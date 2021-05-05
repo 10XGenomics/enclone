@@ -285,3 +285,52 @@ fn test_dependency_structure() {
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 32. Test that the Rust version used by GitHub Actions is the same as the Rust version
+// that's in use.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_rust_version() {
+    PrettyTrace::new().on();
+    let new = Command::new("rustc")
+        .arg("--version")
+        .output()
+        .expect(&format!("failed to execute test_cpu_usage"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\netest_rust_version: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let version = strme(&new.stdout).between(" ", " ");
+    let test_yaml = format!("../.github/workflows/test.yaml");
+    let f = open_for_read![&test_yaml];
+    let mut version_found = false;
+    for line in f.lines() {
+        let s = line.unwrap();
+        if s.contains("rustup default ") {
+            version_found = true;
+            let ga_version = s.after("rustup default ");
+            if ga_version != version {
+                eprintln!(
+                    "\nThe version of Rust you are running is {}, but GitHub Actions is \
+                    using version {} in at\nleast one place.  \
+                    Please update the file .github/workflows/test.yaml.\n",
+                    version, ga_version,
+                );
+                std::process::exit(1);
+            }
+        }
+    }
+    if !version_found {
+        eprintln!("\nFailed to find Rust version in .github/workflows/test.yaml.  Weird.\n");
+        std::process::exit(1);
+    }
+}
