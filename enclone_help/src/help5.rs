@@ -115,6 +115,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.print_tab2();
         h.print("\n");
+
+        h.print(
+            "\\red{━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━}\n\n",
+        );
+
         h.print(
             "\\bold{options that control clonotype grouping}\n\n\
              By default, enclone organizes clonotypes into groups, and each group contains \
@@ -231,6 +237,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2();
         h.print("\n");
+
+        h.print(
+            "\\red{━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━}\n\n",
+        );
+
         h.print(
             "\\bold{options that control global variables}\n\n\
              enclone has some global variables that can be computed, with values printed after \
