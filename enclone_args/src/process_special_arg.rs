@@ -149,6 +149,66 @@ pub fn process_special_arg(
         ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
     // Other.
+    } else if arg.starts_with("GROUP=") {
+        let c = arg.after("GROUP=").split(',').collect::<Vec<&str>>();
+        for x in c.iter() {
+            let x = *x;
+            if x == "vj_refname" {
+                ctl.clono_group_opt.vj_refname = true;
+            } else if x == "vj_heavy_refname" {
+                ctl.clono_group_opt.vj_heavy_refname = true;
+            } else if x == "vdj_refname" {
+                ctl.clono_group_opt.vdj_refname = true;
+            } else if x == "vdj_heavy_refname" {
+                ctl.clono_group_opt.vdj_heavy_refname = true;
+            } else if x == "len" {
+                ctl.clono_group_opt.vj_len = true;
+            } else if x == "cdr3_len" {
+                ctl.clono_group_opt.cdr3_len = true;
+            } else if x.starts_with("aa≥") && x.ends_with("%") {
+                let val = x.after("≥").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_pc = val.force_f64();
+            } else if x.starts_with("aa>=") && x.ends_with("%") {
+                let val = x.after(">=").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_pc = val.force_f64();
+            } else if x.starts_with("aa⩾") && x.ends_with("%") {
+                let val = x.after("⩾").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_pc = val.force_f64();
+            } else if x.starts_with("aa_heavy≥") && x.ends_with("%") {
+                let val = x.after("≥").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_heavy_pc = val.force_f64();
+            } else if x.starts_with("aa_heavy>=") && x.ends_with("%") {
+                let val = x.after(">=").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_heavy_pc = val.force_f64();
+            } else if x.starts_with("aa_heavy⩾") && x.ends_with("%") {
+                let val = x.after("⩾").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.aa_heavy_pc = val.force_f64();
+            }
+        }
     } else if arg.starts_with("DIFF_STYLE=") {
         ctl.gen_opt.diff_style = arg.after("=").to_string();
         if ctl.gen_opt.diff_style != "C1" && ctl.gen_opt.diff_style != "C2" {
