@@ -78,12 +78,16 @@ pub fn grouper(
                     let mut s = Vec::<String>::new();
                     for col in 0..rsi[*i].mat.len() {
                         let vid = rsi[*i].vids[col];
-                        let did = rsi[*i].dids[col];
                         let jid = rsi[*i].jids[col];
                         s.push(refdata.name[vid].clone());
-                        if did.is_some() {
-                            s.push(refdata.name[did.unwrap()].clone());
+                        let d = &opt_d_val[*i].1[col][0];
+                        let dname;
+                        if !d.is_empty() {
+                            dname = refdata.name[d[0]].clone();
+                        } else {
+                            dname = "null".to_string();
                         }
+                        s.push(dname);
                         s.push(refdata.name[jid].clone());
                     }
                     all.push((s, *i));
@@ -154,12 +158,16 @@ pub fn grouper(
                     for col in 0..rsi[*i].mat.len() {
                         if rsi[*i].left[col] {
                             let vid = rsi[*i].vids[col];
-                            let did = rsi[*i].dids[col];
                             let jid = rsi[*i].jids[col];
                             s.push(refdata.name[vid].clone());
-                            if did.is_some() {
-                                s.push(refdata.name[did.unwrap()].clone());
+                            let d = &opt_d_val[*i].1[col][0];
+                            let dname;
+                            if !d.is_empty() {
+                                dname = refdata.name[d[0]].clone();
+                            } else {
+                                dname = "null".to_string();
                             }
+                            s.push(dname);
                             s.push(refdata.name[jid].clone());
                         }
                     }
