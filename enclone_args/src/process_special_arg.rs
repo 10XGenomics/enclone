@@ -175,27 +175,27 @@ pub fn process_special_arg(
                 ctl.clono_group_opt.vj_len = true;
             } else if x == "cdr3_len" {
                 ctl.clono_group_opt.cdr3_len = true;
-            } else if x.starts_with("aa≥") && x.ends_with("%") {
+            } else if x.starts_with("≥aa_light") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
                     std::process::exit(1);
                 }
-                ctl.clono_group_opt.aa_pc = Some(val.force_f64());
-            } else if x.starts_with("aa>=") && x.ends_with("%") {
+                ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("aa_light>=") && x.ends_with("%") {
                 let val = x.after(">=").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
                     std::process::exit(1);
                 }
-                ctl.clono_group_opt.aa_pc = Some(val.force_f64());
-            } else if x.starts_with("aa⩾") && x.ends_with("%") {
+                ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("aa_light⩾") && x.ends_with("%") {
                 let val = x.after("⩾").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa in GROUP.\n");
+                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
                     std::process::exit(1);
                 }
-                ctl.clono_group_opt.aa_pc = Some(val.force_f64());
+                ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy≥") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {

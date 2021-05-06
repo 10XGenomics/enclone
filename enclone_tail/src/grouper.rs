@@ -178,7 +178,7 @@ pub fn grouper(
             for g in groups.iter() {
                 let mut ee: EquivRel = EquivRel::new(g.len() as i32);
                 for i1 in 0..g.len() {
-                    'next: for i2 in i1+1..g.len() {
+                    'next_heavy: for i2 in i1 + 1..g.len() {
                         if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
                             continue;
                         }
@@ -202,7 +202,62 @@ pub fn grouper(
                                         let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
-                                            continue 'next;
+                                            continue 'next_heavy;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(o[j] as usize);
+                    }
+                    groups2.push(p);
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by aa_light_pc.
+
+        if ctl.clono_group_opt.aa_light_pc.is_some() {
+            let min_r = ctl.clono_group_opt.aa_light_pc.unwrap() / 100.0;
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_light: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let dna1 = &ex1.share[p1].seq;
+                                    for p2 in 0..ex2.share.len() {
+                                        if ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let dna2 = &ex2.share[p2].seq;
+                                        let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
+                                        let d = edit_distance(&strme(&aa1), &strme(&aa2));
+                                        let r1 = (aa1.len() - d) as f64 / aa1.len() as f64;
+                                        let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
+                                        if r1 >= min_r || r2 >= min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_light;
                                         }
                                     }
                                 }

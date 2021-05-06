@@ -140,7 +140,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{GROUP=c1,...,cn}\n\
              where each \\bold{ci} is a condition.  Two clonotypes are placed in the same group \
              if all the conditions are satisfied, and that grouping is extended transitively.\n\n\
-             In what follows, \\bold{heavy chain} means IGH or TRB.\n\n\
+             In what follows, \\bold{heavy chain} means IGH or TRB, and \\bold{light chain} means \
+                IGK or IGL or TRA.  \n\n\
              Here are the conditions:\n\n",
         );
         h.rows.clear();
@@ -175,12 +176,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc("cdr3_len", "CDR3 sequences have the same length");
         h.ldoc(
-            "aa≥n%",
-            "amino acid identity on concatenated V..J sequences is at least n%",
-        );
-        h.doc(
             "aa_heavy≥n%",
             "amino acid identity on heavy chain V..J sequences is at least n%",
+        );
+        h.doc(
+            "aa_light≥n%",
+            "amino acid identity on light chain V..J sequences is at least n%",
         );
         h.doc2("(in both cases, we also recognize >= and ⩾)");
         h.print_tab2();

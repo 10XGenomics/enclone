@@ -1566,7 +1566,7 @@ To turn on symmetric grouping, one uses a command of the form
 where each <span style="font-weight:bold;">ci</span> is a condition.  Two clonotypes are placed in the same group if all the conditions
 are satisfied, and that grouping is extended transitively.
 
-In what follows, <span style="font-weight:bold;">heavy chain</span> means IGH or TRB.
+In what follows, <span style="font-weight:bold;">heavy chain</span> means IGH or TRB, and <span style="font-weight:bold;">light chain</span> means IGK or IGL or TRA.  
 
 Here are the conditions:
 
@@ -1585,8 +1585,8 @@ Here are the conditions:
 │len                │  the lengths of V..J are the same (after correction for indels)     │
 │cdr3_len           │  CDR3 sequences have the same length                                │
 ├───────────────────┼─────────────────────────────────────────────────────────────────────┤
-│aa≥n%              │  amino acid identity on concatenated V..J sequences is at least n%  │
 │aa_heavy≥n%        │  amino acid identity on heavy chain V..J sequences is at least n%   │
+│aa_light≥n%        │  amino acid identity on light chain V..J sequences is at least n%   │
 │                   │  (in both cases, we also recognize >= and ⩾)                        │
 └───────────────────┴─────────────────────────────────────────────────────────────────────┘
 

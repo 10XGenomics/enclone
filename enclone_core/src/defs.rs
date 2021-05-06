@@ -414,14 +414,14 @@ pub struct ClonoGroupOpt {
     pub min_group: usize, // minimum number of clonotypes in group to print
     pub style: String,    // symmetric or unsymmetric or unspecified
     // SYMMETRIC GROUPING CONTROLS
-    pub vj_refname: bool,        // group by having the same VJ reference names
-    pub vj_heavy_refname: bool,  // group by having the same heavy VJ reference names
-    pub vdj_refname: bool,       // group by having the same VDJ reference names
-    pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names
-    pub vj_len: bool,            // group by V..J of same length
-    pub cdr3_len: bool,          // group by CDR3 of same length
-    pub aa_pc: Option<f64>,         // group if amino acid identity >= given percent
-    pub aa_heavy_pc: Option<f64>,   // group if amino acid identity >= given percent on heavy chain
+    pub vj_refname: bool,         // group by having the same VJ reference names
+    pub vj_heavy_refname: bool,   // group by having the same heavy VJ reference names
+    pub vdj_refname: bool,        // group by having the same VDJ reference names
+    pub vdj_heavy_refname: bool,  // group by having the same heavy VDJ reference names
+    pub vj_len: bool,             // group by V..J of same length
+    pub cdr3_len: bool,           // group by CDR3 of same length
+    pub aa_heavy_pc: Option<f64>, // group if amino acid identity >= given percent on heavy chain
+    pub aa_light_pc: Option<f64>, // group if amino acid identity >= given percent on light chain
     // ASYMMETRIC GROUPING CONTROLS
     pub asymmetric_center: String, // definition of center for asymmetric grouping
     pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
