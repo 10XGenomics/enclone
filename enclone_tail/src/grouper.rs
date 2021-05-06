@@ -301,8 +301,10 @@ pub fn grouper(
                                         let dna2 = &ex2.share[p2].seq;
                                         let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
                                         let d = edit_distance(&strme(&aa1), &strme(&aa2));
-                                        let r1 = (aa1.len() - d) as f64 / aa1.len() as f64;
-                                        let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_heavy;
@@ -356,8 +358,10 @@ pub fn grouper(
                                         let dna2 = &ex2.share[p2].seq;
                                         let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
                                         let d = edit_distance(&strme(&aa1), &strme(&aa2));
-                                        let r1 = (aa1.len() - d) as f64 / aa1.len() as f64;
-                                        let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_light;
@@ -410,8 +414,10 @@ pub fn grouper(
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa;
                                         let d = edit_distance(&aa1, &aa2);
-                                        let r1 = (aa1.len() - d) as f64 / aa1.len() as f64;
-                                        let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_heavy_cdr3;
@@ -464,8 +470,10 @@ pub fn grouper(
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa;
                                         let d = edit_distance(&aa1, &aa2);
-                                        let r1 = (aa1.len() - d) as f64 / aa1.len() as f64;
-                                        let r2 = (aa2.len() - d) as f64 / aa2.len() as f64;
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_light_cdr3;
