@@ -689,7 +689,7 @@ pub const TESTS: [&str; 234] = [
 
 pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 5] = [
+pub const CRASH_SETS: [&str; 6] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
     //
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
@@ -702,6 +702,9 @@ pub const CRASH_SETS: [&str; 5] = [
     //
     /* 5 */
     "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
+    //
+    /* 6 */
+    "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr_aa_light≥90%",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
