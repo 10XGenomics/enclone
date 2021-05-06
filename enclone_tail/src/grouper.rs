@@ -550,6 +550,7 @@ pub fn grouper(
         let mut center = Vec::<usize>::new();
         for i in 0..exacts.len() {
             if in_center[i] {
+                /*
                 let mut d1 = false;
                 let s = &exacts[i];
                 for k in 0..s.len() {
@@ -563,6 +564,8 @@ pub fn grouper(
                 if d1 {
                     center.push(i);
                 }
+                */
+                center.push(i);
             }
         }
 

@@ -219,8 +219,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             clonotypes in the usual way, but instead filter to define the center, and\n\
             \\bold{AG_CENTER=copy_filters}\n\
             which effectively does nothing -- it just says that filters apply to all clonotypes, \
-            whether in the center or not.  In addition, in both cases, only clonotypes containing \
-            cells from donor d1 are placed in the center.\n\n",
+            whether in the center or not.\n\n",
         );
 
         h.print_with_box(
