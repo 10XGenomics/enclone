@@ -28,7 +28,7 @@ pub fn grouper(
 
     // Case 1: symmetric grouping.
 
-    if !ctl.clono_group_opt.asymmetric {
+    if ctl.clono_group_opt.style != "asymmetric" {
         // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
         // a heavy/TRB CDR3_AA sequence.
 

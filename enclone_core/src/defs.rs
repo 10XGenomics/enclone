@@ -409,6 +409,10 @@ pub struct ClonoPrintOpt {
 
 #[derive(Default)]
 pub struct ClonoGroupOpt {
+    // SYMMETRIC AND ASYMMETRIC
+    pub ngroup: bool,     // don't print group headers
+    pub min_group: usize, // minimum number of clonotypes in group to print
+    pub style: String,    // symmetric or unsymmetric or unspecified
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub vj_heavy_refname: bool,  // group by having the same heavy VJ reference names
@@ -419,13 +423,9 @@ pub struct ClonoGroupOpt {
     pub aa_pc: f64,              // group if amino acid identity >= given percent
     pub aa_heavy_pc: f64,        // group if amino acid identity >= given percent on heavy chain
     // ASYMMETRIC GROUPING CONTROLS
-    pub asymmetric: bool,                // asymmetric grouping turned on
-    pub asymmetric_center: String,       // definition of center for asymmetric grouping
+    pub asymmetric_center: String, // definition of center for asymmetric grouping
     pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
-    pub asymmetric_dist_bound: String,   // definition of distance bound for asymmetric grouping
-    // SYMMETRIC AND ASYMMETRIC
-    pub ngroup: bool,     // don't print group headers
-    pub min_group: usize, // minimum number of clonotypes in group to print
+    pub asymmetric_dist_bound: String, // definition of distance bound for asymmetric grouping
     // DEPRECATED
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
     // UNDOCUMENTED

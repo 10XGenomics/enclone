@@ -394,7 +394,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("ACCEPT_BROKEN", &mut ctl.gen_opt.accept_broken),
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
-        ("AGROUP", &mut ctl.clono_group_opt.asymmetric),
         (
             "ALIGN_JALIGN_CONSISTENCY",
             &mut ctl.gen_opt.align_jun_align_consistency,

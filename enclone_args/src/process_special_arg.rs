@@ -149,7 +149,17 @@ pub fn process_special_arg(
         ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
     // Other.
+    } else if arg == "AGROUP" {
+        if ctl.clono_group_opt.style == "symmetric" {
+            eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");
+            std::process::exit(1);
+        }
+        ctl.clono_group_opt.style = "asymmetric".to_string();
     } else if arg.starts_with("GROUP=") {
+        if ctl.clono_group_opt.style == "asymmetric" {
+            eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");
+            std::process::exit(1);
+        }
         let c = arg.after("GROUP=").split(',').collect::<Vec<&str>>();
         for x in c.iter() {
             let x = *x;

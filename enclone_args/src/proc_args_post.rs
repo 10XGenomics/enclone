@@ -114,7 +114,7 @@ pub fn proc_args_post(
 
     // Sanity check grouping arguments.
 
-    if ctl.clono_group_opt.asymmetric {
+    if ctl.clono_group_opt.style == "asymmetric" {
         if ctl.clono_group_opt.asymmetric_center.len() == 0
             || ctl.clono_group_opt.asymmetric_dist_formula.len() == 0
             || ctl.clono_group_opt.asymmetric_dist_bound.len() == 0
@@ -131,7 +131,7 @@ pub fn proc_args_post(
         || ctl.clono_group_opt.asymmetric_dist_formula.len() > 0
         || ctl.clono_group_opt.asymmetric_dist_bound.len() > 0
     {
-        if !ctl.clono_group_opt.asymmetric {
+        if ctl.clono_group_opt.style == "symmetric" {
             eprintln!(
                 "\nIf any of the asymmetric grouping options AG_CENTER or \
                     AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
@@ -140,7 +140,7 @@ pub fn proc_args_post(
             std::process::exit(1);
         }
     }
-    if ctl.clono_group_opt.asymmetric {
+    if ctl.clono_group_opt.style == "asymmetric" {
         if ctl.clono_group_opt.asymmetric_center != "from_filters"
             && ctl.clono_group_opt.asymmetric_center != "copy_filters"
         {
