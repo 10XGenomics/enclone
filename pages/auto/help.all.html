@@ -1570,25 +1570,33 @@ In what follows, <span style="font-weight:bold;">heavy chain</span> means IGH or
 
 Here are the conditions:
 
-┌───────────────────┬─────────────────────────────────────────────────────────────────────┐
-│vj_refname         │  V segments have the same reference sequence name,                  │
-│                   │  and likewise for J segments                                        │
-│vj_heavy_refname   │  V segments have the same reference sequence name,                  │
-│                   │  and likewise for J segments                                        │
-│                   │  (only applied to heavy chains)                                     │
-│vdj_refname        │  V segments have the same reference sequence name,                  │
-│                   │  and likewise for D segments supplied by Cell Ranger, and J segments│
-│vdj_heavy_refname  │  V segments have the same reference sequence name,                  │
-│                   │  and likewise for D segments supplied by Cell Ranger, and J segments│
-│                   │  (only applied to heavy chains)                                     │
-├───────────────────┼─────────────────────────────────────────────────────────────────────┤
-│len                │  the lengths of V..J are the same (after correction for indels)     │
-│cdr3_len           │  CDR3 sequences have the same length                                │
-├───────────────────┼─────────────────────────────────────────────────────────────────────┤
-│aa_heavy≥n%        │  amino acid identity on heavy chain V..J sequences is at least n%   │
-│aa_light≥n%        │  amino acid identity on light chain V..J sequences is at least n%   │
-│                   │  (in both cases, we also recognize >= and ⩾)                        │
-└───────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌───────────────────┬───────────────────────────────────────────────────────────────────────┐
+│vj_refname         │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for J segments                                          │
+│vj_heavy_refname   │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for J segments                                          │
+│                   │  (only applied to heavy chains)                                       │
+│vdj_refname        │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for D segments supplied by Cell Ranger, and J segments  │
+│vdj_heavy_refname  │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for D segments supplied by Cell Ranger, and J segments  │
+│                   │  (only applied to heavy chains)                                       │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│len                │  the lengths of V..J are the same (after correction for indels)       │
+│cdr3_len           │  CDR3 sequences have the same length                                  │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│cdr3_aa_heavy≥n%   │  amino acid identity on heavy chain CDR3 sequences is at least n%     │
+│cdr3_aa_light≥n%   │  amino acid identity on light chain CDR3 sequences is at least n%     │
+│                   │  (note that use of either of these options without at least one of the│
+│                   │  earlier options may be slow)                                         │
+│                   │  (in both cases, we also recognize >= and ⩾)                          │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│aa_heavy≥n%        │  amino acid identity on heavy chain V..J sequences is at least n%     │
+│aa_light≥n%        │  amino acid identity on light chain V..J sequences is at least n%     │
+│                   │  (note that use of either of these options without at least one of the│
+│                   │  earlier options may be very slow)                                    │
+│                   │  (in both cases, we also recognize >= and ⩾)                          │
+└───────────────────┴───────────────────────────────────────────────────────────────────────┘
 
 To instead turn on asymmetric grouping, one uses the <span style="font-weight:bold;">AGROUP</span> option.  To use this, it is in
 addition necessary to define "center clonotypes", a "distance formula", and a "distance bound". 

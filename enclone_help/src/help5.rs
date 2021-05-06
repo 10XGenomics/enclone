@@ -176,6 +176,17 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc("cdr3_len", "CDR3 sequences have the same length");
         h.ldoc(
+            "cdr3_aa_heavy≥n%",
+            "amino acid identity on heavy chain CDR3 sequences is at least n%",
+        );
+        h.doc(
+            "cdr3_aa_light≥n%",
+            "amino acid identity on light chain CDR3 sequences is at least n%",
+        );
+        h.doc2("(note that use of either of these options without at least one of the");
+        h.doc2("earlier options may be slow)");
+        h.doc2("(in both cases, we also recognize >= and ⩾)");
+        h.ldoc(
             "aa_heavy≥n%",
             "amino acid identity on heavy chain V..J sequences is at least n%",
         );
@@ -183,6 +194,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "aa_light≥n%",
             "amino acid identity on light chain V..J sequences is at least n%",
         );
+        h.doc2("(note that use of either of these options without at least one of the");
+        h.doc2("earlier options may be very slow)");
         h.doc2("(in both cases, we also recognize >= and ⩾)");
         h.print_tab2();
         h.print("\n");

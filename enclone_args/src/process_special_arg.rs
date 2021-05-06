@@ -217,6 +217,48 @@ pub fn process_special_arg(
                     std::process::exit(1);
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("≥cdr3_aa_light") && x.ends_with("%") {
+                let val = x.after("≥").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_aa_light>=") && x.ends_with("%") {
+                let val = x.after(">=").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_aa_light⩾") && x.ends_with("%") {
+                let val = x.after("⩾").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_aa_heavy≥") && x.ends_with("%") {
+                let val = x.after("≥").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_aa_heavy>=") && x.ends_with("%") {
+                let val = x.after(">=").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_aa_heavy⩾") && x.ends_with("%") {
+                let val = x.after("⩾").rev_before("%");
+                if !val.parse::<f64>().is_ok() {
+                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
+                    std::process::exit(1);
+                }
+                ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
             }
         }
     } else if arg.starts_with("DIFF_STYLE=") {
