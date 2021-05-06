@@ -71,7 +71,7 @@ pub const DTESTS: [&str; 15] = [
 // Tests that are affected by the grouping algorithm.  All such tests should go here, if not
 // already in DTESTS.
 
-pub const GTESTS: [&str; 12] = [
+pub const GTESTS: [&str; 13] = [
     // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
     // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
@@ -104,6 +104,9 @@ pub const GTESTS: [&str; 12] = [
     // 12. test of AGROUP
     r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
          AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=13"###,
+    // 13. test of AGROUP
+    r###"BCR=123085 AGROUP AG_CENTER=copy_filters MIN_CELLS=2 MAX_CELLS=2
+         AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
 ];
 
 pub const TESTS: [&str; 234] = [
