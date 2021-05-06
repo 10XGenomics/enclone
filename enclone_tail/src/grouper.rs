@@ -44,15 +44,13 @@ pub fn grouper(
             for g in groups.iter() {
                 let mut all = Vec::new();
                 for i in g.iter() {
-                    // It is somewhat flaky, here and below, that we use the first exact
-                    // subclonotype to determine reference segments.
-                    let ex = &exact_clonotypes[exacts[*i][0]];
                     let mut s = Vec::<String>::new();
-                    for j in 0..ex.share.len() {
-                        s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                        s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    for col in 0..rsi[*i].mat.len() {
+                        let vid = rsi[*i].vids[col];
+                        let jid = rsi[*i].jids[col];
+                        s.push(refdata.name[vid].clone());
+                        s.push(refdata.name[jid].clone());
                     }
-                    s.sort();
                     all.push((s, *i));
                 }
                 all.sort();
@@ -77,15 +75,15 @@ pub fn grouper(
             for g in groups.iter() {
                 let mut all = Vec::new();
                 for i in g.iter() {
-                    let ex = &exact_clonotypes[exacts[*i][0]];
                     let mut s = Vec::<String>::new();
-                    for j in 0..ex.share.len() {
-                        if ex.share[j].left {
-                            s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                            s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    for col in 0..rsi[*i].mat.len() {
+                        if rsi[*i].left[col] {
+                            let vid = rsi[*i].vids[col];
+                            let jid = rsi[*i].jids[col];
+                            s.push(refdata.name[vid].clone());
+                            s.push(refdata.name[jid].clone());
                         }
                     }
-                    s.sort();
                     all.push((s, *i));
                 }
                 all.sort();

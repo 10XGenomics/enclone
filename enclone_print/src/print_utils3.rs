@@ -168,6 +168,7 @@ pub fn define_column_info(
     let mut dids = vec![None; cols];
     let mut jids = vec![0; cols];
     let mut cids = vec![None; cols];
+    let mut left = vec![false; cols];
     for col in 0..cols {
         let mut u = Vec::<usize>::new();
         let mut v = Vec::<usize>::new();
@@ -181,6 +182,9 @@ pub fn define_column_info(
             let m = mat[col][e];
             if m.is_some() {
                 let x = &ex.share[m.unwrap()];
+                if x.left {
+                    left[col] = true;
+                }
                 if x.u_ref_id.is_some() {
                     for _ in 0..ex.ncells() {
                         u.push(x.u_ref_id.unwrap());
@@ -302,6 +306,7 @@ pub fn define_column_info(
     // Return.
 
     ColInfo {
+        left: left,
         uids: uids,
         vids: vids,
         vpids: vpids,

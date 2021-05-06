@@ -767,6 +767,7 @@ pub struct GexInfo {
 
 #[derive(Clone, Default)]
 pub struct ColInfo {
+    pub left: Vec<bool>,
     pub uids: Vec<Option<usize>>,
     pub vids: Vec<usize>,
     pub vpids: Vec<Option<usize>>,
