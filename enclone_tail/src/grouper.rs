@@ -322,7 +322,7 @@ pub fn grouper(
                     ee.orbit(i as i32, &mut o);
                     let mut p = Vec::<usize>::new();
                     for j in 0..o.len() {
-                        p.push(o[j] as usize);
+                        p.push(g[o[j] as usize]);
                     }
                     groups2.push(p);
                 }
@@ -379,7 +379,7 @@ pub fn grouper(
                     ee.orbit(i as i32, &mut o);
                     let mut p = Vec::<usize>::new();
                     for j in 0..o.len() {
-                        p.push(o[j] as usize);
+                        p.push(g[o[j] as usize]);
                     }
                     groups2.push(p);
                 }
@@ -435,7 +435,7 @@ pub fn grouper(
                     ee.orbit(i as i32, &mut o);
                     let mut p = Vec::<usize>::new();
                     for j in 0..o.len() {
-                        p.push(o[j] as usize);
+                        p.push(g[o[j] as usize]);
                     }
                     groups2.push(p);
                 }
@@ -491,7 +491,7 @@ pub fn grouper(
                     ee.orbit(i as i32, &mut o);
                     let mut p = Vec::<usize>::new();
                     for j in 0..o.len() {
-                        p.push(o[j] as usize);
+                        p.push(g[o[j] as usize]);
                     }
                     groups2.push(p);
                 }
