@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone output</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
+</head>
+<body>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 3 CELLS
+┌──────┬───────────────────────────────┬──────────────────────────┐
+│      │  CHAIN 1                      │  CHAIN 2                 │
+│      │  122.1.1|IGHV3-23 ◆ 55|IGHJ4  │  281|IGKV3-15 ◆ 213|IGKJ1│
+│      ├───────────────────────────────┼──────────────────────────┤
+│#  n  │  u  const                     │   u  const               │
+│1  2  │  2  IGHM                      │  16  IGKC                │
+│2  1  │                               │   4  IGKC                │
+└──────┴───────────────────────────────┴──────────────────────────┘
+
+[1.2] CLONOTYPE = 1 CELLS
+┌──────┬─────────────────────────────────────────────┬──────────────────────────┐
+│      │  CHAIN 1                                    │  CHAIN 2                 │
+│      │  122.1.1|IGHV3-23 ◆ 33|IGHD6-19 ◆ 55|IGHJ4  │  281|IGKV3-15 ◆ 213|IGKJ1│
+│      ├─────────────────────────────────────────────┼──────────────────────────┤
+│#  n  │  u  const                                   │   u  const               │
+│1  1  │  5  IGHM                                    │  28  IGKC                │
+└──────┴─────────────────────────────────────────────┴──────────────────────────┘
+</span></pre>
+</body>
+</html>
+

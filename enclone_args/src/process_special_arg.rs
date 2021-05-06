@@ -155,7 +155,17 @@ pub fn process_special_arg(
             std::process::exit(1);
         }
         ctl.clono_group_opt.style = "asymmetric".to_string();
+    } else if arg == "GROUP_VJ_REFNAME" {
+        ctl.clono_group_opt.style = "symmetric".to_string();
+        ctl.clono_group_opt.vj_refname = true;
+    } else if arg == "GROUP_VJ_REFNAME_HEAVY" {
+        ctl.clono_group_opt.style = "symmetric".to_string();
+        ctl.clono_group_opt.vj_heavy_refname = true;
+    } else if arg == "GROUP_VDJ_REFNAME_HEAVY" {
+        ctl.clono_group_opt.style = "symmetric".to_string();
+        ctl.clono_group_opt.vdj_heavy_refname = true;
     } else if arg == "GROUP_VJ_REFNAME_STRONG" {
+        ctl.clono_group_opt.style = "symmetric".to_string();
         ctl.clono_group_opt.vj_refname = true;
         ctl.clono_group_opt.vj_len = true;
         ctl.clono_group_opt.cdr3_len = true;
@@ -164,6 +174,7 @@ pub fn process_special_arg(
             eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");
             std::process::exit(1);
         }
+        ctl.clono_group_opt.style = "symmetric".to_string();
         let c = arg.after("GROUP=").split(',').collect::<Vec<&str>>();
         for x in c.iter() {
             let x = *x;
