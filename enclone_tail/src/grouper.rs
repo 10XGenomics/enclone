@@ -68,6 +68,41 @@ pub fn grouper(
             groups = groups2;
         }
 
+        // Group by vdj_refname.
+
+        if ctl.clono_group_opt.vdj_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        let vid = rsi[*i].vids[col];
+                        let did = rsi[*i].dids[col];
+                        let jid = rsi[*i].jids[col];
+                        s.push(refdata.name[vid].clone());
+                        if did.is_some() {
+                            s.push(refdata.name[did.unwrap()].clone());
+                        }
+                        s.push(refdata.name[jid].clone());
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
         // Group by vj_heavy_refname.
 
         if ctl.clono_group_opt.vj_heavy_refname {
@@ -81,6 +116,50 @@ pub fn grouper(
                             let vid = rsi[*i].vids[col];
                             let jid = rsi[*i].jids[col];
                             s.push(refdata.name[vid].clone());
+                            s.push(refdata.name[jid].clone());
+                        }
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    if all[i].0.is_empty() {
+                        for k in i..j {
+                            let g = vec![all[k].1];
+                            groups2.push(g);
+                        }
+                    } else {
+                        let mut g = Vec::<usize>::new();
+                        for k in i..j {
+                            g.push(all[k].1);
+                        }
+                        groups2.push(g);
+                    }
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vdj_heavy_refname.
+
+        if ctl.clono_group_opt.vdj_heavy_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        if rsi[*i].left[col] {
+                            let vid = rsi[*i].vids[col];
+                            let did = rsi[*i].dids[col];
+                            let jid = rsi[*i].jids[col];
+                            s.push(refdata.name[vid].clone());
+                            if did.is_some() {
+                                s.push(refdata.name[did.unwrap()].clone());
+                            }
                             s.push(refdata.name[jid].clone());
                         }
                     }
@@ -387,11 +466,6 @@ pub fn grouper(
         }
 
         let _groups = groups; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-        /*
-        pub vdj_refname: bool,       // group by having the same VDJ reference names
-        pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names
-        */
 
         // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
         // a heavy/TRB CDR3_AA sequence.
