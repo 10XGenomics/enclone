@@ -704,7 +704,7 @@ pub const CRASH_SETS: [&str; 6] = [
     "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
     //
     /* 6 */
-    "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr_aa_light≥90%",
+    "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
