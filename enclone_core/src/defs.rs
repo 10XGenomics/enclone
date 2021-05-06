@@ -428,7 +428,7 @@ pub struct ClonoGroupOpt {
     pub min_group: usize, // minimum number of clonotypes in group to print
     // DEPRECATED
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
-    // OTHER
+    // UNDOCUMENTED
     pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
 }
 
