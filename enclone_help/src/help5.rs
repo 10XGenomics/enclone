@@ -149,13 +149,27 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
         h.doc(
             "vj_refname",
-            "V segments have the same reference sequence name, and likewise for J segments",
+            "V segments have the same reference sequence name,",
         );
+        h.doc2("and likewise for J segments");
+
+        h.doc(
+            "vj_heavy_refname",
+            "V segments have the same reference sequence name,",
+        );
+        h.doc2("and likewise for J segments");
+        h.doc2("(only applied to heavy chains)");
         h.doc(
             "vdj_refname",
-            "V segments have the same reference sequence name, and likewise for J segments,",
+            "V segments have the same reference sequence name,",
         );
-        h.doc2("and likewise for D segments supplied by Cell Ranger");
+        h.doc2("and likewise for D segments supplied by Cell Ranger, and J segments");
+        h.doc(
+            "vdj_heavy_refname",
+            "V segments have the same reference sequence name,",
+        );
+        h.doc2("and likewise for D segments supplied by Cell Ranger, and J segments");
+        h.doc2("(only applied to heavy chains)");
 
         h.ldoc(
             "len",
