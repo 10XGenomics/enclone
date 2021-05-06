@@ -431,7 +431,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
         (
             "GROUP_VDJ_REFNAME_HEAVY",
-            &mut ctl.clono_group_opt.vdj_refname_heavy,
+            &mut ctl.clono_group_opt.vdj_heavy_refname,
         ),
         ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
         (
@@ -440,7 +440,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ),
         (
             "GROUP_VJ_REFNAME_HEAVY",
-            &mut ctl.clono_group_opt.vj_refname_heavy,
+            &mut ctl.clono_group_opt.vj_heavy_refname,
         ),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),

@@ -807,7 +807,7 @@ pub async fn main_enclone(args: &Vec<String>) {
     let t = Instant::now();
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
     let mut need_opt_d_val =
-        ctl.clono_group_opt.vdj_refname || ctl.clono_group_opt.vdj_refname_heavy;
+        ctl.clono_group_opt.vdj_refname || ctl.clono_group_opt.vdj_heavy_refname;
     for x in ctl.gen_opt.gvars.iter() {
         if x.starts_with("d_inconsistent_") {
             need_opt_d_val = true;

@@ -103,9 +103,9 @@ pub fn grouper(
             }
         }
 
-        // Handle vj_refname_heavy.
+        // Handle vj_heavy_refname.
 
-        if ctl.clono_group_opt.vj_refname_heavy {
+        if ctl.clono_group_opt.vj_heavy_refname {
             let mut all = Vec::<(Vec<String>, usize)>::new();
             for i in 0..exacts.len() {
                 let ex = &exact_clonotypes[exacts[i][0]];
@@ -130,9 +130,9 @@ pub fn grouper(
             }
         }
 
-        // Handle vdj_refname_heavy.
+        // Handle vdj_heavy_refname.
 
-        if ctl.clono_group_opt.vdj_refname_heavy {
+        if ctl.clono_group_opt.vdj_heavy_refname {
             let mut all = Vec::<(Vec<String>, usize)>::new();
             for i in 0..exacts.len() {
                 let ex = &exact_clonotypes[exacts[i][0]];

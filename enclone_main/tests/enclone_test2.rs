@@ -475,7 +475,7 @@ fn test_for_broken_links_and_spellcheck() {
         pcell pdb pgas phad phylip \
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \
-        sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
+        sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
         subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
         thresholding timepoint \
         tracebacks trb tsv \
