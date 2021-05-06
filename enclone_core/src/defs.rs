@@ -418,17 +418,18 @@ pub struct ClonoGroupOpt {
     pub cdr3_len: bool,          // group by CDR3 of same length
     pub aa_pc: f64,              // group if amino acid identity >= given percent
     pub aa_heavy_pc: f64,        // group if amino acid identity >= given percent on heavy chain
+    // ASYMMETRIC GROUPING CONTROLS
+    pub asymmetric: bool,                // asymmetric grouping turned on
+    pub asymmetric_center: String,       // definition of center for asymmetric grouping
+    pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
+    pub asymmetric_dist_bound: String,   // definition of distance bound for asymmetric grouping
     // OTHER
-    pub ngroup: bool,                    // don't print group headers
-    pub heavy_cdr3_aa: bool,             // group by perfect identity of cdr3_aa IGH or TRB
+    pub ngroup: bool,            // don't print group headers
+    pub heavy_cdr3_aa: bool,     // group by perfect identity of cdr3_aa IGH or TRB
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
     pub vj_refname_heavy: bool,  // group by having the same heavy chain VJ reference names
     pub vdj_refname_heavy: bool, // group by having the same heavy chain VDJ reference names
     pub min_group: usize,        // minimum number of clonotypes in group to print
-    pub asymmetric: bool,        // asymmetric grouping turned on
-    pub asymmetric_center: String, // definition of center for asymmetric grouping
-    pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
-    pub asymmetric_dist_bound: String, // definition of distance bound for asymmetric grouping
 }
 
 // Parseable output options.

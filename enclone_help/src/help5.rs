@@ -136,12 +136,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              creates nonoverlapping groups, whereas asymmetric grouping creates groups that may \
              overlap.\n\n\
              \
-             To turn on symmetric grouping, and as a prelude to asymmetric grouping (described \
-             subsequently), one uses a command of the form\n\
+             To turn on symmetric grouping, one uses a command of the form\n\
              \\bold{GROUP=c1,...,cn}\n\
              where each \\bold{ci} is a condition.  Two clonotypes are placed in the same group \
-             if all the conditions are satisfied, and that grouping is extended transitively \
-             (even in the asymmetric case).\n\n\
+             if all the conditions are satisfied, and that grouping is extended transitively.\n\n\
              In what follows, \\bold{heavy chain} means IGH or TRB.\n\n\
              Here are the conditions:\n\n",
         );
@@ -189,7 +187,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\n");
 
         h.print(
-            "To turn on asymmetric grouping, one uses the \\bold{AGROUP} option.  To use \
+            "To instead turn on asymmetric grouping, one uses the \\bold{AGROUP} option.  To use \
             this, it is in addition necessary to define \"center clonotypes\", \
             a \"distance formula\", and a \"distance bound\".  Each group will then consist \
             of the center clonotype (which comes first), followed by, in order by distance \

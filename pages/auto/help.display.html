@@ -100,11 +100,10 @@ These options are experimental.  There are many natural extensions that we have 
 enclone has two types of grouping: symmetric and asymmetric.  Symmetric grouping creates
 nonoverlapping groups, whereas asymmetric grouping creates groups that may overlap.
 
-To turn on symmetric grouping, and as a prelude to asymmetric grouping (described subsequently),
-one uses a command of the form
+To turn on symmetric grouping, one uses a command of the form
 <span style="font-weight:bold;">GROUP=c1,...,cn</span>
 where each <span style="font-weight:bold;">ci</span> is a condition.  Two clonotypes are placed in the same group if all the conditions
-are satisfied, and that grouping is extended transitively (even in the asymmetric case).
+are satisfied, and that grouping is extended transitively.
 
 In what follows, <span style="font-weight:bold;">heavy chain</span> means IGH or TRB.
 
@@ -130,12 +129,12 @@ Here are the conditions:
 │                   │  (in both cases, we also recognize >= and ⩾)                        │
 └───────────────────┴─────────────────────────────────────────────────────────────────────┘
 
-To turn on asymmetric grouping, one uses the <span style="font-weight:bold;">AGROUP</span> option.  To use this, it is in addition
-necessary to define "center clonotypes", a "distance formula", and a "distance bound".  Each group
-will then consist of the center clonotype (which comes first), followed by, in order by distance
-(relative to the formula), all those clonotypes that satisfy the distance bound (with ties broken
-arbitrarily).  For each clonotype in a group, we print its distance from the first clonotype, and
-this is also available as a parseable variable <span style="font-weight:bold;">dist_center</span>.
+To instead turn on asymmetric grouping, one uses the <span style="font-weight:bold;">AGROUP</span> option.  To use this, it is in
+addition necessary to define "center clonotypes", a "distance formula", and a "distance bound". 
+Each group will then consist of the center clonotype (which comes first), followed by, in order by
+distance (relative to the formula), all those clonotypes that satisfy the distance bound (with
+ties broken arbitrarily).  For each clonotype in a group, we print its distance from the first
+clonotype, and this is also available as a parseable variable <span style="font-weight:bold;">dist_center</span>.
 
 <span style="font-weight:bold;">Center clonotypes.</span>  These are in principle any set of clonotypes.  For now we allow two options:
 <span style="font-weight:bold;">AG_CENTER=from_filters</span>
