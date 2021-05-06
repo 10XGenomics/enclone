@@ -12,6 +12,10 @@
 # To run just one test,
 # cargo t <testname>
 # should work.
+#
+# ./test linkless ==> run without testing links, useful if a link is temporarily broken
+
+set arg1 = $1
 
 ##### GET START TIME #####
 
@@ -34,11 +38,20 @@ cargo test --features cpu test_accounting -- --nocapture |& post_process_test
 
 ##### RUN TEST GROUP 1 #####
 
-cargo t |& post_process_test
-
-if ( $status != 0 ) then
-    echo "FAILED!"
-    exit 1
+if ( $arg1 != linkless ) then
+    cargo t |& post_process_test
+    if ( $status != 0 ) then
+        echo "FAILED!"
+        exit 1
+    endif
+else
+    cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
+        --test enclone_test4 --test enclone_test_peak_mem --test test_com --features linkless \
+        -- --nocapture |& post_process_test
+    if ( $status != 0 ) then
+        echo "FAILED!"
+        exit 1
+    endif
 endif
 
 ##### RUN TEST GROUP 2 #####

@@ -434,6 +434,7 @@ fn test_internal() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "linkless"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
