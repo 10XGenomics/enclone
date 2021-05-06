@@ -68,6 +68,20 @@ pub const DTESTS: [&str; 15] = [
     r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CARMAQFYSGSGTYYIGPYYFEYW"###,
 ];
 
+// Tests that are affected by the grouping algorithm.  All such tests should go here, if not
+// already in DTESTS.
+
+pub const GTESTS: [&str; 4] = [
+    // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
+    // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
+    // 3. test 7/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
+    // 4. test 8/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
+];
+
 pub const TESTS: [&str; 234] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
@@ -226,13 +240,13 @@ pub const TESTS: [&str; 234] = [
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN HTML SET_IN_STONE"###,
     // 60. test 4/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
-    // 61. test 5/8 for newline correctness (this grouping option deprecated but supported)
+    // 61. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
-    // 62. test 6/8 for newline correctness (this grouping option deprecated but supported)
+    // 62. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
-    // 63. test 7/8 for newline correctness (this grouping option deprecated but supported)
+    // 63. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
-    // 64. test 8/8 for newline correctness (this grouping option deprecated but supported)
+    // 64. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
     // 65. test NCELL
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
