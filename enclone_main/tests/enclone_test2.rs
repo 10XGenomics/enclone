@@ -445,14 +445,9 @@ fn test_for_broken_links_and_spellcheck() {
     // Also, obviously, these links should be retested to determine if they are permanently broken
     // rather than just unreliable.
 
-    let unreliable_links = [
-        "http://www.abybank.org/abdb",
-        "http://www.abybank.org/abdb/Data/NR_LH_Combined_Martin.tar.bz2",
-        "http://www.bioinf.org.uk/abs/info.html",
-        "http://www.bioinf.org.uk/abs/info.html#martinnum",
-        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html",
-        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html.",
-    ];
+    let unreliable_links = include_str!("../../pages/unreliable_links")
+        .split('\n')
+        .collect::<Vec<&str>>();
 
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
