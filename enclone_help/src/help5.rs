@@ -253,7 +253,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "\\bold{Distance bound.}  For now we allow the following two forms:\n\
             \\bold{AG_DIST_BOUND=top=n}\n\
-            which returns the top n clonotypes, and\n\
+            which returns the top n clonotypes (plus the center), and\n\
             \\bold{AG_DIST_BOUND=max=d}\n\
             which returns all clonotypes having distance ≤ d from the center clonotype.\n\n",
         );
