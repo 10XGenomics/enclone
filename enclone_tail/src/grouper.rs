@@ -29,10 +29,157 @@ pub fn grouper(
     // Case 1: symmetric grouping.
 
     if ctl.clono_group_opt.style != "asymmetric" {
+        let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
+        let mut group = Vec::<usize>::new();
+        for i in 0..exacts.len() {
+            group.push(i);
+        }
+        let mut groups = vec![group];
+
+        // Group by vj_refname.
+
+        if ctl.clono_group_opt.vj_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    // It is somewhat flaky, here and below, that we use the first exact
+                    // subclonotype to determine reference segments.
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<String>::new();
+                    for j in 0..ex.share.len() {
+                        s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                        s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vj_heavy_refname.
+
+        if ctl.clono_group_opt.vj_heavy_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<String>::new();
+                    for j in 0..ex.share.len() {
+                        if ex.share[j].left {
+                            s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                            s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                        }
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    if all[i].0.is_empty() {
+                        for k in i..j {
+                            let g = vec![all[k].1];
+                            groups2.push(g);
+                        }
+                    } else {
+                        let mut g = Vec::<usize>::new();
+                        for k in i..j {
+                            g.push(all[k].1);
+                        }
+                        groups2.push(g);
+                    }
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vj_len.
+
+        if ctl.clono_group_opt.vj_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<(bool, usize)>::new();
+                    for j in 0..ex.share.len() {
+                        s.push((ex.share[j].left, ex.share[j].seq_del.len()));
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by cdr3_len.
+
+        if ctl.clono_group_opt.cdr3_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<(bool, usize)>::new();
+                    for j in 0..ex.share.len() {
+                        s.push((ex.share[j].left, ex.share[j].cdr3_aa.len()));
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        let _groups = groups; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+        /*
+        pub vdj_refname: bool,       // group by having the same VDJ reference names
+        pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names
+        pub aa_pc: f64,              // group if amino acid identity >= given percent
+        pub aa_heavy_pc: f64,        // group if amino acid identity >= given percent on heavy chain
+        */
+
         // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
         // a heavy/TRB CDR3_AA sequence.
 
-        let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
         if ctl.clono_group_opt.heavy_cdr3_aa {
             let mut all = Vec::<(String, usize)>::new();
             for i in 0..exacts.len() {
