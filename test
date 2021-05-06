@@ -17,6 +17,30 @@
 
 set arg1 = $1
 
+##### TEST UNRELIABLE LINKS #####
+
+if !( -f stamps/last_linktest) then
+    echo 0 > stamps/last_linktest
+endif
+set last_linktest    = `cat stamps/last_linktest`
+set linkstart = `date +%s`
+set elapsed_linktest = `expr $linkstart - $last_linktest`
+if ( $elapsed_linktest > 86400 ) then
+    set timeout = 2
+    echo "\ntesting unreliable links; this test is only run once per day"
+    foreach link (`cat pages/unreliable_links`)
+        if ( $link !~ *"." ) then
+            set response = `curl -Is  --max-time $timeout $link | head -1`
+            if ( "$response" !~ *" 200 "* && "$response" !~ *" 301 "* )then
+                echo "$link may be broken, response was $response"
+                echo "If you see this fail repeatedly, link may be permanently broken."
+                echo "Note that timeout is $timeout seconds, so this could be a false alarm."
+            endif
+        endif
+    end
+    echo $linkstart > stamps/last_linktest
+endif
+
 ##### GET START TIME #####
 
 set start = `date +%s`

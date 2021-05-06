@@ -442,8 +442,7 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up link exceptions.  These are links that have been observed to break periodically.
     // The web.archive.org one is probably just too slow, and we should allow for that rather
     // than have it on the unreliable list.  The "period" version is because of a parsing bug.
-    // Also, obviously, these links should be retested to determine if they are permanently broken
-    // rather than just unreliable.
+    // See also the test in ./test.
 
     let unreliable_links = include_str!("../../pages/unreliable_links")
         .split('\n')
