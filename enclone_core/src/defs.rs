@@ -216,7 +216,6 @@ pub struct GeneralOpt {
     pub stable_doc: bool,
     pub imgt: bool,
     pub imgt_fix: bool,
-    pub ngroup: bool,
     pub jc1: bool,
     pub trace_barcode: String,
     pub ncell: bool,
@@ -410,13 +409,21 @@ pub struct ClonoPrintOpt {
 
 #[derive(Default)]
 pub struct ClonoGroupOpt {
-    pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
-    pub vj_refname: bool,    // group by having the same VJ reference names
+    // SYMMETRIC GROUPING CONTROLS
+    pub vj_refname: bool,  // group by having the same VJ reference names
+    pub vdj_refname: bool, // group by having the same VDJ reference names
+    pub vj_len: bool,      // group by V..J of same length
+    pub cdr3_len: bool,    // group by CDR3 of same length
+    pub aa_pc: f64,        // group if amino acid identity >= given percent
+    pub aa_heavy_pc: f64,  // group if amino acid identity >= given percent on heavy chain
+    // OTHER
+    pub ngroup: bool,                    // don't print group headers
+    pub heavy_cdr3_aa: bool,             // group by perfect identity of cdr3_aa IGH or TRB
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
-    pub vj_refname_heavy: bool, // group by having the same heavy chain VJ reference names
+    pub vj_refname_heavy: bool,  // group by having the same heavy chain VJ reference names
     pub vdj_refname_heavy: bool, // group by having the same heavy chain VDJ reference names
-    pub min_group: usize,    // minimum number of clonotypes in group to print
-    pub asymmetric: bool,    // asymmetric grouping turned on
+    pub min_group: usize,        // minimum number of clonotypes in group to print
+    pub asymmetric: bool,        // asymmetric grouping turned on
     pub asymmetric_center: String, // definition of center for asymmetric grouping
     pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
     pub asymmetric_dist_bound: String, // definition of distance bound for asymmetric grouping

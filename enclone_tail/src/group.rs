@@ -257,14 +257,14 @@ pub fn group_and_print_clonotypes(
         // they're marked.
 
         if !ctl.gen_opt.noprint {
-            if !ctl.gen_opt.html && !ctl.gen_opt.ngroup {
+            if !ctl.gen_opt.html && !ctl.clono_group_opt.ngroup {
                 fwriteln!(logx, ""); // NEWLINE 1
             }
 
             // If we just printed a clonotype box, output a bar.
 
             if last_width > 0 {
-                if ctl.gen_opt.ngroup || ctl.gen_opt.html {
+                if ctl.clono_group_opt.ngroup || ctl.gen_opt.html {
                     fwriteln!(logx, ""); // NEWLINE 2
                 }
                 if ctl.pretty {
@@ -273,7 +273,7 @@ pub fn group_and_print_clonotypes(
                     fwrite!(logx, "{}", strme(&log));
                 }
                 fwrite!(logx, "╺{}╸", "━".repeat(last_width - 2));
-                if !ctl.gen_opt.ngroup {
+                if !ctl.clono_group_opt.ngroup {
                     fwriteln!(logx, ""); // NEWLINE 3
                 }
                 fwriteln!(logx, ""); // NEWLINE 4
@@ -286,7 +286,7 @@ pub fn group_and_print_clonotypes(
 
             // If NGROUP is not on, output a GROUP line, including a newline at the end.
 
-            if !ctl.gen_opt.ngroup {
+            if !ctl.clono_group_opt.ngroup {
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_bold_escape(&mut log);
@@ -356,7 +356,7 @@ pub fn group_and_print_clonotypes(
             // Proceed.
 
             if !ctl.gen_opt.noprint {
-                if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
+                if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.clono_group_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
                 }
                 let mut s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);

@@ -460,7 +460,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NEWICK", &mut ctl.gen_opt.newick),
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
-        ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NGROUP", &mut ctl.clono_group_opt.ngroup),
         ("NIMPROPER", &mut ctl.merge_all_impropers),
         ("NO_UNCAP_SIM", &mut ctl.gen_opt.no_uncap_sim),
         ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
