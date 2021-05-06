@@ -185,7 +185,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc2("(note that use of either of these options without at least one of the");
         h.doc2("earlier options may be slow)");
-        h.doc2("(in both cases, we also recognize >= and ⩾)");
+        h.doc2("(in both cases, we also recognize >= (with quoting) and ⩾)");
         h.ldoc(
             "aa_heavy≥n%",
             "amino acid identity on heavy chain V..J sequences is at least n%",
@@ -196,7 +196,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc2("(note that use of either of these options without at least one of the");
         h.doc2("earlier options may be very slow)");
-        h.doc2("(in both cases, we also recognize >= and ⩾)");
+        h.doc2("(in both cases, we also recognize >= (with quoting) and ⩾)");
         h.print_tab2();
         h.print("\n");
 
