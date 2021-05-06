@@ -27,9 +27,27 @@ pub fn grouper(
 ) -> Vec<Vec<(i32, String)>> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Case 1: symmetric grouping.
+    // Case 0: no grouping.
 
-    if ctl.clono_group_opt.style != "asymmetric" {
+    if ctl.clono_group_opt.style == "" {
+        let mut groups = Vec::<Vec<(i32, String)>>::new();
+        let mut grepsn = Vec::<usize>::new();
+        for i in 0..exacts.len() {
+            groups.push(vec![(i as i32, String::new())]);
+            let mut cells = 0;
+            for u in exacts[i].iter() {
+                cells += exact_clonotypes[*u].ncells();
+            }
+            grepsn.push(cells);
+        }
+        sort_sync2(&mut grepsn, &mut groups);
+        groups.reverse();
+        return groups;
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Case 1: symmetric grouping.
+    } else if ctl.clono_group_opt.style == "symmetric" {
         let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
         let mut group = Vec::<usize>::new();
         for i in 0..exacts.len() {
