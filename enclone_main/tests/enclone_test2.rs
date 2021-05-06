@@ -434,7 +434,6 @@ fn test_internal() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "linkless"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
@@ -581,6 +580,9 @@ fn test_for_broken_links_and_spellcheck() {
 
             // Check links.
 
+            if cfg!(feature = "linkless") {
+                continue;
+            }
             let mut links = Vec::<String>::new();
             let mut chars = Vec::<char>::new();
             for c in s.chars() {
