@@ -155,6 +155,10 @@ pub fn process_special_arg(
             std::process::exit(1);
         }
         ctl.clono_group_opt.style = "asymmetric".to_string();
+    } else if arg == "GROUP_VJ_REFNAME_STRONG" {
+        ctl.clono_group_opt.vj_refname = true;
+        ctl.clono_group_opt.vj_len = true;
+        ctl.clono_group_opt.cdr3_len = true;
     } else if arg.starts_with("GROUP=") {
         if ctl.clono_group_opt.style == "asymmetric" {
             eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");

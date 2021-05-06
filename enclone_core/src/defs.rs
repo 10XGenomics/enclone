@@ -430,8 +430,6 @@ pub struct ClonoGroupOpt {
     pub asymmetric_dist_bound: String, // definition of distance bound for asymmetric grouping
     // DEPRECATED
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
-    // UNDOCUMENTED
-    pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
 }
 
 // Parseable output options.
