@@ -98,14 +98,16 @@ pub fn grouper(
                         let vid = rsi[*i].vids[col];
                         let jid = rsi[*i].jids[col];
                         s.push(refdata.name[vid].clone());
-                        let d = &opt_d_val[*i].1[col][0];
-                        let dname;
-                        if !d.is_empty() {
-                            dname = refdata.name[d[0]].clone();
-                        } else {
-                            dname = "null".to_string();
+                        if rsi[*i].left[col] {
+                            let d = &opt_d_val[*i].1[col][0];
+                            let dname;
+                            if !d.is_empty() {
+                                dname = refdata.name[d[0]].clone();
+                            } else {
+                                dname = "null".to_string();
+                            }
+                            s.push(dname);
                         }
-                        s.push(dname);
                         s.push(refdata.name[jid].clone());
                     }
                     all.push((s, *i));
