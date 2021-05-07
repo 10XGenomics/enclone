@@ -61,7 +61,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn main_enclone(args: &Vec<String>) {
+pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let tall = Instant::now();
 
     // Process SOURCE args.
@@ -157,11 +157,7 @@ pub async fn main_enclone(args: &Vec<String>) {
         println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");
-    let res = setup(&mut ctl, &args);
-    if res.is_err() {
-        eprintln!("{}", res.unwrap_err());
-        std::process::exit(1);
-    }
+    setup(&mut ctl, &args)?;
 
     // Read external data.
 
@@ -192,11 +188,11 @@ pub async fn main_enclone(args: &Vec<String>) {
     // list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
-    check_lvars(&ctl, &gex_info);
+    check_lvars(&ctl, &gex_info)?;
     let twoof = Instant::now();
     check_gvars(&ctl);
-    check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
-    check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
+    check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols)?;
+    check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree)?;
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
         check_pcols(
             &ctl,
@@ -205,7 +201,7 @@ pub async fn main_enclone(args: &Vec<String>) {
                 ctl.plot_opt.plot_xy_xvar.clone(),
                 ctl.plot_opt.plot_xy_yvar.clone(),
             ],
-        );
+        )?;
     }
     let mut bound_vars = Vec::<String>::new();
     for bi in 0..ctl.clono_filt_opt.bounds.len() {
@@ -215,7 +211,7 @@ pub async fn main_enclone(args: &Vec<String>) {
         }
     }
     unique_sort(&mut bound_vars);
-    check_pcols(&ctl, &gex_info, &bound_vars);
+    check_pcols(&ctl, &gex_info, &bound_vars)?;
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
@@ -985,4 +981,5 @@ pub async fn main_enclone(args: &Vec<String>) {
     if !ctl.gen_opt.cellranger {
         std::process::exit(0);
     }
+    Ok(())
 }

@@ -7,5 +7,9 @@ use enclone_main::main_enclone::*;
 #[tokio::main]
 async fn main() {
     let mut args: Vec<String> = env::args().collect();
-    main_enclone(&mut args).await;
+    let res = main_enclone(&mut args).await;
+    if res.is_err() {
+        eprintln!("{}", res.unwrap_err());
+        std::process::exit(1);
+    }
 }
