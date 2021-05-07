@@ -146,8 +146,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 .expect("failed to execute enclone");
             print!("{}{}", strme(&o.stdout), strme(&o.stderr));
             if o.status.code() != Some(0) {
-                println!("FAILED!\n");
-                std::process::exit(1);
+                return Err(format!("\nFAILED!\n"));
             }
         }
         std::process::exit(0);
@@ -263,12 +262,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         }
     }
     if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
-        eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n"
+        ));
     }
     if have_tcr && have_bcr {
-        eprintln!("\nKindly please do not specify both TCR and BCR.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nKindly please do not specify both TCR and BCR.\n"
+        ));
     }
     let mut using_plot = false;
 
@@ -286,8 +287,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                             || !stop.parse::<usize>().is_ok()
                             || start.force_usize() > stop.force_usize()
                         {
-                            eprintln!("\nIllegal range in BI argument.\n");
-                            std::process::exit(1);
+                            return Err(format!("\nIllegal range in BI argument.\n"));
                         }
                         let (start, stop) = (start.force_usize(), stop.force_usize());
                         for j in start..=stop {
@@ -309,14 +309,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                             || n.force_usize() < 1
                             || n.force_usize() > 12
                         {
-                            eprintln!(
+                            return Err(format!(
                                 "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
-                            );
-                            std::process::exit(1);
+                            ));
                         }
                     } else if y.len() > 1 {
-                        eprintln!("\nFor BI, if you specify m1, you can only specify m1.\n");
-                        std::process::exit(1);
+                        return Err(format!(
+                            "\nFor BI, if you specify m1, you can only specify m1.\n"
+                        ));
                     }
                     let mut found = false;
                     for s in f.lines() {
@@ -665,11 +665,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Check for weird case that might arise if testing code is screwed up.
 
         if arg.len() == 0 {
-            eprintln!(
+            return Err(format!(
                 "\nYou've passed a null argument to enclone.  Normally that isn't \
                  possible.\nPlease take a detailed look at how you're invoking enclone.\n"
-            );
-            std::process::exit(1);
+            ));
         }
 
         // Process set_true arguments.
@@ -896,18 +895,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if processed[i] {
             continue;
         }
-        let res = process_special_arg(
+        process_special_arg(
             &args[i],
             &mut ctl,
             &mut metas,
             &mut metaxs,
             &mut xcrs,
             &mut using_plot,
-        );
-        if res.is_err() {
-            eprintln!("{}", res.unwrap_err());
-            std::process::exit(1);
-        }
+        )?;
     }
 
     // Record time.
@@ -916,12 +911,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Do residual argument processing.
 
-    let res = proc_args_post(
+    proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
-    );
-    if res.is_err() {
-        eprintln!("{}", res.unwrap_err());
-        std::process::exit(1);
-    }
+    )?;
     Ok(())
 }
