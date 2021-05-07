@@ -175,6 +175,10 @@ There is also a very large test, which can only be run internally, which one run
 An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.
 </p>
 
+<p>The command <code>./test</code> (for internal users) will fail sporadically because it tests
+for broken links on the site, and some of those links break transiently, sometimes for about a 
+day.  To run the tests without testing links, one can use <code>./test linkless</code>.</p>
+
 <p>Pull requests trigger <code>./testx</code> (via GitHub Actions) and the very large test
 (via Jenkins).  Note that the internal main test includes tests that are not tested as
 part of this.</p>

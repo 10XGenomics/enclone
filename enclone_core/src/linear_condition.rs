@@ -67,7 +67,10 @@ impl LinearCondition {
         }
         if !rhs.parse::<f64>().is_ok() {
             eprintln!(
-                "\nImproperly formatted condition, right-hand side invalid: {}.\n",
+                "\nImproperly formatted condition, right-hand side invalid: {}.\n\
+                The right-hand side needs to be a constant.  Please type \
+                \"enclone help filter\"\n\
+                for more information.\n",
                 x
             );
             std::process::exit(1);
@@ -110,7 +113,8 @@ impl LinearCondition {
                 }
                 if !coeffi.parse::<f64>().is_ok() {
                     eprintln!(
-                        "\nImproperly formatted condition, coefficient {} is invalid: {}.\n",
+                        "\nImproperly formatted condition, coefficient {} is invalid: {}.\n\
+                        Please type \"enclone help filter\" for more information.\n",
                         coeffi, x
                     );
                     std::process::exit(1);
@@ -156,7 +160,8 @@ impl LinearCondition {
         for i in 0..self.var.len() {
             if self.var[i].ends_with("_cell") {
                 eprintln!(
-                    "\nThe variable {} should not be used in a linear condition.\n",
+                    "\nThe variable {} should not be used in a linear condition.\n\
+                    Please type \"enclone help filter\" for more information.\n",
                     self.var[i]
                 );
             }

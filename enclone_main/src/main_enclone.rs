@@ -335,9 +335,21 @@ pub async fn main_enclone(args: &Vec<String>) {
 
     search_for_shm_indels(&ctl, &tig_bc);
 
-    // Filter using light --> heavy graph.
+    // Record fate of non-cells.
 
     let mut fate = vec![HashMap::<String, String>::new(); vdj_cells.len()];
+    if ctl.gen_opt.ncell {
+        for i in 0..tig_bc.len() {
+            let bc = &tig_bc[i][0].barcode;
+            let li = tig_bc[i][0].dataset_index;
+            if !bin_member(&vdj_cells[li], bc) {
+                fate[li].insert(bc.clone(), "fails CELL filter".to_string());
+            }
+        }
+    }
+
+    // Filter using light --> heavy graph.
+
     graph_filter(&ctl, &mut tig_bc, ctl.gen_opt.graph, &mut fate);
 
     // Sort tig_bc.
@@ -794,7 +806,8 @@ pub async fn main_enclone(args: &Vec<String>) {
 
     let t = Instant::now();
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
-    let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
+    let mut need_opt_d_val =
+        ctl.clono_group_opt.vdj_refname || ctl.clono_group_opt.vdj_heavy_refname;
     for x in ctl.gen_opt.gvars.iter() {
         if x.starts_with("d_inconsistent_") {
             need_opt_d_val = true;

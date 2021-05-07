@@ -7,6 +7,7 @@
 // group object: a vector of pairs (i, msg) where i is an index into exacts and msg is a message
 //               to be printed
 
+use amino::*;
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
 use equiv::EquivRel;
@@ -26,124 +27,79 @@ pub fn grouper(
 ) -> Vec<Vec<(i32, String)>> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Case 0: no grouping.
+
+    if ctl.clono_group_opt.style == "" {
+        let mut groups = Vec::<Vec<(i32, String)>>::new();
+        let mut grepsn = Vec::<usize>::new();
+        for i in 0..exacts.len() {
+            groups.push(vec![(i as i32, String::new())]);
+            let mut cells = 0;
+            for u in exacts[i].iter() {
+                cells += exact_clonotypes[*u].ncells();
+            }
+            grepsn.push(cells);
+        }
+        sort_sync2(&mut grepsn, &mut groups);
+        groups.reverse();
+        return groups;
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Case 1: symmetric grouping.
-
-    if !ctl.clono_group_opt.asymmetric {
-        // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
-        // a heavy/TRB CDR3_AA sequence.
-
+    } else if ctl.clono_group_opt.style == "symmetric" {
         let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
-        if ctl.clono_group_opt.heavy_cdr3_aa {
-            let mut all = Vec::<(String, usize)>::new();
-            for i in 0..exacts.len() {
-                for x in exacts[i].iter() {
-                    for m in 0..exact_clonotypes[*x].share.len() {
-                        let y = &exact_clonotypes[*x].share[m];
-                        if y.left {
-                            all.push((y.cdr3_aa.clone(), i));
-                        }
+        let mut group = Vec::<usize>::new();
+        for i in 0..exacts.len() {
+            group.push(i);
+        }
+        let mut groups = vec![group];
+
+        // Group by vj_refname.
+
+        if ctl.clono_group_opt.vj_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        let vid = rsi[*i].vids[col];
+                        let jid = rsi[*i].jids[col];
+                        s.push(refdata.name[vid].clone());
+                        s.push(refdata.name[jid].clone());
                     }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
                 }
             }
-            all.sort();
-            let mut i = 0;
-            while i < all.len() {
-                let j = next_diff1_2(&all, i as i32) as usize;
-                for k in i + 1..j {
-                    e.join(all[i].1 as i32, all[k].1 as i32);
-                }
-                i = j;
-            }
+            groups = groups2;
         }
 
-        // Handle vj_refname and vj_refname_strong.
+        // Group by vdj_refname.
 
-        if ctl.clono_group_opt.vj_refname || ctl.clono_group_opt.vj_refname_strong {
-            let mut all = Vec::<(Vec<String>, usize)>::new();
-            for i in 0..exacts.len() {
-                // It is somewhat flaky, here and below, that we use the first exact
-                // subclonotype to determine reference segments.
-                let ex = &exact_clonotypes[exacts[i][0]];
-                let mut s = Vec::<String>::new();
-                for j in 0..ex.share.len() {
-                    s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                    s.push(refdata.name[ex.share[j].j_ref_id].clone());
-                }
-                s.sort();
-                all.push((s, i));
-            }
-            // Note duplication with above code.
-            all.sort();
-            let mut i = 0;
-            while i < all.len() {
-                let j = next_diff1_2(&all, i as i32) as usize;
-                for k in i + 1..j {
-                    let m1 = all[i].1;
-                    let m2 = all[k].1;
-                    if ctl.clono_group_opt.vj_refname_strong {
-                        let ex1 = &exact_clonotypes[exacts[m1][0]];
-                        let ex2 = &exact_clonotypes[exacts[m2][0]];
-                        let mut lens1 = Vec::<(usize, usize)>::new();
-                        let mut lens2 = Vec::<(usize, usize)>::new();
-                        for j in 0..ex1.share.len() {
-                            lens1.push((ex1.share[j].seq_del.len(), ex1.share[j].cdr3_aa.len()));
-                        }
-                        for j in 0..ex2.share.len() {
-                            lens2.push((ex2.share[j].seq_del.len(), ex2.share[j].cdr3_aa.len()));
-                        }
-                        lens1.sort();
-                        lens2.sort();
-                        if lens1 != lens2 {
-                            continue;
-                        }
-                    }
-                    e.join(m1 as i32, m2 as i32);
-                }
-                i = j;
-            }
-        }
-
-        // Handle vj_refname_heavy.
-
-        if ctl.clono_group_opt.vj_refname_heavy {
-            let mut all = Vec::<(Vec<String>, usize)>::new();
-            for i in 0..exacts.len() {
-                let ex = &exact_clonotypes[exacts[i][0]];
-                let mut s = Vec::<String>::new();
-                for j in 0..ex.share.len() {
-                    if ex.share[j].left {
-                        s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                        s.push(refdata.name[ex.share[j].j_ref_id].clone());
-                    }
-                }
-                s.sort();
-                all.push((s, i));
-            }
-            all.sort();
-            let mut i = 0;
-            while i < all.len() {
-                let j = next_diff1_2(&all, i as i32) as usize;
-                for k in i + 1..j {
-                    e.join(all[i].1 as i32, all[k].1 as i32);
-                }
-                i = j;
-            }
-        }
-
-        // Handle vdj_refname_heavy.
-
-        if ctl.clono_group_opt.vdj_refname_heavy {
-            let mut all = Vec::<(Vec<String>, usize)>::new();
-            for i in 0..exacts.len() {
-                let ex = &exact_clonotypes[exacts[i][0]];
-                let mut s = Vec::<String>::new();
-                for col in 0..rsi[i].mat.len() {
-                    let m = rsi[i].mat[col][0];
-                    if m.is_some() {
-                        let j = m.unwrap();
-                        if ex.share[j].left {
-                            s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                            let d = &opt_d_val[i].1[col][0];
+        if ctl.clono_group_opt.vdj_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        let vid = rsi[*i].vids[col];
+                        let jid = rsi[*i].jids[col];
+                        s.push(refdata.name[vid].clone());
+                        if rsi[*i].left[col] {
+                            let d = &opt_d_val[*i].1[col][0];
                             let dname;
                             if !d.is_empty() {
                                 dname = refdata.name[d[0]].clone();
@@ -151,21 +107,405 @@ pub fn grouper(
                                 dname = "null".to_string();
                             }
                             s.push(dname);
-                            s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                        }
+                        s.push(refdata.name[jid].clone());
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vj_heavy_refname.
+
+        if ctl.clono_group_opt.vj_heavy_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        if rsi[*i].left[col] {
+                            let vid = rsi[*i].vids[col];
+                            let jid = rsi[*i].jids[col];
+                            s.push(refdata.name[vid].clone());
+                            s.push(refdata.name[jid].clone());
+                        }
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    if all[i].0.is_empty() {
+                        for k in i..j {
+                            let g = vec![all[k].1];
+                            groups2.push(g);
+                        }
+                    } else {
+                        let mut g = Vec::<usize>::new();
+                        for k in i..j {
+                            g.push(all[k].1);
+                        }
+                        groups2.push(g);
+                    }
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vdj_heavy_refname.
+
+        if ctl.clono_group_opt.vdj_heavy_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        if rsi[*i].left[col] {
+                            let vid = rsi[*i].vids[col];
+                            let jid = rsi[*i].jids[col];
+                            s.push(refdata.name[vid].clone());
+                            let d = &opt_d_val[*i].1[col][0];
+                            let dname;
+                            if !d.is_empty() {
+                                dname = refdata.name[d[0]].clone();
+                            } else {
+                                dname = "null".to_string();
+                            }
+                            s.push(dname);
+                            s.push(refdata.name[jid].clone());
+                        }
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    if all[i].0.is_empty() {
+                        for k in i..j {
+                            let g = vec![all[k].1];
+                            groups2.push(g);
+                        }
+                    } else {
+                        let mut g = Vec::<usize>::new();
+                        for k in i..j {
+                            g.push(all[k].1);
+                        }
+                        groups2.push(g);
+                    }
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by vj_len.
+
+        if ctl.clono_group_opt.vj_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<(bool, usize)>::new();
+                    for j in 0..ex.share.len() {
+                        s.push((ex.share[j].left, ex.share[j].seq_del.len()));
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by cdr3_len.
+
+        if ctl.clono_group_opt.cdr3_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<(bool, usize)>::new();
+                    for j in 0..ex.share.len() {
+                        s.push((ex.share[j].left, ex.share[j].cdr3_aa.len()));
+                    }
+                    s.sort();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by aa_heavy_pc.
+
+        if ctl.clono_group_opt.aa_heavy_pc.is_some() {
+            let min_r = ctl.clono_group_opt.aa_heavy_pc.unwrap() / 100.0;
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_heavy: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if !ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let dna1 = &ex1.share[p1].seq;
+                                    for p2 in 0..ex2.share.len() {
+                                        if !ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let dna2 = &ex2.share[p2].seq;
+                                        let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
+                                        let d = edit_distance(&strme(&aa1), &strme(&aa2));
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
+                                        if r1 >= min_r || r2 >= min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_heavy;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-                s.sort();
-                all.push((s, i));
-            }
-            all.sort();
-            let mut i = 0;
-            while i < all.len() {
-                let j = next_diff1_2(&all, i as i32) as usize;
-                for k in i + 1..j {
-                    e.join(all[i].1 as i32, all[k].1 as i32);
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    groups2.push(p);
                 }
-                i = j;
+            }
+            groups = groups2;
+        }
+
+        // Group by aa_light_pc.
+
+        if ctl.clono_group_opt.aa_light_pc.is_some() {
+            let min_r = ctl.clono_group_opt.aa_light_pc.unwrap() / 100.0;
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_light: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let dna1 = &ex1.share[p1].seq;
+                                    for p2 in 0..ex2.share.len() {
+                                        if ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let dna2 = &ex2.share[p2].seq;
+                                        let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
+                                        let d = edit_distance(&strme(&aa1), &strme(&aa2));
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
+                                        if r1 >= min_r || r2 >= min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_light;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    groups2.push(p);
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by cdr3_aa_heavy_pc.
+
+        if ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
+            let min_r = ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0;
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_heavy_cdr3: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if !ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let aa1 = &ex1.share[p1].cdr3_aa;
+                                    for p2 in 0..ex2.share.len() {
+                                        if !ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let aa2 = &ex2.share[p2].cdr3_aa;
+                                        let d = edit_distance(&aa1, &aa2);
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
+                                        if r1 >= min_r || r2 >= min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_heavy_cdr3;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    groups2.push(p);
+                }
+            }
+            groups = groups2;
+        }
+
+        // Group by cdr3_aa_light_pc.
+
+        if ctl.clono_group_opt.cdr3_aa_light_pc.is_some() {
+            let min_r = ctl.clono_group_opt.cdr3_aa_light_pc.unwrap() / 100.0;
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_light_cdr3: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let aa1 = &ex1.share[p1].cdr3_aa;
+                                    for p2 in 0..ex2.share.len() {
+                                        if ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let aa2 = &ex2.share[p2].cdr3_aa;
+                                        let d = edit_distance(&aa1, &aa2);
+                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
+                                        let r1 = r1 as f64 / aa1.len() as f64;
+                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
+                                        let r2 = r2 as f64 / aa2.len() as f64;
+                                        if r1 >= min_r || r2 >= min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_light_cdr3;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    groups2.push(p);
+                }
+            }
+            groups = groups2;
+        }
+
+        // Join based on grouping.  Stupid, see next step.
+
+        for g in groups.iter() {
+            for i in 0..g.len() - 1 {
+                e.join(g[i] as i32, g[i + 1] as i32);
             }
         }
 
@@ -212,6 +552,7 @@ pub fn grouper(
         let mut center = Vec::<usize>::new();
         for i in 0..exacts.len() {
             if in_center[i] {
+                /*
                 let mut d1 = false;
                 let s = &exacts[i];
                 for k in 0..s.len() {
@@ -225,6 +566,8 @@ pub fn grouper(
                 if d1 {
                     center.push(i);
                 }
+                */
+                center.push(i);
             }
         }
 

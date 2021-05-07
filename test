@@ -12,6 +12,34 @@
 # To run just one test,
 # cargo t <testname>
 # should work.
+#
+# ./test linkless ==> run without testing links, useful if a link is temporarily broken
+
+set arg1 = $1
+
+##### TEST UNRELIABLE LINKS #####
+
+if !( -f stamps/last_linktest) then
+    echo 0 > stamps/last_linktest
+endif
+set last_linktest    = `cat stamps/last_linktest`
+set linkstart = `date +%s`
+set elapsed_linktest = `expr $linkstart - $last_linktest`
+if ( $elapsed_linktest > 86400 ) then
+    set timeout = 2
+    echo "\ntesting unreliable links; this test is only run once per day"
+    foreach link (`cat pages/unreliable_links`)
+        if ( $link !~ *"." ) then
+            set response = `curl -Is  --max-time $timeout $link | head -1`
+            if ( "$response" !~ *" 200 "* && "$response" !~ *" 301 "* )then
+                echo "$link may be broken, response was $response"
+                echo "If you see this fail repeatedly, link may be permanently broken."
+                echo "Note that timeout is $timeout seconds, so this could be a false alarm."
+            endif
+        endif
+    end
+    echo $linkstart > stamps/last_linktest
+endif
 
 ##### GET START TIME #####
 
@@ -34,11 +62,20 @@ cargo test --features cpu test_accounting -- --nocapture |& post_process_test
 
 ##### RUN TEST GROUP 1 #####
 
-cargo t |& post_process_test
-
-if ( $status != 0 ) then
-    echo "FAILED!"
-    exit 1
+if ( $arg1 != linkless ) then
+    cargo t |& post_process_test
+    if ( $status != 0 ) then
+        echo "FAILED!"
+        exit 1
+    endif
+else
+    cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
+        --test enclone_test4 --test enclone_test_peak_mem --test test_com --features linkless \
+        -- --nocapture |& post_process_test
+    if ( $status != 0 ) then
+        echo "FAILED!"
+        exit 1
+    endif
 endif
 
 ##### RUN TEST GROUP 2 #####

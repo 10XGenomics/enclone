@@ -15,7 +15,7 @@
 
 <p>#enclone can assign D genes to each IGH or TRB exact subclonotype, independent of the 
 assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene, 
-or two D genes (in a VDDJ) configuration, or null, depending on score.  The "none" case is
+or two D genes (in a VDDJ) configuration, or none, depending on score.  The none case is
 applied only when no insertion is observed.</p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
@@ -66,7 +66,7 @@ heavy chains are assigned different D genes.  Here you can see the rate:</p>
 were examined.</p>
 
 <p>The inconsistency rate for this dataset is deceptively low, perhaps because the sample size is 
-too small.  For larger datasets we see a rate of around 16%, however the rate likely depends on 
+too small.  For larger datasets we see a rate of around 13%, however the rate likely depends on 
 the particular samples, and not just the sample size.  The option <code>D_INCONSISTENT</code> can 
 be used to show only those clonotypes having D gene assignment inconsistencies.</p>
 

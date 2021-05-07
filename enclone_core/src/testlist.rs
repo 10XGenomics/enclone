@@ -58,14 +58,55 @@ pub const DTESTS: [&str; 15] = [
     r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
     // 11. test d1 etc.
     r###"BCR=123085 CVARS=d1_name,d2_name,d_Δ,d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
-    // 12. test GROUP_VDJ_REFNAME_HEAVY
+    // 12. test GROUP_VDJ_REFNAME_HEAVY (deprecated but supported)
     r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
-    // 13. test GROUP_VJ_REFNAME_HEAVY
+    // 13. test GROUP_VJ_REFNAME_HEAVY (deprecated but supported)
     r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
     // 14. test placement of indel, needed shifting right
     r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CAKDKSRPPTHYYGSGSYYSRILDNW"###,
     // 15. test placement of indel, needed shifting left
     r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CARMAQFYSGSGTYYIGPYYFEYW"###,
+];
+
+// Tests that are affected by the grouping algorithm.  All such tests should go here, if not
+// already in DTESTS.
+
+pub const GTESTS: [&str; 13] = [
+    // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
+    // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
+    // 3. test 7/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
+    // 4. test 8/8 for newline correctness (this grouping option deprecated but supported)
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
+    // 5. test of GROUP
+    r###"BCR=123085 GROUP=vj_refname,cdr3_aa_heavy≥80%,cdr3_aa_light≥80% CVARS=cdr3_len
+         AMINO=cdr3 CDR3="CARHLQWELP.*W""###,
+    // 6. test of GROUP
+    r###"BCR=123085 GROUP=vj_refname,len,cdr3_len MIN_GROUP=2 MIN_CHAINS=2 CDR3="CQQSY.*TLATF"
+         CVARS=cdr3_len"###,
+    // 7. test of GROUP
+    r###"BCR=123085 GROUP=cdr3_aa_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+         CDR3=CARPKSDYIIDAFDIW"###,
+    // 8. test of GROUP
+    r###"BCR=123085 GROUP=cdr3_aa_light≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+         CDR3=CQTWGTGPWVF"###,
+    // 9. test of GROUP
+    r###"BCR=123085 GROUP=vj_refname,aa_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+         CDR3=CARVPYYYDRSYYYYGMDVW"###,
+    // 10. test of AGROUP
+    r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CARHSYSSGWYDEWDYW
+         AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=top=2"###,
+    // 11. test of AGROUP
+    r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
+         AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=14"###,
+    // 12. test of AGROUP
+    r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
+         AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=13"###,
+    // 13. test of AGROUP
+    r###"BCR=123085 AGROUP AG_CENTER=copy_filters MIN_CELLS=2 MAX_CELLS=2
+         AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
 ];
 
 pub const TESTS: [&str; 234] = [
@@ -226,13 +267,13 @@ pub const TESTS: [&str; 234] = [
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN HTML SET_IN_STONE"###,
     // 60. test 4/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
-    // 61. test 5/8 for newline correctness
+    // 61. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
-    // 62. test 6/8 for newline correctness
+    // 62. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
-    // 63. test 7/8 for newline correctness
+    // 63. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
-    // 64. test 8/8 for newline correctness
+    // 64. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
     // 65. test NCELL
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
@@ -660,7 +701,7 @@ pub const TESTS: [&str; 234] = [
 
 pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 5] = [
+pub const CRASH_SETS: [&str; 6] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
     //
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
@@ -673,6 +714,9 @@ pub const CRASH_SETS: [&str; 5] = [
     //
     /* 5 */
     "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
+    //
+    /* 6 */
+    "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are

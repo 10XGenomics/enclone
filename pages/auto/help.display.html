@@ -87,25 +87,108 @@ gtag('config', 'UA-58278925-3');
 │JALIGN_2ND&lt;n>  │  same as JALIGN&lt;n> but use second best D segment                              │
 └───────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
+<span style="color:#c23621;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
 <span style="font-weight:bold;">options that control clonotype grouping</span>
 
 By default, enclone organizes clonotypes into groups, and each group contains just one clonotype! 
-If you prefer not to see the grouping messages, you can turn them off by adding the option <span style="font-weight:bold;">NGROUP</span>
-to the enclone command line.  We intend to add useful versions of grouping to a future version of
-enclone, that are reflective of functional (antigen-binding) differences.  For now there are the
-following "toy" options:
+We offer some options to do actual grouping, with the intention of reflecting functional
+(antigen-binding) differences, but with many caveats because this is a hard problem.
 
-┌─────────────────────────┬───────────────────────────────────────────────────────────────────────┐
-│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB  │
-│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names              │
-│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences                │
-│                         │  (after correction for indels) and identical length CDR3 sequences,   │
-│                         │  but ignores foursies and moresies                                    │
-│GROUP_VJ_REFNAME_HEAVY   │  group by sharing identical IGH or TRB V and J reference gene names   │
-│GROUP_VDJ_REFNAME_HEAVY  │  group by sharing identical IGH or TRB V, D and J reference gene names│
-├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)         │
-└─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
+These options are experimental.  There are many natural extensions that we have not implemented.
+
+enclone has two types of grouping: symmetric and asymmetric.  Symmetric grouping creates
+nonoverlapping groups, whereas asymmetric grouping creates groups that may overlap.
+
+To turn on symmetric grouping, one uses a command of the form
+<span style="font-weight:bold;">GROUP=c1,...,cn</span>
+where each <span style="font-weight:bold;">ci</span> is a condition.  Two clonotypes are placed in the same group if all the conditions
+are satisfied, and that grouping is extended transitively.
+
+In what follows, <span style="font-weight:bold;">heavy chain</span> means IGH or TRB, and <span style="font-weight:bold;">light chain</span> means IGK or IGL or TRA.  
+
+Here are the conditions:
+
+┌───────────────────┬───────────────────────────────────────────────────────────────────────┐
+│vj_refname         │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for J segments                                          │
+│vj_heavy_refname   │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for J segments                                          │
+│                   │  (only applied to heavy chains)                                       │
+│vdj_refname        │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for D segments, computed from scratch, and J segments   │
+│vdj_heavy_refname  │  V segments have the same reference sequence name,                    │
+│                   │  and likewise for D segments, computed from scratch, and J segments   │
+│                   │  (only applied to heavy chains)                                       │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│len                │  the lengths of V..J are the same (after correction for indels)       │
+│cdr3_len           │  CDR3 sequences have the same length                                  │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│cdr3_aa_heavy≥n%   │  amino acid identity on heavy chain CDR3 sequences is at least n%     │
+│cdr3_aa_light≥n%   │  amino acid identity on light chain CDR3 sequences is at least n%     │
+│                   │  (note that use of either of these options without at least one of the│
+│                   │  earlier options may be slow)                                         │
+│                   │  (in both cases, we also recognize >= (with quoting) and ⩾)           │
+├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│aa_heavy≥n%        │  amino acid identity on heavy chain V..J sequences is at least n%     │
+│aa_light≥n%        │  amino acid identity on light chain V..J sequences is at least n%     │
+│                   │  (note that use of either of these options without at least one of the│
+│                   │  earlier options may be very slow)                                    │
+│                   │  (in both cases, we also recognize >= (with quoting) and ⩾)           │
+└───────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+To instead turn on asymmetric grouping, one uses the <span style="font-weight:bold;">AGROUP</span> option.  To use this, it is in
+addition necessary to define "center clonotypes", a "distance formula", and a "distance bound". 
+Each group will then consist of the center clonotype (which comes first), followed by, in order by
+distance (relative to the formula), all those clonotypes that satisfy the distance bound (with
+ties broken arbitrarily).  For each clonotype in a group, we print its distance from the first
+clonotype, and this is also available as a parseable variable <span style="font-weight:bold;">dist_center</span>.
+
+<span style="font-weight:bold;">Center clonotypes.</span>  These are in principle any set of clonotypes.  For now we allow two options:
+<span style="font-weight:bold;">AG_CENTER=from_filters</span>
+which causes all the filters described at "enclone help filters" to NOT filter clonotypes in the
+usual way, but instead filter to define the center, and
+<span style="font-weight:bold;">AG_CENTER=copy_filters</span>
+which effectively does nothing -- it just says that filters apply to all clonotypes, whether in
+the center or not.
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│Please note that asymmetric grouping is very time consuming, and run time is roughly a linear│
+│function of (number of center clonotypes) * (number of clonotypes).  So it is advisable to   │
+│restrict the number of center clonotypes.                                                    │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">Distance formula.</span>  This could in principle be any function that takes as input two clonotypes and
+returns a number.  For now we allow only:
+<span style="font-weight:bold;">AG_DIST_FORMULA=cdr3_edit_distance</span>
+which is the "Levenshtein CDR3 edit distance between two clonotypes".  This is the minimum, over
+all pairs of exact subclonotypes, one from each of the two clonotypes, of the edit distance
+between two exact subclonotypes, which is the sum of the edit distances between the heavy chains
+and between the light chains.
+
+Technical note.  This is the explanation for the case where there are two chains of different
+types.  Here is the explanation for the "non-standard" cases.  We take the sum, over all pairs of
+heavy chains, one from each of the two exact subclonotypes, of the edit distance between the CDR3
+sequences for the heavy chains, plus the same for light chains.  Exact subclonotypes that lack a
+heavy or a light chain are ignored by this computation.  Also the distance between two clonotypes
+is declared infinite if one of them lacks a heavy chain or one of them lacks a light chain.
+
+<span style="font-weight:bold;">Distance bound.</span>  For now we allow the following two forms:
+<span style="font-weight:bold;">AG_DIST_BOUND=top=n</span>
+which returns the top n clonotypes (plus the center), and
+<span style="font-weight:bold;">AG_DIST_BOUND=max=d</span>
+which returns all clonotypes having distance ≤ d from the center clonotype.
+
+In addition, there are the following grouping options, for both the symmetric and asymmetric
+cases:
+
+┌───────────┬──────────────────────────────────────────────────────────────┐
+│MIN_GROUP  │  minimum number of clonotypes in group to print (default = 1)│
+├───────────┼──────────────────────────────────────────────────────────────┤
+│NGROUP     │  don't display grouping messages                             │
+└───────────┴──────────────────────────────────────────────────────────────┘
+
+<span style="color:#c23621;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
 
 <span style="font-weight:bold;">options that control global variables</span>
 

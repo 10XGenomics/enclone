@@ -394,7 +394,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("ACCEPT_BROKEN", &mut ctl.gen_opt.accept_broken),
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
-        ("AGROUP", &mut ctl.clono_group_opt.asymmetric),
         (
             "ALIGN_JALIGN_CONSISTENCY",
             &mut ctl.gen_opt.align_jun_align_consistency,
@@ -428,20 +427,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("FORCE", &mut ctl.force),
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
         ("GRAPH", &mut ctl.gen_opt.graph),
-        ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
-        (
-            "GROUP_VDJ_REFNAME_HEAVY",
-            &mut ctl.clono_group_opt.vdj_refname_heavy,
-        ),
-        ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
-        (
-            "GROUP_VJ_REFNAME_STRONG",
-            &mut ctl.clono_group_opt.vj_refname_strong,
-        ),
-        (
-            "GROUP_VJ_REFNAME_HEAVY",
-            &mut ctl.clono_group_opt.vj_refname_heavy,
-        ),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),
@@ -460,7 +445,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NEWICK", &mut ctl.gen_opt.newick),
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
-        ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NGROUP", &mut ctl.clono_group_opt.ngroup),
         ("NIMPROPER", &mut ctl.merge_all_impropers),
         ("NO_UNCAP_SIM", &mut ctl.gen_opt.no_uncap_sim),
         ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),

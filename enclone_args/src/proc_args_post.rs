@@ -114,34 +114,7 @@ pub fn proc_args_post(
 
     // Sanity check grouping arguments.
 
-    let mut group_styles = 0;
-    if ctl.clono_group_opt.heavy_cdr3_aa {
-        group_styles += 1;
-    }
-    if ctl.clono_group_opt.vj_refname {
-        group_styles += 1;
-    }
-    if ctl.clono_group_opt.vj_refname_heavy {
-        group_styles += 1;
-    }
-    if ctl.clono_group_opt.vdj_refname_heavy {
-        group_styles += 1;
-    }
-    if ctl.clono_group_opt.vj_refname_strong {
-        group_styles += 1;
-    }
-    if ctl.clono_group_opt.asymmetric {
-        group_styles += 1;
-    }
-    if group_styles > 1 {
-        eprintln!(
-            "\nOnly one of the options\n\
-            GROUP_HEAVY_CDR3, GROUP_VJ_REFNAME, GROUP_VJ_REFNAME_STRONG, AGROUP\n\
-            may be specified at a time.\n"
-        );
-        std::process::exit(1);
-    }
-    if ctl.clono_group_opt.asymmetric {
+    if ctl.clono_group_opt.style == "asymmetric" {
         if ctl.clono_group_opt.asymmetric_center.len() == 0
             || ctl.clono_group_opt.asymmetric_dist_formula.len() == 0
             || ctl.clono_group_opt.asymmetric_dist_bound.len() == 0
@@ -158,7 +131,7 @@ pub fn proc_args_post(
         || ctl.clono_group_opt.asymmetric_dist_formula.len() > 0
         || ctl.clono_group_opt.asymmetric_dist_bound.len() > 0
     {
-        if !ctl.clono_group_opt.asymmetric {
+        if ctl.clono_group_opt.style == "symmetric" {
             eprintln!(
                 "\nIf any of the asymmetric grouping options AG_CENTER or \
                     AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
@@ -167,7 +140,7 @@ pub fn proc_args_post(
             std::process::exit(1);
         }
     }
-    if ctl.clono_group_opt.asymmetric {
+    if ctl.clono_group_opt.style == "asymmetric" {
         if ctl.clono_group_opt.asymmetric_center != "from_filters"
             && ctl.clono_group_opt.asymmetric_center != "copy_filters"
         {

@@ -269,6 +269,80 @@ fn test_enclone_d() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 10c.  tests that are affected grouping
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_grouping() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
+    //                       id     ok    output
+    let mut results = Vec::<(usize, bool, String)>::new();
+    for i in 0..GTESTS.len() {
+        results.push((i, false, String::new()));
+    }
+    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let mut tracking = false;
+    let mut comments = Vec::<String>::new();
+    let mut lines = Vec::<String>::new();
+    for line in this.lines() {
+        if line.starts_with("pub const GTESTS: ") {
+            tracking = true;
+            continue;
+        }
+        if tracking {
+            if line == "];" {
+                break;
+            }
+            lines.push(line.to_string());
+        }
+    }
+    let mut i = 0;
+    while i < lines.len() {
+        let mut j = i + 1;
+        while j < lines.len() {
+            if lines[j].starts_with("    // ") {
+                let c = lines[j].after("    // ").as_bytes()[0];
+                if c >= b'0' && c <= b'9' {
+                    break;
+                }
+            }
+            j += 1;
+        }
+        comments.push(lines[i..j].iter().format("\n").to_string());
+        i = j;
+    }
+    results.par_iter_mut().for_each(|res| {
+        let it = res.0;
+        let test = GTESTS[it].to_string();
+        let mut out = String::new();
+        run_test(
+            env!("CARGO_BIN_EXE_enclone"),
+            it,
+            &comments[it],
+            &test,
+            "gtest",
+            &mut res.1,
+            &mut res.2,
+            &mut out,
+        );
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if !results[i].1 {
+            std::process::exit(1);
+        }
+    }
+    println!(
+        "\ntotal time for {} enclone grouping subtests = {:.2} seconds\n",
+        GTESTS.len(),
+        elapsed(&t)
+    );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // 11.
 
 // NOT BASIC
@@ -442,17 +516,11 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up link exceptions.  These are links that have been observed to break periodically.
     // The web.archive.org one is probably just too slow, and we should allow for that rather
     // than have it on the unreliable list.  The "period" version is because of a parsing bug.
-    // Also, obviously, these links should be retested to determine if they are permanently broken
-    // rather than just unreliable.
+    // See also the test in ./test.
 
-    let unreliable_links = [
-        "http://www.abybank.org/abdb",
-        "http://www.abybank.org/abdb/Data/NR_LH_Combined_Martin.tar.bz2",
-        "http://www.bioinf.org.uk/abs/info.html",
-        "http://www.bioinf.org.uk/abs/info.html#martinnum",
-        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html",
-        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html.",
-    ];
+    let unreliable_links = include_str!("../../pages/unreliable_links")
+        .split('\n')
+        .collect::<Vec<&str>>();
 
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
@@ -475,7 +543,7 @@ fn test_for_broken_links_and_spellcheck() {
         pcell pdb pgas phad phylip \
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \
-        sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
+        sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
         subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
         thresholding timepoint \
         tracebacks trb tsv \
@@ -580,6 +648,9 @@ fn test_for_broken_links_and_spellcheck() {
 
             // Check links.
 
+            if cfg!(feature = "linkless") {
+                continue;
+            }
             let mut links = Vec::<String>::new();
             let mut chars = Vec::<char>::new();
             for c in s.chars() {

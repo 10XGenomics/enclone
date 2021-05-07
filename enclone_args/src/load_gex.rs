@@ -374,6 +374,19 @@ pub fn load_gex(
                 const FB_RPC_EXPECTED: f64 = 5_000.0;
                 fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
             }
+            if rpc.is_none() && fbrpc.is_none() {
+                eprintln!(
+                    "\nGene expression or feature barcode data was expected, however the \
+                    CSV file\n{}\n\
+                    does not have a field \"Mean Reads per Cell\" or \
+                    \"Antibody: Mean Reads per Cell\".\n\
+                    This is puzzling, and might be because a file within the Cell Ranger outs \
+                    directory has been moved\n\
+                    from its original location.\n",
+                    csv,
+                );
+                std::process::exit(1);
+            }
             r.4 = gene_mult;
             r.5 = fb_mult;
 
