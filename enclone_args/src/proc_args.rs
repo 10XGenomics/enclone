@@ -916,7 +916,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Do residual argument processing.
 
-    proc_args_post(
+    let res = proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     );
+    if res.is_err() {
+        eprintln!("{}", res.unwrap_err());
+        std::process::exit(1);
+    }
 }
