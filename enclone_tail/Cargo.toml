@@ -1,6 +1,6 @@
 [package]
 name = "enclone_tail"
-version = "0.5.52"
+version = "0.5.53"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
