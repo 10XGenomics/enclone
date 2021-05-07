@@ -20,7 +20,7 @@ pub fn process_special_arg(
     metaxs: &mut Vec<String>,
     xcrs: &mut Vec<String>,
     using_plot: &mut bool,
-) {
+) -> Result<(), String> {
     // Process the argument.
 
     if is_simple_arg(&arg, "SEQ") {
@@ -30,8 +30,7 @@ pub fn process_special_arg(
     } else if arg.starts_with("PG_DIST=") {
         let dist = arg.after("PG_DIST=");
         if dist != "MFL" {
-            eprintln!("\nCurrently the only allowed value for PG_DIST is MFL.\n");
-            std::process::exit(1);
+            return Err("\nCurrently the only allowed value for PG_DIST is MFL.\n".to_string());
         }
         ctl.gen_opt.peer_group_dist = dist.to_string();
     } else if is_simple_arg(&arg, "H5") {
@@ -43,40 +42,36 @@ pub fn process_special_arg(
     } else if arg.starts_with("ALIGN_2ND") {
         let n = arg.after("ALIGN_2ND");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
-            eprintln!("\nArgument {} is not properly specified.\n", arg);
-            std::process::exit(1);
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_align2.push(n.force_usize());
     } else if arg.starts_with("ALIGN") {
         let n = arg.after("ALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
-            eprintln!("\nArgument {} is not properly specified.\n", arg);
-            std::process::exit(1);
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
     } else if arg.starts_with("JALIGN_2ND") {
         let n = arg.after("JALIGN_2ND");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
-            eprintln!("\nArgument {} is not properly specified.\n", arg);
-            std::process::exit(1);
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
-            eprintln!("\nArgument {} is not properly specified.\n", arg);
-            std::process::exit(1);
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
-            eprintln!("\nPLOTXY_EXACT requires three comma-separated arguments.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nPLOTXY_EXACT requires three comma-separated arguments.\n"
+            ));
         }
         if fields[0].len() == 0 || fields[1].len() == 0 || fields[2].len() == 0 {
-            eprintln!("\nArguments to PLOTXY_EXACT must be non-null.\n");
-            std::process::exit(1);
+            return Err(format!("\nArguments to PLOTXY_EXACT must be non-null.\n"));
         }
         let mut xvar = fields[0].to_string();
         let mut yvar = fields[1].to_string();
@@ -96,8 +91,8 @@ pub fn process_special_arg(
         if val != "stdout" {
             let f = File::create(&val);
             if f.is_err() {
-                eprintln!(
-                    "\nYou've specified an output file\n{}\nthat cannot be written.",
+                let mut emsg = format!(
+                    "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                     val
                 );
                 if val.contains("/") {
@@ -108,10 +103,9 @@ pub fn process_special_arg(
                     } else {
                         msg = "does not exist";
                     }
-                    eprintln!("Note that the path {} {}.", dir, msg);
+                    emsg += &mut format!("Note that the path {} {}.\n", dir, msg);
                 }
-                eprintln!("");
-                std::process::exit(1);
+                return Err(emsg);
             }
             remove_file(&val).expect(&format!("could not remove file {}", val));
         }
@@ -151,8 +145,10 @@ pub fn process_special_arg(
     // Other.
     } else if arg == "AGROUP" {
         if ctl.clono_group_opt.style == "symmetric" {
-            eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");
-            std::process::exit(1);
+            return Err(
+                "\nSymmetric and asymmetric grouping options cannot both be specified.\n"
+                    .to_string(),
+            );
         }
         ctl.clono_group_opt.style = "asymmetric".to_string();
     } else if arg == "GROUP_VJ_REFNAME" {
@@ -171,8 +167,10 @@ pub fn process_special_arg(
         ctl.clono_group_opt.cdr3_len = true;
     } else if arg.starts_with("GROUP=") {
         if ctl.clono_group_opt.style == "asymmetric" {
-            eprintln!("\nSymmetric and asymmetric grouping options cannot both be specified.\n");
-            std::process::exit(1);
+            return Err(
+                "\nSymmetric and asymmetric grouping options cannot both be specified.\n"
+                    .to_string(),
+            );
         }
         ctl.clono_group_opt.style = "symmetric".to_string();
         let c = arg.after("GROUP=").split(',').collect::<Vec<&str>>();
@@ -193,97 +191,86 @@ pub fn process_special_arg(
             } else if x.starts_with("≥aa_light") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_light>=") && x.ends_with("%") {
                 let val = x.after(">=").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_light⩾") && x.ends_with("%") {
                 let val = x.after("⩾").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy≥") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy>=") && x.ends_with("%") {
                 let val = x.after(">=").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy⩾") && x.ends_with("%") {
                 let val = x.after("⩾").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light≥") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light>=") && x.ends_with("%") {
                 let val = x.after(">=").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light⩾") && x.ends_with("%") {
                 let val = x.after("⩾").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_light in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy≥") && x.ends_with("%") {
                 let val = x.after("≥").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy>=") && x.ends_with("%") {
                 let val = x.after(">=").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy⩾") && x.ends_with("%") {
                 let val = x.after("⩾").rev_before("%");
                 if !val.parse::<f64>().is_ok() {
-                    eprintln!("\nIllegal value for cdr3_aa_heavy in GROUP.\n");
-                    std::process::exit(1);
+                    return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
             } else {
-                eprintln!("\nUnrecognized condition {} in GROUP argument.\n", x);
-                std::process::exit(1);
+                return Err(format!(
+                    "\nUnrecognized condition {} in GROUP argument.\n",
+                    x
+                ));
             }
         }
     } else if arg.starts_with("DIFF_STYLE=") {
         ctl.gen_opt.diff_style = arg.after("=").to_string();
         if ctl.gen_opt.diff_style != "C1" && ctl.gen_opt.diff_style != "C2" {
-            eprintln!("\nThe only allowed values for DIFF_STYLE are C1 and C2.\n");
-            std::process::exit(1);
+            return Err("\nThe only allowed values for DIFF_STYLE are C1 and C2.\n".to_string());
         }
     } else if arg.starts_with("COLOR=") {
         ctl.gen_opt.color = arg.after("COLOR=").to_string();
@@ -300,11 +287,11 @@ pub fn process_special_arg(
                 }
             }
             if !ok {
-                eprintln!(
-                    "The specified value for COLOR is not allowed.  Please see \
+                return Err(
+                    "\nThe specified value for COLOR is not allowed.  Please see \
                     \"enclone help color\".\n"
+                        .to_string(),
                 );
-                std::process::exit(1);
             }
         }
     } else if arg == "TREE" {
@@ -333,11 +320,10 @@ pub fn process_special_arg(
             if i > 0 && i < con.len() - 1 && con[i] == b'=' {
                 if con[i - 1] != b'=' && con[i - 1] != b'<' && con[i - 1] != b'>' {
                     if con[i + 1] != b'=' {
-                        eprintln!(
+                        return Err(format!(
                             "\nConstraints for {} cannot use =.  Please use == instead.\n",
                             arg.before("="),
-                        );
-                        std::process::exit(1);
+                        ));
                     }
                 }
             }
@@ -345,8 +331,7 @@ pub fn process_special_arg(
         condition = condition.replace("'", "\"");
         let compiled = build_operator_tree(&condition);
         if !compiled.is_ok() {
-            eprintln!("\n{} usage incorrect.\n", arg.before("="));
-            std::process::exit(1);
+            return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
         ctl.clono_filt_opt.fcell.push(compiled.unwrap());
     } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
@@ -354,8 +339,7 @@ pub fn process_special_arg(
     } else if arg.starts_with("LEGEND=") {
         let x = parse_csv(&arg.after("LEGEND="));
         if x.len() == 0 || x.len() % 2 != 0 {
-            eprintln!("\nValue of LEGEND doesn't make sense.\n");
-            std::process::exit(1);
+            return Err(format!("\nValue of LEGEND doesn't make sense.\n"));
         }
         ctl.plot_opt.use_legend = true;
         for i in 0..x.len() / 2 {
@@ -368,10 +352,10 @@ pub fn process_special_arg(
         let mut x = Vec::<String>::new();
         for j in 0..bcs.len() {
             if !bcs[j].contains('-') {
-                eprintln!(
+                return Err(
                     "\nValue for a barcode in BARCODE argument is invalid, must contain -.\n"
+                        .to_string(),
                 );
-                std::process::exit(1);
             }
             x.push(bcs[j].to_string());
         }
@@ -394,16 +378,14 @@ pub fn process_special_arg(
         x = x.replace(" ", "").to_string();
         let x = x.split(',').collect::<Vec<&str>>();
         if x.len() != 3 {
-            eprintln!("\nArgument to SCAN must have three components.\n");
-            std::process::exit(1);
+            return Err("\nArgument to SCAN must have three components.\n".to_string());
         }
         ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
         ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1]));
         let threshold = LinearCondition::new(&x[2]);
         for i in 0..threshold.var.len() {
             if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
-                eprintln!("\nIllegal variable in threshold for scan.\n");
-                std::process::exit(1);
+                return Err("\nIllegal variable in threshold for scan.\n".to_string());
             }
         }
         ctl.gen_opt.gene_scan_threshold = Some(threshold);
@@ -411,14 +393,12 @@ pub fn process_special_arg(
         *using_plot = true;
         let x = arg.after("PLOT=").split(',').collect::<Vec<&str>>();
         if x.is_empty() {
-            eprintln!("\nArgument to PLOT is invalid.\n");
-            std::process::exit(1);
+            return Err("\nArgument to PLOT is invalid.\n".to_string());
         }
         ctl.plot_opt.plot_file = x[0].to_string();
         for j in 1..x.len() {
             if !x[j].contains("->") {
-                eprintln!("\nArgument to PLOT is invalid.\n");
-                std::process::exit(1);
+                return Err("\nArgument to PLOT is invalid.\n".to_string());
             }
             ctl.gen_opt
                 .origin_color_map
@@ -428,20 +408,17 @@ pub fn process_special_arg(
         *using_plot = true;
         let x = arg.after("PLOT2=").split(',').collect::<Vec<&str>>();
         if x.is_empty() {
-            eprintln!("\nArgument to PLOT is invalid.\n");
-            std::process::exit(1);
+            return Err("\nArgument to PLOT is invalid.\n".to_string());
         }
         if x.len() % 2 != 1 {
-            eprintln!("\nArgument to PLOT is invalid.\n");
-            std::process::exit(1);
+            return Err("\nArgument to PLOT is invalid.\n".to_string());
         }
         ctl.plot_opt.plot_file = x[0].to_string();
         for j in (1..x.len()).step_by(2) {
             let condition = x[j].to_string();
             let color = x[j + 1].to_string();
             if !condition.contains("=") {
-                eprintln!("\nArgument to PLOT is invalid.\n");
-                std::process::exit(1);
+                return Err("\nArgument to PLOT is invalid.\n".to_string());
             }
             ctl.plot_opt.plot_conditions.push(condition);
             ctl.plot_opt.plot_colors.push(color);
@@ -450,16 +427,15 @@ pub fn process_special_arg(
         ctl.plot_opt.plot_by_isotype = true;
         ctl.plot_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
         if ctl.plot_opt.plot_file.is_empty() {
-            eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
-            std::process::exit(1);
+            return Err("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n".to_string());
         }
     } else if arg.starts_with("PLOT_BY_ISOTYPE_COLOR=") {
         if arg.after("PLOT_BY_ISOTYPE_COLOR=").len() == 0 {
-            eprintln!(
+            return Err(
                 "\nA value needs to be specified for the PLOT_BY_ISOTYPE_COLOR \
                 argument.\n"
+                    .to_string(),
             );
-            std::process::exit(1);
         }
         let fields = arg
             .after("PLOT_BY_ISOTYPE_COLOR=")
@@ -474,8 +450,7 @@ pub fn process_special_arg(
         ctl.plot_opt.plot_by_mark = true;
         ctl.plot_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
         if ctl.plot_opt.plot_file.is_empty() {
-            eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
-            std::process::exit(1);
+            return Err("\nFilename value needs to be supplied to PLOT_BY_MARK.\n".to_string());
         }
     } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
         ctl.clono_filt_opt.fail_only = false;
@@ -507,8 +482,7 @@ pub fn process_special_arg(
         ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();
         for c in ctl.clono_filt_opt.vj.iter() {
             if !(*c == b'A' || *c == b'C' || *c == b'G' || *c == b'T') {
-                eprintln!("\nIllegal value for VJ, must be over alphabet ACGT.\n");
-                std::process::exit(1);
+                return Err("\nIllegal value for VJ, must be over alphabet ACGT.\n".to_string());
             }
         }
     } else if arg.starts_with("AMINO=") {
@@ -542,12 +516,11 @@ pub fn process_special_arg(
                 }
             }
             if !ok {
-                eprintln!(
+                return Err(format!(
                     "\nUnrecognized variable {} for AMINO.  Please type \
                      \"enclone help amino\".\n",
                     x
-                );
-                std::process::exit(1);
+                ));
             }
         }
     } else if arg.starts_with("CVARS=") {
@@ -602,21 +575,19 @@ pub fn process_special_arg(
     } else if arg.starts_with("CONST_IGH=") {
         let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGH=")));
         if !reg.is_ok() {
-            eprintln!(
+            return Err(format!(
                 "\nYour CONST_IGH value {} could not be parsed as a regular expression.\n",
                 arg.after("CONST_IGH=")
-            );
-            std::process::exit(1);
+            ));
         }
         ctl.gen_opt.const_igh = Some(reg.unwrap());
     } else if arg.starts_with("CONST_IGKL=") {
         let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGKL=")));
         if !reg.is_ok() {
-            eprintln!(
+            return Err(format!(
                 "\nYour CONST_IGKL value {} could not be parsed as a regular expression.\n",
                 arg.after("CONST_IGKL=")
-            );
-            std::process::exit(1);
+            ));
         }
         ctl.gen_opt.const_igkl = Some(reg.unwrap());
     } else if arg.starts_with("CDR3=") {
@@ -636,11 +607,10 @@ pub fn process_special_arg(
         } else {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
             if !reg.is_ok() {
-                eprintln!(
+                return Err(format!(
                     "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
                     arg.after("CDR3=")
-                );
-                std::process::exit(1);
+                ));
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         }
@@ -660,8 +630,7 @@ pub fn process_special_arg(
         let mut y = Vec::<String>::new();
         for x in fields.iter() {
             if !x.parse::<i32>().is_ok() {
-                eprintln!("\nInvalid argument to SEGN.\n");
-                std::process::exit(1);
+                return Err("\nInvalid argument to SEGN.\n".to_string());
             }
             y.push(x.to_string());
         }
@@ -682,7 +651,7 @@ pub fn process_special_arg(
     {
         xcrs.push(arg.to_string());
     } else {
-        eprintln!("\nUnrecognized argument {}.\n", arg);
-        std::process::exit(1);
+        return Err(format!("\nUnrecognized argument {}.\n", arg));
     }
+    Ok(())
 }

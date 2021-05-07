@@ -896,7 +896,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if processed[i] {
             continue;
         }
-        process_special_arg(
+        let res = process_special_arg(
             &args[i],
             &mut ctl,
             &mut metas,
@@ -904,6 +904,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             &mut xcrs,
             &mut using_plot,
         );
+        if res.is_err() {
+            eprintln!("{}", res.unwrap_err());
+            std::process::exit(1);
+        }
     }
 
     // Record time.
