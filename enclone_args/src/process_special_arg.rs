@@ -23,7 +23,7 @@ pub fn process_special_arg(
 ) -> Result<(), String> {
     // Process the argument.
 
-    if is_simple_arg(&arg, "SEQ") {
+    if is_simple_arg(&arg, "SEQ")? {
         ctl.join_print_opt.seq = true;
 
     // Not movable.
@@ -33,9 +33,9 @@ pub fn process_special_arg(
             return Err("\nCurrently the only allowed value for PG_DIST is MFL.\n".to_string());
         }
         ctl.gen_opt.peer_group_dist = dist.to_string();
-    } else if is_simple_arg(&arg, "H5") {
+    } else if is_simple_arg(&arg, "H5")? {
         ctl.gen_opt.force_h5 = true;
-    } else if is_simple_arg(&arg, "NH5") {
+    } else if is_simple_arg(&arg, "NH5")? {
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.plot_opt.use_legend = true;
@@ -109,31 +109,31 @@ pub fn process_special_arg(
             }
             remove_file(&val).expect(&format!("could not remove file {}", val));
         }
-    } else if is_usize_arg(&arg, "REQUIRED_FPS") {
+    } else if is_usize_arg(&arg, "REQUIRED_FPS")? {
         ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_CELLS") {
+    } else if is_usize_arg(&arg, "REQUIRED_CELLS")? {
         ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_DONORS") {
+    } else if is_usize_arg(&arg, "REQUIRED_DONORS")? {
         ctl.gen_opt.required_donors = Some(arg.after("REQUIRED_DONORS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES") {
+    } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES")? {
         ctl.gen_opt.required_clonotypes = Some(arg.after("REQUIRED_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES") {
+    } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES")? {
         ctl.gen_opt.required_two_cell_clonotypes =
             Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_TWO_CHAIN_CLONOTYPES") {
+    } else if is_usize_arg(&arg, "REQUIRED_TWO_CHAIN_CLONOTYPES")? {
         ctl.gen_opt.required_two_chain_clonotypes =
             Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_DATASETS") {
+    } else if is_usize_arg(&arg, "REQUIRED_DATASETS")? {
         ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
-    } else if is_usize_arg(&arg, "EXACT") {
+    } else if is_usize_arg(&arg, "EXACT")? {
         ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
-    } else if is_usize_arg(&arg, "MIN_CHAINS") {
+    } else if is_usize_arg(&arg, "MIN_CHAINS")? {
         ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
-    } else if is_usize_arg(&arg, "MAX_CHAINS") {
+    } else if is_usize_arg(&arg, "MAX_CHAINS")? {
         ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
-    } else if is_usize_arg(&arg, "MIN_CELLS") {
+    } else if is_usize_arg(&arg, "MIN_CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
-    } else if is_usize_arg(&arg, "MAX_CELLS") {
+    } else if is_usize_arg(&arg, "MAX_CELLS")? {
         ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
     } else if arg.starts_with("EXFASTA=") {
         ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
@@ -334,7 +334,7 @@ pub fn process_special_arg(
             return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
         ctl.clono_filt_opt.fcell.push(compiled.unwrap());
-    } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
+    } else if is_simple_arg(&arg, "FAIL_ONLY=true")? {
         ctl.clono_filt_opt.fail_only = true;
     } else if arg.starts_with("LEGEND=") {
         let x = parse_csv(&arg.after("LEGEND="));
@@ -452,9 +452,9 @@ pub fn process_special_arg(
         if ctl.plot_opt.plot_file.is_empty() {
             return Err("\nFilename value needs to be supplied to PLOT_BY_MARK.\n".to_string());
         }
-    } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
+    } else if is_simple_arg(&arg, "FAIL_ONLY=false")? {
         ctl.clono_filt_opt.fail_only = false;
-    } else if is_usize_arg(&arg, "MAX_CORES") {
+    } else if is_usize_arg(&arg, "MAX_CORES")? {
         let nthreads = arg.after("MAX_CORES=").force_usize();
         let _ = rayon::ThreadPoolBuilder::new()
             .num_threads(nthreads)
@@ -614,7 +614,7 @@ pub fn process_special_arg(
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         }
-    } else if is_usize_arg(&arg, "CHAINS") {
+    } else if is_usize_arg(&arg, "CHAINS")? {
         ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
         ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
     } else if arg.starts_with("SEG=") {
@@ -636,7 +636,7 @@ pub fn process_special_arg(
         }
         y.sort();
         ctl.clono_filt_opt.segn.push(y);
-    } else if is_usize_arg(&arg, "CELLS") {
+    } else if is_usize_arg(&arg, "CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
     } else if arg.starts_with("META=") {

@@ -157,7 +157,11 @@ pub async fn main_enclone(args: &Vec<String>) {
         println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");
-    setup(&mut ctl, &args);
+    let res = setup(&mut ctl, &args);
+    if res.is_err() {
+        eprintln!("{}", res.unwrap_err());
+        std::process::exit(1);
+    }
 
     // Read external data.
 

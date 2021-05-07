@@ -252,13 +252,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if args[i].starts_with("BC=") {
             bc = args[i].after("BC=").to_string();
         }
-        if is_simple_arg(&args[i], "MARK_STATS") {
+        if is_simple_arg(&args[i], "MARK_STATS")? {
             ctl.gen_opt.mark_stats = true;
         }
-        if is_simple_arg(&args[i], "MARK_STATS2") {
+        if is_simple_arg(&args[i], "MARK_STATS2")? {
             ctl.gen_opt.mark_stats2 = true;
         }
-        if is_simple_arg(&args[i], "MARKED_B") {
+        if is_simple_arg(&args[i], "MARKED_B")? {
             ctl.clono_filt_opt.marked_b = true;
         }
     }
@@ -693,7 +693,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_usize args.
 
         for j in 0..set_usize.len() {
-            if is_usize_arg(&arg, &set_usize[j].0) {
+            if is_usize_arg(&arg, &set_usize[j].0)? {
                 *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
                 continue 'args_loop;
             }

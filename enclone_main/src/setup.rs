@@ -23,7 +23,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     let t = Instant::now();
     // Provide help if requested.
 
@@ -111,23 +111,23 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut nopretty = false;
     ctl.gen_opt.h5 = true;
     for i in 1..args.len() {
-        if is_simple_arg(&args[i], "PLAIN") {
+        if is_simple_arg(&args[i], "PLAIN")? {
             ctl.pretty = false;
         }
-        if is_simple_arg(&args[i], "NOPRETTY") {
+        if is_simple_arg(&args[i], "NOPRETTY")? {
             nopretty = true;
         }
-        if is_simple_arg(&args[i], "COMP") || args[i] == "COMPE" {
+        if is_simple_arg(&args[i], "COMP")? || args[i] == "COMPE" {
             ctl.comp = true;
         }
-        if is_simple_arg(&args[i], "COMP2") {
+        if is_simple_arg(&args[i], "COMP2")? {
             ctl.comp = true;
             ctl.comp2 = true;
         }
-        if is_simple_arg(&args[i], "CELLRANGER") {
+        if is_simple_arg(&args[i], "CELLRANGER")? {
             ctl.gen_opt.cellranger = true;
         }
-        if is_simple_arg(&args[i], "NH5") {
+        if is_simple_arg(&args[i], "NH5")? {
             ctl.gen_opt.h5 = false;
         }
     }
@@ -140,7 +140,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if !nopretty && !ctl.gen_opt.cellranger {
         let mut ctrlc = false;
         for i in 1..args.len() {
-            if is_simple_arg(&args[i], "CTRLC") {
+            if is_simple_arg(&args[i], "CTRLC")? {
                 ctrlc = true;
             }
         }
@@ -193,16 +193,12 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process args (and set defaults for them).
 
-    let res = proc_args(&mut ctl, &args);
-    if res.is_err() {
-        eprintln!("{}", res.unwrap_err());
-        std::process::exit(1);
-    }
+    proc_args(&mut ctl, &args)?;
 
     // Dump lenas.
 
     for i in 1..args.len() {
-        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS") {
+        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS")? {
             let mut x = Vec::<usize>::new();
             for y in ctl.origin_info.dataset_id.iter() {
                 x.push(y.force_usize());
@@ -212,4 +208,5 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(0);
         }
     }
+    Ok(())
 }
