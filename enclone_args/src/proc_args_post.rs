@@ -425,7 +425,7 @@ pub fn proc_args_post(
         }
     }
     ctl.perf_stats(&t, "after main args loop 2");
-    proc_args_tail(&mut ctl, &args);
+    proc_args_tail(&mut ctl, &args)?;
 
     // Sort chains_to_align.
 

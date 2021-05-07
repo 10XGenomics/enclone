@@ -118,7 +118,7 @@ pub fn is_string_arg(arg: &str, x: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
+pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     let tall = Instant::now();
     let mut lvars_specified = false;
     for i in 1..args.len() {
@@ -130,11 +130,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         ctl.clono_print_opt.cvars.insert(0, "amino".to_string());
     }
     if ctl.gen_opt.mouse && ctl.gen_opt.refname.len() > 0 {
-        eprintln!(
+        return Err(format!(
             "\nIf you specify REF, please do not also specify MOUSE.  It is enough to\n\
              set REF to a mouse reference sequence.\n"
-        );
-        std::process::exit(1);
+        ));
     }
 
     // Remove "datasets" from lvars if there is only one dataset and LVARS not specified.
@@ -173,8 +172,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     while i < dp.len() {
         let j = next_diff(&dp, i);
         if j - i > 1 {
-            eprintln!("\nInput dataset path {} is duplicated.\n", dp[i]);
-            std::process::exit(1);
+            return Err(format!("\nInput dataset path {} is duplicated.\n", dp[i]));
         }
         i = j;
     }
@@ -236,4 +234,5 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     ctl.perf_stats(&tall, "in proc_args_tail");
+    Ok(())
 }
