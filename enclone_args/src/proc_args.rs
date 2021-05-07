@@ -14,7 +14,7 @@ use tilde_expand::*;
 
 // Process arguments.
 
-pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     // Knobs.
 
     if ctl.evil_eye {
@@ -702,7 +702,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_i32 args.
 
         for j in 0..set_i32.len() {
-            if is_i32_arg(&arg, &set_i32[j].0) {
+            if is_i32_arg(&arg, &set_i32[j].0)? {
                 *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
                 continue 'args_loop;
             }
@@ -923,4 +923,5 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("{}", res.unwrap_err());
         std::process::exit(1);
     }
+    Ok(())
 }

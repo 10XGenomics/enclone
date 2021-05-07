@@ -193,7 +193,11 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process args (and set defaults for them).
 
-    proc_args(&mut ctl, &args);
+    let res = proc_args(&mut ctl, &args);
+    if res.is_err() {
+        eprintln!("{}", res.unwrap_err());
+        std::process::exit(1);
+    }
 
     // Dump lenas.
 

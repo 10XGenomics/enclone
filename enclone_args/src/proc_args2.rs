@@ -54,28 +54,26 @@ pub fn is_usize_arg(arg: &str, x: &str) -> bool {
 
 // Usize arguments.  We require that these are nonnegative integers.
 
-pub fn is_i32_arg(arg: &str, x: &str) -> bool {
+pub fn is_i32_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
         let val = arg.after(&format!("{}=", x)).parse::<i32>();
         if val.is_ok() {
-            return true;
+            return Ok(true);
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nYour command line includes \"{}\", which is not a valid argument.\n\
                  Perhaps you meant \"{}=n\", where n is an integer.\n",
                 arg, x
-            );
-            std::process::exit(1);
+            ));
         }
     }
-    return false;
+    return Ok(false);
 }
 
 pub fn is_f64_arg(arg: &str, x: &str) -> bool {
