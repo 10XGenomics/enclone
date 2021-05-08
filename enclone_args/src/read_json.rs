@@ -702,7 +702,15 @@ pub fn read_json(
             }
         }
     }
-    let mut results = Vec::<(usize, Vec<String>, Vec<String>, bool, String, Vec<TigData>)>::new();
+    let mut results = Vec::<(
+        usize,
+        Vec<String>,
+        Vec<String>,
+        bool,
+        String,
+        Vec<TigData>,
+        String,
+    )>::new();
     for i in 0..xs.len() {
         results.push((
             i,
@@ -711,12 +719,13 @@ pub fn read_json(
             false,
             String::new(),
             Vec::<TigData>::new(),
+            String::new(),
         ));
     }
     let exiting = AtomicBool::new(false);
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
-        let res = parse_vector_entry_from_json(
+        let resx = parse_vector_entry_from_json(
             &xs[i],
             &json,
             accept_inconsistent,
@@ -733,11 +742,15 @@ pub fn read_json(
             &mut res.5,
             &exiting,
         );
-        if res.is_err() {
-            eprintln!("{}", res.unwrap_err());
-            std::process::exit(1);
+        if resx.is_err() {
+            res.6 = resx.unwrap_err();
         }
     });
+    for i in 0..results.len() {
+        if results[i].6.len() > 0 {
+            return Err(results[i].6.clone());
+        }
+    }
     for i in 0..xs.len() {
         vdj_cells.append(&mut results[i].1);
         gex_cells.append(&mut results[i].2);
