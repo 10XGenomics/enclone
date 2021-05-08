@@ -813,8 +813,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
-                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
-                    std::process::exit(1);
+                    return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
@@ -841,13 +840,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
-                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
-                    std::process::exit(1);
+                    return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 if !val.ends_with(".csv") {
-                    eprintln!("\nFilename input in {} needs to end with .csv.\n", val);
-                    std::process::exit(1);
+                    return Err(format!(
+                        "\nFilename input in {} needs to end with .csv.\n",
+                        val
+                    ));
                 }
                 *(set_string_readable_csv[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
