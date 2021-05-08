@@ -84,14 +84,13 @@ fn parse_vector_entry_from_json(
     cr_version: &mut String,
     tigs: &mut Vec<TigData>,
     exiting: &AtomicBool,
-) {
+) -> Result<(), String> {
     let v: Result<Value, _> = serde_json::from_str(strme(&x));
     if v.is_err() {
-        eprintln!(
+        return Err(format!(
             "\nInternal error, failed to parse a value from a string.  The string is:\n{}\n",
             strme(&x)
-        );
-        std::process::exit(1);
+        ));
     }
     let v = v.unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
@@ -116,7 +115,7 @@ fn parse_vector_entry_from_json(
     }
 
     if !ctl.gen_opt.ncell && !is_cell {
-        return;
+        return Ok(());
     }
     if is_cell {
         vdj_cells.push(barcode.clone());
@@ -126,12 +125,12 @@ fn parse_vector_entry_from_json(
 
     if !ctl.gen_opt.reprod {
         if !v["productive"].as_bool().unwrap_or(false) {
-            return;
+            return Ok(());
         }
     }
     if !ctl.gen_opt.reprod {
         if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
-            return;
+            return Ok(());
         }
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
@@ -252,10 +251,10 @@ fn parse_vector_entry_from_json(
             if !is_valid(&x, &refdata, &ann, true, &mut log) {
                 print!("{}", strme(&log));
                 println!("invalid");
-                return;
+                return Ok(());
             }
         } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
-            return;
+            return Ok(());
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
@@ -332,7 +331,7 @@ fn parse_vector_entry_from_json(
                 .to_string();
             if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
                 if !exiting.swap(true, Ordering::Relaxed) {
-                    eprintln!(
+                    return Err(format!(
                         "\nThere is an inconsistency between the reference \
                          file used to create the Cell Ranger output files in\n{}\nand the \
                          reference that enclone is using.\n\nFor example, the feature \
@@ -351,8 +350,7 @@ fn parse_vector_entry_from_json(
                         feature_id,
                         gene_name,
                         refdata.name[feature_idx]
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             if region_type == "L-REGION+V-REGION" && ref_start == 0 {
@@ -393,7 +391,7 @@ fn parse_vector_entry_from_json(
             }
         }
         if v_ref_id == 1000000 {
-            return;
+            return Ok(());
         }
 
         // Compute annv from cigarv.  We don't compute the mismatch entry.
@@ -455,14 +453,14 @@ fn parse_vector_entry_from_json(
         let x = DnaString::from_dna_string(&full_seq);
         get_cdr3_using_ann(&x, &refdata, &annv, &mut cdr3);
         if cdr3.is_empty() {
-            return;
+            return Ok(());
         }
         let cdr3_aa_alt = stringme(&cdr3[0].1);
         if cdr3_aa != cdr3_aa_alt {
             // This is particularly pathological and rare:
 
             if tig_start as usize > cdr3[0].0 {
-                return;
+                return Ok(());
             }
 
             // Define start.
@@ -485,10 +483,10 @@ fn parse_vector_entry_from_json(
     // It is not known if these correspond to bugs in cellranger that were subsequently fixed.
 
     if cdr3_aa.contains("*") {
-        return;
+        return Ok(());
     }
     if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
-        return;
+        return Ok(());
     }
 
     // Keep going.
@@ -617,6 +615,7 @@ fn parse_vector_entry_from_json(
         invalidated_umis: invalu,
         frac_reads_used: frac_reads_used,
     });
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -712,7 +711,7 @@ pub fn read_json(
     let exiting = AtomicBool::new(false);
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
-        parse_vector_entry_from_json(
+        let res = parse_vector_entry_from_json(
             &xs[i],
             &json,
             accept_inconsistent,
@@ -729,6 +728,10 @@ pub fn read_json(
             &mut res.5,
             &exiting,
         );
+        if res.is_err() {
+            eprintln!("{}", res.unwrap_err());
+            std::process::exit(1);
+        }
     });
     for i in 0..xs.len() {
         vdj_cells.append(&mut results[i].1);
