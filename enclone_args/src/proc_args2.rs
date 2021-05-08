@@ -95,18 +95,17 @@ pub fn is_f64_arg(arg: &str, x: &str) -> Result<bool, String> {
     Ok(false)
 }
 
-pub fn is_string_arg(arg: &str, x: &str) -> bool {
+pub fn is_string_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=s\" for some string s.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
-        return true;
+        return Ok(true);
     }
-    return false;
+    Ok(false)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

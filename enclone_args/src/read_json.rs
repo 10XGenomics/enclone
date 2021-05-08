@@ -781,7 +781,7 @@ pub fn parse_json_annotations_files(
     vdj_cells: &mut Vec<Vec<String>>,
     gex_cells: &mut Vec<Vec<String>>,
     gex_cells_specified: &mut Vec<bool>,
-) {
+) -> Result<(), String> {
     // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
         usize,
@@ -858,14 +858,14 @@ pub fn parse_json_annotations_files(
             && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
         {
             let args: Vec<String> = env::args().collect();
-            eprintln!(
+            return Err(format!(
                 "\nYou're using output from multiple Cell Ranger versions = {},\n\
                  which is not allowed.  Your command was:\n{}\n",
                 versions.iter().format(", "),
                 args.iter().format(","),
-            );
-            std::process::exit(1);
+            ));
         }
     }
     */
+    Ok(())
 }

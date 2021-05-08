@@ -719,7 +719,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_string args.
 
         for j in 0..set_string.len() {
-            if is_string_arg(&arg, &set_string[j].0) {
+            if is_string_arg(&arg, &set_string[j].0)? {
                 *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
                 continue 'args_loop;
             }
@@ -729,7 +729,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         for j in 0..set_string_writeable.len() {
             let var = &set_string_writeable[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable[j].1;
                 if ctl.evil_eye {
@@ -769,7 +769,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         for j in 0..set_string_writeable_or_stdout.len() {
             let var = &set_string_writeable_or_stdout[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable_or_stdout[j].1;
@@ -812,7 +812,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         for j in 0..set_string_readable.len() {
             let var = &set_string_readable[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);
@@ -841,7 +841,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         for j in 0..set_string_readable_csv.len() {
             let var = &set_string_readable_csv[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);

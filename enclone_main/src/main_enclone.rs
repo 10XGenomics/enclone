@@ -289,7 +289,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut vdj_cells,
         &mut gex_cells,
         &mut gex_cells_specified,
-    );
+    )?;
     ctl.perf_stats(&tparse, "loading from json");
 
     // Populate features.
