@@ -737,8 +737,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 let f = File::create(&val);
                 if f.is_err() {
-                    eprintln!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.",
+                    let mut msgx = format!(
+                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                         val
                     );
                     if val.contains("/") {
@@ -749,10 +749,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         } else {
                             msg = "does not exist";
                         }
-                        eprintln!("Note that the path {} {}.", dir, msg);
+                        msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
                     }
-                    eprintln!("");
-                    std::process::exit(1);
+                    return Err(msgx);
                 }
                 if ctl.evil_eye {
                     println!("removing file {}", val);
@@ -779,8 +778,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     }
                     let f = File::create(&val);
                     if f.is_err() {
-                        eprintln!(
-                            "\nYou've specified an output file\n{}\nthat cannot be written.",
+                        let mut msgx = format!(
+                            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                             val
                         );
                         if val.contains("/") {
@@ -791,10 +790,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                             } else {
                                 msg = "does not exist";
                             }
-                            eprintln!("Note that the path {} {}.", dir, msg);
+                            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
                         }
-                        eprintln!("");
-                        std::process::exit(1);
+                        return Err(msgx);
                     }
                     if ctl.evil_eye {
                         println!("removing file {}", val);
@@ -824,11 +822,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     println!("testing ability to open file {}", val);
                 }
                 if let Err(e) = File::open(&val) {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if ctl.evil_eye {
                     println!("file open complete");
@@ -854,11 +851,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 *(set_string_readable_csv[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 continue 'args_loop;
             }

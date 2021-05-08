@@ -663,7 +663,7 @@ pub fn read_json(
     mut vdj_cells: &mut Vec<String>,
     mut gex_cells: &mut Vec<String>,
     gex_cells_specified: &mut bool,
-) -> Vec<Vec<TigData>> {
+) -> Result<Vec<Vec<TigData>>, String> {
     *gex_cells_specified = false;
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -673,25 +673,23 @@ pub fn read_json(
     if jsonx.contains('/') {
         let p = jsonx.rev_before("/");
         if !path_exists(&p) {
-            eprintln!(
+            return Err(format!(
                 "\nThere should be a directory\n\
                  \"{}\"\n\
                  but it does not exist.  Please check how you have specified the\n\
                  input files to enclone, including the PRE argument.\n",
                 p
-            );
-            std::process::exit(1);
+            ));
         }
     }
     if !path_exists(&jsonx) {
-        eprintln!(
+        return Err(format!(
             "\nThe path\n\
              \"{}\"\n\
              does not exist.  Please check how you have specified the\n\
              input files to enclone, including the PRE argument.\n",
             jsonx
-        );
-        std::process::exit(1);
+        ));
     }
     let mut f = BufReader::new(open_maybe_compressed(&jsonx));
     // ◼ This loop could be speeded up, see comments above.
@@ -776,7 +774,7 @@ pub fn read_json(
         r = s;
     }
     unique_sort(&mut vdj_cells);
-    tig_bc
+    Ok(tig_bc)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -830,7 +828,7 @@ pub fn parse_json_annotations_files(
             eprintln!("\ncan't find {} or {}\n", json, json_lz4);
             std::process::exit(1);
         }
-        let tig_bc: Vec<Vec<TigData>> = read_json(
+        let resx = read_json(
             ctl.gen_opt.accept_inconsistent,
             &ctl.origin_info,
             li,
@@ -844,9 +842,15 @@ pub fn parse_json_annotations_files(
             &mut res.6,
             &mut res.7,
         );
-        res.5.sort();
-        explore(li, &tig_bc, &ctl);
-        res.2 = tig_bc;
+        if resx.is_ok() {
+            let tig_bc: Vec<Vec<TigData>> = resx.unwrap();
+            res.5.sort();
+            explore(li, &tig_bc, &ctl);
+            res.2 = tig_bc;
+        } else {
+            eprintln!("{}", resx.err().unwrap());
+            std::process::exit(1);
+        }
     });
     let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
