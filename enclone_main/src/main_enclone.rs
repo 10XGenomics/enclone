@@ -187,7 +187,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     // has to occur after loading GEX data.  This could also occur after loading only the feature
     // list, which would be better.
 
-    let gex_info = get_gex_info(&mut ctl);
+    let gex_info = get_gex_info(&mut ctl)?;
     check_lvars(&ctl, &gex_info)?;
     let twoof = Instant::now();
     check_gvars(&ctl);

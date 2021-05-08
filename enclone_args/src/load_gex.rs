@@ -34,7 +34,7 @@ pub fn load_gex(
     gex_cell_barcodes: &mut Vec<Vec<String>>,
     have_gex: &mut bool,
     have_fb: &mut bool,
-) {
+) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
         usize,
@@ -469,13 +469,14 @@ pub fn load_gex(
         cell_type_specified.push(x10);
     }
     ctl.perf_stats(&t, "in load_gex tail");
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Get gene expression and feature barcoding counts.
 
-pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
+pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_features = Vec::<Vec<String>>::new();
     let mut gex_barcodes = Vec::<Vec<String>>::new();
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
@@ -502,29 +503,27 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_cell_barcodes,
         &mut have_gex,
         &mut have_fb,
-    );
+    )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
         if allf.len() != 1 {
-            eprintln!(
+            let mut msg = format!(
                 "\nCurrently, SCAN requires that all datasets have identical \
-                 features, and they do not."
-            );
-            eprintln!(
-                "There are {} datasets and {} feature sets after removal of \
-                 duplicates.",
+                 features, and they do not.\n\
+                There are {} datasets and {} feature sets after removal of \
+                 duplicates.\n",
                 gex_features.len(),
                 allf.len()
             );
-            eprintln!("Classification of features sets:\n");
+            msg += &mut format!("Classification of features sets:\n\n");
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
-                eprintln!("{} ==> {}", ctl.origin_info.dataset_id[i], p);
+                msg += &mut format!("{} ==> {}\n", ctl.origin_info.dataset_id[i], p);
             }
-            eprintln!("");
-            std::process::exit(1);
+            msg += "\n";
+            return Err(msg);
         }
     }
     let mut h5_data = Vec::<Option<Dataset>>::new();
@@ -597,7 +596,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
 
     // Answer.
 
-    GexInfo {
+    Ok(GexInfo {
         gex_features: gex_features,
         gex_barcodes: gex_barcodes,
         gex_matrices: gex_matrices,
@@ -615,5 +614,5 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         feature_id: feature_id,
         have_gex: have_gex,
         have_fb: have_fb,
-    }
+    })
 }
