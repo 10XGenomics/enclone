@@ -18,32 +18,39 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
+fn json_error(
+    json: Option<&str>,
+    ctl: &EncloneControl,
+    exiting: &AtomicBool,
+    msg: &str,
+) -> Result<(), String> {
     // The following line prevents error messages from this function from being
     // printed multiple times.
+    let mut msgx = String::new();
     if !exiting.swap(true, Ordering::Relaxed) {
-        eprint!(
+        msgx = format!(
             "\nThere is something wrong with the contig annotations in the cellranger output \
              file"
         );
         if json.is_some() {
-            eprint!("\n{}.", json.unwrap());
+            msgx += &mut format!("\n{}.", json.unwrap());
         } else {
-            eprint!(".");
+            msgx += ".";
         }
         if ctl.gen_opt.internal_run {
-            eprint!("\n\npossibly relevant internal data: {}", msg);
+            msgx += &mut format!("\n\npossibly relevant internal data: {}\n", msg);
         }
         if ctl.gen_opt.internal_run {
-            eprint!(
+            msgx += &mut format!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
                 Quite possibly you are using data from a cellranger run carried out using a \
                 version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
-                argument CURRENT_REF to your command line.  If that doesn't work, please see below."
+                argument CURRENT_REF to your command line.  If that doesn't work, \
+                please see below.\n"
             );
         }
-        eprintln!(
+        msgx += &mut format!(
             "\n\nHere is what you should do:\n\n\
              1. If you used cellranger version ≥ 4.0, the problem is very likely\n\
                 that the directory outs/vdj_reference was not retained, so enclone\n\
@@ -63,7 +70,7 @@ fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, ms
              If you're stuck, please write to us at enclone@10xgenomics.com.\n"
         );
     }
-    std::process::exit(1);
+    Err(msgx)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -440,7 +447,7 @@ fn parse_vector_entry_from_json(
         if annv.len() == 2 {
             if annv[0].1 as usize > rt.len() {
                 let msg = format!("annv[0].1 = {}, rt.len() = {}", annv[0].1, rt.len());
-                json_error(None, &ctl, &exiting, &msg);
+                json_error(None, &ctl, &exiting, &msg)?;
             }
         }
 
@@ -493,7 +500,7 @@ fn parse_vector_entry_from_json(
 
     if tig_start < 0 || tig_stop < 0 {
         let msg = format!("tig_start = {}, tig_stop = {}", tig_start, tig_stop);
-        json_error(Some(&json), &ctl, exiting, &msg);
+        json_error(Some(&json), &ctl, exiting, &msg)?;
     }
     let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
     let quals0 = v["quals"].to_string();
