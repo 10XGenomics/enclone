@@ -223,7 +223,7 @@ fn get_path_or_internal_id(
     ctl: &EncloneControl,
     source: &str,
     spinlock: &Arc<AtomicUsize>,
-) -> String {
+) -> Result<String, String> {
     let mut ok = false;
     let mut pp = get_path(&p, &ctl, &mut ok);
     if !ok {
@@ -247,13 +247,12 @@ fn get_path_or_internal_id(
                 let m = fetch_url(&url);
                 spinlock.store(0, Ordering::SeqCst);
                 if m.contains("502 Bad Gateway") {
-                    eprintln!(
+                    return Err(format!(
                         "\nWell this is sad.  The URL \
                         {} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
                         url
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if m.contains("\"path\":\"") {
                     let path = m.between("\"path\":\"", "\"").to_string();
@@ -265,7 +264,7 @@ fn get_path_or_internal_id(
                     if !path_exists(&pp) {
                         thread::sleep(time::Duration::from_millis(100));
                         if path_exists(&pp) {
-                            eprintln!(
+                            return Err(format!(
                                 "\nYou are experiencing unstable filesystem access: \
                                 100 milliseconds ago, \
                                 the path\n\
@@ -276,50 +275,47 @@ fn get_path_or_internal_id(
                                 if filesystem access blinks in and out of existence,\n\
                                 other more cryptic events are likely to occur.\n",
                                 pp
-                            );
+                            ));
                         } else {
-                            eprintln!(
+                            return Err(format!(
                                 "\nIt looks like you've provided an analysis ID for \
                                 which the pipeline outs folder\n{}\nhas not yet been generated.\n\
-                                This path did not exist:\n{}\n",
-                                p, pp
-                            );
-                            eprintln!("Here is the stdout:\n{}\n", m);
+                                This path did not exist:\n{}\n\n\
+                                Here is the stdout:\n{}\n",
+                                p, pp, m
+                            ));
                         }
-                        std::process::exit(1);
                     }
                 } else {
-                    eprintln!(
+                    return Err(format!(
                         "\nIt looks like you've provided either an incorrect \
                         analysis ID {} or else one for which\n\
                         the pipeline outs folder has not yet been generated.\n\
                         This URL\n{}\ndid not provide a path.\n",
                         p, url
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             } else {
-                eprintln!(
+                return Err(format!(
                     "\nAfter searching high and low, your path\n{}\nfor {} \
                     cannot be found.\nPlease check its value and also the value \
                     for PRE if you provided that.\n",
                     p, source
-                );
-                std::process::exit(1);
+                ));
             }
         }
     }
     if !pp.ends_with("/outs") && path_exists(&format!("{}/outs", pp)) {
         pp = format!("{}/outs", pp);
     }
-    pp
+    Ok(pp)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Parse barcode-level information file.
 
-fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
+fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) -> Result<(), String> {
     let delimiter;
     let file_type;
     if bc.ends_with(".tsv") {
@@ -336,7 +332,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
     let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     if bc != "".to_string() {
-        bc = get_path_or_internal_id(&bc, &ctl, call_type, &spinlock);
+        bc = get_path_or_internal_id(&bc, &ctl, call_type, &spinlock)?;
         let f = open_userfile_for_read(&bc);
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -353,11 +349,10 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     if call_type == "BC" {
                         origin = "from the BC argument";
                     }
-                    eprintln!(
+                    return Err(format!(
                         "\nThe file\n{}\n{}\nis missing the barcode field.\n",
                         bc, origin,
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 for x in fields.iter() {
                     fieldnames.push(x.to_string());
@@ -387,7 +382,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     if call_type == "BC" {
                         origin = "BC";
                     }
-                    eprintln!(
+                    return Err(format!(
                         "\nThere is a line\n{}\nin a {} file defined by {}\n\
                          that has {} fields, which isn't right, because the header line \
                          has {} fields.  This is for the file\n{}.\n",
@@ -396,9 +391,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                         origin,
                         fields.len(),
                         fieldnames.len(),
-                        bc
-                    );
-                    std::process::exit(1);
+                        bc,
+                    ));
                 }
                 for i in 0..fields.len() {
                     if to_alt[i] >= 0 {
@@ -412,13 +406,12 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     if call_type == "BC" {
                         origin = "BC";
                     }
-                    eprintln!(
+                    return Err(format!(
                         "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
                          by {}.  That doesn't make sense because a barcode\n\
                          should include a hyphen.\n",
                         fields[barcode_pos], bc, origin
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if origin_pos.is_some() {
                     origin_for_bc.insert(
@@ -451,6 +444,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     ctl.origin_info.tag.push(tag);
     ctl.origin_info.barcode_color.push(barcode_color);
     ctl.origin_info.alt_bc_fields.push(alt_bc_fields);
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -624,7 +618,7 @@ pub fn proc_xcr(
                 if !bc.is_empty() {
                     bcx = datasets_bc[ix].to_string();
                 }
-                parse_bc(bcx, &mut ctl, "BC");
+                parse_bc(bcx, &mut ctl, "BC")?;
             }
         }
     }
@@ -640,7 +634,7 @@ pub fn proc_xcr(
     if f.contains('=') {
         source = f.before("=");
     }
-    let mut results = Vec::<(String, String, bool)>::new();
+    let mut results = Vec::<(String, String, bool, String)>::new();
     for (id, d) in donor_groups.iter().enumerate() {
         let origin_groups = (*d).split(':').collect::<Vec<&str>>();
         let mut origin_groups_gex = Vec::<&str>::new();
@@ -659,7 +653,7 @@ pub fn proc_xcr(
                 if have_gex {
                     pg = datasets_gex[ix].to_string();
                 }
-                results.push((p, pg, false));
+                results.push((p, pg, false, String::new()));
             }
         }
     }
@@ -668,30 +662,43 @@ pub fn proc_xcr(
     let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
-        *p = get_path_or_internal_id(&p, &ctl, source, &spinlock);
-        if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
-            *p = format!("{}/vdj_b", p);
-        }
-        if ctl.gen_opt.bcr && path_exists(&format!("{}/multi/vdj_b", p)) {
-            *p = format!("{}/multi/vdj_b", p);
-        }
-        if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", p)) {
-            *p = format!("{}/vdj_t", p);
-        }
-        if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", p)) {
-            *p = format!("{}/multi/vdj_t", p);
-        }
-        if have_gex {
-            *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &spinlock);
-            if path_exists(&format!("{}/count", pg)) {
-                *pg = format!("{}/count", pg);
+        let resx = get_path_or_internal_id(&p, &ctl, source, &spinlock);
+        if resx.is_err() {
+            res.3 = resx.unwrap_err();
+        } else {
+            *p = resx.unwrap();
+            if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
+                *p = format!("{}/vdj_b", p);
             }
-            if path_exists(&format!("{}/count_pd", pg)) {
-                *pg = format!("{}/count_pd", pg);
+            if ctl.gen_opt.bcr && path_exists(&format!("{}/multi/vdj_b", p)) {
+                *p = format!("{}/multi/vdj_b", p);
+            }
+            if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", p)) {
+                *p = format!("{}/vdj_t", p);
+            }
+            if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", p)) {
+                *p = format!("{}/multi/vdj_t", p);
+            }
+            if have_gex {
+                let resx = get_path_or_internal_id(&pg, &ctl, "GEX", &spinlock);
+                if resx.is_err() {
+                    res.3 = resx.unwrap_err();
+                } else {
+                    *pg = resx.unwrap();
+                    if path_exists(&format!("{}/count", pg)) {
+                        *pg = format!("{}/count", pg);
+                    }
+                    if path_exists(&format!("{}/count_pd", pg)) {
+                        *pg = format!("{}/count_pd", pg);
+                    }
+                }
             }
         }
     });
     for i in 0..results.len() {
+        if results[i].3.len() > 0 {
+            return Err(results[i].3.clone());
+        }
         ctl.origin_info.dataset_path.push(results[i].0.clone());
         ctl.origin_info.gex_path.push(results[i].1.clone());
     }
@@ -701,7 +708,7 @@ pub fn proc_xcr(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
+pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Result<(), String> {
     let mut fields = Vec::<String>::new();
     let mut donors = Vec::<String>::new();
     for (count, s) in lines.iter().enumerate() {
@@ -713,11 +720,10 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
             let mut fields_sorted = fields.clone();
             unique_sort(&mut fields_sorted);
             if fields_sorted.len() < fields.len() {
-                eprintln!(
+                return Err(format!(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has duplicate field names\nin its first line.\n"
-                );
-                std::process::exit(1);
+                ));
             }
             let allowed_fields = vec![
                 "bc".to_string(),
@@ -730,39 +736,35 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
             ];
             for x in fields.iter() {
                 if !allowed_fields.contains(&x) {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe CSV file that you specified using the META or METAX argument \
                          has an illegal field name ({}) in its first line.\n",
                         x
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             ctl.gen_opt.tcr = fields.contains(&"tcr".to_string());
             ctl.gen_opt.bcr = fields.contains(&"bcr".to_string());
             if !ctl.gen_opt.tcr && !ctl.gen_opt.bcr {
-                eprintln!(
+                return Err(format!(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has neither the field tcr or bcr in its first line.\n"
-                );
-                std::process::exit(1);
+                ));
             }
             if ctl.gen_opt.tcr && ctl.gen_opt.bcr {
-                eprintln!(
+                return Err(format!(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has both the fields tcr and bcr in its first line.\n"
-                );
-                std::process::exit(1);
+                ));
             }
         } else if !s.starts_with('#') {
             let val = s.split(',').collect::<Vec<&str>>();
             if val.len() != fields.len() {
-                eprintln!(
+                return Err(format!(
                     "\nMETA or METAX file line {} has a different number of fields than the \
                      first line of the file.\n",
                     count + 1
-                );
-                std::process::exit(1);
+                ));
             }
             let mut path = String::new();
             let mut abbr = String::new();
@@ -804,10 +806,10 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
 
             // Parse bc and finish up.
 
-            parse_bc(bc.clone(), &mut ctl, "META");
+            parse_bc(bc.clone(), &mut ctl, "META")?;
             let current_ref = false;
             let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
-            path = get_path_or_internal_id(&path, &ctl, "META", &spinlock);
+            path = get_path_or_internal_id(&path, &ctl, "META", &spinlock)?;
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
@@ -821,7 +823,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
                 path = format!("{}/multi/vdj_t", path);
             }
             if gpath.len() > 0 {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock);
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock)?;
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
                 }
@@ -851,22 +853,22 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
             ctl.origin_info.color.push(color);
         }
     }
+    Ok(())
 }
 
-pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
+pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) -> Result<(), String> {
     if !path_exists(&f) {
         eprintln!("\nCan't find the file referenced by your META argument.\n");
         std::process::exit(1);
     }
     let fx = File::open(&f);
     if fx.is_err() {
-        eprintln!(
+        return Err(format!(
             "\nProblem with META: unable to read from the file\n\
              \"{}\".\nPlease check that that path makes sense and that you have read \
              permission for it.\n",
             f
-        );
-        std::process::exit(1);
+        ));
     }
     let f = BufReader::new(fx.unwrap());
     let mut lines = Vec::<String>::new();
@@ -874,5 +876,5 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
         let s = line.unwrap();
         lines.push(s);
     }
-    proc_meta_core(&lines, &mut ctl);
+    proc_meta_core(&lines, &mut ctl)
 }

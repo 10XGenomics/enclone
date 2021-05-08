@@ -248,7 +248,7 @@ pub fn proc_args_post(
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
         let f = get_path_fail(&f, &ctl, "META");
-        proc_meta(&f, &mut ctl);
+        proc_meta(&f, &mut ctl)?;
     }
     if metaxs.len() > 0 {
         let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();
@@ -256,7 +256,7 @@ pub fn proc_args_post(
         for i in 0..lines0.len() {
             lines.push(lines0[i].to_string());
         }
-        proc_meta_core(&lines, &mut ctl);
+        proc_meta_core(&lines, &mut ctl)?;
     }
 
     ctl.perf_stats(&t, "in proc_meta");
