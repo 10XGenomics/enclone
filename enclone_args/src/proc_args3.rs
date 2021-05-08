@@ -87,7 +87,7 @@ fn expand_integer_ranges(x: &str) -> String {
     y
 }
 
-fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
+fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String> {
     let mut tokens = Vec::<String>::new();
     let mut token = String::new();
     for c in x.chars() {
@@ -123,13 +123,12 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
                     let url = format!("{}/{}", ctl.gen_opt.config["ones"], ids[j]);
                     let m = fetch_url(&url);
                     if m.contains("502 Bad Gateway") {
-                        eprintln!(
+                        return Err(format!(
                             "\nWell, this is sad.  The URL \
                             {} returned a 502 Bad Gateway \
                             message.  Please try again later or ask someone for help.\n",
                             url
-                        );
-                        std::process::exit(1);
+                        ));
                     }
                     if !m.contains("\"wiped\"") {
                         ids2.push(ids[j].to_string());
@@ -146,11 +145,10 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
                 }
                 continue;
             } else {
-                eprintln!(
+                return Err(format!(
                     "\nIt looks like you've provided an incorrect analysis set ID {}.\n",
                     setid
-                );
-                std::process::exit(1);
+                ));
             }
         }
         tokens2.push(tokens[i].clone());
@@ -159,7 +157,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
     for i in 0..tokens2.len() {
         y += &tokens2[i];
     }
-    y
+    Ok(y)
 }
 
 // Functions to find the path to data.
@@ -457,11 +455,16 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut EncloneControl) {
+pub fn proc_xcr(
+    f: &str,
+    gex: &str,
+    bc: &str,
+    have_gex: bool,
+    mut ctl: &mut EncloneControl,
+) -> Result<(), String> {
     ctl.origin_info = OriginInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
-        eprintln!("\nOnly one of TCR or BCR can be specified.\n");
-        std::process::exit(1);
+        return Err(format!("\nOnly one of TCR or BCR can be specified.\n"));
     }
     let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
@@ -475,16 +478,15 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         val = f.to_string();
     }
     if val == "".to_string() {
-        eprintln!(
-            "\nYou can't write {} with no value on the right hand side.",
+        return Err(format!(
+            "\nYou can't write {} with no value on the right hand side.\n\
+            Perhaps you need to remove some white space from your command line.\n",
             f
-        );
-        eprintln!("Perhaps you need to remove some white space from your command line.\n");
-        std::process::exit(1);
+        ));
     }
     val = expand_integer_ranges(&val);
     if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val, &ctl);
+        val = expand_analysis_sets(&val, &ctl)?;
     }
     let donor_groups;
     if ctl.gen_opt.cellranger {
@@ -494,7 +496,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     let mut gex2 = expand_integer_ranges(&gex);
     if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2, &ctl);
+        gex2 = expand_analysis_sets(&gex2, &ctl)?;
     }
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {
@@ -508,7 +510,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         xcr = "BCR".to_string();
     }
     if have_gex && donor_groups_gex.len() != donor_groups.len() {
-        eprintln!(
+        return Err(format!(
             "\nThere are {} {} donor groups and {} GEX donor groups, so \
              the {} and GEX arguments do not exactly mirror each \
              other's structure.\n",
@@ -516,16 +518,14 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             donor_groups.len(),
             donor_groups_gex.len(),
             xcr
-        );
-        std::process::exit(1);
+        ));
     }
     if !bc.is_empty() && donor_groups_bc.len() != donor_groups.len() {
-        eprintln!(
+        return Err(format!(
             "\nThe {} and BC arguments do not exactly mirror each \
              other's structure.\n",
             xcr
-        );
-        std::process::exit(1);
+        ));
     }
     ctl.perf_stats(&t, "in proc_xcr 1");
     let t = Instant::now();
@@ -544,7 +544,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
             }
             if origin_groups_gex.len() != origin_groups.len() {
-                eprintln!(
+                return Err(format!(
                     "\nFor donor {}, there are {} {} origin groups and {} GEX origin groups, so \
                      the {} and GEX arguments do not exactly mirror each \
                      other's structure.\n",
@@ -553,20 +553,18 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     origin_groups.len(),
                     origin_groups_gex.len(),
                     xcr
-                );
-                std::process::exit(1);
+                ));
             }
         }
         let mut origin_groups_bc = Vec::<&str>::new();
         if !bc.is_empty() {
             origin_groups_bc = donor_groups_bc[id].split(':').collect::<Vec<&str>>();
             if origin_groups_bc.len() != origin_groups.len() {
-                eprintln!(
+                return Err(format!(
                     "\nThe {} and BC arguments do not exactly mirror each \
                      other's structure.\n",
                     xcr
-                );
-                std::process::exit(1);
+                ));
             }
         }
         for (is, s) in origin_groups.iter().enumerate() {
@@ -585,7 +583,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
                 }
                 if datasets_gex.len() != datasets.len() {
-                    eprintln!(
+                    return Err(format!(
                         "\nSee {} {} datasets and {} GEX datasets, so \
                          the {} and GEX arguments do not exactly mirror each \
                          other's structure.\n",
@@ -593,19 +591,17 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                         datasets.len(),
                         datasets_gex.len(),
                         xcr
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             if !bc.is_empty() {
                 datasets_bc = origin_groups_bc[is].split(',').collect::<Vec<&str>>();
                 if datasets_bc.len() != datasets.len() {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe {} and BC arguments do not exactly mirror each \
                          other's structure.\n",
                         xcr
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             for (ix, x) in datasets.iter().enumerate() {
@@ -700,6 +696,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         ctl.origin_info.gex_path.push(results[i].1.clone());
     }
     ctl.perf_stats(&t, "in proc_xcr 4");
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

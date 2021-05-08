@@ -262,7 +262,7 @@ pub fn proc_args_post(
     ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
-        proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+        proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl)?;
     }
 
     // More argument sanity checking.
