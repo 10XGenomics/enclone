@@ -244,7 +244,7 @@ pub fn proc_args_post(
     // Process TCR, BCR and META.
 
     let t = Instant::now();
-    check_cvars(&ctl);
+    check_cvars(&ctl)?;
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
         let f = get_path_fail(&f, &ctl, "META");

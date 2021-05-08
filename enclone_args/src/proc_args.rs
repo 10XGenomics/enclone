@@ -710,7 +710,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_f64 args.
 
         for j in 0..set_f64.len() {
-            if is_f64_arg(&arg, &set_f64[j].0) {
+            if is_f64_arg(&arg, &set_f64[j].0)? {
                 *(set_f64[j].1) = arg.after(&format!("{}=", set_f64[j].0)).force_f64();
                 continue 'args_loop;
             }

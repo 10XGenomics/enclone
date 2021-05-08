@@ -73,28 +73,26 @@ pub fn is_i32_arg(arg: &str, x: &str) -> Result<bool, String> {
     Ok(false)
 }
 
-pub fn is_f64_arg(arg: &str, x: &str) -> bool {
+pub fn is_f64_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=n\", where n is a floating point number.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
         let val = arg.after(&format!("{}=", x)).parse::<f64>();
         if val.is_ok() {
-            return true;
+            return Ok(true);
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nYour command line includes \"{}\", which is not a valid argument.\n\
                  Perhaps you meant \"{}=n\", where n is a floating point number.\n",
                 arg, x
-            );
-            std::process::exit(1);
+            ));
         }
     }
-    return false;
+    Ok(false)
 }
 
 pub fn is_string_arg(arg: &str, x: &str) -> bool {
