@@ -154,19 +154,17 @@ pub fn load_gex(
             let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
             for f in [pca_file.clone(), cluster_file.clone()].iter() {
                 if !path_exists(&f) {
-                    eprintln!(
+                    r.11 = format!(
                         "\nThe file\n{}\ndoes not exist.  \
-                        Perhaps one of your directories is missing some stuff.\n",
-                        f
-                    );
-                    eprintln!(
-                        "One possibility is that you ran \"cellranger count\" using only \
+                        Perhaps one of your directories is missing some stuff.\n\n\
+                        One possibility is that you ran \"cellranger count\" using only \
                         feature barcode (antibody) data,\nand you had less then ten antibodies.  \
                         Currently if you do this, cellranger will not run the\nsecondary \
                         analyses, so you'll be missing some files.  A workaround is to add \
                         some \"fake\" antibodies\nto pad out the total number to ten.\n",
+                        f
                     );
-                    std::process::exit(1);
+                    return;
                 }
             }
             let csv1 = format!("{}/metrics_summary.csv", outs);
@@ -222,7 +220,7 @@ pub fn load_gex(
             if bin_file_state == 3 {
                 let f = File::create(&bin_file);
                 if !f.is_ok() {
-                    eprintln!(
+                    r.11 = format!(
                         "\nenclone is trying to create the path\n{}\n\
                         but that path cannot be created.  This path is for the binary GEX \
                         matrix file that enclone can read\n\
@@ -232,7 +230,7 @@ pub fn load_gex(
                         3. Don't specify NH5 (if you specified it).\n",
                         bin_file
                     );
-                    std::process::exit(1);
+                    return;
                 }
                 remove_file(&bin_file).unwrap();
             }
@@ -257,12 +255,12 @@ pub fn load_gex(
                 || ctl.gen_opt.mark_stats2
                 || ctl.clono_filt_opt.marked_b
             {
-                eprintln!(
+                r.11 = format!(
                     "\nIf you use MARK_STATS or MARK_STATS2 or MARKED_B, celltypes.csv has to \
                     exist, and this file\n{}\ndoes not exist.\n",
                     types_file
                 );
-                std::process::exit(1);
+                return;
             }
 
             // Read PCA file.
@@ -324,44 +322,44 @@ pub fn load_gex(
                     }
                 } else if line_no == 2 {
                     if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
-                        eprintln!(
+                        r.11 = format!(
                             "\nSomething appears to be wrong with the file\n{}:\n\
                             the second line doesn't have enough fields.\n",
                             csv
                         );
-                        std::process::exit(1);
+                        return;
                     } else if rpc_field.is_some() {
                         let mut rpcx = fields[rpc_field.unwrap()].to_string();
                         rpcx = rpcx.replace(",", "");
                         rpcx = rpcx.replace("\"", "");
                         if !rpcx.parse::<usize>().is_ok() {
-                            eprintln!(
+                            r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Mean Reads per Cell field isn't an integer.\n",
                                 csv
                             );
-                            std::process::exit(1);
+                            return;
                         }
                         rpc = Some(rpcx.force_usize() as isize);
                     }
                     if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
-                        eprintln!(
+                        r.11 = format!(
                             "\nSomething appears to be wrong with the file\n{}:\n\
                             the second line doesn't have enough fields.\n",
                             csv
                         );
-                        std::process::exit(1);
+                        return;
                     } else if fbrpc_field.is_some() {
                         let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
                         fbrpcx = fbrpcx.replace(",", "");
                         fbrpcx = fbrpcx.replace("\"", "");
                         if !fbrpcx.parse::<usize>().is_ok() {
-                            eprintln!(
+                            r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Antibody: Mean Reads per Cell field isn't an integer.\n",
                                 csv
                             );
-                            std::process::exit(1);
+                            return;
                         }
                         fbrpc = Some(fbrpcx.force_usize() as isize);
                     }
@@ -377,7 +375,7 @@ pub fn load_gex(
                 fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
             }
             if rpc.is_none() && fbrpc.is_none() {
-                eprintln!(
+                r.11 = format!(
                     "\nGene expression or feature barcode data was expected, however the \
                     CSV file\n{}\n\
                     does not have a field \"Mean Reads per Cell\" or \
@@ -387,7 +385,7 @@ pub fn load_gex(
                     from its original location.\n",
                     csv,
                 );
-                std::process::exit(1);
+                return;
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
