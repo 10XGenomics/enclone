@@ -18,7 +18,7 @@ use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
 
-fn fetch_url(url: &str) -> String {
+fn fetch_url(url: &str) -> Result<String, String> {
     const TIMEOUT: u64 = 120; // timeout in seconds
     let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
     let response = req.send();
@@ -29,16 +29,15 @@ fn fetch_url(url: &str) -> String {
     if !response.is_success() {
         let msg = response.text().unwrap();
         if msg.contains("Not found") {
-            eprintln!(
+            return Err(format!(
                 "\nAttempt to access the URL\n{}\nfailed with \"Not found\".  Could there \
                 be something wrong with the id?\n",
                 url
-            );
-            std::process::exit(1);
+            ));
         }
-        panic!("Failed to access URL {}: {}.", url, msg);
+        return Err(format!("Failed to access URL {}: {}.", url, msg));
     }
-    response.text().unwrap()
+    Ok(response.text().unwrap())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -109,7 +108,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
             let url = format!("{}/{}", ctl.gen_opt.config["sets"], setid);
-            let m = fetch_url(&url);
+            let m = fetch_url(&url)?;
             if m.contains("\"analysis_ids\":[") {
                 let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
                 ids = ids.replace(" ", "");
@@ -121,7 +120,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
 
                 for j in 0..ids.len() {
                     let url = format!("{}/{}", ctl.gen_opt.config["ones"], ids[j]);
-                    let m = fetch_url(&url);
+                    let m = fetch_url(&url)?;
                     if m.contains("502 Bad Gateway") {
                         return Err(format!(
                             "\nWell, this is sad.  The URL \
@@ -244,7 +243,7 @@ fn get_path_or_internal_id(
                 // intermittently very slow access without it.
                 while spinlock.load(Ordering::SeqCst) != 0 {}
                 spinlock.store(1, Ordering::SeqCst);
-                let m = fetch_url(&url);
+                let m = fetch_url(&url)?;
                 spinlock.store(0, Ordering::SeqCst);
                 if m.contains("502 Bad Gateway") {
                     return Err(format!(

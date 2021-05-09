@@ -812,6 +812,7 @@ pub fn parse_json_annotations_files(
         Vec<String>,
         Vec<String>,
         bool,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.dataset_path.len() {
         results.push((
@@ -823,6 +824,7 @@ pub fn parse_json_annotations_files(
             Vec::<String>::new(),
             Vec::<String>::new(),
             false,
+            String::new(),
         ));
     }
     // Note: only tracking truncated seq and quals initially
@@ -837,8 +839,8 @@ pub fn parse_json_annotations_files(
         let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
         let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
-            eprintln!("\ncan't find {} or {}\n", json, json_lz4);
-            std::process::exit(1);
+            res.8 = format!("\ncan't find {} or {}\n", json, json_lz4);
+            return;
         }
         let resx = read_json(
             ctl.gen_opt.accept_inconsistent,
@@ -859,10 +861,15 @@ pub fn parse_json_annotations_files(
             res.5.sort();
             res.2 = tig_bc;
         } else {
-            eprintln!("{}", resx.err().unwrap());
-            std::process::exit(1);
+            res.8 = format!("{}", resx.err().unwrap());
+            return;
         }
     });
+    for i in 0..results.len() {
+        if results[i].8.len() > 0 {
+            return Err(results[i].8.clone());
+        }
+    }
     let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
