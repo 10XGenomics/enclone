@@ -116,13 +116,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     if ctl.evil_eye {
         println!("at split command");
     }
-    let mut split = false;
-    for i in 1..args.len() {
-        if args[i] == "SPLIT_BY_COMMAND" {
-            split = true;
-        }
-    }
-    if split {
+    if ctl.gen_opt.split {
         let (mut bcr, mut gex) = (Vec::<&str>::new(), Vec::<&str>::new());
         let mut args2 = Vec::<String>::new();
         for i in 1..args.len() {
@@ -149,7 +143,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 return Err(format!("\nFAILED!\n"));
             }
         }
-        std::process::exit(0);
+        return Ok(());
     }
 
     // Set up general options.

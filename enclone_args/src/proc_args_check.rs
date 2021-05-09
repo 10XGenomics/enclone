@@ -157,9 +157,9 @@ fn check_gene_fb(
     // Get known features.  This code is inefficient.
 
     let mut known_features = Vec::<String>::new();
-    let mut results = Vec::<(usize, Vec<String>)>::new();
+    let mut results = Vec::<(usize, Vec<String>, String)>::new();
     for i in 0..gex_info.gex_features.len() {
-        results.push((i, Vec::<String>::new()));
+        results.push((i, Vec::<String>::new(), String::new()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -167,9 +167,12 @@ fn check_gene_fb(
             let f = &gex_info.gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
             if ff.len() != 3 {
-                eprintln!("Unexpected structure of features file, at this line\n{}", f);
-                eprintln!("Giving up.\n");
-                std::process::exit(1);
+                res.2 = format!(
+                    "\nUnexpected structure of features file, at this line\n{}\n\
+                    Giving up.\n",
+                    f
+                );
+                return;
             }
             for z in 0..2 {
                 if ff[2].starts_with("Antibody") {
@@ -192,6 +195,11 @@ fn check_gene_fb(
             }
         }
     });
+    for i in 0..results.len() {
+        if results[i].2.len() > 0 {
+            return Err(results[i].2.clone());
+        }
+    }
     for i in 0..results.len() {
         known_features.append(&mut results[i].1.clone());
     }
@@ -691,11 +699,11 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) -> Result<(), Strin
 
 // Check gvars args.
 
-pub fn check_gvars(ctl: &EncloneControl) {
+pub fn check_gvars(ctl: &EncloneControl) -> Result<(), String> {
     for x in ctl.gen_opt.gvars.iter() {
         if !GVARS_ALLOWED.contains(&x.as_str()) {
-            eprintln!("\nUnknown global variable {}.\n", x);
-            std::process::exit(1);
+            return Err(format!("\nUnknown global variable {}.\n", x));
         }
     }
+    Ok(())
 }

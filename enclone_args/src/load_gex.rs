@@ -549,8 +549,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
                 }
                 if !path_exists(&f) {
-                    eprintln!("\nThere's a missing input file:\n{}.\n", f);
-                    std::process::exit(1);
+                    return Err(format!("\nThere's a missing input file:\n{}.\n", f));
                 }
                 let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));

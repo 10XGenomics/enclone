@@ -79,6 +79,8 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
                 unsafe {
                     PLAIN = true;
                 }
+            } else if args[i] == "SPLIT" {
+                ctl.gen_opt.split = true;
             }
         }
         if ctl.gen_opt.html && ctl.gen_opt.svg {
@@ -194,6 +196,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
     // Process args (and set defaults for them).
 
     proc_args(&mut ctl, &args)?;
+    if ctl.gen_opt.split {
+        return Ok(());
+    }
 
     // Dump lenas.
 
