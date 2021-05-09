@@ -3,7 +3,6 @@
 use self::annotate::*;
 use self::refx::*;
 use self::transcript::*;
-use crate::explore::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
@@ -858,7 +857,6 @@ pub fn parse_json_annotations_files(
         if resx.is_ok() {
             let tig_bc: Vec<Vec<TigData>> = resx.unwrap();
             res.5.sort();
-            explore(li, &tig_bc, &ctl);
             res.2 = tig_bc;
         } else {
             eprintln!("{}", resx.err().unwrap());
