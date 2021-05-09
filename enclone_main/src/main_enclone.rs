@@ -28,7 +28,6 @@ use enclone::misc1::*;
 use enclone::misc2::*;
 use enclone::misc3::*;
 use enclone::secret::*;
-use enclone_args::explore::*;
 use enclone_args::load_gex::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
@@ -415,10 +414,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         erase_if(&mut exact_clonotypes, &to_delete);
     }
     ctl.perf_stats(&t, "filtering foursies");
-
-    // Look for insertions (experimental).
-
-    find_insertions(&ctl, &exact_clonotypes);
 
     // Build info about clonotypes.  Note that this edits the V reference sequence to perform
     // an indel in some cases.
