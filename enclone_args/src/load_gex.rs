@@ -48,6 +48,7 @@ pub fn load_gex(
         HashMap<String, String>,
         HashMap<String, Vec<f64>>,
         bool,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -62,6 +63,7 @@ pub fn load_gex(
             HashMap::<String, String>::new(),
             HashMap::<String, Vec<f64>>::new(),
             false,
+            String::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -86,12 +88,12 @@ pub fn load_gex(
             } else if root.ends_with("/outs") {
                 outs = root.before("/outs").to_string();
                 if !path_exists(&outs) {
-                    eprintln!(
+                    r.11 = format!(
                         "\nThe directory\n{}\ndoes not exist.  Something must be amiss with \
                         the arguments to PRE and/or GEX and/or META.\n",
                         outs
                     );
-                    std::process::exit(1);
+                    return;
                 }
             }
 
@@ -100,13 +102,13 @@ pub fn load_gex(
             let mut h5_path = format!("{}/raw_feature_bc_matrix.h5", outs);
             let h5_path_alt = format!("{}/raw_gene_bc_matrices_h5.h5", outs);
             if !path_exists(&h5_path) && !path_exists(&h5_path_alt) {
-                eprintln!(
+                r.11 = format!(
                     "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
                     and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
                     something\nis amiss with the arguments to PRE and/or GEX and/or META.\n",
                     outs
                 );
-                std::process::exit(1);
+                return;
             }
             if !path_exists(&h5_path) {
                 h5_path = h5_path_alt;
@@ -170,13 +172,13 @@ pub fn load_gex(
             let csv1 = format!("{}/metrics_summary.csv", outs);
             let csv2 = format!("{}/metrics_summary_csv.csv", outs);
             if !path_exists(&csv1) && !path_exists(&csv2) {
-                eprintln!(
+                r.11 = format!(
                     "\nSomething wrong with GEX or META argument:\ncan't find the file \
                         metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
                         {}",
                     outs
                 );
-                std::process::exit(1);
+                return;
             }
             let mut csv = csv1.clone();
             if !path_exists(&csv1) {
@@ -431,9 +433,17 @@ pub fn load_gex(
     });
     ctl.perf_stats(&t, "in load_gex main loop");
 
-    // Set have_gex and have_fb.
+    // Test for error.
 
     let t = Instant::now();
+    for i in 0..results.len() {
+        if results[i].11.len() > 0 {
+            return Err(results[i].11.clone());
+        }
+    }
+
+    // Set have_gex and have_fb.
+
     for i in 0..results.len() {
         if results[i].4.is_some() {
             *have_gex = true;
@@ -446,7 +456,7 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
