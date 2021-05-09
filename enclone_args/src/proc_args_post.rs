@@ -247,7 +247,7 @@ pub fn proc_args_post(
     check_cvars(&ctl)?;
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
-        let f = get_path_fail(&f, &ctl, "META");
+        let f = get_path_fail(&f, &ctl, "META")?;
         proc_meta(&f, &mut ctl)?;
     }
     if metaxs.len() > 0 {

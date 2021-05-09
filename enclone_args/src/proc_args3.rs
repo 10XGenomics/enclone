@@ -161,25 +161,25 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
 
 // Functions to find the path to data.
 
-pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
+pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> Result<String, String> {
     for x in ctl.gen_opt.pre.iter() {
         let pp = format!("{}/{}", x, p);
         if path_exists(&pp) {
-            return pp;
+            return Ok(pp);
         }
     }
     if !path_exists(&p) {
         if ctl.gen_opt.pre.is_empty() {
             let path = std::env::current_dir().unwrap();
-            eprintln!(
+            return Err(format!(
                 "\nIn directory {}, unable to find the path {}.  This came from the {} argument.\n",
                 path.display(),
                 p,
                 source
-            );
+            ));
         } else {
             let path = std::env::current_dir().unwrap();
-            eprintln!(
+            return Err(format!(
                 "\nIn directory {}, unable to find the\npath {},\n\
                 even if prepended by any of the directories \
                 in\nPRE={}.\nThis came from the {} argument.\n",
@@ -187,14 +187,10 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
                 p,
                 ctl.gen_opt.pre.iter().format(","),
                 source
-            );
+            ));
         }
-        if ctl.gen_opt.cellranger {
-            panic!("This should not have happened, so a traceback follows.\n");
-        }
-        std::process::exit(1);
     }
-    p.to_string()
+    Ok(p.to_string())
 }
 
 fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
@@ -227,7 +223,7 @@ fn get_path_or_internal_id(
     let mut pp = get_path(&p, &ctl, &mut ok);
     if !ok {
         if !ctl.gen_opt.internal_run {
-            get_path_fail(&pp, &ctl, source);
+            get_path_fail(&pp, &ctl, source)?;
         } else {
             // For internal runs, try much harder.  This is so that internal users can
             // just type an internal numerical id for a dataset and have it always
@@ -857,8 +853,9 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
 
 pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) -> Result<(), String> {
     if !path_exists(&f) {
-        eprintln!("\nCan't find the file referenced by your META argument.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nCan't find the file referenced by your META argument.\n"
+        ));
     }
     let fx = File::open(&f);
     if fx.is_err() {
