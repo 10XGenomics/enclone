@@ -334,3 +334,28 @@ fn test_rust_version() {
         std::process::exit(1);
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 33. Don't allow exit in code in some crates.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_exit() {
+    PrettyTrace::new().on();
+    let exit_free_crates = ["enclone_args", "enclone_proto"];
+    for cname in exit_free_crates.iter() {
+        let files = dir_list(&format!("../{}/src", cname));
+        for f in files.iter() {
+            let g = open_for_read![&format!("../{}/src/{}", cname, f)];
+            for line in g.lines() {
+                let s = line.unwrap();
+                if s.contains("process::exit") {
+                    eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
+}
