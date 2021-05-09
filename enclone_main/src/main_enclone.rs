@@ -218,7 +218,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     // Find matching features for <regular expression>_g etc.
 
-    match_vars(&mut ctl, &gex_info);
+    match_vars(&mut ctl, &gex_info)?;
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -375,7 +375,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     // Test for consistency between VDJ cells and GEX cells.
 
-    test_vdj_gex_inconsistent(&ctl, &tig_bc, &exact_clonotypes, &vdj_cells, &gex_info);
+    test_vdj_gex_inconsistent(&ctl, &tig_bc, &exact_clonotypes, &vdj_cells, &gex_info)?;
 
     // Filter out some foursie artifacts.
 
