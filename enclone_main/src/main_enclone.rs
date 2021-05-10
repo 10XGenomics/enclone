@@ -726,27 +726,27 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
                         format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
                     eprintln!("H5 path = {}.", h5_path);
                     if !path_exists(&h5_path) {
-                        eprintln!("H5 path {} does not exist.", h5_path);
-                        eprintln!("Retrying a few times to see if it appears.");
+                        let mut msg = format!("H5 path {} does not exist.\n", h5_path);
+                        msg += "Retrying a few times to see if it appears.\n";
                         for _ in 0..5 {
-                            eprintln!("Sleeping for 0.1 seconds.");
+                            msg += "Sleeping for 0.1 seconds.";
                             thread::sleep(time::Duration::from_millis(100));
                             if !path_exists(&h5_path) {
-                                eprintln!("Now h5 path does not exist.");
+                                msg += "Now h5 path does not exist.\n";
                             } else {
-                                eprintln!("Now h5 path exists.");
+                                msg += "Now h5 path exists.\n";
                                 break;
                             }
                         }
-                        eprintln!("Aborting.\n");
-                        std::process::exit(1);
+                        msg += "Aborting.\n";
+                        return Err(msg);
                     } else {
-                        eprintln!("h5 path exists.");
+                        println!("h5 path exists.");
                     }
                 } else {
-                    eprintln!("Path exists.");
+                    println!("Path exists.");
                 }
-                eprintln!("");
+                println!("");
             }
             d_readers.push(Some(x.unwrap().as_reader()));
             ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
