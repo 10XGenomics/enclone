@@ -11,10 +11,10 @@ pub fn test_requirements(
     ctl: &EncloneControl,
     nclono2: usize,
     two_chain: usize,
-) {
+) -> Result<(), String> {
     // Test for required number of false positives.
 
-    let mut fail = false;
+    let mut msg = String::new();
     if ctl.gen_opt.required_fps.is_some() {
         let mut fps = 0;
         for i in 0..pics.len() {
@@ -23,14 +23,13 @@ pub fn test_requirements(
             }
         }
         if fps != ctl.gen_opt.required_fps.unwrap() {
-            eprintln!(
+            msg += &mut format!(
                 "\nA \"false positive\" is a clonotype that contains cells from multiple\n\
                  donors.  You invoked enclone with the argument REQUIRED_FPS={}, but we found\n\
                  {} false positives, so the requirement is not met.\n",
                 ctl.gen_opt.required_fps.unwrap(),
                 fps
             );
-            fail = true;
         }
     }
 
@@ -44,12 +43,11 @@ pub fn test_requirements(
             }
         }
         if ctl.gen_opt.required_cells.unwrap() != ncells {
-            eprintln!(
+            msg += &mut format!(
                 "\nThe required number of cells is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_cells.unwrap(),
                 ncells,
             );
-            fail = true;
         }
     }
 
@@ -58,12 +56,11 @@ pub fn test_requirements(
     let nclono = exacts.len();
     if ctl.gen_opt.required_clonotypes.is_some() {
         if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
-            eprintln!(
+            msg += &mut format!(
                 "\nThe required number of clonotypes is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_clonotypes.unwrap(),
                 nclono,
             );
-            fail = true;
         }
     }
 
@@ -72,12 +69,11 @@ pub fn test_requirements(
     if ctl.gen_opt.required_donors.is_some() {
         let ndonors = ctl.origin_info.donors;
         if ctl.gen_opt.required_donors.unwrap() != ndonors {
-            eprintln!(
+            msg += &format!(
                 "\nThe required number of donors is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_donors.unwrap(),
                 ndonors,
             );
-            fail = true;
         }
     }
 
@@ -85,12 +81,11 @@ pub fn test_requirements(
 
     if ctl.gen_opt.required_two_cell_clonotypes.is_some() {
         if ctl.gen_opt.required_two_cell_clonotypes.unwrap() != nclono2 {
-            eprintln!(
+            msg += &mut format!(
                 "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
                 nclono2,
             );
-            fail = true;
         }
     }
 
@@ -98,12 +93,11 @@ pub fn test_requirements(
 
     if ctl.gen_opt.required_two_chain_clonotypes.is_some() {
         if ctl.gen_opt.required_two_chain_clonotypes.unwrap() != two_chain {
-            eprintln!(
+            msg += &mut format!(
                 "\nThe required number of two-chain clonotypes is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
                 two_chain,
             );
-            fail = true;
         }
     }
 
@@ -112,15 +106,15 @@ pub fn test_requirements(
     if ctl.gen_opt.required_datasets.is_some() {
         let ndatasets = ctl.origin_info.n();
         if ctl.gen_opt.required_datasets.unwrap() != ndatasets {
-            eprintln!(
+            msg += &mut format!(
                 "\nThe required number of datasets is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_datasets.unwrap(),
                 ndatasets,
             );
-            fail = true;
         }
     }
-    if fail {
-        std::process::exit(1);
+    if msg.len() > 0 {
+        return Err(msg);
     }
+    Ok(())
 }

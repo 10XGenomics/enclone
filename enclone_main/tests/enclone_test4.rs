@@ -349,6 +349,7 @@ fn test_exit() {
         "enclone_main",
         "enclone_print",
         "enclone_proto",
+        "enclone_tail",
     ];
     for cname in exit_free_crates.iter() {
         let files = dir_list(&format!("../{}/src", cname));
