@@ -438,7 +438,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             junction (the CDR3 loop plus the canonical C and W/F at the N and C termini \
             respectively).",
             60,
-        );
+        )?;
 
         // doc clonotype
 

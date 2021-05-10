@@ -28,7 +28,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "NALL",
             "Turn off all the noise filters shown below.  This may yield quite a mess.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -36,7 +36,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "Use contigs found by Cell Ranger even if they were not in a called cell, \
             or not called high confidence.",
             55,
-        );
+        )?;
 
         h.doc(
             "NALL_CELL",
@@ -52,7 +52,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             default behavior of enclone is to remove such cells from clonotypes.  This \
             option disables that behavior.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -73,14 +73,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             this option, enclone defines an origin by the pair \
             (origin name, donor name).",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NUMI",
             "Filter out B cells based on low BCR UMI counts.  The heuristics",
             65,
-        );
+        )?;
 
         h.docpr(
             "",
@@ -104,7 +104,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             background mRNA or a phenotypically similar phenomenon.  The \
             NGRAPH_FILTER option turns off this filtering.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -115,7 +115,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             supported by other exact subclonotypes, are variant within the clonotype, \
             and which disagree with the donor reference.  NQUAL turns this off.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -124,7 +124,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             weak and appear to be artifacts, perhaps arising from a stray mRNA molecule \
             that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -136,7 +136,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
             this operation off.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -146,7 +146,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
             happen anyway.  The naming of this option is confusing.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -157,7 +157,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             from repeated cell doublets or GEMs that contain two cells and multiple gel \
             beads.  The argument NFOURSIE_KILL turns off this filtering.",
             65,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -167,7 +167,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
             The argument NDOUBLET turns off this filtering.",
             65,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -175,7 +175,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "By default, enclone filters out rare artifacts arising from contamination \
             of oligos on gel beads.  The NWHITEF option turns off this filter.",
             55,
-        );
+        )?;
 
         h.ldoc(
             "NBC_DUP",
@@ -197,7 +197,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             to find errors.  Use of the bc field for META input specification \
             automatically turns on this option.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -206,7 +206,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             same type.  For example, the filter removes all exact subclonotypes having two TRA \
             chains and no other chains.  The NIMPROPER option turns off this filter.",
             55,
-        );
+        )?;
 
         // Documentation section.
 
@@ -217,7 +217,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             to \"purify\" a clonotype so as to display only exact subclonotypes having \
             all their chains.",
             55,
-        );
+        )?;
 
         h.doc(
             "CHAINS_EXACT=n",
@@ -240,14 +240,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
             55,
-        );
+        )?;
         h.docf2(
             "CONST_IGKL=\"<pattern>\"",
             "for BCR, keep only exact subclonotypes having a light chain whose constant region \
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
             55,
-        );
+        )?;
 
         // Documentation section.
 
@@ -264,7 +264,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             multiple filters.  See the examples below, and be very careful about syntax, \
             which should match the given examples exactly.  In particular,",
             55,
-        );
+        )?;
         h.doc2("• use == for equality, and not =");
         h.doc2("• put string values in single quotes");
         h.doc2("• put the entire expression in double quotes.");
@@ -629,7 +629,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             typically result in peculiar artifacts, so this should only be used as an \
             exploratory tool.",
             75,
-        );
+        )?;
         h.print_tab2();
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \

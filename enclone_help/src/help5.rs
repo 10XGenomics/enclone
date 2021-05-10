@@ -67,7 +67,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
              show a C if the column lies within a complementarity-determining region, \
              and F if it lies in a framework region, and an L if it lies in the leader",
             75,
-        );
+        )?;
         h.doc(
             "DIFF_STYLE=C2",
             "instead of showing an x for each amino acid column containing a difference,",

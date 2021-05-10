@@ -42,7 +42,7 @@ impl HelpDesk {
 
     // docf2: like doc, but fold x2 to n2 chars.
 
-    pub fn docf2(&mut self, x1: &str, x2: &str, n2: usize) {
+    pub fn docf2(&mut self, x1: &str, x2: &str, n2: usize) -> Result<(), String> {
         let mut c2 = Vec::<char>::new();
         for m in x2.chars() {
             c2.push(m);
@@ -61,13 +61,12 @@ impl HelpDesk {
                     s.push(c2[j]);
                 }
                 if s.len() == 0 {
-                    eprintln!(
+                    return Err(format!(
                         "\nError in docf2, x2 = \n\n{}\n\nThere is probably a string in there that \
                         exceeds your argument {}.\n",
                         x2,
                         n2,
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 y2.push(s);
                 start = i + 1;
@@ -86,6 +85,7 @@ impl HelpDesk {
                 self.doc("", &y2[i]);
             }
         }
+        Ok(())
     }
 
     pub fn ldoc(&mut self, x1: &str, x2: &str) {

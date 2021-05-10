@@ -162,13 +162,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             "DNA positions in chain that are constant across the \
              clonotype, but differ from the donor ref",
             60,
-        );
+        )?;
         h.docf2(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
              clonotype, all of these are comma-separated lists but differ from the donor ref",
             60,
-        );
+        )?;
         h.print_tab2();
         h.print("\n");
 
@@ -610,14 +610,14 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             reference sequence.  In such cases, even though you specify CDR1 or CDR2, they will \
             not be shown.",
             85,
-        );
+        )?;
         h.docf2(
             "",
             "3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header \
             line that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even \
             more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
             85,
-        );
+        )?;
         h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
