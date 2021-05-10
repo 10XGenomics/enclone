@@ -13,7 +13,7 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
+pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Result<(), String> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide display help.
@@ -711,9 +711,11 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         let mut x = args[1].clone();
         x.make_ascii_lowercase();
         if x.contains("help") {
-            println!("\nYour help request doesn't match one known to enclone.\n");
-            println!("Please type \"enclone\" to see the help options.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nYour help request doesn't match one known to enclone.\nn\
+                Please type \"enclone\" to see the help options.\n"
+            ));
         }
     }
+    Ok(())
 }

@@ -97,11 +97,11 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
             help_all = true;
         }
         let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
-        help1(&args, &mut h);
-        help2(&args, &ctl, &mut h);
-        help3(&args, &mut h);
-        help4(&args, &mut h);
-        help5(&args, &ctl, &mut h);
+        help1(&args, &mut h)?;
+        help2(&args, &ctl, &mut h)?;
+        help3(&args, &mut h)?;
+        help4(&args, &mut h)?;
+        help5(&args, &ctl, &mut h)?;
     }
 
     // Pretest for some options.

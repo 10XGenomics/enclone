@@ -4,7 +4,7 @@
 
 use crate::help_utils::*;
 
-pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
+pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
     // Provide main help.
 
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
@@ -544,4 +544,5 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         h.end_doc();
     }
+    Ok(())
 }
