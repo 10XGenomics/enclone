@@ -291,7 +291,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     // Process for sec (secreted) or mem (membrane) if specified.
 
-    test_sec_mem(&mut ctl);
+    test_sec_mem(&mut ctl)?;
     ctl.perf_stats(&tr, "building reference and other things");
     if ctl.gen_opt.using_secmem {
         fetch_secmem(&mut ctl);
@@ -334,6 +334,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut cdr2_starts,
         &mut log,
     )?;
+    if ctl.gen_opt.require_unbroken_ok {
+        std::process::exit(0);
+    }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];

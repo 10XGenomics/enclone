@@ -183,9 +183,5 @@ pub fn populate_features(
         );
         return Err(stringme(&log));
     }
-
-    if ctl.gen_opt.require_unbroken_ok {
-        std::process::exit(0);
-    }
     Ok(())
 }
