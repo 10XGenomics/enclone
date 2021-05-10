@@ -4,8 +4,8 @@
 //
 // Note that this gives the wrong answer if you haven't run ./build first.
 
-use enclone_core::run_test::*;
 use enclone_core::testlist::*;
+use enclone_tools::run_test::*;
 use pretty_trace::*;
 
 fn main() {

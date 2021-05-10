@@ -9,7 +9,6 @@ pub mod mammalian_fixed_len;
 pub mod median;
 pub mod opt_d;
 pub mod print_tools;
-pub mod run_test;
 pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;

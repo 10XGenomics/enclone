@@ -726,6 +726,7 @@ dependencies = [
  "enclone_print",
  "enclone_proto",
  "enclone_tail",
+ "enclone_tools",
  "equiv",
  "evalexpr",
  "failure",
@@ -844,6 +845,7 @@ dependencies = [
 name = "enclone_tools"
 version = "0.5.53"
 dependencies = [
+ "ansi_escape",
  "attohttpc",
  "debruijn",
  "dirs",

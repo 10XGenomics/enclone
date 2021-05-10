@@ -346,6 +346,7 @@ fn test_exit() {
     PrettyTrace::new().on();
     let exit_free_crates = [
         "enclone_args",
+        "enclone_core",
         "enclone_main",
         "enclone_print",
         "enclone_proto",
