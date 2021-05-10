@@ -312,7 +312,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut cdr1_starts,
         &mut cdr2_starts,
         &mut log,
-    );
+    )?;
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];

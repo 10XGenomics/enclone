@@ -84,8 +84,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
             }
         }
         if ctl.gen_opt.html && ctl.gen_opt.svg {
-            eprintln!("\nBoth HTML and SVG cannot be used at the same time.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nBoth HTML and SVG cannot be used at the same time.\n"
+            ));
         }
         erase_if(&mut args, &to_delete);
         if args.len() == 1 || args.contains(&"help".to_string()) {
