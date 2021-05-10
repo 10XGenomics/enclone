@@ -12,6 +12,7 @@ use crate::filter_umi::*;
 use crate::flag_defective::*;
 use crate::inconsistent::*;
 use crate::merge_onesies::*;
+use crate::opt_d_val::*;
 use crate::populate_features::*;
 use crate::sec_mem::*;
 use crate::setup::*;
@@ -34,7 +35,6 @@ use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
 use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
-use enclone_core::opt_d::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
@@ -822,58 +822,16 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     // though the true values have to be the same.  This is also true for V and J segments,
     // although they are less likely to vary.
 
-    let t = Instant::now();
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
-    let mut need_opt_d_val =
-        ctl.clono_group_opt.vdj_refname || ctl.clono_group_opt.vdj_heavy_refname;
-    for x in ctl.gen_opt.gvars.iter() {
-        if x.starts_with("d_inconsistent_") {
-            need_opt_d_val = true;
-        }
-    }
-    if need_opt_d_val {
-        for i in 0..exacts.len() {
-            opt_d_val.push((i, Vec::new()));
-        }
-        opt_d_val.par_iter_mut().for_each(|res| {
-            let i = res.0;
-            res.1 = vec![Vec::<Vec<usize>>::new(); rsi[i].mat.len()];
-            for col in 0..rsi[i].mat.len() {
-                let mut dvotes = Vec::<Vec<usize>>::new();
-                for u in 0..exacts[i].len() {
-                    let ex = &exact_clonotypes[exacts[i][u]];
-                    let m = rsi[i].mat[col][u];
-                    if m.is_some() {
-                        let m = m.unwrap();
-                        if ex.share[m].left {
-                            let mut scores = Vec::<f64>::new();
-                            let mut ds = Vec::<Vec<usize>>::new();
-                            opt_d(
-                                &ex,
-                                col,
-                                u,
-                                &rsi[i],
-                                &refdata,
-                                &drefs,
-                                &mut scores,
-                                &mut ds,
-                                &ctl,
-                            );
-                            let mut opt = Vec::new();
-                            if ds.len() > 0 {
-                                opt = ds[0].clone();
-                            }
-                            dvotes.push(opt);
-                        }
-                    } else {
-                        dvotes.push(Vec::new());
-                    }
-                }
-                res.1[col] = dvotes;
-            }
-        });
-    }
-    ctl.perf_stats(&t, "computing opt_d");
+    make_opt_d_val(
+        &ctl,
+        &exact_clonotypes,
+        &exacts,
+        &rsi,
+        &refdata,
+        &drefs,
+        &mut opt_d_val,
+    );
 
     // Group clonotypes.
 
