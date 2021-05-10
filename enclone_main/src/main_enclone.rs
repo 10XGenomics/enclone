@@ -335,7 +335,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut log,
     )?;
     if ctl.gen_opt.require_unbroken_ok {
-        std::process::exit(0);
+        return Ok(());
     }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
@@ -861,7 +861,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
             .await
             .unwrap();
-        std::process::exit(0);
+        return Ok(());
     }
 
     // Tail code.
