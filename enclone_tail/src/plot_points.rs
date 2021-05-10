@@ -14,16 +14,20 @@ use crate::ticks::*;
 use plotters::prelude::*;
 use std::cmp::max;
 
-pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filename: &str) {
+pub fn plot_points(
+    points: &Vec<(f32, f32)>,
+    xvar: &str,
+    yvar: &str,
+    svg_filename: &str,
+) -> Result<(), String> {
     // Requirements.
 
     if points.is_empty() {
-        eprintln!(
+        return Err(format!(
             "\nPlot of {} versus {} can't be carried out because there are no data \
             points\n(consisting of pairs of numbers).\n",
             xvar, yvar
-        );
-        std::process::exit(1);
+        ));
     }
 
     // Define parameters of the plot.
@@ -147,4 +151,5 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
             },
         ))
         .unwrap();
+    Ok(())
 }

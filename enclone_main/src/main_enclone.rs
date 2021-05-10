@@ -887,7 +887,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &drefs,
         &groups,
         &opt_d_val,
-    );
+    )?;
 
     // Report profiling.
 
