@@ -72,8 +72,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
             let f = args[i].after("SOURCE=");
             let f2 = stringme(&tilde_expand(&f.as_bytes()));
             if !path_exists(&f2) {
-                eprintln!("\nCan't find {}.\n", f);
-                std::process::exit(1);
+                return Err(format!("\nCan't find {}.\n", f));
             }
             let f = open_for_read![&f];
             for line in f.lines() {
@@ -239,8 +238,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     }
     determine_ref(&mut ctl, &mut refx);
     if refx.len() == 0 && ctl.origin_info.n() == 0 {
-        eprintln!("\nNo data and no TCR or BCR data have been specified.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nNo data and no TCR or BCR data have been specified.\n"
+        ));
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -334,8 +334,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
-        eprintln!("\nNo TCR or BCR data have been specified.\n");
-        std::process::exit(1);
+        return Err(format!("\nNo TCR or BCR data have been specified.\n"));
     }
 
     // Search for SHM indels.
@@ -935,16 +934,13 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     }
     if ctl.comp_enforce {
         if deltas.force_f64() > 0.03 {
-            eprintln!(
+            return Err(format!(
                 "\nUnaccounted time = {} seconds, but COMPE option required that it \
-                be at most 0.03.\n",
+                be at most 0.03.\n\n\
+                Note that this may fail for a small fraction of runs, even though \
+                nothing is wrong.\n",
                 deltas
-            );
-            eprintln!(
-                "Note that this may fail for a small fraction of runs, even though \
-                nothing is wrong.\n"
-            );
-            std::process::exit(1);
+            ));
         }
     }
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
