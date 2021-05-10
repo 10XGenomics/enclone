@@ -3,7 +3,7 @@
 // Copy a 10x pipestance, retaining only the files used by enclone, or which might otherwise
 // be convenient to keep.
 
-use crate::slurp::*;
+use enclone_core::slurp::*;
 use io_utils::*;
 use mirror_sparse_matrix::*;
 use std::fs::{copy, remove_file};

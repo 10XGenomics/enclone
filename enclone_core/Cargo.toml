@@ -25,7 +25,6 @@ bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "5.0.5"
-fs_extra = "1.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
