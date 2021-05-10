@@ -28,10 +28,6 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
     // Provide help if requested.
 
     {
-        if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
-            println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-            std::process::exit(0);
-        }
         let mut args = args.clone();
         let mut to_delete = vec![false; args.len()];
         let mut nopager = false;
@@ -201,7 +197,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
         return Ok(());
     }
 
-    // Dump lenas.
+    // Dump internal ids.
 
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS")? {

@@ -34,6 +34,7 @@ use enclone_args::read_json::*;
 use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
+use enclone_core::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
 use enclone_tail::grouper::*;
@@ -151,6 +152,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
             let fields = s.split(' ').collect::<Vec<&str>>();
             cpu_this_start = fields[13].force_usize();
         }
+    }
+    if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
+        println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
+        return Ok(());
     }
     if ctl.evil_eye {
         println!("calling perf_stats, before setup");
