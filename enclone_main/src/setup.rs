@@ -196,19 +196,5 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
     if ctl.gen_opt.split {
         return Ok(());
     }
-
-    // Dump internal ids.
-
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS")? {
-            let mut x = Vec::<usize>::new();
-            for y in ctl.origin_info.dataset_id.iter() {
-                x.push(y.force_usize());
-            }
-            x.sort();
-            println!("\n{}\n", x.iter().format(","));
-            std::process::exit(0);
-        }
-    }
     Ok(())
 }

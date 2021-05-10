@@ -29,6 +29,7 @@ use enclone::misc2::*;
 use enclone::misc3::*;
 use enclone::secret::*;
 use enclone_args::load_gex::*;
+use enclone_args::proc_args2::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
 use enclone_com::enclone_server::*;
@@ -41,6 +42,7 @@ use enclone_tail::grouper::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
+use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
@@ -163,6 +165,20 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     setup(&mut ctl, &args)?;
     if ctl.gen_opt.split {
         return Ok(());
+    }
+
+    // Dump internal ids.
+
+    for i in 1..args.len() {
+        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS")? {
+            let mut x = Vec::<usize>::new();
+            for y in ctl.origin_info.dataset_id.iter() {
+                x.push(y.force_usize());
+            }
+            x.sort();
+            println!("\n{}\n", x.iter().format(","));
+            return Ok(());
+        }
     }
 
     // Read external data.

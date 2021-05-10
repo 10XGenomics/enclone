@@ -5,6 +5,8 @@
 use amino::*;
 use enclone_core::defs::*;
 use enclone_core::vdj_features::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 use tables::*;
 use vdj_ann::refx::RefData;
@@ -140,12 +142,13 @@ pub fn populate_features(
     // in that case.
 
     if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
-        eprintln!(
+        let mut log = Vec::<u8>::new();
+        fwriteln!(
+            log,
             "\nSome errors were detected in the reference sequences supplied to enclone.\n\
-            Please see comments at end for what you can do about this.\n",
+            Please see comments at end for what you can do about this.\n\n",
         );
-        eprint!("{}", strme(&log));
-        eprintln!(
+        fwriteln!(log,
 "🌼  Dear user, some defects were detected in the reference sequences supplied to enclone.   🌼\n\
  🌼  Some of these defects may be small.  Generally they are associated with V segments that 🌼\n\
  🌼  are frameshifted or truncated, or with C segments that have an extra base at the        🌼\n\
@@ -164,20 +167,21 @@ pub fn populate_features(
         rows.push(vec![
             "behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string(),
         ]);
-
-        let mut log = String::new();
+        let mut log = stringme(&log);
         print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
-        eprintln!("{}", log);
-
-        eprintln!(
-        "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
+        let mut log = log.as_bytes().to_vec();
+        fwriteln!(log, "");
+        fwriteln!(
+            log,
+            "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
         • rerun cellranger using the cleaned up reference sequences that come prepackaged with \
           it\n  (noting that your might have used an older, less clean version of that)\n\
-        • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
+        • or add the argument BUILT_IN to enclone, which will force use of the built-in \
+        reference\n  \
         sequences.  This will be a bit slower because all the contigs will need to be\n  \
         reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
         );
-        std::process::exit(1);
+        return Err(stringme(&log));
     }
 
     if ctl.gen_opt.require_unbroken_ok {
