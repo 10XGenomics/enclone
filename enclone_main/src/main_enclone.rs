@@ -166,6 +166,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     if ctl.gen_opt.split {
         return Ok(());
     }
+    if args.len() == 1 || (args.len() > 1 && args[1] == "help") {
+        return Ok(());
+    }
 
     // Dump internal ids.
 

@@ -706,7 +706,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
 
     if h.help_all {
         h.dump();
-        std::process::exit(0);
 
     // Catch unrecognized help requests.
     } else if args.len() >= 2 {

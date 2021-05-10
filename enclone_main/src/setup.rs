@@ -102,6 +102,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
         help3(&args, &mut h)?;
         help4(&args, &mut h)?;
         help5(&args, &ctl, &mut h)?;
+        if args.len() == 1 || (args.len() > 1 && args[1] == "help") {
+            return Ok(());
+        }
     }
 
     // Pretest for some options.

@@ -288,6 +288,7 @@ fn test_help_output() {
             .expect(&format!("failed to execute test_help_output"));
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
+            eprintln!("stderr = {}", strme(&new.stderr));
             std::process::exit(1);
         }
         let new2 = edit_html(&stringme(&new.stdout));
