@@ -363,15 +363,15 @@ pub fn process_special_arg(
     } else if arg.starts_with("F=") {
         // deprecated but retained for backward compatibility
         let filt = arg.after("F=").to_string();
-        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("mean".to_string());
     } else if arg.starts_with("KEEP_CLONO_IF_CELL_MEAN=") {
         let filt = arg.after("KEEP_CLONO_IF_CELL_MEAN=").to_string();
-        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("mean".to_string());
     } else if arg.starts_with("KEEP_CLONO_IF_CELL_MAX=") {
         let filt = arg.after("KEEP_CLONO_IF_CELL_MAX=").to_string();
-        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("max".to_string());
     } else if arg.starts_with("SCAN=") {
         let mut x = arg.after("SCAN=").to_string();
@@ -380,9 +380,9 @@ pub fn process_special_arg(
         if x.len() != 3 {
             return Err("\nArgument to SCAN must have three components.\n".to_string());
         }
-        ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
-        ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1]));
-        let threshold = LinearCondition::new(&x[2]);
+        ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0])?);
+        ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1])?);
+        let threshold = LinearCondition::new(&x[2])?;
         for i in 0..threshold.var.len() {
             if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
                 return Err("\nIllegal variable in threshold for scan.\n".to_string());

@@ -16,7 +16,7 @@ impl LinearCondition {
         self.coeff.len()
     }
 
-    pub fn new(x: &str) -> LinearCondition {
+    pub fn new(x: &str) -> Result<LinearCondition, String> {
         let y = x.replace(" ", "");
         let lhs: String;
         let mut rhs: String;
@@ -54,26 +54,24 @@ impl LinearCondition {
             rhs = y.after(">").to_string();
             sense = "gt".to_string();
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nImproperly formatted condition, no inequality symbol, \
                  please type \"enclone help display\": {}.\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
         rhs = rhs.replace("E", "e");
         if !rhs.contains('.') && !rhs.contains('e') {
             rhs += ".0";
         }
         if !rhs.parse::<f64>().is_ok() {
-            eprintln!(
+            return Err(format!(
                 "\nImproperly formatted condition, right-hand side invalid: {}.\n\
                 The right-hand side needs to be a constant.  Please type \
                 \"enclone help filter\"\n\
                 for more information.\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
         let rhs = rhs.force_f64();
         let mut parts = Vec::<String>::new();
@@ -112,12 +110,11 @@ impl LinearCondition {
                     coeffi += ".0";
                 }
                 if !coeffi.parse::<f64>().is_ok() {
-                    eprintln!(
+                    return Err(format!(
                         "\nImproperly formatted condition, coefficient {} is invalid: {}.\n\
                         Please type \"enclone help filter\" for more information.\n",
                         coeffi, x
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 coeff.push(coeffi.force_f64());
                 var.push(vari.to_string());
@@ -132,12 +129,12 @@ impl LinearCondition {
                 var.push(parts[i][start..].to_string());
             }
         }
-        LinearCondition {
+        Ok(LinearCondition {
             coeff: coeff,
             var: var,
             rhs: rhs,
             sense: sense,
-        }
+        })
     }
 
     pub fn satisfied(&self, val: &Vec<f64>) -> bool {
@@ -156,15 +153,16 @@ impl LinearCondition {
         }
     }
 
-    pub fn require_valid_variables(&self, _ctl: &EncloneControl) {
+    pub fn require_valid_variables(&self, _ctl: &EncloneControl) -> Result<(), String> {
         for i in 0..self.var.len() {
             if self.var[i].ends_with("_cell") {
-                eprintln!(
+                return Err(format!(
                     "\nThe variable {} should not be used in a linear condition.\n\
                     Please type \"enclone help filter\" for more information.\n",
                     self.var[i]
-                );
+                ));
             }
         }
+        Ok(())
     }
 }
