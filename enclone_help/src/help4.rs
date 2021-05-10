@@ -13,8 +13,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
     // Provide special filtering help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "special") || h.help_all {
-        h.begin_doc("special");
-        h.print("\n\\bold{special filtering options}\n\n");
+        h.begin_doc("special")?;
+        h.print("\n\\bold{special filtering options}\n\n")?;
         h.print(
             "This page documents some options, most of which allow noise \
              filters to be turned off, and which normally should not be invoked.  Some of \
@@ -22,7 +22,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              SUMMARY option.  See also the lead variable \"filter\", see \
              \"enclone help lvars\".  At the bottom of this page we provide some other options \
              that are not noise filters.\n\n",
-        );
+        )?;
 
         h.docf2(
             "NALL",
@@ -290,8 +290,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
 
         // Done.
 
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
         h.end_doc();
     }
 
@@ -300,14 +300,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
     // Function that provides an explanation used for both enclone help lvars and
     // enclone help cvars.
 
-    fn explain_alt_versions(h: &mut HelpDesk) {
+    fn explain_alt_versions(h: &mut HelpDesk) -> Result<(), String> {
         h.print(&format!(
             "{}",
             gray_left_bar(&print_to(
                 "\\red{●} These variables have some alternate versions, \
                  as shown in the table below.\n\n"
             ))
-        ));
+        ))?;
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
             "variable".to_string(),
@@ -412,7 +412,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         rows.push(row);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
-        h.print_plain(&format!("{}", gray_left_bar(&log)));
+        h.print_plain(&format!("{}", gray_left_bar(&log)))?;
         h.print_plain(&format!(
             "{}",
             gray_left_bar(&print_to(
@@ -431,7 +431,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
             ))
-        ));
+        ))?;
+        Ok(())
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -439,8 +440,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
     // Provide lvars help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || h.help_all {
-        h.begin_doc("lvars");
-        h.print("\n\\bold{lead column options}\n\n");
+        h.begin_doc("lvars")?;
+        h.print("\n\\bold{lead column options}\n\n")?;
         h.print(
             "These options define lead variables, which are variables that are computed for each \
              exact subclonotype, and if using the \\bold{PER_CELL} option, also computed for each \
@@ -451,15 +452,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              Note that for medians of integers, \
              we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
-        );
+        )?;
         h.print(
             "See also \"enclone help cvars\" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
-        );
+        )?;
         h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
-        );
+        )?;
         h.doc("nchains", "total number of chains in the clonotype");
         h.ldoc("datasets", "dataset identifiers");
         h.doc("origin", "origin identifiers");
@@ -630,11 +631,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             exploratory tool.",
             75,
         )?;
-        h.print_tab2();
+        h.print_tab2()?;
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
-        );
+        )?;
         h.print(
             "● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches \
              all genes that begin with TRA or TRB.  Double quotes as in \\bold{LVARS=\"...\"} \
@@ -643,18 +644,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              expression if it contains a character in []()|*.  \
              See \"enclone help filter\" \
              for more information about regular expressions.\n\n",
-        );
-        explain_alt_versions(&mut h);
+        )?;
+        explain_alt_versions(&mut h)?;
         h.print(
             "\n\\blue{●} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
              and the x_mean etc. forms do not apply.\n\n",
-        );
+        )?;
         h.print(
             "The default is \\bold{datasets,n}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
-        );
-        h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
+        )?;
+        h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n")?;
         h.end_doc();
     }
 
@@ -663,7 +664,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
     // Provide cvars help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "cvars") || h.help_all {
-        h.begin_doc("cvars");
+        h.begin_doc("cvars")?;
 
         // Header.
 
@@ -673,16 +674,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              have one entry for each exact subclonotype.  Please note that for medians of \
              integers, we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
-        );
+        )?;
         h.print(
             "See also \"enclone help lvars\" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
-        );
+        )?;
         h.print(
             "Per-column variables are specified using\n\
              \\bold{CVARS=x1,...,xn}\n\
              where each xi is one of:\n\n",
-        );
+        )?;
 
         // Main table entries.
 
@@ -931,13 +932,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
 
         // The rest.
 
-        h.print_tab2();
-        h.print("\n");
-        explain_alt_versions(&mut h);
+        h.print_tab2()?;
+        h.print("\n")?;
+        explain_alt_versions(&mut h)?;
         h.print(
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
-        );
+        )?;
         h.end_doc();
     }
     Ok(())
