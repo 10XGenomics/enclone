@@ -61,7 +61,7 @@ pub fn row_fill(
     extra_args: &Vec<String>,
     all_vars: &Vec<String>,
     fate: &Vec<HashMap<String, String>>,
-) {
+) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
@@ -714,7 +714,7 @@ pub fn row_fill(
                 rtot,
                 &extra_args,
                 stats,
-            ) {
+            )? {
                 let _ = proc_cvar2(
                     &var,
                     jj,
@@ -754,4 +754,5 @@ pub fn row_fill(
             }
         }
     }
+    Ok(())
 }

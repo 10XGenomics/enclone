@@ -12,4 +12,5 @@ async fn main() {
         eprintln!("{}", res.unwrap_err());
         std::process::exit(1);
     }
+    std::process::exit(0);
 }

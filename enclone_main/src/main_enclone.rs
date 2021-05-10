@@ -805,7 +805,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut tests,
         &mut controls,
         &mut fate,
-    );
+    )?;
 
     // Lock data structures so they can't be changed accidentally.
 
@@ -952,10 +952,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
-    }
-    // It's not totally clear that the exit below actually saves time.  Would need more testing.
-    if !ctl.gen_opt.cellranger {
-        std::process::exit(0);
     }
     Ok(())
 }
