@@ -236,7 +236,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     } else {
         ann = "contig_annotations.json";
     }
-    determine_ref(&mut ctl, &mut refx);
+    determine_ref(&mut ctl, &mut refx)?;
     if refx.len() == 0 && ctl.origin_info.n() == 0 {
         return Err(format!(
             "\nNo data and no TCR or BCR data have been specified.\n"

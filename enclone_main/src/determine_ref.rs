@@ -12,7 +12,7 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
-pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
+pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), String> {
     // First check for the existence of a json file.
 
     let ann;
@@ -26,15 +26,14 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
         let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
         let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[0], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
-            eprintln!(
+            return Err(format!(
                 "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
                 There are various possible reasons for this, including an incorrectly \
                 specified path, or incorrect\nspecification of PRE, or a partially copied outs \
                 directory that does not include \
                 all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
                 json, json_lz4
-            );
-            std::process::exit(1);
+            ));
         }
         jsonx = json.clone();
         if !path_exists(&json) {
@@ -43,25 +42,23 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
         if jsonx.contains('/') {
             let p = jsonx.rev_before("/");
             if !path_exists(&p) {
-                eprintln!(
+                return Err(format!(
                     "\nThere should be a directory\n\
                      \"{}\"\n\
                      but it does not exist.  Please check how you have specified the\n\
                      input files to enclone, including the PRE argument.\n",
                     p
-                );
-                std::process::exit(1);
+                ));
             }
         }
         if !path_exists(&jsonx) {
-            eprintln!(
+            return Err(format!(
                 "\nThe path\n\
                  \"{}\"\n\
                  does not exist.  Please check how you have specified the\n\
                  input files to enclone, including the PRE argument.\n",
                 jsonx
-            );
-            std::process::exit(1);
+            ));
         }
     }
 
@@ -122,24 +119,22 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
 
     if refx.len() == 0 && ctl.gen_opt.refname.len() > 0 {
         if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
-            eprintln!(
+            return Err(format!(
                 "\nProblem with REF: \"{}\"\nis a directory, not a file.\n",
                 ctl.gen_opt.refname
-            );
-            std::process::exit(1);
+            ));
         }
         if ctl.gen_opt.descrip {
             println!("using reference = {}", ctl.gen_opt.refname);
         }
         let fx = File::open(&ctl.gen_opt.refname);
         if fx.is_err() {
-            eprintln!(
+            return Err(format!(
                 "\nProblem with REF: unable to read from the file\n\
                  \"{}\".\nPlease check that that path makes sense and that you have read \
                  permission along that path.\n",
                 ctl.gen_opt.refname
-            );
-            std::process::exit(1);
+            ));
         }
         let f = BufReader::new(fx.unwrap());
         let mut nheader = 0;
@@ -156,13 +151,12 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
                 nheader += 1;
                 let v: Vec<&str> = s.split_terminator('|').collect();
                 if v.len() < 4 {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe header line\n{}\nin the FASTA file specified by\nREF={}\n\
                         does not have the required structure for a cellranger or \
                         enclone VDJ reference.",
                         s, ctl.gen_opt.refname,
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             } else {
                 for c in s.chars() {
@@ -180,8 +174,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
             }
         }
         if nheader == 0 || bases == 0 || (na + nc + ng + nt) as f64 / (bases as f64) < 0.95 {
-            eprintln!("\nProblem with REF: it is not a FASTA file.\n");
-            std::process::exit(1);
+            return Err(format!("\nProblem with REF: it is not a FASTA file.\n"));
         }
     }
 
@@ -206,7 +199,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
         if refs.len() > 0 {
             unique_sort(&mut refs);
             if refs.len() > 1 {
-                eprintln!(
+                return Err(format!(
                     "The VDJ reference sequences that were supplied to Cell Ranger are not \
                     identical with each other.\nAs a consequence, the VDJ output files are not \
                     compatible with each other, so enclone can't run.\nYou have some options as \
@@ -215,17 +208,15 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
                     2. You can select one of the references, and supply that to enclone using the \
                     REF option.\n   You will also need to supply the argument RE to get enclone to \
                     recompute annotations,\n   and that will make it somewhat slower.\n\n"
-                );
-                std::process::exit(1);
+                ));
             }
             if ctl.gen_opt.mouse {
-                eprintln!(
+                return Err(format!(
                     "\nSince the reference sequence is already in the VDJ input directories that\n\
                     you supplied to enclone, it is not necessary to supply the MOUSE argument.\n\
                     Please remove that argument.  Exiting now because of possible unintended\n\
                     consequences.\n"
-                );
-                std::process::exit(1);
+                ));
             }
             *refx = refs[0].clone();
         }
@@ -315,13 +306,13 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
         }
     }
     if refx.len() == 0 && jsonx.len() > 0 {
-        eprintln!(
+        return Err(format!(
             "\nenclone was unable to determine the reference sequence that you used.  You \
             have two options:\n\
             1. If you used cellranger version 4.0 or later, copy the vdj_reference directory\n   \
                from there to the outs directory that contains your other enclone input data.\n\
             2. Use the REF argument to specify the name of the reference fasta file.\n",
-        );
-        std::process::exit(1);
+        ));
     }
+    Ok(())
 }
