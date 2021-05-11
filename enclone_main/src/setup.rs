@@ -23,7 +23,11 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
+pub fn setup(
+    mut ctl: &mut EncloneControl,
+    args: &Vec<String>,
+    argsx: &mut Vec<String>,
+) -> Result<(), String> {
     let t = Instant::now();
     // Provide help if requested.
 
@@ -93,6 +97,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
             ));
         }
         erase_if(&mut args, &to_delete);
+        *argsx = args.clone();
         if args.len() == 1 || args.contains(&"help".to_string()) {
             PrettyTrace::new().on();
             setup_pager(!nopager && !ctl.gen_opt.profile && !ctl.gen_opt.toy_com);

@@ -347,6 +347,7 @@ fn test_exit() {
     let exit_free_crates = [
         "enclone_args",
         "enclone_core",
+        "enclone_help",
         "enclone_main",
         "enclone_print",
         "enclone_proto",

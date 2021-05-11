@@ -29,7 +29,10 @@ fn main() {
         .output()
         .expect(&format!("failed to execute enclone"));
     if new.status.code() != Some(0) {
-        panic!();
+        eprintln!("\nbuild_help_pages failed");
+        eprintln!("stdout = {}", strme(&new.stdout));
+        eprintln!("stderr = {}\n", strme(&new.stderr));
+        std::process::exit(1);
     }
     let mut f = open_for_write_new!["pages/auto/help.setup.html"];
     fwrite!(f, "{}", strme(&new.stdout));

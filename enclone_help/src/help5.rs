@@ -708,12 +708,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.dump();
 
     // Catch unrecognized help requests.
-    } else if args.len() >= 2 {
+    } else if args.len() >= 2 && !h.ok {
         let mut x = args[1].clone();
         x.make_ascii_lowercase();
         if x.contains("help") {
             return Err(format!(
-                "\nYour help request doesn't match one known to enclone.\nn\
+                "\nYour help request doesn't match one known to enclone.\n\
                 Please type \"enclone\" to see the help options.\n"
             ));
         }

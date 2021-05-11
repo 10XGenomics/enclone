@@ -162,11 +162,12 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");
-    setup(&mut ctl, &args)?;
+    let mut argsx = Vec::<String>::new();
+    setup(&mut ctl, &args, &mut argsx)?;
     if ctl.gen_opt.split {
         return Ok(());
     }
-    if args.len() == 1 || (args.len() > 1 && args[1] == "help") {
+    if argsx.len() == 1 || (argsx.len() > 1 && argsx[1] == "help") {
         return Ok(());
     }
 

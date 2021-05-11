@@ -19,6 +19,7 @@ pub struct HelpDesk {
     pub rows: Vec<Vec<String>>,
     pub log: Vec<u8>,
     pub title: String,
+    pub ok: bool,
 }
 
 impl HelpDesk {
@@ -31,6 +32,7 @@ impl HelpDesk {
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
             title: String::new(),
+            ok: false,
         }
     }
     pub fn doc(&mut self, x1: &str, x2: &str) {
@@ -238,8 +240,8 @@ impl HelpDesk {
     pub fn end_doc(&mut self) {
         if !self.help_all {
             self.dump();
-            std::process::exit(0);
         }
+        self.ok = true;
     }
     pub fn print_with_box(&mut self, x: &str, bold_box: bool) -> Result<(), String> {
         let y = print_to(x);
