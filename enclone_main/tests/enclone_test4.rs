@@ -345,6 +345,7 @@ fn test_rust_version() {
 fn test_exit() {
     PrettyTrace::new().on();
     let exit_free_crates = [
+        "enclone",
         "enclone_args",
         "enclone_core",
         "enclone_help",

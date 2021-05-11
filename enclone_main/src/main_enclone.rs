@@ -394,7 +394,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     // Look for barcode reuse.
 
-    check_for_barcode_reuse(&ctl, &tig_bc);
+    check_for_barcode_reuse(&ctl, &tig_bc)?;
     ctl.perf_stats(&tproto, "in proto stuff");
 
     // Find exact subclonotypes.
