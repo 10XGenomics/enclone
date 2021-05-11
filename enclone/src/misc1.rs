@@ -158,7 +158,6 @@ pub fn lookup_heavy_chain_reuse(
             "\nused {:.2} seconds in heavy chain reuse calculation\n",
             elapsed(&t)
         );
-        std::process::exit(0);
     }
 }
 

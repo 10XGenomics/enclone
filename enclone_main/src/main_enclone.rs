@@ -579,6 +579,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     // Lookup for heavy chain reuse (special purpose experimental option).
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
+    if ctl.gen_opt.heavy_chain_reuse {
+        return Ok(());
+    }
     ctl.perf_stats(&txxx, "in some odds and ends");
 
     // Filter B cells based on UMI counts.
