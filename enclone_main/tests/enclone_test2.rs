@@ -521,6 +521,10 @@ fn test_for_broken_links_and_spellcheck() {
     let unreliable_links = include_str!("../../pages/unreliable_links")
         .split('\n')
         .collect::<Vec<&str>>();
+    let archived_links = [
+        "http://www.bioinf.org.uk/abs/info.html#martinnum",
+        "http://opig.stats.ox.ac.uk/webapps/stcrdab",
+    ];
 
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
@@ -766,6 +770,15 @@ fn test_for_broken_links_and_spellcheck() {
                     }
                 }
                 if unreliable {
+                    continue;
+                }
+                let mut archived = false;
+                for l in archived_links.iter() {
+                    if *l == link {
+                        archived = true;
+                    }
+                }
+                if archived {
                     continue;
                 }
 
