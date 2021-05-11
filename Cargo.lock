@@ -861,6 +861,7 @@ dependencies = [
  "rayon",
  "regex",
  "serde_json",
+ "stats_utils",
  "string_utils",
  "tilde-expand",
  "vdj_ann",
