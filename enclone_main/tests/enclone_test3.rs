@@ -607,9 +607,9 @@ fn test_subset_json() {
         std::fs::create_dir_all("testx/outputs/woof").unwrap();
         let test;
         if pass == 1 {
-            test = r###"BCR=123085,123089 BUILT_IN CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+            test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
         } else {
-            test = r###"BCR=140703,140704 BUILT_IN CDR3=CARGGALYSSSASYYYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+            test = r###"BCR=140703,140704 BUILT_IN CDR3=CARGGALYSSSASYYYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json NOPRINT POUT=stdout PCOLS=n,nchains"###;
         }
         /*
         let pre_arg = format!(
@@ -635,9 +635,15 @@ fn test_subset_json() {
             std::process::exit(1);
         }
         let o1 = new.stdout;
+        let mut args = vec!["BCR=testx/outputs/woof".to_string()];
+        if pass == 2 {
+            args.push("BUILT_IN".to_string());
+            args.push("NOPRINT".to_string());
+            args.push("POUT=stdout".to_string());
+            args.push("PCOLS=n,nchains".to_string());
+        }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-            .arg("BCR=testx/outputs/woof")
-            .arg("BUILT_IN")
+            .args(&args)
             .output()
             .expect(&format!(
                 "failed to execute test_subset_json 2, pass = {}",
