@@ -298,7 +298,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     test_sec_mem(&mut ctl)?;
     ctl.perf_stats(&tr, "building reference and other things");
     if ctl.gen_opt.using_secmem {
-        fetch_secmem(&mut ctl);
+        fetch_secmem(&mut ctl)?;
     }
 
     // Parse the json annotations file.

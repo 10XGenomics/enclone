@@ -32,7 +32,7 @@ pub fn reverse_complement(x: &mut Vec<u8>) {
     }
 }
 
-pub fn fetch_secmem(ctl: &mut EncloneControl) {
+pub fn fetch_secmem(ctl: &mut EncloneControl) -> Result<(), String> {
     // Define the CH3 exon boundaries, and the sequences that could follow it, both in
     // GRCh38 or GRCm38 coordinates.
 
@@ -181,8 +181,7 @@ pub fn fetch_secmem(ctl: &mut EncloneControl) {
                     } else if x == b'D' {
                         ref_pos += n;
                     } else {
-                        eprintln!("\nUnexpected character in cigar string.\n");
-                        std::process::exit(1);
+                        return Err(format!("\nUnexpected character in cigar string.\n"));
                     }
                 }
 
@@ -247,4 +246,5 @@ pub fn fetch_secmem(ctl: &mut EncloneControl) {
         }
         ctl.origin_info.secmem.push(h);
     }
+    Ok(())
 }
