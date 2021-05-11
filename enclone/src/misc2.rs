@@ -418,7 +418,7 @@ pub fn find_exact_subclonotypes(
     }
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         println!("");
-        std::process::exit(0);
+        return Vec::new();
     }
     if !ctl.silent {
         println!(
@@ -532,7 +532,6 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
             i = j;
         }
         println!("");
-        std::process::exit(0);
     }
 }
 

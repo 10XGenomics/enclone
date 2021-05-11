@@ -363,6 +363,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     // Search for SHM indels.
 
     search_for_shm_indels(&ctl, &tig_bc);
+    if ctl.gen_opt.indels {
+        return Ok(());
+    }
 
     // Record fate of non-cells.
 
@@ -398,6 +401,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     let texact = Instant::now();
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
+    if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
+        return Ok(());
+    }
     ctl.perf_stats(&texact, "finding exact subclonotypes");
 
     // Test for consistency between VDJ cells and GEX cells.
