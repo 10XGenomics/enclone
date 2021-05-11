@@ -28,6 +28,14 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), Str
     // Provide help if requested.
 
     {
+        for i in 2..args.len() {
+            if args[i] == "help" {
+                return Err(format!(
+                    "\nThe help argument, if used, must be the first argument \
+                    to enclone.\n"
+                ));
+            }
+        }
         let mut args = args.clone();
         let mut to_delete = vec![false; args.len()];
         let mut nopager = false;

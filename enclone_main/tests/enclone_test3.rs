@@ -271,17 +271,19 @@ fn test_help_output() {
         }
         let out_file = format!("../pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
-        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-        let mut new = new.arg("HTML");
+        let mut args = Vec::<String>::new();
         if *p == "setup" {
-            new = new.arg("help");
+            args.push("help".to_string());
         } else if *p == "main" {
         } else {
-            new = new.arg("help");
-            new = new.arg(p);
+            args.push("help".to_string());
+            args.push(p.to_string());
         }
-        new = new.arg("STABLE_DOC");
-        new = new.arg("NOPAGER");
+        args.push("HTML".to_string());
+        args.push("STABLE_DOC".to_string());
+        args.push("NOPAGER".to_string());
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
+        let new = new.args(&args);
         let new = new
             .arg("FORCE_EXTERNAL")
             .output()

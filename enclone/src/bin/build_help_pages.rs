@@ -23,9 +23,9 @@ fn main() {
     let mut f = open_for_write_new!["pages/auto/help.main.html"];
     fwrite!(f, "{}", strme(&new.stdout));
     let new = Command::new("target/debug/enclone")
+        .arg("help")
         .arg("HTML")
         .arg("STABLE_DOC")
-        .arg("help")
         .output()
         .expect(&format!("failed to execute enclone"));
     if new.status.code() != Some(0) {
