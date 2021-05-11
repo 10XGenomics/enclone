@@ -622,7 +622,10 @@ fn test_subset_json() {
             // .arg(&pre_arg)
             .args(&args)
             .output()
-            .expect(&format!("failed to execute test_subset_json 1, pass = {}", pass));
+            .expect(&format!(
+                "failed to execute test_subset_json 1, pass = {}",
+                pass
+            ));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 1, pass = {}: failed to execute, stderr =\n{}",
@@ -636,7 +639,10 @@ fn test_subset_json() {
             .arg("BCR=testx/outputs/woof")
             .arg("BUILT_IN")
             .output()
-            .expect(&format!("failed to execute test_subset_json 2, pass = {}", pass));
+            .expect(&format!(
+                "failed to execute test_subset_json 2, pass = {}",
+                pass
+            ));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 2, pass = {}: failed to execute, stderr =\n{}",
@@ -647,7 +653,10 @@ fn test_subset_json() {
         }
         let o2 = new.stdout;
         if o1 != o2 {
-            eprintln!("\nSubset json test failed: outputs are unequal, pass = {}.\n", pass);
+            eprintln!(
+                "\nSubset json test failed: outputs are unequal, pass = {}.\n",
+                pass
+            );
             eprintln!("output 1:\n{}\n", strme(&o1));
             eprintln!("output 2:\n{}\n", strme(&o2));
             std::process::exit(1);
