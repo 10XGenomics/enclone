@@ -7,18 +7,18 @@ use tables::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
+pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide input_tech help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || h.help_all {
-        h.begin_doc("input_tech");
-        h.print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
+        h.begin_doc("input_tech")?;
+        h.print("\n\\bold{information about providing input to enclone (technical notes)}\n\n")?;
         h.print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
-        );
+        )?;
         h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
         h.ldoc("vdj_reference/fasta/regions.fa", "VDJ");
@@ -26,25 +26,25 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.ldoc("raw_feature_bc_matrix.h5", "GEX");
         h.ldoc("analysis/clustering/graphclust/clusters.csv", "GEX");
         h.ldoc("analysis/pca/10_components/projection.csv", "GEX");
-        h.print_tab2();
+        h.print_tab2()?;
         h.print(
             "\nThe first file is required, and the second should be supplied if Cell Ranger \
             version 4.0 or greater was used.  The others are required, in the indicated \
             structure, if GEX or META/gex arguments are provided.  The exact files \
             that are used could be changed in the future.\n\n",
-        );
+        )?;
         h.print(
             "Note that the VDJ outs directories must be from Cell Ranger version \
              \\boldred{≥ 3.1}.  There \
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
-        );
+        )?;
         h.print(
             "Note also that running \"cellranger count\" using only feature barcodes (antibodies),
              with less than ten features, will not yield all the needed files.  You can work \
              around this by adding \"fake antibodies\", to the feature list, so as to pad out \
              the total number to ten.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -53,9 +53,9 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide parseable output help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || h.help_all {
-        h.begin_doc("parseable");
-        h.print("\n");
-        h.print("\\bold{parseable output}\n");
+        h.begin_doc("parseable")?;
+        h.print("\n")?;
+        h.print("\\bold{parseable output}\n")?;
         h.print(
             "\nThe standard output of enclone is designed to be read by humans, but is not \
              readily parseable by computers.  We supplement this with parseable output that can \
@@ -67,7 +67,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \
              Parseable output is targeted primarily at R and Python users, because of the ease of \
              wrangling CSV files with these languages.\n\n",
-        );
+        )?;
         h.print_with_box(
             "Parseable output is invoked by using the argument\n\
              \\bold{POUT=filename}\n\
@@ -89,21 +89,21 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              where each xi is one of the field names shown below.\n\\boldred{This option reduces} \
              \\boldred{run time and memory usage, and prevents voluminous output.  Please use it!}",
             true,
-        );
+        )?;
         h.print(
             "Over time additional fields may be added and the order of fields may \
              change.\n\n",
-        );
+        )?;
         h.print(
             "There is an alternate parseable output mode in which one line is emitted for each \
              cell, rather then each exact subclonotype.  This mode is enabled by adding the \
              argument \\bold{PCELL} to the command line.  Each exact subclonotype then yields a \
              sequence of output lines that are identical except as noted below.\n\n",
-        );
+        )?;
         h.print(
             "If you want to completely suppress the generation of visual clonotypes, add \
              \\bold{NOPRINT} to the enclone command line.\n\n",
-        );
+        )?;
         h.print_with_box(
             "\\bold{FASTA output.}  This is a separate feature.  \
              To generate nucleotide FASTA output for each chain in each exact subclonotype, \
@@ -117,38 +117,38 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
              FASTA file.",
             true,
-        );
+        )?;
         h.print(
             "\\boldred{───────────────────────}\n\
              \\boldred{parseable output fields}\n\
              \\boldred{───────────────────────}\n\n",
-        );
+        )?;
         h.print(
             "See also \"enclone help lvars\", \"enclone help cvars\", and the inventory of all \
             variables at https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
-        );
+        )?;
         h.rows.clear();
-        h.print("\\bold{1. per clonotype group fields}\n\n");
+        h.print("\\bold{1. per clonotype group fields}\n\n")?;
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");
         h.ldoc("group_ncells", "total number of cells in the group");
         h.doc2("(cannot be used in linear conditions)");
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
 
         h.rows.clear();
-        h.print("\\bold{2. per clonotype fields}\n\n");
+        h.print("\\bold{2. per clonotype fields}\n\n")?;
         h.doc(
             "clonotype_id",
             "identifier of clonotype within the clonotype group = 0, 1, ...",
         );
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
 
         h.rows.clear();
         h.print(
             "\\bold{3. per chain fields, where <i> is 1,2,... (see above)\n\
              each of these has the same value for each exact clonotype}\n\n",
-        );
+        )?;
         h.ldoc(
             "var_indices_dna<i>",
             "DNA positions in chain that vary across the clonotype",
@@ -162,18 +162,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "DNA positions in chain that are constant across the \
              clonotype, but differ from the donor ref",
             60,
-        );
+        )?;
         h.docf2(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
              clonotype, all of these are comma-separated lists but differ from the donor ref",
             60,
-        );
-        h.print_tab2();
-        h.print("\n");
+        )?;
+        h.print_tab2()?;
+        h.print("\n")?;
 
         h.rows.clear();
-        h.print("\\bold{4. per exact subclonotype fields}\n\n");
+        h.print("\\bold{4. per exact subclonotype fields}\n\n")?;
         h.doc(
             "exact_subclonotype_id",
             "identifer of exact subclonotype = 1, 2, ...",
@@ -197,15 +197,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              See \"enclone help lvars\".",
             "\\ext",
         );
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
 
         h.rows.clear();
         h.print(
             "\\bold{5. per chain, per exact subclonotype fields, where <i> is 1,2,... \
              (see above)}\n\n",
-        );
-        h.print("[all apply to chain i of a particular exact clonotype]\n\n");
+        )?;
+        h.print("[all apply to chain i of a particular exact clonotype]\n\n")?;
         h.doc("vj_seq<i>", "DNA sequence of V..J");
         h.doc(
             "vj_seq_nl<i>",
@@ -239,8 +239,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "they are not in the default list.  See \"enclone help cvars\".",
             "\\ext",
         );
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
         h.end_doc();
     }
 
@@ -249,18 +249,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide filter help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || h.help_all {
-        h.begin_doc("filter");
+        h.begin_doc("filter")?;
 
         // intro
 
-        h.print("\n\\bold{clonotype filtering options}\n\n");
+        h.print("\n\\bold{clonotype filtering options}\n\n")?;
         h.print(
             "enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This \
             page describes filtering by clonotype.  \
             These options cause only certain clonotypes to be printed.  See also \
             \"enclone help special\", which describes other filtering options.  This page \
             also described scanning for feature enrichment.\n\n",
-        );
+        )?;
 
         // doc *CELLS
 
@@ -409,16 +409,16 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
 
         // print main table
 
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
 
         // footnote for CDR3
 
-        h.print("* Examples of how to specify CDR3:\n\n");
+        h.print("* Examples of how to specify CDR3:\n\n")?;
         h.print(
             "Two pattern types are allowed: either regular expressions, or \"Levenshtein \
             distance patterns\", as exhibited by examples below.\n\n",
-        );
+        )?;
         let mut rows = Vec::<Vec<String>>::new();
         rows.push(vec![
             "CDR3=CARPKSDYIIDAFDIW".to_string(),
@@ -446,17 +446,17 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        h.print(&format!("{}\n", log));
+        h.print(&format!("{}\n", log))?;
         h.print(
             "Note that double quotes should be used if the pattern \
              contains characters other than letters.\n\n",
-        );
+        )?;
         h.print(
             "A gentle introduction to regular expressions may be found at\n\
              https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise\n\
              specification for the regular expression version used by enclone may be found at\n\
              https://docs.rs/regex.\n\n",
-        );
+        )?;
 
         // linear conditions
 
@@ -494,7 +494,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              allow parentheses around variable names to prevent erroneous parsing, like this \
              (IGHV3-7_g) >= 1.  And something like that would need to be quoted on the command \
              line.\n\n",
-        );
+        )?;
 
         // bounds
 
@@ -509,29 +509,29 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              note that\n\\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
              filters by computing the mean across all cells in the clonotype.  See also \
              \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
-        );
+        )?;
         h.print(
             "If for a given clonotype and a given variable, not all values are specified (e.g. if \
                 for a user-specified variable, values are blank), then only the values that are \
                 specified are used in the computation of mean and max.  If no values are \
                 specified, then the condition fails.\n\n",
-        );
+        )?;
         h.print(
             "Similarly, to filter by the max across all cells in a clonotype, one may use\n\
              \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
              and otherwise as above.\n\n",
-        );
+        )?;
         h.print(
             "\\bold{Caution.}  Because of interactions between filters (including built-in \
             filters), the results of filtering can be counterintuitive.  In particular, cells \
             might be removed from a clonotype after a linear condition is applied, leading to \
             confusing results.\n\n",
-        );
+        )?;
         h.print(
             "For cell-exact variables (see \
             \\green{https://10xgenomics.github.io/enclone/pages/auto/variables.html)}, note \
             that linear conditions are applied to the cell version of the variable.\n\n",
-        );
+        )?;
 
         // feature scanning
 
@@ -572,7 +572,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             suffixed).  Ultimately the power of the scan is determined by having \"enough\" \
             cells in both the test and control sets, and in having those sets cleanly defined.\n\n\
             Currently feature scanning requires that each dataset have identical features.\n\n",
-        );
+        )?;
 
         // done
 
@@ -584,13 +584,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide amino help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || h.help_all {
-        h.begin_doc("amino");
+        h.begin_doc("amino")?;
         h.print(
             "\nThere is a complex per-chain column to the left of other \
              per-chain columns, defined by\n\
              \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
              in one combined ordered group, where each xi is one of:\n\n",
-        );
+        )?;
         h.doc("cdr1", "CDR1 sequence");
         h.doc("cdr2", "CDR2 sequence");
         h.doc("cdr3", "CDR3 sequence");
@@ -610,14 +610,14 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             reference sequence.  In such cases, even though you specify CDR1 or CDR2, they will \
             not be shown.",
             85,
-        );
+        )?;
         h.docf2(
             "",
             "3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header \
             line that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even \
             more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
             85,
-        );
+        )?;
         h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
@@ -638,18 +638,19 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "a-b",
             "amino acids numbered a through b (zero-based, inclusive)",
         );
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
         h.print(
             "Note that we compute positions in base space, and then divide by three to get \
              positions in amino acid space.  Thus it can happen that a position in amino acid \
              space is shown for both \\bold{var} and \\bold{share}.\n\n",
-        );
+        )?;
         h.print(
             "The default value for \\bold{AMINO} is \\bold{cdr3,var,share,donor}.  \
              Note that we only report amino acids that are strictly within V..J, \
              thus specifically excluding the codon bridging J and C.\n\n",
-        );
+        )?;
         h.end_doc();
     }
+    Ok(())
 }

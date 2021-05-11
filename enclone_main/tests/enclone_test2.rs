@@ -8,12 +8,12 @@
 // 3. speed test (feature = cpu), requires non-public datasets.
 
 use ansi_escape::*;
-use enclone::html::*;
-use enclone_core::run_test::*;
 use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_tools::html::*;
+use enclone_tools::run_test::*;
 use failure::Error;
 use flate2::read::GzDecoder;
 use io_utils::*;
@@ -514,13 +514,23 @@ fn test_for_broken_links_and_spellcheck() {
     use std::time::Duration;
 
     // Set up link exceptions.  These are links that have been observed to break periodically.
-    // The web.archive.org one is probably just too slow, and we should allow for that rather
+    // The web.archive.org ones are probably just too slow, and we should allow for that rather
     // than have it on the unreliable list.  The "period" version is because of a parsing bug.
     // See also the test in ./test.
 
     let unreliable_links = include_str!("../../pages/unreliable_links")
         .split('\n')
         .collect::<Vec<&str>>();
+
+    // Set up list of archived links.  These are broken a lot and we have archived versions, so
+    // we don't test these at all.  If we determine that they're permanently broken, we should
+    // do something different.
+
+    let archived_links = [
+        "http://www.bioinf.org.uk/abs/info.html#martinnum",
+        "http://opig.stats.ox.ac.uk/webapps/stcrdab",
+        "http://www.imgt.org",
+    ];
 
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
@@ -766,6 +776,15 @@ fn test_for_broken_links_and_spellcheck() {
                     }
                 }
                 if unreliable {
+                    continue;
+                }
+                let mut archived = false;
+                for l in archived_links.iter() {
+                    if *l == link {
+                        archived = true;
+                    }
+                }
+                if archived {
                     continue;
                 }
 

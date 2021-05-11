@@ -51,7 +51,7 @@ pub fn proc_cvar1(
     _rtot: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
-) -> bool {
+) -> Result<bool, String> {
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
@@ -273,7 +273,7 @@ pub fn proc_cvar1(
     {
         if !ex.share[mid].left {
             cvar_stats1![j, var, "".to_string()];
-            return true;
+            return Ok(true);
         }
         let mut scores = Vec::<f64>::new();
         let mut ds = Vec::<Vec<usize>>::new();
@@ -391,12 +391,11 @@ pub fn proc_cvar1(
                     }
                 }
                 if !found {
-                    eprintln!(
+                    return Err(format!(
                         "\nInternal error, failed to find {}, CDR3 = {}.\n",
                         strme(&dna),
                         x.cdr3_aa
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if *var == "cdr1_dna".to_string() {
                     y = stringme(&dna);
@@ -477,12 +476,11 @@ pub fn proc_cvar1(
                     }
                 }
                 if !found {
-                    eprintln!(
+                    return Err(format!(
                         "\nInternal error, failed to find {}, CDR3 = {}.\n",
                         strme(&dna),
                         x.cdr3_aa
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if *var == "cdr2_dna".to_string() {
                     y = stringme(&dna);
@@ -557,12 +555,11 @@ pub fn proc_cvar1(
                 }
             }
             if !found {
-                eprintln!(
+                return Err(format!(
                     "\nInternal error, failed to find {}, CDR3 = {}.\n",
                     strme(&dna),
                     x.cdr3_aa
-                );
-                std::process::exit(1);
+                ));
             }
             y = stringme(&aa_seq(&dna, 0));
         }
@@ -605,12 +602,11 @@ pub fn proc_cvar1(
                 }
             }
             if !found {
-                eprintln!(
+                return Err(format!(
                     "\nInternal error, failed to find {}, CDR3 = {}.\n",
                     strme(&dna),
                     x.cdr3_aa
-                );
-                std::process::exit(1);
+                ));
             }
             if *var == "fwr1_dna".to_string() {
                 y = stringme(&dna);
@@ -664,12 +660,11 @@ pub fn proc_cvar1(
                 }
             }
             if !found {
-                eprintln!(
+                return Err(format!(
                     "\nInternal error, failed to find {}, CDR3 = {}.\n",
                     strme(&dna),
                     x.cdr3_aa
-                );
-                std::process::exit(1);
+                ));
             }
             if *var == "fwr2_dna".to_string() {
                 y = stringme(&dna);
@@ -724,12 +719,11 @@ pub fn proc_cvar1(
                 }
             }
             if !found {
-                eprintln!(
+                return Err(format!(
                     "\nInternal error, failed to find {}, CDR3 = {}.\n",
                     strme(&dna),
                     x.cdr3_aa
-                );
-                std::process::exit(1);
+                ));
             }
             if *var == "fwr3_dna".to_string() {
                 y = stringme(&dna);
@@ -900,7 +894,7 @@ pub fn proc_cvar1(
             cvar_stats1![j, *var, "_".to_string()];
         }
     } else {
-        return false;
+        return Ok(false);
     }
-    return true;
+    Ok(true)
 }

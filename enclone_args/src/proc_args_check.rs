@@ -63,7 +63,12 @@ pub fn is_pattern(x: &String, parseable: bool) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String>, category: &str) {
+fn check_gene_fb(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    to_check: &Vec<String>,
+    category: &str,
+) -> Result<(), String> {
     let g_ends0 = ["_g"];
     let fb_ends0 = ["_ab", "_cr", "_cu"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
@@ -83,19 +88,18 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
         if !gex_info.have_gex && !gex_info.have_fb {
             if *x == "n_gex".to_string() || *x == "n_gex_cell".to_string() {
                 if category == "parseable" {
-                    eprintln!(
+                    return Err(format!(
                         "\nParseable field {} does not make sense because neither gene expression \
                          nor feature barcode data\nwere provided as input.\n",
                         x
-                    );
+                    ));
                 } else {
-                    eprintln!(
+                    return Err(format!(
                         "\nLead variable {} does not make sense because neither gene expression \
                          not feature barcode data\nwere provided as input.\n",
                         x
-                    );
+                    ));
                 }
-                std::process::exit(1);
             }
         }
         if !gex_info.have_gex {
@@ -115,38 +119,36 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 || *x == "cred_cell".to_string()
             {
                 if category == "parseable" {
-                    eprintln!(
+                    return Err(format!(
                         "\nParseable field {} does not make sense because gene expression \
                          data\nwere not provided as input.\n",
                         x
-                    );
+                    ));
                 } else {
-                    eprintln!(
+                    return Err(format!(
                         "\nLead variable {} does not make sense because gene expression \
                          data\nwere not provided as input.\n",
                         x
-                    );
+                    ));
                 }
-                std::process::exit(1);
             }
         }
         if !gex_info.have_fb {
             for y in fb_ends.iter() {
                 if x.ends_with(y) {
                     if category == "parseable" {
-                        eprintln!(
+                        return Err(format!(
                             "\nParseable field {} does not make sense because feature \
                              barcode data\nwere not provided as input.\n",
                             x
-                        );
+                        ));
                     } else {
-                        eprintln!(
+                        return Err(format!(
                             "\nLead variable {} does not make sense because feature barcode \
                              data\nwere not provided as input.\n",
                             x
-                        );
+                        ));
                     }
-                    std::process::exit(1);
                 }
             }
         }
@@ -155,9 +157,9 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
     // Get known features.  This code is inefficient.
 
     let mut known_features = Vec::<String>::new();
-    let mut results = Vec::<(usize, Vec<String>)>::new();
+    let mut results = Vec::<(usize, Vec<String>, String)>::new();
     for i in 0..gex_info.gex_features.len() {
-        results.push((i, Vec::<String>::new()));
+        results.push((i, Vec::<String>::new(), String::new()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -165,9 +167,12 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             let f = &gex_info.gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
             if ff.len() != 3 {
-                eprintln!("Unexpected structure of features file, at this line\n{}", f);
-                eprintln!("Giving up.\n");
-                std::process::exit(1);
+                res.2 = format!(
+                    "\nUnexpected structure of features file, at this line\n{}\n\
+                    Giving up.\n",
+                    f
+                );
+                return;
             }
             for z in 0..2 {
                 if ff[2].starts_with("Antibody") {
@@ -190,6 +195,11 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             }
         }
     });
+    for i in 0..results.len() {
+        if results[i].2.len() > 0 {
+            return Err(results[i].2.clone());
+        }
+    }
     for i in 0..results.len() {
         known_features.append(&mut results[i].1.clone());
     }
@@ -240,12 +250,11 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 let msg = "\nSuggested reading: \"enclone help input\" and \
                            \"enclone help glossary\".\n";
                 if !is_dataset_name && !is_origin_name && !is_donor_name && !is_tag_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          does not name a dataset, nor an origin,\nnor a donor, nor a tag.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 let mut types = 0;
                 if is_dataset_name {
@@ -261,45 +270,40 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                     types += 1;
                 }
                 if is_dataset_name && is_origin_name && is_donor_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          names a dataset, an origin, and a donor.  That's ambiguous.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if is_dataset_name && is_origin_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          names a dataset and an origin.  That's ambiguous.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if is_dataset_name && is_donor_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          names a dataset and a donor.  That's ambiguous.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if is_origin_name && is_donor_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          names an origin and a donor.  That's ambiguous.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if types != 1 {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've used the {} variable {}, and yet {} \
                          names a tag and also a dataset, origin or donor.\n\
                          That's ambiguous.\n{}",
                         category, x, name, msg
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             if !n_var {
@@ -307,30 +311,34 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                     if x == "" {
                         continue;
                     }
-                    eprintln!(
+                    return Err(format!(
                         "\nThe variable {} for LVARS is unrecognized.  Please type \
                          \"enclone help lvars\".\n",
                         x
-                    );
+                    ));
                 } else {
-                    eprintln!(
+                    return Err(format!(
                         "\nUnrecognized parseable variable {}.  Please type \
                          \"enclone help parseable\".\nIf the variable is a chain variable (cvar), \
                         please make sure it is suffixed with the chain index.\n",
                         x
-                    );
+                    ));
                 }
-                std::process::exit(1);
             }
         }
     }
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Check pcols args.
 
-pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>) {
+pub fn check_pcols(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    cols: &Vec<String>,
+) -> Result<(), String> {
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -345,7 +353,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
     for x in cols.iter() {
         let mut ok = false;
         // Note that the following test is probably redundant with some of the testing below.
-        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, false) {
+        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, false)? {
             ok = true;
         }
         for i in 0..ctl.gen_opt.info_fields.len() {
@@ -387,20 +395,18 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
 
         if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
-            eprintln!(
+            return Err(format!(
                 "\nCan't use parseable variable {} without having gene \
                  expression or feature barcode data.\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
         if !gex_info.have_gex && (x.starts_with("gex") || x == "clust") || x == "type" {
-            eprintln!(
+            return Err(format!(
                 "\nCan't use parseable variable {} without having gene \
                  expression data.\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
@@ -443,15 +449,16 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
         }
     }
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_info, &to_check, "parseable");
+        check_gene_fb(&ctl, &gex_info, &to_check, "parseable")?;
     }
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Check cvars args.
 
-pub fn check_cvars(ctl: &EncloneControl) {
+pub fn check_cvars(ctl: &EncloneControl) -> Result<(), String> {
     for x in ctl.clono_print_opt.cvars.iter() {
         let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
         if x.starts_with("ndiff")
@@ -475,14 +482,14 @@ pub fn check_cvars(ctl: &EncloneControl) {
             ok = true;
         }
         if !ok {
-            eprintln!(
+            return Err(format!(
                 "\nUnrecognized variable {} for CVARS or CVARSP.  \
                  Please type \"enclone help cvars\".\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
     }
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -494,10 +501,10 @@ pub fn check_one_lvar(
     nd_used: &mut bool,
     ends: &Vec<String>,
     is_lvar: bool,
-) -> bool {
+) -> Result<bool, String> {
     for i in 0..ctl.gen_opt.info_fields.len() {
         if *x == ctl.gen_opt.info_fields[i] {
-            return true;
+            return Ok(true);
         }
     }
 
@@ -511,15 +518,14 @@ pub fn check_one_lvar(
             }
         }
         if !ctl.gen_opt.internal_run && x != "" {
-            eprintln!(
+            return Err(format!(
                 "\nUnrecognized variable {} for LVARS or PCOLS.  Please type \
                  \"enclone help lvars\".\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         }
         if !specified {
-            eprintln!(
+            return Err(format!(
                 "\nYou've used the lead or parseable variable \"type\", but the file \
                 cell_types.csv was not found.\n\
                 This could be because you're using a GEX pipestance that was \
@@ -527,8 +533,7 @@ pub fn check_one_lvar(
                 Or it might have been generated using the CS pipeline.\n\
                 Or you might have copied the pipestance outs but not included \
                 that file.\n"
-            );
-            std::process::exit(1);
+            ));
         }
     }
 
@@ -537,7 +542,7 @@ pub fn check_one_lvar(
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
             if ctl.origin_info.alt_bc_fields[li][i].0 == x {
-                return true;
+                return Ok(true);
             }
         }
     }
@@ -549,11 +554,12 @@ pub fn check_one_lvar(
         && x.after("nd").force_usize() >= 1
     {
         if *nd_used {
-            eprintln!("\nOnly one instance of the lead variable nd<k> is allowed.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nOnly one instance of the lead variable nd<k> is allowed.\n"
+            ));
         }
         *nd_used = true;
-        return true;
+        return Ok(true);
     }
 
     // Check for [abbr:]count_<regex> and similar.
@@ -575,55 +581,52 @@ pub fn check_one_lvar(
         let y = x.after(&class);
         let reg = Regex::new(&y);
         if !reg.is_ok() {
-            eprintln!(
+            return Err(format!(
                 "\nThe string after {} in your lead or parseable variable {} is not a valid \
                 regular expression.\n",
                 class, x
-            );
-            std::process::exit(1);
+            ));
         }
-        return true;
+        return Ok(true);
     }
 
     // Check for pe<n> and npe<n> and ppe<n>.
 
     if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {
-        return true;
+        return Ok(true);
     }
     if x.starts_with("npe") && x.after("npe").parse::<usize>().is_ok() {
-        return true;
+        return Ok(true);
     }
     if x.starts_with("ppe") && x.after("ppe").parse::<usize>().is_ok() {
-        return true;
+        return Ok(true);
     }
 
     // Check for patterns.
 
     if is_pattern(&x.to_string(), false) {
-        return true;
+        return Ok(true);
     }
 
     // The rest.
 
     if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
-        eprintln!(
+        return Err(format!(
             "\nCan't use LVARS or LVARSP or PCOLS variable {} without having gene \
              expression or feature barcode data.\n",
             x
-        );
-        std::process::exit(1);
+        ));
     }
     if !gex_info.have_gex && (x.starts_with("gex") || x == "clust" || x == "type") {
-        eprintln!(
+        return Err(format!(
             "\nCan't use LVARS or LVARSP or PCOLS variable {} without having gene \
              expression data.\n",
             x
-        );
-        std::process::exit(1);
+        ));
     }
     let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
     if gpvar {
-        return true;
+        return Ok(true);
     }
     if !LVARS_ALLOWED.contains(&x) {
         let mut end_ok = false;
@@ -633,20 +636,19 @@ pub fn check_one_lvar(
             }
         }
         if end_ok {
-            return false;
+            return Ok(false);
         }
         if is_lvar && !x.starts_with("n_") && x != "" {
-            eprintln!(
+            return Err(format!(
                 "\nUnrecognized variable {} for LVARS.  Please type \
                  \"enclone help lvars\".\n",
                 x
-            );
-            std::process::exit(1);
+            ));
         } else {
-            return false;
+            return Ok(false);
         }
     }
-    return true;
+    Ok(true)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -669,37 +671,39 @@ pub fn build_ends() -> Vec<String> {
 
 // Check lvars args.
 
-pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
+pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) -> Result<(), String> {
     let t = Instant::now();
     let mut to_check = Vec::<String>::new();
     let ends = build_ends();
     let mut nd_used = false;
     for x in ctl.clono_print_opt.lvars.iter() {
         if x.ends_with("_cell") {
-            eprintln!("\nFields ending with _cell cannot be used in LVARS or LVARSP.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nFields ending with _cell cannot be used in LVARS or LVARSP.\n"
+            ));
         }
-        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, true) {
+        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, true)? {
             to_check.push(x.clone());
         }
     }
     ctl.perf_stats(&t, "checking lvars top");
     let t = Instant::now();
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_info, &to_check, "lead");
+        check_gene_fb(&ctl, &gex_info, &to_check, "lead")?;
     }
     ctl.perf_stats(&t, "checking gene");
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Check gvars args.
 
-pub fn check_gvars(ctl: &EncloneControl) {
+pub fn check_gvars(ctl: &EncloneControl) -> Result<(), String> {
     for x in ctl.gen_opt.gvars.iter() {
         if !GVARS_ALLOWED.contains(&x.as_str()) {
-            eprintln!("\nUnknown global variable {}.\n", x);
-            std::process::exit(1);
+            return Err(format!("\nUnknown global variable {}.\n", x));
         }
     }
+    Ok(())
 }

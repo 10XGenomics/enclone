@@ -26,7 +26,7 @@ pub fn test_vdj_gex_inconsistent(
     exact_clonotypes: &Vec<ExactClonotype>,
     vdj_cells: &Vec<Vec<String>>,
     gex_info: &GexInfo,
-) {
+) -> Result<(), String> {
     let tinc = Instant::now();
 
     let mut results = Vec::<(usize, String)>::new();
@@ -118,17 +118,15 @@ pub fn test_vdj_gex_inconsistent(
         for i in 0..results.len() {
             eprint!("{}", results[i].1);
         }
-        eprintln!(
+        return Err(format!(
             "\nThis test is restricted to VDJ cells having both chain types, uses at most \
             one cell\nper exact subclonotype, and uses up to 100 cells having the highest \
-            UMI counts."
-        );
-        eprintln!(
-            "\nThe data suggest a laboratory or informatic mixup.  If you believe \
+            UMI counts.\n\
+            \nThe data suggest a laboratory or informatic mixup.  If you believe \
             that this is not the case,\nyou can force enclone to run by adding \
             the argument ALLOW_INCONSISTENT to the command line.\n"
-        );
-        std::process::exit(1);
+        ));
     }
     ctl.perf_stats(&tinc, "testing for inconsistency");
+    Ok(())
 }

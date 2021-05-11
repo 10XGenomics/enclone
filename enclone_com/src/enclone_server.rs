@@ -83,7 +83,7 @@ pub async fn enclone_server(
 
                 // Make plot.
 
-                plot_clonotypes(
+                let res = plot_clonotypes(
                     &ctl,
                     &plot_opt,
                     &refdata,
@@ -92,6 +92,10 @@ pub async fn enclone_server(
                     &groups,
                     &mut svg,
                 );
+                if res.is_err() {
+                    eprintln!("{}", res.unwrap_err());
+                    std::process::exit(1);
+                }
                 let svg_bytes = svg.as_bytes().to_vec();
                 msg = pack_object(ENCLONE_SUBCHANNEL, "svg", &svg_bytes);
             } else {

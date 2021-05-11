@@ -13,8 +13,7 @@ use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::fs::File;
-use std::io::Write;
-use std::io::*;
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -176,14 +175,13 @@ pub fn plot_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
-) {
+) -> Result<(), String> {
     let t = Instant::now();
     if plot_opt.plot_file.is_empty() {
-        return;
+        return Ok(());
     }
     if exacts.is_empty() {
-        eprintln!("\nThere are no clonotypes to plot, giving up.\n");
-        std::process::exit(1);
+        return Err(format!("\nThere are no clonotypes to plot, giving up.\n"));
     }
 
     let mut const_names = Vec::<String>::new();
@@ -195,21 +193,19 @@ pub fn plot_clonotypes(
     unique_sort(&mut const_names);
     if plot_opt.plot_by_isotype_color.len() > 0 {
         if const_names.len() + 1 > plot_opt.plot_by_isotype_color.len() {
-            eprintln!(
+            return Err(format!(
                 "\nUsing the PLOT_BY_ISOTYPE_COLOR argument, you specified {} colors, \
                 but there are {} constant region\nnames, and one more color is needed for the \
                 \"undetermined\" case.  Please add more colors.\n",
                 plot_opt.plot_by_isotype_color.len(),
                 const_names.len()
-            );
-            std::process::exit(1);
+            ));
         }
     } else if plot_opt.plot_by_isotype && const_names.len() > 12 {
-        eprintln!(
+        return Err(format!(
             "\nCurrently PLOT_BY_ISOTYPE only works if there are at most 12 constant \
             region names.  If this is a problem, please let us know and we will generalize it.\n"
-        );
-        std::process::exit(1);
+        ));
     }
     let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize)>::new();
     let mut radii = Vec::<f64>::new();
@@ -365,63 +361,59 @@ pub fn plot_clonotypes(
             let s = line.unwrap();
             for c in s.chars() {
                 if c.is_control() || c == '\u{FEFF}' {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
                         nonprinting character.\n"
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             let fields = s.split(',').collect::<Vec<&str>>();
             if first {
                 let p = position(&fields, &"group_id");
                 if p < 0 {
-                    eprintln!("\nThe CLONOTYPE_GROUP_NAMES file does not have a group_id field.\n");
-                    std::process::exit(1);
+                    return Err(format!(
+                        "\nThe CLONOTYPE_GROUP_NAMES file does not have a group_id field.\n"
+                    ));
                 }
                 group_id_field = p as usize;
                 let p = position(&fields, &"new_group_name");
                 if p < 0 {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe CLONOTYPE_GROUP_NAMES file does not have a \
                          new_group_name field.\n"
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 new_group_name_field = p as usize;
                 first = false;
             } else {
                 let group_id = &fields[group_id_field];
                 if !group_id.parse::<usize>().is_ok() || group_id.force_usize() == 0 {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is not a \
                         positive integer.\n",
                         group_id
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 let group_id = group_id.force_usize() - 1;
                 if group_id > radii.len() {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is larger \
                         than the number of clonotypes, which is {}.\n",
                         group_id,
                         radii.len()
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 let new_group_name = fields[new_group_name_field].to_string();
                 if new_group_names[group_id].is_none() {
                     new_group_names[group_id] = Some(new_group_name.clone());
                 } else if *new_group_names[group_id].as_ref().unwrap() != new_group_name {
-                    eprintln!(
+                    return Err(format!(
                         "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is assigned \
                         the different new_group_names {} and {}.\n",
                         group_id,
                         new_group_names[group_id].as_ref().unwrap(),
                         new_group_name,
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
         }
@@ -923,14 +915,14 @@ pub fn plot_clonotypes(
     if plot_opt.plot_file != "stdout".to_string() {
         let f = File::create(&plot_opt.plot_file);
         if f.is_err() {
-            eprintln!(
+            return Err(format!(
                 "\nThe file {} in your PLOT argument could not be created.\n",
                 plot_opt.plot_file
-            );
-            std::process::exit(1);
+            ));
         }
         let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
     }
     ctl.perf_stats(&t, "building svg file");
+    Ok(())
 }

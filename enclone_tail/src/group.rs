@@ -26,8 +26,8 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::remove_file;
 use std::fs::File;
-use std::io::Write;
-use std::io::*;
+use std::io::stdout;
+use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::time::Instant;
 use string_utils::*;
@@ -52,7 +52,7 @@ pub fn group_and_print_clonotypes(
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
-) {
+) -> Result<(), String> {
     // Build index to join info.
 
     let t = Instant::now();
@@ -440,8 +440,7 @@ pub fn group_and_print_clonotypes(
                 }
                 if !ok {
                     logx.append(&mut b"consistency test failed\n".to_vec());
-                    println!("{}", strme(&logx));
-                    std::process::exit(1);
+                    return Err(format!("{}", strme(&logx)));
                 }
             }
 
@@ -774,7 +773,7 @@ pub fn group_and_print_clonotypes(
             yvar = format!("log10({})", yvar);
         }
         let filename = ctl.plot_opt.plot_xy_filename.clone();
-        plot_points(&plot_xy_vals, &xvar, &yvar, &filename);
+        plot_points(&plot_xy_vals, &xvar, &yvar, &filename)?;
         if filename == "stdout" {
             let f = open_for_read!["stdout"];
             for line in f.lines() {
@@ -854,7 +853,7 @@ pub fn group_and_print_clonotypes(
         &exact_clonotypes,
         &groups,
         &mut svg,
-    );
+    )?;
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
@@ -867,6 +866,7 @@ pub fn group_and_print_clonotypes(
 
     // Test requirements.
 
-    test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain);
+    test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain)?;
     ctl.perf_stats(&t, "in group code 2");
+    Ok(())
 }

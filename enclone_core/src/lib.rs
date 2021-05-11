@@ -2,7 +2,6 @@
 
 pub mod align_to_vdj_ref;
 pub mod allowed_vars;
-pub mod copy_for_enclone;
 pub mod defs;
 pub mod join_one;
 pub mod linear_condition;
@@ -10,7 +9,6 @@ pub mod mammalian_fixed_len;
 pub mod median;
 pub mod opt_d;
 pub mod print_tools;
-pub mod run_test;
 pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;

@@ -5,7 +5,7 @@ use io_utils::*;
 use std::process::Command;
 use vector_utils::*;
 
-pub fn test_sec_mem(ctl: &mut EncloneControl) {
+pub fn test_sec_mem(ctl: &mut EncloneControl) -> Result<(), String> {
     let is_bcr = !ctl.gen_opt.tcr;
 
     // Test for okness of sec/mem args.
@@ -48,27 +48,29 @@ pub fn test_sec_mem(ctl: &mut EncloneControl) {
     }
     if bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string()) {
         if ctl.gen_opt.species != "human" && ctl.gen_opt.species != "mouse" {
-            eprintln!("\nThe lvars sec and mem can only be used for data from human and mouse.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nThe lvars sec and mem can only be used for data from human and mouse.\n"
+            ));
         }
         if !is_bcr {
-            eprintln!("\nThe lvars sec and mem do not make sense for TCR data.\n");
-            std::process::exit(1);
+            return Err(format!(
+                "\nThe lvars sec and mem do not make sense for TCR data.\n"
+            ));
         }
         for g in ctl.origin_info.gex_path.iter() {
             if g.len() == 0 {
-                eprintln!("\nThe lvars sec and mem can only be used if GEX data are provided.\n");
-                std::process::exit(1);
+                return Err(format!(
+                    "\nThe lvars sec and mem can only be used if GEX data are provided.\n"
+                ));
             }
             let bam = format!("{}/possorted_genome_bam.bam", g);
             if !path_exists(&bam) {
-                eprintln!(
+                return Err(format!(
                     "\nThe lvars sec and mem can only be used if the file\n\
                     pos_sorted_genome_bam.bam is provided.  We did not see it at this path\n\
                     {}.",
                     g
-                );
-                std::process::exit(1);
+                ));
             }
         }
         let o = Command::new("samtools")
@@ -77,11 +79,11 @@ pub fn test_sec_mem(ctl: &mut EncloneControl) {
             .expect("failed to execute samtools");
         let status = o.status.code().unwrap();
         if status != 0 {
-            eprintln!(
+            return Err(format!(
                 "\nThe lvars sec and mem can only be used if the samtools\n\
                 executable is in your path.\n"
-            );
-            std::process::exit(1);
+            ));
         }
     }
+    Ok(())
 }

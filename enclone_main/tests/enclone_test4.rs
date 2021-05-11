@@ -86,7 +86,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.7520;
+    const REQUIRED_GI: f64 = 18.7898;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -332,5 +332,41 @@ fn test_rust_version() {
     if !version_found {
         eprintln!("\nFailed to find Rust version in .github/workflows/test.yaml.  Weird.\n");
         std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 33. Don't allow exit in code in some crates.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_exit() {
+    PrettyTrace::new().on();
+    let exit_free_crates = [
+        "enclone",
+        "enclone_args",
+        "enclone_core",
+        "enclone_help",
+        "enclone_main",
+        "enclone_print",
+        "enclone_proto",
+        "enclone_tail",
+    ];
+    for cname in exit_free_crates.iter() {
+        let files = dir_list(&format!("../{}/src", cname));
+        for f in files.iter() {
+            if f.ends_with(".rs") {
+                let g = open_for_read![&format!("../{}/src/{}", cname, f)];
+                for line in g.lines() {
+                    let s = line.unwrap();
+                    if s.contains("process::exit") {
+                        eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
     }
 }

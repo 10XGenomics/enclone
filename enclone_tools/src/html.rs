@@ -117,7 +117,7 @@ fn html_header(level: usize, title: &str, extra_head: &str) -> String {
 pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
     // Extract requirements for the big test from the file enclone.test.
 
-    let x = include_str!("enclone.test");
+    let x = include_str!("../../enclone/src/enclone.test");
     let mut required_fps = None;
     let mut required_cells = None;
     let mut required_donors = None;

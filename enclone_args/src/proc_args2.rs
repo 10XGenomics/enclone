@@ -12,113 +12,105 @@ use vector_utils::*;
 // Simple arguments.  We test for e.g. PLAIN or PLAIN=, the latter to allow for the case
 // where the argument has been set by an environment variable.
 
-pub fn is_simple_arg(arg: &str, x: &str) -> bool {
+pub fn is_simple_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x || arg == &format!("{}=", x) {
-        return true;
+        return Ok(true);
     } else if arg.starts_with(&format!("{}=", x)) {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}\".\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     }
-    return false;
+    Ok(false)
 }
 
 // Usize arguments.  We require that these are nonnegative integers.
 
-pub fn is_usize_arg(arg: &str, x: &str) -> bool {
+pub fn is_usize_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
         let val = arg.after(&format!("{}=", x)).parse::<usize>();
         if val.is_ok() {
-            return true;
+            return Ok(true);
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nYour command line includes \"{}\", which is not a valid argument.\n\
                  Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
                 arg, x
-            );
-            std::process::exit(1);
+            ));
         }
     }
-    return false;
+    Ok(false)
 }
 
 // Usize arguments.  We require that these are nonnegative integers.
 
-pub fn is_i32_arg(arg: &str, x: &str) -> bool {
+pub fn is_i32_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
         let val = arg.after(&format!("{}=", x)).parse::<i32>();
         if val.is_ok() {
-            return true;
+            return Ok(true);
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nYour command line includes \"{}\", which is not a valid argument.\n\
                  Perhaps you meant \"{}=n\", where n is an integer.\n",
                 arg, x
-            );
-            std::process::exit(1);
+            ));
         }
     }
-    return false;
+    Ok(false)
 }
 
-pub fn is_f64_arg(arg: &str, x: &str) -> bool {
+pub fn is_f64_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=n\", where n is a floating point number.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
         let val = arg.after(&format!("{}=", x)).parse::<f64>();
         if val.is_ok() {
-            return true;
+            return Ok(true);
         } else {
-            eprintln!(
+            return Err(format!(
                 "\nYour command line includes \"{}\", which is not a valid argument.\n\
                  Perhaps you meant \"{}=n\", where n is a floating point number.\n",
                 arg, x
-            );
-            std::process::exit(1);
+            ));
         }
     }
-    return false;
+    Ok(false)
 }
 
-pub fn is_string_arg(arg: &str, x: &str) -> bool {
+pub fn is_string_arg(arg: &str, x: &str) -> Result<bool, String> {
     if arg == x {
-        eprintln!(
+        return Err(format!(
             "\nYour command line includes \"{}\", which is not a valid argument.\n\
              Perhaps you meant \"{}=s\" for some string s.\n",
             arg, x
-        );
-        std::process::exit(1);
+        ));
     } else if arg.starts_with(&format!("{}=", x)) {
-        return true;
+        return Ok(true);
     }
-    return false;
+    Ok(false)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
+pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     let tall = Instant::now();
     let mut lvars_specified = false;
     for i in 1..args.len() {
@@ -130,11 +122,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         ctl.clono_print_opt.cvars.insert(0, "amino".to_string());
     }
     if ctl.gen_opt.mouse && ctl.gen_opt.refname.len() > 0 {
-        eprintln!(
+        return Err(format!(
             "\nIf you specify REF, please do not also specify MOUSE.  It is enough to\n\
              set REF to a mouse reference sequence.\n"
-        );
-        std::process::exit(1);
+        ));
     }
 
     // Remove "datasets" from lvars if there is only one dataset and LVARS not specified.
@@ -173,8 +164,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     while i < dp.len() {
         let j = next_diff(&dp, i);
         if j - i > 1 {
-            eprintln!("\nInput dataset path {} is duplicated.\n", dp[i]);
-            std::process::exit(1);
+            return Err(format!("\nInput dataset path {} is duplicated.\n", dp[i]));
         }
         i = j;
     }
@@ -236,4 +226,5 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     ctl.perf_stats(&tall, "in proc_args_tail");
+    Ok(())
 }

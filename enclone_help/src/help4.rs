@@ -7,14 +7,14 @@ use tables::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
+pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide special filtering help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "special") || h.help_all {
-        h.begin_doc("special");
-        h.print("\n\\bold{special filtering options}\n\n");
+        h.begin_doc("special")?;
+        h.print("\n\\bold{special filtering options}\n\n")?;
         h.print(
             "This page documents some options, most of which allow noise \
              filters to be turned off, and which normally should not be invoked.  Some of \
@@ -22,13 +22,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              SUMMARY option.  See also the lead variable \"filter\", see \
              \"enclone help lvars\".  At the bottom of this page we provide some other options \
              that are not noise filters.\n\n",
-        );
+        )?;
 
         h.docf2(
             "NALL",
             "Turn off all the noise filters shown below.  This may yield quite a mess.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -36,7 +36,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Use contigs found by Cell Ranger even if they were not in a called cell, \
             or not called high confidence.",
             55,
-        );
+        )?;
 
         h.doc(
             "NALL_CELL",
@@ -52,7 +52,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             default behavior of enclone is to remove such cells from clonotypes.  This \
             option disables that behavior.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -73,14 +73,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             this option, enclone defines an origin by the pair \
             (origin name, donor name).",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NUMI",
             "Filter out B cells based on low BCR UMI counts.  The heuristics",
             65,
-        );
+        )?;
 
         h.docpr(
             "",
@@ -104,7 +104,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             background mRNA or a phenotypically similar phenomenon.  The \
             NGRAPH_FILTER option turns off this filtering.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -115,7 +115,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             supported by other exact subclonotypes, are variant within the clonotype, \
             and which disagree with the donor reference.  NQUAL turns this off.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -124,7 +124,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             weak and appear to be artifacts, perhaps arising from a stray mRNA molecule \
             that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -136,7 +136,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
             this operation off.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -146,7 +146,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
             happen anyway.  The naming of this option is confusing.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -157,7 +157,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             from repeated cell doublets or GEMs that contain two cells and multiple gel \
             beads.  The argument NFOURSIE_KILL turns off this filtering.",
             65,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -167,7 +167,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
             The argument NDOUBLET turns off this filtering.",
             65,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -175,7 +175,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "By default, enclone filters out rare artifacts arising from contamination \
             of oligos on gel beads.  The NWHITEF option turns off this filter.",
             55,
-        );
+        )?;
 
         h.ldoc(
             "NBC_DUP",
@@ -197,7 +197,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             to find errors.  Use of the bc field for META input specification \
             automatically turns on this option.",
             55,
-        );
+        )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -206,7 +206,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             same type.  For example, the filter removes all exact subclonotypes having two TRA \
             chains and no other chains.  The NIMPROPER option turns off this filter.",
             55,
-        );
+        )?;
 
         // Documentation section.
 
@@ -217,7 +217,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             to \"purify\" a clonotype so as to display only exact subclonotypes having \
             all their chains.",
             55,
-        );
+        )?;
 
         h.doc(
             "CHAINS_EXACT=n",
@@ -240,14 +240,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
             55,
-        );
+        )?;
         h.docf2(
             "CONST_IGKL=\"<pattern>\"",
             "for BCR, keep only exact subclonotypes having a light chain whose constant region \
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
             55,
-        );
+        )?;
 
         // Documentation section.
 
@@ -264,7 +264,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             multiple filters.  See the examples below, and be very careful about syntax, \
             which should match the given examples exactly.  In particular,",
             55,
-        );
+        )?;
         h.doc2("• use == for equality, and not =");
         h.doc2("• put string values in single quotes");
         h.doc2("• put the entire expression in double quotes.");
@@ -290,8 +290,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         // Done.
 
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
         h.end_doc();
     }
 
@@ -300,14 +300,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
     // Function that provides an explanation used for both enclone help lvars and
     // enclone help cvars.
 
-    fn explain_alt_versions(h: &mut HelpDesk) {
+    fn explain_alt_versions(h: &mut HelpDesk) -> Result<(), String> {
         h.print(&format!(
             "{}",
             gray_left_bar(&print_to(
                 "\\red{●} These variables have some alternate versions, \
                  as shown in the table below.\n\n"
             ))
-        ));
+        ))?;
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
             "variable".to_string(),
@@ -412,7 +412,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         rows.push(row);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
-        h.print_plain(&format!("{}", gray_left_bar(&log)));
+        h.print_plain(&format!("{}", gray_left_bar(&log)))?;
         h.print_plain(&format!(
             "{}",
             gray_left_bar(&print_to(
@@ -431,7 +431,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
             ))
-        ));
+        ))?;
+        Ok(())
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -439,8 +440,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
     // Provide lvars help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || h.help_all {
-        h.begin_doc("lvars");
-        h.print("\n\\bold{lead column options}\n\n");
+        h.begin_doc("lvars")?;
+        h.print("\n\\bold{lead column options}\n\n")?;
         h.print(
             "These options define lead variables, which are variables that are computed for each \
              exact subclonotype, and if using the \\bold{PER_CELL} option, also computed for each \
@@ -451,15 +452,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              Note that for medians of integers, \
              we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
-        );
+        )?;
         h.print(
             "See also \"enclone help cvars\" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
-        );
+        )?;
         h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
-        );
+        )?;
         h.doc("nchains", "total number of chains in the clonotype");
         h.ldoc("datasets", "dataset identifiers");
         h.doc("origin", "origin identifiers");
@@ -629,12 +630,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             typically result in peculiar artifacts, so this should only be used as an \
             exploratory tool.",
             75,
-        );
-        h.print_tab2();
+        )?;
+        h.print_tab2()?;
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
-        );
+        )?;
         h.print(
             "● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches \
              all genes that begin with TRA or TRB.  Double quotes as in \\bold{LVARS=\"...\"} \
@@ -643,18 +644,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              expression if it contains a character in []()|*.  \
              See \"enclone help filter\" \
              for more information about regular expressions.\n\n",
-        );
-        explain_alt_versions(&mut h);
+        )?;
+        explain_alt_versions(&mut h)?;
         h.print(
             "\n\\blue{●} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
              and the x_mean etc. forms do not apply.\n\n",
-        );
+        )?;
         h.print(
             "The default is \\bold{datasets,n}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
-        );
-        h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
+        )?;
+        h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n")?;
         h.end_doc();
     }
 
@@ -663,7 +664,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
     // Provide cvars help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "cvars") || h.help_all {
-        h.begin_doc("cvars");
+        h.begin_doc("cvars")?;
 
         // Header.
 
@@ -673,16 +674,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              have one entry for each exact subclonotype.  Please note that for medians of \
              integers, we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
-        );
+        )?;
         h.print(
             "See also \"enclone help lvars\" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
-        );
+        )?;
         h.print(
             "Per-column variables are specified using\n\
              \\bold{CVARS=x1,...,xn}\n\
              where each xi is one of:\n\n",
-        );
+        )?;
 
         // Main table entries.
 
@@ -931,13 +932,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         // The rest.
 
-        h.print_tab2();
-        h.print("\n");
-        explain_alt_versions(&mut h);
+        h.print_tab2()?;
+        h.print("\n")?;
+        explain_alt_versions(&mut h)?;
         h.print(
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
-        );
+        )?;
         h.end_doc();
     }
+    Ok(())
 }

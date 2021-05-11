@@ -10,7 +10,7 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
+pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Result<(), String> {
     // Set up.
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -18,11 +18,11 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
     // Provide example1 help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || h.help_all {
-        h.begin_doc("example1");
-        h.print("\nShown below is the output of the command:\n");
-        h.print(&format!("\n\\bold{{enclone {}}}\n", EXAMPLES[0]));
+        h.begin_doc("example1")?;
+        h.print("\nShown below is the output of the command:\n")?;
+        h.print(&format!("\n\\bold{{enclone {}}}\n", EXAMPLES[0]))?;
         if !h.plain {
-            h.print_plain(&format!("{}", include_str!("example1")));
+            h.print_plain(&format!("{}", include_str!("example1")))?;
         } else {
             let s = include_str!("example1").as_bytes();
             let mut x = Vec::<u8>::new();
@@ -39,7 +39,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
                 }
                 x.push(s[l]);
             }
-            h.print_plain(&format!("{}", strme(&x)));
+            h.print_plain(&format!("{}", strme(&x)))?;
         }
         h.print(
             "This shows an invocation of enclone that takes one dataset as input \
@@ -71,11 +71,11 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              the CDR3.\n\
              • u = median UMI count for a chain in the exact subclonotype.\n\
              • const = const region name for a chain in the exact subclonotype.\n\n",
-        );
+        )?;
         h.print(
             "The view you see here is configurable: see the documentation at \
              \\bold{enclone help lvars} and \\bold{enclone help cvars}.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -84,8 +84,8 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
     // Provide example2 help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || h.help_all {
-        h.begin_doc("example2");
-        h.print("\nShown below is the output of the command:\n");
+        h.begin_doc("example2")?;
+        h.print("\nShown below is the output of the command:\n")?;
 
         // Remove H5.
 
@@ -102,7 +102,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(&format!(
             "\n\\bold{{enclone {}}}\n",
             ex2_args2.iter().format(" ")
-        ));
+        ))?;
         if !h.plain {
             h.print_plain_unchecked(include_str!("example2"));
         } else {
@@ -129,7 +129,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              given CDR3 sequence.  As well the command requests UMI (molecule) counts for one \
              hand-selected gene.  You can use any gene(s) you like and any \
              antibodies for which you have feature barcodes.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -138,7 +138,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
     // Provide input help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input") || h.help_all {
-        h.begin_doc("input");
+        h.begin_doc("input")?;
         h.print(
             "\nenclone has \\boldred{two} mechanisms for specifying input datasets: either \
              directly on the command line or via a supplementary metadata file. Only one mechanism \
@@ -148,7 +148,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              output files, so it is enough that those files are present in given directory, and \
              the particular files that are needed may be found by typing \
              \\bold{enclone help input_tech}.\n\n",
-        );
+        )?;
         h.print_with_box(
             "If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
              pipeline paths.  A comma-separated list is also allowed \\bold{PRE=p1,...,pn}, in \
@@ -159,12 +159,12 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{ENCLONE_PRE} to the desired value.  The default value for \\bold{PRE} \
              is\n\\bold{~/enclone/datasets,~/enclone/datasets2}.",
             true,
-        );
+        )?;
         h.print(
             "Both input forms involve abbreviated names (discussed below), which should be as \
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
-        );
+        )?;
         h.print_with_box(
             "enclone can use gene expression and feature barcode data, as represented by a feature \
              matrix.  Cell Ranger stores this matrix in an hdf5 file, which while generally very \
@@ -181,7 +181,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              Like with other enclone command-line options, if you want \\bold{NH5} on all the \
              time, you can set the environment variable \\bold{ENCLONE_NH5}.",
             true
-        );
+        )?;
         h.print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\
              \\bold{TCR=/home/jdoe/runs/dataset345}\n\
@@ -189,7 +189,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              colons and semicolons act as delimiters.  Commas go between datasets from the \
              same origin, colons between datasets from the same donor, and semicolons separate \
              donors.  If semicolons are used, the value must be quoted.\n\n",
-        );
+        )?;
         h.print(
             "enclone uses the distinction between datasets, origins and donors in the following \
              ways:\n\
@@ -201,7 +201,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              More information may be found at `enclone help special`.  In addition, this is \
              enclone's way of keeping datasets organized and affects the output of fields like \
              origin, etc.\n\n",
-        );
+        )?;
 
         h.print_with_box(
             "\\bold{Naming.}  Using this input system, each dataset is assigned an abbreviated \
@@ -213,14 +213,14 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{and donors, use the second input form, and see in particular} \
              \\green{abbr:path}\\bold{.}",
             true,
-        );
+        )?;
         h.print(
             "Examples:\n\
              \\bold{TCR=p1,p2}   -- input data from two libraries from the same origin\n\
              \\bold{TCR=p1,p2:q} -- input data as above plus another from a different origin \
              from the same donor\n\
              \\bold{TCR=\"a;b\"}   -- input one library from each of two donors.\n\n",
-        );
+        )?;
         h.print(
             "Matching gene expression and/or feature barcode data may also be supplied using \
              an argument \\bold{GEX=...}, whose right side must have the exact same structure \
@@ -228,7 +228,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{TCR} and \\bold{BCR} is not allowed.  If both BCR and GEX data are in the \
              same directory (from a multi run), and single argument \\bold{BCR_GEX=...} may be \
              used, and similarly one may use \\bold{TCR_GEX}.\n\n",
-        );
+        )?;
         h.print(
             "In addition, barcode-level data may be specified using \\bold{BC=...}, whose right \
              side is a list of paths having the same structure as the \\bold{TCR} or \\bold{BCR} \
@@ -242,14 +242,14 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
              variables, but values are only displayed in \\bold{PER_CELL} mode, or for parseable \
              output using \\bold{PCELL}.  These fields should not include existing lead variable \
              names.  Use of \\bold{BC} automatically turns on the \\bold{MIX_DONORS} option.\n\n",
-        );
-        h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
-        h.print("\\bold{META=filename}\n");
+        )?;
+        h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n")?;
+        h.print("\\bold{META=filename}\n")?;
         h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
              group.  After the first line, lines starting with # are ignored.  There must be a \
              field tcr or bcr, and some other fields are allowed:\n",
-        );
+        )?;
         h.doc3("\\bold{field}", "\\bold{default}", "\\bold{meaning}");
         h.ldoc3(
             "tcr",
@@ -276,12 +276,12 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
             "color to associate to this dataset (for \\bold{PLOT} option)",
         );
         h.ldoc3pr("bc", "null", "name of CSV file as in the \\bold{BC} option");
-        h.print_tab3();
+        h.print_tab3()?;
         h.print(
             "\nIn addition, metadata maybe fully specified on the command line via \
             \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
             otherwise put in the \\bold{META} file.\n",
-        );
+        )?;
 
         h.print(
             "\n\\boldred{█ 3 █} enclone can also read an ancillary CSV file that \
@@ -293,8 +293,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
             fields are then made accessible as lvars (see \"enclone help lvars\"), which are \
             populated for any exact subclonotype having exactly two chains (heavy/light or \
             TRB/TRA) that match the data in the CSV file.",
-        );
+        )?;
 
         h.end_doc();
     }
+    Ok(())
 }

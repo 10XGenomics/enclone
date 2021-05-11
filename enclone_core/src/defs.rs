@@ -19,31 +19,7 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-// Macro for user error.  This is designed to prevent multiple error messages being emitted
-// in a parallel loop.
-//
-// To use this, you need to add the following lines:
-// - use enclone_core::defs::*;
-// - use enclone_core::defs::FAILED;
-// - use std::sync::atomic::Ordering::SeqCst;
-
 pub static FAILED: AtomicBool = AtomicBool::new(false);
-
-#[macro_export]
-macro_rules! user_error {
-    ($($arg:tt)*) => (
-    {
-        if !FAILED.load(SeqCst)
-        {
-            FAILED.store(true, SeqCst);
-            eprintln!("");
-            eprintln!($($arg)*);
-            eprintln!("");
-        }
-    std::process::exit(1);
-    }
-);
-}
 
 // The rest.
 
@@ -157,7 +133,6 @@ pub struct GeneralOpt {
     pub weak: bool,
     pub tcr: bool,
     pub bcr: bool,
-    pub exp: bool,
     pub reuse: bool,
     pub fasta: String,
     pub fasta_filename: String,
@@ -267,6 +242,7 @@ pub struct GeneralOpt {
     pub jscore_bits_multiplier: f64,
     pub jscore_gap_open: i32,
     pub jscore_gap_extend: i32,
+    pub split: bool,
 }
 
 // Some plot options.

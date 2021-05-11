@@ -3,13 +3,13 @@
 #![allow(unused_imports, dead_code)]
 
 use ansi_escape::*;
-use enclone::html::*;
 use enclone_core::defs::*;
-use enclone_core::run_test::*;
 use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_tools::html::*;
+use enclone_tools::run_test::*;
 use failure::Error;
 use io_utils::*;
 use itertools::Itertools;
@@ -271,23 +271,26 @@ fn test_help_output() {
         }
         let out_file = format!("../pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
-        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-        let mut new = new.arg("HTML");
+        let mut args = Vec::<String>::new();
         if *p == "setup" {
-            new = new.arg("help");
+            args.push("help".to_string());
         } else if *p == "main" {
         } else {
-            new = new.arg("help");
-            new = new.arg(p);
+            args.push("help".to_string());
+            args.push(p.to_string());
         }
-        new = new.arg("STABLE_DOC");
-        new = new.arg("NOPAGER");
+        args.push("HTML".to_string());
+        args.push("STABLE_DOC".to_string());
+        args.push("NOPAGER".to_string());
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
+        let new = new.args(&args);
         let new = new
             .arg("FORCE_EXTERNAL")
             .output()
             .expect(&format!("failed to execute test_help_output"));
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
+            eprintln!("stderr = {}", strme(&new.stderr));
             std::process::exit(1);
         }
         let new2 = edit_html(&stringme(&new.stdout));

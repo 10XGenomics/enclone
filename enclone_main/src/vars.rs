@@ -7,7 +7,7 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) {
+pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), String> {
     // Find matching features for <regular expression>_g etc.
 
     let tstar = Instant::now();
@@ -101,12 +101,11 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) {
                             }
                         }
                         if !matches {
-                            eprintln!(
+                            return Err(format!(
                                 "\nLead variable {} contains a pattern that matches \
                                 no features.\n",
                                 x
-                            );
-                            std::process::exit(1);
+                            ));
                         }
                         break;
                     }
@@ -115,4 +114,5 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) {
         }
     }
     ctl.perf_stats(&tomega, "messing with variables");
+    Ok(())
 }

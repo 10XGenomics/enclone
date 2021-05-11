@@ -39,7 +39,7 @@ pub fn tail_code(
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
-) {
+) -> Result<(), String> {
     // Print clonotypes.
 
     group_and_print_clonotypes(
@@ -58,7 +58,7 @@ pub fn tail_code(
         &dref,
         &groups,
         &opt_d_val,
-    );
+    )?;
 
     // Do gene scan.
 
@@ -111,19 +111,19 @@ pub fn tail_code(
         }
         if tests.len() == 0 {
             if !ctl.gen_opt.gene_scan_exact {
-                eprintln!("Gene scan failed, no test clonotypes.\n");
+                return Err(format!("Gene scan failed, no test clonotypes.\n"));
             } else {
-                eprintln!("Gene scan failed, no test exact subclonotypes.\n");
+                return Err(format!("Gene scan failed, no test exact subclonotypes.\n"));
             }
-            std::process::exit(1);
         }
         if controls.len() == 0 {
             if !ctl.gen_opt.gene_scan_exact {
-                eprintln!("Gene scan failed, no control clonotypes.\n");
+                return Err(format!("Gene scan failed, no control clonotypes.\n"));
             } else {
-                eprintln!("Gene scan failed, no control exact subclonotypes.\n");
+                return Err(format!(
+                    "Gene scan failed, no control exact subclonotypes.\n"
+                ));
             }
-            std::process::exit(1);
         }
         println!("enriched features\n");
         let mut results = Vec::<(usize, Vec<u8>, f64, f64, f64)>::new();
@@ -366,4 +366,5 @@ pub fn tail_code(
     // Report time.
 
     ctl.perf_stats(&t, "in rest of tail code");
+    Ok(())
 }

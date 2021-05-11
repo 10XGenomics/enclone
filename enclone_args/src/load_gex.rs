@@ -34,7 +34,7 @@ pub fn load_gex(
     gex_cell_barcodes: &mut Vec<Vec<String>>,
     have_gex: &mut bool,
     have_fb: &mut bool,
-) {
+) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
         usize,
@@ -48,6 +48,7 @@ pub fn load_gex(
         HashMap<String, String>,
         HashMap<String, Vec<f64>>,
         bool,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -62,6 +63,7 @@ pub fn load_gex(
             HashMap::<String, String>::new(),
             HashMap::<String, Vec<f64>>::new(),
             false,
+            String::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -86,12 +88,12 @@ pub fn load_gex(
             } else if root.ends_with("/outs") {
                 outs = root.before("/outs").to_string();
                 if !path_exists(&outs) {
-                    eprintln!(
+                    r.11 = format!(
                         "\nThe directory\n{}\ndoes not exist.  Something must be amiss with \
                         the arguments to PRE and/or GEX and/or META.\n",
                         outs
                     );
-                    std::process::exit(1);
+                    return;
                 }
             }
 
@@ -100,13 +102,13 @@ pub fn load_gex(
             let mut h5_path = format!("{}/raw_feature_bc_matrix.h5", outs);
             let h5_path_alt = format!("{}/raw_gene_bc_matrices_h5.h5", outs);
             if !path_exists(&h5_path) && !path_exists(&h5_path_alt) {
-                eprintln!(
+                r.11 = format!(
                     "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
                     and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
                     something\nis amiss with the arguments to PRE and/or GEX and/or META.\n",
                     outs
                 );
-                std::process::exit(1);
+                return;
             }
             if !path_exists(&h5_path) {
                 h5_path = h5_path_alt;
@@ -152,31 +154,29 @@ pub fn load_gex(
             let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
             for f in [pca_file.clone(), cluster_file.clone()].iter() {
                 if !path_exists(&f) {
-                    eprintln!(
+                    r.11 = format!(
                         "\nThe file\n{}\ndoes not exist.  \
-                        Perhaps one of your directories is missing some stuff.\n",
-                        f
-                    );
-                    eprintln!(
-                        "One possibility is that you ran \"cellranger count\" using only \
+                        Perhaps one of your directories is missing some stuff.\n\n\
+                        One possibility is that you ran \"cellranger count\" using only \
                         feature barcode (antibody) data,\nand you had less then ten antibodies.  \
                         Currently if you do this, cellranger will not run the\nsecondary \
                         analyses, so you'll be missing some files.  A workaround is to add \
                         some \"fake\" antibodies\nto pad out the total number to ten.\n",
+                        f
                     );
-                    std::process::exit(1);
+                    return;
                 }
             }
             let csv1 = format!("{}/metrics_summary.csv", outs);
             let csv2 = format!("{}/metrics_summary_csv.csv", outs);
             if !path_exists(&csv1) && !path_exists(&csv2) {
-                eprintln!(
+                r.11 = format!(
                     "\nSomething wrong with GEX or META argument:\ncan't find the file \
                         metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
                         {}",
                     outs
                 );
-                std::process::exit(1);
+                return;
             }
             let mut csv = csv1.clone();
             if !path_exists(&csv1) {
@@ -220,7 +220,7 @@ pub fn load_gex(
             if bin_file_state == 3 {
                 let f = File::create(&bin_file);
                 if !f.is_ok() {
-                    eprintln!(
+                    r.11 = format!(
                         "\nenclone is trying to create the path\n{}\n\
                         but that path cannot be created.  This path is for the binary GEX \
                         matrix file that enclone can read\n\
@@ -230,7 +230,7 @@ pub fn load_gex(
                         3. Don't specify NH5 (if you specified it).\n",
                         bin_file
                     );
-                    std::process::exit(1);
+                    return;
                 }
                 remove_file(&bin_file).unwrap();
             }
@@ -255,12 +255,12 @@ pub fn load_gex(
                 || ctl.gen_opt.mark_stats2
                 || ctl.clono_filt_opt.marked_b
             {
-                eprintln!(
+                r.11 = format!(
                     "\nIf you use MARK_STATS or MARK_STATS2 or MARKED_B, celltypes.csv has to \
                     exist, and this file\n{}\ndoes not exist.\n",
                     types_file
                 );
-                std::process::exit(1);
+                return;
             }
 
             // Read PCA file.
@@ -322,44 +322,44 @@ pub fn load_gex(
                     }
                 } else if line_no == 2 {
                     if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
-                        eprintln!(
+                        r.11 = format!(
                             "\nSomething appears to be wrong with the file\n{}:\n\
                             the second line doesn't have enough fields.\n",
                             csv
                         );
-                        std::process::exit(1);
+                        return;
                     } else if rpc_field.is_some() {
                         let mut rpcx = fields[rpc_field.unwrap()].to_string();
                         rpcx = rpcx.replace(",", "");
                         rpcx = rpcx.replace("\"", "");
                         if !rpcx.parse::<usize>().is_ok() {
-                            eprintln!(
+                            r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Mean Reads per Cell field isn't an integer.\n",
                                 csv
                             );
-                            std::process::exit(1);
+                            return;
                         }
                         rpc = Some(rpcx.force_usize() as isize);
                     }
                     if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
-                        eprintln!(
+                        r.11 = format!(
                             "\nSomething appears to be wrong with the file\n{}:\n\
                             the second line doesn't have enough fields.\n",
                             csv
                         );
-                        std::process::exit(1);
+                        return;
                     } else if fbrpc_field.is_some() {
                         let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
                         fbrpcx = fbrpcx.replace(",", "");
                         fbrpcx = fbrpcx.replace("\"", "");
                         if !fbrpcx.parse::<usize>().is_ok() {
-                            eprintln!(
+                            r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Antibody: Mean Reads per Cell field isn't an integer.\n",
                                 csv
                             );
-                            std::process::exit(1);
+                            return;
                         }
                         fbrpc = Some(fbrpcx.force_usize() as isize);
                     }
@@ -375,7 +375,7 @@ pub fn load_gex(
                 fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
             }
             if rpc.is_none() && fbrpc.is_none() {
-                eprintln!(
+                r.11 = format!(
                     "\nGene expression or feature barcode data was expected, however the \
                     CSV file\n{}\n\
                     does not have a field \"Mean Reads per Cell\" or \
@@ -385,7 +385,7 @@ pub fn load_gex(
                     from its original location.\n",
                     csv,
                 );
-                std::process::exit(1);
+                return;
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
@@ -431,9 +431,17 @@ pub fn load_gex(
     });
     ctl.perf_stats(&t, "in load_gex main loop");
 
-    // Set have_gex and have_fb.
+    // Test for error.
 
     let t = Instant::now();
+    for i in 0..results.len() {
+        if results[i].11.len() > 0 {
+            return Err(results[i].11.clone());
+        }
+    }
+
+    // Set have_gex and have_fb.
+
     for i in 0..results.len() {
         if results[i].4.is_some() {
             *have_gex = true;
@@ -446,7 +454,7 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -469,13 +477,14 @@ pub fn load_gex(
         cell_type_specified.push(x10);
     }
     ctl.perf_stats(&t, "in load_gex tail");
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Get gene expression and feature barcoding counts.
 
-pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
+pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_features = Vec::<Vec<String>>::new();
     let mut gex_barcodes = Vec::<Vec<String>>::new();
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
@@ -502,29 +511,27 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_cell_barcodes,
         &mut have_gex,
         &mut have_fb,
-    );
+    )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
         if allf.len() != 1 {
-            eprintln!(
+            let mut msg = format!(
                 "\nCurrently, SCAN requires that all datasets have identical \
-                 features, and they do not."
-            );
-            eprintln!(
-                "There are {} datasets and {} feature sets after removal of \
-                 duplicates.",
+                 features, and they do not.\n\
+                There are {} datasets and {} feature sets after removal of \
+                 duplicates.\n",
                 gex_features.len(),
                 allf.len()
             );
-            eprintln!("Classification of features sets:\n");
+            msg += &mut format!("Classification of features sets:\n\n");
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
-                eprintln!("{} ==> {}", ctl.origin_info.dataset_id[i], p);
+                msg += &mut format!("{} ==> {}\n", ctl.origin_info.dataset_id[i], p);
             }
-            eprintln!("");
-            std::process::exit(1);
+            msg += "\n";
+            return Err(msg);
         }
     }
     let mut h5_data = Vec::<Option<Dataset>>::new();
@@ -542,8 +549,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
                 }
                 if !path_exists(&f) {
-                    eprintln!("\nThere's a missing input file:\n{}.\n", f);
-                    std::process::exit(1);
+                    return Err(format!("\nThere's a missing input file:\n{}.\n", f));
                 }
                 let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
@@ -597,7 +603,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
 
     // Answer.
 
-    GexInfo {
+    Ok(GexInfo {
         gex_features: gex_features,
         gex_barcodes: gex_barcodes,
         gex_matrices: gex_matrices,
@@ -615,5 +621,5 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         feature_id: feature_id,
         have_gex: have_gex,
         have_fb: have_fb,
-    }
+    })
 }

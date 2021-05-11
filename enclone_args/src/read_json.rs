@@ -3,7 +3,6 @@
 use self::annotate::*;
 use self::refx::*;
 use self::transcript::*;
-use crate::explore::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
@@ -18,32 +17,39 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
+fn json_error(
+    json: Option<&str>,
+    ctl: &EncloneControl,
+    exiting: &AtomicBool,
+    msg: &str,
+) -> Result<(), String> {
     // The following line prevents error messages from this function from being
     // printed multiple times.
+    let mut msgx = String::new();
     if !exiting.swap(true, Ordering::Relaxed) {
-        eprint!(
+        msgx = format!(
             "\nThere is something wrong with the contig annotations in the cellranger output \
              file"
         );
         if json.is_some() {
-            eprint!("\n{}.", json.unwrap());
+            msgx += &mut format!("\n{}.", json.unwrap());
         } else {
-            eprint!(".");
+            msgx += ".";
         }
         if ctl.gen_opt.internal_run {
-            eprint!("\n\npossibly relevant internal data: {}", msg);
+            msgx += &mut format!("\n\npossibly relevant internal data: {}\n", msg);
         }
         if ctl.gen_opt.internal_run {
-            eprint!(
+            msgx += &mut format!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
                 Quite possibly you are using data from a cellranger run carried out using a \
                 version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
-                argument CURRENT_REF to your command line.  If that doesn't work, please see below."
+                argument CURRENT_REF to your command line.  If that doesn't work, \
+                please see below.\n"
             );
         }
-        eprintln!(
+        msgx += &mut format!(
             "\n\nHere is what you should do:\n\n\
              1. If you used cellranger version ≥ 4.0, the problem is very likely\n\
                 that the directory outs/vdj_reference was not retained, so enclone\n\
@@ -63,7 +69,7 @@ fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, ms
              If you're stuck, please write to us at enclone@10xgenomics.com.\n"
         );
     }
-    std::process::exit(1);
+    Err(msgx)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -84,14 +90,13 @@ fn parse_vector_entry_from_json(
     cr_version: &mut String,
     tigs: &mut Vec<TigData>,
     exiting: &AtomicBool,
-) {
+) -> Result<(), String> {
     let v: Result<Value, _> = serde_json::from_str(strme(&x));
     if v.is_err() {
-        eprintln!(
+        return Err(format!(
             "\nInternal error, failed to parse a value from a string.  The string is:\n{}\n",
             strme(&x)
-        );
-        std::process::exit(1);
+        ));
     }
     let v = v.unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
@@ -116,7 +121,7 @@ fn parse_vector_entry_from_json(
     }
 
     if !ctl.gen_opt.ncell && !is_cell {
-        return;
+        return Ok(());
     }
     if is_cell {
         vdj_cells.push(barcode.clone());
@@ -126,12 +131,12 @@ fn parse_vector_entry_from_json(
 
     if !ctl.gen_opt.reprod {
         if !v["productive"].as_bool().unwrap_or(false) {
-            return;
+            return Ok(());
         }
     }
     if !ctl.gen_opt.reprod {
         if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
-            return;
+            return Ok(());
         }
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
@@ -252,10 +257,10 @@ fn parse_vector_entry_from_json(
             if !is_valid(&x, &refdata, &ann, true, &mut log) {
                 print!("{}", strme(&log));
                 println!("invalid");
-                return;
+                return Ok(());
             }
         } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
-            return;
+            return Ok(());
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
@@ -332,7 +337,7 @@ fn parse_vector_entry_from_json(
                 .to_string();
             if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
                 if !exiting.swap(true, Ordering::Relaxed) {
-                    eprintln!(
+                    return Err(format!(
                         "\nThere is an inconsistency between the reference \
                          file used to create the Cell Ranger output files in\n{}\nand the \
                          reference that enclone is using.\n\nFor example, the feature \
@@ -351,8 +356,7 @@ fn parse_vector_entry_from_json(
                         feature_id,
                         gene_name,
                         refdata.name[feature_idx]
-                    );
-                    std::process::exit(1);
+                    ));
                 }
             }
             if region_type == "L-REGION+V-REGION" && ref_start == 0 {
@@ -393,7 +397,7 @@ fn parse_vector_entry_from_json(
             }
         }
         if v_ref_id == 1000000 {
-            return;
+            return Ok(());
         }
 
         // Compute annv from cigarv.  We don't compute the mismatch entry.
@@ -442,7 +446,7 @@ fn parse_vector_entry_from_json(
         if annv.len() == 2 {
             if annv[0].1 as usize > rt.len() {
                 let msg = format!("annv[0].1 = {}, rt.len() = {}", annv[0].1, rt.len());
-                json_error(None, &ctl, &exiting, &msg);
+                json_error(None, &ctl, &exiting, &msg)?;
             }
         }
 
@@ -455,14 +459,14 @@ fn parse_vector_entry_from_json(
         let x = DnaString::from_dna_string(&full_seq);
         get_cdr3_using_ann(&x, &refdata, &annv, &mut cdr3);
         if cdr3.is_empty() {
-            return;
+            return Ok(());
         }
         let cdr3_aa_alt = stringme(&cdr3[0].1);
         if cdr3_aa != cdr3_aa_alt {
             // This is particularly pathological and rare:
 
             if tig_start as usize > cdr3[0].0 {
-                return;
+                return Ok(());
             }
 
             // Define start.
@@ -485,17 +489,17 @@ fn parse_vector_entry_from_json(
     // It is not known if these correspond to bugs in cellranger that were subsequently fixed.
 
     if cdr3_aa.contains("*") {
-        return;
+        return Ok(());
     }
     if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
-        return;
+        return Ok(());
     }
 
     // Keep going.
 
     if tig_start < 0 || tig_stop < 0 {
         let msg = format!("tig_start = {}, tig_stop = {}", tig_start, tig_stop);
-        json_error(Some(&json), &ctl, exiting, &msg);
+        json_error(Some(&json), &ctl, exiting, &msg)?;
     }
     let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
     let quals0 = v["quals"].to_string();
@@ -617,6 +621,7 @@ fn parse_vector_entry_from_json(
         invalidated_umis: invalu,
         frac_reads_used: frac_reads_used,
     });
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -657,7 +662,7 @@ pub fn read_json(
     mut vdj_cells: &mut Vec<String>,
     mut gex_cells: &mut Vec<String>,
     gex_cells_specified: &mut bool,
-) -> Vec<Vec<TigData>> {
+) -> Result<Vec<Vec<TigData>>, String> {
     *gex_cells_specified = false;
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -667,25 +672,23 @@ pub fn read_json(
     if jsonx.contains('/') {
         let p = jsonx.rev_before("/");
         if !path_exists(&p) {
-            eprintln!(
+            return Err(format!(
                 "\nThere should be a directory\n\
                  \"{}\"\n\
                  but it does not exist.  Please check how you have specified the\n\
                  input files to enclone, including the PRE argument.\n",
                 p
-            );
-            std::process::exit(1);
+            ));
         }
     }
     if !path_exists(&jsonx) {
-        eprintln!(
+        return Err(format!(
             "\nThe path\n\
              \"{}\"\n\
              does not exist.  Please check how you have specified the\n\
              input files to enclone, including the PRE argument.\n",
             jsonx
-        );
-        std::process::exit(1);
+        ));
     }
     let mut f = BufReader::new(open_maybe_compressed(&jsonx));
     // ◼ This loop could be speeded up, see comments above.
@@ -698,7 +701,15 @@ pub fn read_json(
             }
         }
     }
-    let mut results = Vec::<(usize, Vec<String>, Vec<String>, bool, String, Vec<TigData>)>::new();
+    let mut results = Vec::<(
+        usize,
+        Vec<String>,
+        Vec<String>,
+        bool,
+        String,
+        Vec<TigData>,
+        String,
+    )>::new();
     for i in 0..xs.len() {
         results.push((
             i,
@@ -707,12 +718,13 @@ pub fn read_json(
             false,
             String::new(),
             Vec::<TigData>::new(),
+            String::new(),
         ));
     }
     let exiting = AtomicBool::new(false);
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
-        parse_vector_entry_from_json(
+        let resx = parse_vector_entry_from_json(
             &xs[i],
             &json,
             accept_inconsistent,
@@ -729,7 +741,15 @@ pub fn read_json(
             &mut res.5,
             &exiting,
         );
+        if resx.is_err() {
+            res.6 = resx.unwrap_err();
+        }
     });
+    for i in 0..results.len() {
+        if results[i].6.len() > 0 {
+            return Err(results[i].6.clone());
+        }
+    }
     for i in 0..xs.len() {
         vdj_cells.append(&mut results[i].1);
         gex_cells.append(&mut results[i].2);
@@ -766,7 +786,7 @@ pub fn read_json(
         r = s;
     }
     unique_sort(&mut vdj_cells);
-    tig_bc
+    Ok(tig_bc)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -781,7 +801,7 @@ pub fn parse_json_annotations_files(
     vdj_cells: &mut Vec<Vec<String>>,
     gex_cells: &mut Vec<Vec<String>>,
     gex_cells_specified: &mut Vec<bool>,
-) {
+) -> Result<(), String> {
     // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
         usize,
@@ -792,6 +812,7 @@ pub fn parse_json_annotations_files(
         Vec<String>,
         Vec<String>,
         bool,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.dataset_path.len() {
         results.push((
@@ -803,6 +824,7 @@ pub fn parse_json_annotations_files(
             Vec::<String>::new(),
             Vec::<String>::new(),
             false,
+            String::new(),
         ));
     }
     // Note: only tracking truncated seq and quals initially
@@ -817,10 +839,10 @@ pub fn parse_json_annotations_files(
         let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
         let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
-            eprintln!("\ncan't find {} or {}\n", json, json_lz4);
-            std::process::exit(1);
+            res.8 = format!("\ncan't find {} or {}\n", json, json_lz4);
+            return;
         }
-        let tig_bc: Vec<Vec<TigData>> = read_json(
+        let resx = read_json(
             ctl.gen_opt.accept_inconsistent,
             &ctl.origin_info,
             li,
@@ -834,10 +856,20 @@ pub fn parse_json_annotations_files(
             &mut res.6,
             &mut res.7,
         );
-        res.5.sort();
-        explore(li, &tig_bc, &ctl);
-        res.2 = tig_bc;
+        if resx.is_ok() {
+            let tig_bc: Vec<Vec<TigData>> = resx.unwrap();
+            res.5.sort();
+            res.2 = tig_bc;
+        } else {
+            res.8 = format!("{}", resx.err().unwrap());
+            return;
+        }
     });
+    for i in 0..results.len() {
+        if results[i].8.len() > 0 {
+            return Err(results[i].8.clone());
+        }
+    }
     let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
@@ -858,14 +890,14 @@ pub fn parse_json_annotations_files(
             && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
         {
             let args: Vec<String> = env::args().collect();
-            eprintln!(
+            return Err(format!(
                 "\nYou're using output from multiple Cell Ranger versions = {},\n\
                  which is not allowed.  Your command was:\n{}\n",
                 versions.iter().format(", "),
                 args.iter().format(","),
-            );
-            std::process::exit(1);
+            ));
         }
     }
     */
+    Ok(())
 }

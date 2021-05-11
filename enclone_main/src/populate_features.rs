@@ -5,6 +5,8 @@
 use amino::*;
 use enclone_core::defs::*;
 use enclone_core::vdj_features::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 use tables::*;
 use vdj_ann::refx::RefData;
@@ -19,13 +21,13 @@ pub fn populate_features(
     cdr1_starts: &mut Vec<Option<usize>>,
     cdr2_starts: &mut Vec<Option<usize>>,
     log: &mut Vec<u8>,
-) {
+) -> Result<(), String> {
     *fr1_starts = vec![0; refdata.refs.len()];
     *fr2_starts = vec![None; refdata.refs.len()];
     *fr3_starts = vec![None; refdata.refs.len()];
     *cdr1_starts = vec![None; refdata.refs.len()];
     *cdr2_starts = vec![None; refdata.refs.len()];
-    let mut fail = false;
+    let mut msg = String::new();
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
             if broken[i] && ctl.gen_opt.require_unbroken_ok {
@@ -53,94 +55,86 @@ pub fn populate_features(
             if fs2.is_some() {
                 fr2_starts[i] = Some(3 * fs2.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
                     could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             let fs3 = fr3_start(&aa, &chain_type, false);
             if fs3.is_some() {
                 fr3_starts[i] = Some(3 * fs3.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
                     could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
                 if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                    eprintln!(
+                    msg += &mut format!(
                         "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
                         exceeds the FWR2 start for this reference sequence:"
                     );
                     let seq = refdata.refs[i].to_ascii_vec();
-                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                    fail = true;
+                    msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
                     could not be computed\nfor this reference sequence:\n"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
                 if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
-                    eprintln!(
+                    msg += &mut format!(
                         "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
                         exceeds the FWR3 start for this reference sequence:"
                     );
                     let seq = refdata.refs[i].to_ascii_vec();
-                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                    fail = true;
+                    msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
                     could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             if cs1.is_some() && fs1 > cs1.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
                     exceeds the CDR1 start for this reference sequence:\n"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             if cs2.is_some()
                 && fs2.is_some()
                 && fs2.unwrap() > cs2.unwrap()
                 && ctl.gen_opt.require_unbroken_ok
             {
-                eprintln!(
+                msg += &mut format!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
                     exceeds the CDR2 start for this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
+                msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
         }
     }
-    if fail {
-        std::process::exit(1);
+    if msg.len() > 0 {
+        return Err(msg);
     }
 
     // Report on broken reference sequences.  This comes after the json loading because possibly
@@ -148,12 +142,13 @@ pub fn populate_features(
     // in that case.
 
     if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
-        eprintln!(
+        let mut log = Vec::<u8>::new();
+        fwriteln!(
+            log,
             "\nSome errors were detected in the reference sequences supplied to enclone.\n\
-            Please see comments at end for what you can do about this.\n",
+            Please see comments at end for what you can do about this.\n\n",
         );
-        eprint!("{}", strme(&log));
-        eprintln!(
+        fwriteln!(log,
 "🌼  Dear user, some defects were detected in the reference sequences supplied to enclone.   🌼\n\
  🌼  Some of these defects may be small.  Generally they are associated with V segments that 🌼\n\
  🌼  are frameshifted or truncated, or with C segments that have an extra base at the        🌼\n\
@@ -172,23 +167,21 @@ pub fn populate_features(
         rows.push(vec![
             "behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string(),
         ]);
-
-        let mut log = String::new();
+        let mut log = stringme(&log);
         print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
-        eprintln!("{}", log);
-
-        eprintln!(
-        "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
+        let mut log = log.as_bytes().to_vec();
+        fwriteln!(log, "");
+        fwriteln!(
+            log,
+            "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
         • rerun cellranger using the cleaned up reference sequences that come prepackaged with \
           it\n  (noting that your might have used an older, less clean version of that)\n\
-        • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
+        • or add the argument BUILT_IN to enclone, which will force use of the built-in \
+        reference\n  \
         sequences.  This will be a bit slower because all the contigs will need to be\n  \
         reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
         );
-        std::process::exit(1);
+        return Err(stringme(&log));
     }
-
-    if ctl.gen_opt.require_unbroken_ok {
-        std::process::exit(0);
-    }
+    Ok(())
 }

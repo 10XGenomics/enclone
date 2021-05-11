@@ -418,7 +418,7 @@ pub fn find_exact_subclonotypes(
     }
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         println!("");
-        std::process::exit(0);
+        return Vec::new();
     }
     if !ctl.silent {
         println!(
@@ -532,7 +532,6 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
             i = j;
         }
         println!("");
-        std::process::exit(0);
     }
 }
 
@@ -541,7 +540,10 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
 // Look for barcode reuse.  The primary purpose of this is to detect instances where two
 // datasets were obtained from the same cDNA (from the same GEM well).
 
-pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
+pub fn check_for_barcode_reuse(
+    ctl: &EncloneControl,
+    tig_bc: &Vec<Vec<TigData>>,
+) -> Result<(), String> {
     if !ctl.gen_opt.accept_reuse {
         const MIN_REUSE_FRAC_TO_SHOW: f64 = 0.25;
         let mut all = Vec::<(String, usize, usize)>::new();
@@ -579,8 +581,9 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
             i = j;
         }
         reuse.sort();
-        let mut found = false;
         let mut i = 0;
+        let mut found = false;
+        let mut msg = String::new();
         while i < reuse.len() {
             let j = next_diff(&reuse, i);
             let n = j - i;
@@ -589,17 +592,18 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
             let frac = n as f64 / min(n1, n2) as f64;
             if frac >= MIN_REUSE_FRAC_TO_SHOW {
                 if !found {
-                    eprintln!("\nSignificant barcode reuse detected.  If at least 25% of the barcodes \
+                    found = true;
+                    msg += &mut format!(
+                        "\nSignificant barcode reuse detected.  If at least 25% of the barcodes \
                         in one dataset\nare present in another dataset, is is likely that two datasets \
                         arising from the\nsame library were included as input to enclone.  Since this \
                         would normally occur\nonly by accident, enclone exits.  \
                         If you wish to override this behavior,\nplease rerun with the argument \
-                        ACCEPT_REUSE.\n\nHere are the instances of reuse that were observed:\n"
+                        ACCEPT_REUSE.\n\nHere are the instances of reuse that were observed:\n\n"
                     );
-                    found = true;
                 }
-                eprintln!(
-                    "{}, {} ==> {} of {}, {} barcodes ({:.1}%)",
+                msg += &mut format!(
+                    "{}, {} ==> {} of {}, {} barcodes ({:.1}%)\n",
                     ctl.origin_info.dataset_id[l1],
                     ctl.origin_info.dataset_id[l2],
                     n,
@@ -611,8 +615,8 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
             i = j;
         }
         if found {
-            eprintln!("");
-            std::process::exit(1);
+            return Err(msg);
         }
     }
+    Ok(())
 }

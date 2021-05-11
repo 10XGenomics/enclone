@@ -19,6 +19,7 @@ pub struct HelpDesk {
     pub rows: Vec<Vec<String>>,
     pub log: Vec<u8>,
     pub title: String,
+    pub ok: bool,
 }
 
 impl HelpDesk {
@@ -31,6 +32,7 @@ impl HelpDesk {
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
             title: String::new(),
+            ok: false,
         }
     }
     pub fn doc(&mut self, x1: &str, x2: &str) {
@@ -42,7 +44,7 @@ impl HelpDesk {
 
     // docf2: like doc, but fold x2 to n2 chars.
 
-    pub fn docf2(&mut self, x1: &str, x2: &str, n2: usize) {
+    pub fn docf2(&mut self, x1: &str, x2: &str, n2: usize) -> Result<(), String> {
         let mut c2 = Vec::<char>::new();
         for m in x2.chars() {
             c2.push(m);
@@ -61,13 +63,12 @@ impl HelpDesk {
                     s.push(c2[j]);
                 }
                 if s.len() == 0 {
-                    eprintln!(
+                    return Err(format!(
                         "\nError in docf2, x2 = \n\n{}\n\nThere is probably a string in there that \
                         exceeds your argument {}.\n",
                         x2,
                         n2,
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 y2.push(s);
                 start = i + 1;
@@ -86,6 +87,7 @@ impl HelpDesk {
                 self.doc("", &y2[i]);
             }
         }
+        Ok(())
     }
 
     pub fn ldoc(&mut self, x1: &str, x2: &str) {
@@ -151,9 +153,9 @@ impl HelpDesk {
             self.rows.push(vec![x1.to_string(), x2.to_string()]);
         }
     }
-    pub fn print_enclone(&mut self) {
+    pub fn print_enclone(&mut self) -> Result<(), String> {
         if self.plain {
-            self.print("enclone");
+            self.print("enclone")?;
         } else {
             let mut log = Vec::<u8>::new();
             print_color(3, &mut log);
@@ -177,20 +179,23 @@ impl HelpDesk {
             print_color(1, &mut log);
             log.push(b'e');
             emit_end_escape(&mut log);
-            self.print(&format!("{}", strme(&log)));
+            self.print(&format!("{}", strme(&log)))?;
         }
+        Ok(())
     }
-    pub fn print_tab2(&mut self) {
+    pub fn print_tab2(&mut self) -> Result<(), String> {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
-        self.print_plain(&format!("{}", log));
+        self.print_plain(&format!("{}", log))?;
+        Ok(())
     }
-    pub fn print_tab3(&mut self) {
+    pub fn print_tab3(&mut self) -> Result<(), String> {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
-        self.print_plain(&format!("{}", log));
+        self.print_plain(&format!("{}", log))?;
+        Ok(())
     }
-    pub fn begin_doc(&mut self, title: &str) {
+    pub fn begin_doc(&mut self, title: &str) -> Result<(), String> {
         self.title = format!("enclone help {}", title);
         self.rows.clear();
         if self.help_all {
@@ -198,46 +203,47 @@ impl HelpDesk {
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&format!("{}", strme(&log)));
+            self.print_plain(&format!("{}", strme(&log)))?;
             for _ in 1..100 {
-                self.print_plain("▓");
+                self.print_plain("▓")?;
             }
-            self.print_plain(&format!("{}", strme(&log)));
+            self.print_plain(&format!("{}", strme(&log)))?;
             if title == "" {
                 self.print_plain(&format!(
                     "\nenclone main help page (what you get by typing \
                     \"enclone\")\n"
-                ));
+                ))?;
             } else if title == "setup" {
                 self.print_plain(&format!(
                     "\nenclone setup page (for one time use, what you get by typing \
                     \"enclone help\")\n"
-                ));
+                ))?;
             } else {
-                self.print_plain(&format!("\nenclone help {}\n", title));
+                self.print_plain(&format!("\nenclone help {}\n", title))?;
             }
             let mut log = Vec::<u8>::new();
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&format!("{}", strme(&log)));
+            self.print_plain(&format!("{}", strme(&log)))?;
             for _ in 1..100 {
-                self.print_plain("▓");
+                self.print_plain("▓")?;
             }
             let mut log = Vec::<u8>::new();
             if !self.plain {
                 emit_end_escape(&mut log);
             }
-            self.print_plain(&format!("{}\n", strme(&log)));
+            self.print_plain(&format!("{}\n", strme(&log)))?;
         }
+        Ok(())
     }
     pub fn end_doc(&mut self) {
         if !self.help_all {
             self.dump();
-            std::process::exit(0);
         }
+        self.ok = true;
     }
-    pub fn print_with_box(&mut self, x: &str, bold_box: bool) {
+    pub fn print_with_box(&mut self, x: &str, bold_box: bool) -> Result<(), String> {
         let y = print_to(x);
         let mut rows = Vec::<Vec<String>>::new();
         let lines = y.split('\n').collect::<Vec<&str>>();
@@ -246,15 +252,17 @@ impl HelpDesk {
         }
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
-        self.print_plain(&format!("{}\n", log));
+        self.print_plain(&format!("{}\n", log))?;
+        Ok(())
     }
-    pub fn print(&mut self, x: &str) {
-        self.print_plain(&format!("{}", print_to(x)));
+    pub fn print(&mut self, x: &str) -> Result<(), String> {
+        self.print_plain(&format!("{}", print_to(x)))?;
+        Ok(())
     }
     pub fn print_plain_unchecked(&mut self, x: &str) {
         fwrite!(self.log, "{}", &x);
     }
-    pub fn print_plain(&mut self, x: &str) {
+    pub fn print_plain(&mut self, x: &str) -> Result<(), String> {
         if !self.long_help {
             let mut count = 0;
             let mut escaped = false;
@@ -273,14 +281,17 @@ impl HelpDesk {
                 } else {
                     count += 1;
                     if count > 100 {
-                        eprintln!("\nHelp line is too long:\n\n{}", line);
-                        eprintln!("\nTry running with LONG_HELP to locate the problem.\n");
-                        std::process::exit(1);
+                        return Err(format!(
+                            "\nHelp line is too long:\n\n{}\n\
+                            \nTry running with LONG_HELP to locate the problem.\n",
+                            line
+                        ));
                     }
                 }
             }
         }
         fwrite!(self.log, "{}", &x);
+        Ok(())
     }
     pub fn dump(&self) {
         if !self.html {

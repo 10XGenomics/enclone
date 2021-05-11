@@ -4,20 +4,20 @@
 
 use crate::help_utils::*;
 
-pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
+pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
     // Provide main help.
 
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
     {
         if h.help_all {
-            h.print("\n");
+            h.print("\n")?;
         }
-        h.begin_doc("");
-        h.print("\nThe mission of ");
-        h.print_enclone();
-        h.print(" is to:\n\n");
-        h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
-        h.print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
+        h.begin_doc("")?;
+        h.print("\nThe mission of ")?;
+        h.print_enclone()?;
+        h.print(" is to:\n\n")?;
+        h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n")?;
+        h.print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n")?;
         h.print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
              Cell Ranger and Loupe.  enclone uses output from Cell Ranger version ≥ 3.1.}\n\n\
@@ -25,7 +25,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              catalogs the subset of those pages that are directly accessible from the enclone \
              command line.  These pages can be viewed in a 100 wide x 56 high window, except for \
              those labeled \"long\" or \"wide\".\n\n",
-        );
+        )?;
         h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc("enclone help", "help to test for correct setup");
         h.doc("enclone", "what you see here: guide to all the doc");
@@ -80,7 +80,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "concatenation of all the help pages (long, wide)",
         );
         h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
-        h.print_tab2();
+        h.print_tab2()?;
         h.end_doc();
     }
 
@@ -92,7 +92,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         || (args.len() == 2 && args[1] == "--help")
         || h.help_all
     {
-        h.begin_doc("setup");
+        h.begin_doc("setup")?;
         h.print(
             "\n\nWelcome to enclone!\n\n\
              The purpose of this first page is to help you make sure that you're set up properly\n\
@@ -140,7 +140,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              If not, please increase the number of rows in your window to 56.\n\n\n\
              If you go through all those tests and everything worked, you should be \
              good to go!\n\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -149,9 +149,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide quick help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || h.help_all {
-        h.begin_doc("quick");
-        h.print("\n");
-        h.print("\\bold{quick guide to getting started}\n\n");
+        h.begin_doc("quick")?;
+        h.print("\n")?;
+        h.print("\\bold{quick guide to getting started}\n\n")?;
         h.print(
             "Just type this:\n\n\
              \\bold{enclone BCR=p}\n\n\
@@ -182,7 +182,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              • q: quit, to return to the command line.\n\n\
              When enclone uses less, it passes the argument -R, which causes certain characters \
              to be hidden, namely escape codes that color or bold text.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -193,9 +193,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "how") || h.help_all {
         // Start.
 
-        h.begin_doc("how");
-        h.print("\n");
-        h.print("\\bold{information about how enclone works}\n\n");
+        h.begin_doc("how")?;
+        h.print("\n")?;
+        h.print("\\bold{information about how enclone works}\n\n")?;
         h.print(
             "The goal of enclone is to find and display the clonotypes within single cell \
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
@@ -208,7 +208,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              See also the heuristics page at \\green{bit.ly/enclone}.\n\n\
              \
              For this, there are fundamental challenges:\n\n",
-        );
+        )?;
 
         // Print challenges.
 
@@ -223,14 +223,14 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              large clonotypes, this noise tends to pile up, yielding ectopic chains, i.e. chains \
              within a clonotype that are artifacts and do not represent true biology.",
             false,
-        );
+        )?;
 
         // Print boxed algorithm.
 
         h.print(
             "To address these challenges, the enclone algorithm has several steps, which we \
              outline:\n\n",
-        );
+        )?;
         h.print(
             "\\boldred{1}.  Input data.  \
              enclone gets its information from the file all_contig_annotations.json that is \
@@ -341,11 +341,11 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \\boldred{12}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
              \"enclone help special\" for a description of the filters.\n\n",
-        );
+        )?;
         h.print(
             "We are actively working to improve the algorithm.  Test results for the current \
              version may be found at \\green{bit.ly/enclone}.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -354,10 +354,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide command line help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "command") || h.help_all {
-        h.begin_doc("command");
-        h.print("\n");
-        h.print("\\bold{information about enclone command-line argument processing}\n\n");
-        h.print("\\bold{1. Order of processing}\n\n");
+        h.begin_doc("command")?;
+        h.print("\n")?;
+        h.print("\\bold{information about enclone command-line argument processing}\n\n")?;
+        h.print("\\bold{1. Order of processing}\n\n")?;
         h.print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
@@ -372,15 +372,15 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              • After checking environment variables, arguments on the command line are read from \
              left to right; if an argument name is repeated, only the \
              rightmost value is used, except as noted specifically in the documentation.\n\n",
-        );
-        h.print("\\bold{2. Importing arguments}\n\n");
+        )?;
+        h.print("\\bold{2. Importing arguments}\n\n")?;
         h.print(
             "Extra arguments can be imported on the command line using \\bold{SOURCE=filename}.  \
             The file may have newlines, and more than one SOURCE command may be used.  Any \
             line starting with # is treated as a comment.\n\n",
-        );
-        h.print("\\bold{3. Color}\n\n");
-        h.print_enclone();
+        )?;
+        h.print("\\bold{3. Color}\n\n")?;
+        h.print_enclone()?;
         h.print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
              and more\nimportantly for amino acids, to represent different codons.  This is \
@@ -389,9 +389,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              You can turn off escape codes by adding \\bold{PLAIN} to any command.  Use this if \
              you want to peruse output using a text editor which does not grok the escape \
              codes.  However some things will not make sense without color.\n\n",
-        );
-        h.print("\\bold{4. Paging}\n\n");
-        h.print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
+        )?;
+        h.print("\\bold{4. Paging}\n\n")?;
+        h.print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n")?;
         h.print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \
@@ -399,12 +399,12 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{-F} option causes an automatic exit if output fits on a single screen, and \
              the \\bold{-X} option prevents output from being sent to the \"alternate screen\" \
              under certain platform/version combinations.\n",
-        );
-        h.print("• Type \\bold{man less} if you need more information.\n");
+        )?;
+        h.print("• Type \\bold{man less} if you need more information.\n")?;
         h.print(
             "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
-        );
+        )?;
         h.end_doc();
     }
 
@@ -413,12 +413,12 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide glossary help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || h.help_all {
-        h.begin_doc("glossary");
-        h.print("\n");
+        h.begin_doc("glossary")?;
+        h.print("\n")?;
 
         // intro
 
-        h.print("\\bold{glossary of terms used by enclone}\n\n");
+        h.print("\\bold{glossary of terms used by enclone}\n\n")?;
 
         // doc V..J
 
@@ -438,7 +438,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             junction (the CDR3 loop plus the canonical C and W/F at the N and C termini \
             respectively).",
             60,
-        );
+        )?;
 
         // doc clonotype
 
@@ -514,8 +514,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         // print main table
 
-        h.print_tab2();
-        h.print("\n");
+        h.print_tab2()?;
+        h.print("\n")?;
 
         // print footnote
 
@@ -528,20 +528,21 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              • and that the difference between the V stop and the C start is the same\n  \
              (noting that this difference is nearly always zero).\n\
              Note that we allow mutations within the 5'-UTR and constant regions.\n\n",
-        );
+        )?;
 
         // conventions
 
-        h.print("\\bold{conventions}\n\n");
+        h.print("\\bold{conventions}\n\n")?;
         h.print(
             "• When we refer to \"V segments\", we always include the leader segment.\n\
              • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
              chains within a clonotype, however DNA and amino-acid positions are numbered starting \
              at zero.\n\n",
-        );
+        )?;
 
         // done
 
         h.end_doc();
     }
+    Ok(())
 }

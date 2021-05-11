@@ -63,7 +63,7 @@ pub fn print_clonotypes(
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
     fate: &mut Vec<HashMap<String, String>>,
-) {
+) -> Result<(), String> {
     let lvars = &ctl.clono_print_opt.lvars;
 
     // Compute extra args.
@@ -203,6 +203,7 @@ pub fn print_clonotypes(
         Vec<bool>,
         Vec<(usize, String, String)>,
         Vec<bool>,
+        String,
     )>::new();
     for i in 0..orbits.len() {
         results.push((
@@ -219,6 +220,7 @@ pub fn print_clonotypes(
             Vec::<bool>::new(),
             Vec::new(),
             Vec::new(),
+            String::new(),
         ));
     }
     results.par_iter_mut().for_each(|res| {
@@ -677,7 +679,7 @@ pub fn print_clonotypes(
                     let ex = &exact_clonotypes[clonotype_id];
                     let mut d_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     let mut ind_all = vec![Vec::<u32>::new(); ex.clones.len()];
-                    row_fill(
+                    let resx = row_fill(
                         pass,
                         u,
                         &ctl,
@@ -714,6 +716,10 @@ pub fn print_clonotypes(
                         &all_vars,
                         &fate,
                     );
+                    if resx.is_err() {
+                        res.13 = resx.unwrap_err();
+                        return;
+                    }
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
                         bli.push((
@@ -927,6 +933,11 @@ pub fn print_clonotypes(
             }
         }
     });
+    for i in 0..results.len() {
+        if results[i].13.len() > 0 {
+            return Err(results[i].13.clone());
+        }
+    }
 
     for i in 0..results.len() {
         for j in 0..results[i].11.len() {
@@ -984,4 +995,5 @@ pub fn print_clonotypes(
             }
         }
     }
+    Ok(())
 }

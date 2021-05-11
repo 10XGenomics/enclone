@@ -26,6 +26,7 @@ enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
+enclone_tools = { path = "../enclone_tools" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1.2"

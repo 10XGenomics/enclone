@@ -14,7 +14,7 @@ use tilde_expand::*;
 
 // Process arguments.
 
-pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     // Knobs.
 
     if ctl.evil_eye {
@@ -116,13 +116,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if ctl.evil_eye {
         println!("at split command");
     }
-    let mut split = false;
-    for i in 1..args.len() {
-        if args[i] == "SPLIT_BY_COMMAND" {
-            split = true;
-        }
-    }
-    if split {
+    if ctl.gen_opt.split {
         let (mut bcr, mut gex) = (Vec::<&str>::new(), Vec::<&str>::new());
         let mut args2 = Vec::<String>::new();
         for i in 1..args.len() {
@@ -146,11 +140,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 .expect("failed to execute enclone");
             print!("{}{}", strme(&o.stdout), strme(&o.stderr));
             if o.status.code() != Some(0) {
-                println!("FAILED!\n");
-                std::process::exit(1);
+                return Err(format!("\nFAILED!\n"));
             }
         }
-        std::process::exit(0);
+        return Ok(());
     }
 
     // Set up general options.
@@ -252,23 +245,25 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if args[i].starts_with("BC=") {
             bc = args[i].after("BC=").to_string();
         }
-        if is_simple_arg(&args[i], "MARK_STATS") {
+        if is_simple_arg(&args[i], "MARK_STATS")? {
             ctl.gen_opt.mark_stats = true;
         }
-        if is_simple_arg(&args[i], "MARK_STATS2") {
+        if is_simple_arg(&args[i], "MARK_STATS2")? {
             ctl.gen_opt.mark_stats2 = true;
         }
-        if is_simple_arg(&args[i], "MARKED_B") {
+        if is_simple_arg(&args[i], "MARKED_B")? {
             ctl.clono_filt_opt.marked_b = true;
         }
     }
     if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
-        eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n"
+        ));
     }
     if have_tcr && have_bcr {
-        eprintln!("\nKindly please do not specify both TCR and BCR.\n");
-        std::process::exit(1);
+        return Err(format!(
+            "\nKindly please do not specify both TCR and BCR.\n"
+        ));
     }
     let mut using_plot = false;
 
@@ -286,8 +281,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                             || !stop.parse::<usize>().is_ok()
                             || start.force_usize() > stop.force_usize()
                         {
-                            eprintln!("\nIllegal range in BI argument.\n");
-                            std::process::exit(1);
+                            return Err(format!("\nIllegal range in BI argument.\n"));
                         }
                         let (start, stop) = (start.force_usize(), stop.force_usize());
                         for j in start..=stop {
@@ -309,14 +303,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                             || n.force_usize() < 1
                             || n.force_usize() > 12
                         {
-                            eprintln!(
+                            return Err(format!(
                                 "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
-                            );
-                            std::process::exit(1);
+                            ));
                         }
                     } else if y.len() > 1 {
-                        eprintln!("\nFor BI, if you specify m1, you can only specify m1.\n");
-                        std::process::exit(1);
+                        return Err(format!(
+                            "\nFor BI, if you specify m1, you can only specify m1.\n"
+                        ));
                     }
                     let mut found = false;
                     for s in f.lines() {
@@ -422,7 +416,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("D_SECOND", &mut ctl.clono_filt_opt.d_second),
         ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
-        ("EXP", &mut ctl.gen_opt.exp),
         ("FOLD_HEADERS", &mut ctl.gen_opt.fold_headers),
         ("FORCE", &mut ctl.force),
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
@@ -665,11 +658,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Check for weird case that might arise if testing code is screwed up.
 
         if arg.len() == 0 {
-            eprintln!(
+            return Err(format!(
                 "\nYou've passed a null argument to enclone.  Normally that isn't \
                  possible.\nPlease take a detailed look at how you're invoking enclone.\n"
-            );
-            std::process::exit(1);
+            ));
         }
 
         // Process set_true arguments.
@@ -693,7 +685,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_usize args.
 
         for j in 0..set_usize.len() {
-            if is_usize_arg(&arg, &set_usize[j].0) {
+            if is_usize_arg(&arg, &set_usize[j].0)? {
                 *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
                 continue 'args_loop;
             }
@@ -702,7 +694,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_i32 args.
 
         for j in 0..set_i32.len() {
-            if is_i32_arg(&arg, &set_i32[j].0) {
+            if is_i32_arg(&arg, &set_i32[j].0)? {
                 *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
                 continue 'args_loop;
             }
@@ -711,7 +703,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_f64 args.
 
         for j in 0..set_f64.len() {
-            if is_f64_arg(&arg, &set_f64[j].0) {
+            if is_f64_arg(&arg, &set_f64[j].0)? {
                 *(set_f64[j].1) = arg.after(&format!("{}=", set_f64[j].0)).force_f64();
                 continue 'args_loop;
             }
@@ -720,7 +712,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_string args.
 
         for j in 0..set_string.len() {
-            if is_string_arg(&arg, &set_string[j].0) {
+            if is_string_arg(&arg, &set_string[j].0)? {
                 *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
                 continue 'args_loop;
             }
@@ -730,7 +722,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
         for j in 0..set_string_writeable.len() {
             let var = &set_string_writeable[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable[j].1;
                 if ctl.evil_eye {
@@ -738,8 +730,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
                 let f = File::create(&val);
                 if f.is_err() {
-                    eprintln!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.",
+                    let mut msgx = format!(
+                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                         val
                     );
                     if val.contains("/") {
@@ -750,10 +742,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                         } else {
                             msg = "does not exist";
                         }
-                        eprintln!("Note that the path {} {}.", dir, msg);
+                        msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
                     }
-                    eprintln!("");
-                    std::process::exit(1);
+                    return Err(msgx);
                 }
                 if ctl.evil_eye {
                     println!("removing file {}", val);
@@ -770,7 +761,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
         for j in 0..set_string_writeable_or_stdout.len() {
             let var = &set_string_writeable_or_stdout[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable_or_stdout[j].1;
@@ -780,8 +771,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     }
                     let f = File::create(&val);
                     if f.is_err() {
-                        eprintln!(
-                            "\nYou've specified an output file\n{}\nthat cannot be written.",
+                        let mut msgx = format!(
+                            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                             val
                         );
                         if val.contains("/") {
@@ -792,10 +783,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                             } else {
                                 msg = "does not exist";
                             }
-                            eprintln!("Note that the path {} {}.", dir, msg);
+                            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
                         }
-                        eprintln!("");
-                        std::process::exit(1);
+                        return Err(msgx);
                     }
                     if ctl.evil_eye {
                         println!("removing file {}", val);
@@ -813,11 +803,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
         for j in 0..set_string_readable.len() {
             let var = &set_string_readable[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
-                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
-                    std::process::exit(1);
+                    return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
@@ -825,11 +814,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     println!("testing ability to open file {}", val);
                 }
                 if let Err(e) = File::open(&val) {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 if ctl.evil_eye {
                     println!("file open complete");
@@ -842,24 +830,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
         for j in 0..set_string_readable_csv.len() {
             let var = &set_string_readable_csv[j].0;
-            if is_string_arg(&arg, var) {
+            if is_string_arg(&arg, var)? {
                 let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
-                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
-                    std::process::exit(1);
+                    return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 if !val.ends_with(".csv") {
-                    eprintln!("\nFilename input in {} needs to end with .csv.\n", val);
-                    std::process::exit(1);
+                    return Err(format!(
+                        "\nFilename input in {} needs to end with .csv.\n",
+                        val
+                    ));
                 }
                 *(set_string_readable_csv[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
-                    eprintln!(
+                    return Err(format!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
-                    );
-                    std::process::exit(1);
+                    ));
                 }
                 continue 'args_loop;
             }
@@ -903,7 +891,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             &mut metaxs,
             &mut xcrs,
             &mut using_plot,
-        );
+        )?;
     }
 
     // Record time.
@@ -914,5 +902,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
-    );
+    )?;
+    Ok(())
 }
