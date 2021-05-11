@@ -159,7 +159,10 @@ all from human and mouse.
 </p>
 
 <p>
-<b> 3. <a href="http://www.imgt.org/">IMGT</a>.</b>  The data we used consisted of annotated 
+<b> 3. <a href="http://www.imgt.org">IMGT</a>.</b>  (Note that this link is occasionally
+nonfunctional.  There is an archived version 
+<a href="http://web.archive.org/web/20210417051643/http://www.imgt.org">here</a>.)
+The data we used consisted of annotated 
 reference sequences for human, rhesus, rabbit, mouse and rat (<i>Rattus norvegicus</i>).  These 
 were for BCR and TCR, with the exception of rat, for which we had only BCR data.  The sequences
 themselves were also downloaded from IMGT, except for human and mouse, for which we used the
