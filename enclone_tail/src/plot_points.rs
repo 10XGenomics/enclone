@@ -18,7 +18,7 @@ pub fn plot_points(
     points: &Vec<(f32, f32)>,
     xvar: &str,
     yvar: &str,
-    svg_filename: &str,
+    svg: &mut String,
 ) -> Result<(), String> {
     // Requirements.
 
@@ -122,7 +122,7 @@ pub fn plot_points(
 
     // Make the plot.
 
-    let root = SVGBackend::new(&svg_filename, (xsize, ysize)).into_drawing_area();
+    let root = SVGBackend::with_string(svg, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
     let mut chart = ChartBuilder::on(&root)
         .caption(&title, (font, title_font_size).into_font())
