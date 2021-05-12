@@ -161,7 +161,11 @@ pub fn load_gex(
                         feature barcode (antibody) data,\nand you had less then ten antibodies.  \
                         Currently if you do this, cellranger will not run the\nsecondary \
                         analyses, so you'll be missing some files.  A workaround is to add \
-                        some \"fake\" antibodies\nto pad out the total number to ten.\n",
+                        some \"fake\" antibodies\nto pad out the total number to ten.\n\n\
+                        Another possibility is that this is a multi run, and the path you \
+                        provided\nis to a subdirectory of the outs folder.  In that case it may \
+                        work to provide the path to outs\nor (equivalently) the parent \
+                        directory.\n",
                         f
                     );
                     return;
