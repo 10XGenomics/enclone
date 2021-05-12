@@ -52,6 +52,7 @@ pub fn group_and_print_clonotypes(
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
+    svgs: &mut Vec<String>,
 ) -> Result<(), String> {
     // Build index to join info.
 
@@ -857,11 +858,13 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.plot_opt.plot_file == "stdout".to_string() {
+    if ctl.plot_opt.plot_file == "stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
         }
+    } else if ctl.plot_opt.plot_file == "gui" {
+        svgs.push(svg);
     }
 
     // Test requirements.

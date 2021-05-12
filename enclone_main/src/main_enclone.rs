@@ -65,7 +65,8 @@ use vector_utils::*;
 
 #[derive(Clone, Debug, Default)]
 pub struct EncloneOuts {
-    pub pics: Vec<String>,
+    pub pics: Vec<String>, // clonotype tables
+    pub svgs: Vec<String>, // SVG objects
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -886,6 +887,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<EncloneOuts, String> {
 
     // Tail code.
 
+    let mut svgs = Vec::<String>::new();
     tail_code(
         &tall,
         &refdata,
@@ -907,6 +909,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<EncloneOuts, String> {
         &drefs,
         &groups,
         &opt_d_val,
+        &mut svgs,
     )?;
 
     // Report profiling.
@@ -973,5 +976,8 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<EncloneOuts, String> {
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
     }
-    Ok(EncloneOuts { pics: pics })
+    Ok(EncloneOuts {
+        pics: pics,
+        svgs: svgs,
+    })
 }
