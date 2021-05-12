@@ -99,9 +99,20 @@ pub fn load_gex(
 
             // Define the file paths and test for their existence.
 
-            let mut h5_path = format!("{}/raw_feature_bc_matrix.h5", outs);
-            let h5_path_alt = format!("{}/raw_gene_bc_matrices_h5.h5", outs);
-            if !path_exists(&h5_path) && !path_exists(&h5_path_alt) {
+            let mut h5_path = String::new();
+            let h5p = [
+                "raw_feature_bc_matrix.h5",
+                "raw_gene_bc_matrices_h5.h5",
+                "multi/count/raw_feature_bc_matrix.h5",
+            ];
+            for x in h5p.iter() {
+                let p = format!("{}/{}", outs, x);
+                if path_exists(&p) {
+                    h5_path = p;
+                    break;
+                }
+            }
+            if h5_path.len() == 0 {
                 r.11 = format!(
                     "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
                     and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
@@ -110,9 +121,6 @@ pub fn load_gex(
                 );
                 return;
             }
-            if !path_exists(&h5_path) {
-                h5_path = h5_path_alt;
-            }
             let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
 
             // Define possible places for the analysis directory.
@@ -120,7 +128,8 @@ pub fn load_gex(
             let mut analysis = Vec::<String>::new();
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
-            let pso = format!("{}/../per_sample_outs", outs);
+            analysis.push(format!("{}/count/analysis", outs));
+            let pso = format!("{}/per_sample_outs", outs);
             if path_exists(&pso) {
                 let samples = dir_list(&pso);
                 if samples.solo() {
@@ -171,9 +180,31 @@ pub fn load_gex(
                     return;
                 }
             }
-            let csv1 = format!("{}/metrics_summary.csv", outs);
-            let csv2 = format!("{}/metrics_summary_csv.csv", outs);
-            if !path_exists(&csv1) && !path_exists(&csv2) {
+
+            // Find metrics summary file.
+
+            let mut csv = String::new();
+            let mut csvs = Vec::<String>::new();
+            csvs.push(format!("{}/metrics_summary.csv", outs));
+            csvs.push(format!("{}/metrics_summary_csv.csv", outs));
+            let pso = format!("{}/per_sample_outs", outs);
+            if path_exists(&pso) {
+                let samples = dir_list(&pso);
+                if samples.solo() {
+                    let a = format!("{}/{}/metrics_summary.csv", pso, samples[0]);
+                    csvs.push(a);
+                    let a = format!("{}/{}/metrics_summary_csv.csv", pso, samples[0]);
+                    csvs.push(a);
+                }
+            }
+            for i in 0..csvs.len() {
+                let c = &csvs[i];
+                if path_exists(&c) {
+                    csv = c.clone();
+                    break;
+                }
+            }
+            if csv.len() == 0 {
                 r.11 = format!(
                     "\nSomething wrong with GEX or META argument:\ncan't find the file \
                         metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
@@ -181,10 +212,6 @@ pub fn load_gex(
                     outs
                 );
                 return;
-            }
-            let mut csv = csv1.clone();
-            if !path_exists(&csv1) {
-                csv = csv2.clone();
             }
 
             // Determine the state of affairs of the bin file.  We end with one of three outcomes:
