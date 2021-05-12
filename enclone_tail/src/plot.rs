@@ -705,7 +705,7 @@ pub fn plot_clonotypes(
         WIDTH,
         HEIGHT,
         BOUNDARY,
-        ctl.plot_opt.tooltip,
+        ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout",
     );
 
     // Calculate the actual height and width of the svg.
@@ -912,7 +912,10 @@ pub fn plot_clonotypes(
 
     // Output the svg file.
 
-    if plot_opt.plot_file != "stdout".to_string() {
+    if plot_opt.plot_file != "stdout"
+        && plot_opt.plot_file != "gui"
+        && plot_opt.plot_file != "gui_stdout"
+    {
         let f = File::create(&plot_opt.plot_file);
         if f.is_err() {
             return Err(format!(

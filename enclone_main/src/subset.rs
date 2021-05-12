@@ -17,16 +17,19 @@ pub fn subset_json(
     ann: &str,
 ) {
     if ctl.gen_opt.subset_json.len() > 0 {
-        let mut barcodes = Vec::<String>::new();
+        let mut barcode_li = Vec::<(String, usize)>::new();
         for l in 0..exacts.len() {
             for u in 0..exacts[l].len() {
                 let ex = &exact_clonotypes[exacts[l][u]];
                 for j in 0..ex.clones.len() {
-                    barcodes.push(ex.clones[j][0].barcode.clone());
+                    barcode_li.push((
+                        ex.clones[j][0].barcode.clone(),
+                        ex.clones[j][0].dataset_index,
+                    ));
                 }
             }
         }
-        unique_sort(&mut barcodes);
+        unique_sort(&mut barcode_li);
         let mut g = open_for_write_new![&ctl.gen_opt.subset_json];
         fwriteln!(g, "[");
         let mut written = false;
@@ -44,7 +47,7 @@ pub fn subset_json(
                     Some(x) => {
                         let v: Value = serde_json::from_str(strme(&x)).unwrap();
                         let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-                        if bin_member(&barcodes, &barcode) {
+                        if bin_member(&barcode_li, &(barcode.clone(), li)) {
                             xs.push(x);
                         }
                     }

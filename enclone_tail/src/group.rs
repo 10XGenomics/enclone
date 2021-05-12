@@ -24,10 +24,9 @@ use io_utils::*;
 use itertools::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::remove_file;
 use std::fs::File;
 use std::io::stdout;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::time::Instant;
 use string_utils::*;
@@ -52,6 +51,7 @@ pub fn group_and_print_clonotypes(
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
+    svgs: &mut Vec<String>,
 ) -> Result<(), String> {
     // Build index to join info.
 
@@ -773,14 +773,17 @@ pub fn group_and_print_clonotypes(
             yvar = format!("log10({})", yvar);
         }
         let filename = ctl.plot_opt.plot_xy_filename.clone();
-        plot_points(&plot_xy_vals, &xvar, &yvar, &filename)?;
-        if filename == "stdout" {
-            let f = open_for_read!["stdout"];
-            for line in f.lines() {
-                let s = line.unwrap();
-                println!("{}", s);
+        let mut svg = String::new();
+        plot_points(&plot_xy_vals, &xvar, &yvar, &mut svg)?;
+        if filename == "stdout" || filename == "gui_stdout" {
+            for line in svg.lines() {
+                println!("{}", line);
             }
-            remove_file("stdout").unwrap();
+        } else if filename == "gui" {
+            svgs.push(svg);
+        } else {
+            let mut f = open_for_write_new![&filename];
+            fwrite!(f, "{}", svg);
         }
     }
 
@@ -857,11 +860,13 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.plot_opt.plot_file == "stdout".to_string() {
+    if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
         }
+    } else if ctl.plot_opt.plot_file == "gui" {
+        svgs.push(svg);
     }
 
     // Test requirements.

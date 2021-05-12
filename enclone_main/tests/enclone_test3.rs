@@ -593,50 +593,82 @@ fn test_annotated_example() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 24. Test SUBSET_JSON option.
+//
+// This uses two examples, that were broken for different reasons.
 
+// not BASIC
+
+#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_subset_json() {
-    // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
-    std::fs::create_dir_all("testx/outputs/woof").unwrap();
-    let test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
-    let pre_arg = format!(
-        "PRE=../enclone-data/big_inputs/version{}",
-        TEST_FILES_VERSION
-    );
-    let args = parse_bsv(&test);
-    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-        .arg(&pre_arg)
-        .args(&args)
-        .output()
-        .expect(&format!("failed to execute test_subset_json 1"));
-    if new.status.code() != Some(0) {
-        eprint!(
-            "\nsubset json test 1: failed to execute, stderr =\n{}",
-            strme(&new.stderr),
+    for pass in 1..=2 {
+        // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
+        std::fs::create_dir_all("testx/outputs/woof").unwrap();
+        let test;
+        if pass == 1 {
+            test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+        } else {
+            test = r###"BCR=140703,140704 BUILT_IN CDR3=CARGGALYSSSASYYYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json NOPRINT POUT=stdout PCOLS=n,nchains"###;
+        }
+        /*
+        let pre_arg = format!(
+            "PRE=../enclone-data/big_inputs/version{}",
+            TEST_FILES_VERSION
         );
-        std::process::exit(1);
+        */
+        let args = parse_bsv(&test);
+        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+            // .arg(&pre_arg)
+            .args(&args)
+            .output()
+            .expect(&format!(
+                "failed to execute test_subset_json 1, pass = {}",
+                pass
+            ));
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nsubset json test 1, pass = {}: failed to execute, stderr =\n{}",
+                pass,
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
+        let o1 = new.stdout;
+        let mut args = vec!["BCR=testx/outputs/woof".to_string()];
+        if pass == 2 {
+            args.push("BUILT_IN".to_string());
+            args.push("NOPRINT".to_string());
+            args.push("POUT=stdout".to_string());
+            args.push("PCOLS=n,nchains".to_string());
+        }
+        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+            .args(&args)
+            .output()
+            .expect(&format!(
+                "failed to execute test_subset_json 2, pass = {}",
+                pass
+            ));
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nsubset json test 2, pass = {}: failed to execute, stderr =\n{}",
+                pass,
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
+        let o2 = new.stdout;
+        if o1 != o2 {
+            eprintln!(
+                "\nSubset json test failed: outputs are unequal, pass = {}.\n",
+                pass
+            );
+            eprintln!("output 1:\n{}\n", strme(&o1));
+            eprintln!("output 2:\n{}\n", strme(&o2));
+            std::process::exit(1);
+        }
+        let _ = remove_dir_all("testx/outputs/woof");
     }
-    let o1 = new.stdout;
-    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-        .arg("BCR=testx/outputs/woof")
-        .output()
-        .expect(&format!("failed to execute test_subset_json 2"));
-    if new.status.code() != Some(0) {
-        eprint!(
-            "\nsubset json test 2: failed to execute, stderr =\n{}",
-            strme(&new.stderr),
-        );
-        std::process::exit(1);
-    }
-    let o2 = new.stdout;
-    if o1 != o2 {
-        eprintln!("\nSubset json test failed: outputs are unequal.\n");
-        eprintln!("output 1:\n{}\n", strme(&o1));
-        eprintln!("output 2:\n{}\n", strme(&o2));
-        std::process::exit(1);
-    }
-    let _ = remove_dir_all("testx/outputs/woof");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

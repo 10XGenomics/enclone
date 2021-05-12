@@ -63,7 +63,15 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
+#[derive(Clone, Debug, Default)]
+pub struct MainEncloneOutput {
+    pub pics: Vec<String>, // clonotype tables
+    pub svgs: Vec<String>, // SVG objects
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
     let tall = Instant::now();
 
     // Process SOURCE args.
@@ -156,7 +164,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     }
     if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
     if ctl.evil_eye {
         println!("calling perf_stats, before setup");
@@ -165,10 +173,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx)?;
     if ctl.gen_opt.split {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
     if argsx.len() == 1 || (argsx.len() > 1 && argsx[1] == "help") {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
 
     // Dump internal ids.
@@ -181,7 +189,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
             }
             x.sort();
             println!("\n{}\n", x.iter().format(","));
-            return Ok(());
+            return Ok(MainEncloneOutput::default());
         }
     }
 
@@ -339,7 +347,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &mut log,
     )?;
     if ctl.gen_opt.require_unbroken_ok {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
@@ -364,7 +372,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     search_for_shm_indels(&ctl, &tig_bc);
     if ctl.gen_opt.indels {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
 
     // Record fate of non-cells.
@@ -402,7 +410,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let texact = Instant::now();
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
     ctl.perf_stats(&texact, "finding exact subclonotypes");
 
@@ -586,7 +594,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
     if ctl.gen_opt.heavy_chain_reuse {
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
     ctl.perf_stats(&txxx, "in some odds and ends");
 
@@ -874,11 +882,12 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
             .await
             .unwrap();
-        return Ok(());
+        return Ok(MainEncloneOutput::default());
     }
 
     // Tail code.
 
+    let mut svgs = Vec::<String>::new();
     tail_code(
         &tall,
         &refdata,
@@ -900,6 +909,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
         &drefs,
         &groups,
         &opt_d_val,
+        &mut svgs,
     )?;
 
     // Report profiling.
@@ -966,5 +976,8 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
     }
-    Ok(())
+    Ok(MainEncloneOutput {
+        pics: pics,
+        svgs: svgs,
+    })
 }
