@@ -689,8 +689,8 @@ pub const TESTS: [&str; 234] = [
     // 233. test use of two linear constraints
     r###"BCR=123085 GEX=123217
          KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
-    // 234. test TOOLTIP
-    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2 TOOLTIP"###,
+    // 234. test tooltip comments; this is via a testing-only filename option gui_stdout
+    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=gui_stdout NOPRINT MIN_CHAINS_EXACT=2"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
