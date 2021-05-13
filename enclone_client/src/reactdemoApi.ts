@@ -20,7 +20,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   oneofs: true,
 });
 
-export const server = grpc.loadPackageDefinition(packageDefinition).server;
+export const server = grpc.loadPackageDefinition(packageDefinition).enclone_server;
 
 
 const getClient = () => new server.Analyzer('127.0.0.1:7000', grpc.credentials.createInsecure());
