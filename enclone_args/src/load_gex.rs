@@ -334,21 +334,101 @@ pub fn load_gex(
 
             let mut gene_mult = None;
             let mut fb_mult = None;
-            let f = open_userfile_for_read(&csv);
-            let mut lines = Vec::<String>::new();
-            for line in f.lines() {
-                let s = line.unwrap();
-                lines.push(s.to_string());
-            }
-            let mut rpc_field = None;
             let mut rpc = None;
-            let mut fbrpc_field = None;
             let mut fbrpc = None;
+            let mut lines = Vec::<String>::new();
             {
+                let f = open_userfile_for_read(&csv);
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    lines.push(s.to_string());
+                }
+            }
+            if lines.is_empty() {
+                r.11 = format!("\nThe file\n{}\nis empty.\n", csv);
+                return;
+            }
+            let fields = parse_csv(&lines[0]);
+            if fields.contains(&"Metric Name".to_string())
+                && fields.contains(&"Metric Value".to_string())
+                && fields.contains(&"Library Type".to_string())
+            {
+                let mut lib_field = 0;
+                let mut name_field = 0;
+                let mut value_field = 0;
+                for i in 0..fields.len() {
+                    if fields[i] == "Library Type" {
+                        lib_field = i;
+                    } else if fields[i] == "Metric Name" {
+                        name_field = i;
+                    } else if fields[i] == "Metric Value" {
+                        value_field = i;
+                    }
+                }
+                for j in 1..lines.len() {
+                    let fields = parse_csv(&lines[j]);
+                    if fields.len() < lib_field + 1
+                        || fields.len() < name_field + 1
+                        || fields.len() < value_field + 1
+                    {
+                        r.11 = format!(
+                            "\nSomething appears to be wrong with the file\n{}:\n\
+                            line {} doesn't have enough fields.\n",
+                            csv,
+                            j + 1,
+                        );
+                        return;
+                    }
+                    if fields[lib_field] == "Gene Expression"
+                        && fields[name_field] == "Mean reads per cell"
+                    {
+                        let mut rpcx = fields[value_field].to_string();
+                        rpcx = rpcx.replace(",", "");
+                        rpcx = rpcx.replace("\"", "");
+                        if !rpcx.parse::<usize>().is_ok() {
+                            r.11 = format!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the Gene Expression Mean Reads per Cell value isn't an integer.\n",
+                                csv
+                            );
+                            return;
+                        }
+                        rpc = Some(rpcx.force_usize() as isize);
+                    } else if fields[lib_field] == "Feature Barcode"
+                        && fields[name_field] == "Mean reads per cell"
+                    {
+                        let mut fbrpcx = fields[value_field].to_string();
+                        fbrpcx = fbrpcx.replace(",", "");
+                        fbrpcx = fbrpcx.replace("\"", "");
+                        if !fbrpcx.parse::<usize>().is_ok() {
+                            r.11 = format!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the Feature Barcode Mean Reads per Cell value isn't an integer.\n",
+                                csv
+                            );
+                            return;
+                        }
+                        fbrpc = Some(fbrpcx.force_usize() as isize);
+                    }
+                }
+                if rpc.is_none() && fbrpc.is_none() {
+                    r.11 = format!(
+                        "\nGene expression or feature barcode data was expected, however the \
+                        CSV file\n{}\n\
+                        does not have values for Gene Expression Mean Reads per Cell or
+                        Feature Barcode Mean Reads per Cell.\n\
+                        This is puzzling.\n",
+                        csv,
+                    );
+                    return;
+                }
+            } else {
+                let mut rpc_field = None;
+                let mut fbrpc_field = None;
                 for line_no in 0..lines.len() {
                     let s = &lines[line_no];
                     let fields = parse_csv(&s);
-                    if line_no == 1 {
+                    if line_no == 0 {
                         for i in 0..fields.len() {
                             if fields[i] == "Mean Reads per Cell" {
                                 rpc_field = Some(i);
@@ -356,7 +436,7 @@ pub fn load_gex(
                                 fbrpc_field = Some(i);
                             }
                         }
-                    } else if line_no == 2 {
+                    } else if line_no == 1 {
                         if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
@@ -401,14 +481,6 @@ pub fn load_gex(
                         }
                     }
                 }
-                if rpc.is_some() {
-                    const RPC_EXPECTED: f64 = 20_000.0;
-                    gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
-                }
-                if fbrpc.is_some() {
-                    const FB_RPC_EXPECTED: f64 = 5_000.0;
-                    fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
-                }
                 if rpc.is_none() && fbrpc.is_none() {
                     r.11 = format!(
                         "\nGene expression or feature barcode data was expected, however the \
@@ -422,6 +494,14 @@ pub fn load_gex(
                     );
                     return;
                 }
+            }
+            if rpc.is_some() {
+                const RPC_EXPECTED: f64 = 20_000.0;
+                gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
+            }
+            if fbrpc.is_some() {
+                const FB_RPC_EXPECTED: f64 = 5_000.0;
+                fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
