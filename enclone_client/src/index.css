@@ -1,0 +1,53 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+code {
+  font-family: Menlo, monospace;
+  display: block;
+  white-space: pre;
+  font-size: 14px;
+}
+
+.hint {
+  margin-top: 4px;
+  font-size: 80%;
+}
+
+.instruction {
+  margin-bottom: 8px;
+}
+
+.instruction button,
+.instruction input,
+.instruction span {
+  margin-right: 8px;
+}
+
+.warning {
+  color: red;
+  border: 1px solid red;
+  border-radius: 3px;
+  padding: 6px;
+  margin: 8px 0;
+}
+
+.success {
+  color: green;
+  border: 1px solid green;
+  border-radius: 3px;
+  padding: 6px;
+  margin: 8px 0;
+}
+
+.viz {
+  display: flex;
+  justify-content: left;
+}
+
+.tooltip-box {
+  margin: 0 8px;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
