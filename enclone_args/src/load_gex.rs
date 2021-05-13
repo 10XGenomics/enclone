@@ -34,6 +34,7 @@ pub fn load_gex(
     gex_cell_barcodes: &mut Vec<Vec<String>>,
     have_gex: &mut bool,
     have_fb: &mut bool,
+    h5_paths: &mut Vec<String>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -49,6 +50,7 @@ pub fn load_gex(
         HashMap<String, Vec<f64>>,
         bool,
         String,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -63,6 +65,7 @@ pub fn load_gex(
             HashMap::<String, String>::new(),
             HashMap::<String, Vec<f64>>::new(),
             false,
+            String::new(),
             String::new(),
         ));
     }
@@ -121,6 +124,7 @@ pub fn load_gex(
                 );
                 return;
             }
+            r.12 = h5_path.clone();
             let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
 
             // Define possible places for the analysis directory.
@@ -566,11 +570,14 @@ pub fn load_gex(
             *have_fb = true;
         }
     }
+    for i in 0..results.len() {
+        h5_paths.push(results[i].12.clone());
+    }
 
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -613,6 +620,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
     let mut have_gex = false;
     let mut have_fb = false;
+    let mut h5_paths = Vec::<String>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -627,6 +635,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_cell_barcodes,
         &mut have_gex,
         &mut have_fb,
+        &mut h5_paths,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -660,13 +669,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
             if gex_outs[i].len() > 0
             /* && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) */
             {
-                let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
-                if !path_exists(&f) {
-                    f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
-                }
-                if !path_exists(&f) {
-                    return Err(format!("\nThere's a missing input file:\n{}.\n", f));
-                }
+                let f = &h5_paths[i];
                 let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));
