@@ -57,7 +57,6 @@ impl Analyzer for EncloneAnalyzer {
         // stdout output in enclone and updated it to always generate and
         // return the plot.)
         // args.push("PLOT_BY_ISOTYPE=stdout".to_string());
-        args.push("TOOLTIP".to_string());
 
         println!("Running enclone:\n  {}", args.join(" "));
         // TODO: Error handling, but main_enclone just exits sometimes
