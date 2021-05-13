@@ -333,90 +333,95 @@ pub fn load_gex(
             // Get the multipliers gene and feature barcode counts.
 
             let mut gene_mult = None;
+            let mut fb_mult = None;
             let f = open_userfile_for_read(&csv);
-            let mut line_no = 0;
+            let mut lines = Vec::<String>::new();
+            for line in f.lines() {
+                let s = line.unwrap();
+                lines.push(s.to_string());
+            }
             let mut rpc_field = None;
             let mut rpc = None;
             let mut fbrpc_field = None;
             let mut fbrpc = None;
-            for line in f.lines() {
-                let s = line.unwrap();
-                let fields = parse_csv(&s);
-                line_no += 1;
-                if line_no == 1 {
-                    for i in 0..fields.len() {
-                        if fields[i] == "Mean Reads per Cell" {
-                            rpc_field = Some(i);
-                        } else if fields[i] == "Antibody: Mean Reads per Cell" {
-                            fbrpc_field = Some(i);
+            {
+                for line_no in 0..lines.len() {
+                    let s = &lines[line_no];
+                    let fields = parse_csv(&s);
+                    if line_no == 1 {
+                        for i in 0..fields.len() {
+                            if fields[i] == "Mean Reads per Cell" {
+                                rpc_field = Some(i);
+                            } else if fields[i] == "Antibody: Mean Reads per Cell" {
+                                fbrpc_field = Some(i);
+                            }
                         }
-                    }
-                } else if line_no == 2 {
-                    if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
-                        r.11 = format!(
-                            "\nSomething appears to be wrong with the file\n{}:\n\
-                            the second line doesn't have enough fields.\n",
-                            csv
-                        );
-                        return;
-                    } else if rpc_field.is_some() {
-                        let mut rpcx = fields[rpc_field.unwrap()].to_string();
-                        rpcx = rpcx.replace(",", "");
-                        rpcx = rpcx.replace("\"", "");
-                        if !rpcx.parse::<usize>().is_ok() {
+                    } else if line_no == 2 {
+                        if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Mean Reads per Cell field isn't an integer.\n",
+                                the second line doesn't have enough fields.\n",
                                 csv
                             );
                             return;
+                        } else if rpc_field.is_some() {
+                            let mut rpcx = fields[rpc_field.unwrap()].to_string();
+                            rpcx = rpcx.replace(",", "");
+                            rpcx = rpcx.replace("\"", "");
+                            if !rpcx.parse::<usize>().is_ok() {
+                                r.11 = format!(
+                                    "\nSomething appears to be wrong with the file\n{}:\n\
+                                    the Mean Reads per Cell field isn't an integer.\n",
+                                    csv
+                                );
+                                return;
+                            }
+                            rpc = Some(rpcx.force_usize() as isize);
                         }
-                        rpc = Some(rpcx.force_usize() as isize);
-                    }
-                    if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
-                        r.11 = format!(
-                            "\nSomething appears to be wrong with the file\n{}:\n\
-                            the second line doesn't have enough fields.\n",
-                            csv
-                        );
-                        return;
-                    } else if fbrpc_field.is_some() {
-                        let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
-                        fbrpcx = fbrpcx.replace(",", "");
-                        fbrpcx = fbrpcx.replace("\"", "");
-                        if !fbrpcx.parse::<usize>().is_ok() {
+                        if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                the second line doesn't have enough fields.\n",
                                 csv
                             );
                             return;
+                        } else if fbrpc_field.is_some() {
+                            let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
+                            fbrpcx = fbrpcx.replace(",", "");
+                            fbrpcx = fbrpcx.replace("\"", "");
+                            if !fbrpcx.parse::<usize>().is_ok() {
+                                r.11 = format!(
+                                    "\nSomething appears to be wrong with the file\n{}:\n\
+                                    the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                    csv
+                                );
+                                return;
+                            }
+                            fbrpc = Some(fbrpcx.force_usize() as isize);
                         }
-                        fbrpc = Some(fbrpcx.force_usize() as isize);
                     }
                 }
-            }
-            if rpc.is_some() {
-                const RPC_EXPECTED: f64 = 20_000.0;
-                gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
-            }
-            let mut fb_mult = None;
-            if fbrpc.is_some() {
-                const FB_RPC_EXPECTED: f64 = 5_000.0;
-                fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
-            }
-            if rpc.is_none() && fbrpc.is_none() {
-                r.11 = format!(
-                    "\nGene expression or feature barcode data was expected, however the \
-                    CSV file\n{}\n\
-                    does not have a field \"Mean Reads per Cell\" or \
-                    \"Antibody: Mean Reads per Cell\".\n\
-                    This is puzzling, and might be because a file within the Cell Ranger outs \
-                    directory has been moved\n\
-                    from its original location.\n",
-                    csv,
-                );
-                return;
+                if rpc.is_some() {
+                    const RPC_EXPECTED: f64 = 20_000.0;
+                    gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
+                }
+                if fbrpc.is_some() {
+                    const FB_RPC_EXPECTED: f64 = 5_000.0;
+                    fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
+                }
+                if rpc.is_none() && fbrpc.is_none() {
+                    r.11 = format!(
+                        "\nGene expression or feature barcode data was expected, however the \
+                        CSV file\n{}\n\
+                        does not have a field \"Mean Reads per Cell\" or \
+                        \"Antibody: Mean Reads per Cell\".\n\
+                        This is puzzling, and might be because a file within the Cell Ranger outs \
+                        directory has been moved\n\
+                        from its original location.\n",
+                        csv,
+                    );
+                    return;
+                }
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
