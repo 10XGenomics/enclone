@@ -398,7 +398,9 @@ pub fn load_gex(
                             return;
                         }
                         rpc = Some(rpcx.force_usize() as isize);
-                    } else if fields[lib_field] == "Feature Barcode"
+                    // Note that where we have "Antibody Capture", we could hypothetically have
+                    // "CRISPR Guide Capture" or "Custom Feature".
+                    } else if fields[lib_field] == "Antibody Capture"
                         && fields[name_field] == "Mean reads per cell"
                     {
                         let mut fbrpcx = fields[value_field].to_string();
@@ -407,7 +409,7 @@ pub fn load_gex(
                         if !fbrpcx.parse::<usize>().is_ok() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Feature Barcode Mean Reads per Cell value isn't an integer.\n",
+                                the Antibody Capture Mean Reads per Cell value isn't an integer.\n",
                                 csv
                             );
                             return;
@@ -420,7 +422,7 @@ pub fn load_gex(
                         "\nGene expression or feature barcode data was expected, however the \
                         CSV file\n{}\n\
                         does not have values for Gene Expression Mean Reads per Cell or
-                        Feature Barcode Mean Reads per Cell.\n\
+                        Antibody Capture Mean Reads per Cell.\n\
                         This is puzzling.\n",
                         csv,
                     );
