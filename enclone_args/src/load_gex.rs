@@ -34,6 +34,7 @@ pub fn load_gex(
     gex_cell_barcodes: &mut Vec<Vec<String>>,
     have_gex: &mut bool,
     have_fb: &mut bool,
+    h5_paths: &mut Vec<String>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -49,6 +50,7 @@ pub fn load_gex(
         HashMap<String, Vec<f64>>,
         bool,
         String,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -63,6 +65,7 @@ pub fn load_gex(
             HashMap::<String, String>::new(),
             HashMap::<String, Vec<f64>>::new(),
             false,
+            String::new(),
             String::new(),
         ));
     }
@@ -99,9 +102,20 @@ pub fn load_gex(
 
             // Define the file paths and test for their existence.
 
-            let mut h5_path = format!("{}/raw_feature_bc_matrix.h5", outs);
-            let h5_path_alt = format!("{}/raw_gene_bc_matrices_h5.h5", outs);
-            if !path_exists(&h5_path) && !path_exists(&h5_path_alt) {
+            let mut h5_path = String::new();
+            let h5p = [
+                "raw_feature_bc_matrix.h5",
+                "raw_gene_bc_matrices_h5.h5",
+                "multi/count/raw_feature_bc_matrix.h5",
+            ];
+            for x in h5p.iter() {
+                let p = format!("{}/{}", outs, x);
+                if path_exists(&p) {
+                    h5_path = p;
+                    break;
+                }
+            }
+            if h5_path.len() == 0 {
                 r.11 = format!(
                     "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
                     and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
@@ -110,9 +124,7 @@ pub fn load_gex(
                 );
                 return;
             }
-            if !path_exists(&h5_path) {
-                h5_path = h5_path_alt;
-            }
+            r.12 = h5_path.clone();
             let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
 
             // Define possible places for the analysis directory.
@@ -120,7 +132,8 @@ pub fn load_gex(
             let mut analysis = Vec::<String>::new();
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
-            let pso = format!("{}/../per_sample_outs", outs);
+            analysis.push(format!("{}/count/analysis", outs));
+            let pso = format!("{}/per_sample_outs", outs);
             if path_exists(&pso) {
                 let samples = dir_list(&pso);
                 if samples.solo() {
@@ -161,15 +174,41 @@ pub fn load_gex(
                         feature barcode (antibody) data,\nand you had less then ten antibodies.  \
                         Currently if you do this, cellranger will not run the\nsecondary \
                         analyses, so you'll be missing some files.  A workaround is to add \
-                        some \"fake\" antibodies\nto pad out the total number to ten.\n",
+                        some \"fake\" antibodies\nto pad out the total number to ten.\n\n\
+                        Another possibility is that this is a multi run, and the path you \
+                        provided\nis to a subdirectory of the outs folder.  In that case it may \
+                        work to provide the path to outs\nor (equivalently) the parent \
+                        directory.\n",
                         f
                     );
                     return;
                 }
             }
-            let csv1 = format!("{}/metrics_summary.csv", outs);
-            let csv2 = format!("{}/metrics_summary_csv.csv", outs);
-            if !path_exists(&csv1) && !path_exists(&csv2) {
+
+            // Find metrics summary file.
+
+            let mut csv = String::new();
+            let mut csvs = Vec::<String>::new();
+            csvs.push(format!("{}/metrics_summary.csv", outs));
+            csvs.push(format!("{}/metrics_summary_csv.csv", outs));
+            let pso = format!("{}/per_sample_outs", outs);
+            if path_exists(&pso) {
+                let samples = dir_list(&pso);
+                if samples.solo() {
+                    let a = format!("{}/{}/metrics_summary.csv", pso, samples[0]);
+                    csvs.push(a);
+                    let a = format!("{}/{}/metrics_summary_csv.csv", pso, samples[0]);
+                    csvs.push(a);
+                }
+            }
+            for i in 0..csvs.len() {
+                let c = &csvs[i];
+                if path_exists(&c) {
+                    csv = c.clone();
+                    break;
+                }
+            }
+            if csv.len() == 0 {
                 r.11 = format!(
                     "\nSomething wrong with GEX or META argument:\ncan't find the file \
                         metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
@@ -177,10 +216,6 @@ pub fn load_gex(
                     outs
                 );
                 return;
-            }
-            let mut csv = csv1.clone();
-            if !path_exists(&csv1) {
-                csv = csv2.clone();
             }
 
             // Determine the state of affairs of the bin file.  We end with one of three outcomes:
@@ -302,61 +337,79 @@ pub fn load_gex(
             // Get the multipliers gene and feature barcode counts.
 
             let mut gene_mult = None;
-            let f = open_userfile_for_read(&csv);
-            let mut line_no = 0;
-            let mut rpc_field = None;
+            let mut fb_mult = None;
             let mut rpc = None;
-            let mut fbrpc_field = None;
             let mut fbrpc = None;
-            for line in f.lines() {
-                let s = line.unwrap();
-                let fields = parse_csv(&s);
-                line_no += 1;
-                if line_no == 1 {
-                    for i in 0..fields.len() {
-                        if fields[i] == "Mean Reads per Cell" {
-                            rpc_field = Some(i);
-                        } else if fields[i] == "Antibody: Mean Reads per Cell" {
-                            fbrpc_field = Some(i);
-                        }
+            let mut lines = Vec::<String>::new();
+            {
+                let f = open_userfile_for_read(&csv);
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    lines.push(s.to_string());
+                }
+            }
+            if lines.is_empty() {
+                r.11 = format!("\nThe file\n{}\nis empty.\n", csv);
+                return;
+            }
+            let fields = parse_csv(&lines[0]);
+            if fields.contains(&"Metric Name".to_string())
+                && fields.contains(&"Metric Value".to_string())
+                && fields.contains(&"Library Type".to_string())
+            {
+                let mut lib_field = 0;
+                let mut name_field = 0;
+                let mut value_field = 0;
+                for i in 0..fields.len() {
+                    if fields[i] == "Library Type" {
+                        lib_field = i;
+                    } else if fields[i] == "Metric Name" {
+                        name_field = i;
+                    } else if fields[i] == "Metric Value" {
+                        value_field = i;
                     }
-                } else if line_no == 2 {
-                    if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
+                }
+                for j in 1..lines.len() {
+                    let fields = parse_csv(&lines[j]);
+                    if fields.len() < lib_field + 1
+                        || fields.len() < name_field + 1
+                        || fields.len() < value_field + 1
+                    {
                         r.11 = format!(
                             "\nSomething appears to be wrong with the file\n{}:\n\
-                            the second line doesn't have enough fields.\n",
-                            csv
+                            line {} doesn't have enough fields.\n",
+                            csv,
+                            j + 1,
                         );
                         return;
-                    } else if rpc_field.is_some() {
-                        let mut rpcx = fields[rpc_field.unwrap()].to_string();
+                    }
+                    if fields[lib_field] == "Gene Expression"
+                        && fields[name_field] == "Mean reads per cell"
+                    {
+                        let mut rpcx = fields[value_field].to_string();
                         rpcx = rpcx.replace(",", "");
                         rpcx = rpcx.replace("\"", "");
                         if !rpcx.parse::<usize>().is_ok() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Mean Reads per Cell field isn't an integer.\n",
+                                the Gene Expression Mean Reads per Cell value isn't an integer.\n",
                                 csv
                             );
                             return;
                         }
                         rpc = Some(rpcx.force_usize() as isize);
-                    }
-                    if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
-                        r.11 = format!(
-                            "\nSomething appears to be wrong with the file\n{}:\n\
-                            the second line doesn't have enough fields.\n",
-                            csv
-                        );
-                        return;
-                    } else if fbrpc_field.is_some() {
-                        let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
+                    // Note that where we have "Antibody Capture", we could hypothetically have
+                    // "CRISPR Guide Capture" or "Custom Feature".
+                    } else if fields[lib_field] == "Antibody Capture"
+                        && fields[name_field] == "Mean reads per cell"
+                    {
+                        let mut fbrpcx = fields[value_field].to_string();
                         fbrpcx = fbrpcx.replace(",", "");
                         fbrpcx = fbrpcx.replace("\"", "");
                         if !fbrpcx.parse::<usize>().is_ok() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                the Antibody Capture Mean Reads per Cell value isn't an integer.\n",
                                 csv
                             );
                             return;
@@ -364,28 +417,97 @@ pub fn load_gex(
                         fbrpc = Some(fbrpcx.force_usize() as isize);
                     }
                 }
+                if rpc.is_none() && fbrpc.is_none() {
+                    r.11 = format!(
+                        "\nGene expression or feature barcode data was expected, however the \
+                        CSV file\n{}\n\
+                        does not have values for Gene Expression Mean Reads per Cell or
+                        Antibody Capture Mean Reads per Cell.\n\
+                        This is puzzling.\n",
+                        csv,
+                    );
+                    return;
+                }
+            } else {
+                let mut rpc_field = None;
+                let mut fbrpc_field = None;
+                for line_no in 0..lines.len() {
+                    let s = &lines[line_no];
+                    let fields = parse_csv(&s);
+                    if line_no == 0 {
+                        for i in 0..fields.len() {
+                            if fields[i] == "Mean Reads per Cell" {
+                                rpc_field = Some(i);
+                            } else if fields[i] == "Antibody: Mean Reads per Cell" {
+                                fbrpc_field = Some(i);
+                            }
+                        }
+                    } else if line_no == 1 {
+                        if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
+                            r.11 = format!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the second line doesn't have enough fields.\n",
+                                csv
+                            );
+                            return;
+                        } else if rpc_field.is_some() {
+                            let mut rpcx = fields[rpc_field.unwrap()].to_string();
+                            rpcx = rpcx.replace(",", "");
+                            rpcx = rpcx.replace("\"", "");
+                            if !rpcx.parse::<usize>().is_ok() {
+                                r.11 = format!(
+                                    "\nSomething appears to be wrong with the file\n{}:\n\
+                                    the Mean Reads per Cell field isn't an integer.\n",
+                                    csv
+                                );
+                                return;
+                            }
+                            rpc = Some(rpcx.force_usize() as isize);
+                        }
+                        if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
+                            r.11 = format!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the second line doesn't have enough fields.\n",
+                                csv
+                            );
+                            return;
+                        } else if fbrpc_field.is_some() {
+                            let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
+                            fbrpcx = fbrpcx.replace(",", "");
+                            fbrpcx = fbrpcx.replace("\"", "");
+                            if !fbrpcx.parse::<usize>().is_ok() {
+                                r.11 = format!(
+                                    "\nSomething appears to be wrong with the file\n{}:\n\
+                                    the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                    csv
+                                );
+                                return;
+                            }
+                            fbrpc = Some(fbrpcx.force_usize() as isize);
+                        }
+                    }
+                }
+                if rpc.is_none() && fbrpc.is_none() {
+                    r.11 = format!(
+                        "\nGene expression or feature barcode data was expected, however the \
+                        CSV file\n{}\n\
+                        does not have a field \"Mean Reads per Cell\" or \
+                        \"Antibody: Mean Reads per Cell\".\n\
+                        This is puzzling, and might be because a file within the Cell Ranger outs \
+                        directory has been moved\n\
+                        from its original location.\n",
+                        csv,
+                    );
+                    return;
+                }
             }
             if rpc.is_some() {
                 const RPC_EXPECTED: f64 = 20_000.0;
                 gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
             }
-            let mut fb_mult = None;
             if fbrpc.is_some() {
                 const FB_RPC_EXPECTED: f64 = 5_000.0;
                 fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
-            }
-            if rpc.is_none() && fbrpc.is_none() {
-                r.11 = format!(
-                    "\nGene expression or feature barcode data was expected, however the \
-                    CSV file\n{}\n\
-                    does not have a field \"Mean Reads per Cell\" or \
-                    \"Antibody: Mean Reads per Cell\".\n\
-                    This is puzzling, and might be because a file within the Cell Ranger outs \
-                    directory has been moved\n\
-                    from its original location.\n",
-                    csv,
-                );
-                return;
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
@@ -450,11 +572,14 @@ pub fn load_gex(
             *have_fb = true;
         }
     }
+    for i in 0..results.len() {
+        h5_paths.push(results[i].12.clone());
+    }
 
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -497,6 +622,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
     let mut have_gex = false;
     let mut have_fb = false;
+    let mut h5_paths = Vec::<String>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -511,6 +637,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_cell_barcodes,
         &mut have_gex,
         &mut have_fb,
+        &mut h5_paths,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -544,13 +671,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
             if gex_outs[i].len() > 0
             /* && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) */
             {
-                let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
-                if !path_exists(&f) {
-                    f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
-                }
-                if !path_exists(&f) {
-                    return Err(format!("\nThere's a missing input file:\n{}.\n", f));
-                }
+                let f = &h5_paths[i];
                 let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));

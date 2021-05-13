@@ -239,6 +239,7 @@ pub fn group_and_print_clonotypes(
     // Now print clonotypes.
 
     let mut plot_xy_vals = Vec::<(f32, f32)>::new();
+    let mut plot_xy_comments = Vec::<String>::new();
     for i in 0..groups.len() {
         let mut o = Vec::<i32>::new();
         for j in 0..groups[i].len() {
@@ -346,6 +347,14 @@ pub fn group_and_print_clonotypes(
                                         y = y.log10();
                                     }
                                     plot_xy_vals.push((x as f32, y as f32));
+                                    let group_id = i;
+                                    let clonotype_id = j;
+                                    let com = format!(
+                                        "data-tooltip='{{\"group_id\":\"{}\",\"clonotype_id\":\"{}\"}}'",
+                                        group_id + 1,
+                                        clonotype_id + 1,
+                                    );
+                                    plot_xy_comments.push(com);
                                 }
                             }
                         }
@@ -780,7 +789,22 @@ pub fn group_and_print_clonotypes(
                 println!("{}", line);
             }
         } else if filename == "gui" {
-            svgs.push(svg);
+            // Add tooltip notes.
+
+            let mut svg2 = svg.clone();
+            let mut count = 0;
+            for line in svg.lines() {
+                let mut s = line.to_string();
+                if s.starts_with("<circle ") {
+                    s = format!("<circle {}{}", plot_xy_comments[count], s.after("<circle"));
+                    count += 1;
+                }
+                svg2 += &mut format!("{}\n", s);
+            }
+
+            // Save.
+
+            svgs.push(svg2);
         } else {
             let mut f = open_for_write_new![&filename];
             fwrite!(f, "{}", svg);
