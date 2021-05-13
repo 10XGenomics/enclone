@@ -40,7 +40,7 @@ impl Analyzer for EncloneAnalyzer {
 
         // Override the output file
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
-        let mut args = vec!["enclone".to_string()];
+        let mut args = Vec::<String>::new();
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
                 args.push(fields[j].to_string());
