@@ -1,0 +1,36 @@
+// version of protocol buffer used
+syntax = "proto3";
+
+package enclone_server;
+
+// Analyzer service that runs enclone. A rust trait will be generated
+// from this service for the server code to implement.
+service Analyzer {
+  rpc Ping(Unit) returns (Unit);
+
+  // Runs enclone.
+  rpc Enclone(EncloneRequest) returns (EncloneResponse);
+  // Returns the table for one clonotype.
+  rpc GetClonotype(ClonotypeRequest) returns (ClonotypeResponse);
+}
+
+message Unit {}
+
+message EncloneRequest {
+  string args = 1;
+}
+
+message EncloneResponse {
+  string args = 1;
+  string plot = 2; // SVG.
+  string table = 3; // Full clonotype table as terminal text.
+}
+
+message ClonotypeRequest {
+  uint32 clonotypeNumber = 1;
+}
+
+message ClonotypeResponse {
+  string table = 1; // Colored terminal text.
+}
+
