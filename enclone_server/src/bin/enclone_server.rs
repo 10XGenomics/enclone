@@ -35,7 +35,7 @@ impl Analyzer for EncloneAnalyzer {
         request: Request<EncloneRequest>,
     ) -> Result<Response<EncloneResponse>, Status> {
 
-        // TODO: Actualy parse the arguments etc
+        // TODO: Actually parse the arguments etc
         let req: EncloneRequest = request.into_inner();
 
         // Override the output file
@@ -156,7 +156,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         println!("For debugging:");
                         println!("  grpcurl -plaintext -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:{}", local_addr.port());
                         println!("To run the client (in another terminal window):");
-                        println!("  cd reactdemo-app; yarn start");
+                        println!("  cd enclone_client; yarn start");
                         return;
                     }
                     Err(e) => warn!("failed to ping, ({:?}), reattempting in 1s", e),
