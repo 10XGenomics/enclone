@@ -62,9 +62,12 @@ impl Analyzer for EncloneAnalyzer {
         // TODO: Error handling, but main_enclone just exits sometimes
         let result = main_enclone(&args).await;
         if result.is_err() {
+            let err_msg = format!("{}", result.unwrap_err().to_string());
+            eprintln!("enclone failed, here is the error message:");
+            eprintln!("{}", err_msg);
             return Err(Status::new(
                 Code::Internal,
-                format!("{}", result.unwrap_err().to_string()),
+                err_msg,
             ));
         }
         let output = result.unwrap();
