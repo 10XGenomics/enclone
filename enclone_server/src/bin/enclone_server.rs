@@ -41,9 +41,14 @@ impl Analyzer for EncloneAnalyzer {
         // Override the output file
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
         let mut args = vec!["enclone".to_string()];
+        let mut server_debug = false;
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
-                args.push(fields[j].to_string());
+                if fields[j] == "SERVER_DEBUG" {
+                    server_debug = true;
+                } else {
+                    args.push(fields[j].to_string());
+                }
             }
         }
         // Don't print the clonotype table.
@@ -89,6 +94,15 @@ impl Analyzer for EncloneAnalyzer {
                 plot: enclone_output.svgs[0].clone(),
                 table: table.join("\n"),
             };
+            if server_debug {
+                println!("sending response as follows:");
+                println!("args = {}", response.args);
+                println!("plot = {}", response.plot);
+                println!("table = {}", response.table);
+            }
+        }
+        if server_debug {
+            println!("returning response");
         }
         Ok(Response::new(response))
     }
