@@ -22,12 +22,12 @@ brew install jq
 
 First, you need to ask the server to run enclone. The server will then cache the individual clonotype pictures and tables.
 ```
-grpcurl -plaintext -d '{"args": "BCR=/path/to/pipestance"}' -import-path ./server-proto -proto ./server-proto/server.proto 127.0.0.1:7000 server.Analyzer/Enclone
+grpcurl -plaintext -d '{"args": "BCR=/path/to/pipestance"}' -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:7000 enclone_server.Analyzer/Enclone
 ```
 
 You can then hit the server for say, a single clonotype table.
 ```
-grpcurl -plaintext -d '{"clonotypeNumber": 1}' -import-path ./server-proto -proto ./server-proto/server.proto 127.0.0.1:7000 server.Analyzer/GetClonotype | jq -r .table
+grpcurl -plaintext -d '{"clonotypeNumber": 1}' -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:7000 enclone_server.Analyzer/GetClonotype | jq -r .table
 ```
 
 You can also use [BloomRPC](https://github.com/uw-labs/bloomrpc/releases) instead of [grpcurl](https://github.com/fullstorydev/grpcurl) if you prefer a GUI.
@@ -54,7 +54,7 @@ npm install --global yarn
 With the server started, open another terminal window and run the following commands.
 
 ```bash
-cd ./reactdemo-app
+cd ./enclone_gui
 yarn start
 ```
 
