@@ -11,9 +11,7 @@ use enclone_server_proto::proto::{
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
 
-use std::sync::{
-    Arc, Mutex,
-};
+use std::sync::{Arc, Mutex};
 use tokio::net::TcpListener;
 use tonic::{transport::Server, Code, Request, Response, Status};
 
@@ -34,7 +32,6 @@ impl Analyzer for EncloneAnalyzer {
         &self,
         request: Request<EncloneRequest>,
     ) -> Result<Response<EncloneResponse>, Status> {
-
         // TODO: Actually parse the arguments etc
         let req: EncloneRequest = request.into_inner();
 
@@ -70,10 +67,7 @@ impl Analyzer for EncloneAnalyzer {
             let err_msg = format!("{}", result.unwrap_err().to_string());
             eprintln!("enclone failed, here is the error message:");
             eprintln!("{}", err_msg);
-            return Err(Status::new(
-                Code::Internal,
-                err_msg,
-            ));
+            return Err(Status::new(Code::Internal, err_msg));
         }
         let output = result.unwrap();
         println!("Enclone done, updating in-memory cache");
