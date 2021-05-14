@@ -73,6 +73,7 @@ pub struct MainEncloneOutput {
 
 pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
     let tall = Instant::now();
+    let args_orig = args.clone();
 
     // Process SOURCE args.
 
@@ -171,7 +172,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
     ctl.perf_stats(&tall, "before setup");
     let mut argsx = Vec::<String>::new();
-    setup(&mut ctl, &args, &mut argsx)?;
+    setup(&mut ctl, &args, &mut argsx, &args_orig)?;
     if ctl.gen_opt.split {
         return Ok(MainEncloneOutput::default());
     }
