@@ -201,7 +201,6 @@ pub fn setup(
                     nopager = true;
                 }
             }
-            println!("setting up pager, nopager = {}", nopager);
             setup_pager(!nopager && !ctl.gen_opt.profile);
         }
     }
