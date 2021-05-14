@@ -753,7 +753,7 @@ dependencies = [
 name = "enclone_com"
 version = "0.5.54"
 dependencies = [
- "bytes 1.0.1",
+ "bytes 0.5.6",
  "enclone_core",
  "enclone_tail",
  "futures",
@@ -775,7 +775,7 @@ dependencies = [
  "ansi_escape",
  "bio",
  "bio_edit",
- "bytes 1.0.1",
+ "bytes 0.5.6",
  "chrono",
  "debruijn",
  "enclone_proto",
@@ -817,7 +817,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "attohttpc",
- "bytes 1.0.1",
+ "bytes 0.5.6",
  "chrono",
  "debruijn",
  "enclone",
@@ -866,7 +866,7 @@ dependencies = [
  "ansi_escape",
  "bio",
  "byteorder",
- "bytes 1.0.1",
+ "bytes 0.5.6",
  "debruijn",
  "edit-distance",
  "enclone_core",
@@ -898,7 +898,7 @@ version = "0.5.54"
 dependencies = [
  "bio",
  "byteorder",
- "bytes 1.0.1",
+ "bytes 0.5.6",
  "failure",
  "prost 0.7.0",
  "prost-build 0.7.0",
