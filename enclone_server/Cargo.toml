@@ -11,17 +11,14 @@ name = "enclone_server"
 path = "src/bin/enclone_server.rs"
 
 [dependencies]
-clap = "*"
+clap = "2.33"
 enclone_main = { path = "../enclone_main" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-log = "*"
-log4rs = "*"
-tonic = { version = "0.3.1" }
-
-[dependencies.tokio]
-version = "0.2.22"
-features = ["dns", "macros", "rt-threaded", "stream", "tcp"]
+log = "0.4"
+log4rs = "1.0"
+tokio = { version = "0.2.22", features = ["dns", "macros", "rt-threaded", "stream", "tcp"] }
+tonic = "0.3.1"
 
 [build-dependencies]
 tonic-build = "0.3.1"
