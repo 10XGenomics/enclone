@@ -159,7 +159,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let dest = format!("http://{}", local_addr);
         let tick = Instant::now();
         loop {
-            tokio::time::delay_for(Duration::from_secs(1)).await;
+            tokio::time::sleep(Duration::from_secs(1)).await;
             match AnalyzerClient::connect(dest.clone()).await {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
