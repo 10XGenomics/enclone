@@ -90,7 +90,10 @@ pub fn evaluate_d(
 
     // Align the V..J sequence on the contig to the reference concatenation.
 
-    let seq_end = tig.len() - (jref.len() - jend);
+    let mut seq_end = tig.len() - (jref.len() - jend);
+    if seq_end <= seq_start as usize {
+        seq_end = tig.len(); // bug fix for problem found by customer, couldn't reproduce internally
+    }
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
