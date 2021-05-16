@@ -17,8 +17,8 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
 log = "0.4"
 log4rs = "1.0"
-tokio = { version = "1.5", features = ["full"] }
-tonic = "0.3.1"
+tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+tonic = "0.4"
 
 [build-dependencies]
-tonic-build = "0.3.1"
+tonic-build = "0.4"
