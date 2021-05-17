@@ -67,7 +67,7 @@ tables = "0.1"
 tar = "0.4.33"
 tilde-expand = "0.1.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1", features = [] }
+tokio-stream = { version = "0.1", features = ["net"] }
 tokio-util = { version = "0.6", features = ["net"] }
 tonic = "0.4"
 tonic-build = "0.4"
