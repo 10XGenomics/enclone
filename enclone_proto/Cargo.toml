@@ -3,6 +3,7 @@ name = "enclone_proto"
 version = "0.5.56"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
+              Lance Hepler <lance.hepler@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
               Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
               Meryl Lewis <meryl.lewis@10xgenomics.com>,
