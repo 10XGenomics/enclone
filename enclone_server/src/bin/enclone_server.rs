@@ -15,6 +15,8 @@ use std::sync::{Arc, Mutex};
 use tokio::net::TcpListener;
 use tonic::{transport::Server, Code, Request, Response, Status};
 
+use tokio_stream::wrappers::TcpListenerStream;
+
 use std::time::{Duration, Instant};
 
 pub struct EncloneAnalyzer {
@@ -151,7 +153,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         enclone_output: Arc::clone(&enclone_output),
     };
 
-    let mut listener = TcpListener::bind(addr).await?;
+    let listener = TcpListener::bind(addr).await?;
     let local_addr = listener.local_addr()?;
 
     // thread waits to print PORT for client until we can connect to our own endpoints
@@ -182,7 +184,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
-        .serve_with_incoming(listener.incoming())
+        // .serve_with_incoming(listener.incoming())
+        .serve_with_incoming(TcpListenerStream::new(listener))
         .await?;
 
     Ok(())
