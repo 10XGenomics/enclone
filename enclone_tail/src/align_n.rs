@@ -294,11 +294,15 @@ pub fn align_n(
                                     let q2 = ex.share[r].annv[1].0;
                                     seq_start += q2 as isize - q1 as isize;
                                 }
-                                let seq_end = seq.len() - (jref.len() - jend);
+                                let mut seq_end = seq.len() - (jref.len() - jend);
                                 // very flaky bug workaround
                                 // asserted on BCR=180030 CDR3=CARERDLIWFGPW JALIGN1
                                 if seq_start as usize > seq_end {
                                     seq_start = vstart as isize;
+                                }
+                                if seq_end <= seq_start as usize {
+                                    seq_end = seq.len(); // bug fix for problem found by customer,
+                                                         // couldn't reproduce internally
                                 }
                                 seq = seq[seq_start as usize..seq_end].to_vec();
                                 frame = seq_start as usize % 3;
