@@ -9,17 +9,18 @@ use enclone_server::proto::{
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("connecting to client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut client = AnalyzerClient::connect("http://127.0.0.1:7000").await?;
 
-    println!("creating request"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let request = tonic::Request::new(EncloneRequest {
         args: "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".into(),
     });
 
     let response = client.enclone(request).await?;
 
-    println!("RESPONSE={:?}", response);
+    let r = response.into_inner();
+    println!("args = {}", r.args);
+    println!("plot = {}", r.plot);
+    println!("table = {}", r.table);
 
     Ok(())
 }
