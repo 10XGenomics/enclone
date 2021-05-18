@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "bio_edit"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -681,7 +681,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -717,7 +717,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -739,7 +739,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_com"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "bytes",
  "enclone_core",
@@ -757,7 +757,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -788,7 +788,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -800,7 +800,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -848,7 +848,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -882,7 +882,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "bio",
  "byteorder",
@@ -897,7 +897,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_server"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "clap",
  "enclone_main",
@@ -912,7 +912,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "align_tools",
  "amino",
@@ -948,7 +948,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.56"
+version = "0.5.57"
 dependencies = [
  "ansi_escape",
  "attohttpc",
