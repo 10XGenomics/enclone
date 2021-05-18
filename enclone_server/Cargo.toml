@@ -1,6 +1,6 @@
 [package]
-name = "enclone_help"
-version = "0.5.56"
+name = "enclone_server"
+version = "0.1.0"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
@@ -12,20 +12,23 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
-license-file = "../LICENSE.txt"
-publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]] # Bin to run the HelloWorld gRPC server
+name = "enclone_server"
+path = "src/bin/enclone_server.rs"
 
 [dependencies]
-ansi_escape = "0.1"
-enclone_core = { path = "../enclone_core" }
-io_utils = "0.2"
-itertools = ">= 0.8, <= 0.11"
-string_utils = "0.1"
-tables = "0.1"
+clap = "2.33"
+enclone_main = { path = "../enclone_main" }
+enclone_proto = { path = "../enclone_proto" }
+enclone_server_proto = { path = "../enclone_server_proto" }
+log = "0.4"
+log4rs = "1.0"
+tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+tonic = "0.4"
 
-
-
-
+[build-dependencies]
+tonic-build = "0.4"

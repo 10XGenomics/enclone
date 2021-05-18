@@ -27,6 +27,7 @@ pub fn setup(
     mut ctl: &mut EncloneControl,
     args: &Vec<String>,
     argsx: &mut Vec<String>,
+    args_orig: &Vec<String>,
 ) -> Result<(), String> {
     let t = Instant::now();
     // Provide help if requested.
@@ -179,7 +180,6 @@ pub fn setup(
                     days_since_build
                 );
             }
-            let args: Vec<String> = env::args().collect();
             let exit_message = format!(
                 "Something has gone badly wrong.  You have probably encountered an internal \
                 error in enclone.\n\n\
@@ -191,13 +191,13 @@ pub fn setup(
                 🌸 Thank you and have a nice day! 🌸",
                 env!("CARGO_PKG_VERSION"),
                 version_string(),
-                args.iter().format(" "),
+                args_orig.iter().format(" "),
                 elapsed_message,
             );
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
-            for i in 1..args.len() {
-                if args[i] == "NOPAGER" || args[i] == "TOY_COM" {
+            for i in 1..args_orig.len() {
+                if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {
                     nopager = true;
                 }
             }

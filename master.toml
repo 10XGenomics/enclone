@@ -16,6 +16,7 @@ bit-set = "0.5"
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
 chrono = "0.4.19"
+clap = "2.33"
 debruijn = "0.3.2"
 dirs = "3.0.1"
 edit-distance = "2.1.0"
@@ -24,6 +25,7 @@ enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
+enclone_server_proto = { path = "../enclone_server_proto" }
 enclone_tail = { path = "../enclone_tail" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
@@ -39,6 +41,8 @@ hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
+log = "0.4"
+log4rs = "1.0"
 mirror_sparse_matrix = "0.1"
 ndarray = ">= 0.14"
 pager = "0.16.0"
@@ -62,8 +66,10 @@ superslice = "1.0.0"
 tables = "0.1"
 tar = "0.4.33"
 tilde-expand = "0.1.1"
-tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1", features = [] }
-tokio-util = { version = "0.6.3", features = ["net"] }
+tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+tokio-util = { version = "0.6", features = ["net"] }
+tonic = "0.4"
+tonic-build = "0.4"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }
 vector_utils = "0.1.3"

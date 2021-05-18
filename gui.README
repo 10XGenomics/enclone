@@ -1,0 +1,69 @@
+
+
+# reactdemo
+
+Playing around with some ideas for a non-CLI interface.  This is a [gRPC](https://grpc.io/docs/languages/go/quickstart/) server (and eventually prototyping client) to interact with [enclone](https://github.com/10XGenomics/enclone).
+
+## Server setup
+
+### Start the [gRPC](https://grpc.io/docs/languages/go/quickstart/) server.
+```
+cargo build --bin server
+target/debug/server
+```
+
+### Test the API directly, hitting the server to get the nice pictures/tables.
+
+First, install some supporting software to hit the server.
+```
+brew install grpcurl
+brew install jq
+```
+
+First, you need to ask the server to run enclone. The server will then cache the individual clonotype pictures and tables.
+```
+grpcurl -plaintext -d '{"args": "BCR=/path/to/pipestance"}' -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:7000 enclone_server.Analyzer/Enclone
+```
+
+You can then hit the server for say, a single clonotype table.
+```
+grpcurl -plaintext -d '{"clonotypeNumber": 1}' -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:7000 enclone_server.Analyzer/GetClonotype | jq -r .table
+```
+
+You can also use [BloomRPC](https://github.com/uw-labs/bloomrpc/releases) instead of [grpcurl](https://github.com/fullstorydev/grpcurl) if you prefer a GUI.
+
+For both `BloomRPC` and `grpcurl` you need to probably give it `server.proto` since `tonic` doesn't generate the gRPC reflection endpoint.
+
+## Running the enclone gui client
+
+### Install prerequisites
+
+First, install `nvm` and use it to install node:
+
+```bash
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+# Install node (javascript runtime). Same version as Loupe.
+nvm install 12.18.3
+# Install yarn (package manager for node)
+npm install --global yarn
+```
+
+### Start the client
+
+With the server started, open another terminal window and run the following commands.
+
+```bash
+cd ./enclone_gui
+yarn start
+```
+
+## How it works
+
+* We have `server.proto` in `server-proto` which is used to define the `Analyzer` service's request and response parameters in protobuf.
+* `tonic` (rust library) generates a trait for `Analyzer` that we implement on some struct (in our case, `EncloneAnalyzer`) in `server`
+* `tokio` is used to hook up the service, also in `server`
+* Your favorite gRPC client makes it easy to talk to the service and decode the response.
+* The app code template is generated with [Electron Forge](https://www.electronforge.io/)
+
+* TODO: We can also use a generated Rust client from `tonic` and put a terminal, etc around that.

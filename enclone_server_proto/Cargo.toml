@@ -1,8 +1,10 @@
 [package]
-name = "enclone_proto"
-version = "0.5.56"
+name = "enclone_server_proto"
+version = "0.1.0"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
+              Jessica Hamel <jessica.hamel@10xgenomics.com>,
               Lance Hepler <lance.hepler@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
               Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
@@ -10,21 +12,12 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
-license-file = "../LICENSE.txt"
-publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bio = ">=0.33"
-bytes = ">=0.5.5, <2"
-byteorder = "1.4.2"
-failure = "0.1.6"
 prost = ">=0.6.1, <0.8"
-serde = "1.0.90"
-serde_derive = "1.0"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }
+tonic = "0.4"
 
 [build-dependencies]
-prost-build = ">=0.6.1, <0.8"
+tonic-build = "0.4"

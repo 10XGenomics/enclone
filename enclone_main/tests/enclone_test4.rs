@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 80298672;
+    const ENCLONE_SIZE: usize = 78803320;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -182,7 +182,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 2;
+    const DUPPED_CRATES: usize = 9;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
@@ -367,6 +367,51 @@ fn test_exit() {
                     }
                 }
             }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 34. Require that authors for all crates are the same.  We do not track authors on a
+// crate-by-crate basis, and always just list them all.  Also some people have contributed
+// to enclone, but not to specific crates.
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_authors() {
+    PrettyTrace::new().on();
+    let dirs = dir_list(&format!("../.."));
+    let mut aud = Vec::<(String, Vec<String>)>::new();
+    for d in dirs.iter() {
+        let toml = format!("../../{}/Cargo.toml", d);
+        if path_exists(&toml) {
+            let f = open_for_read![&toml];
+            let mut au = Vec::<String>::new();
+            let mut started = false;
+            for line in f.lines() {
+                let s = line.unwrap();
+                if s.starts_with("authors =") {
+                    started = true;
+                }
+                if started {
+                    au.push(s.to_string());
+                }
+                if s.contains("]") {
+                    break;
+                }
+            }
+            aud.push((d.clone(), au));
+        }
+    }
+    for i in 1..aud.len() {
+        if aud[i].1 != aud[0].1 {
+            eprintln!(
+                "\nThe author lists for crates {} and {} are different.\n\
+                They are required to be the same.\n",
+                aud[0].0, aud[i].0,
+            );
+            std::process::exit(1);
         }
     }
 }
