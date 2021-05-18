@@ -2,11 +2,9 @@
 
 // This is a text client, which is useless except for debugging and experimentation.
 
-use enclone_server::proto::{
-    analyzer_client::AnalyzerClient,
-    EncloneRequest,
-};
+use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use std::io::{self, BufRead, Write};
+use string_utils::*;
 
 fn truncate(s: &str) -> String {
     const MAX_LINES: usize = 10;
@@ -30,7 +28,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut client = AnalyzerClient::connect("http://127.0.0.1:7000").await?;
 
     loop {
-        print!("\nenter an enclone command, without the enclone part, or type q to quit\n% ");
+        print!(
+            "\nenter one of the following:\n\
+            • an enclone command, without the enclone part\n\
+            • an clonotype id (number)\n\
+            • q to quit\n\n% "
+        );
         std::io::stdout().flush().unwrap();
         let stdin = io::stdin();
         let line = stdin.lock().lines().next().unwrap().unwrap();
@@ -39,18 +42,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             break;
         }
 
-        let request = tonic::Request::new(EncloneRequest {
-            // args: "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".into(),
-            args: line,
-        });
-    
-        let response = client.enclone(request).await?;
-    
-        let r = response.into_inner();
-        println!("\nargs = {}", r.args);
-        println!("\nplot = {}", truncate(&r.plot));
-        println!("\ntable = {}", truncate(&r.table));
+        if line.parse::<usize>().is_ok() {
+            let n = line.force_usize();
+            let request = tonic::Request::new(ClonotypeRequest {
+                clonotype_number: n as u32,
+            });
+            let response = client.get_clonotype(request).await?;
+            let r = response.into_inner();
+            println!("\ntable = {}", truncate(&r.table));
+        } else {
+            let request = tonic::Request::new(EncloneRequest { args: line });
+            let response = client.enclone(request).await?;
+            let r = response.into_inner();
+            println!("\nargs = {}", r.args);
+            println!("\nplot = {}", truncate(&r.plot));
+            println!("\ntable = {}", truncate(&r.table));
+        }
     }
-    
+
     Ok(())
 }
