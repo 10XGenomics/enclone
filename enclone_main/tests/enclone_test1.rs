@@ -318,6 +318,35 @@ fn test_curl_command() {
                     eprint!("stderr:\n{}", strme(&o.stderr));
                     std::process::exit(1);
                 }
+
+                // Make sure that the version looks OK.  It was broken at one point.
+
+                if pass >= 2 && jf == 3 {
+                    let p = format!("testx/outputs/{}", f);
+                    let mut ok = false;
+                    let f = open_for_read![&p];
+                    for line in f.lines() {
+                        let s = line.unwrap();
+                        println!("see version {}", s);
+                        if s.starts_with('v') {
+                            if s.contains('.') {
+                                if s.between("v", ".").parse::<usize>().is_ok() {
+                                    ok = true;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    if !ok {
+                        eprintln!(
+                            "\nDownload yielded defective version file.  The version \
+                            is gotten by parsing an\nhttp response and this problem could arise \
+                            from changes to formatting of the response.\n"
+                        );
+                        std::process::exit(1);
+                    }
+                }
+
                 // Make sure that the all contigs file is not "essentially empty".  This happened.
 
                 if pass >= 2 && jf == 1 {
