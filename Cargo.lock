@@ -897,7 +897,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_server"
-version = "0.1.0"
+version = "0.5.56"
 dependencies = [
  "clap",
  "enclone_main",
