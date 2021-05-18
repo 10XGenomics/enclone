@@ -901,7 +901,6 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "enclone_main",
- "enclone_proto",
  "log",
  "log4rs",
  "prost",
