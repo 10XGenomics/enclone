@@ -21,7 +21,7 @@ bio = ">=0.33"
 bytes = ">=0.5.5, <2"
 byteorder = "1.4.2"
 failure = "0.1.6"
-prost = ">=0.6.1, <0.8"
+prost = { version = ">=0.6.1, <0.8", features = [] }
 serde = "1.0.90"
 serde_derive = "1.0"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }

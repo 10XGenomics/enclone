@@ -22,10 +22,10 @@ clap = "2.33"
 enclone_main = { path = "../enclone_main" }
 log = "0.4"
 log4rs = "1.0"
-prost = ">=0.6.1, <0.8"
+prost = { version = ">=0.6.1, <0.8", features = [] }
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"
 
 [build-dependencies]
-tonic-build = "0.4"
+tonic-build = { version = "0.4", features = [] }
