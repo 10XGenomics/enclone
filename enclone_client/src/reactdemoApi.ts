@@ -9,7 +9,7 @@ const PROTO_NAME = 'server.proto';
 
 const PROTO_PATH =
   process.env.NODE_ENV === 'development'
-    ? `../enclone_server_proto/${PROTO_NAME}`
+    ? `../enclone_server/${PROTO_NAME}`
     : path.join(process.resourcesPath, PROTO_NAME);
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {

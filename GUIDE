@@ -11,7 +11,6 @@ enclone_main          this includes the enclone main program
 enclone_print         prints clonotypes in the sense of creating the "pictures" (much of core logic)
 enclone_proto         stuff for communicating with Loupe, and reused for other purposes
 enclone_server        highly experiment server for minimal GUI client
-enclone_server_proto  defines interface between enclone_server and enclone_client
 enclone_tail          last part of the code
 enclone_tools         miscellaneous binaries
 

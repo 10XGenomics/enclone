@@ -353,6 +353,9 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) -> Result
                     fieldnames.push(x.to_string());
                 }
                 for i in 0..fields.len() {
+                    if fields[i] == "color" {
+                        color_pos = Some(i);
+                    }
                     if fields[i] == "barcode" {
                         barcode_pos = i;
                     } else if fields[i] == "origin" {
@@ -361,8 +364,6 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) -> Result
                         donor_pos = Some(i);
                     } else if fields[i] == "tag" {
                         tag_pos = Some(i);
-                    } else if fields[i] == "color" {
-                        color_pos = Some(i);
                     } else {
                         to_alt[i] = alt_bc_fields.len() as isize;
                         alt_bc_fields

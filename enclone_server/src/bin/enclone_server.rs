@@ -1,23 +1,20 @@
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+
 #![deny(warnings)]
 
 use clap::{App, Arg};
-use log::{error, info, warn};
-
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
-
-use enclone_server_proto::proto::{
+use enclone_server::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
-
+use log::{error, info, warn};
 use std::sync::{Arc, Mutex};
-use tokio::net::TcpListener;
-use tonic::{transport::Server, Code, Request, Response, Status};
-
-use tokio_stream::wrappers::TcpListenerStream;
-
 use std::time::{Duration, Instant};
+use tokio::net::TcpListener;
+use tokio_stream::wrappers::TcpListenerStream;
+use tonic::{transport::Server, Code, Request, Response, Status};
 
 pub struct EncloneAnalyzer {
     enclone_command: Arc<Mutex<String>>,
@@ -166,7 +163,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
                         println!("For debugging:");
-                        println!("  grpcurl -plaintext -import-path ./enclone_server_proto -proto ./enclone_server_proto/server.proto 127.0.0.1:{}", local_addr.port());
+                        println!(
+                            "  grpcurl -plaintext -import-path ./enclone_server \
+                             -proto ./enclone_server/server.proto 127.0.0.1:{}",
+                            local_addr.port()
+                        );
                         println!("To run the client (in another terminal window):");
                         println!("  cd enclone_client; yarn start");
                         return;
@@ -184,7 +185,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
-        // .serve_with_incoming(listener.incoming())
         .serve_with_incoming(TcpListenerStream::new(listener))
         .await?;
 
