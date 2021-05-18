@@ -902,20 +902,11 @@ dependencies = [
  "clap",
  "enclone_main",
  "enclone_proto",
- "enclone_server_proto",
  "log",
  "log4rs",
+ "prost",
  "tokio",
  "tokio-stream",
- "tonic",
- "tonic-build",
-]
-
-[[package]]
-name = "enclone_server_proto"
-version = "0.1.0"
-dependencies = [
- "prost",
  "tonic",
  "tonic-build",
 ]

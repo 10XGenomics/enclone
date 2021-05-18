@@ -13,9 +13,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[[bin]] # Bin to run the HelloWorld gRPC server
+[[bin]]
 name = "enclone_server"
 path = "src/bin/enclone_server.rs"
 
@@ -23,9 +21,9 @@ path = "src/bin/enclone_server.rs"
 clap = "2.33"
 enclone_main = { path = "../enclone_main" }
 enclone_proto = { path = "../enclone_proto" }
-enclone_server_proto = { path = "../enclone_server_proto" }
 log = "0.4"
 log4rs = "1.0"
+prost = ">=0.6.1, <0.8"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"

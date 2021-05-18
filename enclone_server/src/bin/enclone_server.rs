@@ -4,7 +4,7 @@
 
 use clap::{App, Arg};
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
-use enclone_server_proto::proto::{
+use enclone_server::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
@@ -163,8 +163,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
                         println!("For debugging:");
-                        println!("  grpcurl -plaintext -import-path ./enclone_server_proto \
-                             -proto ./enclone_server_proto/server.proto 127.0.0.1:{}", 
+                        println!(
+                            "  grpcurl -plaintext -import-path ./enclone_server \
+                             -proto ./enclone_server/server.proto 127.0.0.1:{}",
                             local_addr.port()
                         );
                         println!("To run the client (in another terminal window):");

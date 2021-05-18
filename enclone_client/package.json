@@ -20,7 +20,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "extraResource": "../enclone_server_proto/server.proto"
+        "extraResource": "../enclone_server/server.proto"
       },
       "makers": [
         {
