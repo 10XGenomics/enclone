@@ -18,7 +18,7 @@ publish = false
 
 [dependencies]
 assert_cmd = "1.0.3"
-bio = ">=0.33"
+bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d0823f6da17f40e3cc1575" }
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
 dirs = "3.0.1"
