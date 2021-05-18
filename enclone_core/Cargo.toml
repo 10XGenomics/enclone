@@ -9,6 +9,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
               Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
               Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Alvin Liang <alvin.liang@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
