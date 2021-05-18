@@ -166,11 +166,11 @@ main() {
     repo=https://github.com/10XGenomics/enclone
     if $_have_curl; then
         _current_version=$(curl -sI $repo/releases/latest/download/enclone_linux | \
-            grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
+            grep -i "^location:" | tr '/' ' ' | cut -d ' ' -f9)
     else
         _current_version=$(wget --server-response --max-redirect=0 \
             $repo/releases/latest/download/enclone_linux |& \
-            grep " location:" | tr '/' ' ' | cut -d ' ' -f11)
+            grep -i " location:" | tr '/' ' ' | cut -d ' ' -f11)
     fi
     _enclone_is_current=false
     if test -f "$HOME/bin/enclone"; then
@@ -180,6 +180,7 @@ main() {
             _local_version=$(cat $HOME/enclone/version)
             if [ "$_local_version" == "$_current_version" ]; then
                 printf "\nThe local version of enclone is current so not downloading executable.\n"
+                printf "Both versions are $_local_version.\n"
                 _enclone_is_current=true
             fi
         fi
