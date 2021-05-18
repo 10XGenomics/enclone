@@ -269,8 +269,9 @@ pub const TESTS: [&str; 234] = [
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
     // 61. test that enclone doesn't crash on CS multi 6.1 pipeline
     r###"BCR_GEX=tiny_multi_CS_6.1 ALLOW_INCONSISTENT EXPECT_OK"###,
-    // 62. DUPLICATE, TO REPLACE
-    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
+    // 62. make sure color from BC can be used as lead variable was broken)
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=color
+         AMINO=cdr3 BARCODE=CATATGGTCAGTTGAC-1"###,
     // 63. DUPLICATE, TO REPLACE
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
     // 64. DUPLICATE, TO REPLACE
