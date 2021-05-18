@@ -7,6 +7,23 @@ use enclone_server::proto::{
     EncloneRequest,
 };
 
+fn truncate(s: &str) -> String {
+    const MAX_LINES: usize = 20;
+    let mut t = String::new();
+    let mut extra = 0;
+    for (i, line) in s.lines().enumerate() {
+        if i < MAX_LINES {
+            t += &mut format!("{}\n", line);
+        } else {
+            extra += 1;
+        }
+    }
+    if extra > 0 {
+        t += &mut format!("(+ {} more lines)", extra);
+    }
+    t
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut client = AnalyzerClient::connect("http://127.0.0.1:7000").await?;
@@ -18,9 +35,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let response = client.enclone(request).await?;
 
     let r = response.into_inner();
-    println!("args = {}", r.args);
-    println!("plot = {}", r.plot);
-    println!("table = {}", r.table);
+    println!("\nargs = {}", r.args);
+    println!("\nplot = {}", truncate(&r.plot));
+    println!("\ntable = {}", truncate(&r.table));
 
     Ok(())
 }
