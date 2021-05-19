@@ -40,6 +40,8 @@ fn test_comx() {
         Ok(server_process) => server_process,
     };
 
+    println!("server process has id {}", server_process.id());
+
     // Wait until server has printed something.
 
     let mut buffer = [0; 50];
@@ -69,6 +71,8 @@ fn test_comx() {
         Ok(client_process) => client_process,
     };
 
+    println!("client process has id {}", client_process.id());
+
     // Wait until client has printed something.
 
     let mut client_buffer = [0; 224]; // much larger than needed
@@ -97,7 +101,6 @@ fn test_comx() {
         let mut f = open_for_write_new!["test_output"];
         fwrite!(f, "{}", total);
     }
-    println!("output =\n{}\n", total); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Verify that client output is correct.
 

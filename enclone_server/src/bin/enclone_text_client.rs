@@ -27,7 +27,7 @@ fn truncate(s: &str) -> String {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
-    let mut client = AnalyzerClient::connect("http://127.0.0.1:7002").await?;
+    let mut client = AnalyzerClient::connect("http://127.0.0.1:7005").await?;
 
     loop {
         print!(
