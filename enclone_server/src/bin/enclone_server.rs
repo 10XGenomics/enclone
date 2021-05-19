@@ -10,6 +10,7 @@ use enclone_server::proto::{
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
 use log::{error, info, warn};
+use pretty_trace::*;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -121,6 +122,7 @@ impl Analyzer for EncloneAnalyzer {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    PrettyTrace::new().on();
     let matches = App::new("enclone_server")
         .arg(
             Arg::with_name("port")
@@ -142,6 +144,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // Start server
+    println!("starting server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = format!("127.0.0.1:{}", port);
     let enclone_command = Arc::new(Mutex::new("".to_string()));
     let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
@@ -152,6 +155,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let listener = TcpListener::bind(addr).await?;
     let local_addr = listener.local_addr()?;
+    println!("local_addr defined"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // thread waits to print PORT for client until we can connect to our own endpoints
     tokio::spawn(async move {

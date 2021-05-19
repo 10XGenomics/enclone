@@ -873,8 +873,10 @@ version = "0.5.58"
 dependencies = [
  "clap",
  "enclone_main",
+ "io_utils",
  "log",
  "log4rs",
+ "pretty_trace",
  "prost",
  "string_utils",
  "tokio",

@@ -3,6 +3,7 @@
 // This is a text client, which is useless except for debugging and experimentation.
 
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use pretty_trace::*;
 use std::io::{self, BufRead, Write};
 use string_utils::*;
 
@@ -25,6 +26,7 @@ fn truncate(s: &str) -> String {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    PrettyTrace::new().on();
     let mut client = AnalyzerClient::connect("http://127.0.0.1:7000").await?;
 
     loop {
@@ -35,8 +37,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             • q to quit\n\n% "
         );
         std::io::stdout().flush().unwrap();
+        println!("flushed"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let stdin = io::stdin();
+        println!("getting line"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let line = stdin.lock().lines().next().unwrap().unwrap();
+        println!("line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if line == "q" {
             println!("");
             break;
