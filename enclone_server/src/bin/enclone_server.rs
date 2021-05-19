@@ -2,15 +2,15 @@
 
 #![deny(warnings)]
 
-use clap::{App, Arg};
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use enclone_server::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
-use log::{error, info, warn};
+use log::{error, warn};
 use pretty_trace::*;
+use std::env;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -123,6 +123,13 @@ impl Analyzer for EncloneAnalyzer {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
+    let args: Vec<String> = env::args().collect();
+    let mut ip = "127.0.0.1".to_string();
+    if args.len() > 1 {
+        ip = args[1].clone();
+    }
+    let port = 7006;
+    /*
     let matches = App::new("enclone_server")
         .arg(
             Arg::with_name("port")
@@ -142,9 +149,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         Some(val) => val.parse::<u16>()?,
     };
+    */
 
     // Start server
-    let addr = format!("127.0.0.1:{}", port);
+    let addr = format!("{}:{}", ip, port);
     let enclone_command = Arc::new(Mutex::new("".to_string()));
     let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
     let analyzer = EncloneAnalyzer {

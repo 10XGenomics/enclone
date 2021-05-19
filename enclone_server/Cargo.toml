@@ -19,7 +19,6 @@ name = "enclone_server"
 path = "src/bin/enclone_server.rs"
 
 [dependencies]
-clap = "2.33"
 enclone_main = { path = "../enclone_main" }
 log = "0.4"
 log4rs = "1.0"
