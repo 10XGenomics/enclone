@@ -1,9 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // This is a text client, which is useless except for debugging and experimentation.
+// Accepts one argument, the IP address of the server that enclone_server is running on.
 
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use pretty_trace::*;
+use std::env;
 use std::io::{self, BufRead, Write};
 use string_utils::*;
 
@@ -27,7 +29,13 @@ fn truncate(s: &str) -> String {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
-    let mut client = AnalyzerClient::connect("http://127.0.0.1:7006").await?;
+    let args: Vec<String> = env::args().collect();
+    let mut ip = "127.0.0.1".to_string();
+    if args.len() > 1 {
+        ip = args[1].clone();
+    }
+    let url = format!("http://{}:7006", ip);
+    let mut client = AnalyzerClient::connect(url).await?;
 
     loop {
         print!(
