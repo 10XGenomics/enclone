@@ -27,7 +27,7 @@ fn truncate(s: &str) -> String {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
-    let mut client = AnalyzerClient::connect("http://127.0.0.1:7000").await?;
+    let mut client = AnalyzerClient::connect("http://127.0.0.1:7002").await?;
 
     loop {
         print!(
@@ -37,11 +37,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             • q to quit\n\n% "
         );
         std::io::stdout().flush().unwrap();
-        println!("flushed"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let stdin = io::stdin();
-        println!("getting line"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let line = stdin.lock().lines().next().unwrap().unwrap();
-        println!("line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if line == "q" {
             println!("");
             break;

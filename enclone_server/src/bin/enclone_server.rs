@@ -138,13 +138,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let port = match matches.value_of("port") {
         None => match std::env::var("SERVER_PORT") {
             Ok(val) => val.parse::<u16>()?,
-            _ => 7000, // Use 0 to get a randomized port.
+            _ => 7002, // Use 0 to get a randomized port.
         },
         Some(val) => val.parse::<u16>()?,
     };
 
     // Start server
-    println!("starting server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = format!("127.0.0.1:{}", port);
     let enclone_command = Arc::new(Mutex::new("".to_string()));
     let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
@@ -155,7 +154,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let listener = TcpListener::bind(addr).await?;
     let local_addr = listener.local_addr()?;
-    println!("local_addr defined"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // thread waits to print PORT for client until we can connect to our own endpoints
     tokio::spawn(async move {
@@ -187,6 +185,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
         .serve_with_incoming(TcpListenerStream::new(listener))

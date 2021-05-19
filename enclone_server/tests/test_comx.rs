@@ -18,9 +18,8 @@ use std::time;
 use string_utils::*;
 
 #[test]
-fn test_com() {
+fn test_comx() {
     PrettyTrace::new().on();
-    println!("starting test"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Define commmands to be tested.
 
@@ -28,20 +27,18 @@ fn test_com() {
 
     // Define sleep time in milliseconds.
 
-    // XXXXXXXXXXXXXXXXX should be 100 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    let pause = 5000;
+    let pause = 100;
 
     // Start the server.
 
-    println!("starting server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let server_process = match Command::new("enclone_server")
         .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
     {
         Err(why) => panic!("couldn't spawn server: {}", why),
         Ok(server_process) => server_process,
     };
-    println!("done"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Wait until server has printed something.
 
@@ -49,7 +46,17 @@ fn test_com() {
     let mut server_stdout = server_process.stdout.unwrap();
     server_stdout.read(&mut buffer).unwrap();
     thread::sleep(time::Duration::from_millis(pause));
-    println!("server stdout = {}", strme(&buffer)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+    // Look at stderr.
+
+    let mut ebuffer = [0; 200];
+    let mut server_stderr = server_process.stderr.unwrap();
+    server_stderr.read(&mut ebuffer).unwrap();
+    let emsg = strme(&ebuffer);
+    if emsg.contains("already in use") {
+        eprintln!("server failed, error = {}", emsg);
+        std::process::exit(1);
+    }
 
     // Fork client.
 
@@ -64,25 +71,21 @@ fn test_com() {
 
     // Wait until client has printed something.
 
-    let mut client_buffer = [0; 224];
+    let mut client_buffer = [0; 224]; // much larger than needed
     let mut client_stdout = client_process.stdout.unwrap();
     client_stdout.read(&mut client_buffer).unwrap();
-    println!("client has printed: {}", strme(&client_buffer)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Send enclone_client the requests.
 
     let mut client_input = client_process.stdin.unwrap();
     for x in requests.iter() {
         let msg = format!("{}\n", x);
-        print!("msg = {}", msg); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         client_input.write_all(msg.as_bytes()).unwrap();
-        println!("sleeping"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         thread::sleep(time::Duration::from_millis(pause));
     }
 
     // Read the rest of what client printed.
 
-    println!("reading rest of what client printed"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut rest = String::new();
     client_stdout.read_to_string(&mut rest).unwrap();
 
@@ -98,8 +101,6 @@ fn test_com() {
 
     // Verify that client output is correct.
 
-    /*
     let total_control = include_str!["test_output"];
     assert_eq!(total, total_control);
-    */
 }
