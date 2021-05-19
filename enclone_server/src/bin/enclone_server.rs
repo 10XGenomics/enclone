@@ -138,7 +138,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let port = match matches.value_of("port") {
         None => match std::env::var("SERVER_PORT") {
             Ok(val) => val.parse::<u16>()?,
-            _ => 7005, // Use 0 to get a randomized port.
+            _ => 7006, // Use 0 to get a randomized port.
         },
         Some(val) => val.parse::<u16>()?,
     };

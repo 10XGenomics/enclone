@@ -35,3 +35,4 @@ tonic-build = { version = "0.4", features = [] }
 
 [dev-dependencies]
 io_utils = "0.2"
+nix = "0.19.1"

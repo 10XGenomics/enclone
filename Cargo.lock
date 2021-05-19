@@ -876,6 +876,7 @@ dependencies = [
  "io_utils",
  "log",
  "log4rs",
+ "nix",
  "pretty_trace",
  "prost",
  "string_utils",

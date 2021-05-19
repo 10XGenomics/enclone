@@ -8,6 +8,8 @@
 // ./test runs this and many other tests.
 
 use io_utils::*;
+use nix::sys::signal::{kill, SIGINT};
+use nix::unistd::Pid;
 use pretty_trace::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -40,7 +42,7 @@ fn test_comx() {
         Ok(server_process) => server_process,
     };
 
-    println!("server process has id {}", server_process.id());
+    let server_process_id = server_process.id();
 
     // Wait until server has printed something.
 
@@ -71,7 +73,7 @@ fn test_comx() {
         Ok(client_process) => client_process,
     };
 
-    println!("client process has id {}", client_process.id());
+    let client_process_id = client_process.id();
 
     // Wait until client has printed something.
 
@@ -102,8 +104,17 @@ fn test_comx() {
         fwrite!(f, "{}", total);
     }
 
+    // Kill processes.
+
+    kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+    kill(Pid::from_raw(client_process_id as i32), SIGINT).unwrap();
+
     // Verify that client output is correct.
 
     let total_control = include_str!["test_output"];
+    if total != total_control {
+        println!("expected output =\n{}", total);
+        println!("actual output =\n{}", total_control);
+    }
     assert_eq!(total, total_control);
 }
