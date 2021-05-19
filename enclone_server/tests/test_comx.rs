@@ -104,7 +104,8 @@ fn test_comx() {
         fwrite!(f, "{}", total);
     }
 
-    // Kill processes.
+    // Kill processes.  If this step is omitted, then the port is in some sense "hung" after
+    // the test completes.
 
     kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
     kill(Pid::from_raw(client_process_id as i32), SIGINT).unwrap();
