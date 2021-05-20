@@ -32,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let mut url = "http://127.0.0.1:7000".to_string();
     if args.len() > 1 {
-        url = args[1].clone();
+        url = format!("http://{}", args[1]);
     }
     let mut client = AnalyzerClient::connect(url).await?;
 
