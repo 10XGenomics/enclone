@@ -41,14 +41,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "\nenter one of the following:\n\
             • an enclone command, without the enclone part\n\
             • an clonotype id (number)\n\
+            • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
             • q to quit\n\n% "
         );
         std::io::stdout().flush().unwrap();
         let stdin = io::stdin();
-        let line = stdin.lock().lines().next().unwrap().unwrap();
+        let mut line = stdin.lock().lines().next().unwrap().unwrap();
         if line == "q" {
             println!("");
             break;
+        }
+        if line == "d" {
+            line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
         }
 
         if line.parse::<usize>().is_ok() {
