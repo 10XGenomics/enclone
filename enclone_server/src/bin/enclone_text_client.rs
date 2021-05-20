@@ -30,11 +30,10 @@ fn truncate(s: &str) -> String {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
-    let mut ip = "127.0.0.1".to_string();
+    let mut url = "http://127.0.0.1:7000".to_string();
     if args.len() > 1 {
-        ip = args[1].clone();
+        url = args[1].clone();
     }
-    let url = format!("http://{}:7006", ip);
     let mut client = AnalyzerClient::connect(url).await?;
 
     loop {

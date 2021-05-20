@@ -124,11 +124,10 @@ impl Analyzer for EncloneAnalyzer {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
-    let mut ip = "127.0.0.1".to_string();
+    let mut ip_port = "127.0.0.1:7000".to_string();
     if args.len() > 1 {
-        ip = args[1].clone();
+        ip_port = args[1].clone();
     }
-    let port = 7006;
     /*
     let matches = App::new("enclone_server")
         .arg(
@@ -152,7 +151,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     */
 
     // Start server
-    let addr = format!("{}:{}", ip, port);
+    let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
     let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
     let analyzer = EncloneAnalyzer {
