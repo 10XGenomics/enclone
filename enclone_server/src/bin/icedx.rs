@@ -4,7 +4,7 @@ use iced::Font;
 
 const CQ_MONO: Font = Font::External {
     name: "CQ_MONO",
-    bytes: include_bytes!("../../../graphics/fonts/DejaVuLGCSansMono.ttf"),
+    bytes: include_bytes!("../../../fonts/DejaVuLGCSansMono.ttf"),
 };
 
 use iced::{
