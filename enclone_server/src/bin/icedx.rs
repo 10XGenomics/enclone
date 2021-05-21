@@ -2,214 +2,204 @@
 
 use iced::Font;
 
-
-
 use iced::{
-    button, scrollable, Button, Column, Container, Element, Length, Radio, Row,
-    Rule, Sandbox, Scrollable, Settings, Space, Text,
+    button, scrollable, Button, Column, Container, Element, Length, Radio, Row, Rule, Sandbox,
+    Scrollable, Settings, Space, Text,
 };
-
-
-
-
 
 mod style {
 
-use iced::{container, radio, rule, scrollable};
+    use iced::{container, radio, rule, scrollable};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Theme {
-    Light,
-    Dark,
-}
-
-impl Theme {
-    pub const ALL: [Theme; 2] = [Theme::Light, Theme::Dark];
-}
-
-impl Default for Theme {
-    fn default() -> Theme {
-        Theme::Light
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Theme {
+        Light,
+        Dark,
     }
-}
 
-impl From<Theme> for Box<dyn container::StyleSheet> {
-    fn from(theme: Theme) -> Self {
-        match theme {
-            Theme::Light => Default::default(),
-            Theme::Dark => dark::Container.into(),
+    impl Theme {
+        pub const ALL: [Theme; 2] = [Theme::Light, Theme::Dark];
+    }
+
+    impl Default for Theme {
+        fn default() -> Theme {
+            Theme::Light
         }
     }
-}
 
-impl From<Theme> for Box<dyn radio::StyleSheet> {
-    fn from(theme: Theme) -> Self {
-        match theme {
-            Theme::Light => Default::default(),
-            Theme::Dark => dark::Radio.into(),
+    impl From<Theme> for Box<dyn container::StyleSheet> {
+        fn from(theme: Theme) -> Self {
+            match theme {
+                Theme::Light => Default::default(),
+                Theme::Dark => dark::Container.into(),
+            }
         }
     }
-}
 
-impl From<Theme> for Box<dyn scrollable::StyleSheet> {
-    fn from(theme: Theme) -> Self {
-        match theme {
-            Theme::Light => Default::default(),
-            Theme::Dark => dark::Scrollable.into(),
+    impl From<Theme> for Box<dyn radio::StyleSheet> {
+        fn from(theme: Theme) -> Self {
+            match theme {
+                Theme::Light => Default::default(),
+                Theme::Dark => dark::Radio.into(),
+            }
         }
     }
-}
 
-impl From<Theme> for Box<dyn rule::StyleSheet> {
-    fn from(theme: Theme) -> Self {
-        match theme {
-            Theme::Light => Default::default(),
-            Theme::Dark => dark::Rule.into(),
+    impl From<Theme> for Box<dyn scrollable::StyleSheet> {
+        fn from(theme: Theme) -> Self {
+            match theme {
+                Theme::Light => Default::default(),
+                Theme::Dark => dark::Scrollable.into(),
+            }
         }
     }
-}
 
-mod dark {
-    use iced::{container, radio, rule, scrollable, Color};
+    impl From<Theme> for Box<dyn rule::StyleSheet> {
+        fn from(theme: Theme) -> Self {
+            match theme {
+                Theme::Light => Default::default(),
+                Theme::Dark => dark::Rule.into(),
+            }
+        }
+    }
 
-    const BACKGROUND: Color = Color::from_rgb(
-        0x36 as f32 / 255.0,
-        0x39 as f32 / 255.0,
-        0x3F as f32 / 255.0,
-    );
+    mod dark {
+        use iced::{container, radio, rule, scrollable, Color};
 
-    const SURFACE: Color = Color::from_rgb(
-        0x40 as f32 / 255.0,
-        0x44 as f32 / 255.0,
-        0x4B as f32 / 255.0,
-    );
+        const BACKGROUND: Color = Color::from_rgb(
+            0x36 as f32 / 255.0,
+            0x39 as f32 / 255.0,
+            0x3F as f32 / 255.0,
+        );
 
-    const ACCENT: Color = Color::from_rgb(
-        0x6F as f32 / 255.0,
-        0xFF as f32 / 255.0,
-        0xE9 as f32 / 255.0,
-    );
+        const SURFACE: Color = Color::from_rgb(
+            0x40 as f32 / 255.0,
+            0x44 as f32 / 255.0,
+            0x4B as f32 / 255.0,
+        );
 
-    const ACTIVE: Color = Color::from_rgb(
-        0x72 as f32 / 255.0,
-        0x89 as f32 / 255.0,
-        0xDA as f32 / 255.0,
-    );
+        const ACCENT: Color = Color::from_rgb(
+            0x6F as f32 / 255.0,
+            0xFF as f32 / 255.0,
+            0xE9 as f32 / 255.0,
+        );
 
-    const SCROLLBAR: Color = Color::from_rgb(
-        0x2E as f32 / 255.0,
-        0x33 as f32 / 255.0,
-        0x38 as f32 / 255.0,
-    );
+        const ACTIVE: Color = Color::from_rgb(
+            0x72 as f32 / 255.0,
+            0x89 as f32 / 255.0,
+            0xDA as f32 / 255.0,
+        );
 
-    const SCROLLER: Color = Color::from_rgb(
-        0x20 as f32 / 255.0,
-        0x22 as f32 / 255.0,
-        0x25 as f32 / 255.0,
-    );
+        const SCROLLBAR: Color = Color::from_rgb(
+            0x2E as f32 / 255.0,
+            0x33 as f32 / 255.0,
+            0x38 as f32 / 255.0,
+        );
 
-    pub struct Container;
+        const SCROLLER: Color = Color::from_rgb(
+            0x20 as f32 / 255.0,
+            0x22 as f32 / 255.0,
+            0x25 as f32 / 255.0,
+        );
 
-    impl container::StyleSheet for Container {
-        fn style(&self) -> container::Style {
-            container::Style {
-                background: Color {
-                    a: 0.99,
-                    ..BACKGROUND
+        pub struct Container;
+
+        impl container::StyleSheet for Container {
+            fn style(&self) -> container::Style {
+                container::Style {
+                    background: Color {
+                        a: 0.99,
+                        ..BACKGROUND
+                    }
+                    .into(),
+                    text_color: Color::WHITE.into(),
+                    ..container::Style::default()
                 }
-                .into(),
-                text_color: Color::WHITE.into(),
-                ..container::Style::default()
-            }
-        }
-    }
-
-    pub struct Radio;
-
-    impl radio::StyleSheet for Radio {
-        fn active(&self) -> radio::Style {
-            radio::Style {
-                background: SURFACE.into(),
-                dot_color: ACTIVE,
-                border_width: 1.0,
-                border_color: ACTIVE,
             }
         }
 
-        fn hovered(&self) -> radio::Style {
-            radio::Style {
-                background: Color { a: 0.5, ..SURFACE }.into(),
-                ..self.active()
-            }
-        }
-    }
+        pub struct Radio;
 
-    pub struct Scrollable;
-
-    impl scrollable::StyleSheet for Scrollable {
-        fn active(&self) -> scrollable::Scrollbar {
-            scrollable::Scrollbar {
-                background: Color {
-                    a: 0.8,
-                    ..SCROLLBAR
+        impl radio::StyleSheet for Radio {
+            fn active(&self) -> radio::Style {
+                radio::Style {
+                    background: SURFACE.into(),
+                    dot_color: ACTIVE,
+                    border_width: 1.0,
+                    border_color: ACTIVE,
                 }
-                .into(),
-                border_radius: 2.0,
-                border_width: 0.0,
-                border_color: Color::TRANSPARENT,
-                scroller: scrollable::Scroller {
-                    color: Color { a: 0.7, ..SCROLLER },
+            }
+
+            fn hovered(&self) -> radio::Style {
+                radio::Style {
+                    background: Color { a: 0.5, ..SURFACE }.into(),
+                    ..self.active()
+                }
+            }
+        }
+
+        pub struct Scrollable;
+
+        impl scrollable::StyleSheet for Scrollable {
+            fn active(&self) -> scrollable::Scrollbar {
+                scrollable::Scrollbar {
+                    background: Color {
+                        a: 0.8,
+                        ..SCROLLBAR
+                    }
+                    .into(),
                     border_radius: 2.0,
                     border_width: 0.0,
                     border_color: Color::TRANSPARENT,
-                },
+                    scroller: scrollable::Scroller {
+                        color: Color { a: 0.7, ..SCROLLER },
+                        border_radius: 2.0,
+                        border_width: 0.0,
+                        border_color: Color::TRANSPARENT,
+                    },
+                }
+            }
+
+            fn hovered(&self) -> scrollable::Scrollbar {
+                let active = self.active();
+
+                scrollable::Scrollbar {
+                    background: SCROLLBAR.into(),
+                    scroller: scrollable::Scroller {
+                        color: SCROLLER,
+                        ..active.scroller
+                    },
+                    ..active
+                }
+            }
+
+            fn dragging(&self) -> scrollable::Scrollbar {
+                let hovered = self.hovered();
+
+                scrollable::Scrollbar {
+                    scroller: scrollable::Scroller {
+                        color: ACCENT,
+                        ..hovered.scroller
+                    },
+                    ..hovered
+                }
             }
         }
 
-        fn hovered(&self) -> scrollable::Scrollbar {
-            let active = self.active();
+        pub struct Rule;
 
-            scrollable::Scrollbar {
-                background: SCROLLBAR.into(),
-                scroller: scrollable::Scroller {
-                    color: SCROLLER,
-                    ..active.scroller
-                },
-                ..active
-            }
-        }
-
-        fn dragging(&self) -> scrollable::Scrollbar {
-            let hovered = self.hovered();
-
-            scrollable::Scrollbar {
-                scroller: scrollable::Scroller {
-                    color: ACCENT,
-                    ..hovered.scroller
-                },
-                ..hovered
-            }
-        }
-    }
-
-    pub struct Rule;
-
-    impl rule::StyleSheet for Rule {
-        fn style(&self) -> rule::Style {
-            rule::Style {
-                color: SURFACE,
-                width: 2,
-                radius: 1.0,
-                fill_mode: rule::FillMode::Percent(30.0),
+        impl rule::StyleSheet for Rule {
+            fn style(&self) -> rule::Style {
+                rule::Style {
+                    color: SURFACE,
+                    width: 2,
+                    radius: 1.0,
+                    fill_mode: rule::FillMode::Percent(30.0),
+                }
             }
         }
     }
 }
-
-}
-
-
-
 
 const CQ_MONO: Font = Font::External {
     name: "CQ_MONO",
@@ -274,22 +264,18 @@ impl Sandbox for ScrollableDemo {
             variants
                 .iter_mut()
                 .map(|variant| {
-                    let mut scrollable =
-                        Scrollable::new(&mut variant.scrollable)
-                            .padding(10)
-                            .spacing(10)
-                            .width(Length::Fill)
-                            .height(Length::Fill)
-                            .style(*theme)
-                            .push(Text::new(variant.title));
+                    let mut scrollable = Scrollable::new(&mut variant.scrollable)
+                        .padding(10)
+                        .spacing(10)
+                        .width(Length::Fill)
+                        .height(Length::Fill)
+                        .style(*theme)
+                        .push(Text::new(variant.title));
 
                     if let Some(scrollbar_width) = variant.scrollbar_width {
                         scrollable = scrollable
                             .scrollbar_width(scrollbar_width)
-                            .push(Text::new(format!(
-                                "scrollbar_width: {:?}",
-                                scrollbar_width
-                            )));
+                            .push(Text::new(format!("scrollbar_width: {:?}", scrollbar_width)));
                     }
 
                     if let Some(scrollbar_margin) = variant.scrollbar_margin {
@@ -304,16 +290,14 @@ impl Sandbox for ScrollableDemo {
                     if let Some(scroller_width) = variant.scroller_width {
                         scrollable = scrollable
                             .scroller_width(scroller_width)
-                            .push(Text::new(format!(
-                                "scroller_width: {:?}",
-                                scroller_width
-                            )));
+                            .push(Text::new(format!("scroller_width: {:?}", scroller_width)));
                     }
 
                     scrollable = scrollable
                         .push(Space::with_height(Length::Units(100)))
-                        .push(Text::new(
-                            "Some content that should wrap within the \
+                        .push(
+                            Text::new(
+                                "Some content that should wrap within the \
                             scrollable. Let's output a lot of short words, so \
                             that we'll make sure to see how wrapping works \
                             with these scrollbars.\n\n\
@@ -331,18 +315,17 @@ impl Sandbox for ScrollableDemo {
 ├───────────┼────────────────────────────────────────────┼──────────────────────────┤\n\
 │#  n       │  .. ..........................   u  const  │  ...........   u  const  │\n\
 │1  1       │  KF CTRSSTTPRDPTMIVVAYYYYGMDVW  17  IGHG1  │  CMQALQTSWTF  25  IGKC   │\n\
-└───────────┴────────────────────────────────────────────┴──────────────────────────┘\n"
-                        ).font(CQ_MONO))
+└───────────┴────────────────────────────────────────────┴──────────────────────────┘\n",
+                            )
+                            .font(CQ_MONO),
+                        )
                         .push(Space::with_height(Length::Units(1200)))
                         .push(Text::new("Middle"))
                         .push(Space::with_height(Length::Units(1200)))
                         .push(
-                            Button::new(
-                                &mut variant.button,
-                                Text::new("I am a button"),
-                            )
-                            .width(Length::Fill)
-                            .padding(10),
+                            Button::new(&mut variant.button, Text::new("I am a button"))
+                                .width(Length::Fill)
+                                .padding(10),
                         )
                         .push(Text::new("The End."));
 
