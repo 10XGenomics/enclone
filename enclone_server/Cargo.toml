@@ -29,6 +29,9 @@ tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"
 
+iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio"] }
+rand = "0.8"
+
 [build-dependencies]
 tonic-build = { version = "0.4", features = [] }
 
