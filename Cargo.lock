@@ -918,9 +918,9 @@ dependencies = [
 
 [[package]]
 name = "dirs"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "142995ed02755914747cc6ca76fc7e4583cd18578746716d0508ea6ed558b9ff"
+checksum = "30baa043103c9d0c2a57cf537cc2f35623889dc0d405e6c3cccfadbc81c71309"
 dependencies = [
  "dirs-sys",
 ]
@@ -1027,7 +1027,7 @@ dependencies = [
  "assert_cmd",
  "bio",
  "debruijn",
- "dirs 3.0.1",
+ "dirs 3.0.2",
  "enclone_args",
  "enclone_core",
  "equiv",
@@ -1060,7 +1060,7 @@ version = "0.5.58"
 dependencies = [
  "attohttpc",
  "debruijn",
- "dirs 3.0.1",
+ "dirs 3.0.2",
  "enclone_core",
  "evalexpr",
  "hdf5",
@@ -1297,7 +1297,7 @@ dependencies = [
  "ansi_escape",
  "attohttpc",
  "debruijn",
- "dirs 3.0.1",
+ "dirs 3.0.2",
  "enclone_core",
  "evalexpr",
  "fs_extra",
@@ -1749,9 +1749,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9495705279e7140bf035dde1f6e750c162df8b625267cd52cc44e0b156732c8"
+checksum = "7fcd999463524c52659517fe2cea98493cfe485d10565e7b0fb07dbba7ad2753"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
@@ -1958,7 +1958,7 @@ dependencies = [
  "glyph_brush_draw_cache",
  "glyph_brush_layout",
  "log",
- "ordered-float 2.2.0",
+ "ordered-float 2.4.0",
  "rustc-hash",
  "twox-hash",
 ]
@@ -3193,9 +3193,9 @@ dependencies = [
 
 [[package]]
 name = "ordered-float"
-version = "2.2.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b50b8919aecb97e5ee9aceef27e24f39c46b11831130f4a6b7b091ec5de0de12"
+checksum = "76d99537dd7019c4dabfcf3898a43ee685412f76e6bee1ecc48785d730c1a275"
 dependencies = [
  "num-traits",
 ]
@@ -3473,9 +3473,9 @@ checksum = "bc881b2c22681370c6a780e47af9840ef841837bc98118431d4e1868bd0c1086"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.26"
+version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a152013215dca273577e18d2bf00fa862b89b24169fb78c4c95aeb07992c9cec"
+checksum = "f0d8caf72986c1a598726adc988bb5984792ef84f5ee5aa50209145ee8077038"
 dependencies = [
  "unicode-xid",
 ]
@@ -3600,7 +3600,7 @@ version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34cf66eb183df1c5876e2dcf6b13d57340741e8dc255b48e40a26de954d06ae7"
 dependencies = [
- "getrandom 0.2.2",
+ "getrandom 0.2.3",
 ]
 
 [[package]]
@@ -3698,7 +3698,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "528532f3d801c87aec9def2add9ca802fe569e44a544afe633765267840abe64"
 dependencies = [
- "getrandom 0.2.2",
+ "getrandom 0.2.3",
  "redox_syscall 0.2.8",
 ]
 
@@ -3878,7 +3878,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3a1a3341211875ef120e117ea7fd5228530ae7e7036a779fdc9117be6b3282c"
 dependencies = [
- "ordered-float 2.2.0",
+ "ordered-float 2.4.0",
  "serde",
 ]
 
