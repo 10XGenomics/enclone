@@ -148,6 +148,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             host = config["REMOTE_HOST"].clone();
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
+            println!("\nstarting remote server using\nssh {} {}/enclone_server {}:{}",
+                host, bin, ip, port
+            );
             server_process = Command::new("ssh")
                 .arg(&host)
                 .arg(&format!("{}/enclone_server", bin))
@@ -250,9 +253,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             */
         }
 
-        // Form local URL.  Not really a URL.
+        // Form local URL.
 
-        let url = format!("{}:{}", local_host, port);
+        let url = format!("http://{}:{}", local_host, port);
 
         // Connect to client.
 
