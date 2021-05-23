@@ -1238,9 +1238,11 @@ dependencies = [
 name = "enclone_server"
 version = "0.5.58"
 dependencies = [
+ "enclone_core",
  "enclone_main",
  "iced",
  "io_utils",
+ "itertools",
  "log",
  "log4rs",
  "nix 0.19.1",
