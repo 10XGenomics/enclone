@@ -131,8 +131,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             remote = true;
         }
         println!("trying random port {}", port);
+        let mut host = String::new();
         if remote {
-            let host = &config["REMOTE_HOST"];
+            host = config["REMOTE_HOST"].clone();
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
             server_process = Command::new("ssh")
@@ -142,7 +143,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
-            local_host = format!("local_host:{}", port);
+            local_host = "local_host".to_string();
         } else {
             let ip = "127.0.0.1";
             server_process = Command::new("enclone_server")
@@ -180,6 +181,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 continue;
             }
             eprintln!("\nserver says this:\n{}", emsg);
+        }
+
+        // Get server process id, possibly remote.
+
+        let mut remote_id = None;
+        if remote {
+            if emsg.contains("I am process ") && emsg.after("I am process ").contains(".") {
+                let id = emsg.between("I am process ", ".");
+                if id.parse::<usize>().is_ok() {
+                    remote_id = Some(id.force_usize());
+                }
+            }
+            if remote_id.is_none() {
+                eprintln!("\nUnable to determine remote process id.\n");
+                std::process::exit(1);
+            }
         }
 
         // Fork remote setup command if needed.
@@ -264,6 +281,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Kill server.
 
         kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+        if remote {
+            Command::new("ssh")
+                .arg(&host)
+                .arg("kill")
+                .arg("-9")
+                .arg(&format!("{}", remote_id.unwrap()))
+                .output()
+                .expect("failed to execute ssh to kill");
+        }
 
         // Done.
 
