@@ -4,8 +4,8 @@
 //
 // This starts enclone_server, which can be either local or remote.
 //
-// For now accepts a single argument, which is COM=x where x is a "configuration name".  It then 
-// looks for an environment variable ENCLONE_COM.x, and parses that into blank-separated 
+// For now accepts a single argument, which is COM=x where x is a "configuration name".  It then
+// looks for an environment variable ENCLONE_COM.x, and parses that into blank-separated
 // arguments, which may be:
 //
 // argument                  interpretation
@@ -58,8 +58,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.len() > 1 {
         let arg = args[1].to_string();
         if !arg.starts_with("COM=") {
-            eprintln!("\nCurrently the only allowed argument is COM=x where x is a \
-                configuration name.\n");
+            eprintln!(
+                "\nCurrently the only allowed argument is COM=x where x is a \
+                configuration name.\n"
+            );
             std::process::exit(1);
         }
         let config_name = arg.after("COM=");
@@ -70,10 +72,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         if configuration.is_none() {
-            eprintln!("\nYou specified the configuration name {}, but the environment variable {} \
+            eprintln!(
+                "\nYou specified the configuration name {}, but the environment variable {} \
                 is not defined.\n",
-                config_name,
-                env_var,
+                config_name, env_var,
             );
             std::process::exit(1);
         }
@@ -84,7 +86,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let x = parse_bsv(&configuration);
         for arg in x.iter() {
             if !arg.contains("=") {
-                eprintln!("\nYour configuration has an argument {} that does not contain =.\n",
+                eprintln!(
+                    "\nYour configuration has an argument {} that does not contain =.\n",
                     arg
                 );
                 std::process::exit(1);
@@ -107,12 +110,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut remote = false;
         let server_process;
         let mut local_host = "127.0.0.1".to_string();
-        if config.contains_key("REMOTE_HOST") || config.contains_key("REMOTE_IP")
-            || config.contains_key("REMOTE_BIN") {
-            if !config.contains_key("REMOTE_HOST") || !config.contains_key("REMOTE_IP")
-                || !config.contains_key("REMOTE_BIN") {
-                eprintln!("\nTo use a remote host, please specify all of REMOTE_HOST, \
-                    REMOTE_IP, and REMOTE_BIN.\n");
+        if config.contains_key("REMOTE_HOST")
+            || config.contains_key("REMOTE_IP")
+            || config.contains_key("REMOTE_BIN")
+        {
+            if !config.contains_key("REMOTE_HOST")
+                || !config.contains_key("REMOTE_IP")
+                || !config.contains_key("REMOTE_BIN")
+            {
+                eprintln!(
+                    "\nTo use a remote host, please specify all of REMOTE_HOST, \
+                    REMOTE_IP, and REMOTE_BIN.\n"
+                );
                 eprintln!("Here is what is specified:");
                 for (key, value) in config.iter() {
                     eprintln!("{}={}", key, value);
@@ -143,7 +152,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .spawn();
         }
         if !server_process.is_ok() {
-            eprintln!("\nfailed to launch server, err =\n{}.\n", server_process.unwrap_err());
+            eprintln!(
+                "\nfailed to launch server, err =\n{}.\n",
+                server_process.unwrap_err()
+            );
             std::process::exit(1);
         }
         let server_process = server_process.unwrap();
@@ -191,7 +203,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .stderr(Stdio::piped())
                 .spawn();
             if !setup_process.is_ok() {
-                eprintln!("\nfailed to launch setup, err =\n{}.\n", setup_process.unwrap_err());
+                eprintln!(
+                    "\nfailed to launch setup, err =\n{}.\n",
+                    setup_process.unwrap_err()
+                );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
                 std::process::exit(1);
             }
@@ -204,10 +219,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let url = format!("{}:{}", local_host, port);
 
         // Connect to client.
-    
+
         println!("connecting to {}", url);
         let mut client = AnalyzerClient::connect(url).await?;
-        
+
         // Accept commands.
 
         loop {
