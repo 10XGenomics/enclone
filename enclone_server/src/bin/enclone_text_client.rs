@@ -213,7 +213,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             setup = setup.replace("$port", &format!("{}", port));
             let argsp = setup.split(' ').collect::<Vec<&str>>();
             let args = argsp[1..].to_vec();
-            eprintln!("running setup command = {}", argsp.iter().format(" "));
+            eprintln!("\nrunning setup command = {}", argsp.iter().format(" "));
             let setup_process = Command::new(argsp[0])
                 .args(args)
                 .stdout(Stdio::piped())
@@ -227,8 +227,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
                 std::process::exit(1);
             }
-            let _setup_process = setup_process.unwrap();
+            let setup_process = setup_process.unwrap();
             thread::sleep(Duration::from_millis(100));
+            let mut buffer = [0; 10];
+            let mut setup_stdout = setup_process.stdout.unwrap();
+            setup_stdout.read(&mut buffer).unwrap();
+            let msg = strme(&buffer);
+            println!("setup process says {}", msg);
         }
 
         // Form local URL.  Not really a URL.
@@ -239,6 +244,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         println!("connecting to {}", url);
         let mut client = AnalyzerClient::connect(url).await?;
+        println!("connected");
 
         // Accept commands.
 
