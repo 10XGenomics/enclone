@@ -293,7 +293,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("\ntable = {}", truncate(&r.table));
             } else {
                 let request = tonic::Request::new(EncloneRequest { args: line });
-                let response = client.enclone(request).await?;
+                let response = client.enclone(request).await;
+                if response.is_err() {
+                    let left = r###"message: "\n"###;
+                    let right = r###"\n""###;
+                    let mut err = format!("{:?}", response);
+                    if err.contains(&left) && err.after(&left).contains(&right) {
+                        err = err.between(&left, &right).to_string();
+                    }
+                    eprintln!("\nThe server is unhappy.  It says:\n{}", err);
+                    continue;
+                }
+                let response = response.unwrap();
                 let r = response.into_inner();
                 println!("\nargs = {}", r.args);
                 println!("\nplot = {}", truncate(&r.plot));
