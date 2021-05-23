@@ -1238,6 +1238,7 @@ dependencies = [
 name = "enclone_server"
 version = "0.5.58"
 dependencies = [
+ "async-trait",
  "enclone_core",
  "enclone_main",
  "iced",

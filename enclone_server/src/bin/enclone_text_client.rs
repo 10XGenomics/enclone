@@ -15,8 +15,14 @@
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone_server executable
 
+use async_trait::async_trait;
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use iced::{
+    button, scrollable, text_input, Align, Button, Column,
+    Container, Element, Length, Row, Rule, Sandbox,
+    Scrollable, Settings, Text, TextInput,
+};
 use itertools::Itertools;
 use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::Pid;
@@ -29,6 +35,154 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 use string_utils::*;
+use tonic::transport::Channel;
+
+#[derive(Default)]
+struct Styling {
+    scroll: scrollable::State,
+    input: text_input::State,
+    input_value: String,
+    submitted_input_value: String,
+    button: button::State,
+    client: AnalyzerClient<Channel>,
+}
+
+#[derive(Debug, Clone)]
+enum Message {
+    InputChanged(String),
+    ButtonPressed,
+}
+
+#[async_trait]
+impl Sandbox for Styling {
+    type Message = Message;
+
+    fn new() -> Self {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Styling::default()
+    }
+
+    fn title(&self) -> String {
+        String::from("Styling - Iced")
+    }
+
+    async fn update(&mut self, message: Message) {
+        match message {
+            Message::InputChanged(value) => self.input_value = value,
+            Message::ButtonPressed => {
+
+                let mut line = self.input_value.clone();
+                let mut output = String::new();
+
+                if line == "q" {
+                    std::process::exit(0);
+                }
+                if line == "d" {
+                    line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+                }
+                if line.parse::<usize>().is_ok() {
+                    let n = line.force_usize();
+                    let request = tonic::Request::new(ClonotypeRequest {
+                        clonotype_number: n as u32,
+                    });
+                    let response = self.client.get_clonotype(request).await;
+                    if response.is_err() {
+                        eprintln!("\nclonotype request failed\n");
+                        std::process::exit(1);
+                    }
+                    let response = response.unwrap();
+                    let r = response.into_inner();
+                    output = format!("\ntable = {}", truncate(&r.table));
+                } else {
+                    let request = tonic::Request::new(EncloneRequest { args: line });
+                    let response = self.client.enclone(request).await;
+                    if response.is_err() {
+                        let left = r###"message: "\n"###;
+                        let right = r###"\n""###;
+                        let mut err = format!("{:?}", response);
+                        if err.contains(&left) && err.after(&left).contains(&right) {
+                            err = err.between(&left, &right).to_string();
+                        }
+                        output = format!("\nThe server is unhappy.  It says:\n{}", err);
+                    } else {
+                        let response = response.unwrap();
+                        let r = response.into_inner();
+                        output = format!("\nargs = {}", r.args);
+                        output += &format!("\nplot = {}", truncate(&r.plot));
+                        output += &format!("\ntable = {}", truncate(&r.table));
+                    }
+                }
+
+                self.submitted_input_value = output;
+
+            }
+        }
+    }
+
+    fn view(&mut self) -> Element<Message> {
+
+        let text_input = TextInput::new(
+            &mut self.input,
+            "Enter command...",
+            &self.input_value,
+            Message::InputChanged,
+        )
+        .padding(10)
+        .size(20);
+
+        let button = Button::new(&mut self.button, Text::new("Submit"))
+            .padding(10)
+            .on_press(Message::ButtonPressed);
+
+        let scrollable = Scrollable::new(&mut self.scroll)
+            .width(Length::Fill)
+            .height(Length::Units(100))
+            .push(Text::new(&self.submitted_input_value));
+
+        let content = Column::new()
+            .spacing(20)
+            .padding(20)
+            .max_width(600)
+            .push(Row::new().spacing(10).push(text_input).push(button))
+            .push(
+                Row::new()
+                    .spacing(10)
+                    .height(Length::Units(100))
+                    .align_items(Align::Center)
+                    .push(scrollable)
+                    .push(Rule::vertical(38))
+            );
+
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
+            .into()
+    }
+}
 
 fn truncate(s: &str) -> String {
     const MAX_LINES: usize = 10;
@@ -268,6 +422,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Accept commands.
 
+        Styling::run(Settings::default());
+
+        /*
         loop {
             print!(
                 "\nenter one of the following:\n\
@@ -314,6 +471,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("\ntable = {}", truncate(&r.table));
             }
         }
+        */
 
         // Kill server.
 
