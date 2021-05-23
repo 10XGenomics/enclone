@@ -230,17 +230,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let argsp = setup.split(' ').collect::<Vec<&str>>();
             let args = argsp[1..].to_vec();
             eprintln!("\nrunning setup command = {}", argsp.iter().format(" "));
-
-            // println!("please open a separate terminal window and type the setup command");
-
-            // println!("then push return in this window");
-            // std::io::stdout().flush().unwrap();
-            // let stdin = io::stdin();
-            // let mut line = stdin.lock().lines().next().unwrap().unwrap();
-
-            // println!("you have twenty seconds");
-            // thread::sleep(Duration::from_millis(20000));
-
             let setup_process = Command::new(argsp[0])
                 .args(args)
                 .stdout(Stdio::piped())
@@ -255,13 +244,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 std::process::exit(1);
             }
             let _setup_process = setup_process.unwrap();
-
             thread::sleep(Duration::from_millis(5000));
-            // let mut buffer = [0; 10];
-            // let mut setup_stdout = setup_process.stdout.unwrap();
-            // setup_stdout.read(&mut buffer).unwrap();
-            // let msg = strme(&buffer);
-            // println!("setup process says {}", msg);
         }
 
         // Form local URL.
@@ -320,11 +303,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Kill server.
 
-        println!("killing server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-        println!("killing remote server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         cleanup(remote, &host, remote_id);
-        println!("done killing"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         // Done.
 
