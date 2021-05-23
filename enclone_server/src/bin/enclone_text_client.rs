@@ -47,6 +47,18 @@ fn truncate(s: &str) -> String {
     t
 }
 
+fn cleanup(remote: bool, host: &str, remote_id: Option<usize>) {
+    if remote {
+        Command::new("ssh")
+            .arg(&host)
+            .arg("kill")
+            .arg("-9")
+            .arg(&format!("{}", remote_id.unwrap()))
+            .output()
+            .expect("failed to execute ssh to kill");
+    }
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
@@ -130,7 +142,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             remote = true;
         }
-        println!("trying random port {}", port);
+        println!("\ntrying random port {}", port);
         let mut host = String::new();
         if remote {
             host = config["REMOTE_HOST"].clone();
@@ -143,7 +155,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
-            local_host = "local_host".to_string();
+            local_host = "localhost".to_string();
         } else {
             let ip = "127.0.0.1";
             server_process = Command::new("enclone_server")
@@ -227,13 +239,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
                 std::process::exit(1);
             }
-            let setup_process = setup_process.unwrap();
+            let _setup_process = setup_process.unwrap();
             thread::sleep(Duration::from_millis(100));
+            /*
             let mut buffer = [0; 10];
             let mut setup_stdout = setup_process.stdout.unwrap();
             setup_stdout.read(&mut buffer).unwrap();
             let msg = strme(&buffer);
             println!("setup process says {}", msg);
+            */
         }
 
         // Form local URL.  Not really a URL.
@@ -243,7 +257,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Connect to client.
 
         println!("connecting to {}", url);
-        let mut client = AnalyzerClient::connect(url).await?;
+        let client = AnalyzerClient::connect(url).await;
+        if client.is_err() {
+            eprintln!("\nconnection failed with error\n{:?}\n", client);
+            cleanup(remote, &host, remote_id);
+            std::process::exit(1);
+        }
+        let mut client = client.unwrap();
         println!("connected");
 
         // Accept commands.
@@ -287,15 +307,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Kill server.
 
         kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-        if remote {
-            Command::new("ssh")
-                .arg(&host)
-                .arg("kill")
-                .arg("-9")
-                .arg(&format!("{}", remote_id.unwrap()))
-                .output()
-                .expect("failed to execute ssh to kill");
-        }
+        cleanup(remote, &host, remote_id);
 
         // Done.
 
