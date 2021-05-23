@@ -2,11 +2,29 @@
 
 // This is a text client, which is useless except for debugging and experimentation.
 // Accepts one argument, the IP address of the server that enclone_server is running on.
+//
+// This starts enclone_server, which can be either local or remote.
+//
+// For now accepts a single argument, which is COM=x where x is a "configuration name".  It then 
+// looks for an environment variable ENCLONE_COM.x, and parses that into blank-separated 
+// arguments, which may be:
+//
+// argument                  interpretation
+//
+// REMOTE_HOST=...           name of remote host for password-free ssh
+// REMOTE_IP=...             IP number of remote host
+// REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
+// REMOVE_BIN=...            directory on remote host containing the enclone_server executable
 
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use pretty_trace::*;
+use rand::Rng;
+use std::collections::HashMap;
 use std::env;
-use std::io::{self, BufRead, Write};
+use std::io::{self, BufRead, Read, Write};
+use std::process::{Command, Stdio};
+use std::thread;
+use std::time::Duration;
 use string_utils::*;
 
 fn truncate(s: &str) -> String {
@@ -29,49 +47,193 @@ fn truncate(s: &str) -> String {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
+
+    // Get configuration.
+
+    let mut configuration = None;
     let args: Vec<String> = env::args().collect();
-    let mut url = "http://127.0.0.1:7000".to_string();
     if args.len() > 1 {
-        url = format!("http://{}", args[1]);
+        let arg = args[1].to_string();
+        if !arg.starts_with("COM=") {
+            eprintln!("\nCurrently the only allowed argument is COM=x where x is a \
+                configuration name.\n");
+            std::process::exit(1);
+        }
+        let config_name = arg.after("COM=");
+        let env_var = format!("ENCLONE_COM.{}", config_name);
+        for (key, value) in env::vars() {
+            if key == env_var {
+                configuration = Some(value.clone());
+            }
+        }
+        if configuration.is_none() {
+            eprintln!("\nYou specified the configuration name {}, but the environment variable {} \
+                is not defined.\n",
+                config_name,
+                env_var,
+            );
+            std::process::exit(1);
+        }
     }
-    let mut client = AnalyzerClient::connect(url).await?;
+    let mut config = HashMap::<String, String>::new();
+    if configuration.is_some() {
+        let configuration = configuration.unwrap();
+        let x = configuration.split(' ').collect::<Vec<&str>>();
+        for arg in x.iter() {
+            if !arg.contains("=") {
+                eprintln!("\nYour configuration has an argument {} that does not contain =.\n",
+                    arg
+                );
+                std::process::exit(1);
+            }
+            config.insert(arg.before("=").to_string(), arg.after("=").to_string());
+        }
+    }
 
+    // Loop through random ports until we get one that works.
+
+    let mut rng = rand::thread_rng();
     loop {
-        print!(
-            "\nenter one of the following:\n\
-            • an enclone command, without the enclone part\n\
-            • an clonotype id (number)\n\
-            • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-            • q to quit\n\n% "
-        );
-        std::io::stdout().flush().unwrap();
-        let stdin = io::stdin();
-        let mut line = stdin.lock().lines().next().unwrap().unwrap();
-        if line == "q" {
-            println!("");
-            break;
-        }
-        if line == "d" {
-            line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+        let port: u16 = rng.gen();
+        if port < 1024 {
+            continue;
         }
 
-        if line.parse::<usize>().is_ok() {
-            let n = line.force_usize();
-            let request = tonic::Request::new(ClonotypeRequest {
-                clonotype_number: n as u32,
-            });
-            let response = client.get_clonotype(request).await?;
-            let r = response.into_inner();
-            println!("\ntable = {}", truncate(&r.table));
+        // Attempt to fork the server.
+
+        let mut remote = false;
+        let server_process;
+        let mut local_host = "127.0.0.1".to_string();
+        if config.contains_key("REMOTE_HOST") || config.contains_key("REMOTE_IP")
+            || config.contains_key("REMOTE_BIN") {
+            if !config.contains_key("REMOTE_HOST") || !config.contains_key("REMOTE_IP")
+                || !config.contains_key("REMOTE_BIN") {
+                eprintln!("\nTo use a remote host, please specify all of REMOTE_HOST, \
+                    REMOTE_IP, and REMOTE_BIN.\n");
+                std::process::exit(1);
+            }
+            remote = true;
+        }
+        println!("trying random port {}", port);
+        if remote {
+            let host = &config["REMOTE_HOST"];
+            let ip = &config["REMOTE_IP"];
+            let bin = &config["REMOTE_BIN"];
+            server_process = Command::new("ssh")
+                .arg(&host)
+                .arg(&format!("{}/enclone_server", bin))
+                .arg(&format!("{}:{}", ip, port))
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
+            local_host = format!("local_host:{}", port);
         } else {
-            let request = tonic::Request::new(EncloneRequest { args: line });
-            let response = client.enclone(request).await?;
-            let r = response.into_inner();
-            println!("\nargs = {}", r.args);
-            println!("\nplot = {}", truncate(&r.plot));
-            println!("\ntable = {}", truncate(&r.table));
+            let ip = "127.0.0.1";
+            server_process = Command::new("enclone_server")
+                .arg(&format!("{}:{}", ip, port))
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
         }
-    }
+        if !server_process.is_ok() {
+            eprintln!("\nfailed to launch server, err =\n{}.\n", server_process.unwrap_err());
+            std::process::exit(1);
+        }
+        let server_process = server_process.unwrap();
 
-    Ok(())
+        // Wait until server has printed something.
+
+        let mut buffer = [0; 50];
+        let mut server_stdout = server_process.stdout.unwrap();
+        server_stdout.read(&mut buffer).unwrap();
+        thread::sleep(Duration::from_millis(100));
+
+        // Look at stderr.
+
+        let mut ebuffer = [0; 200];
+        let mut server_stderr = server_process.stderr.unwrap();
+        server_stderr.read(&mut ebuffer).unwrap();
+        let emsg = strme(&ebuffer);
+        if emsg.len() > 0 {
+            if emsg.contains("already in use") {
+                println!("oops, that port is in use, trying a different one");
+                continue;
+            }
+            eprintln!("server may have failed, error = {}", emsg);
+            std::process::exit(1);
+        }
+
+        // Fork remote setup command if needed.
+
+        if config.contains_key("REMOTE_SETUP") {
+            if !remote {
+                eprintln!("\nYou specified REMOTE_SETUP but not REMOTE_HOST.\n");
+                std::process::exit(1);
+            }
+            let setup = &config["REMOTE_SETUP"];
+            let argsp = setup.split(' ').collect::<Vec<&str>>();
+            let args = argsp[1..].to_vec();
+            let setup_process = Command::new(argsp[0])
+                .args(args)
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
+            if !setup_process.is_ok() {
+                eprintln!("\nfailed to launch setup, err =\n{}.\n", setup_process.unwrap_err());
+                std::process::exit(1);
+            }
+            let _setup_process = setup_process.unwrap();
+            thread::sleep(Duration::from_millis(100));
+        }
+
+        // Form local URL.  Not really a URL.
+
+        let url = format!("{}:{}", local_host, port);
+
+        // Connect to client.
+    
+        let mut client = AnalyzerClient::connect(url).await?;
+        
+        // Accept commands.
+
+        loop {
+            print!(
+                "\nenter one of the following:\n\
+                • an enclone command, without the enclone part\n\
+                • an clonotype id (number)\n\
+                • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                • q to quit\n\n% "
+            );
+            std::io::stdout().flush().unwrap();
+            let stdin = io::stdin();
+            let mut line = stdin.lock().lines().next().unwrap().unwrap();
+            if line == "q" {
+                println!("");
+                break;
+            }
+            if line == "d" {
+                line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+            }
+            if line.parse::<usize>().is_ok() {
+                let n = line.force_usize();
+                let request = tonic::Request::new(ClonotypeRequest {
+                    clonotype_number: n as u32,
+                });
+                let response = client.get_clonotype(request).await?;
+                let r = response.into_inner();
+                println!("\ntable = {}", truncate(&r.table));
+            } else {
+                let request = tonic::Request::new(EncloneRequest { args: line });
+                let response = client.enclone(request).await?;
+                let r = response.into_inner();
+                println!("\nargs = {}", r.args);
+                println!("\nplot = {}", truncate(&r.plot));
+                println!("\ntable = {}", truncate(&r.table));
+            }
+        }
+
+        // Done.
+
+        return Ok(());
+    }
 }
