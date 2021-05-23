@@ -142,6 +142,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             remote = true;
         }
+        if config.contains_key("REMOTE_SETUP") {
+            if !remote {
+                eprintln!("\nYou specified REMOTE_SETUP but not REMOTE_HOST.\n");
+                std::process::exit(1);
+            }
+        }
         println!("\ntrying random port {}", port);
         let mut host = String::new();
         if remote {
@@ -218,10 +224,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Fork remote setup command if needed.
 
         if config.contains_key("REMOTE_SETUP") {
-            if !remote {
-                eprintln!("\nYou specified REMOTE_SETUP but not REMOTE_HOST.\n");
-                std::process::exit(1);
-            }
             let mut setup = config["REMOTE_SETUP"].clone();
             if setup.starts_with("\"") && setup.ends_with("\"") {
                 setup = setup.after("\"").rev_before("\"").to_string();
@@ -241,10 +243,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     setup_process.unwrap_err()
                 );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+                cleanup(remote, &host, remote_id);
                 std::process::exit(1);
             }
             let _setup_process = setup_process.unwrap();
-            thread::sleep(Duration::from_millis(5000));
+            thread::sleep(Duration::from_millis(2000));
         }
 
         // Form local URL.
