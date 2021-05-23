@@ -64,12 +64,12 @@ enum Message {
     ButtonPressed,
 }
 
-#[async_trait]
 impl Sandbox for Styling {
     type Message = Message;
 
-    async fn new() -> Self {
+    fn new() -> Self {
         let mut sss = Styling::default();
+        let rt = tokio::runtime::Runtime::new().unwrap();
 
         // Get configuration.
 
@@ -267,7 +267,7 @@ impl Sandbox for Styling {
             // Connect to client.
 
             println!("connecting to {}", url);
-            let client = AnalyzerClient::connect(url).await;
+            let client = rt.block_on(AnalyzerClient::connect(url));
             if client.is_err() {
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
                 cleanup(remote, &host, remote_id);
@@ -290,7 +290,8 @@ impl Sandbox for Styling {
         String::from("Styling - Iced")
     }
 
-    async fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message) {
+        let rt = tokio::runtime::Runtime::new().unwrap();
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
@@ -308,7 +309,8 @@ impl Sandbox for Styling {
                     let request = tonic::Request::new(ClonotypeRequest {
                         clonotype_number: n as u32,
                     });
-                    let response = self.client.unwrap().get_clonotype(request).await;
+                    let response =
+                        rt.block_on(self.client.as_mut().unwrap().get_clonotype(request));
                     if response.is_err() {
                         eprintln!("\nclonotype request failed\n");
                         std::process::exit(1);
@@ -318,7 +320,7 @@ impl Sandbox for Styling {
                     output = format!("\ntable = {}", truncate(&r.table));
                 } else {
                     let request = tonic::Request::new(EncloneRequest { args: line });
-                    let response = self.client.unwrap().enclone(request).await;
+                    let response = rt.block_on(self.client.as_mut().unwrap().enclone(request));
                     if response.is_err() {
                         let left = r###"message: "\n"###;
                         let right = r###"\n""###;
