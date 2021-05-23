@@ -69,7 +69,6 @@ impl Sandbox for Styling {
 
     fn new() -> Self {
         let mut sss = Styling::default();
-        let rt = tokio::runtime::Runtime::new().unwrap();
 
         // Get configuration.
 
@@ -118,10 +117,10 @@ impl Sandbox for Styling {
 
         // Loop through random ports until we get one that works.
 
-        // let mut rng = rand::thread_rng();
+        let mut rng = rand::thread_rng();
         loop {
-            // let port: u16 = rng.gen();
-            let port: u16 = 7000;
+            let port: u16 = rng.gen();
+            // let port: u16 = 7000;
             if port < 1024 {
                 continue;
             }
@@ -267,7 +266,11 @@ impl Sandbox for Styling {
             // Connect to client.
 
             println!("connecting to {}", url);
-            let client = rt.block_on(AnalyzerClient::connect(url));
+            let h = thread::spawn(|| {
+                let rt = tokio::runtime::Runtime::new().unwrap();
+                rt.block_on(AnalyzerClient::connect(url))
+            });
+            let client = h.join().unwrap();
             if client.is_err() {
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
                 cleanup(remote, &host, remote_id);
@@ -291,7 +294,6 @@ impl Sandbox for Styling {
     }
 
     fn update(&mut self, message: Message) {
-        let rt = tokio::runtime::Runtime::new().unwrap();
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
@@ -309,8 +311,19 @@ impl Sandbox for Styling {
                     let request = tonic::Request::new(ClonotypeRequest {
                         clonotype_number: n as u32,
                     });
-                    let response =
-                        rt.block_on(self.client.as_mut().unwrap().get_clonotype(request));
+                    let arc =
+                        std::sync::Arc::new(std::sync::Mutex::new(self.client.as_mut().unwrap()));
+                    let response = crossbeam_utils::thread::scope(move |s| {
+                        let h = {
+                            let arc = arc.clone();
+                            s.spawn(move |_| {
+                                let rt = tokio::runtime::Runtime::new().unwrap();
+                                rt.block_on(arc.lock().unwrap().get_clonotype(request))
+                            })
+                        };
+                        h.join().unwrap()
+                    })
+                    .unwrap();
                     if response.is_err() {
                         eprintln!("\nclonotype request failed\n");
                         std::process::exit(1);
@@ -320,7 +333,19 @@ impl Sandbox for Styling {
                     output = format!("\ntable = {}", truncate(&r.table));
                 } else {
                     let request = tonic::Request::new(EncloneRequest { args: line });
-                    let response = rt.block_on(self.client.as_mut().unwrap().enclone(request));
+                    let arc =
+                        std::sync::Arc::new(std::sync::Mutex::new(self.client.as_mut().unwrap()));
+                    let response = crossbeam_utils::thread::scope(move |s| {
+                        let h = {
+                            let arc = arc.clone();
+                            s.spawn(move |_| {
+                                let rt = tokio::runtime::Runtime::new().unwrap();
+                                rt.block_on(arc.lock().unwrap().enclone(request))
+                            })
+                        };
+                        h.join().unwrap()
+                    })
+                    .unwrap();
                     if response.is_err() {
                         let left = r###"message: "\n"###;
                         let right = r###"\n""###;
