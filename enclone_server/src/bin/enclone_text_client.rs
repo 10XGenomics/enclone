@@ -40,6 +40,25 @@ type Com = Option<AnalyzerClient<Channel>>;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn truncate(s: &str) -> String {
+    const MAX_LINES: usize = 10;
+    let mut t = String::new();
+    let mut extra = 0;
+    for (i, line) in s.lines().enumerate() {
+        if i < MAX_LINES {
+            t += &mut format!("{}\n", line);
+        } else {
+            extra += 1;
+        }
+    }
+    if extra > 0 {
+        t += &mut format!("(+ {} more lines)", extra);
+    }
+    t
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn cleanup(remote: bool, host: &str, remote_id: Option<usize>) {
     if remote {
         Command::new("ssh")
@@ -409,23 +428,6 @@ impl Sandbox for Styling {
             .center_y()
             .into()
     }
-}
-
-fn truncate(s: &str) -> String {
-    const MAX_LINES: usize = 10;
-    let mut t = String::new();
-    let mut extra = 0;
-    for (i, line) in s.lines().enumerate() {
-        if i < MAX_LINES {
-            t += &mut format!("{}\n", line);
-        } else {
-            extra += 1;
-        }
-    }
-    if extra > 0 {
-        t += &mut format!("(+ {} more lines)", extra);
-    }
-    t
 }
 
 #[tokio::main]
