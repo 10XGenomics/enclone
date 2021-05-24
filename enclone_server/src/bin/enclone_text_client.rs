@@ -373,7 +373,7 @@ struct Calculator {
     scroll: scrollable::State,
     input: text_input::State,
     input_value: String,
-    submitted_input_value: String,
+    output_value: String,
     button: button::State,
     client: Com,
 }
@@ -403,7 +403,7 @@ impl Sandbox for Calculator {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
                 let output = process_command(&self.input_value, &mut self.client);
-                self.submitted_input_value = output.await; // await is new, maybe wrong
+                self.output_value = output.await; // await is new, maybe wrong
             }
         }
     }
@@ -425,7 +425,7 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .push(Text::new(&self.submitted_input_value));
+            .push(Text::new(&self.output_value));
 
         let content = Column::new()
             .spacing(20)
