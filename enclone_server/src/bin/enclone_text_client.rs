@@ -23,16 +23,17 @@ use iced::{
     Sandbox, Scrollable, Settings, Text, TextInput,
 };
 use itertools::Itertools;
+use lazy_static::lazy_static;
 use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::Pid;
 use pretty_trace::*;
-// use rand::Rng;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, BufRead, Read, Write};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::Mutex;
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
@@ -64,8 +65,16 @@ fn truncate(s: &str) -> String {
 static REMOTE: AtomicBool = AtomicBool::new(false);
 static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 
-fn cleanup(host: &str) {
+lazy_static! {
+    static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
+    // let sep = HAPPENING.lock().unwrap().sep;
+    // HAPPENING.lock().unwrap().on = happening.on;
+
+fn cleanup() {
     if REMOTE.load(SeqCst) {
+        let host = &HOST.lock().unwrap()[0];
         Command::new("ssh")
             .arg(&host)
             .arg("kill")
@@ -182,6 +191,7 @@ async fn initialize_com() -> Com {
         let mut host = String::new();
         if remote {
             host = config["REMOTE_HOST"].clone();
+            HOST.lock().unwrap().push(host.clone());
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
             println!(
@@ -275,7 +285,7 @@ async fn initialize_com() -> Com {
                     setup_process.unwrap_err()
                 );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-                cleanup(&host);
+                cleanup();
                 std::process::exit(1);
             }
             let _setup_process = setup_process.unwrap();
@@ -292,7 +302,7 @@ async fn initialize_com() -> Com {
         let client = AnalyzerClient::connect(url).await;
         if client.is_err() {
             eprintln!("\nconnection failed with error\n{:?}\n", client);
-            cleanup(&host);
+            cleanup();
             std::process::exit(1);
         }
         println!("connected");
@@ -377,7 +387,7 @@ impl Sandbox for Styling {
             // Kill server.
 
             // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-            // cleanup(remote, &host, remote_id);
+            // cleanup();
 
 
     fn title(&self) -> String {

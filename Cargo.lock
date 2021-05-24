@@ -1244,6 +1244,7 @@ dependencies = [
  "iced",
  "io_utils",
  "itertools",
+ "lazy_static",
  "log",
  "log4rs",
  "nix 0.19.1",
