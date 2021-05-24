@@ -5,7 +5,7 @@
 // This starts enclone_server, which can be either local or remote.
 //
 // For now accepts a single argument, which is COM=x where x is a "configuration name".  It then
-// looks for an environment variable ENCLONE_COM.x, and parses that into blank-separated
+// looks for an environment variable ENCLONE_COM_x, and parses that into blank-separated
 // arguments, which may be:
 //
 // argument                  interpretation
@@ -85,7 +85,7 @@ impl Sandbox for Styling {
                 std::process::exit(1);
             }
             let config_name = arg.after("COM=");
-            let env_var = format!("ENCLONE_COM.{}", config_name);
+            let env_var = format!("ENCLONE_COM_{}", config_name);
             for (key, value) in env::vars() {
                 if key == env_var {
                     configuration = Some(value.clone());
