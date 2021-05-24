@@ -257,7 +257,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Connect to client.
 
         println!("connecting to {}", url);
-        let client = AnalyzerClient::connect(url).await;
+
+        // let client = AnalyzerClient::connect(url).await;
+
+        use tokio::task;
+
+        let client = task::spawn_blocking(move || {
+            AnalyzerClient::connect(url)
+        }).await?;
+        let client = client.await;
+
+        /*
+        let h = thread::spawn(|| {
+            let rt = tokio::runtime::Runtime::new().unwrap();
+            rt.block_on(AnalyzerClient::connect(url))
+        });
+        let client = h.join().unwrap();
+        */
+
         if client.is_err() {
             eprintln!("\nconnection failed with error\n{:?}\n", client);
             cleanup(remote, &host, remote_id);
