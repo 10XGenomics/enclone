@@ -29,7 +29,7 @@ use nix::unistd::Pid;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
-use std::io::{self, BufRead, Read, Write};
+use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::atomic::Ordering::SeqCst;
