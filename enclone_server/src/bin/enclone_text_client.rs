@@ -62,16 +62,17 @@ fn truncate(s: &str) -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Cleanup code to make sure processes are killed.
+// Dont know if we also need this:
+    // Kill server.
+    // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+
 static REMOTE: AtomicBool = AtomicBool::new(false);
 static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
-
-// Dont know if we also need this:
-    // Kill server.
-    // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
 
 fn cleanup() {
     if REMOTE.load(SeqCst) {
