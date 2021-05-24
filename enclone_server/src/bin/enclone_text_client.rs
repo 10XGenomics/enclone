@@ -26,13 +26,13 @@ use itertools::Itertools;
 use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::Pid;
 use pretty_trace::*;
-use rand::Rng;
+// use rand::Rng;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, BufRead, Read, Write};
 use std::process::{Command, Stdio};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tonic::transport::Channel;
 
@@ -120,8 +120,16 @@ impl Sandbox for Styling {
 
         // let mut rng = rand::thread_rng();
         loop {
+
+            let start = SystemTime::now();
+            let since_the_epoch = start
+                .duration_since(UNIX_EPOCH)
+                .expect("Time went backwards");
+            let nanos = since_the_epoch.subsec_nanos() as u64;
+            let port: u16 = (nanos % 65536) as u16;
+
             // let port: u16 = rng.gen();
-            let port: u16 = 7000;
+
             if port < 1024 {
                 continue;
             }
