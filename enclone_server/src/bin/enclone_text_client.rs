@@ -412,6 +412,13 @@ impl Sandbox for Calculator {
         let text_input = TextInput::new(
             &mut self.input,
             "Enter command...",
+
+                // "\nenter one of the following:\n\
+                // • an enclone command, without the enclone part\n\
+                // • an clonotype id (number)\n\
+                // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                // • q to quit\n\n% "
+
             &self.input_value,
             Message::InputChanged,
         )
