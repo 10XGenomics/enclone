@@ -22,6 +22,7 @@ path = "src/bin/enclone_server.rs"
 async-trait = "0.1"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
+iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio"] }
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
 log = "0.4"
@@ -33,9 +34,6 @@ string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"
-
-iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio"] }
-rand = "0.8"
 
 [build-dependencies]
 tonic-build = { version = "0.4", features = [] }
