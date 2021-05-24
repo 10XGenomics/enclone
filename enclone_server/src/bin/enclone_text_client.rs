@@ -69,8 +69,9 @@ lazy_static! {
     static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
-    // let sep = HAPPENING.lock().unwrap().sep;
-    // HAPPENING.lock().unwrap().on = happening.on;
+// Dont know if we also need this:
+    // Kill server.
+    // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
 
 fn cleanup() {
     if REMOTE.load(SeqCst) {
@@ -316,6 +317,7 @@ async fn process_command(input: &str, com: &mut Com) -> String {
     let mut line = input.to_string();
     let mut output = String::new();
     if line == "q" {
+        cleanup();
         std::process::exit(0);
     }
     if line == "d" {
@@ -383,12 +385,6 @@ impl Sandbox for Styling {
         sss.client = initialize_com().await; // the await is new, maybe not right
         sss
     }
-
-            // Kill server.
-
-            // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-            // cleanup();
-
 
     fn title(&self) -> String {
         String::from("Styling - Iced")
