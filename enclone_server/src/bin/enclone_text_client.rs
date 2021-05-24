@@ -402,9 +402,7 @@ impl Sandbox for Calculator {
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
-                let mut line = self.input_value.clone();
-                let mut output = String::new();
-                let output = process_command(&line, &mut self.client);
+                let output = process_command(&self.input_value, &mut self.client);
                 self.submitted_input_value = output.await; // await is new, maybe wrong
             }
         }
