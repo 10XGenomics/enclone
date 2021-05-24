@@ -24,7 +24,7 @@ use iced::{
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
-use nix::sys::signal::{kill, SIGINT};
+use nix::sys::signal::{kill, Signal, SIGINT};
 use nix::unistd::Pid;
 use pretty_trace::*;
 use std::collections::HashMap;
@@ -83,6 +83,13 @@ fn cleanup() {
             .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
             .output()
             .expect("failed to execute ssh to kill");
+    }
+}
+
+extern "C" fn handler(sig: Signal) {
+    if sig == SIGINT {
+        cleanup();
+        std::process::exit(0);
     }
 }
 
