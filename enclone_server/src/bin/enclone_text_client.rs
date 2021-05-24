@@ -36,6 +36,10 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tonic::transport::Channel;
 
+type Com = Option<AnalyzerClient<Channel>>;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn cleanup(remote: bool, host: &str, remote_id: Option<usize>) {
     if remote {
         Command::new("ssh")
@@ -47,8 +51,6 @@ fn cleanup(remote: bool, host: &str, remote_id: Option<usize>) {
             .expect("failed to execute ssh to kill");
     }
 }
-
-type Com = Option<AnalyzerClient<Channel>>;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -273,6 +275,52 @@ async fn initialize_com() -> Com {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+async fn process_command(input: &str, com: &mut Com) -> String {
+    let mut line = input.to_string();
+    let mut output = String::new();
+    if line == "q" {
+        std::process::exit(0);
+    }
+    if line == "d" {
+        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+    }
+    if line.parse::<usize>().is_ok() {
+        let n = line.force_usize();
+        let request = tonic::Request::new(ClonotypeRequest {
+            clonotype_number: n as u32,
+        });
+        let response = com.as_mut().unwrap().get_clonotype(request).await;
+        if response.is_err() {
+            eprintln!("\nclonotype request failed\n");
+            std::process::exit(1);
+        }
+        let response = response.unwrap();
+        let r = response.into_inner();
+        output = format!("\ntable = {}", truncate(&r.table));
+    } else {
+        let request = tonic::Request::new(EncloneRequest { args: line });
+        let response = com.as_mut().unwrap().enclone(request).await;
+        if response.is_err() {
+            let left = r###"message: "\n"###;
+            let right = r###"\n""###;
+            let mut err = format!("{:?}", response);
+            if err.contains(&left) && err.after(&left).contains(&right) {
+                err = err.between(&left, &right).to_string();
+            }
+            output = format!("\nThe server is unhappy.  It says:\n{}", err);
+        } else {
+            let response = response.unwrap();
+            let r = response.into_inner();
+            output = format!("\nargs = {}", r.args);
+            output += &format!("\nplot = {}", truncate(&r.plot));
+            output += &format!("\ntable = {}", truncate(&r.table));
+        }
+    }
+    output
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[derive(Default)]
 struct Styling {
     scroll: scrollable::State,
@@ -315,47 +363,8 @@ impl Sandbox for Styling {
             Message::ButtonPressed => {
                 let mut line = self.input_value.clone();
                 let mut output = String::new();
-
-                if line == "q" {
-                    std::process::exit(0);
-                }
-                if line == "d" {
-                    line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
-                }
-                if line.parse::<usize>().is_ok() {
-                    let n = line.force_usize();
-                    let request = tonic::Request::new(ClonotypeRequest {
-                        clonotype_number: n as u32,
-                    });
-                    let response = self.client.unwrap().get_clonotype(request).await;
-                    if response.is_err() {
-                        eprintln!("\nclonotype request failed\n");
-                        std::process::exit(1);
-                    }
-                    let response = response.unwrap();
-                    let r = response.into_inner();
-                    output = format!("\ntable = {}", truncate(&r.table));
-                } else {
-                    let request = tonic::Request::new(EncloneRequest { args: line });
-                    let response = self.client.unwrap().enclone(request).await;
-                    if response.is_err() {
-                        let left = r###"message: "\n"###;
-                        let right = r###"\n""###;
-                        let mut err = format!("{:?}", response);
-                        if err.contains(&left) && err.after(&left).contains(&right) {
-                            err = err.between(&left, &right).to_string();
-                        }
-                        output = format!("\nThe server is unhappy.  It says:\n{}", err);
-                    } else {
-                        let response = response.unwrap();
-                        let r = response.into_inner();
-                        output = format!("\nargs = {}", r.args);
-                        output += &format!("\nplot = {}", truncate(&r.plot));
-                        output += &format!("\ntable = {}", truncate(&r.table));
-                    }
-                }
-
-                self.submitted_input_value = output;
+                let output = process_command(&line, &mut self.client);
+                self.submitted_input_value = output.await; // await is new, maybe wrong
             }
         }
     }
