@@ -31,8 +31,8 @@ use std::collections::HashMap;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
-use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -64,8 +64,8 @@ fn truncate(s: &str) -> String {
 
 // Cleanup code to make sure processes are killed.
 // Dont know if we also need this:
-    // Kill server.
-    // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+// Kill server.
+// kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
 
 static REMOTE: AtomicBool = AtomicBool::new(false);
 static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
@@ -99,7 +99,6 @@ extern "C" fn handler(sig: Signal) {
 // Set up initial communications with server.
 
 async fn initialize_com() -> Com {
-
     // Get configuration.
 
     let mut configuration = None;
@@ -149,7 +148,6 @@ async fn initialize_com() -> Com {
 
     // let mut rng = rand::thread_rng();
     loop {
-
         let start = SystemTime::now();
         let since_the_epoch = start
             .duration_since(UNIX_EPOCH)
@@ -188,7 +186,6 @@ async fn initialize_com() -> Com {
             }
             remote = true;
             REMOTE.store(true, SeqCst);
-            
         }
         if config.contains_key("REMOTE_SETUP") {
             if !remote {
@@ -412,13 +409,11 @@ impl Sandbox for Calculator {
         let text_input = TextInput::new(
             &mut self.input,
             "Enter command...",
-
-                // "\nenter one of the following:\n\
-                // • an enclone command, without the enclone part\n\
-                // • an clonotype id (number)\n\
-                // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                // • q to quit\n\n% "
-
+            // "\nenter one of the following:\n\
+            // • an enclone command, without the enclone part\n\
+            // • an clonotype id (number)\n\
+            // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+            // • q to quit\n\n% "
             &self.input_value,
             Message::InputChanged,
         )
