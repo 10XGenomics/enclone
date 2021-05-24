@@ -389,9 +389,9 @@ impl Sandbox for Calculator {
     type Message = Message;
 
     async fn new() -> Self {
-        let mut sss = Calculator::default();
-        sss.client = initialize_com().await; // the await is new, maybe not right
-        sss
+        let mut x = Calculator::default();
+        x.client = initialize_com().await; // the await is new, maybe not right
+        x
     }
 
     fn title(&self) -> String {
