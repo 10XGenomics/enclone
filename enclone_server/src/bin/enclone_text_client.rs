@@ -31,30 +31,14 @@ use std::collections::HashMap;
 use std::env;
 use std::io::{self, BufRead, Read, Write};
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicBool, AtomicUsize};
+use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tonic::transport::Channel;
 
 type Com = Option<AnalyzerClient<Channel>>;
-
-use std::sync::atomic::AtomicBool;
-use std::sync::atomic::Ordering::SeqCst;
-
-static REMOTE: AtomicBool = AtomicBool::new(false);
-
-/*
-
-        if CTRLC_DEBUG.load(SeqCst) {
-            unsafe {
-                eprint!("\ncaught Ctrl-C");
-                eprintln!(" #{}", HEARD_CTRLC + 1);
-            }
-        }
-
-        CTRLC_DEBUG.store(true, SeqCst);
-
-*/
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -77,13 +61,16 @@ fn truncate(s: &str) -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn cleanup(host: &str, remote_id: Option<usize>) {
+static REMOTE: AtomicBool = AtomicBool::new(false);
+static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
+
+fn cleanup(host: &str) {
     if REMOTE.load(SeqCst) {
         Command::new("ssh")
             .arg(&host)
             .arg("kill")
             .arg("-9")
-            .arg(&format!("{}", remote_id.unwrap()))
+            .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
             .output()
             .expect("failed to execute ssh to kill");
     }
@@ -257,6 +244,7 @@ async fn initialize_com() -> Com {
                 let id = emsg.between("I am process ", ".");
                 if id.parse::<usize>().is_ok() {
                     remote_id = Some(id.force_usize());
+                    REMOTE_SERVER_ID.store(remote_id.unwrap(), SeqCst);
                 }
             }
             if remote_id.is_none() {
@@ -287,7 +275,7 @@ async fn initialize_com() -> Com {
                     setup_process.unwrap_err()
                 );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
-                cleanup(&host, remote_id);
+                cleanup(&host);
                 std::process::exit(1);
             }
             let _setup_process = setup_process.unwrap();
@@ -304,7 +292,7 @@ async fn initialize_com() -> Com {
         let client = AnalyzerClient::connect(url).await;
         if client.is_err() {
             eprintln!("\nconnection failed with error\n{:?}\n", client);
-            cleanup(&host, remote_id);
+            cleanup(&host);
             std::process::exit(1);
         }
         println!("connected");
