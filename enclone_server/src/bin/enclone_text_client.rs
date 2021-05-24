@@ -369,7 +369,7 @@ async fn process_command(input: &str, com: &mut Com) -> String {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[derive(Default)]
-struct Styling {
+struct Calculator {
     scroll: scrollable::State,
     input: text_input::State,
     input_value: String,
@@ -385,17 +385,17 @@ enum Message {
 }
 
 #[async_trait]
-impl Sandbox for Styling {
+impl Sandbox for Calculator {
     type Message = Message;
 
     async fn new() -> Self {
-        let mut sss = Styling::default();
+        let mut sss = Calculator::default();
         sss.client = initialize_com().await; // the await is new, maybe not right
         sss
     }
 
     fn title(&self) -> String {
-        String::from("Styling - Iced")
+        String::from("Calculator")
     }
 
     async fn update(&mut self, message: Message) {
@@ -455,6 +455,6 @@ impl Sandbox for Styling {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
-    Styling::run(Settings::default());
+    Calculator::run(Settings::default());
     Ok(())
 }
