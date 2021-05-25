@@ -372,7 +372,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let setup_process_id = setup_process.id();
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
-            thread::sleep(Duration::from_millis(2000));
+            thread::sleep(Duration::from_millis(1000));
         }
 
         // Form local URL.
