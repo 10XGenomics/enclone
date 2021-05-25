@@ -458,11 +458,6 @@ impl Sandbox for Calculator {
         let text_input = TextInput::new(
             &mut self.input,
             "Enter command...",
-            // "\nenter one of the following:\n\
-            // • an enclone command, without the enclone part\n\
-            // • an clonotype id (number)\n\
-            // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
-            // • q to quit\n\n% "
             &self.input_value,
             Message::InputChanged,
         )
@@ -478,10 +473,20 @@ impl Sandbox for Calculator {
             .height(Length::Units(100))
             .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
 
+        let instructions = 
+            Text::new(
+                "\nEnter one of the following:\n\
+                • an enclone command, without the enclone part\n\
+                • an clonotype id (number)\n\
+                • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
+                • q to quit\n"
+            );
+
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1200) // width of window
+            .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(
                 Row::new()
