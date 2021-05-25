@@ -80,8 +80,10 @@ const CQ_MONO: Font = Font::External {
 // Global variables.
 
 static REMOTE: AtomicBool = AtomicBool::new(false);
+static USING_SETUP: AtomicBool = AtomicBool::new(false);
 
 static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
+static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 
 static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 
@@ -116,12 +118,12 @@ fn _truncate(s: &str) -> String {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Cleanup code to make sure processes are killed.
-// Dont know if we also need this:
-// Kill server.
-// kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
 
 fn cleanup() {
     if REMOTE.load(SeqCst) {
+        if USING_SETUP.load(SeqCst) {
+            kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
+        }
         let host = &HOST.lock().unwrap()[0];
         Command::new("ssh")
             .arg(&host)
@@ -354,7 +356,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 cleanup();
                 std::process::exit(1);
             }
-            let _setup_process = setup_process.unwrap();
+            let setup_process = setup_process.unwrap();
+            let setup_process_id = setup_process.id();
+            SETUP_PID.store(setup_process_id as usize, SeqCst);
+            USING_SETUP.store(true, SeqCst);
             thread::sleep(Duration::from_millis(2000));
         }
 
