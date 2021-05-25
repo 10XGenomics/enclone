@@ -491,7 +491,7 @@ impl Sandbox for Calculator {
             .push(
                 Row::new()
                     .spacing(10)
-                    .height(Length::Units(500)) // This is the height of the scrollable window.
+                    .height(Length::Units(800)) // This is the height of the scrollable window.
                     .align_items(Align::Center)
                     .push(scrollable)
                     .push(Rule::vertical(38)),
