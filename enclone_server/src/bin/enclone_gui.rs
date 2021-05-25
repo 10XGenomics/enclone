@@ -8,7 +8,7 @@
 // 3.  Is font too light?
 // 4.  Doesn't properly handle connection refused.
 // 5.  Speed up initialization.
-// 6.  Don't print initialization gorp.
+// 6.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 // 7.  Handle the case where tsh hasn't been started
 //     server says this:
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
@@ -25,7 +25,6 @@
 // 15. Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 // 16. Have text-only mode for testing and development.
-// 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
