@@ -457,7 +457,7 @@ impl Sandbox for Calculator {
     fn view(&mut self) -> Element<Message> {
         let text_input = TextInput::new(
             &mut self.input,
-            "Enter command...",
+            "",
             &self.input_value,
             Message::InputChanged,
         )
