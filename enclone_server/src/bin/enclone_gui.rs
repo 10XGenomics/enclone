@@ -161,6 +161,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     PrettyTrace::new().on();
     let _ = install_signal_handler();
+    let verbose = false;
 
     // Get configuration.
 
@@ -261,10 +262,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             HOST.lock().unwrap().push(host.clone());
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
-            println!(
-                "\nstarting remote server using\nssh {} {}/enclone_server {}:{}",
-                host, bin, ip, port
-            );
+            if verbose {
+                println!(
+                    "\nstarting remote server using\nssh {} {}/enclone_server {}:{}",
+                    host, bin, ip, port
+                );
+            }
             server_process = Command::new("ssh")
                 .arg("-n")
                 .arg(&host)
@@ -310,7 +313,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("oops, that port is in use, trying a different one");
                 continue;
             }
-            eprintln!("\nserver says this:\n{}", emsg);
+            if verbose {
+                println!("\nserver says this:\n{}", emsg);
+            }
         }
 
         // Get server process id, possibly remote.
@@ -340,7 +345,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             setup = setup.replace("$port", &format!("{}", port));
             let argsp = setup.split(' ').collect::<Vec<&str>>();
             let args = argsp[1..].to_vec();
-            eprintln!("\nrunning setup command = {}", argsp.iter().format(" "));
+            if verbose {
+                println!("\nrunning setup command = {}", argsp.iter().format(" "));
+            }
             let setup_process = Command::new(argsp[0])
                 .args(args)
                 .stdout(Stdio::piped())
@@ -368,14 +375,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Connect to client.
 
-        println!("connecting to {}", url);
+        if verbose {
+            println!("connecting to {}", url);
+        }
         let client = AnalyzerClient::connect(url).await;
         if client.is_err() {
             eprintln!("\nconnection failed with error\n{:?}\n", client);
             cleanup();
             std::process::exit(1);
         }
-        println!("connected");
+        println!("connected\n");
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
