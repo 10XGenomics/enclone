@@ -384,8 +384,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let response = response.unwrap();
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
-                            output += &format!("\nplot = {}", truncate(&r.plot));
-                            output += &format!("\ntable = {}", truncate(&r.table));
+                            output += &format!("\n\nplot = {}", truncate(&r.plot));
+                            output += &format!("\n\ntable = {}", truncate(&r.table));
                         }
                     }
                     SERVER_REPLY.lock().unwrap().clear();
@@ -476,17 +476,17 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .push(Text::new(&self.output_value).font(CQ_MONO));
+            .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
 
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(600)
+            .max_width(1200) // width of window
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(
                 Row::new()
                     .spacing(10)
-                    .height(Length::Units(400))
+                    .height(Length::Units(500)) // This is the height of the scrollable window.
                     .align_items(Align::Center)
                     .push(scrollable)
                     .push(Rule::vertical(38)),
