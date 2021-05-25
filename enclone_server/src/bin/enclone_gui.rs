@@ -49,7 +49,7 @@
 //     (d) while we're at it, roll enclone_gui into enclone.
 //
 // 18. Return on close request.
-//     Clicking the upper left button causes an exit without cleanup() being called.  
+//     Clicking the upper left button causes an exit without cleanup() being called.
 //     Raised as an issue on zulip chat.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -72,12 +72,12 @@
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use failure::Error;
+use iced::svg::Handle;
+use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
     Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
-use iced::svg::Handle;
-use iced::Length::Units;
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::SIGINT;
@@ -566,7 +566,7 @@ impl Sandbox for Calculator {
             .height(Length::Units(100))
             .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
 
-        // Display the user instructions.  The height is set because otherwise the text is 
+        // Display the user instructions.  The height is set because otherwise the text is
         // truncated.
 
         let instructions = Text::new(
@@ -575,7 +575,8 @@ impl Sandbox for Calculator {
                 • an clonotype id (number)\n\
                 • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
                 • q to quit\n",
-        ).height(Units(125));
+        )
+        .height(Units(125));
 
         // Display the SVG.
 
