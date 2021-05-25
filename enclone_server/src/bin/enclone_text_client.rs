@@ -385,7 +385,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
                             output += &format!("\n\nplot = {}", truncate(&r.plot));
-                            output += &format!("\n\ntable = {}", truncate(&r.table));
+                            output += &format!("\n{}", r.table);
                         }
                     }
                     SERVER_REPLY.lock().unwrap().clear();
