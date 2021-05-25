@@ -43,10 +43,9 @@
 // 16. Have text-only mode for testing and development.
 //
 // 17. Need shared location for server binary.
-//     (a) merge the enclone_server functionality into enclone
-//     (b) create a shared directory where the latest enclone should go (in /mnt/opt?)
-//     (c) start_release forks a background process that updates the shared directory
-//     (d) while we're at it, roll enclone_gui into enclone.
+//     (a) create a shared directory where the latest enclone should go (in /mnt/opt?)
+//     (b) start_release forks a background process that updates the shared directory
+//     (c) while we're at it, roll enclone_gui into enclone.
 //
 // 18. Return on close request.
 //     Clicking the upper left button causes an exit without cleanup() being called.
@@ -56,7 +55,7 @@
 
 // This is a GUI client, work in progress.
 //
-// This starts enclone_server, which can be either local or remote.
+// This starts enclone in SERVER mode, which can be either local or remote.
 //
 // For now accepts a single argument, which is COM=x where x is a "configuration name".  It then
 // looks for an environment variable ENCLONE_COM_x, and parses that into blank-separated
@@ -67,10 +66,10 @@
 // REMOTE_HOST=...           name of remote host for password-free ssh
 // REMOTE_IP=...             IP number of remote host
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
-// REMOVE_BIN=...            directory on remote host containing the enclone_server executable
+// REMOVE_BIN=...            directory on remote host containing the enclone executable
 
 use enclone_core::parse_bsv;
-use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use enclone_main::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
@@ -298,14 +297,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let bin = &config["REMOTE_BIN"];
             if verbose {
                 println!(
-                    "\nstarting remote server using\nssh {} {}/enclone_server {}:{}",
+                    "\nstarting remote server using\nssh {} {}/enclone {}:{}",
                     host, bin, ip, port
                 );
             }
             server_process = Command::new("ssh")
                 .arg("-n")
                 .arg(&host)
-                .arg(&format!("{}/enclone_server", bin))
+                .arg(&format!("{}/enclone", bin))
+                .arg("SERVER")
                 .arg(&format!("{}:{}", ip, port))
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
@@ -313,7 +313,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             local_host = "localhost".to_string();
         } else {
             let ip = "127.0.0.1";
-            server_process = Command::new("enclone_server")
+            server_process = Command::new("enclone")
+                .arg("SERVER")
                 .arg(&format!("{}:{}", ip, port))
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())

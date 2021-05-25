@@ -17,3 +17,7 @@ pub mod setup;
 pub mod split_orbits;
 pub mod subset;
 pub mod vars;
+
+pub mod proto {
+    tonic::include_proto!("enclone");
+}

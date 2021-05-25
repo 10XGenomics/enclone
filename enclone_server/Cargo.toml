@@ -14,9 +14,9 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
 
-[[bin]]
-name = "enclone_server"
-path = "src/bin/enclone_server.rs"
+# [[bin]]
+# name = "enclone_server"
+# path = "src/bin/enclone_server.rs"
 
 [dependencies]
 enclone_core = { path = "../enclone_core" }
