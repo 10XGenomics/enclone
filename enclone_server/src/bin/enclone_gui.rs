@@ -14,7 +14,8 @@
 //     server says this:
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
-// 8.  Can't cut and paste text from terminal window.
+// 8.  Can't cut and paste text from the GUI window, except for the text input box.
+       Looks like this is https://github.com/hecrj/iced/issues/36.
 // 9.  Pretty, not plain.
 // 10. Add local server capability.
 // 11. tooltip
