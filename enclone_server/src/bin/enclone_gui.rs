@@ -18,6 +18,7 @@
 // 10. Add local server capability.
 // 11. tooltip
 // 12. the wraparound problem
+// 13. Make sure that client and server are the same version.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -362,11 +363,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
-
-                    // let output = process_command(&request, &mut com.await).await;
-
                     let mut line = input.to_string();
                     let mut output;
+                    let mut svg_output = String::new();
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
@@ -402,9 +401,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let response = response.unwrap();
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
-                            output += &format!("\n\nplot = {}", truncate(&r.plot));
+                            svg_output = format!("\n\nplot = {}", truncate(&r.plot));
                             output += &format!("\n\n{}", r.table);
                         }
+                        SERVER_REPLY_SVG.lock().unwrap().clear();
+                        SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
                     }
                     SERVER_REPLY_TEXT.lock().unwrap().clear();
                     SERVER_REPLY_TEXT.lock().unwrap().push(output.clone());
@@ -463,7 +464,8 @@ impl Sandbox for Calculator {
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
-                    let reply_text = &SERVER_REPLY_TEXT.lock().unwrap()[0];
+                    let mut reply_text = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    reply_text += &mut SERVER_REPLY_TEXT.lock().unwrap()[0];
                     self.output_value = reply_text.to_string();
                 }
             }
