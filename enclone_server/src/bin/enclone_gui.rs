@@ -20,6 +20,7 @@
 // 12. the wraparound problem
 // 13. Make sure that client and server are the same version.
 // 14. Handle the case where button is pushed twice, etc.
+// 15. Label text in PLOT_BY_ISOTYPE doesn't show up.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -402,7 +403,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let response = response.unwrap();
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
-                            svg_output = format!("\n\nplot = {}", truncate(&r.plot));
+                            // svg_output = format!("\n\nplot = {}", truncate(&r.plot));
+                            svg_output = r.plot.clone();
                             output += &format!("\n\n{}", r.table);
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
@@ -430,6 +432,7 @@ struct Calculator {
     input: text_input::State,
     input_value: String,
     output_value: String,
+    svg_value: String,
     button: button::State,
 }
 
@@ -465,9 +468,10 @@ impl Sandbox for Calculator {
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
-                    let mut reply_text = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    reply_text += &mut SERVER_REPLY_TEXT.lock().unwrap()[0];
+                    let reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                    let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
+                    self.svg_value = reply_svg.to_string();
                 }
             }
         }
@@ -500,9 +504,11 @@ impl Sandbox for Calculator {
                 • q to quit\n",
         );
 
-        let svg_string = include_str!["tiger.svg"];
+        // let svg_string = include_str!["tiger.svg"];
         use iced::Length::Units;
-        let svg = Svg::from_data(Data::Bytes(svg_string.as_bytes().into()));
+        use iced::svg::Handle;
+        // let svg = Svg::new(Handle::from_memory(svg_string.as_bytes().to_vec()));
+        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec())).width(Units(250)).height(Units(250));
 
         let content = Column::new()
             .spacing(20)
