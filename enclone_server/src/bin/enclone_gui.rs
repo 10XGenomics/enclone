@@ -157,26 +157,33 @@ extern "C" fn handler(sig: i32) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Turn on pretty tracebacks and set up to catch CTRL-C events.
+    //
+    // Turn on pretty tracebacks and set up to catch CTRL-C events.  Parse arguments.
 
     PrettyTrace::new().on();
     let _ = install_signal_handler();
-    let verbose = false;
+    let args: Vec<String> = env::args().collect();
+    let mut verbose = false;
+    let mut config_name = String::new();
+    for i in 1..args.len() {
+        let arg = &args[i];
+        if arg == "VERBOSE" {
+            verbose = true;
+        } else if arg.starts_with("COM=") {
+            config_name = arg.after("COM=").to_string();
+        } else {
+            eprintln!(
+                "\nCurrently the only allowed arguments are COM=x where x is a \
+                configuration name, and VERBOSE.\n"
+            );
+            std::process::exit(1);
+        }
+    }
 
     // Get configuration.
 
     let mut configuration = None;
-    let args: Vec<String> = env::args().collect();
-    if args.len() > 1 {
-        let arg = args[1].to_string();
-        if !arg.starts_with("COM=") {
-            eprintln!(
-                "\nCurrently the only allowed argument is COM=x where x is a \
-                configuration name.\n"
-            );
-            std::process::exit(1);
-        }
-        let config_name = arg.after("COM=");
+    if config_name.len() > 0 {
         let env_var = format!("ENCLONE_COM_{}", config_name);
         for (key, value) in env::vars() {
             if key == env_var {
