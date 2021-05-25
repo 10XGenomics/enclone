@@ -20,7 +20,7 @@
 // 12. the wraparound problem
 // 13. Make sure that client and server are the same version.
 // 14. Handle the case where button is pushed twice, etc.
-// 15. Label text in PLOT_BY_ISOTYPE doesn't show up.
+// 15. Text in SVG objects does not show up.  Problem reported.
 // 16. Have text mode.
 // 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 // 18. Scrollable window part needs to be larger.
