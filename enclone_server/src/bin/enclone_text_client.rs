@@ -495,8 +495,60 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 break;
             }
             if PROCESSING_REQUEST.load(SeqCst) {
-                let request = USER_REQUEST.lock().unwrap()[0].clone();
-                let output = process_command(&request, &mut com.await).await;
+                let input = USER_REQUEST.lock().unwrap()[0].clone();
+
+
+                // let output = process_command(&request, &mut com.await).await;
+
+
+
+                let mut line = input.to_string();
+                let mut output;
+                if line == "q" {
+                    cleanup();
+                    std::process::exit(0);
+                }
+                if line == "d" {
+                    line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+                }
+                if line.parse::<usize>().is_ok() {
+                    let n = line.force_usize();
+                    let request = tonic::Request::new(ClonotypeRequest {
+                        clonotype_number: n as u32,
+                    });
+                    let response = com.await.as_mut().unwrap().get_clonotype(request).await;
+                    if response.is_err() {
+                        eprintln!("\nclonotype request failed\n");
+                        std::process::exit(1);
+                    }
+                    let response = response.unwrap();
+                    let r = response.into_inner();
+                    output = format!("\ntable = {}", truncate(&r.table));
+                } else {
+                    let request = tonic::Request::new(EncloneRequest { args: line });
+
+                    let response = com.await.as_mut().unwrap().enclone(request).await;
+                    // let response = com.enclone(request).await;
+
+                    if response.is_err() {
+                        let left = r###"message: "\n"###;
+                        let right = r###"\n""###;
+                        let mut err = format!("{:?}", response);
+                        if err.contains(&left) && err.after(&left).contains(&right) {
+                            err = err.between(&left, &right).to_string();
+                        }
+                        output = format!("\nThe server is unhappy.  It says:\n{}", err);
+                    } else {
+                        let response = response.unwrap();
+                        let r = response.into_inner();
+                        output = format!("\nargs = {}", r.args);
+                        output += &format!("\nplot = {}", truncate(&r.plot));
+                        output += &format!("\ntable = {}", truncate(&r.table));
+                    }
+                }
+
+
+
                 SERVER_REPLY.lock().unwrap().clear();
                 SERVER_REPLY.lock().unwrap().push(output.clone());
                 PROCESSING_REQUEST.store(false, SeqCst);
