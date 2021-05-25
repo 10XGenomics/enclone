@@ -1,5 +1,26 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// TO DO
+// 1.  Make sure server dies.
+// 2.  Handle CTRL-C, or not.
+// 3.  Is font too light?
+// 4.  Display the SVG.
+// 5.  Speed up initialization.
+// 6.  Don't print initialization gorp.
+// 7.  Handle the case where tsh hasn't been started
+//     server says this:
+//     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+//     kex_exchange_identification: Connection closed by remote host
+// 8.  Can't cut and paste text from terminal window.
+// 9.  Pretty, not plain.
+// 10. Add local server capability.
+// 11. tooltip
+// 12. the wraparound problem
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // This is a text client, which is useless except for debugging and experimentation.
 //
 // This starts enclone_server, which can be either local or remote.
@@ -18,8 +39,8 @@
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Container, Element, Font,
-    Length, Row, Rule, Sandbox, Scrollable, Settings, Text, TextInput,
+    button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
+    Rule, Sandbox, Scrollable, Settings, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -113,7 +134,6 @@ extern "C" fn _handler(sig: Signal) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-
     // Turn on pretty tracebacks.
 
     PrettyTrace::new().on();
@@ -332,7 +352,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
-    
+
         tokio::spawn(async move {
             loop {
                 thread::sleep(Duration::from_millis(10));
@@ -341,12 +361,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
-    
-    
+
                     // let output = process_command(&request, &mut com.await).await;
-    
-    
-    
+
                     let mut line = input.to_string();
                     let mut output;
                     if line == "q" {
@@ -385,7 +402,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
                             output += &format!("\n\nplot = {}", truncate(&r.plot));
-                            output += &format!("\n{}", r.table);
+                            output += &format!("\n\n{}", r.table);
                         }
                     }
                     SERVER_REPLY.lock().unwrap().clear();
@@ -394,12 +411,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         });
-    
+
         // Launch GUI.
-    
+
         let _ = Calculator::run(Settings::default());
         return Ok(());
-
     }
 }
 
@@ -435,7 +451,6 @@ impl Sandbox for Calculator {
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
-
                 // Need to figure what to do if we are already processing a request, for example
                 // if the user pushes the button twice or enters a second command and pushes the
                 // button before the first one has completed.  For now, do nothing.
@@ -473,14 +488,13 @@ impl Sandbox for Calculator {
             .height(Length::Units(100))
             .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
 
-        let instructions = 
-            Text::new(
-                "\nEnter one of the following:\n\
+        let instructions = Text::new(
+            "\nEnter one of the following:\n\
                 • an enclone command, without the enclone part\n\
                 • an clonotype id (number)\n\
                 • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
-                • q to quit\n"
-            );
+                • q to quit\n",
+        );
 
         let content = Column::new()
             .spacing(20)
