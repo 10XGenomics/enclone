@@ -21,6 +21,9 @@
 // 13. Make sure that client and server are the same version.
 // 14. Handle the case where button is pushed twice, etc.
 // 15. Label text in PLOT_BY_ISOTYPE doesn't show up.
+// 16. Have text mode.
+// 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
+// 18. Scrollable window part needs to be larger.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -87,7 +90,7 @@ lazy_static! {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn truncate(s: &str) -> String {
+fn _truncate(s: &str) -> String {
     const MAX_LINES: usize = 10;
     let mut t = String::new();
     let mut extra = 0;
@@ -387,7 +390,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         let response = response.unwrap();
                         let r = response.into_inner();
-                        output = format!("\ntable = {}", truncate(&r.table));
+                        output = r.table.clone();
                     } else {
                         let request = tonic::Request::new(EncloneRequest { args: line });
                         let response = client.enclone(request).await;
@@ -403,7 +406,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let response = response.unwrap();
                             let r = response.into_inner();
                             output = format!("\nargs = {}", r.args);
-                            // svg_output = format!("\n\nplot = {}", truncate(&r.plot));
                             svg_output = r.plot.clone();
                             output += &format!("\n\n{}", r.table);
                         }
@@ -504,23 +506,21 @@ impl Sandbox for Calculator {
                 • q to quit\n",
         );
 
-        // let svg_string = include_str!["tiger.svg"];
         use iced::Length::Units;
         use iced::svg::Handle;
-        // let svg = Svg::new(Handle::from_memory(svg_string.as_bytes().to_vec()));
-        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec())).width(Units(250)).height(Units(250));
+        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec())).width(Units(300)).height(Units(300));
 
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(1200) // width of window
+            .max_width(1300) // width of window
             .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(
                 Row::new()
                     .spacing(10)
-                    .height(Length::Units(800)) // This is the height of the scrollable window.
+                    .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
                     .push(scrollable)
                     .push(Rule::vertical(38)),
