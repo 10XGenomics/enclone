@@ -7,7 +7,7 @@
 // 2.  Scrollable window part needs to be larger.
 // 2.  Handle CTRL-C, or not.
 // 3.  Is font too light?
-// 4.  Display the SVG.
+// 4.  Doesn't properly handle connection refused.
 // 5.  Speed up initialization.
 // 6.  Don't print initialization gorp.
 // 7.  Handle the case where tsh hasn't been started
@@ -15,8 +15,9 @@
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 // 8.  Can't cut and paste text from the GUI window, except for the text input box.
-       Looks like this is https://github.com/hecrj/iced/issues/36.
+//     Looks like this is https://github.com/hecrj/iced/issues/36.
 // 9.  Pretty, not plain.
+//     Enabling e.g. multicolor text is on the iced roadmap.
 // 10. Add local server capability.
 // 11. tooltip
 // 12. the wraparound problem
@@ -26,7 +27,6 @@
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 // 16. Have text mode.
 // 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-// 18. Doesn't properly handle connection refused.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
