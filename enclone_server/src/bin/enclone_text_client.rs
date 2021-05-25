@@ -354,7 +354,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         std::process::exit(0);
                     }
                     if line == "d" {
-                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
@@ -461,7 +461,7 @@ impl Sandbox for Calculator {
             // "\nenter one of the following:\n\
             // • an enclone command, without the enclone part\n\
             // • an clonotype id (number)\n\
-            // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+            // • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
             // • q to quit\n\n% "
             &self.input_value,
             Message::InputChanged,
@@ -486,7 +486,7 @@ impl Sandbox for Calculator {
             .push(
                 Row::new()
                     .spacing(10)
-                    .height(Length::Units(100))
+                    .height(Length::Units(400))
                     .align_items(Align::Center)
                     .push(scrollable)
                     .push(Rule::vertical(38)),
