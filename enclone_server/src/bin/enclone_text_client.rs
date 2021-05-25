@@ -38,7 +38,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tonic::transport::Channel;
 
-type Com = Option<AnalyzerClient<Channel>>;
+type Com = AnalyzerClient<Channel>;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -324,12 +324,13 @@ async fn initialize_com() -> Com {
             std::process::exit(1);
         }
         println!("connected");
-        return Some(client.unwrap());
+        return client.unwrap();
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+/*
 async fn process_command(input: &str, com: &mut Com) -> String {
     let mut line = input.to_string();
     let mut output;
@@ -374,6 +375,7 @@ async fn process_command(input: &str, com: &mut Com) -> String {
     }
     output
 }
+*/
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -516,7 +518,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let request = tonic::Request::new(ClonotypeRequest {
                         clonotype_number: n as u32,
                     });
-                    let response = com.await.as_mut().unwrap().get_clonotype(request).await;
+
+                    // let response = com.await.as_mut().unwrap().get_clonotype(request).await;
+                    let response = com.await.get_clonotype(request).await;
+
                     if response.is_err() {
                         eprintln!("\nclonotype request failed\n");
                         std::process::exit(1);
@@ -527,8 +532,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } else {
                     let request = tonic::Request::new(EncloneRequest { args: line });
 
-                    let response = com.await.as_mut().unwrap().enclone(request).await;
-                    // let response = com.enclone(request).await;
+                    // let response = com.await.as_mut().unwrap().enclone(request).await;
+                    let response = com.await.enclone(request).await;
 
                     if response.is_err() {
                         let left = r###"message: "\n"###;
