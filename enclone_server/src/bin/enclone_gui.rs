@@ -5,7 +5,6 @@
 // TO DO
 // 1.  Make sure server dies.
 // 2.  Scrollable window part needs to be larger.
-// 2.  Handle CTRL-C, or not.
 // 3.  Is font too light?
 // 4.  Doesn't properly handle connection refused.
 // 5.  Speed up initialization.
@@ -25,7 +24,7 @@
 // 14. Handle the case where button is pushed twice, etc.
 // 15. Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
-// 16. Have text mode.
+// 16. Have text-only mode for testing and development.
 // 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
