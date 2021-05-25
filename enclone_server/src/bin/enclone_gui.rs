@@ -6,8 +6,7 @@
 //
 // 1.  Make sure server dies.
 //
-// 2.  Scrollable window part needs to be larger.
-//     (asked for help on this, in progress)
+// 2.  Need a regression test.
 //
 // 3.  Is font too light?
 //
@@ -44,6 +43,10 @@
 // 16. Have text-only mode for testing and development.
 //
 // 17. Need shared location for server binary.
+//
+// 18. Return on close request.
+//     Clicking the upper left button causes an exit without cleanup() being called.  
+//     Raised as an issue on zulip chat.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
