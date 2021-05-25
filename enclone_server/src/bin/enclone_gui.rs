@@ -4,6 +4,7 @@
 
 // TO DO
 // 1.  Make sure server dies.
+// 2.  Scrollable window part needs to be larger.
 // 2.  Handle CTRL-C, or not.
 // 3.  Is font too light?
 // 4.  Display the SVG.
@@ -20,10 +21,11 @@
 // 12. the wraparound problem
 // 13. Make sure that client and server are the same version.
 // 14. Handle the case where button is pushed twice, etc.
-// 15. Text in SVG objects does not show up.  Problem reported.
+// 15. Text in SVG objects does not show up. 
+//     Known regression = https://github.com/hecrj/iced/issues/870.
 // 16. Have text mode.
 // 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-// 18. Scrollable window part needs to be larger.
+// 18. Doesn't properly handle connection refused.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -435,6 +437,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Launch GUI.
 
         let _ = Calculator::run(Settings::default());
+        cleanup();
         return Ok(());
     }
 }
