@@ -43,6 +43,10 @@
 // 16. Have text-only mode for testing and development.
 //
 // 17. Need shared location for server binary.
+//     (a) merge the enclone_server functionality into enclone
+//     (b) create a shared directory where the latest enclone should go (in /mnt/opt?)
+//     (c) start_release forks a background process that updates the shared directory
+//     (d) while we're at it, roll enclone_gui into enclone.
 //
 // 18. Return on close request.
 //     Clicking the upper left button causes an exit without cleanup() being called.  
