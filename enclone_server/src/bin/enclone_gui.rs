@@ -50,6 +50,8 @@ use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
     Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
+use iced::svg::Handle;
+use iced::Length::Units;
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::SIGINT;
@@ -534,16 +536,19 @@ impl Sandbox for Calculator {
             .height(Length::Units(100))
             .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
 
+        // Display the user instructions.  The height is set because otherwise the text is 
+        // truncated.
+
         let instructions = Text::new(
             "\nEnter one of the following:\n\
                 • an enclone command, without the enclone part\n\
                 • an clonotype id (number)\n\
                 • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
                 • q to quit\n",
-        );
+        ).height(Units(125));
 
-        use iced::svg::Handle;
-        use iced::Length::Units;
+        // Display the SVG.
+
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
             .width(Units(300))
             .height(Units(300));
