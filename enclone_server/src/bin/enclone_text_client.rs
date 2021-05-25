@@ -78,7 +78,8 @@ static DONE: AtomicBool = AtomicBool::new(false);
 lazy_static! {
     static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref SERVER_REPLY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -405,8 +406,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             output += &format!("\n\n{}", r.table);
                         }
                     }
-                    SERVER_REPLY.lock().unwrap().clear();
-                    SERVER_REPLY.lock().unwrap().push(output.clone());
+                    SERVER_REPLY_TEXT.lock().unwrap().clear();
+                    SERVER_REPLY_TEXT.lock().unwrap().push(output.clone());
                     PROCESSING_REQUEST.store(false, SeqCst);
                 }
             }
@@ -462,8 +463,8 @@ impl Sandbox for Calculator {
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
-                    let reply = &SERVER_REPLY.lock().unwrap()[0];
-                    self.output_value = reply.to_string();
+                    let reply_text = &SERVER_REPLY_TEXT.lock().unwrap()[0];
+                    self.output_value = reply_text.to_string();
                 }
             }
         }
