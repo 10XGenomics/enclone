@@ -475,9 +475,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         });
 
-        // Launch GUI.
+        // Launch GUI.  We set the size to a reasonable minimum.
 
-        let _ = Calculator::run(Settings::default());
+        let mut settings = Settings::default();
+        let mut window_settings = iced::window::Settings::default();
+        window_settings.size = (1100 as u32, 1000 as u32);
+        settings.window = window_settings;
+        let _ = Calculator::run(settings);
         cleanup();
         return Ok(());
     }
