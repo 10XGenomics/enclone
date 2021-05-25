@@ -18,8 +18,8 @@
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Container, Element, Length, Row, Rule,
-    Sandbox, Scrollable, Settings, Text, TextInput,
+    button, scrollable, text_input, Align, Button, Column, Container, Element, Font,
+    Length, Row, Rule, Sandbox, Scrollable, Settings, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -39,6 +39,11 @@ use string_utils::*;
 use tonic::transport::Channel;
 
 type Com = AnalyzerClient<Channel>;
+
+const CQ_MONO: Font = Font::External {
+    name: "CQ_MONO",
+    bytes: include_bytes!("../../../fonts/DejaVuLGCSansMono.ttf"),
+};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -450,7 +455,7 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .push(Text::new(&self.output_value));
+            .push(Text::new(&self.output_value).font(CQ_MONO));
 
         let content = Column::new()
             .spacing(20)
