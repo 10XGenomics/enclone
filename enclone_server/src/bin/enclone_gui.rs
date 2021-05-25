@@ -44,13 +44,16 @@
 
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use failure::Error;
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
     Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
-use nix::sys::signal::{kill, Signal, SIGINT};
+use libc::SIGINT;
+use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
+use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
 use pretty_trace::*;
 use std::collections::HashMap;
@@ -127,10 +130,19 @@ fn cleanup() {
     }
 }
 
-// Doesn't this have to be enabled?  And can this work, given that an interrupt can occur in
-// any code, including in the memory manager?
+// Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
+// since a CTRL-C could happen at any point, including in the memory manager.
 
-extern "C" fn _handler(sig: Signal) {
+fn install_signal_handler() -> Result<(), Error> {
+    let handler = SigHandler::Handler(handler);
+    let action = SigAction::new(handler, SaFlags::SA_RESTART, SigSet::empty());
+    unsafe {
+        sigaction(Signal::SIGINT, &action)?;
+    }
+    Ok(())
+}
+
+extern "C" fn handler(sig: i32) {
     if sig == SIGINT {
         cleanup();
         std::process::exit(0);
@@ -141,9 +153,10 @@ extern "C" fn _handler(sig: Signal) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Turn on pretty tracebacks.
+    // Turn on pretty tracebacks and set up to catch CTRL-C events.
 
     PrettyTrace::new().on();
+    let _ = install_signal_handler();
 
     // Get configuration.
 
@@ -334,7 +347,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "\nfailed to launch setup, err =\n{}.\n",
                     setup_process.unwrap_err()
                 );
-                kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
+                kill(Pid::from_raw(server_process_id as i32), SIGINT_nix).unwrap();
                 cleanup();
                 std::process::exit(1);
             }

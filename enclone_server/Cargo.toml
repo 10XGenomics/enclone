@@ -21,9 +21,11 @@ path = "src/bin/enclone_server.rs"
 [dependencies]
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
+failure = "0.1.6"
 iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio", "svg"] }
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
+libc = "0.2.85"
 log = "0.4"
 log4rs = "1.0"
 nix = "0.19.1"

@@ -1271,10 +1271,12 @@ version = "0.5.58"
 dependencies = [
  "enclone_core",
  "enclone_main",
+ "failure",
  "iced",
  "io_utils",
  "itertools",
  "lazy_static",
+ "libc",
  "log",
  "log4rs",
  "nix 0.19.1",
