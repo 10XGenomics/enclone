@@ -19,6 +19,7 @@
 // 11. tooltip
 // 12. the wraparound problem
 // 13. Make sure that client and server are the same version.
+// 14. Handle the case where button is pushed twice, etc.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -41,7 +42,7 @@ use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
-    Rule, Sandbox, Scrollable, Settings, Text, TextInput,
+    Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -499,12 +500,17 @@ impl Sandbox for Calculator {
                 • q to quit\n",
         );
 
+        // let svg = include_str!["tiger.svg"];
+        use iced::Length::Units;
+        let svg = Svg::from_path("enclone_server/src/bin/tiger.svg").width(Units(100)).height(Units(100));
+
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1200) // width of window
             .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
+            .push(Row::new().spacing(10).push(svg))
             .push(
                 Row::new()
                     .spacing(10)
