@@ -15,7 +15,6 @@
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone_server executable
 
-use async_trait::async_trait;
 use enclone_core::parse_bsv;
 use enclone_server::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use iced::{
@@ -43,6 +42,24 @@ type Com = Option<AnalyzerClient<Channel>>;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Global variables.
+
+static REMOTE: AtomicBool = AtomicBool::new(false);
+
+static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
+
+static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
+
+static DONE: AtomicBool = AtomicBool::new(false);
+
+lazy_static! {
+    static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref SERVER_REPLY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn truncate(s: &str) -> String {
     const MAX_LINES: usize = 10;
     let mut t = String::new();
@@ -67,13 +84,6 @@ fn truncate(s: &str) -> String {
 // Kill server.
 // kill(Pid::from_raw(server_process_id as i32), SIGINT).unwrap();
 
-static REMOTE: AtomicBool = AtomicBool::new(false);
-static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
-
-lazy_static! {
-    static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-}
-
 fn cleanup() {
     if REMOTE.load(SeqCst) {
         let host = &HOST.lock().unwrap()[0];
@@ -86,6 +96,9 @@ fn cleanup() {
             .expect("failed to execute ssh to kill");
     }
 }
+
+// Doesn't this have to be enabled?  And can this work, given that an interrupt can occur in
+// any code, including in the memory manager?
 
 extern "C" fn handler(sig: Signal) {
     if sig == SIGINT {
@@ -194,9 +207,8 @@ async fn initialize_com() -> Com {
             }
         }
         println!("\ntrying random port {}", port);
-        let mut host = String::new();
         if remote {
-            host = config["REMOTE_HOST"].clone();
+            let host = config["REMOTE_HOST"].clone();
             HOST.lock().unwrap().push(host.clone());
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
@@ -320,7 +332,7 @@ async fn initialize_com() -> Com {
 
 async fn process_command(input: &str, com: &mut Com) -> String {
     let mut line = input.to_string();
-    let mut output = String::new();
+    let mut output;
     if line == "q" {
         cleanup();
         std::process::exit(0);
@@ -372,7 +384,6 @@ struct Calculator {
     input_value: String,
     output_value: String,
     button: button::State,
-    client: Com,
 }
 
 #[derive(Debug, Clone)]
@@ -381,26 +392,36 @@ enum Message {
     ButtonPressed,
 }
 
-#[async_trait]
 impl Sandbox for Calculator {
     type Message = Message;
 
-    async fn new() -> Self {
-        let mut x = Calculator::default();
-        x.client = initialize_com().await; // the await is new, maybe not right
-        x
+    fn new() -> Self {
+        Calculator::default()
     }
 
     fn title(&self) -> String {
         String::from("Calculator")
     }
 
-    async fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message) {
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
-                let output = process_command(&self.input_value, &mut self.client);
-                self.output_value = output.await; // await is new, maybe wrong
+
+                // Need to figure what to do if we are already processing a request, for example
+                // if the user pushes the button twice or enters a second command and pushes the
+                // button before the first one has completed.  For now, do nothing.
+
+                if !PROCESSING_REQUEST.load(SeqCst) {
+                    USER_REQUEST.lock().unwrap().clear();
+                    USER_REQUEST.lock().unwrap().push(self.input_value.clone());
+                    PROCESSING_REQUEST.store(true, SeqCst);
+                    while PROCESSING_REQUEST.load(SeqCst) {
+                        thread::sleep(Duration::from_millis(10));
+                    }
+                    let reply = &SERVER_REPLY.lock().unwrap()[0];
+                    self.output_value = reply.to_string();
+                }
             }
         }
     }
@@ -452,9 +473,42 @@ impl Sandbox for Calculator {
     }
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    // Turn on pretty tracebacks.
+
     PrettyTrace::new().on();
+
+    // Set up initial communications with server.
+
+    let com = initialize_com();
+
+    // Process commands via the server in the background.
+
+    tokio::spawn(async move {
+        loop {
+            thread::sleep(Duration::from_millis(10));
+            if DONE.load(SeqCst) {
+                break;
+            }
+            if PROCESSING_REQUEST.load(SeqCst) {
+                let request = USER_REQUEST.lock().unwrap()[0].clone();
+                let output = process_command(&request, &mut com.await).await;
+                SERVER_REPLY.lock().unwrap().clear();
+                SERVER_REPLY.lock().unwrap().push(output.clone());
+                PROCESSING_REQUEST.store(false, SeqCst);
+            }
+        }
+    });
+
+    // Launch GUI.
+
     Calculator::run(Settings::default());
+
+    // Done.
+
     Ok(())
 }

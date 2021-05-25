@@ -19,7 +19,6 @@ name = "enclone_server"
 path = "src/bin/enclone_server.rs"
 
 [dependencies]
-async-trait = "0.1"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio"] }
