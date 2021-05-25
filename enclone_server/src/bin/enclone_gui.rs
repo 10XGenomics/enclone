@@ -500,9 +500,9 @@ impl Sandbox for Calculator {
                 • q to quit\n",
         );
 
-        // let svg = include_str!["tiger.svg"];
+        let svg_string = include_str!["tiger.svg"];
         use iced::Length::Units;
-        let svg = Svg::from_path("enclone_server/src/bin/tiger.svg").width(Units(100)).height(Units(100));
+        let svg = Svg::from_data(Data::Bytes(svg_string.as_bytes().into()));
 
         let content = Column::new()
             .spacing(20)
