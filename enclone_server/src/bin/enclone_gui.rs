@@ -43,13 +43,19 @@
 // 16. Have text-only mode for testing and development.
 //
 // 17. Need shared location for server binary.
-//     (a) create a shared directory where the latest enclone should go (in /mnt/opt?)
+//     (a) create a shared directory where the latest enclone should go (in /mnt/opt)
 //     (b) start_release forks a background process that updates the shared directory
 //     (c) while we're at it, roll enclone_gui into enclone.
 //
 // 18. Return on close request.
 //     Clicking the upper left button causes an exit without cleanup() being called.
 //     Raised as an issue on zulip chat.
+//
+// 19. Get ./test to work again.
+//
+// 20. Need auto-update for binary (at least for Mac).
+//
+// 21. Trim features and duplicated crates; reduce binary size.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
