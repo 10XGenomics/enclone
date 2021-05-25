@@ -23,7 +23,7 @@
 // 12. the wraparound problem
 // 13. Make sure that client and server are the same version.
 // 14. Handle the case where button is pushed twice, etc.
-// 15. Text in SVG objects does not show up. 
+// 15. Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 // 16. Have text mode.
 // 17. Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
@@ -523,9 +523,11 @@ impl Sandbox for Calculator {
                 • q to quit\n",
         );
 
-        use iced::Length::Units;
         use iced::svg::Handle;
-        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec())).width(Units(300)).height(Units(300));
+        use iced::Length::Units;
+        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
+            .width(Units(300))
+            .height(Units(300));
 
         let content = Column::new()
             .spacing(20)
