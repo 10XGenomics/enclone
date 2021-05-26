@@ -85,7 +85,7 @@ use iced::{
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
-use libc::SIGINT;
+use libc::{atexit, SIGINT};
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
@@ -151,6 +151,7 @@ fn _truncate(s: &str) -> String {
 // Cleanup code to make sure processes are killed.
 
 fn cleanup() {
+    println!("in cleanup"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if REMOTE.load(SeqCst) {
         if USING_SETUP.load(SeqCst) {
             kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
@@ -185,6 +186,10 @@ extern "C" fn handler(sig: i32) {
     }
 }
 
+extern "C" fn exit_handler() {
+    cleanup();
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[tokio::main]
@@ -210,6 +215,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             );
             std::process::exit(1);
         }
+    }
+    unsafe {
+        atexit(exit_handler);
     }
 
     // Get configuration.
