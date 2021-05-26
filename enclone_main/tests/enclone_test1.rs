@@ -639,7 +639,7 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
-    const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 7] =
         ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
