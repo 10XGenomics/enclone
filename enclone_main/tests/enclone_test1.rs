@@ -636,6 +636,7 @@ fn test_cpu() {
 // 9.  instant OK because we include the license.
 // 10. nalgebra and gethostname and xi-unicode OK because currently licensed under Apache-2.0 
 //     and there is not NOTICE file.
+// 11. iced_wgpu OK because it is MIT AND OFL-1.1.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -645,13 +646,14 @@ fn test_licenses() {
         ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "OFL-1.1"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 14] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 16] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
         "fuchsia-zircon",
         "fuchsia-zircon-sys",
         "gethostname",
+        "iced_wgpu",
         "instant",
         "nalgebra",
         "num_enum",
