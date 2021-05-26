@@ -84,41 +84,7 @@ pub fn print_clonotypes(
 
     // Identify certain extra parseable variables.  These arise from parameterizable cvars.
 
-    let mut extra_parseables = Vec::<String>::new();
-    {
-        let mut exclusions = ctl.clono_print_opt.cvars.clone();
-        for v in CVARS_ALLOWED.iter() {
-            exclusions.push(v.to_string());
-        }
-        for v in CVARS_ALLOWED_PCELL.iter() {
-            exclusions.push(v.to_string());
-        }
-        unique_sort(&mut exclusions);
-        for x in pcols_sort.iter() {
-            let mut chars = Vec::<char>::new();
-            for c in x.chars() {
-                chars.push(c);
-            }
-            let n = chars.len();
-            let mut trim = 0;
-            for i in (0..n).rev() {
-                if !chars[i].is_digit(10) {
-                    break;
-                }
-                trim += 1;
-            }
-            if trim > 0 {
-                let mut v = String::new();
-                for i in 0..n - trim {
-                    v.push(chars[i]);
-                }
-                if !bin_member(&exclusions, &v) {
-                    extra_parseables.push(v);
-                }
-            }
-        }
-        unique_sort(&mut extra_parseables);
-    }
+    let extra_parseables = get_extra_parseables(&ctl, &pcols_sort);
 
     // Compute all_vars.
 
