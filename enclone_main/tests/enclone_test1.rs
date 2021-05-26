@@ -646,7 +646,7 @@ fn test_licenses() {
         ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "OFL-1.1"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 16] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 17] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
