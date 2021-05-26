@@ -234,7 +234,7 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             std::process::exit(1);
         } else if verbose {
             println!(
-                "\nusing configuration\n▓{}▓\n",
+                "\nusing configuration\n▓{}▓",
                 configuration.as_ref().unwrap()
             );
         }
