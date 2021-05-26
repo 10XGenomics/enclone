@@ -1274,30 +1274,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "enclone_server"
-version = "0.5.58"
-dependencies = [
- "enclone_core",
- "enclone_main",
- "failure",
- "iced",
- "io_utils",
- "itertools",
- "lazy_static",
- "libc",
- "log",
- "log4rs",
- "nix 0.19.1",
- "pretty_trace",
- "prost",
- "string_utils",
- "tokio",
- "tokio-stream",
- "tonic",
- "tonic-build",
-]
-
-[[package]]
 name = "enclone_tail"
 version = "0.5.58"
 dependencies = [

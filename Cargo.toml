@@ -10,7 +10,6 @@ members = [
     "enclone_main",
     "enclone_print",
     "enclone_proto",
-    "enclone_server",
     "enclone_tail",
     "enclone_tools",
 ]
