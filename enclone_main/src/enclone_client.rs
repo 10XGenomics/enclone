@@ -51,6 +51,8 @@
 // 19. Need auto-update for binary (at least for Mac).
 //
 // 20. Trim features and duplicated crates; reduce binary size.
+//
+// 21. Make the scrollbar always visible.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
