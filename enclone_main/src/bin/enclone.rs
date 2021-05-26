@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use enclone_main::enclone_client::enclone_client;
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use enclone_main::proto::{
     analyzer_client::AnalyzerClient,
@@ -126,6 +127,16 @@ impl Analyzer for EncloneAnalyzer {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Client run of enclone.
+
+    for i in 0..args.len() {
+        if args[i].starts_with("COM=") {
+            enclone_client().await?;
+        }
+    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

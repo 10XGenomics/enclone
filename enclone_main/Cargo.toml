@@ -39,12 +39,17 @@ enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
+failure = "0.1.6"
 futures = { version = "0.3.0", features = [] }
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio", "svg"] }
 io_utils = "0.2"
-lazy_static = "1.4"
-log = "0.4"
 itertools = ">= 0.8, <= 0.11"
+lazy_static = "1.4"
+libc = "0.2.85"
+log = "0.4"
+log4rs = "1.0"
+nix = "0.19.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
@@ -71,7 +76,6 @@ tonic-build = { version = "0.4", features = [] }
 [dev-dependencies]
 ansi_escape = "0.1"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-failure = "0.1.6"
 flate2 = "1.0.20"
 io_utils = "0.2"
 perf_stats = "0.1"
