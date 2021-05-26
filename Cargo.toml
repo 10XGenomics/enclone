@@ -4,6 +4,7 @@ members = [
     "bio_edit",
     "enclone",
     "enclone_args",
+    "enclone_client",
     "enclone_com",
     "enclone_core",
     "enclone_help",
