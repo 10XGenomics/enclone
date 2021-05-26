@@ -112,6 +112,7 @@ const CQ_MONO: Font = Font::External {
 
 static REMOTE: AtomicBool = AtomicBool::new(false);
 static USING_SETUP: AtomicBool = AtomicBool::new(false);
+static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 
 static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
@@ -151,19 +152,21 @@ fn _truncate(s: &str) -> String {
 // Cleanup code to make sure processes are killed.
 
 fn cleanup() {
-    println!("in cleanup"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    if REMOTE.load(SeqCst) {
-        if USING_SETUP.load(SeqCst) {
-            kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
+    if !CLEANED_UP.load(SeqCst) {
+        CLEANED_UP.store(true, SeqCst);
+        if REMOTE.load(SeqCst) {
+            if USING_SETUP.load(SeqCst) {
+                kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
+            }
+            let host = &HOST.lock().unwrap()[0];
+            Command::new("ssh")
+                .arg(&host)
+                .arg("kill")
+                .arg("-9")
+                .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
+                .output()
+                .expect("failed to execute ssh to kill");
         }
-        let host = &HOST.lock().unwrap()[0];
-        Command::new("ssh")
-            .arg(&host)
-            .arg("kill")
-            .arg("-9")
-            .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
-            .output()
-            .expect("failed to execute ssh to kill");
     }
 }
 
