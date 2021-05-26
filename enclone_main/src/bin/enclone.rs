@@ -15,6 +15,8 @@ use tokio::net::TcpListener;
 use tokio_stream::wrappers::TcpListenerStream;
 use tonic::{transport::Server, Code, Request, Response, Status};
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub struct EncloneAnalyzer {
     enclone_command: Arc<Mutex<String>>,
     enclone_output: Arc<Mutex<MainEncloneOutput>>, // Caches result from main_enclone.
@@ -118,10 +120,14 @@ impl Analyzer for EncloneAnalyzer {
     }
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Standard run of enclone.
 
@@ -134,6 +140,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::process::exit(0);
     }
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Server run of enclone.
 
     let mut ip_port = "127.0.0.1:7000".to_string();
@@ -141,29 +149,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ip_port = args[2].clone();
     }
 
-    /*
-    let matches = App::new("enclone")
-        .arg(
-            Arg::with_name("port")
-                .short("n")
-                .long("port")
-                .takes_value(true)
-                .help("port optional"),
-        )
-        .get_matches();
-
-    info!("cwd: {:?}", std::env::current_dir());
-
-    let port = match matches.value_of("port") {
-        None => match std::env::var("SERVER_PORT") {
-            Ok(val) => val.parse::<u16>()?,
-            _ => 7006, // Use 0 to get a randomized port.
-        },
-        Some(val) => val.parse::<u16>()?,
-    };
-    */
-
     // Start server
+
     let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
     let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
@@ -176,6 +163,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let local_addr = listener.local_addr()?;
 
     // thread waits to print PORT for client until we can connect to our own endpoints
+
     tokio::spawn(async move {
         let dest = format!("http://{}", local_addr);
         let tick = Instant::now();
