@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 78803320;
+    const ENCLONE_SIZE: usize = 224519040;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -86,7 +86,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.7898;
+    const REQUIRED_GI: f64 = 18.7191;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -182,7 +182,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 9;
+    const DUPPED_CRATES: usize = 30;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
@@ -337,7 +337,7 @@ fn test_rust_version() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 33. Don't allow exit in code in some crates.
+// 33. Don't allow exit in code in some crates.  There is an exception for enclone_client.rs.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -358,6 +358,9 @@ fn test_exit() {
         let files = dir_list(&format!("../{}/src", cname));
         for f in files.iter() {
             if f.ends_with(".rs") {
+                if f == "enclone_client.rs" {
+                    continue;
+                }
                 let g = open_for_read![&format!("../{}/src/{}", cname, f)];
                 for line in g.lines() {
                     let s = line.unwrap();

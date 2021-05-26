@@ -1,7 +1,7 @@
 // version of protocol buffer used
 syntax = "proto3";
 
-package enclone_server;
+package enclone;
 
 // Analyzer service that runs enclone. A rust trait will be generated
 // from this service for the server code to implement.

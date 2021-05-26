@@ -4,19 +4,23 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-align_tools = "0.1"
+# to restore
+# align_tools = "0.1"
+align_tools = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="d566f5b43ae3eeaf16e5b64caf4800bed2f13d27" }
 amino = "0.1"
 ansi_escape = "0.1"
 assert_cmd = "1.0.3"
+async-trait = "0.1"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-bio = ">=0.33"
+# to restore this line when bio 0.35 is released
+# bio = ">=0.33"
+bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d0823f6da17f40e3cc1575" }
 bio-types = ">=0.11.0"
 bit-set = "0.5"
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
 chrono = "0.4.19"
-clap = "2.33"
 debruijn = "0.3.2"
 dirs = "3.0.1"
 edit-distance = "2.1.0"
@@ -38,13 +42,16 @@ futures = { version = "0.3.0", features = [] }
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1.2"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio", "svg"] }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
+libc = "0.2.85"
 log = "0.4"
 log4rs = "1.0"
 mirror_sparse_matrix = "0.1"
 ndarray = ">= 0.14"
+nix = "0.19.1"
 pager = "0.16.0"
 perf_stats = "0.1"
 permutation = "0.2.5"
@@ -71,5 +78,5 @@ tokio-stream = { version = "0.1", features = ["net"] }
 tokio-util = { version = "0.6", features = ["net"] }
 tonic = "0.4"
 tonic-build = { version = "0.4", features = [] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="6e69244cbb9802fe720e990f9387673b96475ae0" }
 vector_utils = "0.1.3"
