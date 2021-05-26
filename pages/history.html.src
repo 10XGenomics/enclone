@@ -32,6 +32,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>5/26/21</b>: Allow <code>PCHAINS=max</code> See
+<a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>.
+</p>
+
+<p>
 <b>5/6/21</b>: Clonotype grouping has been completely reworked.  Please see
     <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
 The pre-existing options are still present but now undocumented, and their behavior might have

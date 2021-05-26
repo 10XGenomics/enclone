@@ -84,6 +84,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              has, filling in with null entries.  One may instead specify n chains using the \
              argument\n\
              \\bold{PCHAINS=n}\n\
+             and if you use \\bold{max} in place of \\bold{n}, then the maximum value for your \
+             dataset will be used.\n\
              The parseable output fields may be specified using\n\
              \\bold{PCOLS=x1,...,xn}\n\
              where each xi is one of the field names shown below.\n\\boldred{This option reduces} \

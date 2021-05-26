@@ -58,7 +58,9 @@ pub fn proc_cvar1(
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
-                && ((ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains)
+                && ((ctl.parseable_opt.pout.len() > 0
+                    && (ctl.parseable_opt.pchains == "max"
+                        || $col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
                 let mut v = $var.clone();

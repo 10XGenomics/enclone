@@ -21,6 +21,7 @@ use enclone_core::mammalian_fixed_len::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -74,7 +75,11 @@ pub fn print_clonotypes(
     // by macros that begin with "speak".
 
     let mut parseable_fields = Vec::<String>::new();
-    set_speakers(&ctl, &mut parseable_fields);
+    let mut max_chains = 4;
+    for i in 0..rsi.len() {
+        max_chains = max(max_chains, rsi[i].mat.len());
+    }
+    set_speakers(&ctl, &mut parseable_fields, max_chains);
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
 
     // Identify certain extra parseable variables.  These arise from parameterizable cvars.

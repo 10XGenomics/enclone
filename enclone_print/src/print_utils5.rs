@@ -118,7 +118,10 @@ pub fn vars_and_shares(
         for u in 0..nexacts {
             macro_rules! speakc {
                 ($u:expr, $col:expr, $var:expr, $val:expr) => {
-                    if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                    if ctl.parseable_opt.pout.len() > 0
+                        && (ctl.parseable_opt.pchains == "max"
+                            || $col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    {
                         let varc = format!("{}{}", $var, $col + 1);
                         if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
                             out_data[$u].insert(varc, $val);

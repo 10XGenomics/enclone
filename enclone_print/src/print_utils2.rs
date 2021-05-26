@@ -79,7 +79,8 @@ pub fn row_fill(
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
-                && $col + 1 <= ctl.parseable_opt.pchains
+                && (ctl.parseable_opt.pchains == "max"
+                    || $col + 1 <= ctl.parseable_opt.pchains.force_usize())
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
@@ -497,7 +498,8 @@ pub fn row_fill(
                 needed = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
-                && col + 1 <= ctl.parseable_opt.pchains
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
@@ -655,7 +657,8 @@ pub fn row_fill(
                 needed = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
-                && col + 1 <= ctl.parseable_opt.pchains
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;

@@ -412,7 +412,7 @@ pub struct ClonoGroupOpt {
 #[derive(Default)]
 pub struct ParseableOpt {
     pub pout: String,             // name of parseable output file
-    pub pchains: usize,           // number of chains to show in parseable output
+    pub pchains: String,          // number of chains to show in parseable output
     pub pcols: Vec<String>,       // column names to show in parseable output
     pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
     pub pcols_sortx: Vec<String>, // same but before colon if present
@@ -807,7 +807,7 @@ pub fn justification(x: &str) -> u8 {
 //
 // The overlap with code in proc_args_check.rs is not nice.
 
-pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
+pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>, max_chains: usize) {
     // Make some abbreviations.
 
     let lvars = &ctl.clono_print_opt.lvars;
@@ -870,7 +870,13 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
-    for col in 0..ctl.parseable_opt.pchains {
+    let pchains;
+    if ctl.parseable_opt.pchains == "max" {
+        pchains = max_chains;
+    } else {
+        pchains = ctl.parseable_opt.pchains.force_usize();
+    }
+    for col in 0..pchains {
         for x in CVARS_ALLOWED.iter() {
             speakerc!(col, x);
         }

@@ -179,6 +179,11 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if !ctl.parseable_opt.pchains.parse::<usize>().is_ok() && ctl.parseable_opt.pchains != "max" {
+        return Err(format!(
+            "\nThe only allowed values for PCHAINS are a positive integer and max.\n"
+        ));
+    }
     if ctl.gen_opt.align_jun_align_consistency && ctl.pretty {
         return Err(format!(
             "\nIf you use ALIGN_JALIGN_CONSISTENCY, you should also use PLAIN.\n"

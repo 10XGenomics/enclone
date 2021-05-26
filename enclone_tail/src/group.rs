@@ -22,6 +22,7 @@ use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use itertools::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -65,7 +66,11 @@ pub fn group_and_print_clonotypes(
     // Set up for parseable output.
 
     let mut parseable_fields = Vec::<String>::new();
-    set_speakers(&ctl, &mut parseable_fields);
+    let mut max_chains = 0;
+    for i in 0..rsi.len() {
+        max_chains = max(max_chains, rsi[i].mat.len());
+    }
+    set_speakers(&ctl, &mut parseable_fields, max_chains);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
         "" => (Box::new(stdout()) as Box<Write>),
