@@ -375,6 +375,14 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             if verbose {
                 println!("\nserver says this:\n{}", emsg);
             }
+            if emsg.contains("tput: No value") {
+                println!(
+                    "\nThat's an odd message that we've observed once and don't \
+                    understand.  When it happened,\nit was associated with setting the \
+                    environment variable PS1 on the remote server.  If it happens\nto you, \
+                    please contact us at enclone@10xgenomics.com.\n"
+                );
+            }
         }
 
         // Get server process id, possibly remote.
