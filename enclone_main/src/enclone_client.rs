@@ -46,13 +46,11 @@
 //     (a) create a shared directory where the latest enclone should go (in /mnt/opt)
 //     (b) start_release forks a background process that updates the shared directory
 //
-// 18. Get ./test to work again.
+// 18. Need auto-update for binary (at least for Mac).
 //
-// 19. Need auto-update for binary (at least for Mac).
+// 19. Trim features and duplicated crates; reduce binary size.
 //
-// 20. Trim features and duplicated crates; reduce binary size.
-//
-// 21. Make the scrollbar always visible.
+// 20. Make the scrollbar always visible.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
