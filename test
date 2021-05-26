@@ -94,7 +94,7 @@ set elapsed = `expr $end - $start`
 
 ##### FAIL IF TOO MUCH TIME USED #####
 
-set expected = 128
+set expected = 137
 set fudge_num = 11
 set fudge_den = 10
 set expected_plus_times = `expr $expected \* $fudge_num`
