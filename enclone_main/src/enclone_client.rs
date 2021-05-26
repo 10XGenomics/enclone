@@ -232,6 +232,11 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
                 config_name, env_var,
             );
             std::process::exit(1);
+        } else if verbose {
+            println!(
+                "\nusing configuration\n▓{}▓\n",
+                configuration.as_ref().unwrap()
+            );
         }
     }
     let mut config = HashMap::<String, String>::new();
