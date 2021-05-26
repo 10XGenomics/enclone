@@ -644,16 +644,18 @@ fn test_licenses() {
         ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 9] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 11] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
         "fuchsia-zircon",
         "fuchsia-zircon-sys",
+        "gethostname",
         "instant",
         "nalgebra",
         "ring",
         "webpki",
+        "xi-unicode",
     ];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
