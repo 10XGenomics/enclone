@@ -47,15 +47,11 @@
 //     (b) start_release forks a background process that updates the shared directory
 //     (c) while we're at it, roll enclone_gui into enclone.
 //
-// 18. Return on close request.
-//     Clicking the upper left button causes an exit without cleanup() being called.
-//     Raised as an issue on zulip chat.
+// 18. Get ./test to work again.
 //
-// 19. Get ./test to work again.
+// 19. Need auto-update for binary (at least for Mac).
 //
-// 20. Need auto-update for binary (at least for Mac).
-//
-// 21. Trim features and duplicated crates; reduce binary size.
+// 20. Trim features and duplicated crates; reduce binary size.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
