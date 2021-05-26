@@ -4,6 +4,7 @@ pub mod blacklist;
 pub mod determine_ref;
 pub mod disintegrate;
 pub mod doublets;
+pub mod enclone_client;
 pub mod fcell;
 pub mod filter_umi;
 pub mod flag_defective;

@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_client::enclone_client::enclone_client;
+use enclone_main::enclone_client::enclone_client;
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use enclone_main::proto::{
     analyzer_client::AnalyzerClient,
