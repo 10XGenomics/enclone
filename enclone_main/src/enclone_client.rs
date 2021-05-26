@@ -321,7 +321,7 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             let bin = &config["REMOTE_BIN"];
             if verbose {
                 println!(
-                    "\nstarting remote server using\nssh {} {}/enclone {}:{}",
+                    "\nstarting remote server using\nssh {} {}/enclone {}:{} SERVER",
                     host, bin, ip, port
                 );
             }
