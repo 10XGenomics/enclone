@@ -616,25 +616,26 @@ fn test_cpu() {
 // Test licenses of included packages and their dependencies.
 //
 // The following rules are applied:
-// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0
-//    or CC0-1.0 or BSL-1.0, or is a logical expression for which one of those is sufficient, then 
-//    there is no problem.  Note that for MPL-2.0, we inform people how to get the source code for
-//    dependent crates.
-// 2. If both license and license_field are null, then there is no problem.
-// 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
-//    and there is no NOTICE file, then there is no problem.  Note that we include the
-//    Apache-2.0 license as part of this repo in third_party.
-// 4. If the package is owned by 10x, then there is no problem.
-// 5. arrayref and cloudabi OK because we've included the license for it.
-// 6. fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
-//    at https://fuchsia.googlesource.com/fuchsia/+/master/LICENSE, which we include in
-//    third_party under fuchsia.  Similarly, fuchsia-zircon and fuchsia-zircon-sys are
-//    covered by this.
-// 7. ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
-//    the ring license.
-// 8. webpki OK because we include the webpki license and also that for chromium.
-// 9. instant OK because we include the license.
-// 10. nalgebra OK because currently licensed under Apache-2.0 and there is not NOTICE file.
+// 1.  If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0
+//     or CC0-1.0 or BSL-1.0, or is a logical expression for which one of those is sufficient, then 
+//     there is no problem.  Note that for MPL-2.0, we inform people how to get the source code for
+//     dependent crates.
+// 2.  If both license and license_field are null, then there is no problem.
+// 3.  If the license field is Apache-2.0, or a logical expression for which that is sufficient,
+//     and there is no NOTICE file, then there is no problem.  Note that we include the
+//     Apache-2.0 license as part of this repo in third_party.
+// 4.  If the package is owned by 10x, then there is no problem.
+// 5.  arrayref and cloudabi OK because we've included the license for it.
+// 6.  fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
+//     at https://fuchsia.googlesource.com/fuchsia/+/master/LICENSE, which we include in
+//     third_party under fuchsia.  Similarly, fuchsia-zircon and fuchsia-zircon-sys are
+//     covered by this.
+// 7.  ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
+//     the ring license.
+// 8.  webpki OK because we include the webpki license and also that for chromium.
+// 9.  instant OK because we include the license.
+// 10. nalgebra and gethostname and xi-unicode OK because currently licensed under Apache-2.0 
+//     and there is not NOTICE file.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
