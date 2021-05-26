@@ -217,7 +217,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
 
-    ctl.parseable_opt.pchains = 4;
+    ctl.parseable_opt.pchains = "4".to_string();
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
@@ -525,7 +525,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
         ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
-        ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];
 
@@ -557,6 +556,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
         ("EXT", &mut ctl.gen_opt.ext),
+        ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
         ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
         ("POUT", &mut ctl.parseable_opt.pout),

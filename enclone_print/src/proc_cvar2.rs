@@ -52,7 +52,9 @@ pub fn proc_cvar2(
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
-                && ((ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains)
+                && ((ctl.parseable_opt.pout.len() > 0
+                    && (ctl.parseable_opt.pchains == "max"
+                        || $col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
                 let mut v = $var.clone();
@@ -124,7 +126,9 @@ pub fn proc_cvar2(
     if var == "nval" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -152,7 +156,9 @@ pub fn proc_cvar2(
     } else if var == "nnval" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -180,7 +186,9 @@ pub fn proc_cvar2(
     } else if var == "nival" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -208,7 +216,9 @@ pub fn proc_cvar2(
     } else if var == "valumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -241,7 +251,9 @@ pub fn proc_cvar2(
     } else if var == "valbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -271,7 +283,9 @@ pub fn proc_cvar2(
     } else if var == "nvalumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -304,7 +318,9 @@ pub fn proc_cvar2(
     } else if var == "nvalbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -334,7 +350,9 @@ pub fn proc_cvar2(
     } else if var == "ivalumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -367,7 +385,9 @@ pub fn proc_cvar2(
     } else if var == "ivalbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+            && ((ctl.parseable_opt.pout.len() > 0
+                && (ctl.parseable_opt.pchains == "max"
+                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
                 || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
@@ -543,7 +563,11 @@ pub fn proc_cvar2(
         cvar_stats![j, var, format!("{}", median_numis), vals];
     } else if *var == "u_cell" {
         let var = var.clone();
-        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pchains == "max"
+                || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                || extra_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                 let mut vals = String::new();
@@ -580,7 +604,11 @@ pub fn proc_cvar2(
         cvar_stats1![j, var, format!("{}", rtot)];
     } else if *var == "r_cell" {
         let var = var.clone();
-        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pchains == "max"
+                || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                || extra_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)

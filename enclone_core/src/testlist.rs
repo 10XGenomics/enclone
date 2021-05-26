@@ -723,7 +723,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 28] = [
+pub const EXTENDED_TESTS: [&str; 29] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -792,6 +792,11 @@ pub const EXTENDED_TESTS: [&str; 28] = [
     r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
     // 28. conp value was truncated
     r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
+    // 29. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
+    // question is whether the header line represents cvars for all the chains.  The output of
+    // this is expected to change whenever variables are added.
+    r###"BCR=140696,140697,140701,140704 MIN_CHAINS=5 BUILT_IN AMINO= FOLD_HEADERS LVARS=
+         POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

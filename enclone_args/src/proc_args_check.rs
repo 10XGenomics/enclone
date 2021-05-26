@@ -347,7 +347,7 @@ pub fn check_pcols(
     }
     unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
-    let pchains = ctl.parseable_opt.pchains;
+    let pchains = &ctl.parseable_opt.pchains;
     let ends = build_ends();
     let mut nd_used = false;
     for x in cols.iter() {
@@ -413,9 +413,20 @@ pub fn check_pcols(
         } else if is_pattern(&x, true) {
             ok = true;
         } else {
-            for p in 1..=pchains {
-                let ps = format!("{}", p);
-                if x.ends_with(&ps) {
+            let mut y = Vec::<u8>::new();
+            for c in x.chars().rev() {
+                if c.is_ascii_digit() {
+                    y.push(c as u8);
+                } else {
+                    break;
+                }
+            }
+            y.reverse();
+            let ps = strme(&y);
+            if !ps.is_empty() {
+                if pchains == "max"
+                    || (ps.force_usize() > 0 && ps.force_usize() <= pchains.force_usize())
+                {
                     let y = x.rev_before(&ps);
                     if CVARS_ALLOWED.contains(&y)
                         || (ctl.parseable_opt.pbarcode && CVARS_ALLOWED_PCELL.contains(&y))
@@ -429,7 +440,6 @@ pub fn check_pcols(
                         && y.between("ndiff", "vj").force_usize() >= 1
                     {
                         ok = true;
-                        break;
                     } else if (y.starts_with("cdr1_aa_")
                         || y.starts_with("cdr2_aa_")
                         || y.starts_with("cdr3_aa_"))
@@ -439,7 +449,6 @@ pub fn check_pcols(
                         && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
                     {
                         ok = true;
-                        break;
                     }
                 }
             }
