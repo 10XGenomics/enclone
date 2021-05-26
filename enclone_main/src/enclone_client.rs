@@ -215,6 +215,16 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
         atexit(exit_handler);
     }
 
+    // Announce.
+
+    if !verbose {
+        println!(
+            "\nHi! You are using the experimental enclone GUI client.  If you get an error \
+            message or a\nGUI window does not pop up, please rerun the command with the added \
+            argument VERBOSE, and then ask for help."
+        );
+    }
+
     // Get configuration.
 
     let mut configuration = None;
