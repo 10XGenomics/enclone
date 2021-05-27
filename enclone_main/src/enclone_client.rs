@@ -654,19 +654,12 @@ mod style {
 
     pub struct Squeak;
 
-    use iced::Color;
-    use iced::scrollable;
-
-    const SURFACE: Color = Color::from_rgb(
-        0.0,
-        0.0,
-        0.0,
-    );
+    use iced::{scrollable, Color};
 
     impl scrollable::StyleSheet for Squeak {
         fn active(&self) -> scrollable::Scrollbar {
             scrollable::Scrollbar {
-                background: SURFACE.into(),
+                background: Color::from_rgb(0.75, 0.75, 0.75).into(),
                 border_radius: 2.0,
                 border_width: 0.0,
                 border_color: Color::TRANSPARENT,
@@ -681,9 +674,8 @@ mod style {
 
         fn hovered(&self) -> scrollable::Scrollbar {
             let active = self.active();
-
             scrollable::Scrollbar {
-                background: Color { a: 0.5, ..SURFACE }.into(),
+                background: Color { a: 0.5, ..Color::from_rgb(0.0, 0.0, 0.0) }.into(),
                 scroller: scrollable::Scroller {
                     color: Color::from_rgb(0.0, 0.0, 0.0),
                     ..active.scroller
@@ -694,7 +686,6 @@ mod style {
 
         fn dragging(&self) -> scrollable::Scrollbar {
             let hovered = self.hovered();
-
             scrollable::Scrollbar {
                 scroller: scrollable::Scroller {
                     color: Color::from_rgb(0.0, 0.0, 0.0),
