@@ -32,8 +32,13 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>5/26/21</b>: Allow <code>PCHAINS=max</code> See
-<a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>.
+<b>5/27/21</b>: 
+<ul>
+<li>Allow <code>PCHAINS=max</code>.  See
+    <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>.</li>
+<li>Fix bug that caused VDJ gene name and id fields to be displayed in parseable output even
+    when a chain was absent for a given exact subclonotype.</li>
+</ul>
 </p>
 
 <p>

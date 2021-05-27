@@ -8,49 +8,50 @@
 //
 // 2.  Need a regression test.
 //
-// 3.  Is font too light?
+// 3.  Doesn't properly handle connection refused.
 //
-// 4.  Doesn't properly handle connection refused.
+// 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
-// 5.  Speed up initialization.
-//
-// 6.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-//
-// 7.  Handle the case where tsh hasn't been started
+// 5.  Handle the case where tsh hasn't been started
 //     server says this:
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
-// 8.  Can't cut and paste text from the GUI window, except for the text input box.
+// 6.  Add local server capability.
+//
+// 7.  tooltip
+//
+// 8.  the wraparound problem
+//
+// 9.  Make sure that client and server are the same version.
+//
+// 10. Handle the case where button is pushed twice, etc.
+//
+// 11. Have text-only mode for testing and development.
+//
+// 12. Need auto-update for binary (at least for Mac).
+//
+// 13. Trim features and duplicated crates; reduce binary size.
+//
+// WAITING ON ICED
+//
+// 1.  Can't cut and paste text from the GUI window, except for the text input box.
 //     Looks like this is https://github.com/hecrj/iced/issues/36.
 //
-// 9.  Pretty, not plain.
+// 2.  Pretty, not plain.
 //     Enabling e.g. multicolor text is on the iced roadmap.
 //
-// 10. Add local server capability.
-//
-// 11. tooltip
-//
-// 12. the wraparound problem
-//
-// 13. Make sure that client and server are the same version.
-//
-// 14. Handle the case where button is pushed twice, etc.
-//
-// 15. Text in SVG objects does not show up.
+// 3.  Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 //
-// 16. Have text-only mode for testing and development.
+// 4.  Place the scrollbar on the left side of the scrollable window.
+//     Asked on zulip chat if this is possible.
 //
-// 17. Need shared location for server binary.
-//     (a) create a shared directory where the latest enclone should go (in /mnt/opt)
-//     (b) start_release forks a background process that updates the shared directory
+// NICE TO HAVE
 //
-// 18. Need auto-update for binary (at least for Mac).
+// 1.  Make font a little darker.
 //
-// 19. Trim features and duplicated crates; reduce binary size.
-//
-// 20. Make the scrollbar always visible.
+// 2.  Can carriage return be used instead of pushing a button?
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -76,7 +77,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
-    Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -84,6 +85,7 @@ use libc::{atexit, SIGINT};
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use perf_stats::*;
 use std::collections::HashMap;
 use std::env;
 use std::io::Read;
@@ -92,11 +94,11 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 use std::thread;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 
-const CQ_MONO: Font = Font::External {
-    name: "CQ_MONO",
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
 };
 
@@ -153,13 +155,14 @@ fn cleanup() {
                 kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
             }
             let host = &HOST.lock().unwrap()[0];
-            Command::new("ssh")
+            let _ = Command::new("ssh")
                 .arg(&host)
                 .arg("kill")
                 .arg("-9")
                 .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
-                .output()
-                .expect("failed to execute ssh to kill");
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
         }
     }
 }
@@ -189,7 +192,7 @@ extern "C" fn exit_handler() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
     // Set up to catch CTRL-C events.  Parse arguments.
 
@@ -221,7 +224,7 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
         println!(
             "\nHi! You are using the experimental enclone GUI client.  If you get an error \
             message or a\nGUI window does not pop up, please rerun the command with the added \
-            argument VERBOSE, and then ask for help."
+            argument VERBOSE,\nand then ask for help."
         );
     }
 
@@ -358,8 +361,14 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut buffer = [0; 50];
         let mut server_stdout = server_process.stdout.unwrap();
+        let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
-        thread::sleep(Duration::from_millis(100));
+        println!(
+            "time spent waiting to read bytes from remote server = {:.1} seconds",
+            elapsed(&tread)
+        );
+        // seems to not be needed
+        // thread::sleep(Duration::from_millis(100));
 
         // Look at stderr.
 
@@ -433,6 +442,7 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             let setup_process_id = setup_process.id();
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
+            // Reducing sleep time below to 500 ms causes frequent failures.
             thread::sleep(Duration::from_millis(1000));
         }
 
@@ -451,7 +461,8 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             cleanup();
             std::process::exit(1);
         }
-        println!("connected\n");
+        println!("connected");
+        println!("time since startup = {:.1} seconds\n", elapsed(&t));
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
@@ -565,16 +576,25 @@ impl Sandbox for Calculator {
                 // button before the first one has completed.  For now, do nothing.
 
                 if !PROCESSING_REQUEST.load(SeqCst) {
+                    let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
-                    let reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                    let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                    if reply_text.contains("enclone failed") {
+                        reply_text =
+                            format!("enclone failed{}", reply_text.after("enclone failed"));
+                    }
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
+                    println!(
+                        "time used processing command = {:.1} seconds\n",
+                        elapsed(&t)
+                    );
                 }
             }
         }
@@ -597,7 +617,10 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
+            .scrollbar_width(12)
+            .scroller_width(12)
+            .style(style::Squeak)
+            .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
         // Display the user instructions.  The height is set because otherwise the text is
         // truncated.
@@ -620,17 +643,15 @@ impl Sandbox for Calculator {
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(1300) // width of window
+            .max_width(1500) // this governs the max window width upon manual resizing
             .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(
                 Row::new()
-                    .spacing(10)
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
-                    .push(scrollable)
-                    .push(Rule::vertical(38)),
+                    .push(scrollable),
             );
 
         Container::new(content)
@@ -639,5 +660,58 @@ impl Sandbox for Calculator {
             .center_x()
             .center_y()
             .into()
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+mod style {
+
+    pub struct Squeak;
+
+    use iced::{scrollable, Color};
+
+    impl scrollable::StyleSheet for Squeak {
+        fn active(&self) -> scrollable::Scrollbar {
+            scrollable::Scrollbar {
+                background: Color::from_rgb(0.75, 0.75, 0.75).into(),
+                border_radius: 2.0,
+                border_width: 0.0,
+                border_color: Color::TRANSPARENT,
+                scroller: scrollable::Scroller {
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                    border_radius: 2.0,
+                    border_width: 0.0,
+                    border_color: Color::TRANSPARENT,
+                },
+            }
+        }
+
+        fn hovered(&self) -> scrollable::Scrollbar {
+            let active = self.active();
+            scrollable::Scrollbar {
+                background: Color {
+                    a: 0.5,
+                    ..Color::from_rgb(0.0, 0.0, 0.0)
+                }
+                .into(),
+                scroller: scrollable::Scroller {
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                    ..active.scroller
+                },
+                ..active
+            }
+        }
+
+        fn dragging(&self) -> scrollable::Scrollbar {
+            let hovered = self.hovered();
+            scrollable::Scrollbar {
+                scroller: scrollable::Scroller {
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                    ..hovered.scroller
+                },
+                ..hovered
+            }
+        }
     }
 }

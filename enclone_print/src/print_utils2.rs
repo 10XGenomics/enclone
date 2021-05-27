@@ -471,6 +471,8 @@ pub fn row_fill(
         }
 
         // Process variables that need to be computed even if the chain entry is empty.
+        // NO: WHY?  WHY WOULD WE WANT TO PRINT THESE?  BEHAVIOR CHANGED.  DON'T KNOW WHY
+        // WE EVER DID THIS>
 
         let rsi_vars = &ctl.clono_print_opt.cvars;
         let have_notes = rsi.cvars[col].contains(&"notes".to_string());
@@ -481,6 +483,11 @@ pub fn row_fill(
                 notes_pos = j;
                 notes_in = true;
             }
+        }
+        // these lines moved to prevent printing if chain is absent
+        let mid = mat[col][u];
+        if mid.is_none() {
+            continue;
         }
         for j in 0..all_vars.len() {
             let mut jj = j;
@@ -562,10 +569,6 @@ pub fn row_fill(
 
         // Keep going.
 
-        let mid = mat[col][u];
-        if mid.is_none() {
-            continue;
-        }
         let mid = mid.unwrap();
         let ex = &exact_clonotypes[clonotype_id];
         let seq_amino = rsi.seqss_amino[col][u].clone();

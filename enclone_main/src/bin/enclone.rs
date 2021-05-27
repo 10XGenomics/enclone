@@ -49,26 +49,19 @@ impl Analyzer for EncloneAnalyzer {
                 }
             }
         }
-        // Don't print the clonotype table.
         args.push("NOPRINT".to_string());
-        // Turn off the pager.
-        // (This argument doesn't work at the moment so I've commented it out in
-        // enclone, but it will still likely be the correct argument to pass.)
         args.push("NOPAGER".to_string());
-        // This is needed to activate the plotting and not output a file.
-        // (PLOT_BY_ISOTYPE argument values conflict, so I've commented out
-        // stdout output in enclone and updated it to always generate and
-        // return the plot.)
-        // args.push("PLOT_BY_ISOTYPE=stdout".to_string());
-
         println!("Running enclone:\n  {}", args.join(" "));
-        // TODO: Error handling, but main_enclone just exits sometimes
         let result = main_enclone(&args).await;
         if result.is_err() {
             let err_msg = format!("{}", result.unwrap_err().to_string());
-            eprintln!("enclone failed, here is the error message:");
-            eprintln!("{}", err_msg);
-            return Err(Status::new(Code::Internal, err_msg));
+            let msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
         }
         let output = result.unwrap();
         println!("Enclone done, updating in-memory cache");
@@ -125,6 +118,7 @@ impl Analyzer for EncloneAnalyzer {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let t = Instant::now();
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
 
@@ -134,7 +128,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for i in 0..args.len() {
         if args[i].starts_with("COM=") {
-            enclone_client().await?;
+            enclone_client(&t).await?;
         }
     }
 
