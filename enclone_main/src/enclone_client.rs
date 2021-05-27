@@ -435,6 +435,7 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             let setup_process_id = setup_process.id();
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
+            // Reducing sleep time below to 500 ms causes frequent failures.
             thread::sleep(Duration::from_millis(1000));
         }
 
