@@ -153,13 +153,14 @@ fn cleanup() {
                 kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
             }
             let host = &HOST.lock().unwrap()[0];
-            Command::new("ssh")
+            let _ = Command::new("ssh")
                 .arg(&host)
                 .arg("kill")
                 .arg("-9")
                 .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
-                .output()
-                .expect("failed to execute ssh to kill");
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
         }
     }
 }
