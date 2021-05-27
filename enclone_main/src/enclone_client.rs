@@ -74,7 +74,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
-    Rule, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
 use itertools::Itertools;
 use lazy_static::lazy_static;
