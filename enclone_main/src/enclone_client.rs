@@ -51,7 +51,7 @@
 // 19. Trim features and duplicated crates; reduce binary size.
 //
 // 20. Make the scrollbar always visible.
-//     The scrollbar is only visible at all when the cursor is in the scrollable region, and 
+//     The scrollbar is only visible at all when the cursor is in the scrollable region, and
 //     the background bar only shows up when you mouse over it.
 //     Asked for help on zulipchat.
 
