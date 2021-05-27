@@ -363,7 +363,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let mut server_stdout = server_process.stdout.unwrap();
         let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
-        println!("time spent waiting to read bytes from remote server = {:.1} seconds", 
+        println!(
+            "time spent waiting to read bytes from remote server = {:.1} seconds",
             elapsed(&tread)
         );
         // seems to not be needed
@@ -586,7 +587,10 @@ impl Sandbox for Calculator {
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
-                    println!("time used processing command = {:.1} seconds\n", elapsed(&t));
+                    println!(
+                        "time used processing command = {:.1} seconds\n",
+                        elapsed(&t)
+                    );
                 }
             }
         }
@@ -643,7 +647,7 @@ impl Sandbox for Calculator {
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
-                    .push(scrollable)
+                    .push(scrollable),
             );
 
         Container::new(content)
