@@ -43,15 +43,11 @@
 //
 // 16. Have text-only mode for testing and development.
 //
-// 17. Need shared location for server binary.
-//     (a) create a shared directory where the latest enclone should go (in /mnt/opt)
-//     (b) start_release forks a background process that updates the shared directory
+// 17. Need auto-update for binary (at least for Mac).
 //
-// 18. Need auto-update for binary (at least for Mac).
+// 18. Trim features and duplicated crates; reduce binary size.
 //
-// 19. Trim features and duplicated crates; reduce binary size.
-//
-// 20. Can carriage return be used instead of pushing a button?
+// 19. Can carriage return be used instead of pushing a button?
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
