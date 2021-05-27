@@ -95,8 +95,8 @@ use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 
-const CQ_MONO: Font = Font::External {
-    name: "CQ_MONO",
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
 };
 
@@ -598,7 +598,7 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .push(Text::new(&self.output_value).font(CQ_MONO).size(13));
+            .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
         // Display the user instructions.  The height is set because otherwise the text is
         // truncated.
