@@ -17,41 +17,43 @@
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
-// 6.  Can't cut and paste text from the GUI window, except for the text input box.
+// 6.  Add local server capability.
+//
+// 7.  tooltip
+//
+// 8.  the wraparound problem
+//
+// 9.  Make sure that client and server are the same version.
+//
+// 10. Handle the case where button is pushed twice, etc.
+//
+// 11. Have text-only mode for testing and development.
+//
+// 12. Need auto-update for binary (at least for Mac).
+//
+// 13. Trim features and duplicated crates; reduce binary size.
+//
+// 14. If the user enters a broken command, print the error message.
+//
+// WAITING ON ICED
+//
+// 1.  Can't cut and paste text from the GUI window, except for the text input box.
 //     Looks like this is https://github.com/hecrj/iced/issues/36.
 //
-// 7.  Pretty, not plain.
+// 2.  Pretty, not plain.
 //     Enabling e.g. multicolor text is on the iced roadmap.
 //
-// 8.  Add local server capability.
-//
-// 9.  tooltip
-//
-// 10. the wraparound problem
-//
-// 11. Make sure that client and server are the same version.
-//
-// 12. Handle the case where button is pushed twice, etc.
-//
-// 13. Text in SVG objects does not show up.
+// 3.  Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 //
-// 14. Have text-only mode for testing and development.
-//
-// 15. Need auto-update for binary (at least for Mac).
-//
-// 16. Trim features and duplicated crates; reduce binary size.
-//
-// 17. If the user enters a broken command, print the error message.
+// 4.  Place the scrollbar on the left side of the scrollable window.
+//     Asked on zulip chat if this is possible.
 //
 // NICE TO HAVE
 //
 // 1.  Make font a little darker.
 //
-// 2.  Place the scrollbar on the left side of the scrollable window.
-//     Asked on zulip chat if this is possible.
-//
-// 3.  Can carriage return be used instead of pushing a button?
+// 2.  Can carriage return be used instead of pushing a button?
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
