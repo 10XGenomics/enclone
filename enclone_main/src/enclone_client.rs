@@ -33,8 +33,6 @@
 //
 // 13. Trim features and duplicated crates; reduce binary size.
 //
-// 14. If the user enters a broken command, print the error message.
-//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
