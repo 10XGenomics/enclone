@@ -4,9 +4,11 @@
 //
 // See enclone/release_instructions.
 
+use enclone_core::defs::*;
 use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
+use std::collections::HashMap;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
@@ -263,7 +265,28 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Step 11. Done.
+    // Step 11. Copy enclone to a shared location.
+
+    let mut config = HashMap::<String, String>::new();
+    if get_config(&mut config) {
+        let bin = &config["enclone_linux_bin"];
+        if !path_exists(&bin) {
+            std::fs::create_dir_all(&bin).unwrap();
+        }
+        let current = format!("{}/enclone", bin);
+        let last = format!("{}/enclone_last", bin);
+        if path_exists(&last) {
+            std::fs::remove_file(&last).unwrap();
+        }
+        if path_exists(&current) {
+            std::fs::rename(&current, &last).unwrap();
+        }
+        std::fs::copy("target/debug/enclone", &current).unwrap();
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 12. Done.
 
     println!("\nAll done, looks like it worked!\n");
     println!("GitHub should now be making a release.\n");
