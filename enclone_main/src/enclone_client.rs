@@ -575,6 +575,7 @@ impl Sandbox for Calculator {
                 // button before the first one has completed.  For now, do nothing.
 
                 if !PROCESSING_REQUEST.load(SeqCst) {
+                    let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
@@ -585,6 +586,7 @@ impl Sandbox for Calculator {
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
+                    println!("time used processing command = {:.1} seconds\n", elapsed(&t));
                 }
             }
         }
