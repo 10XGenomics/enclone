@@ -677,7 +677,11 @@ mod style {
         fn hovered(&self) -> scrollable::Scrollbar {
             let active = self.active();
             scrollable::Scrollbar {
-                background: Color { a: 0.5, ..Color::from_rgb(0.0, 0.0, 0.0) }.into(),
+                background: Color {
+                    a: 0.5,
+                    ..Color::from_rgb(0.0, 0.0, 0.0)
+                }
+                .into(),
                 scroller: scrollable::Scroller {
                     color: Color::from_rgb(0.0, 0.0, 0.0),
                     ..active.scroller
