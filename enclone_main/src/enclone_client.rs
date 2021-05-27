@@ -48,6 +48,8 @@
 // 18. Trim features and duplicated crates; reduce binary size.
 //
 // 19. Can carriage return be used instead of pushing a button?
+//
+// 20. If the user enters a broken command, print the error message.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
