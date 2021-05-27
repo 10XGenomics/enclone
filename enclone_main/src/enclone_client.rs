@@ -601,6 +601,7 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
+            .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
         // Display the user instructions.  The height is set because otherwise the text is
@@ -644,5 +645,73 @@ impl Sandbox for Calculator {
             .center_x()
             .center_y()
             .into()
+    }
+}
+
+mod style {
+
+    pub struct Squeak;
+
+    use iced::Color;
+    use iced::scrollable;
+
+    const SURFACE: Color = Color::from_rgb(
+        0.0,
+        0.0,
+        0.0,
+    );
+
+    const ACTIVE: Color = Color::from_rgb(
+        0.0,
+        0.0,
+        0.0,
+    );
+
+    const HOVERED: Color = Color::from_rgb(
+        0.0,
+        0.0,
+        0.0,
+    );
+
+    impl scrollable::StyleSheet for Squeak {
+        fn active(&self) -> scrollable::Scrollbar {
+            scrollable::Scrollbar {
+                background: SURFACE.into(),
+                border_radius: 2.0,
+                border_width: 0.0,
+                border_color: Color::TRANSPARENT,
+                scroller: scrollable::Scroller {
+                    color: ACTIVE,
+                    border_radius: 2.0,
+                    border_width: 0.0,
+                    border_color: Color::TRANSPARENT,
+                },
+            }
+        }
+
+        fn hovered(&self) -> scrollable::Scrollbar {
+            let active = self.active();
+
+            scrollable::Scrollbar {
+                background: Color { a: 0.5, ..SURFACE }.into(),
+                scroller: scrollable::Scroller {
+                    color: HOVERED,
+                    ..active.scroller
+                },
+                ..active
+            }
+        }
+
+        fn dragging(&self) -> scrollable::Scrollbar {
+            let hovered = self.hovered();
+
+            scrollable::Scrollbar {
+                scroller: scrollable::Scroller {
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                    ..hovered.scroller
+                },
+                ..hovered
+            }
+        }
     }
 }
