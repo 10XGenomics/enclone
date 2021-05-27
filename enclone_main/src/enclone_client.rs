@@ -628,12 +628,9 @@ impl Sandbox for Calculator {
             .push(Row::new().spacing(10).push(svg))
             .push(
                 Row::new()
-                    .spacing(10)
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
                     .push(scrollable)
-                    // not sure what if anything this does
-                    .push(Rule::vertical(38)),
             );
 
         Container::new(content)
