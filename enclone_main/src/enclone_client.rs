@@ -8,48 +8,50 @@
 //
 // 2.  Need a regression test.
 //
-// 3.  Is font too light?
+// 3.  Doesn't properly handle connection refused.
 //
-// 4.  Doesn't properly handle connection refused.
+// 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
-// 5.  Place the scrollbar on the left side of the scrollable window.
-//     Asked on zulip chat if this is possible.
-//
-// 6.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-//
-// 7.  Handle the case where tsh hasn't been started
+// 5.  Handle the case where tsh hasn't been started
 //     server says this:
 //     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
-// 8.  Can't cut and paste text from the GUI window, except for the text input box.
+// 6.  Can't cut and paste text from the GUI window, except for the text input box.
 //     Looks like this is https://github.com/hecrj/iced/issues/36.
 //
-// 9.  Pretty, not plain.
+// 7.  Pretty, not plain.
 //     Enabling e.g. multicolor text is on the iced roadmap.
 //
-// 10. Add local server capability.
+// 8.  Add local server capability.
 //
-// 11. tooltip
+// 9.  tooltip
 //
-// 12. the wraparound problem
+// 10. the wraparound problem
 //
-// 13. Make sure that client and server are the same version.
+// 11. Make sure that client and server are the same version.
 //
-// 14. Handle the case where button is pushed twice, etc.
+// 12. Handle the case where button is pushed twice, etc.
 //
-// 15. Text in SVG objects does not show up.
+// 13. Text in SVG objects does not show up.
 //     Known regression = https://github.com/hecrj/iced/issues/870.
 //
-// 16. Have text-only mode for testing and development.
+// 14. Have text-only mode for testing and development.
 //
-// 17. Need auto-update for binary (at least for Mac).
+// 15. Need auto-update for binary (at least for Mac).
 //
-// 18. Trim features and duplicated crates; reduce binary size.
+// 16. Trim features and duplicated crates; reduce binary size.
 //
-// 19. Can carriage return be used instead of pushing a button?
+// 17. If the user enters a broken command, print the error message.
 //
-// 20. If the user enters a broken command, print the error message.
+// NICE TO HAVE
+//
+// 1.  Make font a little darker.
+//
+// 2.  Place the scrollbar on the left side of the scrollable window.
+//     Asked on zulip chat if this is possible.
+//
+// 3.  Can carriage return be used instead of pushing a button?
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
