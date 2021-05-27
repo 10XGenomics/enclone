@@ -49,6 +49,9 @@
 // 18. Need auto-update for binary (at least for Mac).
 //
 // 19. Trim features and duplicated crates; reduce binary size.
+//
+// 20. Place the scrollbar on the left side of the scrollable window.
+//     Asked on zulip chat if this is possible.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
