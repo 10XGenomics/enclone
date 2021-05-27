@@ -601,6 +601,8 @@ impl Sandbox for Calculator {
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
+            .scrollbar_width(12)
+            .scroller_width(12)
             .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
