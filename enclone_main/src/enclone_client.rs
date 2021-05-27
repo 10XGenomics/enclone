@@ -361,8 +361,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         let mut buffer = [0; 50];
         let mut server_stdout = server_process.stdout.unwrap();
+        let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
-        thread::sleep(Duration::from_millis(100));
+        println!("time spent waiting to read bytes from remote server = {:.1} seconds", 
+            elapsed(&tread)
+        );
+        // seems to not be needed
+        // thread::sleep(Duration::from_millis(100));
 
         // Look at stderr.
 
