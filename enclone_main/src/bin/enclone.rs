@@ -55,7 +55,7 @@ impl Analyzer for EncloneAnalyzer {
         let result = main_enclone(&args).await;
         if result.is_err() {
             let err_msg = format!("{}", result.unwrap_err().to_string());
-            let msg = format!("enclone failed, here is the error message:\n{}", err_msg);
+            let msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
             let response = EncloneResponse {
                 args: req.args,
                 plot: String::new(),
