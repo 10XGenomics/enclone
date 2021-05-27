@@ -585,7 +585,11 @@ impl Sandbox for Calculator {
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
-                    let reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                    let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                    if reply_text.contains("enclone failed") {
+                        reply_text =
+                            format!("enclone failed{}", reply_text.after("enclone failed"));
+                    }
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
