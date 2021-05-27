@@ -283,10 +283,8 @@ fn main() {
             std::fs::rename(&current, &last).unwrap();
         }
         std::fs::copy("target/debug/enclone", &current).unwrap();
-        let f = File::open(&current).unwrap();
-        let metadata = f.metadata().unwrap();
-        let mut permissions = metadata.permissions();
-        permissions.set_mode(0o755);
+        let perms = std::fs::Permissions::from_mode(0o775);
+        std::fs::set_permissions(&current, perms).unwrap();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
