@@ -621,7 +621,7 @@ impl Sandbox for Calculator {
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(1300) // width of window
+            .max_width(1500) // this governs the max window width upon manual resizing
             .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
@@ -631,6 +631,7 @@ impl Sandbox for Calculator {
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
                     .push(scrollable)
+                    // not sure what if anything this does
                     .push(Rule::vertical(38)),
             );
 
