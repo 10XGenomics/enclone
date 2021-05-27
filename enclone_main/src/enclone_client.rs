@@ -648,6 +648,8 @@ impl Sandbox for Calculator {
     }
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 mod style {
 
     pub struct Squeak;
@@ -661,18 +663,6 @@ mod style {
         0.0,
     );
 
-    const ACTIVE: Color = Color::from_rgb(
-        0.0,
-        0.0,
-        0.0,
-    );
-
-    const HOVERED: Color = Color::from_rgb(
-        0.0,
-        0.0,
-        0.0,
-    );
-
     impl scrollable::StyleSheet for Squeak {
         fn active(&self) -> scrollable::Scrollbar {
             scrollable::Scrollbar {
@@ -681,7 +671,7 @@ mod style {
                 border_width: 0.0,
                 border_color: Color::TRANSPARENT,
                 scroller: scrollable::Scroller {
-                    color: ACTIVE,
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
                     border_radius: 2.0,
                     border_width: 0.0,
                     border_color: Color::TRANSPARENT,
@@ -695,7 +685,7 @@ mod style {
             scrollable::Scrollbar {
                 background: Color { a: 0.5, ..SURFACE }.into(),
                 scroller: scrollable::Scroller {
-                    color: HOVERED,
+                    color: Color::from_rgb(0.0, 0.0, 0.0),
                     ..active.scroller
                 },
                 ..active
