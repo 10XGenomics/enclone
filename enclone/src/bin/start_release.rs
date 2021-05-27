@@ -11,6 +11,7 @@ use pretty_trace::*;
 use std::collections::HashMap;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::os::unix::fs::PermissionsExt;
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
@@ -282,6 +283,10 @@ fn main() {
             std::fs::rename(&current, &last).unwrap();
         }
         std::fs::copy("target/debug/enclone", &current).unwrap();
+        let f = File::open(&current).unwrap();
+        let metadata = f.metadata().unwrap();
+        let mut permissions = metadata.permissions();
+        permissions.set_mode(0o755);
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
