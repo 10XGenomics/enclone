@@ -13,8 +13,7 @@
 // 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
 // 5.  Handle the case where tsh hasn't been started
-//     server says this:
-//     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+//     server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
 // 6.  Add local server capability.
