@@ -50,6 +50,8 @@
 // 18. Need auto-update for binary (at least for Mac).
 //
 // 19. Trim features and duplicated crates; reduce binary size.
+//
+// 20. Can carriage return be used instead of pushing a button?
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
