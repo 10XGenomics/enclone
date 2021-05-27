@@ -85,6 +85,7 @@ use libc::{atexit, SIGINT};
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use perf_stats::*;
 use std::collections::HashMap;
 use std::env;
 use std::io::Read;
@@ -93,7 +94,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 use std::thread;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 
 const DEJAVU: Font = Font::External {
@@ -191,7 +192,7 @@ extern "C" fn exit_handler() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
     // Set up to catch CTRL-C events.  Parse arguments.
 
@@ -454,7 +455,8 @@ pub async fn enclone_client() -> Result<(), Box<dyn std::error::Error>> {
             cleanup();
             std::process::exit(1);
         }
-        println!("connected\n");
+        println!("connected");
+        println!("time since startup = {:.1} seconds\n", elapsed(&t));
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.

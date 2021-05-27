@@ -125,6 +125,7 @@ impl Analyzer for EncloneAnalyzer {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let t = Instant::now();
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
 
@@ -134,7 +135,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for i in 0..args.len() {
         if args[i].starts_with("COM=") {
-            enclone_client().await?;
+            enclone_client(&t).await?;
         }
     }
 
