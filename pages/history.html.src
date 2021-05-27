@@ -32,7 +32,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>5/26/21</b>: Allow <code>PCHAINS=max</code> See
+<b>5/27/21</b>: Allow <code>PCHAINS=max</code> See
 <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>.
 </p>
 
