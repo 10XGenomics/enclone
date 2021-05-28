@@ -486,7 +486,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
-                    let mut output;
+                    let output;
                     let mut svg_output = String::new();
                     if line == "q" {
                         cleanup();
@@ -532,9 +532,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
-                            output = format!("\nargs = {}", r.args);
                             svg_output = r.plot.clone();
-                            output += &format!("\n\n{}", r.table);
+                            output = format!("\n\n{}", r.table);
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
