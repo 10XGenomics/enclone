@@ -179,6 +179,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.gen_opt.jscore_gap_open = -120;
     ctl.gen_opt.jscore_gap_extend = -20;
     ctl.gen_opt.jscore_bits_multiplier = 2.2;
+    ctl.gen_opt.max_heavies = 1000000;
 
     // Set up clonotyping control parameters.
 

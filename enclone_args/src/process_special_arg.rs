@@ -39,6 +39,8 @@ pub fn process_special_arg(
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.plot_opt.use_legend = true;
+    } else if arg == "MAX_HEAVIES=1" {
+        ctl.gen_opt.max_heavies = 1;
     } else if arg.starts_with("ALIGN_2ND") {
         let n = arg.after("ALIGN_2ND");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {

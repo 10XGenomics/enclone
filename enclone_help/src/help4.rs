@@ -248,6 +248,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             \"enclone help filter\")",
             55,
         )?;
+        h.doc(
+            "MAX_HEAVIES=1",
+            "ignore any cell having more than one IGH or TRB chain",
+        );
 
         // Documentation section.
 

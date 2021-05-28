@@ -243,6 +243,7 @@ pub struct GeneralOpt {
     pub jscore_gap_open: i32,
     pub jscore_gap_extend: i32,
     pub split: bool,
+    pub max_heavies: usize,
 }
 
 // Some plot options.
