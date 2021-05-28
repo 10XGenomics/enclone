@@ -711,14 +711,15 @@ impl Sandbox for EncloneVisual {
             Card::new(
                 Text::new(""),
                 Text::new(
-                    "Welcome to enclone visual 0.000...0001!\n\n\
-                        To use it, type in the box \
-                       (see below)\nand then push the Submit button.  Here are the things \
-                       that you can type:\n\n\
-                        • an enclone command, without the enclone part\n\
-                        • an clonotype id (number)\n\
-                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                        • q to quit\n\n\
+                    "Welcome to enclone visual 0.0000000000000000000000000000001!\n\n\
+                     Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
+                     To use enclone visual, type in the box \
+                     (see below)\nand then push the Submit button.  Here are the things \
+                     that you can type:\n\n\
+                     • an enclone command, without the enclone part\n\
+                     • an clonotype id (number)\n\
+                     • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                     • q to quit\n\n\
                      \n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
