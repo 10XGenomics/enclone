@@ -90,8 +90,8 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
-            } else if args[i].starts_with("CONFIG_FILE=") {
-                ctl.gen_opt.config_file = args[i].after("CONFIG_FILE=").to_string();
+            } else if args[i].starts_with("CONFIG=") {
+                ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             }
 
         }
