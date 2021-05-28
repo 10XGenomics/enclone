@@ -75,9 +75,11 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
-    Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    button, scrollable, text_input, Align, Button, Column, /* Container, */ Element, Font, 
+    HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    VerticalAlignment,
 };
+use iced_aw::{modal, Card, Modal};
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::{atexit, SIGINT};
@@ -547,12 +549,25 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     button: button::State,
+
+    open_state: button::State,
+    modal_state: modal::State<ModalState>,
+    last_message: Option<Message>,
+
 }
 
 #[derive(Debug, Clone)]
 enum Message {
     InputChanged(String),
     ButtonPressed,
+    OpenModal,
+    CloseModal,
+    CancelButtonPressed,
+}
+
+#[derive(Default)]
+struct ModalState {
+    cancel_state: button::State,
 }
 
 impl Sandbox for EncloneVisual {
@@ -568,7 +583,10 @@ impl Sandbox for EncloneVisual {
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::InputChanged(value) => self.input_value = value,
+            Message::OpenModal => self.modal_state.show(true),
+            Message::CloseModal => self.modal_state.show(false),
+            Message::CancelButtonPressed => self.modal_state.show(false),
+            Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
                 // Need to figure what to do if we are already processing a request, for example
                 // if the user pushes the button twice or enters a second command and pushes the
@@ -597,6 +615,7 @@ impl Sandbox for EncloneVisual {
                 }
             }
         }
+        self.last_message = Some(message)
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -643,6 +662,26 @@ impl Sandbox for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
+            .push(Row::new()
+                .spacing(10)
+                .align_items(Align::Center)
+                .push(
+                    Button::new(&mut self.open_state, Text::new("Help"))
+                        .on_press(Message::OpenModal),
+                )
+                .push(Text::new(format!(
+                    "Last message: {}",
+                    match self.last_message.as_ref() {
+                        Some(message) => match message {
+                            Message::OpenModal => "Modal opened",
+                            Message::CloseModal => "Modal closed",
+                            Message::CancelButtonPressed => "Modal canceled",
+                            Message::InputChanged(ref _value) => "input changed",
+                            Message::ButtonPressed => "button pressed",
+                        },
+                        None => "None",
+                    }
+                ))))
             .push(Row::new().spacing(10).push(instructions))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
@@ -653,12 +692,55 @@ impl Sandbox for EncloneVisual {
                     .push(scrollable),
             );
 
+        Modal::new(&mut self.modal_state, content, |state| {
+            Card::new(
+                Text::new("My modal"),
+                // Text::new("This is a modal!"), 
+                Text::new(
+                    "\n\n\n\nEnter one of the following:\n\
+                        • an enclone command, without the enclone part\n\
+                        • an clonotype id (number)\n\
+                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
+                        • q to quit\n"
+                ).height(Units(200)).vertical_alignment(VerticalAlignment::Bottom),
+            )
+            .foot(
+                Row::new()
+                    .spacing(10)
+                    .padding(5)
+                    .width(Units(1100))
+                    .height(Units(1000))
+                    // .push(Text::new("Gerbilspit"))
+                    .push(
+                        Button::new(
+                            &mut state.cancel_state,
+                            Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Center),
+                        )
+                        .width(Length::Fill)
+                        .on_press(Message::CancelButtonPressed),
+                    )
+            )
+            .width(Units(1100))
+            .height(Units(1000))
+            .on_close(Message::CloseModal)
+            .into()
+        })
+        .backdrop(Message::CloseModal)
+        .on_esc(Message::CloseModal)
+        .into()
+
+
+
+        /*
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x()
             .center_y()
             .into()
+        */
+
+
     }
 }
 
