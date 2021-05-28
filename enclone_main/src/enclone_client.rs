@@ -640,18 +640,6 @@ impl Sandbox for EncloneVisual {
             .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
-        // Display the user instructions.  The height is set because otherwise the text is
-        // truncated.
-
-        let instructions = Text::new(
-            "\nEnter one of the following:\n\
-                • an enclone command, without the enclone part\n\
-                • an clonotype id (number)\n\
-                • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
-                • q to quit\n",
-        )
-        .height(Units(125));
-
         // Display the SVG.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
@@ -668,21 +656,7 @@ impl Sandbox for EncloneVisual {
                 .push(
                     Button::new(&mut self.open_state, Text::new("Help"))
                         .on_press(Message::OpenModal),
-                )
-                .push(Text::new(format!(
-                    "Last message: {}",
-                    match self.last_message.as_ref() {
-                        Some(message) => match message {
-                            Message::OpenModal => "Modal opened",
-                            Message::CloseModal => "Modal closed",
-                            Message::CancelButtonPressed => "Modal canceled",
-                            Message::InputChanged(ref _value) => "input changed",
-                            Message::ButtonPressed => "button pressed",
-                        },
-                        None => "None",
-                    }
-                ))))
-            .push(Row::new().spacing(10).push(instructions))
+                ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(
