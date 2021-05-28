@@ -84,9 +84,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if args[i] == "FORCE_EXTERNAL".to_string() {
             ctl.gen_opt.internal_run = false;
         }
+        /*
         if args[i] == "INTERNAL".to_string() {
             ctl.gen_opt.internal_run = true;
         }
+        */
     }
     if ctl.gen_opt.internal_run {
         if ctl.evil_eye {
