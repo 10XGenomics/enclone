@@ -54,7 +54,7 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         args.push("INTERNAL".to_string());
-        println!("Running enclone:\n  {}", args.join(" "));
+        eprintln!("Running enclone:\n  {}", args.join(" "));
         let result = main_enclone(&args).await;
         if result.is_err() {
             let err_msg = format!("{}", result.unwrap_err().to_string());
@@ -72,7 +72,7 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
         let output = result.unwrap();
-        println!("Enclone done, updating in-memory cache");
+        eprintln!("Enclone done, updating in-memory cache");
         // Update stored command
         {
             let mut enclone_command = self.enclone_command.lock().unwrap();
