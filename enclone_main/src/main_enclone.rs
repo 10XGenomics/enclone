@@ -878,7 +878,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     );
 
     // Group clonotypes.
-
     let t = Instant::now();
     let groups = grouper(
         &refdata,
@@ -890,7 +889,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         &opt_d_val,
     );
     ctl.perf_stats(&t, "in grouper");
-
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {
@@ -906,7 +904,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
 
     // Tail code.
-
     let mut svgs = Vec::<String>::new();
     tail_code(
         &tall,
