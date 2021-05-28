@@ -76,8 +76,8 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
-    Font, HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
-    VerticalAlignment,
+    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text, 
+    TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
 use itertools::Itertools;
@@ -677,6 +677,7 @@ impl Sandbox for EncloneVisual {
             ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
+            .push(Rule::horizontal(10))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
