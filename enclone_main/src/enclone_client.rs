@@ -75,8 +75,8 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, /* Container, */ Element, Font, 
-    HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    button, scrollable, text_input, Align, Background, Button, Column, Color, /* Container, */ Element, 
+    Font, HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
     VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -666,10 +666,33 @@ impl Sandbox for EncloneVisual {
                     .push(scrollable),
             );
 
-        Modal::new(&mut self.modal_state, content, |state| {
+        use iced_aw::style::{
+            card::{Style, StyleSheet},
+            colors,
+        };
+
+        #[derive(Clone, Copy)]
+        pub struct Gerbil;
+
+        impl StyleSheet for Gerbil {
+            fn active(&self) -> Style {
+                Style {
+                    background: iced::Background::Color(Color::from_rgb(1.0, 0.9, 0.9)),
+                    border_width: 1.0,
+                    border_color: iced::Color::from_rgb(0.5, 0.5, 0.5),
+                    head_background: iced::Background::Color(Color::from_rgb(1.0, 0.9, 0.9)),
+                    head_text_color: colors::WHITE,
+                    close_color: colors::WHITE,
+                    ..Style::default()
+                }
+            }
+        }
+
+        let style = Gerbil;
+
+        Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
-                Text::new("My modal"),
-                // Text::new("This is a modal!"), 
+                Text::new(""),
                 Text::new(
                     "\n\n\n\nEnter one of the following:\n\
                         • an enclone command, without the enclone part\n\
@@ -678,19 +701,21 @@ impl Sandbox for EncloneVisual {
                         • q to quit\n"
                 ).height(Units(200)).vertical_alignment(VerticalAlignment::Bottom),
             )
+            // .padding_foot(300.0)
+            .style(style)
             .foot(
                 Row::new()
                     .spacing(10)
-                    .padding(5)
-                    .width(Units(1100))
-                    .height(Units(1000))
+                    // .padding(5)
+                    // .width(Units(1100))
+                    // .height(Units(1000))
                     // .push(Text::new("Gerbilspit"))
                     .push(
                         Button::new(
                             &mut state.cancel_state,
-                            Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Center),
+                            Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
                         )
-                        .width(Length::Fill)
+                        // .width(Length::Fill)
                         .on_press(Message::CancelButtonPressed),
                     )
             )
