@@ -355,13 +355,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
             std::process::exit(1);
         }
-        let server_process = server_process.unwrap();
+        let mut server_process = server_process.unwrap();
         let server_process_id = server_process.id();
 
         // Wait until server has printed something.
 
         let mut buffer = [0; 50];
-        let mut server_stdout = server_process.stdout.unwrap();
+        let mut server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
         println!(
@@ -374,7 +374,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // Look at stderr.
 
         let mut ebuffer = [0; 200];
-        let mut server_stderr = server_process.stderr.unwrap();
+        let mut server_stderr = server_process.stderr.as_mut().unwrap();
         server_stderr.read(&mut ebuffer).unwrap();
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
@@ -513,6 +513,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             output = format!(
                                 "\nThe enclone server is unhappy.  It says:\n\n{}", err
                             );
+
+                            let mut ebuffer = [0; 10000];
+                            let mut server_stderr = server_process.stderr.as_mut().unwrap();
+                            server_stderr.read(&mut ebuffer).unwrap();
+                            let emsg = strme(&ebuffer);
+                            println!("server error =\n{}\n", emsg);
+
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
