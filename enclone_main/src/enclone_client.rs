@@ -597,10 +597,7 @@ impl Sandbox for EncloneVisual {
                 if !PROCESSING_REQUEST.load(SeqCst) {
                     let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
-                    // should add INTERNAL
-                    let mut plus = format!("{} PLAIN", self.input_value.clone());
-                    plus = plus.replace("\n", " ");
-                    plus = plus.replace("  ", " ");
+                    let plus = format!("{}", self.input_value.clone());
                     USER_REQUEST.lock().unwrap().push(plus);
                     PROCESSING_REQUEST.store(true, SeqCst);
                     while PROCESSING_REQUEST.load(SeqCst) {

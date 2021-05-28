@@ -88,8 +88,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             ctl.gen_opt.internal_run = true;
         }
     }
-    // TEMPORARY CHANGE, MUST NOT GO TO MASTER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ctl.gen_opt.internal_run = true; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if ctl.gen_opt.internal_run {
         if ctl.evil_eye {
             println!("detected internal run");
