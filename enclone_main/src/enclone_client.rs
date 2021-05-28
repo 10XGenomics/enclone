@@ -720,9 +720,14 @@ impl Sandbox for EncloneVisual {
                         • an enclone command, without the enclone part\n\
                         • an clonotype id (number)\n\
                         • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                        • q to quit\n",
+                        • q to quit\n\n\
+                     \n\
+                     Major limitations of this version:\n\
+                     1. There is no color in the clonotype tables.\n\
+                     2. Text in plots does not show up.\n\
+                     3. Cutting and pasting from clonotype tables doesn't work.",
                 )
-                .height(Units(220))
+                .height(Units(400))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style)
