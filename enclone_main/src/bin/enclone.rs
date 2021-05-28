@@ -60,7 +60,8 @@ impl Analyzer for EncloneAnalyzer {
             let err_msg = format!("{}", result.unwrap_err().to_string());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
             if server_debug {
-                msg += &mut format!("The arguments provided to the server were\n{}.\n",
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
                     args.iter().format(" ")
                 );
             }

@@ -76,7 +76,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
-    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text, 
+    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -519,16 +519,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                 err = err.between(&left, &right).to_string();
                             }
                             err = err.replace("\\n", "\n");
-                            output = format!(
-                                "\nThe enclone server is unhappy.  It says:\n\n{}", err
-                            );
+                            output =
+                                format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
 
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
                             println!("server error =\n{}\n", emsg);
-
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
