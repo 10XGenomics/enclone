@@ -75,7 +75,7 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Background, Button, Column, Color, /* Container, */ Element, 
+    button, scrollable, text_input, Align, Button, Column, Color, /* Container, */ Element, 
     Font, HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
     VerticalAlignment,
 };
@@ -678,8 +678,8 @@ impl Sandbox for EncloneVisual {
             fn active(&self) -> Style {
                 Style {
                     background: iced::Background::Color(Color::from_rgb(1.0, 0.9, 0.9)),
-                    border_width: 1.0,
-                    border_color: iced::Color::from_rgb(0.5, 0.5, 0.5),
+                    border_width: 0.0,
+                    border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
                     head_background: iced::Background::Color(Color::from_rgb(1.0, 0.9, 0.9)),
                     head_text_color: colors::WHITE,
                     close_color: colors::WHITE,
@@ -694,12 +694,15 @@ impl Sandbox for EncloneVisual {
             Card::new(
                 Text::new(""),
                 Text::new(
-                    "\n\n\n\nEnter one of the following:\n\
+                    "Welcome to enclone visual 0.000...0001!\n\n\
+                        To use it, type in the box \
+                       (see below)\nand then push the Submit button.  Here are the things \
+                       that you can type:\n\n\
                         • an enclone command, without the enclone part\n\
                         • an clonotype id (number)\n\
                         • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
                         • q to quit\n"
-                ).height(Units(200)).vertical_alignment(VerticalAlignment::Bottom),
+                ).height(Units(220)).vertical_alignment(VerticalAlignment::Center),
             )
             // .padding_foot(300.0)
             .style(style)
