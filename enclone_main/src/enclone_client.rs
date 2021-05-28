@@ -549,7 +549,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         let mut settings = Settings::default();
         let mut window_settings = iced::window::Settings::default();
-        window_settings.size = (1100 as u32, 1000 as u32);
+        window_settings.size = (1100 as u32, 1060 as u32);
         settings.window = window_settings;
         let _ = EncloneVisual::run(settings);
         cleanup();
@@ -665,8 +665,8 @@ impl Sandbox for EncloneVisual {
         // Display the SVG.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .width(Units(400))
+            .height(Units(400));
 
         let content = Column::new()
             .spacing(20)
@@ -737,7 +737,7 @@ impl Sandbox for EncloneVisual {
                 ),
             )
             .width(Units(1100))
-            .height(Units(1000))
+            .height(Units(1060))
             .on_close(Message::CloseModal)
             .into()
         })
