@@ -9,6 +9,7 @@ use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;
+use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
@@ -40,7 +41,13 @@ fn main() {
     fwriteln!(f, "");
     fwriteln!(f, "id,cellranger_version");
     let mut config = HashMap::<String, String>::new();
-    let _ = get_config(&mut config);
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+        }
+    }
+    let _ = get_config(&config_file, &mut config);
     let root = format!("{}/current{}", config["earth"], TEST_FILES_VERSION);
     let dirs = dir_list(&root);
     let mut ids = Vec::<usize>::new();

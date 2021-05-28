@@ -26,7 +26,13 @@ use string_utils::*;
 fn main() {
     PrettyTrace::new().on();
     let mut config = HashMap::<String, String>::new();
-    let _ = get_config(&mut config);
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+        }
+    }
+    let _ = get_config(&config_file, &mut config);
     let mut dests = Vec::<String>::new();
     dests.push(format!("{}/current{}", config["earth"], TEST_FILES_VERSION));
     dests.push(format!("{}/current{}", config["cloud"], TEST_FILES_VERSION));

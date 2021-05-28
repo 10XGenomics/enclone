@@ -36,9 +36,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
     for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_")
-            && key != "ENCLONE_CONFIG"
-            && !key.starts_with("ENCLONE_COM_")
+        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_COM_")
         {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         }
@@ -71,7 +69,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if ctl.evil_eye {
                 println!("getting config");
             }
-            if get_config(&mut ctl.gen_opt.config) {
+            if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
                 ctl.gen_opt.internal_run = true;
             }
             if ctl.evil_eye {
@@ -561,6 +559,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ),
         ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
+        ("CONFIG", &mut ctl.gen_opt.config_file),
         ("EXT", &mut ctl.gen_opt.ext),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),

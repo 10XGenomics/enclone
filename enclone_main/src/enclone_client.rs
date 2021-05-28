@@ -123,6 +123,7 @@ lazy_static! {
     static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -227,6 +228,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             message or a\nGUI window does not pop up, please rerun the command with the added \
             argument VERBOSE,\nand then ask for help."
         );
+    }
+
+    // Get config file name if defined.
+
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            CONFIG_FILE.lock().unwrap().push(value.to_string());
+        }
     }
 
     // Get configuration.
@@ -361,7 +370,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // Wait until server has printed something.
 
         let mut buffer = [0; 50];
-        let mut server_stdout = server_process.stdout.as_mut().unwrap();
+        let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
         println!(
@@ -374,7 +383,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // Look at stderr.
 
         let mut ebuffer = [0; 200];
-        let mut server_stderr = server_process.stderr.as_mut().unwrap();
+        let server_stderr = server_process.stderr.as_mut().unwrap();
         server_stderr.read(&mut ebuffer).unwrap();
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
@@ -515,7 +524,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             );
 
                             let mut ebuffer = [0; 10000];
-                            let mut server_stderr = server_process.stderr.as_mut().unwrap();
+                            let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
                             println!("server error =\n{}\n", emsg);
@@ -604,7 +613,11 @@ impl Sandbox for EncloneVisual {
                 if !PROCESSING_REQUEST.load(SeqCst) {
                     let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
-                    let plus = format!("{}", self.input_value.clone());
+                    let mut plus = format!("{}", self.input_value.clone());
+                    if CONFIG_FILE.lock().unwrap().len() > 0 {
+                        let config_file = CONFIG_FILE.lock().unwrap()[0].clone();
+                        plus = format!("{} CONFIG={}", plus, config_file);
+                    }
                     USER_REQUEST.lock().unwrap().push(plus);
                     PROCESSING_REQUEST.store(true, SeqCst);
                     while PROCESSING_REQUEST.load(SeqCst) {
