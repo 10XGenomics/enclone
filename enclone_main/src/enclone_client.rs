@@ -75,7 +75,7 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Color, /* Container, */ Element, 
+    button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
     Font, HorizontalAlignment, Length, Row, Sandbox, Scrollable, Settings, Svg, Text, TextInput,
     VerticalAlignment,
 };
@@ -553,7 +553,6 @@ struct EncloneVisual {
     open_state: button::State,
     modal_state: modal::State<ModalState>,
     last_message: Option<Message>,
-
 }
 
 #[derive(Debug, Clone)]
@@ -650,13 +649,9 @@ impl Sandbox for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
-            .push(Row::new()
-                .spacing(10)
-                .align_items(Align::Center)
-                .push(
-                    Button::new(&mut self.open_state, Text::new("Help"))
-                        .on_press(Message::OpenModal),
-                ))
+            .push(Row::new().spacing(10).align_items(Align::Center).push(
+                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal),
+            ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(
@@ -701,26 +696,21 @@ impl Sandbox for EncloneVisual {
                         • an enclone command, without the enclone part\n\
                         • an clonotype id (number)\n\
                         • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
-                        • q to quit\n"
-                ).height(Units(220)).vertical_alignment(VerticalAlignment::Center),
+                        • q to quit\n",
+                )
+                .height(Units(220))
+                .vertical_alignment(VerticalAlignment::Center),
             )
-            // .padding_foot(300.0)
             .style(style)
             .foot(
-                Row::new()
-                    .spacing(10)
-                    // .padding(5)
-                    // .width(Units(1100))
-                    // .height(Units(1000))
-                    // .push(Text::new("Gerbilspit"))
-                    .push(
-                        Button::new(
-                            &mut state.cancel_state,
-                            Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
-                        )
-                        // .width(Length::Fill)
-                        .on_press(Message::CancelButtonPressed),
+                Row::new().spacing(10).push(
+                    Button::new(
+                        &mut state.cancel_state,
+                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
                     )
+                    // .width(Length::Fill)
+                    .on_press(Message::CancelButtonPressed),
+                ),
             )
             .width(Units(1100))
             .height(Units(1000))
@@ -730,19 +720,6 @@ impl Sandbox for EncloneVisual {
         .backdrop(Message::CloseModal)
         .on_esc(Message::CloseModal)
         .into()
-
-
-
-        /*
-        Container::new(content)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .center_x()
-            .center_y()
-            .into()
-        */
-
-
     }
 }
 
