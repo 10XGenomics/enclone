@@ -509,7 +509,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             if err.contains(&left) && err.after(&left).contains(&right) {
                                 err = err.between(&left, &right).to_string();
                             }
-                            output = format!("\nThe server is unhappy.  It says:\n{}", err);
+                            err = err.replace("\\n", "\n");
+                            output = format!(
+                                "\nThe enclone server is unhappy.  It says:\n\n{}", err
+                            );
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
