@@ -484,7 +484,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         std::process::exit(0);
                     }
                     if line == "d" {
-                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN".to_string();
+                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
@@ -698,7 +698,7 @@ impl Sandbox for EncloneVisual {
                        that you can type:\n\n\
                         • an enclone command, without the enclone part\n\
                         • an clonotype id (number)\n\
-                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
+                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
                         • q to quit\n",
                 )
                 .height(Units(220))
