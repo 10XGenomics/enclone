@@ -13,8 +13,7 @@
 // 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
 // 5.  Handle the case where tsh hasn't been started
-//     server says this:
-//     david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+//     server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
 // 6.  Add local server capability.
@@ -76,9 +75,11 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
-    Sandbox, Scrollable, Settings, Svg, Text, TextInput,
+    button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
+    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
+    TextInput, VerticalAlignment,
 };
+use iced_aw::{modal, Card, Modal};
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::{atexit, SIGINT};
@@ -122,6 +123,7 @@ lazy_static! {
     static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -226,6 +228,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             message or a\nGUI window does not pop up, please rerun the command with the added \
             argument VERBOSE,\nand then ask for help."
         );
+    }
+
+    // Get config file name if defined.
+
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            CONFIG_FILE.lock().unwrap().push(value.to_string());
+        }
     }
 
     // Get configuration.
@@ -354,13 +364,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
             std::process::exit(1);
         }
-        let server_process = server_process.unwrap();
+        let mut server_process = server_process.unwrap();
         let server_process_id = server_process.id();
 
         // Wait until server has printed something.
 
         let mut buffer = [0; 50];
-        let mut server_stdout = server_process.stdout.unwrap();
+        let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
         server_stdout.read(&mut buffer).unwrap();
         println!(
@@ -373,7 +383,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // Look at stderr.
 
         let mut ebuffer = [0; 200];
-        let mut server_stderr = server_process.stderr.unwrap();
+        let server_stderr = server_process.stderr.as_mut().unwrap();
         server_stderr.read(&mut ebuffer).unwrap();
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
@@ -476,14 +486,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
-                    let mut output;
+                    let output;
                     let mut svg_output = String::new();
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
                     }
                     if line == "d" {
-                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN".to_string();
+                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
@@ -508,13 +518,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             if err.contains(&left) && err.after(&left).contains(&right) {
                                 err = err.between(&left, &right).to_string();
                             }
-                            output = format!("\nThe server is unhappy.  It says:\n{}", err);
+                            err = err.replace("\\n", "\n");
+                            output =
+                                format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
+
+                            let mut ebuffer = [0; 10000];
+                            let server_stderr = server_process.stderr.as_mut().unwrap();
+                            server_stderr.read(&mut ebuffer).unwrap();
+                            let emsg = strme(&ebuffer);
+                            println!("server error =\n{}\n", emsg);
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
-                            output = format!("\nargs = {}", r.args);
                             svg_output = r.plot.clone();
-                            output += &format!("\n\n{}", r.table);
+                            output = format!("\n\n{}", r.table);
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
@@ -530,9 +547,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         let mut settings = Settings::default();
         let mut window_settings = iced::window::Settings::default();
-        window_settings.size = (1100 as u32, 1000 as u32);
+        window_settings.size = (1100 as u32, 1060 as u32);
         settings.window = window_settings;
-        let _ = Calculator::run(settings);
+        let _ = EncloneVisual::run(settings);
         cleanup();
         return Ok(());
     }
@@ -541,35 +558,50 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[derive(Default)]
-struct Calculator {
+struct EncloneVisual {
     scroll: scrollable::State,
     input: text_input::State,
     input_value: String,
     output_value: String,
     svg_value: String,
     button: button::State,
+
+    open_state: button::State,
+    modal_state: modal::State<ModalState>,
+    last_message: Option<Message>,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
     InputChanged(String),
     ButtonPressed,
+    OpenModal,
+    CloseModal,
+    CancelButtonPressed,
 }
 
-impl Sandbox for Calculator {
+#[derive(Default)]
+struct ModalState {
+    cancel_state: button::State,
+}
+
+impl Sandbox for EncloneVisual {
     type Message = Message;
 
     fn new() -> Self {
-        Calculator::default()
+        EncloneVisual::default()
     }
 
     fn title(&self) -> String {
-        String::from("Calculator")
+        String::from("EncloneVisual")
     }
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::InputChanged(value) => self.input_value = value,
+            Message::OpenModal => self.modal_state.show(true),
+            Message::CloseModal => self.modal_state.show(false),
+            Message::CancelButtonPressed => self.modal_state.show(false),
+            Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
                 // Need to figure what to do if we are already processing a request, for example
                 // if the user pushes the button twice or enters a second command and pushes the
@@ -578,7 +610,12 @@ impl Sandbox for Calculator {
                 if !PROCESSING_REQUEST.load(SeqCst) {
                     let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST.lock().unwrap().push(self.input_value.clone());
+                    let mut plus = format!("{}", self.input_value.clone());
+                    if CONFIG_FILE.lock().unwrap().len() > 0 {
+                        let config_file = CONFIG_FILE.lock().unwrap()[0].clone();
+                        plus = format!("{} CONFIG={}", plus, config_file);
+                    }
+                    USER_REQUEST.lock().unwrap().push(plus);
                     PROCESSING_REQUEST.store(true, SeqCst);
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
@@ -598,6 +635,7 @@ impl Sandbox for Calculator {
                 }
             }
         }
+        self.last_message = Some(message)
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -622,31 +660,22 @@ impl Sandbox for Calculator {
             .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
-        // Display the user instructions.  The height is set because otherwise the text is
-        // truncated.
-
-        let instructions = Text::new(
-            "\nEnter one of the following:\n\
-                • an enclone command, without the enclone part\n\
-                • an clonotype id (number)\n\
-                • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui PLAIN\n\
-                • q to quit\n",
-        )
-        .height(Units(125));
-
         // Display the SVG.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .width(Units(400))
+            .height(Units(400));
 
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
-            .push(Row::new().spacing(10).push(instructions))
+            .push(Row::new().spacing(10).align_items(Align::Center).push(
+                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal),
+            ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
+            .push(Rule::horizontal(10))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
@@ -654,12 +683,70 @@ impl Sandbox for Calculator {
                     .push(scrollable),
             );
 
-        Container::new(content)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .center_x()
-            .center_y()
+        use iced_aw::style::{
+            card::{Style, StyleSheet},
+            colors,
+        };
+
+        #[derive(Clone, Copy)]
+        pub struct Gerbil;
+
+        impl StyleSheet for Gerbil {
+            fn active(&self) -> Style {
+                Style {
+                    background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
+                    border_width: 0.0,
+                    border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
+                    head_background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
+                    head_text_color: colors::WHITE,
+                    close_color: colors::WHITE,
+                    ..Style::default()
+                }
+            }
+        }
+
+        let style = Gerbil;
+
+        Modal::new(&mut self.modal_state, content, move |state| {
+            Card::new(
+                Text::new(""),
+                Text::new(
+                    "Welcome to enclone visual 0.000...0001!\n\n\
+                        To use it, type in the box \
+                       (see below)\nand then push the Submit button.  Here are the things \
+                       that you can type:\n\n\
+                        • an enclone command, without the enclone part\n\
+                        • an clonotype id (number)\n\
+                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                        • q to quit\n\n\
+                     \n\
+                     Major limitations of this version:\n\
+                     1. There is no color in the clonotype tables.\n\
+                     2. Text in plots does not show up.\n\
+                     3. Cutting and pasting from clonotype tables doesn't work.",
+                )
+                .height(Units(400))
+                .vertical_alignment(VerticalAlignment::Center),
+            )
+            .style(style)
+            .foot(
+                Row::new().spacing(10).push(
+                    Button::new(
+                        &mut state.cancel_state,
+                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
+                    )
+                    // .width(Length::Fill)
+                    .on_press(Message::CancelButtonPressed),
+                ),
+            )
+            .width(Units(1100))
+            .height(Units(1060))
+            .on_close(Message::CloseModal)
             .into()
+        })
+        .backdrop(Message::CloseModal)
+        .on_esc(Message::CloseModal)
+        .into()
     }
 }
 

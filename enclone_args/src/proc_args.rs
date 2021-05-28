@@ -36,10 +36,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
     for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_")
-            && key != "ENCLONE_CONFIG"
-            && !key.starts_with("ENCLONE_COM_")
-        {
+        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_COM_") {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         }
     }
@@ -71,7 +68,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if ctl.evil_eye {
                 println!("getting config");
             }
-            if get_config(&mut ctl.gen_opt.config) {
+            if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
                 ctl.gen_opt.internal_run = true;
             }
             if ctl.evil_eye {
@@ -84,6 +81,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if args[i] == "FORCE_EXTERNAL".to_string() {
             ctl.gen_opt.internal_run = false;
         }
+        /*
+        if args[i] == "INTERNAL".to_string() {
+            ctl.gen_opt.internal_run = true;
+        }
+        */
     }
     if ctl.gen_opt.internal_run {
         if ctl.evil_eye {
@@ -177,6 +179,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.gen_opt.jscore_gap_open = -120;
     ctl.gen_opt.jscore_gap_extend = -20;
     ctl.gen_opt.jscore_bits_multiplier = 2.2;
+    ctl.gen_opt.max_heavies = 1000000;
 
     // Set up clonotyping control parameters.
 
@@ -430,6 +433,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("INDELS", &mut ctl.gen_opt.indels),
         ("INKT", &mut ctl.clono_filt_opt.inkt),
         ("INSERTIONS", &mut ctl.gen_opt.insertions),
+        ("INTERNAL", &mut ctl.gen_opt.internal_run),
         ("JC1", &mut ctl.gen_opt.jc1),
         ("MAIT", &mut ctl.clono_filt_opt.mait),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
@@ -555,6 +559,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ),
         ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
+        ("CONFIG", &mut ctl.gen_opt.config_file),
         ("EXT", &mut ctl.gen_opt.ext),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),

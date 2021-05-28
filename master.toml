@@ -42,7 +42,9 @@ futures = { version = "0.3.0", features = [] }
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1.2"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio", "svg"] }
+iced = { version = "0.3", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
+# iced = { git = "https://github.com/hecrj/iced", rev = "8473d8e984f1c74e2f87d655ed048e2c07128f8b", features = ["canvas", "tokio", "svg"] }
+iced_aw = { git = "https://github.com/iced-rs/iced_aw", rev = "3dfce43396af457aaee835dbe281663a41a261ab", default-features = false, features = ["card", "colors", "modal"] }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"

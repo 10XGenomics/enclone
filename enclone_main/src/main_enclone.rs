@@ -455,6 +455,25 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     if ctl.clono_filt_opt.weak_foursies {
         erase_if(&mut exact_clonotypes, &to_delete);
     }
+
+    // Filter if MAX_HEAVIES = 1 set.
+
+    if ctl.gen_opt.max_heavies == 1 {
+        let mut to_delete = vec![false; exact_clonotypes.len()];
+        for i in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[i];
+            let mut heavies = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].left {
+                    heavies += 1;
+                }
+            }
+            if heavies > 1 {
+                to_delete[i] = true;
+            }
+        }
+        erase_if(&mut exact_clonotypes, &to_delete);
+    }
     ctl.perf_stats(&t, "filtering foursies");
 
     // Build info about clonotypes.  Note that this edits the V reference sequence to perform
@@ -859,7 +878,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     );
 
     // Group clonotypes.
-
     let t = Instant::now();
     let groups = grouper(
         &refdata,
@@ -871,7 +889,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         &opt_d_val,
     );
     ctl.perf_stats(&t, "in grouper");
-
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {
@@ -887,7 +904,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
 
     // Tail code.
-
     let mut svgs = Vec::<String>::new();
     tail_code(
         &tall,

@@ -9,6 +9,7 @@ use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
 use std::collections::HashMap;
+use std::env;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::os::unix::fs::PermissionsExt;
@@ -269,7 +270,13 @@ fn main() {
     // Step 11. Copy enclone to a shared location.
 
     let mut config = HashMap::<String, String>::new();
-    if get_config(&mut config) {
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+        }
+    }
+    if get_config(&config_file, &mut config) {
         let bin = &config["enclone_linux_bin"];
         if !path_exists(&bin) {
             std::fs::create_dir_all(&bin).unwrap();

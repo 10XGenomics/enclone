@@ -90,6 +90,13 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
+            } else if args[i].starts_with("CONFIG=") {
+                ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
+            }
+        }
+        for (key, value) in env::vars() {
+            if key == "ENCLONE_CONFIG" {
+                ctl.gen_opt.config_file = value.to_string();
             }
         }
         if ctl.gen_opt.html && ctl.gen_opt.svg {

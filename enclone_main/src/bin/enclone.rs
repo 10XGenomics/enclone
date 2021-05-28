@@ -7,6 +7,7 @@ use enclone_main::proto::{
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
@@ -51,11 +52,19 @@ impl Analyzer for EncloneAnalyzer {
         }
         args.push("NOPRINT".to_string());
         args.push("NOPAGER".to_string());
-        println!("Running enclone:\n  {}", args.join(" "));
+        args.push("PLAIN".to_string()); // until colored text can be rendered
+        args.push("INTERNAL".to_string());
+        eprintln!("Running enclone:\n  {}", args.join(" "));
         let result = main_enclone(&args).await;
         if result.is_err() {
             let err_msg = format!("{}", result.unwrap_err().to_string());
-            let msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
+            }
             let response = EncloneResponse {
                 args: req.args,
                 plot: String::new(),
@@ -64,7 +73,7 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
         let output = result.unwrap();
-        println!("Enclone done, updating in-memory cache");
+        eprintln!("Enclone done, updating in-memory cache");
         // Update stored command
         {
             let mut enclone_command = self.enclone_command.lock().unwrap();

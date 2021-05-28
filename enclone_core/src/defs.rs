@@ -11,7 +11,6 @@ use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
-use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::sync::atomic::AtomicBool;
@@ -228,6 +227,7 @@ pub struct GeneralOpt {
     pub info_data: HashMap<String, Vec<String>>,
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
+    pub config_file: String,
     pub config: HashMap<String, String>,
     pub top_genes: bool,
     pub toy_com: bool,
@@ -243,6 +243,7 @@ pub struct GeneralOpt {
     pub jscore_gap_open: i32,
     pub jscore_gap_extend: i32,
     pub split: bool,
+    pub max_heavies: usize,
 }
 
 // Some plot options.
@@ -957,13 +958,7 @@ pub struct PotentialJoin {
     pub mult: f64,
 }
 
-pub fn get_config(config: &mut HashMap<String, String>) -> bool {
-    let mut config_file = String::new();
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            config_file = value.to_string();
-        }
-    }
+pub fn get_config(config_file: &str, config: &mut HashMap<String, String>) -> bool {
     if config_file.len() > 0 && path_exists(&config_file) {
         let f = open_for_read![&config_file];
         for line in f.lines() {
