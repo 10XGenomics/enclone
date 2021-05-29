@@ -1564,16 +1564,11 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.59"
 dependencies = [
- "ansi_escape",
- "attohttpc",
  "enclone_core",
  "enclone_main",
- "enclone_proto",
  "failure",
- "flate2",
  "iced",
  "iced_aw",
- "io_utils",
  "itertools",
  "lazy_static",
  "libc",
@@ -1582,9 +1577,6 @@ dependencies = [
  "perf_stats",
  "pretty_trace",
  "prost",
- "rayon",
- "sha2",
- "stats_utils",
  "string_utils",
  "tokio",
  "tokio-stream",
