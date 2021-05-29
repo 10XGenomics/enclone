@@ -39,6 +39,8 @@
 //
 // 16. Make sure the rare case where the port is already in use is correctly handled.
 //
+// 17. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
+//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
