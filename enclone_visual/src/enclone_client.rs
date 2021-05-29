@@ -37,6 +37,8 @@
 //
 // 15. Refactor to keep tokio etc. out of cellranger.
 //
+// 16. Make sure the rare case where the port is already in use is correctly handled.
+//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
