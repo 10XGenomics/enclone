@@ -57,7 +57,6 @@ use std::{
 };
 use stirling_numbers::*;
 use string_utils::*;
-use tilde_expand::*;
 use vdj_ann::*;
 use vector_utils::*;
 
@@ -74,34 +73,7 @@ pub struct MainEncloneOutput {
 pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
-
-    // Process SOURCE args.
-
-    let mut args2 = vec![args[0].clone()];
-    for i in 1..args.len() {
-        if args[i].starts_with("SOURCE=") {
-            let f = args[i].after("SOURCE=");
-            let f2 = stringme(&tilde_expand(&f.as_bytes()));
-            if !path_exists(&f2) {
-                return Err(format!("\nCan't find {}.\n", f));
-            }
-            let f = open_for_read![&f];
-            for line in f.lines() {
-                let s = line.unwrap();
-                if !s.starts_with('#') {
-                    let fields = s.split(' ').collect::<Vec<&str>>();
-                    for j in 0..fields.len() {
-                        if fields[j].len() > 0 {
-                            args2.push(fields[j].to_string());
-                        }
-                    }
-                }
-            }
-        } else {
-            args2.push(args[i].clone());
-        }
-    }
-    let args = args2;
+    let args = process_source(&args)?;
 
     // Set up stuff, read args, etc.
 
