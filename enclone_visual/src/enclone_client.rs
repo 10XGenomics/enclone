@@ -36,6 +36,10 @@
 // 14. Clonotype printouts need to show not just the pictures, but also the group info
 //     and any additional stuff like trees.
 //
+// 15. Improve data shown for tooltip.
+//
+// 16. Refactor to keep tokio etc. out of cellranger.
+//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
@@ -58,6 +62,10 @@
 //
 // 3.  Bold some text on the help page.
 //     Probably not possible at this time, could ask on zulip chat.
+//
+// 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
+//
+// 5.  Enable plotting after initially starting GUI.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -232,13 +240,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Announce.
 
+    let version_float = format!("1e-{}", -version.force_f64().log10());
     if !verbose {
         println!(
-            "\nHi! You are using enclone visual {}.\n\n\
+            "\nHi! You are using enclone visual {} = {}.\n\n\
             If you get an error \
             message or a window does not pop up, and it's not clear what to do,\nplease \
             rerun the command with the added argument VERBOSE, and then ask for help.",
-            version
+            version, version_float,
         );
     }
 
@@ -761,11 +770,12 @@ impl Sandbox for EncloneVisual {
         let style = Gerbil;
 
         let version = VERSION.lock().unwrap()[0].clone();
+        let version_float = format!("1e-{}", -version.force_f64().log10());
         Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
                 Text::new(""),
                 Text::new(&format!(
-                    "Welcome to enclone visual {}!\n\n\
+                    "Welcome to enclone visual {} = {}!\n\n\
                      Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
                      To use enclone visual, type in the box \
                      (see below)\nand then push the Submit button.  Here are the things \
@@ -779,7 +789,7 @@ impl Sandbox for EncloneVisual {
                      1. There is no color in the clonotype tables.\n\
                      2. Text in plots does not show up.\n\
                      3. Cutting and pasting from clonotype tables doesn't work.",
-                    version
+                    version, version_float,
                 ))
                 .height(Units(400))
                 .vertical_alignment(VerticalAlignment::Center),
