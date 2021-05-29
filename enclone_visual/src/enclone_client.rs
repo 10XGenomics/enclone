@@ -791,10 +791,12 @@ impl Sandbox for EncloneVisual {
                      1. There is no color in the clonotype tables.\n\
                      2. Text in plots does not show up.\n\
                      3. Cutting and pasting from clonotype tables doesn't work.\n\
-                     4. Long commands are hard to work with in the input box.",
+                     4. Long commands are hard to work with in the input box.\n\
+                     5. Very wide clonotype tables wrap, making them unintelligible, and \
+                     only solvable by window resizing, and sometimes not that.",
                     version, version_float,
                 ))
-                .height(Units(400))
+                .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style)
