@@ -30,15 +30,12 @@
 //
 // 12. Need auto-update for binary (at least for Mac).
 //
-// 13. Make the TextInput gracefully handle long inputs.
-//     Need to ask about this.
-//
-// 14. Clonotype printouts need to show not just the pictures, but also the group info
+// 13. Clonotype printouts need to show not just the pictures, but also the group info
 //     and any additional stuff like trees.
 //
-// 15. Improve data shown for tooltip.
+// 14. Improve data shown for tooltip.
 //
-// 16. Refactor to keep tokio etc. out of cellranger.
+// 15. Refactor to keep tokio etc. out of cellranger.
 //
 // WAITING ON ICED
 //
@@ -53,6 +50,9 @@
 //
 // 4.  Place the scrollbar on the left side of the scrollable window.
 //     Asked on zulip chat if this is possible.
+//
+// 5.  Make the TextInput gracefully handle long inputs.
+//     This is https://github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
 //
 // NICE TO HAVE
 //
@@ -708,7 +708,7 @@ impl Sandbox for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .size(20);
+        .size(14);
 
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
@@ -788,7 +788,8 @@ impl Sandbox for EncloneVisual {
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
                      2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.",
+                     3. Cutting and pasting from clonotype tables doesn't work.\n\
+                     4. Long commands are hard to work with in the input box.",
                     version, version_float,
                 ))
                 .height(Units(400))
