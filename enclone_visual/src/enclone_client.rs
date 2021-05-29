@@ -117,7 +117,7 @@ use string_utils::*;
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
-    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
