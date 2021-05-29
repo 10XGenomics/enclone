@@ -461,6 +461,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         }
 
+        // Form local URL.
+
+        let url = format!("http://{}:{}", local_host, port);
+
         // Fork remote setup command if needed.
 
         if config.contains_key("REMOTE_SETUP") {
@@ -496,20 +500,30 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             thread::sleep(Duration::from_millis(1000));
         }
 
-        // Form local URL.
-
-        let url = format!("http://{}:{}", local_host, port);
-
         // Connect to client.
 
         if verbose {
             println!("connecting to {}", url);
         }
-        let client = AnalyzerClient::connect(url).await;
+        let mut client = AnalyzerClient::connect(url.clone()).await;
         if client.is_err() {
-            eprintln!("\nconnection failed with error\n{:?}\n", client);
-            cleanup();
-            std::process::exit(1);
+
+            // If connection failed, sleep and try again.  This happens maybe 10% of the time.
+
+            println!("connection attempt failed, waiting one second and will try again");
+            thread::sleep(Duration::from_millis(1000));
+            client = AnalyzerClient::connect(url).await;
+
+            // Test for second failure.
+
+            if client.is_err() {
+            
+                eprintln!("\nconnection failed with error\n{:?}\n", client);
+                cleanup();
+                std::process::exit(1);
+            } else {
+                println!("excellent, it's OK now");
+            }
         }
         println!("connected");
         println!("time since startup = {:.1} seconds\n", elapsed(&t));
