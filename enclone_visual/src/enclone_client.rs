@@ -33,6 +33,9 @@
 // 13. Make the TextInput gracefully handle long inputs.
 //     Need to ask about this.
 //
+// 14. Clonotype printouts need to show not just the pictures, but also the group info
+//     and any additional stuff like trees.
+//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
