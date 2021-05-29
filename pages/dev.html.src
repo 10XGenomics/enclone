@@ -195,7 +195,7 @@ part of this.</p>
 </ul>
 
 <p>The standard test battery includes a speed test, but there is some additional testing
-given by <code>./speed</code>.  However we don't routinely test this because it is too 
+given by <code>./scripts/speed</code>.  However we don't routinely test this because it is too 
 subject to server load.  It also only runs at 10x Genomics.</p>
 
 <p>There are miscellaneous gnarly issues that we have not automated testing for:
