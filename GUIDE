@@ -3,7 +3,6 @@ guide to some of the directories here:
 
 enclone               most of the code up to "printing"
 enclone_args          argument processing
-enclone_client        highly experimental, minimal GUI client (not in use)
 enclone_com           inter-processs communication (experimenal)
 enclone_core          core definitions, etc.
 enclone_exec          just the actual main program
