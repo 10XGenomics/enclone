@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
