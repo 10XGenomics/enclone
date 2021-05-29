@@ -8,7 +8,7 @@
 //
 // 2.  Need a regression test.
 //
-// 3.  Doesn't properly handle connection refused.
+// 3.  Trim features and duplicated crates; reduce binary size.
 //
 // 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
@@ -30,9 +30,7 @@
 //
 // 12. Need auto-update for binary (at least for Mac).
 //
-// 13. Trim features and duplicated crates; reduce binary size.
-//
-// 14. Make the TextInput gracefully handle long inputs.
+// 13. Make the TextInput gracefully handle long inputs.
 //     Need to ask about this.
 //
 // WAITING ON ICED
@@ -507,7 +505,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         let mut client = AnalyzerClient::connect(url.clone()).await;
         if client.is_err() {
-
             // If connection failed, sleep and try again.  This happens maybe 10% of the time.
 
             println!("connection attempt failed, waiting one second and will try again");
@@ -517,7 +514,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             // Test for second failure.
 
             if client.is_err() {
-            
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
                 cleanup();
                 std::process::exit(1);
