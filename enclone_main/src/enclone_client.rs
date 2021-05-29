@@ -32,6 +32,9 @@
 //
 // 13. Trim features and duplicated crates; reduce binary size.
 //
+// 14. Make the TextInput gracefully handle long inputs.
+//     Need to ask about this.
+//
 // WAITING ON ICED
 //
 // 1.  Can't cut and paste text from the GUI window, except for the text input box.
