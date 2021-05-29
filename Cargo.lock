@@ -1374,7 +1374,6 @@ dependencies = [
  "evalexpr",
  "failure",
  "flate2",
- "futures",
  "io_utils",
  "itertools",
  "libc",
@@ -1388,10 +1387,6 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "tokio",
- "tokio-stream",
- "tokio-util",
- "tonic",
- "tonic-build",
  "vector_utils",
 ]
 
