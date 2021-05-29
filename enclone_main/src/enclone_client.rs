@@ -51,6 +51,9 @@
 // 1.  Make font a little darker.
 //
 // 2.  Can carriage return be used instead of pushing a button?
+//
+// 3.  Bold some text on the help page.
+//     Probably not possible at this time, could ask on zulip chat.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
