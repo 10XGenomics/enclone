@@ -337,7 +337,7 @@ fn test_rust_version() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 33. Don't allow exit in code in some crates.  There is an exception for enclone_client.rs.
+// 33. Don't allow exit in code in some crates.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -358,9 +358,6 @@ fn test_exit() {
         let files = dir_list(&format!("../{}/src", cname));
         for f in files.iter() {
             if f.ends_with(".rs") {
-                if f == "enclone_client.rs" {
-                    continue;
-                }
                 let g = open_for_read![&format!("../{}/src/{}", cname, f)];
                 for line in g.lines() {
                     let s = line.unwrap();

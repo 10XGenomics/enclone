@@ -30,7 +30,6 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_tools = { path = "../enclone_tools" }
 enclone_visual = { path = "../enclone_visual" }
-enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"

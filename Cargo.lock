@@ -1425,8 +1425,6 @@ name = "enclone_main"
 version = "0.5.59"
 dependencies = [
  "amino",
- "ansi_escape",
- "attohttpc",
  "bytes",
  "chrono",
  "debruijn",
@@ -1442,7 +1440,6 @@ dependencies = [
  "equiv",
  "evalexpr",
  "failure",
- "flate2",
  "futures",
  "hdf5",
  "io_utils",
@@ -1460,7 +1457,6 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "sha2",
  "stats_utils",
  "stirling_numbers",
  "string_utils",
