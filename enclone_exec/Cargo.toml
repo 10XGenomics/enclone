@@ -1,5 +1,5 @@
 [package]
-name = "enclone_main"
+name = "enclone_exec"
 version = "0.5.59"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
@@ -19,6 +19,10 @@ publish = false
 # Please do not edit crate versions within this file.  Instead edit the file master.toml
 # in the root of the enclone repo.
 
+[[bin]]
+name = "enclone"
+path = "src/bin/enclone.rs"
+
 [dependencies]
 amino = "0.1"
 bytes = ">=0.5.5, <2"
@@ -27,10 +31,12 @@ debruijn = "0.3.2"
 enclone_com = { path = "../enclone_com" }
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
+enclone_main = { path = "../enclone_main" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_tools = { path = "../enclone_tools" }
+enclone_visual = { path = "../enclone_visual" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1.2"
