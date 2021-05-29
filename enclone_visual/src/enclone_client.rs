@@ -58,7 +58,7 @@
 //
 // NICE TO HAVE
 //
-// 1.  Make font a little darker.
+// 1.  Add font size slider for clonotype tables.
 //
 // 2.  Can carriage return be used instead of pushing a button?
 //
@@ -68,6 +68,10 @@
 // 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
 //
 // 5.  Enable plotting after initially starting GUI.
+//
+// 6.  Put plots in a scrollable window.
+//
+// 7.  Add scale slider for plots.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
