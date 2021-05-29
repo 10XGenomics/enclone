@@ -27,7 +27,6 @@ path = "src/bin/enclone.rs"
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual" }
 pretty_trace = "0.5"
-string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 
 [dev-dependencies]
@@ -45,6 +44,7 @@ rayon = "1.4"
 serde_json = "*"
 sha2 = "0.9.3"
 stats_utils = "0.1"
+string_utils = "0.1"
 vector_utils = "0.1.3"
 
 [features]

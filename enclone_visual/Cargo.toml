@@ -27,11 +27,7 @@ publish = false
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_proto = { path = "../enclone_proto" }
-enclone_tail = { path = "../enclone_tail" }
 enclone_tools = { path = "../enclone_tools" }
-enclone_args = { path = "../enclone_args" }
-equiv = "0.1.2"
-evalexpr = "5.0.5"
 failure = "0.1.6"
 futures = { version = "0.3.0", features = [] }
 iced = { version = "0.3", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
@@ -45,11 +41,7 @@ nix = "0.19.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
-rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
-serde = "1.0.90"
-serde_derive = "1.0"
-serde_json = "*"
 stats_utils = "0.1"
 string_utils = "0.1"
 tables = "0.1"
@@ -70,8 +62,3 @@ io_utils = "0.2"
 perf_stats = "0.1"
 rayon = "1.4"
 sha2 = "0.9.3"
-
-[features]
-basic = []
-cpu = []
-linkless = []
