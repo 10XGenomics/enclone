@@ -712,7 +712,7 @@ impl Sandbox for EncloneVisual {
             ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
-            .push(Rule::horizontal(10))
+            .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
@@ -795,6 +795,19 @@ impl Sandbox for EncloneVisual {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod style {
+
+    pub struct RuleStyle;
+
+    impl iced::rule::StyleSheet for RuleStyle {
+        fn style(&self) -> iced::rule::Style {
+            iced::rule::Style {
+                color: Color::from_rgb(0.0, 1.0, 1.0),
+                width: 3,
+                radius: 1.0,
+                fill_mode: iced::rule::FillMode::Percent(100.0),
+            }
+        }
+    }
 
     pub struct Squeak;
 
