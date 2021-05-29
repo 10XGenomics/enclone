@@ -119,6 +119,7 @@ static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 static DONE: AtomicBool = AtomicBool::new(false);
 
 lazy_static! {
+    static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -216,17 +217,21 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
-    unsafe {
-        atexit(exit_handler);
-    }
+
+    // Set enclone visual version.
+
+    let version = "0.0000000000000000000000000000001";
+    VERSION.lock().unwrap().push(version.to_string());
 
     // Announce.
 
     if !verbose {
         println!(
-            "\nHi! You are using the experimental enclone GUI client.  If you get an error \
-            message or a\nGUI window does not pop up, please rerun the command with the added \
-            argument VERBOSE,\nand then ask for help."
+            "\nHi! You are using enclone visual {}.\n\n\
+            If you get an error \
+            message or a window does not pop up, and it's not clear what to do,\nplease \
+            rerun the command with the added argument VERBOSE, and then ask for help.",
+            version
         );
     }
 
@@ -277,6 +282,60 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             config.insert(arg.before("=").to_string(), arg.after("=").to_string());
         }
     }
+    
+    // Determine if the server is remote.
+
+    let remote = config.contains_key("REMOTE_HOST")
+            || config.contains_key("REMOTE_IP")
+            || config.contains_key("REMOTE_BIN");
+    if remote {
+        if !config.contains_key("REMOTE_HOST")
+            || !config.contains_key("REMOTE_IP")
+            || !config.contains_key("REMOTE_BIN")
+        {
+            eprintln!(
+                "\nTo use a remote host, please specify all of REMOTE_HOST, \
+                REMOTE_IP, and REMOTE_BIN.\n"
+            );
+            eprintln!("Here is what is specified:");
+            for (key, value) in config.iter() {
+                eprintln!("{}={}", key, value);
+            }
+            std::process::exit(1);
+        } else {
+            REMOTE.store(true, SeqCst);
+        }
+    }
+
+    // If server is remote, see if we can ssh to it.  Otherwise, busted.
+
+    if remote {
+        let t = Instant::now();
+        let host = config["REMOTE_HOST"].clone();
+        let o = Command::new("ssh")
+            .arg(&host)
+            .arg("-n")
+            .arg("echo")
+            .output()
+            .expect("failed to execute initial ssh");
+        println!("\ninitial test ssh took {:.1} seconds", elapsed(&t));
+        if o.status.code() != Some(0) {
+            let m = String::from_utf8(o.stderr).unwrap();
+            println!("\ntest ssh failed with error message =\n{}", m);
+            println!("Attempt to ssh to {} as specified by REMOTE_HOST failed.", host);
+            println!("Here are two possible explanations:");
+            println!("1. You have the wrong REMOTE_HOST.");
+            println!("2. You first need to do something to enable crossing a firewall.");
+            println!("   If so, ask one of your colleagues how to do this.\n");
+            std::process::exit(1);
+        }
+    }
+
+    // Set exit handler to force cleanup at end of process.
+
+    unsafe {
+        atexit(exit_handler);
+    }
 
     // Loop through random ports until we get one that works.
 
@@ -296,36 +355,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         // Attempt to fork the server.
 
-        let mut remote = false;
         let server_process;
         let mut local_host = "127.0.0.1".to_string();
-        if config.contains_key("REMOTE_HOST")
-            || config.contains_key("REMOTE_IP")
-            || config.contains_key("REMOTE_BIN")
-        {
-            if !config.contains_key("REMOTE_HOST")
-                || !config.contains_key("REMOTE_IP")
-                || !config.contains_key("REMOTE_BIN")
-            {
-                eprintln!(
-                    "\nTo use a remote host, please specify all of REMOTE_HOST, \
-                    REMOTE_IP, and REMOTE_BIN.\n"
-                );
-                eprintln!("Here is what is specified:");
-                for (key, value) in config.iter() {
-                    eprintln!("{}={}", key, value);
-                }
-                std::process::exit(1);
-            }
-            remote = true;
-            REMOTE.store(true, SeqCst);
-        }
-        if config.contains_key("REMOTE_SETUP") {
-            if !remote {
-                eprintln!("\nYou specified REMOTE_SETUP but not REMOTE_HOST.\n");
-                std::process::exit(1);
-            }
-        }
         println!("\ntrying random port {}", port);
         if remote {
             let host = config["REMOTE_HOST"].clone();
@@ -707,11 +738,13 @@ impl Sandbox for EncloneVisual {
 
         let style = Gerbil;
 
+        let version = VERSION.lock().unwrap()[0].clone();
         Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
                 Text::new(""),
                 Text::new(
-                    "Welcome to enclone visual 0.0000000000000000000000000000001!\n\n\
+                    &format!(
+                    "Welcome to enclone visual {}!\n\n\
                      Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
                      To use enclone visual, type in the box \
                      (see below)\nand then push the Submit button.  Here are the things \
@@ -725,6 +758,8 @@ impl Sandbox for EncloneVisual {
                      1. There is no color in the clonotype tables.\n\
                      2. Text in plots does not show up.\n\
                      3. Cutting and pasting from clonotype tables doesn't work.",
+                    version
+                    )
                 )
                 .height(Units(400))
                 .vertical_alignment(VerticalAlignment::Center),
