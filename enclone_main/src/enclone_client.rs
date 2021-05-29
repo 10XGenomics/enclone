@@ -288,12 +288,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             config.insert(arg.before("=").to_string(), arg.after("=").to_string());
         }
     }
-    
+
     // Determine if the server is remote.
 
     let remote = config.contains_key("REMOTE_HOST")
-            || config.contains_key("REMOTE_IP")
-            || config.contains_key("REMOTE_BIN");
+        || config.contains_key("REMOTE_IP")
+        || config.contains_key("REMOTE_BIN");
     if remote {
         if !config.contains_key("REMOTE_HOST")
             || !config.contains_key("REMOTE_IP")
@@ -328,7 +328,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if o.status.code() != Some(0) {
             let m = String::from_utf8(o.stderr).unwrap();
             println!("\ntest ssh failed with error message =\n{}", m);
-            println!("Attempt to ssh to {} as specified by REMOTE_HOST failed.", host);
+            println!(
+                "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
+                host
+            );
             println!("Here are two possible explanations:");
             println!("1. You have the wrong REMOTE_HOST.");
             println!("2. You first need to do something to enable crossing a firewall.");
@@ -748,8 +751,7 @@ impl Sandbox for EncloneVisual {
         Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
                 Text::new(""),
-                Text::new(
-                    &format!(
+                Text::new(&format!(
                     "Welcome to enclone visual {}!\n\n\
                      Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
                      To use enclone visual, type in the box \
@@ -765,8 +767,7 @@ impl Sandbox for EncloneVisual {
                      2. Text in plots does not show up.\n\
                      3. Cutting and pasting from clonotype tables doesn't work.",
                     version
-                    )
-                )
+                ))
                 .height(Units(400))
                 .vertical_alignment(VerticalAlignment::Center),
             )
