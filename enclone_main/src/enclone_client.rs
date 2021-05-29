@@ -523,7 +523,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         cleanup();
                         std::process::exit(0);
                     }
-                    if line == "d" {
+                    if line.before(" ") == "d" {
                         line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
