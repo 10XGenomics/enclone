@@ -1569,10 +1569,8 @@ dependencies = [
  "enclone_core",
  "enclone_main",
  "enclone_proto",
- "enclone_tools",
  "failure",
  "flate2",
- "futures",
  "iced",
  "iced_aw",
  "io_utils",
@@ -1585,17 +1583,13 @@ dependencies = [
  "pretty_trace",
  "prost",
  "rayon",
- "regex",
  "sha2",
  "stats_utils",
  "string_utils",
- "tables",
- "tilde-expand",
  "tokio",
  "tokio-stream",
  "tonic",
  "tonic-build",
- "vector_utils",
 ]
 
 [[package]]
