@@ -3,12 +3,11 @@
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, Container, Element,
-    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
-    TextInput, VerticalAlignment,
+    button, scrollable, text_input, Align, Button, Column, Container, Element,
+    Font, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
+    TextInput,
 };
 use iced_aw::{modal, Card, Modal};
-use string_utils::*;
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
