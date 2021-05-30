@@ -14,9 +14,10 @@ members = [
     "enclone_tail",
     "enclone_tools",
     "enclone_visual",
+    "scroll_crash",
 ]
 
-exclude = ["scroll_crash"]
+# exclude = ["scroll_crash"]
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

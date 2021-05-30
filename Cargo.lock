@@ -4431,6 +4431,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
+name = "scroll_crash"
+version = "0.5.59"
+dependencies = [
+ "failure",
+ "iced",
+ "itertools",
+ "lazy_static",
+ "libc",
+ "log",
+ "nix 0.19.1",
+ "perf_stats",
+ "pretty_trace",
+ "prost",
+ "string_utils",
+ "tokio",
+ "tokio-stream",
+ "tonic",
+]
+
+[[package]]
 name = "sct"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

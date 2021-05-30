@@ -10,7 +10,7 @@ use iced::{
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
-    bytes: include_bytes!("../DejaVuLGCSansMono.ttf"),
+    bytes: include_bytes!("../DejaVuLGCSansMono-Bold.ttf"),
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -58,6 +58,7 @@ impl Sandbox for Calculator {
         match message {
             Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
+                self.svg_value = include_str!("../plot.svg").to_string();
                 self.output_value = include_str!("../test.txt").to_string();
             }
         }
@@ -88,8 +89,8 @@ impl Sandbox for Calculator {
         // Display the SVG.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .width(Units(400))
+            .height(Units(400));
 
         let content = Column::new()
             .spacing(20)
