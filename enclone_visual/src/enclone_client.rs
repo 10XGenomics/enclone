@@ -731,10 +731,14 @@ impl Sandbox for EncloneVisual {
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
         // Display the SVG.
+        //
+        // WARNING!  When we changed the width and height to 400, the performance of scolling
+        // in the clonotype table window gradually degraded, becoming less and less responsive.
+        // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(400))
-            .height(Units(400));
+            .width(Units(300))
+            .height(Units(300));
 
         let content = Column::new()
             .spacing(20)
