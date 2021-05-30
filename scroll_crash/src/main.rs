@@ -3,9 +3,8 @@
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Column, Container, Element,
-    Font, Length, Row, Sandbox, Scrollable, Settings, Svg, Text,
-    TextInput,
+    button, scrollable, text_input, Align, Button, Column, Container, Element, Font, Length, Row,
+    Sandbox, Scrollable, Settings, Svg, Text, TextInput,
 };
 
 const DEJAVU: Font = Font::External {
@@ -111,7 +110,6 @@ impl Sandbox for Calculator {
             .center_x()
             .center_y()
             .into()
-
     }
 }
 
