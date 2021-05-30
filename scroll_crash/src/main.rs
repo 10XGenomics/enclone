@@ -19,7 +19,7 @@ const DEJAVU: Font = Font::External {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
-    window_settings.size = (1100 as u32, 1060 as u32);
+    window_settings.size = (1100 as u32, 1000 as u32);
     settings.window = window_settings;
     let _ = EncloneVisual::run(settings);
     Ok(())
