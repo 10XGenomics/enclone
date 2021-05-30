@@ -61,7 +61,6 @@ impl Sandbox for EncloneVisual {
                 self.output_value = include_str!("../test.txt").to_string();
             }
         }
-        // self.last_message = Some(message)
     }
 
     fn view(&mut self) -> Element<Message> {
