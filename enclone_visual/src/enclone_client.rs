@@ -229,17 +229,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let _ = install_signal_handler();
     let args: Vec<String> = env::args().collect();
     let mut verbose = false;
+    let mut monitor_threads = false;
     let mut config_name = String::new();
     for i in 1..args.len() {
         let arg = &args[i];
         if arg == "VERBOSE" {
             verbose = true;
+        } else if arg == "MONITOR_THREADS" {
+            monitor_threads = true;
         } else if arg.starts_with("COM=") {
             config_name = arg.after("COM=").to_string();
         } else {
             eprintln!(
                 "\nCurrently the only allowed arguments are COM=x where x is a \
-                configuration name, and VERBOSE.\n"
+                configuration name, VERBOSE, and MONITOR_THREADS.\n"
             );
             std::process::exit(1);
         }
@@ -249,6 +252,17 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let version = "0.0000000000000000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
+
+    // Monitor threads.
+
+    if monitor_threads {
+        tokio::spawn(async move {
+            loop {
+                thread::sleep(Duration::from_millis(5000));
+                println!("[using {} threads", palaver::thread::count());
+            }
+        });
+    }
 
     // Announce.
 
