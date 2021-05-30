@@ -4,7 +4,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Button, Column, Container, Element,
-    Font, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
+    Font, Length, Row, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput,
 };
 
@@ -97,7 +97,6 @@ impl Sandbox for EncloneVisual {
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
-            // .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
@@ -118,21 +117,6 @@ impl Sandbox for EncloneVisual {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod style {
-
-    /*
-    pub struct RuleStyle;
-
-    impl iced::rule::StyleSheet for RuleStyle {
-        fn style(&self) -> iced::rule::Style {
-            iced::rule::Style {
-                color: Color::from_rgb(0.0, 1.0, 1.0),
-                width: 3,
-                radius: 1.0,
-                fill_mode: iced::rule::FillMode::Percent(100.0),
-            }
-        }
-    }
-    */
 
     pub struct Squeak;
 
