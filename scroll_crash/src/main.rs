@@ -71,7 +71,7 @@ impl Sandbox for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .size(14);
+        .size(20);
 
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
