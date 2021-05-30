@@ -10,7 +10,7 @@ use iced::{
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
-    bytes: include_bytes!("../DejaVuLGCSansMono-Bold.ttf"),
+    bytes: include_bytes!("../DejaVuLGCSansMono.ttf"),
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
