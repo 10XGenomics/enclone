@@ -3,7 +3,7 @@
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
+    button, scrollable, text_input, Align, Button, Color, Column, Container, Element,
     Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput, VerticalAlignment,
 };
@@ -38,23 +38,25 @@ struct EncloneVisual {
     svg_value: String,
     button: button::State,
 
-    open_state: button::State,
-    modal_state: modal::State<ModalState>,
-    last_message: Option<Message>,
+    // open_state: button::State,
+    // modal_state: modal::State<ModalState>,
+    // last_message: Option<Message>,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
     InputChanged(String),
     ButtonPressed,
-    OpenModal,
-    CloseModal,
-    CancelButtonPressed,
+    // OpenModal,
+    // CloseModal,
+    // CancelButtonPressed,
 }
+/*
 #[derive(Default)]
 struct ModalState {
     cancel_state: button::State,
 }
+*/
 
 impl Sandbox for EncloneVisual {
     type Message = Message;
@@ -69,15 +71,15 @@ impl Sandbox for EncloneVisual {
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::OpenModal => self.modal_state.show(true),
-            Message::CloseModal => self.modal_state.show(false),
-            Message::CancelButtonPressed => self.modal_state.show(false),
+            // Message::OpenModal => self.modal_state.show(true),
+            // Message::CloseModal => self.modal_state.show(false),
+            // Message::CancelButtonPressed => self.modal_state.show(false),
             Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
                 self.output_value = include_str!("../test.txt").to_string();
             }
         }
-        self.last_message = Some(message)
+        // self.last_message = Some(message)
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -112,9 +114,11 @@ impl Sandbox for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
+            /*
             .push(Row::new().spacing(10).align_items(Align::Center).push(
                 Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal),
             ))
+            */
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(Rule::horizontal(10).style(style::RuleStyle))
@@ -125,6 +129,7 @@ impl Sandbox for EncloneVisual {
                     .push(scrollable),
             );
 
+        /*
         use iced_aw::style::{
             card::{Style, StyleSheet},
             colors,
@@ -195,6 +200,15 @@ impl Sandbox for EncloneVisual {
         .backdrop(Message::CloseModal)
         .on_esc(Message::CloseModal)
         .into()
+        */
+
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
+            .into()
+
     }
 }
 
