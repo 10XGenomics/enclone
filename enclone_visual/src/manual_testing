@@ -1,0 +1,9 @@
+MANUAL TESTING
+
+1. Type d and then manually scroll up and down for two minutes.  Should not slow down or crash.
+
+2. Cut and paste should be possible from clonotype tables.  [BROKEN]
+
+3. Test the help button.
+
+4. Test internal data using BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui and make sure it works.
