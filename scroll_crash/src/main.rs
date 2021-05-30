@@ -21,14 +21,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1000 as u32);
     settings.window = window_settings;
-    let _ = EncloneVisual::run(settings);
+    let _ = Calculator::run(settings);
     Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[derive(Default)]
-struct EncloneVisual {
+struct Calculator {
     scroll: scrollable::State,
     input: text_input::State,
     input_value: String,
@@ -43,15 +43,15 @@ enum Message {
     ButtonPressed,
 }
 
-impl Sandbox for EncloneVisual {
+impl Sandbox for Calculator {
     type Message = Message;
 
     fn new() -> Self {
-        EncloneVisual::default()
+        Calculator::default()
     }
 
     fn title(&self) -> String {
-        String::from("EncloneVisual")
+        String::from("Calculator")
     }
 
     fn update(&mut self, message: Message) {
