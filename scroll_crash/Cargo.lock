@@ -1659,20 +1659,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "iced_aw"
-version = "0.1.0"
-source = "git+https://github.com/iced-rs/iced_aw?rev=3dfce43396af457aaee835dbe281663a41a261ab#3dfce43396af457aaee835dbe281663a41a261ab"
-dependencies = [
- "dodrio",
- "iced_graphics",
- "iced_native",
- "iced_style",
- "iced_web",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
 name = "iced_core"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3184,7 +3170,6 @@ version = "0.5.59"
 dependencies = [
  "failure",
  "iced",
- "iced_aw",
  "itertools 0.10.0",
  "lazy_static",
  "libc",
