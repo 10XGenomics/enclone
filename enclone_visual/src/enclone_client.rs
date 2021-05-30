@@ -58,6 +58,9 @@
 // 5.  Make the TextInput gracefully handle long inputs.
 //     This is https://github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
 //
+// 6.  Flaky behavior scrolling large texts.
+//     Issue filed: https://github.com/hecrj/iced/issues/897.
+//
 // NICE TO HAVE
 //
 // 1.  Add font size slider for clonotype tables.
