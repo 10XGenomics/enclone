@@ -35,10 +35,6 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     button: button::State,
-
-    // open_state: button::State,
-    // modal_state: modal::State<ModalState>,
-    // last_message: Option<Message>,
 }
 
 #[derive(Debug, Clone)]
