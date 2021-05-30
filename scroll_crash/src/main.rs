@@ -7,7 +7,6 @@ use iced::{
     Font, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput,
 };
-use iced_aw::{modal, Card, Modal};
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
