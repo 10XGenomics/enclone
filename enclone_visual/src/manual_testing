@@ -6,4 +6,8 @@ MANUAL TESTING
 
 3. Test the help button.
 
-4. Test internal data using BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui and make sure it works.
+4. Make sure each of these commands do not return an error
+   - d
+   - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+   - 10
+   - q
