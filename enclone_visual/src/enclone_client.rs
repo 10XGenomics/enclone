@@ -78,7 +78,6 @@
 //
 // 7.  Add scale slider for plots.
 
-
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // This is a GUI client, work in progress.
@@ -755,8 +754,8 @@ impl Sandbox for EncloneVisual {
         // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .width(Units(400))
+            .height(Units(400));
 
         let content = Column::new()
             .spacing(20)
