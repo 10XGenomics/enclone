@@ -754,8 +754,8 @@ impl Sandbox for EncloneVisual {
         // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(400))
-            .height(Units(400));
+            .width(Units(300))
+            .height(Units(300));
 
         let content = Column::new()
             .spacing(20)
