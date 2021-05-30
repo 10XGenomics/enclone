@@ -17,8 +17,6 @@ members = [
     "scroll_crash",
 ]
 
-# exclude = ["scroll_crash"]
-
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # dev mode profile: setting lto = true or lto = "thin" or codegen-units = 1 or even
