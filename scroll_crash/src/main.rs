@@ -56,7 +56,7 @@ impl Sandbox for EncloneVisual {
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::InputChanged(ref value) => self.input_value = value.to_string(),
+            Message::InputChanged(value) => self.input_value = value,
             Message::ButtonPressed => {
                 self.output_value = include_str!("../test.txt").to_string();
             }
