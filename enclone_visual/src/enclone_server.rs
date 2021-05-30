@@ -1,12 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_main::enclone_client::enclone_client;
-use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
-use enclone_main::proto::{
+use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
@@ -125,39 +124,9 @@ impl Analyzer for EncloneAnalyzer {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let t = Instant::now();
+pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
-    let mut args: Vec<String> = env::args().collect();
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Client run of enclone.
-
-    for i in 0..args.len() {
-        if args[i].starts_with("COM=") {
-            enclone_client(&t).await?;
-        }
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Standard run of enclone.
-
-    if args.len() < 2 || args[1] != "SERVER" {
-        let res = main_enclone(&mut args).await;
-        if res.is_err() {
-            eprintln!("{}", res.unwrap_err());
-            std::process::exit(1);
-        }
-        std::process::exit(0);
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Server run of enclone.
-
+    let args: Vec<String> = env::args().collect();
     let mut ip_port = "127.0.0.1:7000".to_string();
     if args.len() > 2 {
         ip_port = args[2].clone();

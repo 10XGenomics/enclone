@@ -1361,6 +1361,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_exec"
+version = "0.5.59"
+dependencies = [
+ "ansi_escape",
+ "attohttpc",
+ "enclone_core",
+ "enclone_main",
+ "enclone_proto",
+ "enclone_tools",
+ "enclone_visual",
+ "failure",
+ "flate2",
+ "io_utils",
+ "itertools",
+ "perf_stats",
+ "pretty_trace",
+ "rayon",
+ "serde_json",
+ "sha2",
+ "stats_utils",
+ "string_utils",
+ "tokio",
+ "vector_utils",
+]
+
+[[package]]
 name = "enclone_help"
 version = "0.5.59"
 dependencies = [
@@ -1377,8 +1403,6 @@ name = "enclone_main"
 version = "0.5.59"
 dependencies = [
  "amino",
- "ansi_escape",
- "attohttpc",
  "bytes",
  "chrono",
  "debruijn",
@@ -1394,11 +1418,8 @@ dependencies = [
  "equiv",
  "evalexpr",
  "failure",
- "flate2",
  "futures",
  "hdf5",
- "iced",
- "iced_aw",
  "io_utils",
  "itertools",
  "lazy_static",
@@ -1414,7 +1435,6 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "sha2",
  "stats_utils",
  "stirling_numbers",
  "string_utils",
@@ -1424,7 +1444,6 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
- "tonic-build",
  "vdj_ann",
  "vector_utils",
 ]
@@ -1539,6 +1558,30 @@ dependencies = [
  "tilde-expand",
  "vdj_ann",
  "vector_utils",
+]
+
+[[package]]
+name = "enclone_visual"
+version = "0.5.59"
+dependencies = [
+ "enclone_core",
+ "enclone_main",
+ "failure",
+ "iced",
+ "iced_aw",
+ "itertools",
+ "lazy_static",
+ "libc",
+ "log",
+ "nix 0.19.1",
+ "perf_stats",
+ "pretty_trace",
+ "prost",
+ "string_utils",
+ "tokio",
+ "tokio-stream",
+ "tonic",
+ "tonic-build",
 ]
 
 [[package]]
@@ -4386,6 +4429,26 @@ name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
+
+[[package]]
+name = "scroll_crash"
+version = "0.5.59"
+dependencies = [
+ "failure",
+ "iced",
+ "itertools",
+ "lazy_static",
+ "libc",
+ "log",
+ "nix 0.19.1",
+ "perf_stats",
+ "pretty_trace",
+ "prost",
+ "string_utils",
+ "tokio",
+ "tokio-stream",
+ "tonic",
+]
 
 [[package]]
 name = "sct"

@@ -1,0 +1,53 @@
+[package]
+name = "enclone_exec"
+version = "0.5.59"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Nigel Delaney <nigel.delaney@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Jessica Hamel <jessica.hamel@10xgenomics.com>,
+              Lance Hepler <lance.hepler@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Alvin Liang <alvin.liang@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+license-file = "../LICENSE.txt"
+publish = false
+
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
+[[bin]]
+name = "enclone"
+path = "src/bin/enclone.rs"
+
+[dependencies]
+enclone_main = { path = "../enclone_main" }
+enclone_visual = { path = "../enclone_visual" }
+pretty_trace = "0.5"
+tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+
+[dev-dependencies]
+ansi_escape = "0.1"
+attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
+enclone_core = { path = "../enclone_core" }
+enclone_proto = { path = "../enclone_proto" }
+enclone_tools = { path = "../enclone_tools" }
+failure = "0.1.6"
+flate2 = "1.0.20"
+io_utils = "0.2"
+itertools = ">= 0.8, <= 0.11"
+perf_stats = "0.1"
+rayon = "1.4"
+serde_json = "*"
+sha2 = "0.9.3"
+stats_utils = "0.1"
+string_utils = "0.1"
+vector_utils = "0.1.3"
+
+[features]
+basic = []
+cpu = []
+linkless = []

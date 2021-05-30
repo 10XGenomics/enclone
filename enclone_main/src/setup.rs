@@ -14,12 +14,48 @@ use enclone_help::help3::*;
 use enclone_help::help4::*;
 use enclone_help::help5::*;
 use enclone_help::help_utils::*;
+use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
 use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::time::Instant;
 use string_utils::*;
+use tilde_expand::tilde_expand;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Process SOURCE args.
+
+pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
+    let mut args2 = vec![args[0].clone()];
+    for i in 1..args.len() {
+        if args[i].starts_with("SOURCE=") {
+            let f = args[i].after("SOURCE=");
+            let f2 = stringme(&tilde_expand(&f.as_bytes()));
+            if !path_exists(&f2) {
+                return Err(format!("\nCan't find {}.\n", f));
+            }
+            let f = open_for_read![&f];
+            for line in f.lines() {
+                let s = line.unwrap();
+                if !s.starts_with('#') {
+                    let fields = s.split(' ').collect::<Vec<&str>>();
+                    for j in 0..fields.len() {
+                        if fields[j].len() > 0 {
+                            args2.push(fields[j].to_string());
+                        }
+                    }
+                }
+            }
+        } else {
+            args2.push(args[i].clone());
+        }
+    }
+    Ok(args2)
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -6,12 +6,15 @@ members = [
     "enclone_args",
     "enclone_com",
     "enclone_core",
+    "enclone_exec",
     "enclone_help",
     "enclone_main",
     "enclone_print",
     "enclone_proto",
     "enclone_tail",
     "enclone_tools",
+    "enclone_visual",
+    "scroll_crash",
 ]
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -1,0 +1,955 @@
+
+CLONOTYPE = 187 CELLS
+┌───────────┬───────────────────────────────────────────────────┬────────────────────────────────────┬────────────────────────────────────┐
+│           │  CHAIN 1                                          │  CHAIN 2                           │  CHAIN 3                           │
+│           │  88|IGHV1-69D ◆ 57|IGHJ5                          │  359|IGLV3-21 ◆ 309|IGLJ1          │  351|IGLV3-10 ◆ 311|IGLJ2          │
+│           ├───────────────────────────────────────────────────┼────────────────────────────────────┼────────────────────────────────────┤
+│           │          11111 11111111111111111111               │      11111111111111                │       1 1111111111111              │
+│           │  3556788900011 11111122222222223333               │  566 00000111111111                │  458990 0000011111111              │
+│           │  1139734323613 45678901234567890123               │  626 56789012345678                │  483264 5678901234567              │
+│           │                ════════CDR3════════               │      ═════CDR3═════                │         ═════CDR3════              │
+│reference  │  KASINQGSSSSV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  KVY CQVWDSS◦◦◦◦◦◦◦                │  AGSIQY CYSTD◦◦◦◦◦◦◦◦              │
+│donor ref  │  KASINQGSSSSV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  KVY CQVWDSS◦◦◦◦◦◦◦                │  AGSIQY CYSTD◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────────┼────────────────────────────────────┼────────────────────────────────────┤
+│#     n    │  xxxxxxxxxxxxx ..x....x............     u  const  │  xxx ....xx........      u  const  │  xxxxxx ...x..x....x.      u  const│
+│1   147    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW  1565  IGHG1  │  KVY CQVWDSSSDHPYVF   4072  IGLC1  │  AGSIQY CYSTDSSGNLVVF   5036  IGLC2│
+│2     9    │  TASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    43  IGHG1  │  KVY CQVWDVSSDHPYVF     74  IGLC1  │  AGSIQY CYSADSTGNLVVF    130  IGLC2│
+│3     2    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW  2585  IGHG1  │  KVY CQVWDNSSDHPYVF   5955  IGLC1  │  AGSIQY CYSTDSSGNLVVF   7838  IGLC2│
+│4     2    │  KASINQGSSSSVY CARDSWYTSGRNTPNWFDPW  2099  IGHG1  │  KVY CQVWDSSSDHPYVF   6470  IGLC1  │  AGSIQY CYSTDSSGNLVVF   6578  IGLC2│
+│5     2    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    49  IGHG1  │  KVY CQVWDVSSDHPYVF     68  IGLC1  │  AGSIQY CYSADSTGNLVVF    100  IGLC2│
+│6     2    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    34  IGHG1  │  KVY CQVWDSSSDHPYVF    573  IGLC1  │  AGSIQY CYSTDSSGNLVVF    524  IGLC2│
+│7     2    │  KASINQDSSSSVY CARDSWYSSGRNTPNWFDPW    33  IGHG1  │  KVY CQVWDSSSDHPYVF   1096  IGLC1  │  AGSIQY CYSTDSSGNLVVF    868  IGLC2│
+│8     1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW  5899  IGHG1  │  KVY CQVWDNSSDHPYVF   8480  IGLC1  │  AGRIQY CYSTDSSGNLVVF   8506  IGLC2│
+│9     1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW  4971  IGHG1  │  KVY CQVWDNSSDHPYVF   9705  IGLC1  │  AGRVQY CYSTDSSGNLVVF   9548  IGLC2│
+│10    1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW  3970  IGHG1  │  KVF CQVWDSSSDHPYVF   7088  IGLC1  │  AGSIQY CYSTDSSGNLVVF   9740  IGLC2│
+│11    1    │  KGSINQGSSSSVY CARDSWYTSGRNTPNWFDPW  3657  IGHG1  │  KVY CQVWDSSSDHPYVF  11497  IGLC1  │  AGSIQY CYSTDSSGNLVVF  10997  IGLC2│
+│12    1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW   374  IGHG1  │  KVY CQVWDSSSDHPYVF   1176  IGLC1  │  TGSIQY CYSTDSSGNLVVF   1384  IGLC2│
+│13    1    │  KASTNQGSSSSVY CARDSWYSSGRNTPNWFDPW   339  IGHG1  │  KVY CQVWDSSSDHPYVF   3117  IGLC1  │  AGSIQY CYSTDSSGNLVVF   4277  IGLC2│
+│14    1    │  KASIDQGSSSSLY CATDSWYSSGRNTPNWFDPW   230  IGHG1  │  KVY CQVWNSSSDHPYVF   5762  IGLC1  │  TGSIQY CYSIDSSGNLVVF   4720  IGLC2│
+│15    1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW   219  IGHA1  │  KVY CQVWDSSSDHPYVF   1132  IGLC1  │  AGSIQY CYSTDSSGNLVVF   4924  IGLC2│
+│16    1    │  KASINQDSSSSVY CARDSWYSSGRNTPNWFDPW    48  IGHG1  │  KVY CQVWDSSSDHPYVF   1180  IGLC1  │  AGSIQY CYSTDSSGNLVVF   1101  IGLC2│
+│17    1    │  TASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    36  IGHG1  │  KVY CQVWDVSSDHPYVF     12  IGLC1  │  AGSIQY CYSADSTGNLVVF     20  IGLC2│
+│18    1    │  TASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    36  IGHG1  │  KVY CQVWDVSSDHPYVF     60  IGLC1  │  AGSIQY CYSADSTGNLVVF     73  ?    │
+│19    1    │  KGSINQGSSSCVY CARDSWYTSGRNTPNWFDPW    28  IGHG1  │  KVY CQVWDSSSDHPYVF    430  IGLC1  │  AGSIRY CYSTDSSGNLVVF    469  IGLC2│
+│20    1    │  KASINHDSSSSVY CARDSWYSSGRNTPNWFDPW    23  IGHG1  │  KVY CQVWDSSSDHPYVF   1347  IGLC1  │  AGSIQY CYSTDSSGNLVVF   2320  IGLC2│
+│21    1    │  KASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    55  IGHG1  │  KVY CQVWDSSSDHPYVF    860  IGLC1  │                                    │
+│22    1    │  TASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    16  IGHG1  │                                    │  AGSIQY CYSADSTGNLVVF     33  IGLC2│
+│23    1    │  TASINQGSSSSVY CARDSWYSSGRNTPNWFDPW    15  IGHG1  │                                    │  AGSIQY CYSADSTGNLVVF     71  IGLC2│
+│24    1    │  KASTNQGSSSSVY CARDSWYSSGRNTPNWFDPW     3  IGHG1  │                                    │  AGSIQY CYSTDSSGNLVVF    792  IGLC2│
+│25    1    │                                                   │  KVY CQVWDSSSDHPYVF    282  IGLC1  │                                    │
+│26    1    │                                                   │  KVY CQVWDVSSDHPYVF      5  IGLC2  │                                    │
+│27    1    │                                                   │                                    │  AGSIQY CYSTDSSGNLVVF     81  IGLC2│
+│28    1    │                                                   │                                    │  AGSIQY CYSADSTGNLVVF      3  ?    │
+└───────────┴───────────────────────────────────────────────────┴────────────────────────────────────┴────────────────────────────────────┘
+
+CLONOTYPE = 60 CELLS
+┌───────────┬─────────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                                │  CHAIN 2                    │
+│           │  151.1.2|IGHV3-64D ◆ 55|IGHJ4           │  349.1.1|IGLV3-1 ◆ 309|IGLJ1│
+│           ├─────────────────────────────────────────┼─────────────────────────────┤
+│           │        11 1111111111111111              │    11111111111              │
+│           │  46778900 1111112222222222              │  6 00000111111              │
+│           │  98151856 4567890123456789              │  9 56789012345              │
+│           │           ══════CDR3══════              │    ════CDR3═══              │
+│reference  │  SASSSYRA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  S CQAWD◦◦◦◦◦◦              │
+│donor ref  │  SASSSYRA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  T CQAWD◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│#   n      │  ........ ................    u  const  │  . ...........     u  const │
+│1  54      │  DSTNSSGT CVKDRVTGTITELDYW  305  IGHG1  │  T CQAWDSSAGVF  3907  IGLC1 │
+│2   1      │  DSTNSSGT CVKDRVTGTITELDYW    3  IGHG1  │                             │
+│3   5      │                                         │  T CQAWDSSAGVF   262  IGLC1 │
+└───────────┴─────────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 51 CELLS
+┌───────────┬──────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                             │  CHAIN 2                      │
+│           │  144.1.2|IGHV3-49 ◆ 53|IGHJ3         │  279|IGKV3-11 ◆ 217|IGKJ5     │
+│           ├──────────────────────────────────────┼───────────────────────────────┤
+│           │   1 11111111111111111 1              │    1111111111111              │
+│           │  51 11112222222222333 4              │  6 0001111111111              │
+│           │  53 67890123456789012 1              │  4 7890123456789              │
+│           │     ═══════CDR3══════                │    ═════CDR3════              │
+│reference  │  VV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W S              │  R CQQ◦◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  FV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W S              │  R CQQ◦◦◦◦◦◦◦◦◦◦              │
+├───────────┼──────────────────────────────────────┼───────────────────────────────┤
+│#   n      │  .x ................. x    u  const  │  x .x...........      u  const│
+│1  46      │  FV CTRDRDLRGATDAFDIW S  101  IGHG1  │  R CQQRSNWPPSITF   3769  IGKC │
+│2   3      │  FM CTRDRDLRGATDAFDIW S   73  IGHG1  │  R CHQRSNWPPSITF   7548  IGKC │
+│3   1      │  FV CTRDRDLRGATDAFDIW S  279  IGHG1  │  S CQQRSNWPPSITF  12446  IGKC │
+│4   1      │  FV CTRDRDLRGATDAFDIW S   33  IGHG1  │  R CQQRSNWPPSITF    116  IGKC │
+└───────────┴──────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 49 CELLS
+┌───────────┬───────────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                  │
+│           │  159.1.1|IGHV3-7 ◆ 21|IGHD3-3 ◆ 55|IGHJ4  │  374|IGLV4-69 ◆ 313|IGLJ3 │
+│           ├───────────────────────────────────────────┼───────────────────────────┤
+│           │     1 111111111111111111                  │  11111111111              │
+│           │   571 111111222222222233                  │  11111111122              │
+│           │  1270 456789012345678901                  │  12345678901              │
+│           │       ═══════CDR3═══════                  │  ════CDR3═══              │
+│reference  │  EMYA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                  │  CQT◦◦◦◦◦◦◦◦              │
+│donor ref  │  EMYA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                  │  CQT◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────┼───────────────────────────┤
+│#   n      │  xxxx ..................     u  const     │  ...........      u  const│
+│1  34      │  EMFA CAREPLYYDFWSAYFDYW   863  IGHG1     │  CQTWGTGIRVF   4478  IGLC3│
+│2   2      │  EMFA CAREPLYYDFWSAYFDYW  6378  IGHG1     │  CQTWGTGIRVF  11225  IGLC3│
+│3   2      │  EMYA CAREPLYYDFWSAYFDYW   487  IGHG1     │  CQTWGTGIRVF    653  IGLC3│
+│4   1      │  EMFA CAREPLYYDFWSAYFDYW   315  IGHG1     │  CQTWGTGIRVF   1348  IGLC3│
+│5   1      │  E-FA CAREPLYYDFWSAYFDYW    53  IGHG1     │  CQTWGTGIRVF    833  IGLC3│
+│6   1      │  EMFA CAREPLYYDFWSAYFDYW    15  ?         │  CQTWGTGIRVF    890  IGLC3│
+│7   1      │  EMFA CAREPLYYDFWSAYFDYW     2  IGHG1     │                           │
+│8   7      │                                           │  CQTWGTGIRVF    700  IGLC3│
+└───────────┴───────────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 45 CELLS
+┌───────────┬────────────────────────────────────────────────────────────┬───────────────────────────────────────┐
+│           │  CHAIN 1                                                   │  CHAIN 2                              │
+│           │  159|IGHV3-7 ◆ 53|IGHJ3                                    │  376|IGLV5-37 ◆ 313|IGLJ3             │
+│           ├────────────────────────────────────────────────────────────┼───────────────────────────────────────┤
+│           │                       11 1111111111111111111               │           11 11111111111              │
+│           │  23344445667777788999901 1111112222222222333               │  23556679911 11111122222              │
+│           │  22324893380156725357903 4567890123456789012               │  17068902403 45678901234              │
+│           │                          ════════CDR3═══════               │              ════CDR3═══              │
+│reference  │  LPGAGSSSLNKQEKYVRANLLQ◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  VRSYLYYAAAY CMIW◦◦◦◦◦◦◦              │
+│donor ref  │  LPGAGSSSLNKQEKYVRANLLQ◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  VRSYLYYAAAY CMIW◦◦◦◦◦◦◦              │
+├───────────┼────────────────────────────────────────────────────────────┼───────────────────────────────────────┤
+│#    n     │  xxxxxxxxxxxxxxxxxxxxxxx .x......x........x.     u  const  │  xxxxxxxxxxx ...........      u  const│
+│1   10     │  LPGAGSSSPNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW  2323  IGHG1  │  VRGYLYYAAAY CMIWPSNAWVF  14585  IGLC2│
+│2    8     │  LPGAGSSSLNKEEKYMRANLLQY CARDQNFDESSGYDAFDIW  3121  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF  11855  IGLC2│
+│3    6     │  LPGAKSNSLNKEQKYVRANLLQY CARDQNFDESSGYDAFDIW  1171  IGHG1  │  VRSYLYYTAAY CMIWPSNAWVF   7613  IGLC2│
+│4    5     │  LPGAGSSSLNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW    11  IGHG1  │  VRSYLYYAGAY CMIWPSNAWVF     26  IGLC2│
+│5    2     │  LPGAGSSSLNKEEKYMRANLLQY CARDQNFDESSGYDAFDIW  1005  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF   4779  IGLC2│
+│6    1     │  LPGAKSNSLNKEQKYVRANLLQY CARDQNFDESSGYDAFDIW  5862  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF  14144  IGLC2│
+│7    1     │  LPGAGSNSLNKEEIYVRANLLEY CTRDQNFDESSGYDAFDIW  4384  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF  14621  IGLC2│
+│8    1     │  LPGAGSSSLNKEEKYVRANLLQY CARDQNFDDSSGYDAFDIW  3890  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF  15577  IGLC2│
+│9    1     │  LPGAGSSSLNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW  3302  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF   5256  IGLC2│
+│10   1     │  LPGAGSSSPNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW  3067  IGHG1  │  VRGYLYYAAAY CMIWPSNAWVF   6429  IGLC2│
+│11   1     │  LPGAGRNSLNKEEKYVRGNLLQY CARDQNFDESSGYDAFDIW  2724  IGHG3  │  VRGYLYYAAAY CMIWPSNAWVF   5775  IGLC2│
+│12   1     │  LPGAGSSSLNKEEKYMRANLLQY CARDQNFDESSGYDAFDIW  2578  IGHA1  │  VRSYLYYAAAY CMIWPSNAWVF  14497  IGLC2│
+│13   1     │  LPGAGSSSPNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW   839  IGHG1  │  VRGYLYYAAAY CMIWPSNAWVF   7816  IGLC2│
+│14   1     │  LPGAGSSSLNKEEKYVRANLLQY CARDQNFDESSGYDAFDIW   404  IGHG1  │  VRGYLYYAAAY CMIWPSNAWVF   3456  IGLC2│
+│15   1     │  LPGAGSSSLNKQEKYVRANLLQY CARDQNFDESSGYDAFDIW   136  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF   1023  IGLC2│
+│16   1     │  LPGAGSNSLNKEEIYVRANLLEY CTRDQNFDESSGYDAFDIW    96  IGHG1  │  VRSYLYYAAAY CMIWPSNAWVF   1762  IGLC2│
+│17   1     │                                                            │  VRSYLYYAAAY CMIWPSNAWVF    792  IGLC2│
+│18   1     │                                                            │  VRSYLYYAAAY CMIWPSNAWVF    232  IGLC2│
+│19   1     │                                                            │  VRSYLYYAGAY CMIWPSNAWVF     13  IGLC2│
+└───────────┴────────────────────────────────────────────────────────────┴───────────────────────────────────────┘
+
+CLONOTYPE = 37 CELLS
+┌───────────┬─────────────────────────────────────┬───────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                      │  CHAIN 3                    │
+│           │  88|IGHV1-69D ◆ 57|IGHJ5            │  88|IGHV1-69D ◆ 57|IGHJ5      │  283|IGKV3-20 ◆ 213|IGKJ1   │
+│           ├─────────────────────────────────────┼───────────────────────────────┼─────────────────────────────┤
+│           │  11111111111111111111               │  1 111111111111               │  1 11111111111              │
+│           │  11111122222222223333               │  1 111111222222               │  0 00111111111              │
+│           │  45678901234567890123               │  1 456789012345               │  4 89012345678              │
+│           │  ════════CDR3════════               │    ════CDR3════               │    ════CDR3═══              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  V ◦◦◦◦◦◦◦◦◦◦◦W               │  A CQQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  V ◦◦◦◦◦◦◦◦◦◦◦W               │  A CQQ◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────┼───────────────────────────────┼─────────────────────────────┤
+│#   n      │  ....................     u  const  │  x ............     u  const  │  x ...........      u  const│
+│1   5      │  CARDSWYSSGRNTPNWFDPW  1164  IGHG1  │  V CARENYNWFDPW   553  IGHG1  │  A CQQYGSSSWTF   4113  IGKC │
+│2   2      │  CARDSWYSSGRNTPNWFDPW   158  IGHG1  │  I CARENYNWFDPW    92  IGHG1  │  E CQQYGSSSWTF    395  IGKC │
+│3  25      │                                     │  V CARENYNWFDPW  1227  IGHG1  │  A CQQYGSSSWTF   6225  IGKC │
+│4   2      │                                     │  I CARENYNWFDPW  1342  IGHG1  │  A CQQYGSSSWTF   5601  IGKC │
+│5   1      │                                     │  I CARENYNWFDPW  2526  IGHG1  │  E CQQYGSSSWTF  10027  IGKC │
+│6   1      │                                     │  V CARENYNWFDPW     2  ?      │                             │
+│7   1      │                                     │  V CARENYNWFDPW     4  IGHG1  │                             │
+└───────────┴─────────────────────────────────────┴───────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 34 CELLS
+┌───────────┬─────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                  │
+│           │  740.1.1|IGHV4-30-4 ◆ 53|IGHJ3      │  253|IGKV1D-39 ◆ 217|IGKJ5│
+│           ├─────────────────────────────────────┼───────────────────────────┤
+│           │      1 1111111111111111             │  111111111111             │
+│           │  25690 1111122222222223             │  011111111112             │
+│           │  01048 5678901234567890             │  901234567890             │
+│           │        ══════CDR3══════             │  ════CDR3════             │
+│reference  │  LDPSA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  CQQ◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  VGHSA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  CQQ◦◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼───────────────────────────┤
+│#   n      │  ..... ................   u  const  │  ............    u  const │
+│1  34      │  VGHSA CARRYFGVVADAFDIW  57  IGHM   │  CQQSYSTPPITF  207  IGKC  │
+└───────────┴─────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 21 CELLS
+┌───────────┬──────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                             │  CHAIN 2                      │
+│           │  203|IGHV5-51 ◆ 53|IGHJ3             │  327|IGLV1-47 ◆ 313|IGLJ3     │
+│           ├──────────────────────────────────────┼───────────────────────────────┤
+│           │       1111111111111111               │      11111111111              │
+│           │  6777 1111112222222222               │  467 00011111111              │
+│           │  5257 4567890123456789               │  490 78901234567              │
+│           │       ══════CDR3══════               │      ════CDR3═══              │
+│reference  │  WGDR ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  SSN CAAWD◦◦◦◦◦◦              │
+│donor ref  │  WGDR ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  SSN CAAWD◦◦◦◦◦◦              │
+├───────────┼──────────────────────────────────────┼───────────────────────────────┤
+│#   n      │  x... ................     u  const  │  ... ...........      u  const│
+│1  15      │  FAHT CARPKSDYIIDAFDIW   105  IGHG1  │  NRS CAAWDDSLWVF    539  IGLC3│
+│2   1      │  FAHT CARPKSDYIIDAFDIW  8909  IGHA1  │  NRS CAAWDDSLWVF  11086  IGLC3│
+│3   1      │  FAHT CARPKSDYIIDAFDIW    20  IGHG1  │  NRS CAAWDDSLWVF     21  IGLC2│
+│4   1      │  WAHT CARPKSDYIIDAFDIW    15  IGHG1  │  NRS CAAWDDSLWVF    711  IGLC3│
+│5   1      │  FAHT CARPKSDYIIDAFDIW     6  IGHG1  │  NRS CAAWDDSLWVF      5  IGLC1│
+│6   1      │                                      │  NRS CAAWDDSLWVF      9  IGLC2│
+│7   1      │                                      │  NRS CAAWDDSLWVF      8  IGLC3│
+└───────────┴──────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 19 CELLS
+┌───────────┬──────────────────────────────────────┬─────────────────────────────────┐
+│           │  CHAIN 1                             │  CHAIN 2                        │
+│           │  740.1.1|IGHV4-30-4 ◆ 55|IGHJ4       │  390|IGLV8-61 ◆ 311|IGLJ2       │
+│           ├──────────────────────────────────────┼─────────────────────────────────┤
+│           │          1 1111111111111             │     11 111111111111 1           │
+│           │  255668990 1111122222222             │  56701 111111122222 3           │
+│           │  015094148 5678901234567             │  54452 345678901234 3           │
+│           │            ═════CDR3════             │        ════CDR3════             │
+│reference  │  LDSPGKVSA ◦◦◦◦◦◦◦◦◦◦◦◦◦             │  STYAY CVLY◦◦◦◦◦◦◦◦ L           │
+│donor ref  │  VGSHGKVSA ◦◦◦◦◦◦◦◦◦◦◦◦◦             │  STYAY CVLY◦◦◦◦◦◦◦◦ L           │
+├───────────┼──────────────────────────────────────┼─────────────────────────────────┤
+│#   n      │  ......... .x...........   u  const  │  ..... ............ .   u  const│
+│1  15      │  VGIHGNLSA CASRKSGNYIIYW  42  IGHG3  │  SSHAY CVLYMGSGIVVF L  52  IGLC2│
+│2   1      │  VGIHGNLSA CASRKSGNYIIYW  17  ?      │  SSHAY CVLYMGSGIVVF L  27  IGLC2│
+│3   1      │  VGIHGNLSA CASRKSGNYIIYW   9  IGHG3  │  SSHAY CVLYMGSGIVVF L   6  ?    │
+│4   1      │  VGIHGNLSA CVSRKSGNYIIYW   4  IGHG3  │  SSHAY CVLYMGSGIVVF L   6  IGLC2│
+│5   1      │  VGIHGNLSA CASRKSGNYIIYW   6  IGHG3  │                                 │
+└───────────┴──────────────────────────────────────┴─────────────────────────────────┘
+
+CLONOTYPE = 17 CELLS
+┌───────────┬───────────────────────────────────────────────────────┬─────────────────────────────────────┐
+│           │  CHAIN 1                                              │  CHAIN 2                            │
+│           │  194.1.1|IGHV4-59 ◆ 737|IGHJ6                         │  253|IGKV1D-39 ◆ 216|IGKJ4          │
+│           ├───────────────────────────────────────────────────────┼─────────────────────────────────────┤
+│           │                    11 11111111111111111               │         1 111111111111              │
+│           │     44455666777788900 11111112222222222               │  23557770 011111111112              │
+│           │  27838979089147979105 34567890123456789               │  96280140 901234567890              │
+│           │                       ═══════CDR3══════               │           ════CDR3════              │
+│reference  │  HLLSSSQPGYIYSYPIVTLA ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  PVSQYASQ CQQ◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  HLLSSSQPGYIYSYPMVTLA ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  PVSQYASQ CQQ◦◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────────────┼─────────────────────────────────────┤
+│#   n      │  ...xxxx.x.xxxxx.xxx. ..xx..x..........     u  const  │  xxxxxxxx ....x.......      u  const│
+│1  15      │  HLLSSSQAGRITSYPMVTLA CARVRDILTGDYGMDVW   131  IGHG1  │  PVSQYASQ CQQSYSTLSLTF    752  IGKC │
+│2   1      │  HLLSTNQAGRIASHPMVALA CARARDILTGDYGMDVW  1698  IGHG1  │  PVNQHSSQ CQQSFSTLSLTF  17171  IGKC │
+│3   1      │  HLLSSNQAGRINRYPMATVA CARTRDILTGDYGMDVW   128  IGHG1  │  PVNQYARQ CQQSFSTLSLTF    398  IGKC │
+└───────────┴───────────────────────────────────────────────────────┴─────────────────────────────────────┘
+
+CLONOTYPE = 16 CELLS
+┌───────────┬─────────────────────────────────────┬──────────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                     │
+│           │  122.1.2|IGHV3-23 ◆ 55|IGHJ4        │  323|IGLV1-44 ◆ 313|IGLJ3    │
+│           ├─────────────────────────────────────┼──────────────────────────────┤
+│           │    1 1111111111111111 1             │    1111111111111             │
+│           │   21 1111112222222222 3             │  8 0001111111111             │
+│           │  531 4567890123456789 5             │  8 7890123456789             │
+│           │      ══════CDR3══════               │    ═════CDR3════             │
+│reference  │  SVV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V             │  T CAAWD◦◦◦◦◦◦◦◦             │
+│donor ref  │  SLV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V             │  T CAAWD◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼──────────────────────────────┤
+│#   n      │  x.. ................ x   u  const  │  . .............     u  const│
+│1  10      │  NLL CAKWRCSGGNCHFDYW L  81  IGHG1  │  P CAAWDDSLNGWVF  1929  IGLC3│
+│2   1      │  NLL CAKWRCSGGNCHFDYW L  65  IGHA1  │  P CAAWDDSLNGWVF   624  IGLC3│
+│3   1      │  SLL CAKWRCSGGNCHFDYW L  32  IGHG1  │  P CAAWDDSLNGWVF   111  IGLC3│
+│4   1      │  NLL CAKWRCSGGNCHFDYW V  25  IGHG1  │  P CAAWDDSLNGWVF  1356  IGLC3│
+│5   1      │  NLL CAKWRCSGGNCHFDYW L   7  IGHG1  │  P CAAWDDSLNGWVF    17  IGLC2│
+│6   2      │                                     │  P CAAWDDSLNGWVF   607  IGLC3│
+└───────────┴─────────────────────────────────────┴──────────────────────────────┘
+
+CLONOTYPE = 15 CELLS
+┌───────────┬────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                           │  CHAIN 2                 │
+│           │  67.1.1|IGHV1-2 ◆ 54|IGHJ4         │  225|IGKV1-27 ◆ 213|IGKJ1│
+│           ├────────────────────────────────────┼──────────────────────────┤
+│           │        1111111111111               │  11111111111             │
+│           │  44578 1111112222222               │  01111111111             │
+│           │  26025 4567890123456               │  90123456789             │
+│           │        ═════CDR3════               │  ════CDR3═══             │
+│reference  │  ATYNW ◦◦◦◦◦◦◦◦◦◦◦◦◦               │  CQK◦◦◦◦◦◦◦◦             │
+│donor ref  │  ATYNR ◦◦◦◦◦◦◦◦◦◦◦◦◦               │  CQK◦◦◦◦◦◦◦◦             │
+├───────────┼────────────────────────────────────┼──────────────────────────┤
+│#   n      │  ..... .............     u  const  │  ...........     u  const│
+│1  15      │  TTFKR CAREYSSRMNDYW  1514  IGHG1  │  CQKYNSALWTF  8225  IGKC │
+└───────────┴────────────────────────────────────┴──────────────────────────┘
+
+CLONOTYPE = 13 CELLS
+┌───────────┬──────────────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                                     │  CHAIN 2                    │
+│           │  88|IGHV1-69D ◆ 56|IGHJ5                     │  233|IGKV1-5 ◆ 213|IGKJ1    │
+│           ├──────────────────────────────────────────────┼─────────────────────────────┤
+│           │           111 1111111111111111               │    11111111111              │
+│           │  234456789001 1111112222222222               │  7 01111111111              │
+│           │  878932242071 4567890123456789               │  1 90123456789              │
+│           │               ══════CDR3══════               │    ════CDR3═══              │
+│reference  │  EKSSSGIGEEEV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  K CQQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  EKSSSGIGEEEV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  K CQQ◦◦◦◦◦◦◦◦              │
+├───────────┼──────────────────────────────────────────────┼─────────────────────────────┤
+│#   n      │  xxxxxxx.xx.. ................     u  const  │  . ...........      u  const│
+│1   2      │  DRSSNGLGEDDI CARDLGGRYYGSKDPW  3083  IGHG1  │  E CQQYNSYSWTF  12484  IGKC │
+│2   1      │  ERTSNGLGEDDI CARDLGGRYYGSKDPW  4733  IGHG1  │  E CQQYNSYSWTF  12027  IGKC │
+│3   1      │  DRSSNGLGEDDI CARDLGGRYYGSKDPW  3932  IGHG1  │  E CQQYNSYSWTF   9476  IGKC │
+│4   1      │  DRSSNGLGEEDI CARDLGGRYYGSKDPW  3416  IGHG1  │  E CQQYNSYSWTF  12405  IGKC │
+│5   1      │  DRSSSGLGEDDI CARDLGGRYYGSKDPW  3345  IGHG1  │  E CQQYNSYSWTF   6365  IGKC │
+│6   1      │  DKSSNGLGEDDI CARDLGGRYYGSKDPW  3279  IGHG1  │  E CQQYNSYSWTF   2867  IGKC │
+│7   1      │  EKSSSGLGEDDI CARDLGGRYYGSKDPW  1809  IGHG1  │  E CQQYNSYSWTF   2810  IGKC │
+│8   1      │  DRSSSGLGEDDI CARDLGGRYYGSKDPW  1253  IGHG1  │  E CQQYNSYSWTF   1837  IGKC │
+│9   1      │  DKSSSGLGEDDI CARDLGGRYYGSKDPW   677  IGHG1  │  E CQQYNSYSWTF   2435  IGKC │
+│10  1      │  EKSSSGIGEDDI CARDLGGRYYGSKDPW   382  IGHG1  │  E CQQYNSYSWTF    881  IGKC │
+│11  1      │  EKSSNGLGEDDI CARDLGGRYYGSKDPW    73  IGHG1  │  E CQQYNSYSWTF    294  IGKC │
+│12  1      │  EKSSNGIGEEDI CARDLGGRYYGSKDPW    72  IGHG1  │  E CQQYNSYSWTF    249  IGKC │
+└───────────┴──────────────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 11 CELLS
+┌───────────┬─────────────────────────────────────────────┬─────────────────────────────────┐
+│           │  CHAIN 1                                    │  CHAIN 2                        │
+│           │  120|IGHV3-21 ◆ 11|IGHD1-7 ◆ 53|IGHJ3       │  225|IGKV1-27 ◆ 216|IGKJ4       │
+│           ├─────────────────────────────────────────────┼─────────────────────────────────┤
+│           │        1 1111111111111111111111             │           11111111111           │
+│           │  2477790 1111112222222222333333             │  23334679 01111111111           │
+│           │  0901367 4567890123456789012345             │  00160628 90123456789           │
+│           │          ═════════CDR3═════════             │           ════CDR3═══           │
+│reference  │  VSSSSSE ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  RSSVVKAS CQK◦◦◦◦◦◦◦◦           │
+│donor ref  │  VSSSSSE ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  RSSVVKAS CQK◦◦◦◦◦◦◦◦           │
+├───────────┼─────────────────────────────────────────────┼─────────────────────────────────┤
+│#  n       │  ....... ......................   u  const  │  ........ ...........   u  const│
+│1  9       │  VISGGAG CVRDEGGARPNKWNYEGAFDIW  38  IGHG1  │  SFFIIKAG CQKYDSAPLTF  51  IGKC │
+│2  1       │  VISGGAG CVRDEGGARPNKWNYEGAFDIW  12  ?      │  SFFIIKAG CQKYDSAPLTF  19  IGKC │
+│3  1       │  VISGGAG CVRDEGGARPNKWNYEGAFDIW   3  IGHG1  │                                 │
+└───────────┴─────────────────────────────────────────────┴─────────────────────────────────┘
+
+CLONOTYPE = 11 CELLS
+┌───────────┬───────────────────────────────────────┬─────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                              │  CHAIN 2                        │  CHAIN 3                      │
+│           │  67.1.1|IGHV1-2 ◆ 55|IGHJ4            │  281|IGKV3-15 ◆ 214|IGKJ2       │  281|IGKV3-15 ◆ 214|IGKJ2     │
+│           ├───────────────────────────────────────┼─────────────────────────────────┼───────────────────────────────┤
+│           │      11 1111111111111111              │          11111111               │           11111111            │
+│           │  478900 1111112222222222              │  3388999 00011111               │  33488999 00011111            │
+│           │  265502 4567890123456789              │  2659789 78901234               │  26459789 78901234            │
+│           │         ══════CDR3══════              │          ══CDR3══               │           ══CDR3══            │
+│reference  │  ATWSES ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  VEGELQS CQQ◦◦◦◦◦               │  VEAGELQS CQQ◦◦◦◦◦            │
+│donor ref  │  ATRSES ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  VEGELQS CQQ◦◦◦◦◦               │  VEAGELQS CQQ◦◦◦◦◦            │
+├───────────┼───────────────────────────────────────┼─────────────────────────────────┼───────────────────────────────┤
+│#  n       │  xx.xxx .x.......x.x....    u  const  │  xxxxxxx ........     u  const  │  xxxxxxxx ........    u  const│
+│1  1       │  ASRSES CERESVVGLLPMFDYW  530  IGHG1  │  VDGELQS CQQFPSTF  1221  IGKC   │  VDVGDLEP CQQFPSTF  871  IGKC │
+│2  1       │  ATRIET CARESVVGLLPIFDYW  256  IGHG1  │  VEVELEP CQQFPSTF   479  IGKC   │  VEAVELQS CQQFPSTF  946  IGKC │
+│3  1       │  ATRSES CARESVVGLLPIFDYW  219  IGHG1  │  VEGDLEP CQQFPSTF   453  IGKC   │  VEAGELQS CQQFPSTF  908  IGKC │
+│4  4       │  ATRSES CARESVVGLLPIFDYW  162  IGHG1  │  VEGELQS CQQFPSTF   317  IGKC   │                               │
+│5  3       │  ATRIET CARESVVGLLPIFDYW   39  IGHG1  │  VEVELQS CQQFPSTF   339  IGKC   │                               │
+│6  1       │  ATRSES CARESVVGLLPIFDYW  145  IGHG1  │  VEEELQS CQQFPSTF   166  IGKC   │                               │
+└───────────┴───────────────────────────────────────┴─────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 11 CELLS
+┌───────────┬───────────────────────────────────────────┬──────────────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                         │
+│           │  199|IGHV5-10-1 ◆ 20|IGHD3-22 ◆ 53|IGHJ3  │  357|IGLV3-19 ◆ 311|IGLJ2        │
+│           ├───────────────────────────────────────────┼──────────────────────────────────┤
+│           │        1 11111111111111111111             │        1111111111111             │
+│           │  3455770 11111122222222223333             │  14689 0000011111111             │
+│           │  0937275 45678901234567890123             │  27530 5678901234567             │
+│           │          ════════CDR3════════             │        ═════CDR3════             │
+│reference  │  KSSQSNK ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  LSISL CN◦◦◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  KSSQSNK ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  LSISL CN◦◦◦◦◦◦◦◦◦◦◦             │
+├───────────┼───────────────────────────────────────────┼──────────────────────────────────┤
+│#  n       │  ....... ....................   u  const  │  ..... .............     u  const│
+│1  8       │  KNTHPKT CARLGVYYDSSGYHDAFDIW  41  IGHG1  │  LNNRM CNSRDSSGNHLVF  1097  IGLC2│
+│2  3       │                                           │  LNNRM CNSRDSSGNHLVF   699  IGLC2│
+└───────────┴───────────────────────────────────────────┴──────────────────────────────────┘
+
+CLONOTYPE = 10 CELLS
+┌───────────┬───────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                              │  CHAIN 2                    │
+│           │  106|IGHV3-11 ◆ 737|IGHJ6             │  331|IGLV1-51 ◆ 309|IGLJ1   │
+│           ├───────────────────────────────────────┼─────────────────────────────┤
+│           │        11111111111111111              │    1111111111111            │
+│           │  24677 11111122222222223              │  5 0001111111111            │
+│           │  26557 45678901234567890              │  8 7890123456789            │
+│           │        ═══════CDR3══════              │    ═════CDR3════            │
+│reference  │  LTWYN ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  L CGTWD◦◦◦◦◦◦◦◦            │
+│donor ref  │  LTWYN ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  L CGTWD◦◦◦◦◦◦◦◦            │
+├───────────┼───────────────────────────────────────┼─────────────────────────────┤
+│#  n       │  ..x.. .................    u  const  │  . .............    u  const│
+│1  9       │  LIWYN CARDRIAGRFGYGMDVW  175  IGHG1  │  V CGTWDGSLSAYVL  990  IGLC1│
+│2  1       │  LICYN CARDRIAGRFGYGMDVW    8  IGHG1  │  V CGTWDGSLSAYVL    7  IGLC1│
+└───────────┴───────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 10 CELLS
+┌───────────┬───────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                              │  CHAIN 2                  │
+│           │  142|IGHV3-48 ◆ 54|IGHJ4              │  277|IGKV2D-30 ◆ 217|IGKJ5│
+│           ├───────────────────────────────────────┼───────────────────────────┤
+│           │         11 111111111111               │  11111111111              │
+│           │  345777901 111111222222               │  11111111222              │
+│           │  371156261 456789012345               │  23456789012              │
+│           │            ════CDR3════               │  ════CDR3═══              │
+│reference  │  GFESTINAV ◦◦◦◦◦◦◦◦◦◦◦◦               │  CMQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  GFESTINAV ◦◦◦◦◦◦◦◦◦◦◦◦               │  CMQ◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────┼───────────────────────────┤
+│#  n       │  ......x.. ............     u  const  │  ...........     u  const │
+│1  9       │  GFSGSRNDV CARGLTGHPGVW  2700  IGHG1  │  CMQGTHWPITF  9672  IGKC  │
+│2  1       │  GFSGSRNDV CARGLTGHPGVW   265  IGHG1  │  CMQGTHWPITF   746  IGKC  │
+└───────────┴───────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 9 CELLS
+┌───────────┬─────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                        │  CHAIN 2                  │
+│           │  126|IGHV3-33 ◆ 737|IGHJ6       │  273|IGKV2D-28 ◆ 213|IGKJ1│
+│           ├─────────────────────────────────┼───────────────────────────┤
+│           │  11111111111111111              │  11111111111              │
+│           │  11111122222222223              │  11111111222              │
+│           │  45678901234567890              │  23456789012              │
+│           │  ═══════CDR3══════              │  ════CDR3═══              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  CMQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  CMQ◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────┼───────────────────────────┤
+│#  n       │  .................    u  const  │  ...........    u  const  │
+│1  9       │  CARGYEDFTMKYGMDVW  166  IGHG1  │  CMQALQTPQTF  398  IGKC   │
+└───────────┴─────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 9 CELLS
+┌───────────┬───────────────────────────────────────┬────────────────────────────┐
+│           │  CHAIN 1                              │  CHAIN 2                   │
+│           │  120|IGHV3-21 ◆ 737|IGHJ6             │  381|IGLV5-45 ◆ 313|IGLJ3  │
+│           ├───────────────────────────────────────┼────────────────────────────┤
+│           │    1 11111111111111111111             │    11111111111             │
+│           │  671 11111122222222223333             │  4 11111122222             │
+│           │  831 45678901234567890123             │  2 45678901234             │
+│           │      ════════CDR3════════             │    ════CDR3═══             │
+│reference  │  SSV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW             │  L CMIW◦◦◦◦◦◦◦             │
+│donor ref  │  SSV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW             │  L CMIW◦◦◦◦◦◦◦             │
+├───────────┼───────────────────────────────────────┼────────────────────────────┤
+│#  n       │  ... ....................   u  const  │  . ...........     u  const│
+│1  6       │  CSV CARAPRGGSGSQYYYGMDVW  22  IGHG1  │  L CMIWHSSAWVF  1367  IGLC3│
+│2  1       │  CSV CARAPRGGSGSQYYYGMDVW   5  IGHG1  │  L CMIWHSSAWVF    10  IGLC7│
+│3  1       │                                       │  L CMIWHSSAWVF     5  IGLC2│
+│4  1       │                                       │  L CMIWHSSAWVF    28  IGLC3│
+└───────────┴───────────────────────────────────────┴────────────────────────────┘
+
+CLONOTYPE = 9 CELLS
+┌───────────┬───────────────────────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                                              │  CHAIN 2                      │
+│           │  124|IGHV3-30 ◆ 737|IGHJ6                             │  281|IGKV3-15 ◆ 214|IGKJ2     │
+│           ├───────────────────────────────────────────────────────┼───────────────────────────────┤
+│           │               1111 111111111111111111111              │       11111111111             │
+│           │  34457777778890000 111111222222222233333              │  2356 00011111111             │
+│           │  54810145686781246 456789012345678901234              │  2674 78901234567             │
+│           │                    ═════════CDR3════════              │       ════CDR3═══             │
+│reference  │  SGSGSYSNKYFTYMNLA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  VEQR CQQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  SGSGSYSNKYFTYMNLA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  VEQR CQQ◦◦◦◦◦◦◦◦             │
+├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────┤
+│#  n       │  .....x..x....x..x .....................    u  const  │  .... ...........     u  const│
+│1  5       │  SGSASYGKKYITNVNPA CAKANQLLYGGRQYYYGMDVW  184  IGHG1  │  MEQG CQQYNNWPYTF  8347  IGKC │
+│2  3       │  SGSASFGKTYITNLNPV CAKANQLLYGGRQYYYGMDVW   96  IGHG1  │  MEQG CQQYNNWPYTF   275  IGKC │
+│3  1       │                                                       │  MEQG CQQYNNWPYTF   114  IGKC │
+└───────────┴───────────────────────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 8 CELLS
+┌───────────┬─────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                    │
+│           │  124|IGHV3-30 ◆ 53|IGHJ3            │  331|IGLV1-51 ◆ 313|IGLJ3   │
+│           ├─────────────────────────────────────┼─────────────────────────────┤
+│           │     111111111111111 1               │  1111111111111              │
+│           │  79 111111222222222 3               │  0001111111111              │
+│           │  48 456789012345678 0               │  7890123456789              │
+│           │     ══════CDR3═════                 │  ═════CDR3════              │
+│reference  │  SY ◦◦◦◦◦◦◦◦◦◦◦◦◦◦W Q               │  CGTWD◦◦◦◦◦◦◦◦              │
+│donor ref  │  SY ◦◦◦◦◦◦◦◦◦◦◦◦◦◦W Q               │  CGTWD◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────┼─────────────────────────────┤
+│#  n       │  .x ............... .     u  const  │  .............      u  const│
+│1  3       │  NF CANFGRGGDVAFDIW P    28  IGHG1  │  CGTWDSSLSAWVF    531  IGLC2│
+│2  3       │  NF CANFGRGGDVAFDIW P   294  IGHG2  │  CGTWDSSLSAWVF   4016  IGLC2│
+│3  1       │  NY CANFGRGGDVAFDIW P  2063  IGHG1  │  CGTWDSSLSAWVF  10908  IGLC2│
+│4  1       │  NF CANFGRGGDVAFDIW P     6  IGHG1  │  CGTWDSSLSAWVF      7  ?    │
+└───────────┴─────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 8 CELLS
+┌───────────┬──────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                             │  CHAIN 2                  │
+│           │  159.1.1|IGHV3-7 ◆ 737|IGHJ6         │  341|IGLV2-18 ◆ 309|IGLJ1 │
+│           ├──────────────────────────────────────┼───────────────────────────┤
+│           │   1 1111111111111111111              │  111111111111             │
+│           │   1 1111112222222222333              │  001111111111             │
+│           │  10 4567890123456789012              │  890123456789             │
+│           │     ════════CDR3═══════              │  ════CDR3════             │
+│reference  │  EA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  CSLYT◦◦◦◦◦◦◦             │
+│donor ref  │  EA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  CSLYT◦◦◦◦◦◦◦             │
+├───────────┼──────────────────────────────────────┼───────────────────────────┤
+│#  n       │  .x ...................    u  const  │  ............     u  const│
+│1  6       │  EA CAREYDFANYYYYYGMDVW   90  IGHG1  │  CSLYTSSSTYVF   678  IGLC1│
+│2  1       │  EA CAREYDFANYYYYYGMDVW  140  IGHG1  │  CSLYTSSSTYVF   943  IGLC1│
+│3  1       │                                      │  CSLYTSSSTYVF  2710  IGLC1│
+└───────────┴──────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 8 CELLS
+┌───────────┬──────────────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                                     │  CHAIN 2                  │
+│           │  194.1.1|IGHV4-59 ◆ 737|IGHJ6                │  292|IGKV3D-20 ◆ 217|IGKJ5│
+│           ├──────────────────────────────────────────────┼───────────────────────────┤
+│           │           11 11111111111111111 1             │    11111111111            │
+│           │     45677800 11111112222222222 3             │  7 00111111111            │
+│           │  27899818705 34567890123456789 4             │  3 89012345678            │
+│           │              ═══════CDR3══════               │    ════CDR3═══            │
+│reference  │  HLLSPYYNILA ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW T             │  S CQQ◦◦◦◦◦◦◦◦            │
+│donor ref  │  HLLSPYYNMLA ◦◦◦◦◦◦◦◦◦◦◦◦GMDVW T             │  S CQQ◦◦◦◦◦◦◦◦            │
+├───────────┼──────────────────────────────────────────────┼───────────────────────────┤
+│#  n       │  ........... ................. .   u  const  │  . ...........    u  const│
+│1  6       │  HLLNARTKMLA CAGSGDIQLWYGGMDVW K  19  IGHG1  │  N CQQYDSSQITF  145  IGKC │
+│2  2       │                                              │  N CQQYDSSQITF   91  IGKC │
+└───────────┴──────────────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 7 CELLS
+┌───────────┬─────────────────────────────────────┬────────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                   │
+│           │  79|IGHV1-46 ◆ 737|IGHJ6            │  281|IGKV3-15 ◆ 213|IGKJ1  │
+│           ├─────────────────────────────────────┼────────────────────────────┤
+│           │  11111111111111111111               │  111111111111              │
+│           │  11111122222222223333               │  000111111111              │
+│           │  45678901234567890123               │  789012345678              │
+│           │  ════════CDR3════════               │  ════CDR3════              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────┼────────────────────────────┤
+│#  n       │  ....................     u  const  │  ............      u  const│
+│1  7       │  CARVPYYYDRSYYYYGMDVW  4235  IGHG1  │  CQQYNNWPPWTF  12302  IGKC │
+└───────────┴─────────────────────────────────────┴────────────────────────────┘
+
+CLONOTYPE = 7 CELLS
+┌───────────┬────────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                               │  CHAIN 2                    │
+│           │  146.1.1|IGHV3-53 ◆ 51|IGHJ2           │  279|IGKV3-11 ◆ 215|IGKJ3   │
+│           ├────────────────────────────────────────┼─────────────────────────────┤
+│           │     11111111111111111111               │  1111111111111              │
+│           │  12 11111112222222222333               │  0001111111111              │
+│           │  35 34567890123456789012               │  7890123456789              │
+│           │     ════════CDR3════════               │  ═════CDR3════              │
+│reference  │  ST ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦LW               │  CQQ◦◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  LS ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦LW               │  CQQ◦◦◦◦◦◦◦◦◦◦              │
+├───────────┼────────────────────────────────────────┼─────────────────────────────┤
+│#  n       │  .. ...........x........     u  const  │  .............      u  const│
+│1  5       │  LS CAREGGVGVVTATDWYFDLW  2988  IGHM   │  CQQRSNWPPLFTF  10387  IGKC │
+│2  1       │  LS CAREGGVGVVTTTDWYFDLW  4824  IGHM   │  CQQRSNWPPLFTF  12071  IGKC │
+│3  1       │                                        │  CQQRSNWPPLFTF    108  IGKC │
+└───────────┴────────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬──────────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                                 │  CHAIN 2                  │
+│           │  203|IGHV5-51 ◆ 22|IGHD3-9 ◆ 737|IGHJ6   │  253|IGKV1D-39 ◆ 216|IGKJ4│
+│           ├──────────────────────────────────────────┼───────────────────────────┤
+│           │  1111111111111111111111111               │  11111111111              │
+│           │  1111112222222222333333333               │  01111111111              │
+│           │  4567890123456789012345678               │  90123456789              │
+│           │  ═══════════CDR3══════════               │  ════CDR3═══              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦              │
+├───────────┼──────────────────────────────────────────┼───────────────────────────┤
+│#  n       │  .........................     u  const  │  ...........     u  const │
+│1  6       │  CARLYYDILTGYYAEDYYYYGMDVW  1647  IGHG1  │  CQQSYSTPLTF  3598  IGKC  │
+└───────────┴──────────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬───────────────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                                      │  CHAIN 2                 │
+│           │  106|IGHV3-11 ◆ 20|IGHD3-22 ◆ 737|IGHJ6       │  265|IGKV2-28 ◆ 214|IGKJ2│
+│           ├───────────────────────────────────────────────┼──────────────────────────┤
+│           │       1 11111111111111111111111               │  11111111111             │
+│           │  777791 11111122222222223333333               │  11111111222             │
+│           │  356700 45678901234567890123456               │  23456789012             │
+│           │         ══════════CDR3═════════               │  ════CDR3═══             │
+│reference  │  SYTNRA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CMQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  SYTNRA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CMQ◦◦◦◦◦◦◦◦             │
+├───────────┼───────────────────────────────────────────────┼──────────────────────────┤
+│#  n       │  ...... .......................     u  const  │  ...........     u  const│
+│1  6       │  GTIYRA CARDRIDDSSGYYYAYYYGMDVW  1599  IGHG1  │  CMQALQTPGTF  7256  IGKC │
+└───────────┴───────────────────────────────────────────────┴──────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬──────────────────────────────────────┬──────────────────────────────┐
+│           │  CHAIN 1                             │  CHAIN 2                     │
+│           │  144.1.2|IGHV3-49 ◆ 54|IGHJ4         │  296|IGKV4-1 ◆ 216|IGKJ4     │
+│           ├──────────────────────────────────────┼──────────────────────────────┤
+│           │     1111111111111111111              │      11111111111             │
+│           │  35 1111222222222233333              │  245 11111112222             │
+│           │  15 6789012345678901234              │  233 34567890123             │
+│           │     ════════CDR3═══════              │      ════CDR3═══             │
+│reference  │  QV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  VKN CQQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  QF ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦              │  VKN CQQ◦◦◦◦◦◦◦◦             │
+├───────────┼──────────────────────────────────────┼──────────────────────────────┤
+│#  n       │  .. ...................    u  const  │  ... ...........     u  const│
+│1  5       │  KF CSRVFGNSTYYSSRVGGYW  680  IGHG1  │  ERK CQQYYSTPLTF  7756  IGKC │
+│2  1       │  KF CSRVFGNSTYYSSRVGGYW   14  IGHG1  │                              │
+└───────────┴──────────────────────────────────────┴──────────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬─────────────────────────────────┬──────────────────────────────┐
+│           │  CHAIN 1                        │  CHAIN 2                     │
+│           │  190|IGHV4-39 ◆ 54|IGHJ4        │  386|IGLV7-43 ◆ 311|IGLJ2    │
+│           ├─────────────────────────────────┼──────────────────────────────┤
+│           │      1 111111111111             │     1 111111111111           │
+│           │  55891 222222223333             │  5570 001111111111           │
+│           │  89149 234567890123             │  0925 890123456789           │
+│           │        ════CDR3════             │       ════CDR3════           │
+│reference  │  SYSVV ◦◦◦◦◦◦◦◦◦◦◦◦             │  GKSE CLLY◦◦◦◦◦◦◦◦           │
+│donor ref  │  SYSVV ◦◦◦◦◦◦◦◦◦◦◦◦             │  GKSE CLLY◦◦◦◦◦◦◦◦           │
+├───────────┼─────────────────────────────────┼──────────────────────────────┤
+│#  n       │  xxxxx ............   u  const  │  xxxx .....x....x.   u  const│
+│1  1       │  SNSVV CARHLQWELPYW  17  IGHG1  │  GKNE CLLYYGGANVVF  29  IGLC2│
+│2  1       │  NYTIV CARHLQWELPYW   9  IGHG1  │  SIND CLLYYGGANVVF   7  ?    │
+│3  1       │  NYTIV CARHLQWELPYW   8  IGHG1  │  SIND CLLYYGGANVVF  40  IGLC2│
+│4  1       │  SYSVV CARHLQWELPYW   5  IGHG1  │  GKSD CLLYYSGANVVF  37  IGLC2│
+│5  1       │  SYSVV CARHLQWELPYW   7  IGHG1  │                              │
+│6  1       │  NYTIV CARHLQWELPYW   4  IGHG1  │                              │
+└───────────┴─────────────────────────────────┴──────────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬────────────────────────────────────────────────────┬──────────────────────────────────────────────────┬──────────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                                           │  CHAIN 2                                         │  CHAIN 3                                 │  CHAIN 4                      │
+│           │  740|IGHV4-30-4 ◆ 55|IGHJ4                         │  253|IGKV1D-39 ◆ 215|IGKJ3                       │  253|IGKV1D-39 ◆ 215|IGKJ3               │  253|IGKV1D-39 ◆ 216|IGKJ4    │
+│           ├────────────────────────────────────────────────────┼──────────────────────────────────────────────────┼──────────────────────────────────────────┼───────────────────────────────┤
+│           │                11 11111111111111111 1              │                 11 11111111111 111               │              11111111111 111             │       1 11111111111           │
+│           │  2245777778899901 11111222222222233 4              │  13334445556788900 01111111111 222               │  13334445556 01111111111 222             │  555790 01111111111           │
+│           │  0895013783815614 56789012345678901 1              │  81462891255416724 90123456789 456               │  81462891255 90123456789 456             │  125474 90123456789           │
+│           │                   ═══════CDR3══════                │                    ════CDR3═══                   │              ════CDR3═══                 │         ════CDR3═══           │
+│reference  │  LGSSYIYTYLTVKNK◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ S              │  GSAVIQSSSNPSSSSEF CQQ◦◦◦◦◦◦◦◦ KVD               │  GSAVIQSSSNP CQQ◦◦◦◦◦◦◦◦ KVD             │  SSNSSF CQQ◦◦◦◦◦◦◦◦           │
+│donor ref  │  LGSSYIYTYLTVKNK◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ S              │  GSAVIQSSSNPSSSSEF CQQ◦◦◦◦◦◦◦◦ KVD               │  GSAVIQSSSNP CQQ◦◦◦◦◦◦◦◦ KVD             │  SSNSSF CQQ◦◦◦◦◦◦◦◦           │
+├───────────┼────────────────────────────────────────────────────┼──────────────────────────────────────────────────┼──────────────────────────────────────────┼───────────────────────────────┤
+│#  n       │  .xx.x.xx.xx.xxxx ......x.x........ x    u  const  │  xx..xxxxx.xxxxxxx ........... xxx     u  const  │  ........... ........... ...   u  const  │  ...... ...........   u  const│
+│1  1       │  VRGSYVHSSLTVKNRF CARQQDVYTRSWYFDYW S   82  IGHG1  │  GPAVVRNGINPSSSNEV CQQSYFTPFTF EVH    69  IGKC   │  GPAVVRNGINP CQQSYFTPFTF EVH  27  IGKC   │                               │
+│2  1       │  VGSSFVYTSLSVRHKY CARQQDVYNRSWYFDYW S   54  IGHG1  │  GSAVIQSAMNPTSSSEF CQQSYFTPFTF KVD   425  IGKC   │                                          │  AMNTNL CQQSYSTPLTF  32  IGKC │
+│3  1       │  VRGSYVHSSLTVKNRF CARQQDVYTRSWYFDYW S  386  IGHG1  │  GPAVVRNGINPSSGNEV CQQSYFTPFTF EVH  9556  IGKC   │                                          │                               │
+│4  1       │  VGSSFVYTSLSVRHKY CARQQDVYNRSWYFDYW S   76  IGHG1  │  GSAVIQSAMNPSSSNEL CQQSYFTPFTF KVD   626  IGKC   │                                          │                               │
+│5  1       │  VGSSFVYTSLSVRHKY CARQQDVYNRSWYFDYW S   15  IGHG1  │  GSAVIQSAMNPTSSNEL CQQSYFTPFTF KVD    32  IGKC   │                                          │                               │
+│6  1       │  VRGSYVHSSLTVKNRF CARQQDVYTRSWYFDYW S    4  IGHG1  │                                                  │                                          │                               │
+└───────────┴────────────────────────────────────────────────────┴──────────────────────────────────────────────────┴──────────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬───────────────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                                      │  CHAIN 2                 │
+│           │  67.1.1|IGHV1-2 ◆ 55|IGHJ4                    │  283|IGKV3-20 ◆ 213|IGKJ1│
+│           ├───────────────────────────────────────────────┼──────────────────────────┤
+│           │            11 11111111111111111               │     1111111              │
+│           │  123388999911 11111122222222223               │  57 0011111              │
+│           │  820615245813 45678901234567890               │  41 8901234              │
+│           │               ═══════CDR3══════               │     ══CDR3═              │
+│reference  │  SLKVKWTISYV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  AA CQQ◦◦◦◦              │
+│donor ref  │  SLKVKRTISYV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  AA CQQ◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────┼──────────────────────────┤
+│#  n       │  xxxxx.xxxxxx .........x.x.....     u  const  │  xx .......      u  const│
+│1  2       │  SLKVKRTISYVY CAREVEQWLERNTLDYW   531  IGHG1  │  AA CQQPWTF   1226  IGKC │
+│2  1       │  SLKVKRTISYVF CAREVEQWLVRDTLDYW  5529  IGHG1  │  TA CQQPWTF  11854  IGKC │
+│3  1       │  CLEVKRTISYVY CAREVEQWLERNTLDYW  4976  IGHG1  │  AA CQQPWTF  16146  IGKC │
+│4  1       │  SLKVKRTITYVY CAREVEQWLERNTLDYW  4715  IGHG1  │  AT CQQPWTF  16479  IGKC │
+│5  1       │  SLKVKRTFSYVY CAREVEQWLERNTLDYW   791  IGHG1  │  AA CQQPWTF   1569  IGKC │
+└───────────┴───────────────────────────────────────────────┴──────────────────────────┘
+
+CLONOTYPE = 6 CELLS
+┌───────────┬──────────────────────────────┬────────────────────────────┐
+│           │  CHAIN 1                     │  CHAIN 2                   │
+│           │  88|IGHV1-69D ◆ 55|IGHJ4     │  381|IGLV5-45 ◆ 311|IGLJ2  │
+│           ├──────────────────────────────┼────────────────────────────┤
+│           │    1111111111111             │    11111111111             │
+│           │  7 1111112222222             │  2 11111122222             │
+│           │  1 4567890123456             │  6 45678901234             │
+│           │    ═════CDR3════             │    ════CDR3═══             │
+│reference  │  P ◦◦◦◦◦◦◦◦◦◦◦◦◦             │  S CMIW◦◦◦◦◦◦◦             │
+│donor ref  │  P ◦◦◦◦◦◦◦◦◦◦◦◦◦             │  S CMIW◦◦◦◦◦◦◦             │
+├───────────┼──────────────────────────────┼────────────────────────────┤
+│#  n       │  x .............   u  const  │  . ...........     u  const│
+│1  3       │  P CGWGYYYEPFDYW  43  IGHG1  │  A CMIWHSSASVF  1956  IGLC2│
+│2  3       │  P CGWGYYYEPFDYW  44  IGHG1  │  A CMIWHSSASVF   637  IGLC2│
+└───────────┴──────────────────────────────┴────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬──────────────────────────────────────────┬────────────────────────────┐
+│           │  CHAIN 1                                 │  CHAIN 2                   │
+│           │  122.1.2|IGHV3-23 ◆ 737|IGHJ6            │  265|IGKV2-28 ◆ 214|IGKJ2  │
+│           ├──────────────────────────────────────────┼────────────────────────────┤
+│           │     11111111111111111111111              │     11111111111            │
+│           │  27 11111122222222223333333              │  67 11111111222            │
+│           │  35 45678901234567890123456              │  45 23456789012            │
+│           │     ══════════CDR3═════════              │     ════CDR3═══            │
+│reference  │  VS ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  PG CMQ◦◦◦◦◦◦◦◦            │
+│donor ref  │  LS ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW              │  PG CMQ◦◦◦◦◦◦◦◦            │
+├───────────┼──────────────────────────────────────────┼────────────────────────────┤
+│#  n       │  .. .......................    u  const  │  .. ...........    u  const│
+│1  5       │  LN CAKDKVPRRSSWSVFDYYGMDVW  138  IGHG1  │  PA CMQALQTPYSF  397  IGKC │
+└───────────┴──────────────────────────────────────────┴────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬───────────────────────────────────────────┬──────────────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                         │
+│           │  88|IGHV1-69D ◆ 737|IGHJ6                 │  283|IGKV3-20 ◆ 215|IGKJ3        │
+│           ├───────────────────────────────────────────┼──────────────────────────────────┤
+│           │       111111111111111111111               │       11111111111 1              │
+│           │  7789 111111222222222233333               │  1125 00111111111 2              │
+│           │  1612 456789012345678901234               │  6740 89012345678 3              │
+│           │       ═════════CDR3════════               │       ════CDR3═══                │
+│reference  │  PAKE ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  DTTS CQQ◦◦◦◦◦◦◦◦ K              │
+│donor ref  │  PAKE ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  DTTS CQQ◦◦◦◦◦◦◦◦ K              │
+├───────────┼───────────────────────────────────────────┼──────────────────────────────────┤
+│#  n       │  xxxx .....................     u  const  │  ...x ........... .      u  const│
+│1  2       │  PAKE CAVTIFGVRTALPYYYALDVW  2678  IGHG1  │  EIAG CQQYGSSPFTF R  15544  IGKC │
+│2  1       │  PAKK CAVTIFGVRTALPYYYALDVW  1015  IGHG1  │  EIAG CQQYGSSPFTF R  12946  IGKC │
+│3  1       │  PAKE CAVTIFGVRTALPYYYALDVW   359  IGHG1  │  EIAS CQQYGSSPFTF R   1162  IGKC │
+│4  1       │  LTEK CAVTIFGVRTALPYYYALDVW    60  IGHG1  │  EIAG CQQYGSSPFTF R    827  IGKC │
+└───────────┴───────────────────────────────────────────┴──────────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬───────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                              │  CHAIN 2                    │
+│           │  98|IGHV2-5 ◆ 57|IGHJ5                │  349|IGLV3-1 ◆ 311|IGLJ2    │
+│           ├───────────────────────────────────────┼─────────────────────────────┤
+│           │    11111111111111111111               │    11111111111              │
+│           │  8 11111222222222233333               │  6 00000111111              │
+│           │  5 56789012345678901234               │  2 56789012345              │
+│           │    ════════CDR3════════               │    ════CDR3═══              │
+│reference  │  S ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  V CQAWD◦◦◦◦◦◦              │
+│donor ref  │  S ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W               │  V CQAWD◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────┼─────────────────────────────┤
+│#  n       │  x ....................     u  const  │  . ...........      u  const│
+│1  3       │  S CALMGTYCSGDNCYSWFDPW   592  IGHM   │  V CQAWDSSVVVF   2995  IGLC2│
+│2  1       │  S CALMGTYCSGDNCYSWFDPW  6218  IGHG1  │  V CQAWDSSVVVF  15182  IGLC2│
+│3  1       │  T CALMGTYCSGDNCYSWFDPW  4033  IGHG1  │  V CQAWDSSVVVF   6777  IGLC2│
+└───────────┴───────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬──────────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                                 │  CHAIN 2                      │
+│           │  124|IGHV3-30 ◆ 55|IGHJ4                 │  253|IGKV1D-39 ◆ 216|IGKJ4    │
+│           ├──────────────────────────────────────────┼───────────────────────────────┤
+│           │        1111111111111111111               │      11111111111              │
+│           │  45677 1111112222222222333               │  458 01111111111              │
+│           │  91859 4567890123456789012               │  926 90123456789              │
+│           │        ════════CDR3═══════               │      ════CDR3═══              │
+│reference  │  SGVNA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  SSS CQQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  SGVNA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  SSS CQQ◦◦◦◦◦◦◦◦              │
+├───────────┼──────────────────────────────────────────┼───────────────────────────────┤
+│#  n       │  .x... ...................     u  const  │  ..x ...........      u  const│
+│1  2       │  IGISV CAKDLVAVAGSGGERFDYW  1712  IGHG1  │  TTT CQQSSSTPLTF  17200  IGKC │
+│2  2       │  IGISV CAKDLVAVAGSGGERFDYW   292  IGHG1  │  TTS CQQSSSTPLTF    726  IGKC │
+│3  1       │  IAISV CAKDLVAVAGSGGERFDYW    79  IGHG1  │  TTT CQQSSSTPLTF    252  IGKC │
+└───────────┴──────────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬─────────────────────────────────────────────┬────────────────────────────────┐
+│           │  CHAIN 1                                    │  CHAIN 2                       │
+│           │  122.1.2|IGHV3-23 ◆ 13|IGHD2-15 ◆ 53|IGHJ3  │  283|IGKV3-20 ◆ 213|IGKJ1      │
+│           ├─────────────────────────────────────────────┼────────────────────────────────┤
+│           │         1111111111111111111                 │        11111111111             │
+│           │  122446 1111112222222222333                 │  13667 00111111111             │
+│           │  513598 4567890123456789012                 │  96793 89012345678             │
+│           │         ════════CDR3═══════                 │        ════CDR3═══             │
+│reference  │  GQVFSA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W                 │  GELYS CQQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  GQLFSA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W                 │  GELYS CQQ◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────────────┼────────────────────────────────┤
+│#  n       │  ...... ...................    u  const     │  .xxxx ...........     u  const│
+│1  2       │  VRLLNT CAKDPYCSGGSCLHAFDIW  343  IGHG1     │  GELYS CQQYGSSPETF  2812  IGKC │
+│2  2       │  VRLLNT CAKDPYCSGGSCLHAFDIW  172  IGHG1     │  GDLYS CQQYGSSPETF   250  IGKC │
+│3  1       │  VRLLNT CAKDPYCSGGSCLHAFDIW   27  IGHG1     │  GDINT CQQYGSSPETF   150  IGKC │
+└───────────┴─────────────────────────────────────────────┴────────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬─────────────────────────────────────────┬──────────────────────────────┐
+│           │  CHAIN 1                                │  CHAIN 2                     │
+│           │  740.1.1|IGHV4-30-4 ◆ 737|IGHJ6         │  279|IGKV3-11 ◆ 215|IGKJ3    │
+│           ├─────────────────────────────────────────┼──────────────────────────────┤
+│           │      1 111111111111111111               │       111111111              │
+│           │  25690 111112222222222333               │  1377 000111111              │
+│           │  01048 567890123456789012               │  7412 789012345              │
+│           │        ═══════CDR3═══════               │       ═══CDR3══              │
+│reference  │  LDPSA ◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  TPSN CQQ◦◦◦◦◦◦              │
+│donor ref  │  VGHSA ◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  TPSN CQQ◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────────┼──────────────────────────────┤
+│#  n       │  ..... ..................     u  const  │  ..xx .........      u  const│
+│1  3       │  VGHSA CARQGRAGNYYYYGMDVW  1524  IGHG1  │  APYN CQHRSNWPF  15177  IGKC │
+│2  2       │  VGHSA CARQGRAGNYYYYGMDVW   444  IGHG1  │  APSN CQHRSNWPF   3371  IGKC │
+└───────────┴─────────────────────────────────────────┴──────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬─────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                        │  CHAIN 2                  │
+│           │  85|IGHV1-69 ◆ 737|IGHJ6        │  273|IGKV2D-28 ◆ 214|IGKJ2│
+│           ├─────────────────────────────────┼───────────────────────────┤
+│           │  1111111111111111               │  11111111111              │
+│           │  1111112222222222               │  11111111222              │
+│           │  4567890123456789               │  23456789012              │
+│           │  ══════CDR3══════               │  ════CDR3═══              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CMQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CMQ◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────┼───────────────────────────┤
+│#  n       │  ................     u  const  │  ...........     u  const │
+│1  5       │  CARAGNSGYGQTMDVW  1860  IGHM   │  CMQALQTPSTF  4672  IGKC  │
+└───────────┴─────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬───────────────────────────────────────────┬─────────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                    │
+│           │  122.1.2|IGHV3-23 ◆ 55|IGHJ4              │  267|IGKV2-30 ◆ 213|IGKJ1   │
+│           ├───────────────────────────────────────────┼─────────────────────────────┤
+│           │            1111 11111111111               │     11111111111             │
+│           │  25677799990011 11111122222               │  79 11111111222             │
+│           │  33815656790612 45678901234               │  43 23456789012             │
+│           │                 ════CDR3═══               │     ════CDR3═══             │
+│reference  │  VSAGSTNTLLQAV◦ ◦◦◦◦◦◦◦◦◦◦◦               │  KT CMQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  LSAGSTNTLLQAV◦ ◦◦◦◦◦◦◦◦◦◦◦               │  KT CMQ◦◦◦◦◦◦◦◦             │
+├───────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│#  n       │  ......xxx..... ...........     u  const  │  .. ...........     u  const│
+│1  4       │  LSSASRSTLLQVVF CAKGRSSLDYW  1953  IGHG1  │  MS CMQGTHWPQTF  9526  IGKC │
+│2  1       │  LSSASRSMLLQVVF CAKGRSSLDYW  2553  IGHG1  │  MS CMQGTHWPQTF  8589  IGKC │
+└───────────┴───────────────────────────────────────────┴─────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬─────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                            │  CHAIN 2                      │
+│           │  126|IGHV3-33 ◆ 737|IGHJ6           │  339|IGLV2-14 ◆ 311|IGLJ2     │
+│           ├─────────────────────────────────────┼───────────────────────────────┤
+│           │       1 11111111111111              │      111111111111             │
+│           │  467790 11111122222222              │  567 001111111111             │
+│           │  445742 45678901234567              │  106 890123456789             │
+│           │         ═════CDR3═════              │      ════CDR3════             │
+│reference  │  GENYKN ◦◦◦◦◦◦◦◦◦GMDVW              │  NPS CSSYTSS◦◦◦◦◦             │
+│donor ref  │  GENYKN ◦◦◦◦◦◦◦◦◦GMDVW              │  NPS CSSYTSS◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼───────────────────────────────┤
+│#  n       │  ...... ..............    u  const  │  ... ............     u  const│
+│1  4       │  EEEYNS CARESAVAGDMDVW  212  IGHG1  │  DPS CSSHTSSSTVIF  3378  IGLC2│
+│2  1       │                                     │  DPS CSSHTSSSTVIF    13  IGLC2│
+└───────────┴─────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬────────────────────────────────────────────────────────┬─────────────────────────────────┐
+│           │  CHAIN 1                                               │  CHAIN 2                        │
+│           │  86|IGHV1-69-2 ◆ 55|IGHJ4                              │  337|IGLV2-11 ◆ 311|IGLJ2       │
+│           ├────────────────────────────────────────────────────────┼─────────────────────────────────┤
+│           │                    11 111111111111111111               │        111111111111             │
+│           │  22334455666777788801 111111222222222233               │  44566 001111111111             │
+│           │  13481202247235618951 456789012345678901               │  19136 890123456789             │
+│           │                       ═══════CDR3═══════               │        ════CDR3════             │
+│reference  │  QVAIKVYMGEGEDETKITRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  TGNAL CCSYAG◦◦◦◦◦◦             │
+│donor ref  │  QVAIKVYMGEGEDETKITRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  TGNAL CCSYAG◦◦◦◦◦◦             │
+├───────────┼────────────────────────────────────────────────────────┼─────────────────────────────────┤
+│#  n       │  xxxxxxxxxxxx.xxx.xxx ..........xx......     u  const  │  xxxx. ......x...x.     u  const│
+│1  1       │  QVAIKVYMGEGEAETKLTRV CATLRGSSWYGDYYFHYW  1798  IGHG1  │  TGNAV CCSYAGSYTLVF  6010  IGLC2│
+│2  1       │  QVTVKISIGEGEAQTKLIRV CATLRGSSWYGDYYFHYW  1727  IGHG1  │  TGNVV CCSYAGSYTLVF  8252  IGLC2│
+│3  1       │  QVAVRVYMGQGAAETRLTKV CATLRGSSWYGEYYFHYW    15  IGHG1  │  TSNVV CCSYAGSYTLVF   133  IGLC2│
+│4  1       │                                                        │  TGNVV CCSYAGSYTLVF     7  IGLC2│
+│5  1       │                                                        │  TGNAV CCSYAGSYTLVF     5  IGLC2│
+└───────────┴────────────────────────────────────────────────────────┴─────────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬───────────────────────────────────────────────────────┬───────────────────────────────────────────┐
+│           │  CHAIN 1                                              │  CHAIN 2                                  │
+│           │  85|IGHV1-69 ◆ 737|IGHJ6                              │  227|IGKV1-33 ◆ 214|IGKJ2                 │
+│           ├───────────────────────────────────────────────────────┼───────────────────────────────────────────┤
+│           │           1111 111111111111111111111 11               │            111 11111111111 1              │
+│           │  4577778990001 111111222222222233333 34               │  5567777899000 01111111111 2              │
+│           │  5124677261241 456789012345678901234 94               │  3814578968246 90123456789 6              │
+│           │                ═════════CDR3════════                  │                ════CDR3═══                │
+│reference  │  GAIGANTKTLSLV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW TS               │  YQPNLTGGISEIT CQQ◦◦◦◦◦◦◦◦ E              │
+│donor ref  │  GAIGANTKTLSLV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW TS               │  YQPNLTGGISEIT CQQ◦◦◦◦◦◦◦◦ E              │
+├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────────────────┤
+│#  n       │  xx........... ..................... ..     u  const  │  ............. ........... .      u  const│
+│1  3       │  DSVGPNTQILNLV CARAQRHDFWGGYYHYGMDVW TS    93  IGHG1  │  HQPNLAGGVGGVT CQQYDNLPHTF G    502  IGKC │
+│2  1       │  GAVGPNTQILNLV CARAQRHDFWGGYYHYGMDVW TS  3328  IGHG1  │  HQPNLAGGVGGVT CQQYDNLPHTF G  17713  IGKC │
+│3  1       │                                                       │  HQPNLAGGVGGVT CQQYDNLPHTF G   3209  IGKC │
+└───────────┴───────────────────────────────────────────────────────┴───────────────────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬───────────────────────────────────────────┬───────────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                      │
+│           │  124|IGHV3-30 ◆ 737|IGHJ6                 │  219|IGKV1-12 ◆ 216|IGKJ4     │
+│           ├───────────────────────────────────────────┼───────────────────────────────┤
+│           │     1 111111111111111111111               │      11111111111              │
+│           │   770 111111222222222233333               │  779 01111111111              │
+│           │  2366 456789012345678901234               │  028 90123456789              │
+│           │       ═════════CDR3════════               │      ════CDR3═══              │
+│reference  │  FGKA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  YAS CQQ◦◦◦◦◦◦◦◦              │
+│donor ref  │  FGKA ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  YAS CQQ◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────┼───────────────────────────────┤
+│#  n       │  xxxx .....................     u  const  │  xxx ....x......      u  const│
+│1  2       │  FGKA CAKTRLSGDYVGDYYYGMDVW  1302  IGHG1  │  YAS CQQANSFPLTF  14847  IGKC │
+│2  1       │  SGNA CAKTRLSGDYVGDYYYGMDVW   464  IGHG1  │  YAR CQQANSFPLTF  16188  IGKC │
+│3  1       │  FGKG CAKTRLSGDYVGDYYYGMDVW    13  IGHG1  │  SAS CQQAHSFPLTF     43  IGKC │
+│4  1       │                                           │  SAS CQQAHSFPLTF     15  IGKC │
+└───────────┴───────────────────────────────────────────┴───────────────────────────────┘
+
+CLONOTYPE = 5 CELLS
+┌───────────┬────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                           │  CHAIN 2                 │
+│           │  120|IGHV3-21 ◆ 53|IGHJ3           │  279|IGKV3-11 ◆ 217|IGKJ5│
+│           ├────────────────────────────────────┼──────────────────────────┤
+│           │     111111111111111111             │  11111111111             │
+│           │  23 111111222222222233             │  00011111111             │
+│           │  22 456789012345678901             │  78901234567             │
+│           │     ═══════CDR3═══════             │  ════CDR3═══             │
+│reference  │  LP ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  CQQ◦◦◦◦◦◦◦◦             │
+│donor ref  │  LP ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W             │  CQQ◦◦◦◦◦◦◦◦             │
+├───────────┼────────────────────────────────────┼──────────────────────────┤
+│#  n       │  .. ..................   u  const  │  ...........   u  const  │
+│1  4       │  LT CARPPAMSGYNRDAFDIW  21  IGHG1  │  CQQRSNWPLTF  20  IGKC   │
+│2  1       │                                    │  CQQRSNWPLTF  40  IGKC   │
+└───────────┴────────────────────────────────────┴──────────────────────────┘
+
+CLONOTYPE = 4 CELLS
+┌───────────┬─────────────────────────────────────────────────────────────┬───────────────────────────────────┐
+│           │  CHAIN 1                                                    │  CHAIN 2                          │
+│           │  190.1.1|IGHV4-39 ◆ 737|IGHJ6                               │  281|IGKV3-15 ◆ 216|IGKJ4         │
+│           ├─────────────────────────────────────────────────────────────┼───────────────────────────────────┤
+│           │                  1111111 11111111111111111111               │           1111111111              │
+│           │  12255577778889990000112 22222222333333333344               │  44567777 0001111111              │
+│           │  67905807890671784689091 23456789012345678901               │  79590569 7890123456              │
+│           │                          ════════CDR3════════               │           ═══CDR3═══              │
+│reference  │  LLLSSSKSIYYYNKSVQSKLSV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  SSYGATGA CQQ◦◦◦◦◦◦◦              │
+│donor ref  │  VLLSSSKSIYYYNKSVQSKLSV◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  SSYGATGA CQQ◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────────────────────────────┼───────────────────────────────────┤
+│#  n       │  .xx...xxx.xxxxx.x.xxxxx ...........xx.......     u  const  │  xxxxxxxx ..x.x.....      u  const│
+│1  1       │  VLVSRNKTVYSSNTSLQSKLRRY CEIMLYNSSGSDYYYDMDVW  4951  IGHG1  │  NSLGATGA CQQYNNWVTF  15982  IGKC │
+│2  1       │  VLLSRNRSIYYYSKSLQSNLTVY CEIMLYNSSGSDYYYDMDVW   102  IGHG1  │  SSYSATGT CQQYNNWVTF    230  IGKC │
+│3  1       │  VLVSRNKTVYSSNTSLQSKLRRY CEIMLYNSSGSDYYYDMDVW    20  IGHG1  │  NSLSATGT CQQYNNWVTF    123  IGKC │
+│4  1       │  VLLSRNKSIYYYNKSLHSRLSVF CEIMLYNSSGSDYYYDMDVW     9  IGHG1  │  SSYSATGT CQQYSNWVTF     15  IGKC │
+└───────────┴─────────────────────────────────────────────────────────────┴───────────────────────────────────┘
+
+CLONOTYPE = 4 CELLS
+┌───────────┬─────────────────────────────────────────┬───────────────────────────┐
+│           │  CHAIN 1                                │  CHAIN 2                  │
+│           │  120|IGHV3-21 ◆ 16|IGHD2-8 ◆ 737|IGHJ6  │  225|IGKV1-27 ◆ 216|IGKJ4 │
+│           ├─────────────────────────────────────────┼───────────────────────────┤
+│           │  111111111111111111111111               │  11111111111              │
+│           │  111111222222222233333333               │  01111111111              │
+│           │  456789012345678901234567               │  90123456789              │
+│           │  ══════════CDR3══════════               │  ════CDR3═══              │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQK◦◦◦◦◦◦◦◦              │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQK◦◦◦◦◦◦◦◦              │
+├───────────┼─────────────────────────────────────────┼───────────────────────────┤
+│#  n       │  ........................     u  const  │  ...........      u  const│
+│1  4       │  CARDPEDIVLMVYAMGGNYGMDVW  1640  IGHG1  │  CQKYNSAPRTF  11655  IGKC │
+└───────────┴─────────────────────────────────────────┴───────────────────────────┘
+
+CLONOTYPE = 4 CELLS
+┌───────────┬──────────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                                 │  CHAIN 2                 │
+│           │  116|IGHV3-20 ◆ 32|IGHD6-13 ◆ 737|IGHJ6  │  279|IGKV3-11 ◆ 216|IGKJ4│
+│           ├──────────────────────────────────────────┼──────────────────────────┤
+│           │    11111111111111111111111               │  111111111111            │
+│           │  4 11111122222222223333333               │  000111111111            │
+│           │  0 45678901234567890123456               │  789012345678            │
+│           │    ══════════CDR3═════════               │  ════CDR3════            │
+│reference  │  F ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦◦            │
+│donor ref  │  F ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦GMDVW               │  CQQ◦◦◦◦◦◦◦◦◦            │
+├───────────┼──────────────────────────────────────────┼──────────────────────────┤
+│#  n       │  . .......................   u  const    │  ............    u  const│
+│1  4       │  C CARVLSGRIAAAGTYYYYGMDVW  66  IGHG1    │  CQQRSNWPPLTF  257  IGKC │
+└───────────┴──────────────────────────────────────────┴──────────────────────────┘
+
+CLONOTYPE = 4 CELLS
+┌───────────┬───────────────────────────────────────────┬──────────────────────────┐
+│           │  CHAIN 1                                  │  CHAIN 2                 │
+│           │  67.1.1|IGHV1-2 ◆ 20|IGHD3-22 ◆ 53|IGHJ3  │  219|IGKV1-12 ◆ 216|IGKJ4│
+│           ├───────────────────────────────────────────┼──────────────────────────┤
+│           │    1111111111111111111111                 │  1111111                 │
+│           │  8 1111112222222222333333                 │  0111111                 │
+│           │  5 4567890123456789012345                 │  9012345                 │
+│           │    ═════════CDR3═════════                 │  ══CDR3═                 │
+│reference  │  W ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W                 │  CQQ◦◦◦◦                 │
+│donor ref  │  R ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦W                 │  CQQ◦◦◦◦                 │
+├───────────┼───────────────────────────────────────────┼──────────────────────────┤
+│#  n       │  . ......................     u  const    │  .......      u  const   │
+│1  4       │  R CAREMPDYYDSSGYSRDAFDIW  3252  IGHG1    │  CQQGVTF  12045  IGKC    │
+└───────────┴───────────────────────────────────────────┴──────────────────────────┘

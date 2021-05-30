@@ -1,0 +1,18 @@
+This doesn't actually crash.  To get an actual crash, checkout this
+
+commit a013f21b672c22004e3c555b1845fe29b1790d6d
+Author: David Jaffe <david.jaffe@10xgenomics.com>
+Date:   Sun May 30 06:41:48 2021 -0700
+revert a diff
+
+and start up enclone COM=... .
+
+Then enter "d", and start scrolling in the clonotype tables.  After about two minutes,
+it seg faults, with thirty threads running.
+
+This was fixed, after a fashion, with
+
+commit b9b7e5e93a99e9da17537c46d9f2fdece9e2ebd1 (HEAD -> dj/162, origin/dj/162)
+Author: David Jaffe <david.jaffe@10xgenomics.com>
+Date:   Sun May 30 07:37:31 2021 -0700
+bug workaround

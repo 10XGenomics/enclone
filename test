@@ -7,7 +7,7 @@
 # also does some tidying and reports time used.  Note that the effect of cargo t is defined 
 # by .cargo/config.
 #
-# If you want to run this over and over to look for sporadic failures, use ./testtest.
+# If you want to run this over and over to look for sporadic failures, use ./scripts/testtest.
 #
 # To run just one test,
 # cargo t <testname>
@@ -94,7 +94,7 @@ set elapsed = `expr $end - $start`
 
 ##### FAIL IF TOO MUCH TIME USED #####
 
-set expected = 137
+set expected = 171
 set fudge_num = 11
 set fudge_den = 10
 set expected_plus_times = `expr $expected \* $fudge_num`

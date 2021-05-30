@@ -8,7 +8,7 @@
 //
 // 2.  Need a regression test.
 //
-// 3.  Doesn't properly handle connection refused.
+// 3.  Trim features and duplicated crates; reduce binary size.
 //
 // 4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
 //
@@ -30,7 +30,16 @@
 //
 // 12. Need auto-update for binary (at least for Mac).
 //
-// 13. Trim features and duplicated crates; reduce binary size.
+// 13. Clonotype printouts need to show not just the pictures, but also the group info
+//     and any additional stuff like trees.
+//
+// 14. Improve data shown for tooltip.
+//
+// 15. Refactor to keep tokio etc. out of cellranger.
+//
+// 16. Make sure the rare case where the port is already in use is correctly handled.
+//
+// 17. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
 //
 // WAITING ON ICED
 //
@@ -46,12 +55,28 @@
 // 4.  Place the scrollbar on the left side of the scrollable window.
 //     Asked on zulip chat if this is possible.
 //
+// 5.  Make the TextInput gracefully handle long inputs.
+//     This is https://github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
+//
+// 6.  Flaky behavior scrolling large texts.
+//     Issue filed: https://github.com/hecrj/iced/issues/897.
+//
 // NICE TO HAVE
 //
-// 1.  Make font a little darker.
+// 1.  Add font size slider for clonotype tables.
 //
 // 2.  Can carriage return be used instead of pushing a button?
-
+//
+// 3.  Bold some text on the help page.
+//     Probably not possible at this time, could ask on zulip chat.
+//
+// 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
+//
+// 5.  Enable plotting after initially starting GUI.
+//
+// 6.  Put plots in a scrollable window.
+//
+// 7.  Add scale slider for plots.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -101,7 +126,7 @@ use string_utils::*;
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
-    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -120,6 +145,7 @@ static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 static DONE: AtomicBool = AtomicBool::new(false);
 
 lazy_static! {
+    static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -217,17 +243,22 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
-    unsafe {
-        atexit(exit_handler);
-    }
+
+    // Set enclone visual version.
+
+    let version = "0.0000000000000000000000000000001";
+    VERSION.lock().unwrap().push(version.to_string());
 
     // Announce.
 
+    let version_float = format!("1e-{}", -version.force_f64().log10());
     if !verbose {
         println!(
-            "\nHi! You are using the experimental enclone GUI client.  If you get an error \
-            message or a\nGUI window does not pop up, please rerun the command with the added \
-            argument VERBOSE,\nand then ask for help."
+            "\nHi! You are using enclone visual {} = {}.\n\n\
+            If you get an error \
+            message or a window does not pop up, and it's not clear what to do,\nplease \
+            rerun the command with the added argument VERBOSE, and then ask for help.",
+            version, version_float,
         );
     }
 
@@ -279,6 +310,63 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
 
+    // Determine if the server is remote.
+
+    let remote = config.contains_key("REMOTE_HOST")
+        || config.contains_key("REMOTE_IP")
+        || config.contains_key("REMOTE_BIN");
+    if remote {
+        if !config.contains_key("REMOTE_HOST")
+            || !config.contains_key("REMOTE_IP")
+            || !config.contains_key("REMOTE_BIN")
+        {
+            eprintln!(
+                "\nTo use a remote host, please specify all of REMOTE_HOST, \
+                REMOTE_IP, and REMOTE_BIN.\n"
+            );
+            eprintln!("Here is what is specified:");
+            for (key, value) in config.iter() {
+                eprintln!("{}={}", key, value);
+            }
+            std::process::exit(1);
+        } else {
+            REMOTE.store(true, SeqCst);
+        }
+    }
+
+    // If server is remote, see if we can ssh to it.  Otherwise, busted.
+
+    if remote {
+        let t = Instant::now();
+        let host = config["REMOTE_HOST"].clone();
+        let o = Command::new("ssh")
+            .arg(&host)
+            .arg("-n")
+            .arg("echo")
+            .output()
+            .expect("failed to execute initial ssh");
+        println!("\ninitial test ssh took {:.1} seconds", elapsed(&t));
+        if o.status.code() != Some(0) {
+            let m = String::from_utf8(o.stderr).unwrap();
+            println!("\ntest ssh failed with error message =\n{}", m);
+            println!(
+                "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
+                host
+            );
+            println!("Here are two possible explanations:");
+            println!("1. You have the wrong REMOTE_HOST.");
+            println!("2. You first need to do something to enable crossing a firewall.");
+            println!("   If so, ask one of your colleagues how to do this.\n");
+            std::process::exit(1);
+        }
+    }
+
+    // Set exit handler to force cleanup at end of process.
+
+    unsafe {
+        atexit(exit_handler);
+    }
+
     // Loop through random ports until we get one that works.
 
     loop {
@@ -297,36 +385,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         // Attempt to fork the server.
 
-        let mut remote = false;
         let server_process;
         let mut local_host = "127.0.0.1".to_string();
-        if config.contains_key("REMOTE_HOST")
-            || config.contains_key("REMOTE_IP")
-            || config.contains_key("REMOTE_BIN")
-        {
-            if !config.contains_key("REMOTE_HOST")
-                || !config.contains_key("REMOTE_IP")
-                || !config.contains_key("REMOTE_BIN")
-            {
-                eprintln!(
-                    "\nTo use a remote host, please specify all of REMOTE_HOST, \
-                    REMOTE_IP, and REMOTE_BIN.\n"
-                );
-                eprintln!("Here is what is specified:");
-                for (key, value) in config.iter() {
-                    eprintln!("{}={}", key, value);
-                }
-                std::process::exit(1);
-            }
-            remote = true;
-            REMOTE.store(true, SeqCst);
-        }
-        if config.contains_key("REMOTE_SETUP") {
-            if !remote {
-                eprintln!("\nYou specified REMOTE_SETUP but not REMOTE_HOST.\n");
-                std::process::exit(1);
-            }
-        }
         println!("\ntrying random port {}", port);
         if remote {
             let host = config["REMOTE_HOST"].clone();
@@ -422,6 +482,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         }
 
+        // Form local URL.
+
+        let url = format!("http://{}:{}", local_host, port);
+
         // Fork remote setup command if needed.
 
         if config.contains_key("REMOTE_SETUP") {
@@ -457,20 +521,28 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             thread::sleep(Duration::from_millis(1000));
         }
 
-        // Form local URL.
-
-        let url = format!("http://{}:{}", local_host, port);
-
         // Connect to client.
 
         if verbose {
             println!("connecting to {}", url);
         }
-        let client = AnalyzerClient::connect(url).await;
+        let mut client = AnalyzerClient::connect(url.clone()).await;
         if client.is_err() {
-            eprintln!("\nconnection failed with error\n{:?}\n", client);
-            cleanup();
-            std::process::exit(1);
+            // If connection failed, sleep and try again.  This happens maybe 10% of the time.
+
+            println!("connection attempt failed, waiting one second and will try again");
+            thread::sleep(Duration::from_millis(1000));
+            client = AnalyzerClient::connect(url).await;
+
+            // Test for second failure.
+
+            if client.is_err() {
+                eprintln!("\nconnection failed with error\n{:?}\n", client);
+                cleanup();
+                std::process::exit(1);
+            } else {
+                println!("excellent, it's OK now");
+            }
         }
         println!("connected");
         println!("time since startup = {:.1} seconds\n", elapsed(&t));
@@ -493,7 +565,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         cleanup();
                         std::process::exit(0);
                     }
-                    if line == "d" {
+                    if line.before(" ") == "d" {
                         line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
@@ -647,7 +719,7 @@ impl Sandbox for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .size(20);
+        .size(14);
 
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
@@ -662,10 +734,14 @@ impl Sandbox for EncloneVisual {
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
         // Display the SVG.
+        //
+        // WARNING!  When we changed the width and height to 400, the performance of scolling
+        // in the clonotype table window gradually degraded, becoming less and less responsive.
+        // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(400))
-            .height(Units(400));
+            .width(Units(300))
+            .height(Units(300));
 
         let content = Column::new()
             .spacing(20)
@@ -676,7 +752,7 @@ impl Sandbox for EncloneVisual {
             ))
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
-            .push(Rule::horizontal(10))
+            .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
@@ -708,25 +784,31 @@ impl Sandbox for EncloneVisual {
 
         let style = Gerbil;
 
+        let version = VERSION.lock().unwrap()[0].clone();
+        let version_float = format!("1e-{}", -version.force_f64().log10());
         Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
                 Text::new(""),
-                Text::new(
-                    "Welcome to enclone visual 0.000...0001!\n\n\
-                        To use it, type in the box \
-                       (see below)\nand then push the Submit button.  Here are the things \
-                       that you can type:\n\n\
-                        • an enclone command, without the enclone part\n\
-                        • an clonotype id (number)\n\
-                        • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                        • q to quit\n\n\
-                     \n\
+                Text::new(&format!(
+                    "Welcome to enclone visual {} = {}!\n\n\
+                     Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
+                     To use enclone visual, type in the box \
+                     (see below)\nand then push the Submit button.  Here are the things \
+                     that you can type:\n\n\
+                     • an enclone command, without the enclone part\n\
+                     • an clonotype id (number)\n\
+                     • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                     • q to quit\n\n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
                      2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.",
-                )
-                .height(Units(400))
+                     3. Cutting and pasting from clonotype tables doesn't work.\n\
+                     4. Long commands are hard to work with in the input box.\n\
+                     5. Very wide clonotype tables wrap, making them unintelligible, and \
+                     only solvable by window resizing, and sometimes not that.",
+                    version, version_float,
+                ))
+                .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style)
@@ -754,6 +836,19 @@ impl Sandbox for EncloneVisual {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod style {
+
+    pub struct RuleStyle;
+
+    impl iced::rule::StyleSheet for RuleStyle {
+        fn style(&self) -> iced::rule::Style {
+            iced::rule::Style {
+                color: Color::from_rgb(0.0, 1.0, 1.0),
+                width: 3,
+                radius: 1.0,
+                fill_mode: iced::rule::FillMode::Percent(100.0),
+            }
+        }
+    }
 
     pub struct Squeak;
 
