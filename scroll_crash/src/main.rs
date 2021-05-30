@@ -88,8 +88,8 @@ impl Sandbox for EncloneVisual {
         // Display the SVG.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(400))
-            .height(Units(400));
+            .width(Units(300))
+            .height(Units(300));
 
         let content = Column::new()
             .spacing(20)
@@ -97,7 +97,7 @@ impl Sandbox for EncloneVisual {
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
-            .push(Rule::horizontal(10).style(style::RuleStyle))
+            // .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
@@ -119,6 +119,7 @@ impl Sandbox for EncloneVisual {
 
 mod style {
 
+    /*
     pub struct RuleStyle;
 
     impl iced::rule::StyleSheet for RuleStyle {
@@ -131,6 +132,7 @@ mod style {
             }
         }
     }
+    */
 
     pub struct Squeak;
 
