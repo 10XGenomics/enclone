@@ -45,16 +45,7 @@ struct EncloneVisual {
 enum Message {
     InputChanged(String),
     ButtonPressed,
-    // OpenModal,
-    // CloseModal,
-    // CancelButtonPressed,
 }
-/*
-#[derive(Default)]
-struct ModalState {
-    cancel_state: button::State,
-}
-*/
 
 impl Sandbox for EncloneVisual {
     type Message = Message;
@@ -69,9 +60,6 @@ impl Sandbox for EncloneVisual {
 
     fn update(&mut self, message: Message) {
         match message {
-            // Message::OpenModal => self.modal_state.show(true),
-            // Message::CloseModal => self.modal_state.show(false),
-            // Message::CancelButtonPressed => self.modal_state.show(false),
             Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
                 self.output_value = include_str!("../test.txt").to_string();
@@ -112,11 +100,6 @@ impl Sandbox for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
-            /*
-            .push(Row::new().spacing(10).align_items(Align::Center).push(
-                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal),
-            ))
-            */
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(Rule::horizontal(10).style(style::RuleStyle))
@@ -126,79 +109,6 @@ impl Sandbox for EncloneVisual {
                     .align_items(Align::Center)
                     .push(scrollable),
             );
-
-        /*
-        use iced_aw::style::{
-            card::{Style, StyleSheet},
-            colors,
-        };
-
-        #[derive(Clone, Copy)]
-        pub struct Gerbil;
-
-        impl StyleSheet for Gerbil {
-            fn active(&self) -> Style {
-                Style {
-                    background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    border_width: 0.0,
-                    border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
-                    head_background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    head_text_color: colors::WHITE,
-                    close_color: colors::WHITE,
-                    ..Style::default()
-                }
-            }
-        }
-
-        let style = Gerbil;
-
-        let version = "0.00000000000000000000000000000000000001";
-        let version_float = format!("1e-{}", -version.force_f64().log10());
-        Modal::new(&mut self.modal_state, content, move |state| {
-            Card::new(
-                Text::new(""),
-                Text::new(&format!(
-                    "Welcome to enclone visual {} = {}!\n\n\
-                     Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
-                     To use enclone visual, type in the box \
-                     (see below)\nand then push the Submit button.  Here are the things \
-                     that you can type:\n\n\
-                     • an enclone command, without the enclone part\n\
-                     • an clonotype id (number)\n\
-                     • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                     • q to quit\n\n\
-                     Major limitations of this version:\n\
-                     1. There is no color in the clonotype tables.\n\
-                     2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.\n\
-                     4. Long commands are hard to work with in the input box.\n\
-                     5. Very wide clonotype tables wrap, making them unintelligible, and \
-                     only solvable by window resizing, and sometimes not that.",
-                    version, version_float,
-                ))
-                .height(Units(450))
-                .vertical_alignment(VerticalAlignment::Center),
-            )
-            .style(style)
-            .foot(
-                Row::new().spacing(10).push(
-                    Button::new(
-                        &mut state.cancel_state,
-                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
-                    )
-                    // .width(Length::Fill)
-                    .on_press(Message::CancelButtonPressed),
-                ),
-            )
-            .width(Units(1100))
-            .height(Units(1060))
-            .on_close(Message::CloseModal)
-            .into()
-        })
-        .backdrop(Message::CloseModal)
-        .on_esc(Message::CloseModal)
-        .into()
-        */
 
         Container::new(content)
             .width(Length::Fill)
