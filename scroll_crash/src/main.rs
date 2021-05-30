@@ -1,6 +1,5 @@
-use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
-use enclone_core::parse_bsv;
-use failure::Error;
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
@@ -9,23 +8,12 @@ use iced::{
     TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
-use itertools::Itertools;
-use lazy_static::lazy_static;
-use libc::{atexit, SIGINT};
-use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
-use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
-use nix::unistd::Pid;
-use perf_stats::*;
-use std::collections::HashMap;
-use std::env;
-use std::io::Read;
-use std::process::{Command, Stdio};
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicBool, AtomicUsize};
-use std::sync::Mutex;
-use std::thread;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
+
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
+    bytes: include_bytes!("../DejaVuLGCSansMono-Bold.ttf"),
+};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -36,8 +24,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     window_settings.size = (1100 as u32, 1060 as u32);
     settings.window = window_settings;
     let _ = EncloneVisual::run(settings);
-    cleanup();
-    Ok(()
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -87,7 +74,7 @@ impl Sandbox for EncloneVisual {
             Message::CancelButtonPressed => self.modal_state.show(false),
             Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
-                self.output_value = include_string!("../test.txt");
+                self.output_value = include_str!("../test.txt").to_string();
             }
         }
         self.last_message = Some(message)
