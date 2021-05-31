@@ -146,9 +146,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             monitor_threads = true;
         } else if arg.starts_with("VIS=") {
             config_name = arg.after("VIS=").to_string();
-        } else {
+        } else if arg != "VIS" {
             eprintln!(
-                "\nCurrently the only allowed arguments are VIS=x where x is a \
+                "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
                 configuration name, VERBOSE, and MONITOR_THREADS.\n"
             );
             std::process::exit(1);
