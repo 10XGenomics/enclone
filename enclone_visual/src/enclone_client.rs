@@ -581,7 +581,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         cleanup();
                         std::process::exit(0);
                     }
-                    if line.before(" ") == "d" {
+                    if line == "d" {
                         line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
@@ -598,6 +598,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         let r = response.into_inner();
                         output = r.table.clone();
                     } else {
+                        if CONFIG_FILE.lock().unwrap().len() > 0 {
+                            line += &mut format!(" CONFIG={}", CONFIG_FILE.lock().unwrap()[0]);
+                        }
                         let request = tonic::Request::new(EncloneRequest { args: line });
                         let response = client.enclone(request).await;
                         if response.is_err() {
@@ -699,12 +702,7 @@ impl Sandbox for EncloneVisual {
                 if !PROCESSING_REQUEST.load(SeqCst) {
                     let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
-                    let mut plus = format!("{}", self.input_value.clone());
-                    if CONFIG_FILE.lock().unwrap().len() > 0 {
-                        let config_file = CONFIG_FILE.lock().unwrap()[0].clone();
-                        plus = format!("{} CONFIG={}", plus, config_file);
-                    }
-                    USER_REQUEST.lock().unwrap().push(plus);
+                    USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
