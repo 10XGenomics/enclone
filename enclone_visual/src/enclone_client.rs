@@ -103,8 +103,8 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, /* Container, */ Element,
-    Font, HorizontalAlignment, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
+    button, scrollable, text_input, Align, Button, Color, Column, Element,
+    Font, HorizontalAlignment, Image, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -762,13 +762,17 @@ impl Sandbox for EncloneVisual {
             .width(Units(300))
             .height(Units(300));
 
+        let png = include_bytes!("../../img/enclone_banner.png").to_vec();
+        let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
+
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
-            .push(Row::new().spacing(10).align_items(Align::Center).push(
-                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal),
-            ))
+            .push(Row::new().spacing(230).align_items(Align::Center).push(
+                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal))
+                .push(banner)
+            )
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
             .push(Rule::horizontal(10).style(style::RuleStyle))
