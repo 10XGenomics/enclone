@@ -13,3 +13,7 @@ MANUAL TESTING
    - q
 
 5. Scroll to the bottom and make sure that the last clonotype is not truncated.
+
+6. check that clonotype number 0 and too large give errors
+
+7. check that clonotype number 1 is the right clonotype
