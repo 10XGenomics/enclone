@@ -185,15 +185,17 @@ fn cleanup() {
             if USING_SETUP.load(SeqCst) {
                 kill(Pid::from_raw(SETUP_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
             }
-            let host = &HOST.lock().unwrap()[0];
-            let _ = Command::new("ssh")
-                .arg(&host)
-                .arg("kill")
-                .arg("-9")
-                .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .spawn();
+            if HOST.lock().unwrap().len() > 0 {
+                let host = &HOST.lock().unwrap()[0];
+                let _ = Command::new("ssh")
+                    .arg(&host)
+                    .arg("kill")
+                    .arg("-9")
+                    .arg(&format!("{}", REMOTE_SERVER_ID.load(SeqCst)))
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .spawn();
+            }
         }
     }
 }
