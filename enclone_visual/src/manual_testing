@@ -11,3 +11,5 @@ MANUAL TESTING
    - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
    - 10
    - q
+
+5. Scroll to the bottom and make sure that the last clonotype is not truncated.
