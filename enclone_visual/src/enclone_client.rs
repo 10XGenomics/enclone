@@ -712,6 +712,7 @@ impl Sandbox for EncloneVisual {
                         reply_text =
                             format!("enclone failed{}", reply_text.after("enclone failed"));
                     }
+                    reply_text += "\n \n"; // papering over truncation bug
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
