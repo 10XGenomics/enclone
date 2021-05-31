@@ -97,6 +97,7 @@
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone executable
 
+use crate::*;
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use enclone_core::parse_bsv;
 use failure::Error;
@@ -109,7 +110,6 @@ use iced::{
 };
 use iced_aw::{modal, Card, Modal};
 use itertools::Itertools;
-use lazy_static::lazy_static;
 use libc::{atexit, SIGINT};
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
@@ -120,8 +120,6 @@ use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicBool, AtomicUsize};
-use std::sync::Mutex;
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
@@ -130,30 +128,6 @@ const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Global variables.
-
-static REMOTE: AtomicBool = AtomicBool::new(false);
-static USING_SETUP: AtomicBool = AtomicBool::new(false);
-static CLEANED_UP: AtomicBool = AtomicBool::new(false);
-
-static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
-static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
-
-static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
-
-static DONE: AtomicBool = AtomicBool::new(false);
-
-lazy_static! {
-    static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
