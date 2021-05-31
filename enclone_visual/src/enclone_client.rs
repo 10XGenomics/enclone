@@ -591,12 +591,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         });
                         let response = client.get_clonotype(request).await;
                         if response.is_err() {
-                            eprintln!("\nclonotype request failed\n");
-                            std::process::exit(1);
+                            output = "clonotype number is too large\n".to_string();
+                        } else {
+                            let response = response.unwrap();
+                            let r = response.into_inner();
+                            output = r.table.clone();
                         }
-                        let response = response.unwrap();
-                        let r = response.into_inner();
-                        output = r.table.clone();
                     } else {
                         if CONFIG_FILE.lock().unwrap().len() > 0 {
                             line += &mut format!(" CONFIG={}", CONFIG_FILE.lock().unwrap()[0]);
