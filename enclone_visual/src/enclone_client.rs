@@ -86,8 +86,8 @@
 //
 // This starts enclone in SERVER mode, which can be either local or remote.
 //
-// For now accepts a single argument, which is COM=x where x is a "configuration name".  It then
-// looks for an environment variable ENCLONE_COM_x, and parses that into blank-separated
+// For now accepts a single argument, which is VIS=x where x is a "configuration name".  It then
+// looks for an environment variable ENCLONE_VIS_x, and parses that into blank-separated
 // arguments, which may be:
 //
 // argument                  interpretation
@@ -144,11 +144,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             verbose = true;
         } else if arg == "MONITOR_THREADS" {
             monitor_threads = true;
-        } else if arg.starts_with("COM=") {
-            config_name = arg.after("COM=").to_string();
+        } else if arg.starts_with("VIS=") {
+            config_name = arg.after("VIS=").to_string();
         } else {
             eprintln!(
-                "\nCurrently the only allowed arguments are COM=x where x is a \
+                "\nCurrently the only allowed arguments are VIS=x where x is a \
                 configuration name, VERBOSE, and MONITOR_THREADS.\n"
             );
             std::process::exit(1);
@@ -196,7 +196,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let mut configuration = None;
     if config_name.len() > 0 {
-        let env_var = format!("ENCLONE_COM_{}", config_name);
+        let env_var = format!("ENCLONE_VIS_{}", config_name);
         for (key, value) in env::vars() {
             if key == env_var {
                 configuration = Some(value.clone());
