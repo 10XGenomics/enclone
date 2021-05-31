@@ -97,8 +97,8 @@
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone executable
 
-use crate::*;
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use crate::*;
 use enclone_core::parse_bsv;
 use iced::svg::Handle;
 use iced::Length::Units;

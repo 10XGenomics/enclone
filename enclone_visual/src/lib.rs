@@ -3,12 +3,12 @@
 use failure::Error;
 use lazy_static::lazy_static;
 use libc::SIGINT;
-use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
+use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
 use std::process::{Command, Stdio};
-use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 
 pub mod enclone_client;
