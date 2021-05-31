@@ -1,7 +1,10 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use failure::Error;
 use lazy_static::lazy_static;
-use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
+use libc::SIGINT;
+use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
+use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -82,4 +85,29 @@ pub fn cleanup() {
             }
         }
     }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
+// since a CTRL-C could happen at any point, including in the memory manager.
+
+pub fn install_signal_handler() -> Result<(), Error> {
+    let handler = SigHandler::Handler(handler);
+    let action = SigAction::new(handler, SaFlags::SA_RESTART, SigSet::empty());
+    unsafe {
+        sigaction(Signal::SIGINT, &action)?;
+    }
+    Ok(())
+}
+
+extern "C" fn handler(sig: i32) {
+    if sig == SIGINT {
+        cleanup();
+        std::process::exit(0);
+    }
+}
+
+pub extern "C" fn exit_handler() {
+    cleanup();
 }

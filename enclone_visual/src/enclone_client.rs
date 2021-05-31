@@ -100,7 +100,6 @@
 use crate::*;
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use enclone_core::parse_bsv;
-use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
@@ -110,9 +109,8 @@ use iced::{
 };
 use iced_aw::{modal, Card, Modal};
 use itertools::Itertools;
-use libc::{atexit, SIGINT};
-use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
-use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
+use libc::atexit;
+use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
 use perf_stats::*;
 use std::collections::HashMap;
@@ -130,29 +128,6 @@ const DEJAVU: Font = Font::External {
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
-// since a CTRL-C could happen at any point, including in the memory manager.
-
-fn install_signal_handler() -> Result<(), Error> {
-    let handler = SigHandler::Handler(handler);
-    let action = SigAction::new(handler, SaFlags::SA_RESTART, SigSet::empty());
-    unsafe {
-        sigaction(Signal::SIGINT, &action)?;
-    }
-    Ok(())
-}
-
-extern "C" fn handler(sig: i32) {
-    if sig == SIGINT {
-        cleanup();
-        std::process::exit(0);
-    }
-}
-
-extern "C" fn exit_handler() {
-    cleanup();
-}
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
