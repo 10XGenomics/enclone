@@ -103,8 +103,8 @@ use failure::Error;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, Element,
-    Font, HorizontalAlignment, Image, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
+    button, scrollable, text_input, Align, Button, Color, Column, Element, Font,
+    HorizontalAlignment, Image, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
     TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -771,9 +771,15 @@ impl Sandbox for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
-            .push(Row::new().spacing(230).align_items(Align::Center).push(
-                Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::OpenModal))
-                .push(banner)
+            .push(
+                Row::new()
+                    .spacing(230)
+                    .align_items(Align::Center)
+                    .push(
+                        Button::new(&mut self.open_state, Text::new("Help"))
+                            .on_press(Message::OpenModal),
+                    )
+                    .push(banner),
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
