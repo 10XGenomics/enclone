@@ -37,9 +37,7 @@
 //
 // 15. Refactor to keep tokio etc. out of cellranger.
 //
-// 16. Make sure the rare case where the port is already in use is correctly handled.
-//
-// 17. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
+// 16. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
 //
 // WAITING ON ICED
 //
@@ -296,9 +294,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             .expect("Time went backwards");
         let nanos = since_the_epoch.subsec_nanos() as u64;
         let port: u16 = (nanos % 65536) as u16;
-
-        // let port: u16 = rng.gen();
-
         if port < 1024 {
             continue;
         }
