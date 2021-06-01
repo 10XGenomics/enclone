@@ -74,7 +74,7 @@ jobs:
       - name: download test data
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture
+        run: cd enclone_exec; cargo test --release --features basic -- --nocapture
 
   test-linux:
     # This job runs on Linux
@@ -135,4 +135,4 @@ jobs:
       - name: download test data
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture
+        run: cd enclone_exec; cargo test --release --features basic -- --nocapture
