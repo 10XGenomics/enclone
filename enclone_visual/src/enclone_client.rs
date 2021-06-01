@@ -538,19 +538,23 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         });
 
-        // Launch GUI.  We set the size to a reasonable minimum.
+        // Launch GUI.
 
-        let mut settings = Settings::default();
-        let mut window_settings = iced::window::Settings::default();
-        window_settings.size = (1100 as u32, 1060 as u32);
-        settings.window = window_settings;
-        let _ = EncloneVisual::run(settings);
+        launch_gui();
         cleanup();
         return Ok(());
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+fn launch_gui() {
+    let mut settings = Settings::default();
+    let mut window_settings = iced::window::Settings::default();
+    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
+    settings.window = window_settings;
+    let _ = EncloneVisual::run(settings);
+}
 
 #[derive(Default)]
 struct EncloneVisual {
