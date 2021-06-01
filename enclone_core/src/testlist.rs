@@ -727,7 +727,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 29] = [
+pub const EXTENDED_TESTS: [&str; 30] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -801,6 +801,8 @@ pub const EXTENDED_TESTS: [&str; 29] = [
     // this is expected to change whenever variables are added.
     r###"BCR=140696,140697,140701,140704 MIN_CHAINS=5 BUILT_IN AMINO= FOLD_HEADERS LVARS=
          POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
+    // 30. test on PD multi pipestance; failed before bug fix
+    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

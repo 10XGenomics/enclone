@@ -1,0 +1,19 @@
+MANUAL TESTING
+
+1. Type d and then manually scroll up and down for two minutes.  Should not slow down or crash.
+
+2. Cut and paste should be possible from clonotype tables.  [BROKEN]
+
+3. Test the help button.
+
+4. Make sure each of these commands do not return an error
+   - d
+   - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+   - 10
+   - q
+
+5. Scroll to the bottom and make sure that the last clonotype is not truncated.
+
+6. check that clonotype number 0 and too large give errors
+
+7. check that clonotype number 1 is the right clonotype

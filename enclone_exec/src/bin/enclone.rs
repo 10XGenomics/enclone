@@ -16,7 +16,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Client run of enclone.
 
     for i in 0..args.len() {
-        if args[i].starts_with("COM=") {
+        if args[i] == "VIS" || args[i].starts_with("VIS=") {
             enclone_client(&t).await?;
         }
     }

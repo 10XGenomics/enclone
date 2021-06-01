@@ -629,7 +629,7 @@ fn test_cpu() {
 // 6.  fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
 //     at https://fuchsia.googlesource.com/fuchsia/+/master/LICENSE, which we include in
 //     third_party under fuchsia.  Similarly, fuchsia-zircon and fuchsia-zircon-sys are
-//     covered by this.  Ditto num_enum and num_enum_derive and tiny-skia.
+//     covered by this.  Ditto num_enum and num_enum_derive and tiny-skia and mach.
 // 7.  ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
 //     the ring license.
 // 8.  webpki OK because we include the webpki license and also that for chromium.
@@ -647,7 +647,7 @@ fn test_licenses() {
     ];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 15] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 16] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
@@ -656,6 +656,7 @@ fn test_licenses() {
         "gethostname",
         "iced_wgpu",
         "instant",
+        "mach",
         "nalgebra",
         "num_enum",
         "num_enum_derive",

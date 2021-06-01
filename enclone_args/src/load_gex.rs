@@ -141,6 +141,14 @@ pub fn load_gex(
                     analysis.push(a);
                 }
             }
+            let pso2 = format!("{}/../per_sample_outs", outs);
+            if path_exists(&pso2) {
+                let samples = dir_list(&pso2);
+                if samples.solo() {
+                    let a = format!("{}/{}/count/analysis", pso2, samples[0]);
+                    analysis.push(a);
+                }
+            }
 
             // Find the pca file.
 

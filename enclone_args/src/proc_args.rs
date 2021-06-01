@@ -36,7 +36,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
     for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_COM_") {
+        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_VIS_") {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         }
     }
