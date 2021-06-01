@@ -13,6 +13,7 @@ use std::sync::Mutex;
 
 pub mod enclone_client;
 pub mod enclone_server;
+pub mod gui;
 
 pub mod proto {
     tonic::include_proto!("enclone");
