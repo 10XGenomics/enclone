@@ -459,6 +459,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
             if remote_id.is_none() {
                 eprintln!("\nUnable to determine remote process id.\n");
+                eprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
         }
