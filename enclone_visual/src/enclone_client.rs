@@ -16,7 +16,7 @@
 //     server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
 //     kex_exchange_identification: Connection closed by remote host
 //
-// 6.  Add local server capability.
+// 6.  What do we do about the truncation of printing to fifty clonotypes?
 //
 // 7.  tooltip
 //
@@ -40,8 +40,6 @@
 // 16. Make sure the rare case where the port is already in use is correctly handled.
 //
 // 17. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
-//
-// 18. What do we do about the truncation of printing to fifty clonotypes?
 //
 // WAITING ON ICED
 //
