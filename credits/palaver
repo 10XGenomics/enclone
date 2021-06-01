@@ -1,0 +1,2 @@
+We copied the thread function from this crate into a new function count_threads, because the 
+crate had not been updated recently and we wanted to avoid duplication of other crates.

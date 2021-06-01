@@ -164,7 +164,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         tokio::spawn(async move {
             loop {
                 thread::sleep(Duration::from_millis(5000));
-                println!("[using {} threads", palaver::thread::count());
+                println!("[using {} threads", thread_count());
             }
         });
     }

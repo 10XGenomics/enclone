@@ -111,3 +111,80 @@ extern "C" fn handler(sig: i32) {
 pub extern "C" fn exit_handler() {
     cleanup();
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This is copied from the palaver crate 0.3.0.  We copied it because it had not been updated
+// recently and was causing crate duplication.
+
+// Count the number of threads of the current process. Uses
+// [`/proc/self/stat`](http://man7.org/linux/man-pages/man5/proc.5.html):`num_threads` on Linux,
+// [`task_threads`](http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_threads.html)
+// on macOS.
+
+use std::convert::TryInto;
+
+pub fn thread_count() -> usize {
+    #[cfg(any(target_os = "android", target_os = "linux"))]
+    {
+        procfs::process::Process::myself()
+            .unwrap()
+            .stat
+            .num_threads
+            .try_into()
+            .unwrap()
+    }
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
+    {
+        use mach::{
+            kern_return::{kern_return_t, KERN_SUCCESS},
+            mach_types::thread_act_array_t,
+            message::mach_msg_type_number_t,
+            task::task_threads,
+            traps::mach_task_self,
+            vm_types::{vm_address_t, vm_map_t, vm_size_t},
+        };
+        use std::{mem, ptr};
+        extern "C" {
+            pub fn vm_deallocate(
+                target_task: vm_map_t,
+                address: vm_address_t,
+                size: vm_size_t,
+            ) -> kern_return_t;
+        }
+
+        let this_task = unsafe { mach_task_self() };
+
+        let mut thread_list: thread_act_array_t = ptr::null_mut();
+        let mut thread_count: mach_msg_type_number_t = 0;
+        let kret = unsafe { task_threads(this_task, &mut thread_list, &mut thread_count) };
+        assert_eq!(kret, KERN_SUCCESS);
+        let thread_count: usize = thread_count.try_into().unwrap();
+
+        for i in 0..thread_count {
+            let kret = unsafe {
+                mach::mach_port::mach_port_deallocate(
+                    this_task,
+                    *thread_list.offset(i.try_into().unwrap()),
+                )
+            };
+            assert_eq!(kret, KERN_SUCCESS);
+        }
+        let kret = unsafe {
+            vm_deallocate(
+                this_task,
+                thread_list as usize,
+                mem::size_of_val(&*thread_list) * thread_count,
+            )
+        };
+        assert_eq!(kret, KERN_SUCCESS);
+        thread_count
+    }
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "linux",
+        target_os = "macos",
+        target_os = "ios"
+    )))]
+    unimplemented!()
+}
