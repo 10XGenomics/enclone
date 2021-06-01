@@ -1576,6 +1576,7 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.59"
 dependencies = [
+ "enclone_core",
  "enclone_main",
  "failure",
  "iced",

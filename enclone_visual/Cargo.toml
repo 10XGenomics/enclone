@@ -24,6 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
+enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
 iced = { version = "0.3", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }

@@ -95,6 +95,7 @@
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
+use enclone_core::parse_bsv;
 use gui::launch_gui;
 use io_utils::*;
 use itertools::Itertools;
@@ -168,74 +169,116 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         );
     }
 
-    // Get config file if defined.  The config file is specified by an environment variable
-    // of the form ENCLONE_CONFIG=filename or ENCLONE_CONFIG=filehost:filename.
+    // Get configuration from environment variable if defined.
 
-    let mut config_file_contents = String::new();
-    let mut filehost = String::new();
-    let mut filehost_used = false;
+    let mut config = HashMap::<String, String>::new();
+    let mut configuration = None;
+    let mut found = false;
     if config_name.len() > 0 {
+        let env_var = format!("ENCLONE_VIS_{}", config_name);
         for (key, value) in env::vars() {
-            if key == "ENCLONE_CONFIG" {
-                CONFIG_FILE.lock().unwrap().push(value.to_string());
-                let hf = value.to_string();
-                let mut filename = hf.clone();
-                if hf.contains(":") {
-                    filehost = hf.before(":").to_string();
-                    filename = hf.after(":").to_string();
+            if key == env_var {
+                configuration = Some(value.clone());
+            }
+        }
+        if configuration.is_some() {
+            let configuration = configuration.unwrap();
+            found = true;
+            if verbose {
+                println!("\nusing configuration\n▓{}▓", configuration);
+            }
+            let x = parse_bsv(&configuration);
+            for arg in x.iter() {
+                if !arg.contains("=") {
+                    eprintln!(
+                        "\nYour configuration has an argument {} that does not contain =.\n",
+                        arg
+                    );
+                    std::process::exit(1);
                 }
-
-                // If filename exists on this server, use it, and ignore filehost.
-
-                if path_exists(&filename) {
-                    config_file_contents = std::fs::read_to_string(&filename).unwrap();
-
-                // Otherwise, fetch the file from the host.
-                } else if filehost.len() > 0 {
-                    filehost_used = true;
-                    let t = Instant::now();
-                    let o = Command::new("ssh")
-                        .arg(&filehost)
-                        .arg("cat")
-                        .arg(&filename)
-                        .output()
-                        .expect("failed to execute ssh cat");
-                    println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
-                    if o.status.code() != Some(0) {
-                        let m = String::from_utf8(o.stderr).unwrap();
-                        println!("\ntest ssh failed with error message =\n{}", m);
-                        println!(
-                            "Attempt to ssh to {} as specified by environment variable \
-                            ENCLONE_CONFIG failed.",
-                            filehost,
-                        );
-                        println!("Here are two possible explanations:");
-                        println!("1. The host is wrong.");
-                        println!(
-                            "2. You first need to do something to enable crossing \
-                                  a firewall."
-                        );
-                        println!("   If so, ask one of your colleagues how to do this.\n");
-                        std::process::exit(1);
-                    }
-                    config_file_contents = strme(&o.stdout).to_string();
-                }
+                config.insert(arg.before("=").to_string(), arg.after("=").to_string());
             }
         }
     }
 
-    // Get configuration.
+    // Get config file if defined.  The config file is specified by an environment variable
+    // of the form ENCLONE_CONFIG=filename or ENCLONE_CONFIG=filehost:filename.
 
-    let mut config = HashMap::<String, String>::new();
-    if config_name.len() > 0 {
-        let prefix = format!("vis.{}.", config_name);
-        for line in config_file_contents.lines() {
-            if line.starts_with(&prefix) {
-                let def = line.after(&prefix);
-                if def.contains("=") {
-                    config.insert(def.before("=").to_string(), def.after("=").to_string());
+    let mut filehost = String::new();
+    let mut filehost_used = false;
+    if config_name.len() > 0 && !found {
+        let mut config_file_contents = String::new();
+        if config_name.len() > 0 {
+            for (key, value) in env::vars() {
+                if key == "ENCLONE_CONFIG" {
+                    CONFIG_FILE.lock().unwrap().push(value.to_string());
+                    let hf = value.to_string();
+                    let mut filename = hf.clone();
+                    if hf.contains(":") {
+                        filehost = hf.before(":").to_string();
+                        filename = hf.after(":").to_string();
+                    }
+
+                    // If filename exists on this server, use it, and ignore filehost.
+
+                    if path_exists(&filename) {
+                        config_file_contents = std::fs::read_to_string(&filename).unwrap();
+
+                    // Otherwise, fetch the file from the host.
+                    } else if filehost.len() > 0 {
+                        filehost_used = true;
+                        let t = Instant::now();
+                        let o = Command::new("ssh")
+                            .arg(&filehost)
+                            .arg("cat")
+                            .arg(&filename)
+                            .output()
+                            .expect("failed to execute ssh cat");
+                        println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
+                        if o.status.code() != Some(0) {
+                            let m = String::from_utf8(o.stderr).unwrap();
+                            println!("\ntest ssh failed with error message =\n{}", m);
+                            println!(
+                                "Attempt to ssh to {} as specified by environment variable \
+                                ENCLONE_CONFIG failed.",
+                                filehost,
+                            );
+                            println!("Here are two possible explanations:");
+                            println!("1. The host is wrong.");
+                            println!(
+                                "2. You first need to do something to enable crossing \
+                                      a firewall."
+                            );
+                            println!("   If so, ask one of your colleagues how to do this.\n");
+                            std::process::exit(1);
+                        }
+                        config_file_contents = strme(&o.stdout).to_string();
+                    }
                 }
             }
+        }
+
+        // Get configuration.
+
+        if config_name.len() > 0 {
+            let prefix = format!("vis.{}.", config_name);
+            for line in config_file_contents.lines() {
+                if line.starts_with(&prefix) {
+                    let def = line.after(&prefix);
+                    if def.contains("=") {
+                        config.insert(def.before("=").to_string(), def.after("=").to_string());
+                        found = true;
+                    }
+                }
+            }
+        }
+        if !found {
+            eprintln!(
+                "\nYou specified the configuration name {}, but the content of that configuration \
+                   was not found.\n",
+                config_name,
+            );
+            std::process::exit(1);
         }
     }
 
