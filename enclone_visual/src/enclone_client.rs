@@ -92,6 +92,12 @@
 // REMOTE_IP=...             IP number of remote host
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone executable
+//
+// Alternatively, you can define an environment variable ENCLONE_CONFIG=filename or
+// ENCLONE_CONFIG=filehost:filename, in which case that file is fetched, and lines are found
+// that look like
+// vis.x.variable=value
+// and in such cases, we use variable=value is the source of variable definitions.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
