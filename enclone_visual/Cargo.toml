@@ -37,6 +37,7 @@ nix = "0.19.1"
 palaver = "0.2.8"
 perf_stats = "0.1"
 pretty_trace = "0.5"
+procfs = "0.9"
 prost = { version = ">=0.6.1, <0.8", features = [] }
 string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }

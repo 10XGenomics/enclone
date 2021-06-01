@@ -127,6 +127,8 @@ use std::convert::TryInto;
 pub fn thread_count() -> usize {
     #[cfg(any(target_os = "android", target_os = "linux"))]
     {
+        // This pulls in the procfs crate.  Not really sure this is necessary.
+
         procfs::process::Process::myself()
             .unwrap()
             .stat
