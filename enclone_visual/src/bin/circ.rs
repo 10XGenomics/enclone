@@ -73,7 +73,6 @@ mod engine {
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
-    use std::time::{SystemTime, UNIX_EPOCH};
 
     #[derive(Default)]
     pub struct State {
@@ -83,7 +82,6 @@ mod engine {
 
     pub struct Engine {
         pub state: State,
-        pub last_radius: f32,
     }
 
     #[derive(Debug, Clone)]
@@ -94,7 +92,6 @@ mod engine {
         fn default() -> Self {
             Self { 
                 state: State::default(),
-                last_radius: 0.0,
             }
         }
     }
@@ -117,16 +114,7 @@ mod engine {
     impl<'a> canvas::Program<Message> for Engine {
         fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
-            /*
-            let start = SystemTime::now();
-            let since_the_epoch = start
-                .duration_since(UNIX_EPOCH)
-                .expect("Time went backwards");
-            let nanos = since_the_epoch.subsec_nanos() as u64;
-            let radius = (nanos % 99) as f32;
-            */
             let radius = self.state.radius;
-            // self.last_radius = radius;
             let circle = Path::circle(frame.center(), radius);
             frame.fill(&circle, Color::BLACK);
             vec![frame.into_geometry()]
