@@ -120,10 +120,13 @@ mod engine {
             }
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
-            // let circle = Path::circle(frame.center(), radius);
             let center = frame.center();
-            let circle = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
-            frame.fill(&circle, Color::BLACK);
+
+            let circle1 = Path::circle(frame.center(), radius);
+            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
+            let circle2 = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
+            frame.fill(&circle2, Color::BLACK);
+
             vec![frame.into_geometry()]
         }
     }
