@@ -126,10 +126,16 @@ mod engine {
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
             let circle2 = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
             frame.fill(&circle2, Color::BLACK);
-            use iced_native::Vector;
-            frame.translate(Vector{x: 100.0, y: 100.0});
-            frame.fill_text("woof");
-
+            if pos.is_some() {
+                let xdiff = pos.unwrap().x - frame.center().x;
+                let ydiff = pos.unwrap().y - frame.center().y;
+                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                if dist <= radius {
+                    use iced_native::Vector;
+                    frame.translate(Vector{x: 100.0, y: 100.0});
+                    frame.fill_text("in circle one");
+                }
+            }
             vec![frame.into_geometry()]
         }
     }
