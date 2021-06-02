@@ -74,6 +74,7 @@ mod engine {
         Color, Element, Length, Rectangle,
     };
     use iced_native::Point;
+    use iced_native::Vector;
 
     #[derive(Default)]
     pub struct State {
@@ -99,11 +100,6 @@ mod engine {
 
     impl Engine {
 
-        pub fn update(&mut self, message: Message) {
-            match message {
-            }
-        }
-
         pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
                 .width(Length::Fill)
@@ -115,27 +111,23 @@ mod engine {
     impl<'a> canvas::Program<Message> for Engine {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
             let pos = cursor.position();
-            if pos.is_some() {
-                // println!("cursor = {:?}", pos);
-            }
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let center = frame.center();
-
-            let circle1 = Path::circle(frame.center(), radius);
+            let circle1 = Path::circle(center, radius);
+            if pos.is_some() {
+                let xdiff = pos.unwrap().x - center.x;
+                let ydiff = pos.unwrap().y - center.y;
+                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                if dist <= radius {
+                    frame.translate(Vector{x: 100.0, y: 100.0});
+                    frame.fill_text(format!("in circle one at distance {:.1} <= {:.1}", dist, radius));
+                    frame.translate(Vector{x: -100.0, y: -100.0});
+                }
+            }
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
             let circle2 = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
             frame.fill(&circle2, Color::BLACK);
-            if pos.is_some() {
-                let xdiff = pos.unwrap().x - frame.center().x;
-                let ydiff = pos.unwrap().y - frame.center().y;
-                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
-                if dist <= radius {
-                    use iced_native::Vector;
-                    frame.translate(Vector{x: 100.0, y: 100.0});
-                    frame.fill_text("in circle one");
-                }
-            }
             vec![frame.into_geometry()]
         }
     }
