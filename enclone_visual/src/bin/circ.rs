@@ -43,24 +43,20 @@ impl Sandbox for Clock {
     }
 
     fn view(&mut self) -> Element<Message> {
-
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
             .on_press(Message::ButtonPressed);
-
         let content = Column::new()
             .push(button)
             .push(
                 self.grid
                     .view()
-                    .map(move |message| Message::ButtonPressed),
+                    .map(move |_message| Message::ButtonPressed),
             );
-
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
-
     }
 }
 
@@ -87,7 +83,6 @@ mod grid {
             Self { 
                 state: State::default(),
             }
-            // Self::from_preset(Preset::default())
         }
     }
 
