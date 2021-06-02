@@ -1,9 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use iced::{
-    button, Button, Column, Container, Element, Length, Sandbox, Settings, Text,
-};
 use engine::Engine;
+use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn main() -> iced::Result {
@@ -32,10 +30,7 @@ impl Sandbox for Circles {
         String::from("Circles")
     }
 
-    fn update(
-        &mut self,
-        message: Message,
-    ) {
+    fn update(&mut self, message: Message) {
         match message {
             Message::ButtonPressed => {
                 self.engine.state.button_pressed = true;
@@ -54,13 +49,11 @@ impl Sandbox for Circles {
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
             .on_press(Message::ButtonPressed);
-        let content = Column::new()
-            .push(button)
-            .push(
-                self.engine
-                    .view()
-                    .map(move |_message| Message::ButtonPressed),
-            );
+        let content = Column::new().push(button).push(
+            self.engine
+                .view()
+                .map(move |_message| Message::ButtonPressed),
+        );
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
@@ -75,6 +68,8 @@ mod engine {
     };
     use iced_native::Point;
     use iced_native::Vector;
+    // use iced_native::mouse::Interaction;
+    // use iced::mouse::Interaction;
 
     #[derive(Default)]
     pub struct State {
@@ -87,19 +82,17 @@ mod engine {
     }
 
     #[derive(Debug, Clone)]
-    pub enum Message {
-    }
+    pub enum Message {}
 
     impl Default for Engine {
         fn default() -> Self {
-            Self { 
+            Self {
                 state: State::default(),
             }
         }
     }
 
     impl Engine {
-
         pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
                 .width(Length::Fill)
@@ -116,17 +109,36 @@ mod engine {
             let center = frame.center();
             let circle1 = Path::circle(center, radius);
             if pos.is_some() {
+                // Magic constant that seems to be needed.
+                const YSHIFT: f32 = 43.0;
                 let xdiff = pos.unwrap().x - center.x;
-                let ydiff = pos.unwrap().y - center.y;
+                let ydiff = pos.unwrap().y - center.y - YSHIFT;
                 let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                 if dist <= radius {
-                    frame.translate(Vector{x: 100.0, y: 100.0});
-                    frame.fill_text(format!("in circle one at distance {:.1} <= {:.1}", dist, radius));
-                    frame.translate(Vector{x: -100.0, y: -100.0});
+                    frame.translate(Vector { x: 100.0, y: 100.0 });
+                    frame.fill_text(format!(
+                        "delta = ({:.1}, {:.1}); in circle one at distance {:.1} <= {:.1}",
+                        pos.unwrap().x - center.x,
+                        pos.unwrap().y - center.y,
+                        dist,
+                        radius
+                    ));
+                    frame.translate(Vector {
+                        x: -100.0,
+                        y: -100.0,
+                    });
                 }
             }
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
-            let circle2 = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
+            let circlex = Path::circle(center, 2.0);
+            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
+            let circle2 = Path::circle(
+                Point {
+                    x: center.x + 20.0,
+                    y: center.y + 40.0,
+                },
+                radius,
+            );
             frame.fill(&circle2, Color::BLACK);
             vec![frame.into_geometry()]
         }
