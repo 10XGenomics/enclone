@@ -1,5 +1,6 @@
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+
 use iced::{
-    // canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
     button, Button, Column, Container, Element, Length, Sandbox, Settings, Text,
 };
 
@@ -47,20 +48,6 @@ impl Sandbox for Clock {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
-        /*
-        let canvas = Canvas::new(self)
-            .width(Length::Units(400))
-            .height(Length::Units(400));
-
-        Container::new(canvas)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .padding(20)
-            .center_x()
-            .center_y()
-            .into()
-        */
-
         let content = Column::new()
             .push(button)
             .push(
@@ -72,7 +59,6 @@ impl Sandbox for Clock {
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
-            // .style(style::Container)
             .into()
 
     }
@@ -80,7 +66,6 @@ impl Sandbox for Clock {
 
 mod grid {
     use iced::{
-        // canvas::event::{self, Event},
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
@@ -108,10 +93,12 @@ mod grid {
 
     impl Grid {
 
+        /*
         pub fn update(&mut self, message: Message) {
             match message {
             }
         }
+        */
 
         pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
@@ -119,20 +106,6 @@ mod grid {
                 .height(Length::Fill)
                 .into()
         }
-
-        /*
-        fn visible_region(&self, size: Size) -> Region {
-            let width = size.width / self.scaling;
-            let height = size.height / self.scaling;
-
-            Region {
-                x: -self.translation.x - width / 2.0,
-                y: -self.translation.y - height / 2.0,
-                width,
-                height,
-            }
-        }
-        */
     }
 
     impl<'a> canvas::Program<Message> for Grid {
@@ -145,18 +118,3 @@ mod grid {
         }
     }
 }
-
-
-
-
-/*
-impl canvas::Program<Message> for Clock {
-    fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
-        let mut frame = Frame::new(bounds.size());
-        let radius = 100.0;
-        let circle = Path::circle(frame.center(), radius);
-        frame.fill(&circle, Color::BLACK);
-        vec![frame.into_geometry()]
-    }
-}
-*/
