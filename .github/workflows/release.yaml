@@ -25,7 +25,7 @@ jobs:
           docker.pkg.github.com/10xdev/toolchain-scripts/toolchain:latest
           /bin/bash -lec '
           apt-get update
-          && apt-get install libfreetype6-dev
+          && apt-get install -y libfreetype6-dev
           && ln -s /usr/lib/x86_64-linux-gnu/libfreetype.a /mnt/build/toolchains/versions/latest/lib/
           && cargo build --release
           && target/release/enclone --help | grep -q enclone
