@@ -1,0 +1,73 @@
+TO DO
+
+1.  Make sure server dies.
+
+2.  Need a regression test.
+
+3.  Trim features and duplicated crates; reduce binary size.
+
+4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
+
+5.  Handle the case where tsh hasn't been started
+    server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+    kex_exchange_identification: Connection closed by remote host
+
+6.  What do we do about the truncation of printing to fifty clonotypes?
+
+7.  tooltip
+
+8.  the wraparound problem
+
+9.  Make sure that client and server are the same version.
+
+10. Handle the case where button is pushed twice, etc.
+
+11. Have text-only mode for testing and development.
+
+12. Need auto-update for binary (at least for Mac).
+
+13. Clonotype printouts need to show not just the pictures, but also the group info
+    and any additional stuff like trees.
+
+14. Improve data shown for tooltip.
+
+15. Refactor to keep tokio etc. out of cellranger.
+
+16. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
+
+WAITING ON ICED
+
+1.  Can't cut and paste text from the GUI window, except for the text input box.
+    Looks like this is https:github.com/hecrj/iced/issues/36.
+
+2.  Pretty, not plain.
+    Enabling e.g. multicolor text is on the iced roadmap.
+
+3.  Text in SVG objects does not show up.
+    Known regression = https:github.com/hecrj/iced/issues/870.
+
+4.  Place the scrollbar on the left side of the scrollable window.
+    Asked on zulip chat if this is possible.
+
+5.  Make the TextInput gracefully handle long inputs.
+    This is https:github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
+
+6.  Flaky behavior scrolling large texts.
+    Issue filed: https:github.com/hecrj/iced/issues/897.
+
+NICE TO HAVE
+
+1.  Add font size slider for clonotype tables.
+
+2.  Can carriage return be used instead of pushing a button?
+
+3.  Bold some text on the help page.
+    Probably not possible at this time, could ask on zulip chat.
+
+4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
+
+5.  Enable plotting after initially starting GUI.
+
+6.  Put plots in a scrollable window.
+
+7.  Add scale slider for plots.
