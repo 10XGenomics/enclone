@@ -73,6 +73,7 @@ mod engine {
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
+    use iced_native::Point;
 
     #[derive(Default)]
     pub struct State {
@@ -115,11 +116,13 @@ mod engine {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
             let pos = cursor.position();
             if pos.is_some() {
-                println!("cursor = {:?}", pos);
+                // println!("cursor = {:?}", pos);
             }
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
-            let circle = Path::circle(frame.center(), radius);
+            // let circle = Path::circle(frame.center(), radius);
+            let center = frame.center();
+            let circle = Path::circle(Point{x: center.x + 20.0, y: center.y + 40.0}, radius);
             frame.fill(&circle, Color::BLACK);
             vec![frame.into_geometry()]
         }
