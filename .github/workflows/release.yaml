@@ -26,10 +26,11 @@ jobs:
           /bin/bash -lec '
           apt-get update
           && apt-get install -y libfreetype6-dev
-          && ln -s /usr/lib/x86_64-linux-gnu/libfreetype.a /mnt/build/toolchains/versions/latest/lib/
-          && cargo build --release
+          && ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /mnt/build/toolchains/versions/latest/lib/
+          && env -u PKG_CONFIG_LIBDIR cargo build --release
           && target/release/enclone --help | grep -q enclone
           && readelf -V target/release/enclone
+          && ldd target/release/enclone
           ';
           mkdir artifacts;
           cp -a target/release/enclone artifacts/enclone-linux
