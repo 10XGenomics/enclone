@@ -1593,6 +1593,7 @@ dependencies = [
  "pretty_trace",
  "procfs",
  "prost",
+ "rand 0.8.3",
  "string_utils",
  "tokio",
  "tokio-stream",
