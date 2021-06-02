@@ -1,7 +1,7 @@
 //! Circles
 use iced::{
     canvas::{self, Cursor, Path, Stroke},
-    executor, time, Application, Canvas, Clipboard, Color, Command,
+    executor, time, Application, Canvas, Clipboard, Color, Command, Container,
     Element, Length, Point, Rectangle, Settings, Size, Subscription, Vector,
 };
 
@@ -62,7 +62,6 @@ impl Application for SolarSystem {
 
     fn view(&mut self) -> Element<Message> {
 
-        /*
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
             .on_press(Message::ButtonPressed);
@@ -77,15 +76,24 @@ impl Application for SolarSystem {
                     .height(Length::Fill)
                     .into()
             );
-        */
+
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
+            .into()
 
 
 
 
+
+        /*
         Canvas::new(&mut self.state)
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
+        */
     }
 }
 
