@@ -24,6 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
+chrono = "0.4.19"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
@@ -39,7 +40,6 @@ palaver = "0.2.8"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
-rand = "0.8"
 string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }

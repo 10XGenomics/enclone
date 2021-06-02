@@ -1576,6 +1576,7 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.63"
 dependencies = [
+ "chrono",
  "enclone_core",
  "enclone_main",
  "failure",
@@ -1593,7 +1594,6 @@ dependencies = [
  "pretty_trace",
  "procfs",
  "prost",
- "rand 0.8.3",
  "string_utils",
  "tokio",
  "tokio-stream",
