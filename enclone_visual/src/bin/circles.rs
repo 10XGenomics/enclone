@@ -1,8 +1,9 @@
 //! Circles
 use iced::{
+    button,
     canvas::{self, Cursor, Path, Stroke},
-    executor, time, Application, Canvas, Clipboard, Color, Command, Container,
-    Element, Length, Point, Rectangle, Settings, Size, Subscription, Vector,
+    executor, time, Application, Button, Canvas, Clipboard, Color, Column, Command, Container,
+    Element, Length, Point, Rectangle, Settings, Size, Subscription, Text, Vector,
 };
 
 use std::time::Instant;
@@ -16,11 +17,13 @@ pub fn main() -> iced::Result {
 
 struct SolarSystem {
     state: State,
+    button: button::State,
 }
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
     Tick(Instant),
+    ButtonPressed,
 }
 
 impl Application for SolarSystem {
@@ -32,6 +35,7 @@ impl Application for SolarSystem {
         (
             SolarSystem {
                 state: State::new(),
+                button: iced::button::State::new(),
             },
             Command::none(),
         )
@@ -50,6 +54,8 @@ impl Application for SolarSystem {
             Message::Tick(instant) => {
                 self.state.update(instant);
             }
+            Message::ButtonPressed => {
+            }
         }
 
         Command::none()
@@ -66,16 +72,15 @@ impl Application for SolarSystem {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
+        let canvas = Canvas::new(self.state)
+            .width(Length::Units(400))
+            .height(Length::Units(400));
+
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .push(button)
-            .push(
-                Canvas::new(&mut self.state)
-                    .width(Length::Fill)
-                    .height(Length::Fill)
-                    .into()
-            );
+            .push(canvas);
 
         Container::new(content)
             .width(Length::Fill)
