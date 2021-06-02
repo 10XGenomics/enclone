@@ -1581,6 +1581,7 @@ dependencies = [
  "failure",
  "iced",
  "iced_aw",
+ "io_utils",
  "itertools",
  "lazy_static",
  "libc",

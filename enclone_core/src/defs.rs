@@ -959,13 +959,19 @@ pub struct PotentialJoin {
 }
 
 pub fn get_config(config_file: &str, config: &mut HashMap<String, String>) -> bool {
-    if config_file.len() > 0 && path_exists(&config_file) {
-        let f = open_for_read![&config_file];
-        for line in f.lines() {
-            let s = line.unwrap();
-            config.insert(s.before("=").to_string(), s.after("=").to_string());
+    if config_file.len() > 0 {
+        let mut cf = config_file.to_string();
+        if cf.contains(':') {
+            cf = cf.after(":").to_string();
         }
-        return true;
+        if path_exists(&cf) {
+            let f = open_for_read![&cf];
+            for line in f.lines() {
+                let s = line.unwrap();
+                config.insert(s.before("=").to_string(), s.after("=").to_string());
+            }
+            return true;
+        }
     }
     false
 }

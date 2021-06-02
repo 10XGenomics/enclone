@@ -92,11 +92,18 @@
 // REMOTE_IP=...             IP number of remote host
 // REMOTE_SETUP=...          command to be forked to use port through firewall, may include $port
 // REMOVE_BIN=...            directory on remote host containing the enclone executable
+//
+// Alternatively, you can define an environment variable ENCLONE_CONFIG=filename or
+// ENCLONE_CONFIG=filehost:filename, in which case that file is fetched, and lines are found
+// that look like
+// vis.x.variable=value
+// and in such cases, we use variable=value is the source of variable definitions.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
 use enclone_core::parse_bsv;
 use gui::launch_gui;
+use io_utils::*;
 use itertools::Itertools;
 use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
@@ -168,17 +175,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         );
     }
 
-    // Get config file name if defined.
+    // Get configuration from environment variable if defined.
 
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            CONFIG_FILE.lock().unwrap().push(value.to_string());
-        }
-    }
-
-    // Get configuration.
-
+    let mut config = HashMap::<String, String>::new();
     let mut configuration = None;
+    let mut found = false;
     if config_name.len() > 0 {
         let env_var = format!("ENCLONE_VIS_{}", config_name);
         for (key, value) in env::vars() {
@@ -186,33 +187,104 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 configuration = Some(value.clone());
             }
         }
-        if configuration.is_none() {
-            eprintln!(
-                "\nYou specified the configuration name {}, but the environment variable {} \
-                is not defined.\n",
-                config_name, env_var,
-            );
-            std::process::exit(1);
-        } else if verbose {
-            println!(
-                "\nusing configuration\n▓{}▓",
-                configuration.as_ref().unwrap()
-            );
+        if configuration.is_some() {
+            let configuration = configuration.unwrap();
+            found = true;
+            if verbose {
+                println!("\nusing configuration\n▓{}▓", configuration);
+            }
+            let x = parse_bsv(&configuration);
+            for arg in x.iter() {
+                if !arg.contains("=") {
+                    eprintln!(
+                        "\nYour configuration has an argument {} that does not contain =.\n",
+                        arg
+                    );
+                    std::process::exit(1);
+                }
+                config.insert(arg.before("=").to_string(), arg.after("=").to_string());
+            }
         }
     }
-    let mut config = HashMap::<String, String>::new();
-    if configuration.is_some() {
-        let configuration = configuration.unwrap();
-        let x = parse_bsv(&configuration);
-        for arg in x.iter() {
-            if !arg.contains("=") {
-                eprintln!(
-                    "\nYour configuration has an argument {} that does not contain =.\n",
-                    arg
-                );
-                std::process::exit(1);
+
+    // Get config file if defined.  The config file is specified by an environment variable
+    // of the form ENCLONE_CONFIG=filename or ENCLONE_CONFIG=filehost:filename.
+
+    let mut filehost = String::new();
+    let mut filehost_used = false;
+    if config_name.len() > 0 && !found {
+        let mut config_file_contents = String::new();
+        if config_name.len() > 0 {
+            for (key, value) in env::vars() {
+                if key == "ENCLONE_CONFIG" {
+                    CONFIG_FILE.lock().unwrap().push(value.to_string());
+                    let hf = value.to_string();
+                    let mut filename = hf.clone();
+                    if hf.contains(":") {
+                        filehost = hf.before(":").to_string();
+                        filename = hf.after(":").to_string();
+                    }
+
+                    // If filename exists on this server, use it, and ignore filehost.
+
+                    if path_exists(&filename) {
+                        config_file_contents = std::fs::read_to_string(&filename).unwrap();
+
+                    // Otherwise, fetch the file from the host.
+                    } else if filehost.len() > 0 {
+                        filehost_used = true;
+                        let t = Instant::now();
+                        let o = Command::new("ssh")
+                            .arg(&filehost)
+                            .arg("cat")
+                            .arg(&filename)
+                            .output()
+                            .expect("failed to execute ssh cat");
+                        println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
+                        if o.status.code() != Some(0) {
+                            let m = String::from_utf8(o.stderr).unwrap();
+                            println!("\ntest ssh failed with error message =\n{}", m);
+                            println!(
+                                "Attempt to ssh to {} as specified by environment variable \
+                                ENCLONE_CONFIG failed.",
+                                filehost,
+                            );
+                            println!("Here are two possible explanations:");
+                            println!("1. The host is wrong.");
+                            println!(
+                                "2. You first need to do something to enable crossing \
+                                      a firewall."
+                            );
+                            println!("   If so, ask one of your colleagues how to do this.\n");
+                            std::process::exit(1);
+                        }
+                        config_file_contents = strme(&o.stdout).to_string();
+                    }
+                }
             }
-            config.insert(arg.before("=").to_string(), arg.after("=").to_string());
+        }
+
+        // Get configuration.
+
+        if config_name.len() > 0 {
+            let prefix = format!("vis.{}.", config_name);
+            for line in config_file_contents.lines() {
+                if line.starts_with(&prefix) {
+                    let def = line.after(&prefix);
+                    if def.contains("=") {
+                        config.insert(def.before("=").to_string(), def.after("=").to_string());
+                        found = true;
+                    }
+                }
+            }
+        }
+        if !found {
+            eprintln!(
+                "\nYou specified the configuration name {}, but the content of that configuration \
+                   was not found.\n",
+                config_name,
+            );
+            std::process::exit(1);
         }
     }
 
@@ -243,27 +315,33 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     // If server is remote, see if we can ssh to it.  Otherwise, busted.
 
     if remote {
-        let t = Instant::now();
         let host = config["REMOTE_HOST"].clone();
-        let o = Command::new("ssh")
-            .arg(&host)
-            .arg("-n")
-            .arg("echo")
-            .output()
-            .expect("failed to execute initial ssh");
-        println!("\ninitial test ssh took {:.1} seconds", elapsed(&t));
-        if o.status.code() != Some(0) {
-            let m = String::from_utf8(o.stderr).unwrap();
-            println!("\ntest ssh failed with error message =\n{}", m);
+        if !filehost_used || filehost != host {
+            let t = Instant::now();
+            let o = Command::new("ssh")
+                .arg(&host)
+                .arg("-n")
+                .arg("echo")
+                .output()
+                .expect("failed to execute initial ssh");
             println!(
-                "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
-                host
+                "\ninitial test ssh to {} took {:.1} seconds",
+                host,
+                elapsed(&t)
             );
-            println!("Here are two possible explanations:");
-            println!("1. You have the wrong REMOTE_HOST.");
-            println!("2. You first need to do something to enable crossing a firewall.");
-            println!("   If so, ask one of your colleagues how to do this.\n");
-            std::process::exit(1);
+            if o.status.code() != Some(0) {
+                let m = String::from_utf8(o.stderr).unwrap();
+                println!("\ntest ssh to {} failed with error message =\n{}", host, m);
+                println!(
+                    "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
+                    host
+                );
+                println!("Here are two possible explanations:");
+                println!("1. You have the wrong REMOTE_HOST.");
+                println!("2. You first need to do something to enable crossing a firewall.");
+                println!("   If so, ask one of your colleagues how to do this.\n");
+                std::process::exit(1);
+            }
         }
     }
 
@@ -381,6 +459,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
             if remote_id.is_none() {
                 eprintln!("\nUnable to determine remote process id.\n");
+                eprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
         }
