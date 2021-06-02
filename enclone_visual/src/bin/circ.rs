@@ -112,7 +112,11 @@ mod engine {
     }
 
     impl<'a> canvas::Program<Message> for Engine {
-        fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
+        fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
+            let pos = cursor.position();
+            if pos.is_some() {
+                println!("cursor = {:?}", pos);
+            }
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let circle = Path::circle(frame.center(), radius);
