@@ -39,9 +39,9 @@ jobs:
           name: enclone
           path: artifacts
   macos:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.7
+      MACOSX_DEPLOYMENT_TARGET: 10.9
     steps:
       - name: Checkout git repository
         uses: actions/checkout@master
