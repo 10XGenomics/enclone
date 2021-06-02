@@ -26,10 +26,7 @@ jobs:
           /bin/bash -lec '
           apt-get update
           && apt-get install -y libfreetype6-dev
-          && ln -s
-            /usr/lib/x86_64-linux-gnu/libfreetype.a
-            /usr/lib/x86_64-linux-gnu/libfreetype.so
-            /mnt/build/toolchains/versions/latest/lib/
+          && ln -s /usr/lib/x86_64-linux-gnu/libfreetype.a /usr/lib/x86_64-linux-gnu/libfreetype.so /mnt/build/toolchains/versions/latest/lib/
           && env -u PKG_CONFIG_LIBDIR cargo check --release
           && rm -f /mnt/build/toolchains/versions/latest/lib/libfreetype.so
           && cargo build --release
