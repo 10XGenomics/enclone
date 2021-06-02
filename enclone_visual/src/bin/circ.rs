@@ -103,16 +103,14 @@ mod engine {
 
     impl<'a> canvas::Program<Message> for Engine {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
-            let pos = cursor.position();
+            let pos = cursor.position_in(&bounds);
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let center = frame.center();
             let circle1 = Path::circle(center, radius);
             if pos.is_some() {
-                // Magic constant that seems to be needed.
-                const YSHIFT: f32 = 43.0;
                 let xdiff = pos.unwrap().x - center.x;
-                let ydiff = pos.unwrap().y - center.y - YSHIFT;
+                let ydiff = pos.unwrap().y - center.y;
                 let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                 if dist <= radius {
                     frame.translate(Vector { x: 100.0, y: 100.0 });
