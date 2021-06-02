@@ -3,16 +3,16 @@
 use iced::{
     button, Button, Column, Container, Element, Length, Sandbox, Settings, Text,
 };
-
-use grid::Grid;
+use engine::Engine;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn main() -> iced::Result {
-    Clock::run(Settings::default())
+    Circles::run(Settings::default())
 }
 
 #[derive(Default)]
-struct Clock {
-    grid: Grid,
+struct Circles {
+    engine: Engine,
     button: button::State,
 }
 
@@ -21,15 +21,15 @@ enum Message {
     ButtonPressed,
 }
 
-impl Sandbox for Clock {
+impl Sandbox for Circles {
     type Message = Message;
 
     fn new() -> Self {
-        Clock::default()
+        Circles::default()
     }
 
     fn title(&self) -> String {
-        String::from("Clock - Iced")
+        String::from("Circles")
     }
 
     fn update(
@@ -38,6 +38,14 @@ impl Sandbox for Clock {
     ) {
         match message {
             Message::ButtonPressed => {
+                self.engine.state.button_pressed = true;
+                let start = SystemTime::now();
+                let since_the_epoch = start
+                    .duration_since(UNIX_EPOCH)
+                    .expect("Time went backwards");
+                let nanos = since_the_epoch.subsec_nanos() as u64;
+                let radius = (nanos % 99) as f32;
+                self.engine.state.radius = radius;
             }
         }
     }
@@ -49,7 +57,7 @@ impl Sandbox for Clock {
         let content = Column::new()
             .push(button)
             .push(
-                self.grid
+                self.engine
                     .view()
                     .map(move |_message| Message::ButtonPressed),
             );
@@ -60,7 +68,7 @@ impl Sandbox for Clock {
     }
 }
 
-mod grid {
+mod engine {
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
@@ -68,33 +76,35 @@ mod grid {
     use std::time::{SystemTime, UNIX_EPOCH};
 
     #[derive(Default)]
-    struct State {
+    pub struct State {
+        pub button_pressed: bool,
+        pub radius: f32,
     }
 
-    pub struct Grid {
-        state: State,
+    pub struct Engine {
+        pub state: State,
+        pub last_radius: f32,
     }
 
     #[derive(Debug, Clone)]
     pub enum Message {
     }
 
-    impl Default for Grid {
+    impl Default for Engine {
         fn default() -> Self {
             Self { 
                 state: State::default(),
+                last_radius: 0.0,
             }
         }
     }
 
-    impl Grid {
+    impl Engine {
 
-        /*
         pub fn update(&mut self, message: Message) {
             match message {
             }
         }
-        */
 
         pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
@@ -104,15 +114,19 @@ mod grid {
         }
     }
 
-    impl<'a> canvas::Program<Message> for Grid {
+    impl<'a> canvas::Program<Message> for Engine {
         fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
+            /*
             let start = SystemTime::now();
             let since_the_epoch = start
                 .duration_since(UNIX_EPOCH)
                 .expect("Time went backwards");
             let nanos = since_the_epoch.subsec_nanos() as u64;
             let radius = (nanos % 99) as f32;
+            */
+            let radius = self.state.radius;
+            // self.last_radius = radius;
             let circle = Path::circle(frame.center(), radius);
             frame.fill(&circle, Color::BLACK);
             vec![frame.into_geometry()]
