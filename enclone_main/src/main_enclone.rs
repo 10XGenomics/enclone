@@ -784,7 +784,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     });
     ctl.perf_stats(&tdi, "setting up readers");
 
-    // Test for a bug that occurred in customer data.
+    // Trap for a bug that occurred in customer data at a much later point.  Leave this in place.
 
     if ctl.evil_eye {
         for ex in exact_clonotypes.iter() {
