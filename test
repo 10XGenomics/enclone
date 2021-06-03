@@ -44,7 +44,8 @@ endif
 #### COMPILE FOR TEST SO WE CAN SEPARATELY TRACK COMPILE TIME ####
 
 set compile_start = `date +%s`
-cargo test --no-run >& /dev/null
+cargo test --features cpu --no-run >& /dev/null
+cargo test --features linkless --no-run >& /dev/null
 if ( $status != 0 ) then
     echo "compilation failed, try cargo test --no-run
     exit 1

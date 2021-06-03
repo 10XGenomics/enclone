@@ -291,7 +291,7 @@ pub struct JoinPrintOpt {
     pub ann: bool,     // print annotations of contigs
     pub ann0: bool,    // print annotations of contigs, after truncation to V..J
     pub show_bc: bool, // show barcodes
-    pub quiet: bool,   // don't print join events
+    pub quiet: bool,   // do not print join events
     pub pfreq: usize,  // show data for 1/n joins even if correct
 }
 
