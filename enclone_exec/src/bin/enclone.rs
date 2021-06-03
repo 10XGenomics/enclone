@@ -17,6 +17,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let t = Instant::now();
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
+    let mut no_kill = false;
+    for i in 1..args.len() {
+        if args[i] == "NO_KILL" {
+            no_kill = true;
+        }
+    }
 
     // Client run of enclone.
 
@@ -41,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // improved.
 
             eprint!("{}", res.unwrap_err());
-            if USING_PAGER.load(SeqCst) {
+            if !no_kill && USING_PAGER.load(SeqCst) {
                 let ppid = getppid();
                 kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
             } else {

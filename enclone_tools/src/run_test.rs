@@ -156,6 +156,12 @@ pub fn run_test(
             // change the algorithms, this may change.
             new = new.arg("MAX_CORES=24")
         }
+
+        // Turn off process killing, which is needed to get enclone to emit the correct exit
+        // code, but doesn't play nicely with the testing machinery.
+
+        new = new.arg("NO_KILL");
+
         // dubious use of expect:
         let new = new
             .output()

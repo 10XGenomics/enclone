@@ -131,6 +131,8 @@ pub fn setup(
                 ctl.gen_opt.split = true;
             } else if args[i].starts_with("CONFIG=") {
                 ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
+            } else if args[i] == "NO_KILL" {
+                to_delete[i] = true;
             }
         }
         for (key, value) in env::vars() {
