@@ -23,7 +23,7 @@ jobs:
           docker run -v ${{github.workspace}}:/root
           -e GITHUB_SHA -e GITHUB_REF
           docker.pkg.github.com/10xdev/toolchain-scripts/toolchain:latest
-          /bin/bash -lec '
+          /bin/bash -leuxc '
           apt-get update
           && apt-get install -y libfreetype6-dev pkg-config
           && ln -s /usr/lib/x86_64-linux-gnu/libfreetype.a /usr/lib/x86_64-linux-gnu/libfreetype.so /mnt/build/toolchains/versions/latest/lib/
