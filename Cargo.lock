@@ -1553,6 +1553,7 @@ dependencies = [
  "attohttpc",
  "debruijn",
  "dirs 3.0.2",
+ "enclone",
  "enclone_core",
  "evalexpr",
  "fs_extra",

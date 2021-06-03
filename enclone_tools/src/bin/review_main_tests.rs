@@ -5,15 +5,15 @@
 //
 // NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
+use enclone::misc1::setup_pager;
 use enclone_core::testlist::*;
 use enclone_tools::run_test::*;
-use pager::Pager;
 use pretty_trace::*;
 use rayon::prelude::*;
 
 fn main() {
     PrettyTrace::new().on();
-    Pager::with_pager("less -R -F -X").setup();
+    setup_pager(true);
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
