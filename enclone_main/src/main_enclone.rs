@@ -784,20 +784,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     });
     ctl.perf_stats(&tdi, "setting up readers");
 
-    // Test for a bug that occurred in customer data.
-
-    if ctl.evil_eye {
-        for ex in exact_clonotypes.iter() {
-            for j in 0..ex.clones.len() {
-                assert!(ex.clones[j].len() > 0);
-            }
-            let mut _datasets = Vec::<String>::new();
-            for j in 0..ex.clones.len() {
-                _datasets.push(ctl.origin_info.dataset_list[ex.clones[j][0].dataset_index].clone());
-            }
-        }
-    }
-
     // Find and print clonotypes.  (But we don't actually print them here.)
 
     let torb = Instant::now();

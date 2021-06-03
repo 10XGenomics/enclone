@@ -251,7 +251,7 @@ pub fn proc_lvar1(
     } else if x == "datasets_cell" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
-            datasets.push(ctl.origin_info.dataset_list[ex.clones[j][0].dataset_index].clone());
+            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
         }
         if pass == 2 {
             speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));

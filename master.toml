@@ -44,6 +44,7 @@ graph_simple = "0.1.2"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 iced = { version = "0.3", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
 iced_aw = { git = "https://github.com/iced-rs/iced_aw", rev = "3dfce43396af457aaee835dbe281663a41a261ab", default-features = false, features = ["card", "colors", "modal"] }
+iced_native = "0.4"
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
@@ -63,6 +64,7 @@ pretty_trace = "0.5"
 procfs = "0.9"
 prost = { version = ">=0.6.1, <0.8", features = [] }
 prost-build = ">=0.6.1, <0.8"
+rand = "0.8"
 rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"

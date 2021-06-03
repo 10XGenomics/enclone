@@ -1576,11 +1576,13 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.64"
 dependencies = [
+ "chrono",
  "enclone_core",
  "enclone_main",
  "failure",
  "iced",
  "iced_aw",
+ "iced_native",
  "io_utils",
  "itertools",
  "lazy_static",
