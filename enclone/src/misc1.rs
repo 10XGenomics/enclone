@@ -29,7 +29,7 @@ use vector_utils::*;
 #[cfg(not(target_os = "windows"))]
 pub fn setup_pager(pager: bool) {
     // If the output is going to a terminal, set up paging so that output is in effect piped to
-    // "less -R -F -X".
+    // "less -R -F -X -K".
     //
     // ∙ The option -R is used to render ANSI escape characters correctly.  We do not use
     //   -r instead because if you navigate backwards in less -r, stuff gets screwed up,
@@ -44,7 +44,7 @@ pub fn setup_pager(pager: bool) {
     //   from enclone.  This is really bad, so do not turn off this option!
 
     if pager {
-        Pager::with_pager("less -R -F -X").setup();
+        Pager::with_pager("less -R -F -X -K").setup();
     }
 }
 

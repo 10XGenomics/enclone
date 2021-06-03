@@ -1387,6 +1387,7 @@ dependencies = [
  "flate2",
  "io_utils",
  "itertools",
+ "nix 0.19.1",
  "perf_stats",
  "pretty_trace",
  "rayon",
