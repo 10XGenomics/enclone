@@ -83,17 +83,6 @@ endif
 echo
 cargo test --features cpu test_accounting -- --nocapture |& post_process_test
 
-##### NONZERO EXIT STATUS #####
-
-# Test that when enclone fails, it returns nonzero exit status.  This is not the same as testing
-# for this inside Rust's testing machinery.
-
-enclone nonsense >& /dev/null
-if ( $status == 0 ) then
-    echo "\nThe command \"enclone nonsense\" returned zero exit status.\n"
-    exit 1
-endif
-
 ##### RUN TEST GROUP 1 #####
 
 if ( $arg1 != linkless ) then
