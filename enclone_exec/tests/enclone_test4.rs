@@ -261,11 +261,11 @@ fn test_dependency_structure() {
         }
     }
 
-    // Don't allow any crate except enclone_main to reach the enclone crate.
+    // Don't allow any crate except enclone_main and enclone_tools to reach the enclone crate.
 
     let top = dir_list("..");
     for d in top.iter() {
-        if d.starts_with("enclone") && d != "enclone_main" {
+        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_tools" {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
                 let f = open_for_read![&toml];

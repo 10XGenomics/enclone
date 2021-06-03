@@ -652,7 +652,7 @@ pub fn process_special_arg(
         || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
     {
         xcrs.push(arg.to_string());
-    } else {
+    } else if arg != "--help" {
         return Err(format!("\nUnrecognized argument {}.\n", arg));
     }
     Ok(())

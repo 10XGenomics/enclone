@@ -26,6 +26,7 @@ path = "src/bin/enclone.rs"
 [dependencies]
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual" }
+nix = "0.19.1"
 pretty_trace = "0.5"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 

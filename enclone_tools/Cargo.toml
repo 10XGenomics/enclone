@@ -24,6 +24,7 @@ ansi_escape = "0.1"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 debruijn = "0.3.2"
 dirs = "3.0.1"
+enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
 evalexpr = "5.0.5"
 fs_extra = "1.1"

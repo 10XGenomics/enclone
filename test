@@ -41,6 +41,29 @@ if ( $elapsed_linktest > 86400 ) then
     echo $linkstart > stamps/last_linktest
 endif
 
+#### COMPILE FOR TEST SO WE CAN SEPARATELY TRACK COMPILE TIME ####
+
+set compile_start = `date +%s`
+
+cargo test --features cpu test_accounting --no-run >& /dev/null
+if ( $status != 0 ) then
+    echo "compilation failed"
+    exit 1
+endif
+cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
+    --test enclone_test4 --test enclone_test_peak_mem --test test_com --no-run >& /dev/null
+if ( $status != 0 ) then
+    echo "compilation failed"
+    exit 1
+endif
+cargo test -p enclone_tail --lib --no-run >& /dev/null
+if ( $status != 0 ) then
+    echo "compilation failed"
+    exit 1
+endif
+set compile_end = `date +%s`
+set compile_elapsed = `expr $compile_end - $compile_start`
+
 ##### GET START TIME #####
 
 set start = `date +%s`
@@ -94,7 +117,8 @@ set elapsed = `expr $end - $start`
 
 ##### FAIL IF TOO MUCH TIME USED #####
 
-set expected = 171
+echo "\ntest compile time = $compile_elapsed seconds"
+set expected = 135
 set fudge_num = 11
 set fudge_den = 10
 set expected_plus_times = `expr $expected \* $fudge_num`
@@ -108,7 +132,7 @@ if ( $elapsed_times > $expected_plus_times ) then
     echo
     exit 1
 else
-    echo "\ntotal test time = $elapsed seconds versus expected time of $expected seconds"
+    echo "total noncompile test time = $elapsed seconds versus expected time of $expected seconds"
 endif
 
 ##### DONE #####

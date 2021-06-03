@@ -17,3 +17,7 @@ pub mod setup;
 pub mod split_orbits;
 pub mod subset;
 pub mod vars;
+
+use std::sync::atomic::AtomicBool;
+
+pub static USING_PAGER: AtomicBool = AtomicBool::new(false);

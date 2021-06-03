@@ -109,7 +109,7 @@ pub const GTESTS: [&str; 13] = [
          AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
 ];
 
-pub const TESTS: [&str; 236] = [
+pub const TESTS: [&str; 237] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -696,6 +696,8 @@ pub const TESTS: [&str; 236] = [
     r###"BCR=123085 CDR3=CVRGLRTW PCOLS=barcodes,v_name1,j_name1,v_id1,j_id1 POUT=stdouth"###,
     // 236. test MAX_HEAVIES=1
     r###"BCR=123085 CDR3=CASPVPYYYDSSGYPYW MAX_HEAVIES=1 EXPECT_NULL"###,
+    // 237. test enclone --help
+    r###"--help NO_PRE EXPECT_OK"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

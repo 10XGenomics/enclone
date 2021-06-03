@@ -249,6 +249,11 @@ subject to server load.  It also only runs at 10x Genomics.</p>
    because the output was going to the alternate screen.  This seems to require manual testing.
 
 3. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
+
+4. We had buggy behavior that when enclone was called from a terminal window, and it failed,
+   it returned zero exit status, even though when called e.g. from a script, it would return
+   a nonzero value.  We don't know how to automated testing for this behavior.
+
 </pre>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
