@@ -2,6 +2,7 @@
 //
 // See README for documentation.
 
+use crate::PAGER_PID;
 use chrono::{TimeZone, Utc};
 use enclone::misc1::*;
 use enclone_args::proc_args::*;
@@ -20,6 +21,7 @@ use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
 use string_utils::*;
 use tilde_expand::tilde_expand;
@@ -144,7 +146,10 @@ pub fn setup(
         *argsx = args.clone();
         if args.len() == 1 || args.contains(&"help".to_string()) {
             PrettyTrace::new().on();
-            setup_pager(!nopager && !ctl.gen_opt.profile && !ctl.gen_opt.toy_com);
+            if !nopager && !ctl.gen_opt.profile && !ctl.gen_opt.toy_com {
+                let pid = setup_pager(true);
+                PAGER_PID.store(pid, SeqCst);
+            }
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {

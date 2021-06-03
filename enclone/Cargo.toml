@@ -29,11 +29,13 @@ dirs = "3.0.1"
 enclone_args = { path = "../enclone_args" }
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1.2"
+errno = "0.2"
 evalexpr = "5.0.5"
 graph_simple = "0.1.2"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
+libc = "0.2.85"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 petgraph = "0.5"
