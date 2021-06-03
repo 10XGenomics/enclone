@@ -1,3 +1,6 @@
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["--codegen=link-args=-Wl,--compress-debug-sections=zlib"]
+
 [alias]
 
 # "cargo t" exercises nearly the full test suite, except for the giant test "enclone.test"
