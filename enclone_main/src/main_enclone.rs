@@ -148,7 +148,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     if ctl.gen_opt.split {
         return Ok(MainEncloneOutput::default());
     }
-    if argsx.len() == 1 || (argsx.len() > 1 && argsx[1] == "help") {
+    if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
         return Ok(MainEncloneOutput::default());
     }
 
