@@ -1,14 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_main;
 use enclone_main::main_enclone::main_enclone;
 use enclone_visual::enclone_client::enclone_client;
 use enclone_visual::enclone_server::enclone_server;
-use nix::sys::signal::{kill, SIGKILL};
-use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
-use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
 
 #[tokio::main]
@@ -31,10 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let res = main_enclone(&mut args).await;
         if res.is_err() {
             eprintln!("{}", res.unwrap_err());
-            let pid = enclone_main::PAGER_PID.load(SeqCst);
-            eprintln!("(deliberately killing the pager process to force nonzero exit status)\n");
-            kill(Pid::from_raw(pid as i32), SIGKILL).unwrap();
-            std::process::exit(1); // should not be executed
+            std::process::exit(1);
         }
         std::process::exit(0);
     }

@@ -6,11 +6,9 @@ use enclone_core::defs::*;
 use equiv::*;
 use itertools::*;
 #[cfg(not(target_os = "windows"))]
+use pager::Pager;
 use perf_stats::*;
 use std::collections::HashMap;
-use std::ffi::{CString, OsString};
-use std::os::unix::ffi::OsStringExt;
-use std::ptr;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -29,11 +27,9 @@ use vector_utils::*;
 // Linux.
 
 #[cfg(not(target_os = "windows"))]
-pub fn setup_pager(pager: bool) -> usize {
+pub fn setup_pager(pager: bool) {
     // If the output is going to a terminal, set up paging so that output is in effect piped to
     // "less -R -F -X".
-    //
-    // Return value is the pid of the child.
     //
     // ∙ The option -R is used to render ANSI escape characters correctly.  We do not use
     //   -r instead because if you navigate backwards in less -r, stuff gets screwed up,
@@ -46,76 +42,10 @@ pub fn setup_pager(pager: bool) -> usize {
     // ∙ The -X option is needed because we found that in full screen mode on OSX Catalina, output
     //   was sent to the alternate screen, and hence it appeared that one got no output at all
     //   from enclone.  This is really bad, so do not turn off this option!
-    //
-    // Code copied from pager crate because we need to be able to track the pid.
-
-    fn osstring2cstring(s: OsString) -> CString {
-        unsafe { CString::from_vec_unchecked(s.into_vec()) }
-    }
-
-    fn split_string(s: &OsString) -> Vec<OsString> {
-        match s.clone().into_string() {
-            Ok(cmd) => cmd.split_whitespace().map(OsString::from).collect(),
-            Err(cmd) => vec![cmd],
-        }
-    }
-
-    fn fork() -> libc::pid_t {
-        unsafe { libc::fork() }
-    }
-
-    fn execvp(cmd: &OsString) {
-        let cstrings = split_string(cmd)
-            .into_iter()
-            .map(osstring2cstring)
-            .collect::<Vec<_>>();
-        let args = cstrings
-            .iter()
-            .map(|c| c.as_ptr())
-            .chain(Some(ptr::null()))
-            .collect::<Vec<_>>();
-        errno::set_errno(errno::Errno(0));
-        unsafe { libc::execvp(args[0], args.as_ptr()) };
-    }
-
-    fn dup2(fd1: i32, fd2: i32) {
-        assert!(unsafe { libc::dup2(fd1, fd2) } > -1);
-    }
-
-    fn close(fd: i32) {
-        assert_eq!(unsafe { libc::close(fd) }, 0);
-    }
-
-    fn pipe() -> (i32, i32) {
-        let mut fds = [0; 2];
-        assert_eq!(unsafe { libc::pipe(fds.as_mut_ptr()) }, 0);
-        (fds[0], fds[1])
-    }
 
     if pager {
-        let (pager_stdin, main_stdout) = pipe();
-        let pid = fork();
-        match pid {
-            -1 => {
-                // Fork failed
-                close(pager_stdin);
-                close(main_stdout);
-            }
-            0 => {
-                // I am child
-                dup2(main_stdout, libc::STDOUT_FILENO);
-                close(pager_stdin);
-            }
-            _ => {
-                // I am parent
-                dup2(pager_stdin, libc::STDIN_FILENO);
-                close(main_stdout);
-                execvp(&OsString::from("less -R -F -X"));
-            }
-        }
-        return pid as usize;
+        Pager::with_pager("less -R -F -X").setup();
     }
-    0
 }
 
 #[cfg(target_os = "windows")]

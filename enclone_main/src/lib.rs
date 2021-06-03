@@ -17,7 +17,3 @@ pub mod setup;
 pub mod split_orbits;
 pub mod subset;
 pub mod vars;
-
-use std::sync::atomic::AtomicUsize;
-
-pub static PAGER_PID: AtomicUsize = AtomicUsize::new(0);
