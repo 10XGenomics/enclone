@@ -31,12 +31,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.len() < 2 || args[1] != "SERVER" {
         let res = main_enclone(&mut args).await;
         if res.is_err() {
-            eprintln!("{}", res.unwrap_err());
+
+            // If there was an error and we had used the pager, then std::process::exit(1) will
+            // result in exit status 0.  To get nonzero exit status, we instead kill the parent
+            // process, which is less.  That's a little surprising, but that's how it works:
+            // it is the parent that is less.
+            //
+            // Handling of the last newline is problematic.  Sometimes the kill causes a newline,
+            // and sometimes it doesn't.  Mostly it does.  Not sure if this behavior could be
+            // improved.
+
+            eprint!("{}", res.unwrap_err());
             if USING_PAGER.load(SeqCst) {
                 let ppid = getppid();
                 kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
+            } else {
+                eprintln!("");
+                std::process::exit(1);
             }
-            std::process::exit(1);
         }
         std::process::exit(0);
     }
