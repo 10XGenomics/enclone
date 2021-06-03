@@ -684,7 +684,7 @@ impl ExactClonotype {
 }
 
 // Define clonotype info data structure.  The fact that we have multiple data structures
-// encapsulating the same info is legacy and to be cleaned up.
+// encapsulating the same info is legacy and should be cleaned up.
 //
 // The vectors in a CloneInfo object mostly have length two.  The exceptions are in
 // improper clones (not having chains of both types).
