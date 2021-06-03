@@ -38,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let res = main_enclone(&mut args).await;
         if res.is_err() {
             // If there was an error and we had used the pager, then std::process::exit(1) will
-            // result in exit status 0 if enclone was invoked from a terminal window, and 
+            // result in exit status 0 if enclone was invoked from a terminal window, and
             // probably not otherwise.  To get nonzero exit status, we instead kill the parent
             // process, which is less.  That's a little surprising, but that's how it works:
             // it is the parent that is less.
