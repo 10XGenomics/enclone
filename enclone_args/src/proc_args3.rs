@@ -237,13 +237,17 @@ fn get_path_or_internal_id(
                 if !ctl.gen_opt.config.contains_key("ones") {
                     let mut msg = format!(
                         "\nSomething is wrong.  This is an internal run, but \
-                        the configuration\nvariable \"ones\" is undefined.  Here are the \
-                        configuration variables that are defined:\n\n"
+                        the configuration\nvariable \"ones\" is undefined.\n"
                     );
-                    for (key, value) in ctl.gen_opt.config.iter() {
-                        msg += &mut format!("{} = {}", key, value);
+                    if ctl.gen_opt.config.len() == 0 {
+                        msg += "In fact, there are no configuration variables.\n";
+                    } else {
+                        msg += "Here are the configuration variables that are defined:\n\n";
+                        for (key, value) in ctl.gen_opt.config.iter() {
+                            msg += &mut format!("{} = {}", key, value);
+                        }
+                        msg += "\n";
                     }
-                    msg += "\n";
                     return Err(msg);
                 }
                 let url = format!("{}/{}", ctl.gen_opt.config["ones"], q);
