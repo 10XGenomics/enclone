@@ -85,7 +85,7 @@ endif
 #     echo "\nrunning cargo update, as it has been more than one week since it was last done"
 #     echo "this could cause problems\n"
 #     echo "INTERRUPTING THE UPDATE IS PROBABLY NOT A GOOD IDEA"
-#     ./update_enclone
+#     ./scripts/update_enclone
 #     if ( $status != 0 ) then
 #         exit 1
 #     endif
