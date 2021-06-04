@@ -10,7 +10,8 @@ use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
 use std::sync::atomic::Ordering::SeqCst;
-use std::time::Instant;
+use std::time::{Duration, Instant};
+use std::thread;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -43,16 +44,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // process, which is less.  That's a little surprising, but that's how it works:
             // it is the parent that is less.
             //
-            // Handling of the last newline is problematic.  Sometimes the kill causes a newline,
-            // and sometimes it doesn't.  Mostly it does.  Not sure if this behavior could be
-            // improved.
+            // The little big of sleep seems to prevent printing of an extra newline, but this
+            // is flaky.
 
-            eprint!("{}", res.unwrap_err());
+            eprintln!("{}", res.unwrap_err());
             if !no_kill && USING_PAGER.load(SeqCst) {
+                thread::sleep(Duration::from_millis(10));
                 let ppid = getppid();
                 kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
+                thread::sleep(Duration::from_millis(10));
             } else {
-                eprintln!("");
                 std::process::exit(1);
             }
         }
