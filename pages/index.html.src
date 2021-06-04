@@ -339,17 +339,9 @@ Restart your terminal session; you can now run #enclone.</p>
 Only required files will be downloaded.  
 See <a href="pages/auto/history.html">history</a> for what has changed.</span></p>
 
-<p>Previous releases of #enclone, matching particular Cell Ranger releases, may be found here:
-<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_5.0.0">5.0.0</a>
-(5.0.1 used the same #enclone version)
-<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_6.0.0">6.0.0</a>
-(6.0.1 used the same #enclone version).
-<br>To use these, click on the <code>enclone_linux</code> or <code>enclone_macos</code> link 
-(on one of those pages)
-to download the binary executable file, then e.g. <code>chmod +x enclone_macos</code> to add
-execute permission, then run with e.g. <code>enclone_macos</code>.
-
-</p>
+<p>Information about previous releases of #enclone, matching particular Cell Ranger releases is
+<a href="pages/auto/cellranger.html>here</a>, along with an inventory of #enclone changes that
+affect Cell Ranger output.</p>
 
 <hr>
 
@@ -564,6 +556,10 @@ documentation within its online menus.  To get started you should:</p>
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/d_genes.html">D genes, junction regions
+    </a></td> <td align="left">everyone</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/auto/cellranger.html">#enclone in cellranger
     </a></td> <td align="left">everyone</td>
 </tr>
 
