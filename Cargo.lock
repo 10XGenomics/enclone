@@ -4064,9 +4064,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.10"
+version = "0.5.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cb804cefc5d2d54322b76042b2db96df6a53147b10c76374d812dd1952b4903"
+checksum = "62fa7de5d6d377f22cd43dbfcb76daf3bc9fedb3bf4ee024577f563824584b68"
 dependencies = [
  "backtrace",
  "failure",
