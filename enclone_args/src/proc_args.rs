@@ -77,20 +77,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             break;
         }
     }
-    if ctl.gen_opt.internal_run && ctl.gen_opt.config.len() == 0 {
-        return Err(format!(
-            "\nYou need to set up your configuration file, please ask for help.\n"
-        ));
-    }
     for i in 1..args.len() {
         if args[i] == "FORCE_EXTERNAL".to_string() {
             ctl.gen_opt.internal_run = false;
         }
-        /*
-        if args[i] == "INTERNAL".to_string() {
-            ctl.gen_opt.internal_run = true;
-        }
-        */
     }
     if ctl.gen_opt.internal_run {
         if ctl.evil_eye {
@@ -911,6 +901,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Do residual argument processing.
 
+    if ctl.gen_opt.internal_run && ctl.gen_opt.config.len() == 0 {
+        return Err(format!(
+            "\nYou need to set up your configuration file, please ask for help.\n"
+        ));
+    }
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     )?;
