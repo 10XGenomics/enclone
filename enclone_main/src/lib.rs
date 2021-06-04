@@ -14,9 +14,11 @@ pub mod opt_d_val;
 pub mod populate_features;
 pub mod sec_mem;
 pub mod setup;
+pub mod some_filters;
 pub mod split_orbits;
 pub mod subset;
 pub mod vars;
+pub mod weak_chains;
 
 use std::sync::atomic::AtomicBool;
 

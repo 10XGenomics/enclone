@@ -680,9 +680,9 @@ pub const TESTS: [&str; 237] = [
     //
     // 229. test KEEP_CLONO_IF_CELL_MAX with comp
     r###"BCR=123085 CVARSP=comp KEEP_CLONO_IF_CELL_MAX="comp1 >= 18" AMINO=cdr3"###,
-    // 230. weird but correct result, becaused filtering is applied simultaneously with other
-    // filters
-    r###"BCR=123085 KEEP_CLONO_IF_CELL_MAX="nchains > 2" CDR3=CTRDRDLRGATDAFDIW"###,
+    // 230. not really clear what this is doing, but don't delete, as it used to represent
+    // strange behavior
+    r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW"###,
     // 231. test ≤
     r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 232. test nonsense variable in linear constraint
