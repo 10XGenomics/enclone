@@ -165,7 +165,6 @@ pub fn vars_and_shares(
 pub fn delete_weaks(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
-    mults: &Vec<usize>, // should eliminate
     exact_clonotypes: &Vec<ExactClonotype>,
     _total_cells: usize,
     mat: &Vec<Vec<Option<usize>>>,
@@ -321,42 +320,6 @@ pub fn delete_weaks(
             }
         }
         j = k;
-    }
-
-    // Based on the number of cells in each column, decide which exact subclonotypes
-    // look like junk.  Preliminary heuristic.
-
-    if cols > 2 {
-        let mut ncells = vec![0; cols];
-        let mut col_entries = vec![Vec::<usize>::new(); cols];
-        for u in 0..nexacts {
-            for col in 0..cols {
-                let mid = mat[col][u];
-                if mid.is_some() {
-                    col_entries[col].push(u);
-                    let clonotype_id = exacts[u];
-                    ncells[col] += exact_clonotypes[clonotype_id].clones.len();
-                }
-            }
-        }
-        let total_cells: usize = mults.iter().sum();
-        for j in 0..cols {
-            if ncells[j] <= 20 && 8 * ncells[j] < total_cells {
-                for d in col_entries[j].iter() {
-                    if ctl.clono_filt_opt.weak_chains {
-                        bads[*d] = true;
-                    }
-                    let ex = &exact_clonotypes[exacts[*d]];
-                    for i in 0..ex.ncells() {
-                        fate.push((
-                            ex.clones[i][0].dataset_index,
-                            ex.clones[i][0].barcode.clone(),
-                            "failed WEAK_CHAINS filter".to_string(),
-                        ));
-                    }
-                }
-            }
-        }
     }
 
     // Remove onesies that do not have an exact match.

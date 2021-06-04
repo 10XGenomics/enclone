@@ -6,17 +6,15 @@ use self::refx::*;
 use crate::blacklist::*;
 use crate::determine_ref::*;
 use crate::disintegrate::*;
-use crate::doublets::*;
 use crate::fcell::*;
 use crate::filter_umi::*;
 use crate::flag_defective::*;
 use crate::inconsistent::*;
-use crate::merge_onesies::*;
 use crate::opt_d_val::*;
 use crate::populate_features::*;
 use crate::sec_mem::*;
 use crate::setup::*;
-use crate::split_orbits::*;
+use crate::some_filters::*;
 use crate::subset::*;
 use crate::vars::*;
 use debruijn::dna_string::DnaString;
@@ -648,10 +646,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
     ctl.perf_stats(&tumi, "umi filtering and such");
 
-    // Delete exact subclonotypes that appear to represent doublets.
+    // Run some filters.
 
-    let tdoublet = Instant::now();
-    delete_doublets(
+    some_filters(
         &mut orbits,
         is_bcr,
         &to_bc,
@@ -660,33 +657,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         &exact_clonotypes,
         &info,
         &raw_joins,
-    );
-    ctl.perf_stats(&tdoublet, "doublet filtering");
-
-    // Merge onesies where totally unambiguous, then check for disjoint orbits.
-
-    let tmerge = Instant::now();
-    merge_onesies(
-        &mut orbits,
-        &ctl,
-        &exact_clonotypes,
-        &info,
         &eq,
         &disintegrated,
+        &mut fate,
     );
-    ctl.perf_stats(&tmerge, "merging onesies");
-    let tsplit = Instant::now();
-    split_orbits(
-        &mut orbits,
-        is_bcr,
-        &to_bc,
-        &sr,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &raw_joins,
-    );
-    ctl.perf_stats(&tsplit, "splitting orbits");
 
     // Mark VDJ noncells.
 

@@ -133,10 +133,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Get config file if defined.  The config file is specified by an environment variable
     // of the form ENCLONE_CONFIG=filename or ENCLONE_CONFIG=filehost:filename.
+    //
+    // Note that even if ENCLONE_VIS is specified, we still look for ENCLONE_CONFIG.
 
     let mut filehost = String::new();
     let mut filehost_used = false;
-    if config_name.len() > 0 && !found {
+    if config_name.len() > 0 {
         let mut config_file_contents = String::new();
         if config_name.len() > 0 {
             for (key, value) in env::vars() {
@@ -505,14 +507,27 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                 err = err.between(&left, &right).to_string();
                             }
                             err = err.replace("\\n", "\n");
-                            output =
-                                format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
-
+                            let crash =
+                                err.contains("transport error: connection error: broken pipe");
+                            if crash {
+                                output = format!(
+                                    "\nIt would appear the the enclone server \
+                                    crashed.\nPlease look in the terminal window for a traceback \
+                                    and report it.\n"
+                                );
+                            } else {
+                                let msg = format!(
+                                    "\nThe enclone server is unhappy.  It says:\n\n{}",
+                                    err
+                                );
+                                output = msg.clone();
+                                eprintln!("{}", msg);
+                            }
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
-                            println!("server error =\n{}\n", emsg);
+                            print!("server error =\n{}", emsg);
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();

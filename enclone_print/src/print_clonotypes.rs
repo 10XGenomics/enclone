@@ -391,7 +391,6 @@ pub fn print_clonotypes(
                     delete_weaks(
                         &ctl,
                         &exacts,
-                        &mults,
                         &exact_clonotypes,
                         total_cells,
                         &mat,

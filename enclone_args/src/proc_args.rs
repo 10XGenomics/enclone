@@ -81,11 +81,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if args[i] == "FORCE_EXTERNAL".to_string() {
             ctl.gen_opt.internal_run = false;
         }
-        /*
-        if args[i] == "INTERNAL".to_string() {
-            ctl.gen_opt.internal_run = true;
-        }
-        */
     }
     if ctl.gen_opt.internal_run {
         if ctl.evil_eye {
@@ -275,78 +270,76 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Preprocess BI argument.
 
-    if ctl.gen_opt.internal_run {
-        for i in 1..args.len() {
-            if args[i].starts_with("BI=") {
-                let x = args[i].after("BI=").split(',').collect::<Vec<&str>>();
-                let mut y = Vec::<String>::new();
-                for j in 0..x.len() {
-                    if x[j].contains('-') {
-                        let (start, stop) = (x[j].before("-"), x[j].after("-"));
-                        if !start.parse::<usize>().is_ok()
-                            || !stop.parse::<usize>().is_ok()
-                            || start.force_usize() > stop.force_usize()
-                        {
-                            return Err(format!("\nIllegal range in BI argument.\n"));
-                        }
-                        let (start, stop) = (start.force_usize(), stop.force_usize());
-                        for j in start..=stop {
-                            y.push(format!("{}", j));
-                        }
-                    } else {
-                        y.push(x[j].to_string());
+    for i in 1..args.len() {
+        if args[i].starts_with("BI=") {
+            if !ctl.gen_opt.internal_run {
+                return Err(format!("\nUnrecognized argument {}.\n", args[i]));
+            }
+            let x = args[i].after("BI=").split(',').collect::<Vec<&str>>();
+            let mut y = Vec::<String>::new();
+            for j in 0..x.len() {
+                if x[j].contains('-') {
+                    let (start, stop) = (x[j].before("-"), x[j].after("-"));
+                    if !start.parse::<usize>().is_ok()
+                        || !stop.parse::<usize>().is_ok()
+                        || start.force_usize() > stop.force_usize()
+                    {
+                        return Err(format!("\nIllegal range in BI argument.\n"));
                     }
+                    let (start, stop) = (start.force_usize(), stop.force_usize());
+                    for j in start..=stop {
+                        y.push(format!("{}", j));
+                    }
+                } else {
+                    y.push(x[j].to_string());
                 }
-                let mut args2 = Vec::<String>::new();
-                for j in 0..i {
-                    args2.push(args[j].clone());
-                }
-                let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
-                let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
-                for n in y.iter() {
-                    if *n != "m1" {
-                        if !n.parse::<usize>().is_ok()
-                            || n.force_usize() < 1
-                            || n.force_usize() > 12
-                        {
-                            return Err(format!(
-                                "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
-                            ));
-                        }
-                    } else if y.len() > 1 {
+            }
+            let mut args2 = Vec::<String>::new();
+            for j in 0..i {
+                args2.push(args[j].clone());
+            }
+            let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
+            let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
+            for n in y.iter() {
+                if *n != "m1" {
+                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 12 {
                         return Err(format!(
-                            "\nFor BI, if you specify m1, you can only specify m1.\n"
+                            "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
                         ));
                     }
-                    let mut found = false;
-                    for s in f.lines() {
-                        if s == format!("DONOR={}", n) {
-                            found = true;
-                        } else if found && s.starts_with("DONOR=") {
-                            break;
+                } else if y.len() > 1 {
+                    return Err(format!(
+                        "\nFor BI, if you specify m1, you can only specify m1.\n"
+                    ));
+                }
+                let mut found = false;
+                for s in f.lines() {
+                    if s == format!("DONOR={}", n) {
+                        found = true;
+                    } else if found && s.starts_with("DONOR=") {
+                        break;
+                    }
+                    if found {
+                        if s.starts_with("BCR=") {
+                            bcrv.push(s.after("BCR=").to_string());
                         }
-                        if found {
-                            if s.starts_with("BCR=") {
-                                bcrv.push(s.after("BCR=").to_string());
-                            }
-                            if s.starts_with("GEX=") {
-                                gexv.push(s.after("GEX=").to_string());
-                            }
-                            if s == "SPECIES=mouse" {
-                                args2.push("MOUSE".to_string());
-                            }
+                        if s.starts_with("GEX=") {
+                            gexv.push(s.after("GEX=").to_string());
+                        }
+                        if s == "SPECIES=mouse" {
+                            args2.push("MOUSE".to_string());
                         }
                     }
                 }
-                args2.push(format!("BCR={}", bcrv.iter().format(";")));
-                args2.push(format!("GEX={}", gexv.iter().format(";")));
-                gex = format!("{}", gexv.iter().format(";"));
-                for j in i + 1..args.len() {
-                    args2.push(args[j].clone());
-                }
-                args = args2;
-                break;
             }
+            args2.push(format!("BCR={}", bcrv.iter().format(";")));
+            args2.push(format!("GEX={}", gexv.iter().format(";")));
+            gex = format!("{}", gexv.iter().format(";"));
+            for j in i + 1..args.len() {
+                args2.push(args[j].clone());
+            }
+            args = args2;
+            break;
         }
     }
 
@@ -908,6 +901,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Do residual argument processing.
 
+    if ctl.gen_opt.internal_run && ctl.gen_opt.config.len() == 0 {
+        return Err(format!(
+            "\nYou need to set up your configuration file, please ask for help.\n"
+        ));
+    }
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     )?;

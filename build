@@ -85,7 +85,7 @@ endif
 #     echo "\nrunning cargo update, as it has been more than one week since it was last done"
 #     echo "this could cause problems\n"
 #     echo "INTERRUPTING THE UPDATE IS PROBABLY NOT A GOOD IDEA"
-#     ./update_enclone
+#     ./scripts/update_enclone
 #     if ( $status != 0 ) then
 #         exit 1
 #     endif
@@ -132,8 +132,7 @@ git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_c
 
 # sweep, to prevent target from becoming gigantic over time
 #
-# The cap is set at about 15 GB.  Using 10 GB is definitely too low.  The sweep is run at most 
-# once per day.
+# The cap is set at about 25 GB.  The sweep is run at most once per week.
 #
 # There is a file stamps/last_sweep that is NOT under git control, and should not be, because
 # each user needs to have their own file.
@@ -144,8 +143,8 @@ if !( -f stamps/last_sweep) then
 endif
 set last_sweep    = `cat stamps/last_sweep`
 set elapsed_sweep = `expr $start - $last_sweep`
-if ( $elapsed_sweep > 86400 ) then
-    cargo sweep --maxsize 10000 > /dev/null
+if ( $elapsed_sweep > 604800 ) then
+    cargo sweep --maxsize 25000 > /dev/null
     if ( $status != 0 ) then
         echo "sweep failed, please try rerunning by hand"
         echo "or perhaps you need to \"cargo install cargo-sweep\""

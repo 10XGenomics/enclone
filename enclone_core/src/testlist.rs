@@ -680,9 +680,9 @@ pub const TESTS: [&str; 237] = [
     //
     // 229. test KEEP_CLONO_IF_CELL_MAX with comp
     r###"BCR=123085 CVARSP=comp KEEP_CLONO_IF_CELL_MAX="comp1 >= 18" AMINO=cdr3"###,
-    // 230. weird but correct result, becaused filtering is applied simultaneously with other
-    // filters
-    r###"BCR=123085 KEEP_CLONO_IF_CELL_MAX="nchains > 2" CDR3=CTRDRDLRGATDAFDIW"###,
+    // 230. not really clear what this is doing, but don't delete, as it used to represent
+    // strange behavior
+    r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW"###,
     // 231. test ≤
     r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 232. test nonsense variable in linear constraint
@@ -729,7 +729,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 30] = [
+pub const EXTENDED_TESTS: [&str; 31] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -805,6 +805,9 @@ pub const EXTENDED_TESTS: [&str; 30] = [
          POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
     // 30. test on PD multi pipestance; failed before bug fix
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    // 31. previously this yielded a disconnected clonotype
+    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
+         NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

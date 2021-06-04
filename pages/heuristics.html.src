@@ -41,8 +41,30 @@ have the same length and differ at at most 10 bases.</li>
 of V..J.</li>
 </ol>
 This description is accurate for the current #enclone, and corresponds to changes that will appear
-in Cell Ranger in a version after 6.0
+in Cell Ranger in a version after 6.0.
 </p>
+
+<p>
+<b>Exact subclonotype ordering within a clonotype.</b>
+Originally we tried ordering the exact clonotypes in reverse order by the number of cells in
+a given exact subclonotype.  This had the perverse effect of sometimes placing 
+onesie (single chain) clonotypes
+at the top, which we thought not helpful.  After some experimentation we arrived at the following
+ordering, which although arbitrary, tends to place "more interesting" exact subclonotypes near
+the top:
+<ol>
+<li>For each exact subclonotype, we form a vector of boolean values reflecting the presence
+of a given chain in an exact subclonotype.  For example, in a two-chain clonotype, if both chains
+are present, the vector is <code>(true, true)</code>.  The ordering is reverse lexicographical,
+so that in the two chain case, the ordering is:
+<pre><code>(true, true)</code>
+<code>(true, false)</code>
+<code>(false, true)</code>.</pre></li>
+<li>Subject to this, exact subclonotypes are then reverse ordered by number of cells.</li>
+<li>Subject to the first two orderings, exact subclonotypes are then reverse ordered by
+    the total number of UMIs, summed across chains.</li>
+</ul>
+
 
 </body>
 </html>

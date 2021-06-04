@@ -32,6 +32,13 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>6/4/21</b>: Tweak the order of default filters so as to increase the likelihood that clonotypes
+that are held together tenuously (or not at all) will be pulled apart.  This has a tiny effect
+on our datasets (changing about <code>1</code> in <code>10^5</code> clonotypes), but could affect
+certain user datasets disproportionally.
+</p>
+
+<p>
 <b>6/3/21</b>: Fix bug in the computation of <code>datasets_cell</code>.
 </p>
 

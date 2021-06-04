@@ -234,6 +234,22 @@ fn get_path_or_internal_id(
                 q = q.before("/").to_string();
             }
             if q.parse::<usize>().is_ok() {
+                if !ctl.gen_opt.config.contains_key("ones") {
+                    let mut msg = format!(
+                        "\nSomething is wrong.  This is an internal run, but \
+                        the configuration\nvariable \"ones\" is undefined.\n"
+                    );
+                    if ctl.gen_opt.config.len() == 0 {
+                        msg += "In fact, there are no configuration variables.\n";
+                    } else {
+                        msg += "Here are the configuration variables that are defined:\n\n";
+                        for (key, value) in ctl.gen_opt.config.iter() {
+                            msg += &mut format!("{} = {}", key, value);
+                        }
+                        msg += "\n";
+                    }
+                    return Err(msg);
+                }
                 let url = format!("{}/{}", ctl.gen_opt.config["ones"], q);
                 // We force single threading around the https access because we observed
                 // intermittently very slow access without it.

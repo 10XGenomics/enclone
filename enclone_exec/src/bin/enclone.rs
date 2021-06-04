@@ -1,5 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// Note: if enclone is run from the command line, and fails, it will still return exit status
+// zero.  As far as we know, in all other cases where it is not run from the command line, it
+// returns exit status zero.
+
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 use enclone_visual::enclone_client::enclone_client;
@@ -10,7 +14,8 @@ use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
 use std::sync::atomic::Ordering::SeqCst;
-use std::time::Instant;
+use std::thread;
+use std::time::{Duration, Instant};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -37,22 +42,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.len() < 2 || args[1] != "SERVER" {
         let res = main_enclone(&mut args).await;
         if res.is_err() {
+            // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
+            //
             // If there was an error and we had used the pager, then std::process::exit(1) will
             // result in exit status 0 if enclone was invoked from a terminal window, and
             // probably not otherwise.  To get nonzero exit status, we instead kill the parent
             // process, which is less.  That's a little surprising, but that's how it works:
             // it is the parent that is less.
             //
-            // Handling of the last newline is problematic.  Sometimes the kill causes a newline,
-            // and sometimes it doesn't.  Mostly it does.  Not sure if this behavior could be
-            // improved.
+            // The little big of sleep seems to prevent printing of an extra newline, but this
+            // is flaky.
+            //
+            // The kill makes the screen flash.  This is pretty horrible.
 
-            eprint!("{}", res.unwrap_err());
-            if !no_kill && USING_PAGER.load(SeqCst) {
+            eprintln!("{}", res.unwrap_err());
+            if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
+                thread::sleep(Duration::from_millis(10));
                 let ppid = getppid();
                 kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
+                thread::sleep(Duration::from_millis(10));
             } else {
-                eprintln!("");
                 std::process::exit(1);
             }
         }
