@@ -46,6 +46,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //
             // The little big of sleep seems to prevent printing of an extra newline, but this
             // is flaky.
+            //
+            // The kill makes the screen flash.  This is pretty horrible.
 
             eprintln!("{}", res.unwrap_err());
             if !no_kill && USING_PAGER.load(SeqCst) {
