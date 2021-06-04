@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone in cellranger</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<a href="../../index.html#help">
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
+
+<h1>enclone in cellranger</h1>
+
+<p>
+This page does two things: 
+1. Show how to use the versions of enclone that were used by previous versions of cellranger.
+2. Show the enclone changes that affect cellranger output.
+</p>
+
+<hr>
+
+<h2>previous versions</h2>
+
+<p>Previous releases of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, matching particular Cell Ranger releases, may be found here:
+<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_5.0.0">5.0.0</a>
+(5.0.1 used the same <span style="color:rgb(120,123,175);font-weight:900">enclone</span> version)
+<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_6.0.0">6.0.0</a>
+(6.0.1 used the same <span style="color:rgb(120,123,175);font-weight:900">enclone</span> version).
+<br>To use these, click on the <code>enclone_linux</code> or <code>enclone_macos</code> link
+(on one of those pages)
+to download the binary executable file, then e.g. <code>chmod +x enclone_macos</code> to add
+execute permission, then run with e.g. <code>enclone_macos</code>.
+</p>
+
+<hr>
+
+<h2><span style="color:rgb(120,123,175);font-weight:900">enclone</span> changes that affect cellranger</h2>
+
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> date          </th>
+<th align="left"> git hash      </th>
+<th align="left"> change        </th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td> June 4, 2021 </td>
+<td> <code>635832</code> </td>
+<td> 
+Tweak the order of default filters so as to increase the likelihood that clonotypes
+that are held together tenuously (or not at all) will be pulled apart.  This has a tiny effect
+on our datasets (changing about <code>1</code> in <code>10^5</code> clonotypes), but could affect
+certain user datasets disproportionally.
+</td>
+</tr>
+
+</tbody>
+</table>
+</p>
+
+</body>
+</html>
