@@ -1,5 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// Note: if enclone is run from the command line, and fails, it will still return exit status
+// zero.  As far as we know, in all other cases where it is not run from the command line, it
+// returns exit status zero.
+
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 use enclone_visual::enclone_client::enclone_client;
