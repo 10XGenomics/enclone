@@ -133,10 +133,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Get config file if defined.  The config file is specified by an environment variable
     // of the form ENCLONE_CONFIG=filename or ENCLONE_CONFIG=filehost:filename.
+    //
+    // Note that even if ENCLONE_VIS is specified, we still look for ENCLONE_CONFIG.
 
     let mut filehost = String::new();
     let mut filehost_used = false;
-    if config_name.len() > 0 && !found {
+    if config_name.len() > 0 {
         let mut config_file_contents = String::new();
         if config_name.len() > 0 {
             for (key, value) in env::vars() {
