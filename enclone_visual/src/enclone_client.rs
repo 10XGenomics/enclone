@@ -505,14 +505,25 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                 err = err.between(&left, &right).to_string();
                             }
                             err = err.replace("\\n", "\n");
-                            output =
-                                format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
-
+                            let crash =
+                                err.contains("transport error: connection error: broken pipe");
+                            if crash {
+                                output = format!(
+                                    "\nIt would appear the the enclone server \
+                                    crashed.\nPlease look in the terminal window for a traceback \
+                                    and report it.\n"
+                                );
+                            } else {
+                                output = format!(
+                                    "\nThe enclone server is unhappy.  It says:\n\n{}",
+                                    err
+                                );
+                            }
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
-                            println!("server error =\n{}\n", emsg);
+                            print!("server error =\n{}", emsg);
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
