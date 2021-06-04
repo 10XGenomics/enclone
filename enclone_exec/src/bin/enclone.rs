@@ -10,8 +10,8 @@ use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
 use std::sync::atomic::Ordering::SeqCst;
-use std::time::{Duration, Instant};
 use std::thread;
+use std::time::{Duration, Instant};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
