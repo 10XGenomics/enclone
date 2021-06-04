@@ -514,10 +514,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                     and report it.\n"
                                 );
                             } else {
-                                output = format!(
+                                let msg = format!(
                                     "\nThe enclone server is unhappy.  It says:\n\n{}",
                                     err
                                 );
+                                output = msg.clone();
+                                eprintln!("{}", msg);
                             }
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
