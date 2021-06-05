@@ -4,6 +4,10 @@ use engine::Engine;
 use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+pub fn rotate(r: i64) -> i64 {
+    6_364_136_223_846_793_005i64.wrapping_mul(r).wrapping_add(1_442_695_040_888_963_407)
+}
+
 pub fn main() -> iced::Result {
     Circles::run(Settings::default())
 }
@@ -41,6 +45,7 @@ impl Sandbox for Circles {
                 let nanos = since_the_epoch.subsec_nanos() as u64;
                 let radius = (nanos % 99) as f32;
                 self.engine.state.radius = radius;
+                self.engine.state.rand = rotate(self.engine.state.rand);
             }
         }
     }
@@ -68,11 +73,13 @@ mod engine {
     };
     use iced_native::Point;
     use iced_native::Vector;
+    use crate::rotate;
 
     #[derive(Default)]
     pub struct State {
         pub button_pressed: bool,
         pub radius: f32,
+        pub rand: i64,
     }
 
     pub struct Engine {
@@ -105,7 +112,6 @@ mod engine {
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let center = frame.center();
-            let circle1 = Path::circle(center, radius);
             if pos.is_some() {
                 let xdiff = pos.unwrap().x - center.x;
                 let ydiff = pos.unwrap().y - center.y;
@@ -125,17 +131,35 @@ mod engine {
                     });
                 }
             }
+            let circle1 = Path::circle(center, radius);
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
             let circlex = Path::circle(center, 2.0);
             frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
-            let circle2 = Path::circle(
-                Point {
-                    x: center.x + 20.0,
-                    y: center.y + 40.0,
-                },
-                radius,
-            );
-            frame.fill(&circle2, Color::BLACK);
+
+            let mut r = self.state.rand;
+            for _ in 0..10000 {
+                r = rotate(r);
+                let x = r % 200;
+                r = rotate(r);
+                let y = r % 200;
+                r = rotate(r);
+                let rad = r % 10;
+                let circle2 = Path::circle(
+                    Point {
+                        x: center.x + x as f32,
+                        y: center.y + y as f32,
+                    },
+                    rad as f32,
+                );
+                r = rotate(r);
+                let c1 = 0.7 + (r % 1000) as f32 / 3000.0;
+                r = rotate(r);
+                let c2 = 0.7 + (r % 1000) as f32 / 3000.0;
+                r = rotate(r);
+                let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
+                frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
+            }
+
             vec![frame.into_geometry()]
         }
     }
