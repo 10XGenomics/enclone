@@ -38,6 +38,7 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     button: button::State,
+    submit_button_text: String,
 
     open_state: button::State,
     modal_state: modal::State<ModalState>,
@@ -62,7 +63,9 @@ impl Sandbox for EncloneVisual {
     type Message = Message;
 
     fn new() -> Self {
-        EncloneVisual::default()
+        let mut x = EncloneVisual::default();
+        x.submit_button_text = "Submit".to_string();
+        x
     }
 
     fn title(&self) -> String {
@@ -76,11 +79,8 @@ impl Sandbox for EncloneVisual {
             Message::CancelButtonPressed => self.modal_state.show(false),
             Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
-                // Need to figure what to do if we are already processing a request, for example
-                // if the user pushes the button twice or enters a second command and pushes the
-                // button before the first one has completed.  For now, do nothing.
-
-                if !PROCESSING_REQUEST.load(SeqCst) {
+                if self.submit_button_text == "Submit".to_string() {
+                    self.submit_button_text = "thinking".to_string();
                     let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
@@ -97,6 +97,7 @@ impl Sandbox for EncloneVisual {
                     let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
+                    self.submit_button_text = "Submit".to_string();
                     println!(
                         "time used processing command = {:.1} seconds\n",
                         elapsed(&t)
@@ -117,7 +118,7 @@ impl Sandbox for EncloneVisual {
         .padding(10)
         .size(14);
 
-        let button = Button::new(&mut self.button, Text::new("Submit"))
+        let button = Button::new(&mut self.button, Text::new(&self.submit_button_text))
             .padding(10)
             .on_press(Message::ButtonPressed);
 
