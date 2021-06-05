@@ -52,7 +52,6 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINT".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
-        args.push("INTERNAL".to_string());
         eprintln!("Running enclone:\n  {}", args.join(" "));
         let result = main_enclone(&args).await;
         if result.is_err() {
