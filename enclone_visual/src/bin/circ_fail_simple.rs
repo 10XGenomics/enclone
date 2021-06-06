@@ -36,9 +36,7 @@ impl Sandbox for Circles {
     fn update(&mut self, message: Message) {
         match message {
             Message::ButtonPressed => {
-                self.engine.state.button_pressed = true;
-                let radius = 20.0;
-                self.engine.state.radius = radius;
+                self.engine.state.radius = 20.0;
             }
         }
     }
@@ -73,15 +71,12 @@ impl Sandbox for Circles {
 
 mod engine {
     use iced::{
-        canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
-        Color, Element, Length, Rectangle,
+        canvas::{self, Canvas, Cursor, Frame, Geometry, Path}, Color, Element, Length, Rectangle,
     };
 
     #[derive(Default)]
     pub struct State {
-        pub button_pressed: bool,
         pub radius: f32,
-        pub rand: i64,
     }
 
     pub struct Engine {
@@ -95,9 +90,7 @@ mod engine {
         fn default() -> Self {
             Self {
                 state: State {
-                    button_pressed: false,
                     radius: 10.0,
-                    rand: 0,
                 }
             }
         }
