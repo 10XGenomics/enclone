@@ -61,6 +61,10 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 return None;
             }
             let fields = line.split(' ').collect::<Vec<&str>>();
+            let (mut x, mut y, mut r) = (None, None, None);
+             
+
+            
             // circle, fields
             // cx="147.61" 
             // cy="210.88" 
