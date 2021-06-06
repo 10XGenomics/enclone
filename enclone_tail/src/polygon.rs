@@ -91,7 +91,7 @@ impl Segment {
 
 // Interval in one-space.
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Interval {
     pub x1: f64,
     pub x2: f64,
@@ -616,4 +616,25 @@ pub fn enclosing_polygon(c: &Vec<(f64, f64, f64)>, d: f64, n: usize) -> Polygon 
         });
     }
     p
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+//
+// WHICH CIRCLE
+//
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+
+// Given a collection of circles, determine which if any circles contain a given point.  Requres
+// precompute.
+
+pub fn precompute_for_circle_containment( circles: &Vec<(f64, f64, f64)> ) -> IntervalVec {
+    let mut x = IntervalVec::default();
+    x.is.resize(circles.len(), Interval::default());
+    for (i, c) in circles.iter().enumerate() {
+        x.is[i].x1 = c.0 - c.2;
+        x.is[i].x2 = c.0 + c.2;
+    }
+    x.precompute();
+    x
 }
