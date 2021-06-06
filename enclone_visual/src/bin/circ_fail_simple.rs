@@ -88,9 +88,7 @@ mod engine {
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
-    use iced_native::Point;
     use iced_native::Vector;
-    use crate::rotate;
 
     #[derive(Default)]
     pub struct State {
@@ -152,30 +150,6 @@ mod engine {
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
             let circlex = Path::circle(center, 2.0);
             frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
-
-            let mut r = self.state.rand;
-            for _ in 0..10000 {
-                r = rotate(r);
-                let x = r % 200;
-                r = rotate(r);
-                let y = r % 200;
-                r = rotate(r);
-                let rad = r % 10;
-                let circle2 = Path::circle(
-                    Point {
-                        x: center.x + x as f32,
-                        y: center.y + y as f32,
-                    },
-                    rad as f32,
-                );
-                r = rotate(r);
-                let c1 = 0.7 + (r % 1000) as f32 / 3000.0;
-                r = rotate(r);
-                let c2 = 0.7 + (r % 1000) as f32 / 3000.0;
-                r = rotate(r);
-                let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
-                frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
-            }
 
             vec![frame.into_geometry()]
         }
