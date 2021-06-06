@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use engine::Engine;
 use iced::{Column, Container, Element, Length, Sandbox, scrollable, Scrollable, Settings};
 
 pub fn main() -> iced::Result {
@@ -51,33 +50,31 @@ impl Sandbox for Circles {
     }
 }
 
-mod engine {
-    use iced::{
-        canvas::{self, Canvas, Cursor, Frame, Geometry, Path}, Color, Element, Length, Rectangle,
-    };
+use iced::{
+    canvas::{self, Canvas, Cursor, Frame, Geometry, Path}, Color, Rectangle,
+};
 
-    #[derive(Default)]
-    pub struct Engine {
+#[derive(Default)]
+pub struct Engine {
+}
+
+#[derive(Debug, Clone)]
+pub enum EngineMessage {}
+
+impl Engine {
+    pub fn view<'a>(&'a mut self) -> Element<'a, EngineMessage> {
+        Canvas::new(self)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .into()
     }
+}
 
-    #[derive(Debug, Clone)]
-    pub enum Message {}
-
-    impl Engine {
-        pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
-            Canvas::new(self)
-                .width(Length::Fill)
-                .height(Length::Fill)
-                .into()
-        }
-    }
-
-    impl<'a> canvas::Program<Message> for Engine {
-        fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
-            let mut frame = Frame::new(bounds.size());
-            let circle = Path::circle(frame.center(), 20.0);
-            frame.fill(&circle, Color::BLACK);
-            vec![frame.into_geometry()]
-        }
+impl<'a> canvas::Program<EngineMessage> for Engine {
+    fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
+        let mut frame = Frame::new(bounds.size());
+        let circle = Path::circle(frame.center(), 20.0);
+        frame.fill(&circle, Color::BLACK);
+        vec![frame.into_geometry()]
     }
 }
