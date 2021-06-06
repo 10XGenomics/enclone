@@ -33,11 +33,7 @@ impl Sandbox for Circles {
         String::from("Circles")
     }
 
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::ButtonPressed => {
-            }
-        }
+    fn update(&mut self, _message: Message) {
     }
 
     fn view(&mut self) -> Element<Message> {
