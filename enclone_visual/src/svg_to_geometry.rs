@@ -5,6 +5,24 @@
 
 use crate::genometry;
 
+pub fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
+    let mut kv = Vec::<(String, String)>::new();
+    let fields = line.split(' ').collect::<Vec<&str>>();
+    for j in 0..fields.len() {
+        if !fields[j].contains("=") {
+            return None;
+        }
+        let key = fields[j].before("=");
+        let mut value = fields[j].after("=").to_string();
+        if !value.starts_with('"') || !value.ends_with('"') {
+            return None;
+        }
+        let value = value.after("\"").rev_before("\"");
+        kv.push((key.to_string(), value.to_string()));
+    }
+    kv
+}
+
 pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
     
     // First divide svg into lines of the form <...>, or something between such.
@@ -60,20 +78,48 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             } else {
                 return None;
             }
-            let fields = line.split(' ').collect::<Vec<&str>>();
+            let kv = parse_kv(&line);
+            if kv.is_none() {
+                return None;
+            }
             let (mut x, mut y, mut r) = (None, None, None);
-             
-
-            
-            // circle, fields
-            // cx="147.61" 
-            // cy="210.88" 
-            // r="4.05" 
-            // fill="rgb(0,0,0)"
-            // opacity="1" 
-            // fill="#FF0000" 
-            // stroke="none" 
-            // stroke-width="1"
+            let mut c = None;
+            for m in kv.unwrap().iter() {
+                if *m == "stroke" {
+                } else if *m.0 == "stroke-width" {
+                } else if *m.0 == "cx" {
+                    if !m.parse::<f32>().is_ok() {
+                        return None;
+                    } else {
+                        x = m.1.force_f32();
+                    }
+                } else if *m.0 == "cy" {
+                    if !m.0.parse::<f32>().is_ok() {
+                        return None;
+                    } else {
+                        y = m.1.force_f32();
+                    }
+                } else if *m.0 == "r" {
+                    if !m.0.parse::<f32>().is_ok() {
+                        return None;
+                    } else {
+                        r = m.1.force_f32();
+                    }
+                } else if *m.0 == "fill" && *m.1.starts_with("rgb(" && *m.1.ends_with(")") {
+                    let rgb = *m.0.split(',').collect::<Vec<&str>>();
+                    if rgb.len() != 3 {
+                        return None;
+                    }
+                    for j in 0..3 {
+                        if !rgb[j].parse::<u8>().is_ok() {
+                            return None;
+                        }
+                    }
+                    c = (rgb[0].force_u8(), rgb[1].force_u8(), rgb[2].force_u8());
+                }
+                
+                // fill="#FF0000" 
+                // opacity="1" 
 
 ===================================================================================================
 
