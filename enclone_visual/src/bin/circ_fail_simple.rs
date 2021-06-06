@@ -62,8 +62,6 @@ impl Sandbox for Circles {
     }
 }
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 mod engine {
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path}, Color, Element, Length, Rectangle,
@@ -71,25 +69,15 @@ mod engine {
 
     #[derive(Default)]
     pub struct State {
-        pub radius: f32,
     }
 
+    #[derive(Default)]
     pub struct Engine {
         pub state: State,
     }
 
     #[derive(Debug, Clone)]
     pub enum Message {}
-
-    impl Default for Engine {
-        fn default() -> Self {
-            Self {
-                state: State {
-                    radius: 10.0,
-                }
-            }
-        }
-    }
 
     impl Engine {
         pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
@@ -104,7 +92,7 @@ mod engine {
         fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
             let circle = Path::circle(frame.center(), 20.0);
-            frame.fill(&circle, Color::from_rgb(0.5, 0.5, 1.0));
+            frame.fill(&circle, Color::BLACK);
             vec![frame.into_geometry()]
         }
     }
