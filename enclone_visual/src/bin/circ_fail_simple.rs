@@ -5,11 +5,6 @@ use iced::{
     button, Button, Column, Container, Element, Length, Sandbox, scrollable,
     Scrollable, Settings, Text
 };
-use std::time::{SystemTime, UNIX_EPOCH};
-
-pub fn rotate(r: i64) -> i64 {
-    6_364_136_223_846_793_005i64.wrapping_mul(r).wrapping_add(1_442_695_040_888_963_407)
-}
 
 pub fn main() -> iced::Result {
     Circles::run(Settings::default())
@@ -42,14 +37,8 @@ impl Sandbox for Circles {
         match message {
             Message::ButtonPressed => {
                 self.engine.state.button_pressed = true;
-                let start = SystemTime::now();
-                let since_the_epoch = start
-                    .duration_since(UNIX_EPOCH)
-                    .expect("Time went backwards");
-                let nanos = since_the_epoch.subsec_nanos() as u64;
-                let radius = (nanos % 99) as f32;
+                let radius = 20.0;
                 self.engine.state.radius = radius;
-                self.engine.state.rand = rotate(self.engine.state.rand);
             }
         }
     }
@@ -69,7 +58,6 @@ impl Sandbox for Circles {
             .height(Length::Units(100))
             .scrollbar_width(12)
             .scroller_width(12)
-            // .style(style::Squeak)
             .push(engine);
 
 
