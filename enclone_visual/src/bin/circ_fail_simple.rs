@@ -103,9 +103,7 @@ mod engine {
     impl<'a> canvas::Program<Message> for Engine {
         fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
-            let radius = self.state.radius;
-            let center = frame.center();
-            let circle = Path::circle(center, radius);
+            let circle = Path::circle(frame.center(), 20.0);
             frame.fill(&circle, Color::from_rgb(0.5, 0.5, 1.0));
             vec![frame.into_geometry()]
         }
