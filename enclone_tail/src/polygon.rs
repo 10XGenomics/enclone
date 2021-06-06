@@ -624,7 +624,7 @@ pub fn enclosing_polygon(c: &Vec<(f64, f64, f64)>, d: f64, n: usize) -> Polygon 
 //
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Given a collection of circles, determine which if any circles contain a given point.  Requres
+// Given a collection of circles, determine which if any circles contain a given point.  Requires
 // precompute.
 
 pub fn precompute_for_circle_containment(circles: &Vec<(f64, f64, f64)>) -> IntervalVec {
@@ -636,4 +636,21 @@ pub fn precompute_for_circle_containment(circles: &Vec<(f64, f64, f64)>) -> Inte
     }
     x.precompute();
     x
+}
+
+pub fn circles_containing_point(
+    p: Point, 
+    circles: &Vec<(f64, f64, f64)>, 
+    circles_precompute: &IntervalVec,
+) -> Vec<usize> {
+    let xhome = circles_precompute.get_containers(p.x);
+    let mut c = Vec::<usize>::new();
+    for i in xhome.iter() {
+        let (x, y, r) = &circles[*i];
+        let (xdiff, ydiff) = (p.x - x, p.y - y);
+        if xdiff*xdiff + ydiff*ydiff <= r*r {
+            c.push(*i);
+        }
+    }
+    c
 }
