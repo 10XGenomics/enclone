@@ -2,8 +2,7 @@
 
 use engine::Engine;
 use iced::{
-    button, Button, Column, Container, Element, Length, Sandbox, scrollable,
-    Scrollable, Settings, Text
+    button, Column, Container, Element, Length, Sandbox, scrollable, Scrollable, Settings
 };
 
 pub fn main() -> iced::Result {
@@ -13,7 +12,7 @@ pub fn main() -> iced::Result {
 #[derive(Default)]
 struct Circles {
     engine: Engine,
-    button: button::State,
+    _button: button::State,
     scroll: scrollable::State,
 }
 
@@ -37,9 +36,6 @@ impl Sandbox for Circles {
     }
 
     fn view(&mut self) -> Element<Message> {
-        let button = Button::new(&mut self.button, Text::new("Submit"))
-            .padding(10)
-            .on_press(Message::ButtonPressed);
         let engine = 
             self.engine
                 .view()
@@ -50,7 +46,7 @@ impl Sandbox for Circles {
             .scrollbar_width(12)
             .scroller_width(12)
             .push(engine);
-        let content = Column::new().push(button).push(scrollable);
+        let content = Column::new().push(scrollable);
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
