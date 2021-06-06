@@ -15,7 +15,7 @@ struct Circles {
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
-    ButtonPressed,
+    Something,
 }
 
 impl Sandbox for Circles {
@@ -36,7 +36,7 @@ impl Sandbox for Circles {
         let engine = 
             self.engine
                 .view()
-                .map(move |_message| Message::ButtonPressed);
+                .map(move |_message| Message::Something);
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
