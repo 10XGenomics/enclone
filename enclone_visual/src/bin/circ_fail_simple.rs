@@ -1,6 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use iced::{Column, Container, Element, Length, Sandbox, scrollable, Scrollable, Settings};
+use iced::{
+    Column, Color, Container, Element, Length, Rectangle, Sandbox, scrollable, Scrollable, Settings
+};
+use iced::canvas::{self, Canvas, Cursor, Frame, Geometry, Path};
 
 pub fn main() -> iced::Result {
     Circles::run(Settings::default())
@@ -50,9 +53,6 @@ impl Sandbox for Circles {
     }
 }
 
-use iced::{
-    canvas::{self, Canvas, Cursor, Frame, Geometry, Path}, Color, Rectangle,
-};
 
 #[derive(Default)]
 pub struct Engine {
