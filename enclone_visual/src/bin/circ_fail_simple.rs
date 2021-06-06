@@ -94,7 +94,11 @@ mod engine {
     impl Default for Engine {
         fn default() -> Self {
             Self {
-                state: State::default(),
+                state: State {
+                    button_pressed: false,
+                    radius: 10.0,
+                    rand: 0,
+                }
             }
         }
     }
