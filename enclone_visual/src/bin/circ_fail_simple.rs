@@ -1,9 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use engine::Engine;
-use iced::{
-    button, Column, Container, Element, Length, Sandbox, scrollable, Scrollable, Settings
-};
+use iced::{Column, Container, Element, Length, Sandbox, scrollable, Scrollable, Settings};
 
 pub fn main() -> iced::Result {
     Circles::run(Settings::default())
@@ -12,7 +10,6 @@ pub fn main() -> iced::Result {
 #[derive(Default)]
 struct Circles {
     engine: Engine,
-    _button: button::State,
     scroll: scrollable::State,
 }
 
