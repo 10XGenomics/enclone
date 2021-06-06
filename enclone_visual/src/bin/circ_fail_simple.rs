@@ -57,12 +57,7 @@ mod engine {
     };
 
     #[derive(Default)]
-    pub struct State {
-    }
-
-    #[derive(Default)]
     pub struct Engine {
-        pub state: State,
     }
 
     #[derive(Debug, Clone)]
