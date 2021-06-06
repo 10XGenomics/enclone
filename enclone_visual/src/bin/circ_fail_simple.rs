@@ -52,7 +52,6 @@ impl Sandbox for Circles {
 #[derive(Default)]
 pub struct Engine {}
 
-#[derive(Debug, Clone)]
 pub enum EngineMessage {}
 
 impl Engine {
