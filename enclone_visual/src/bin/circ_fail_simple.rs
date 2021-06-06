@@ -76,7 +76,6 @@ mod engine {
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
-    use iced_native::Vector;
 
     #[derive(Default)]
     pub struct State {
@@ -110,30 +109,10 @@ mod engine {
     }
 
     impl<'a> canvas::Program<Message> for Engine {
-        fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
-            let pos = cursor.position_in(&bounds);
+        fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let center = frame.center();
-            if pos.is_some() {
-                let xdiff = pos.unwrap().x - center.x;
-                let ydiff = pos.unwrap().y - center.y;
-                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
-                if dist <= radius {
-                    frame.translate(Vector { x: 100.0, y: 100.0 });
-                    frame.fill_text(format!(
-                        "delta = ({:.1}, {:.1}); in circle one at distance {:.1} <= {:.1}",
-                        pos.unwrap().x - center.x,
-                        pos.unwrap().y - center.y,
-                        dist,
-                        radius
-                    ));
-                    frame.translate(Vector {
-                        x: -100.0,
-                        y: -100.0,
-                    });
-                }
-            }
             let circle1 = Path::circle(center, radius);
             frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
             let circlex = Path::circle(center, 2.0);
