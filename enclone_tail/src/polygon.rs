@@ -639,8 +639,8 @@ pub fn precompute_for_circle_containment(circles: &Vec<(f64, f64, f64)>) -> Inte
 }
 
 pub fn circles_containing_point(
-    p: Point, 
-    circles: &Vec<(f64, f64, f64)>, 
+    p: Point,
+    circles: &Vec<(f64, f64, f64)>,
     circles_precompute: &IntervalVec,
 ) -> Vec<usize> {
     let xhome = circles_precompute.get_containers(p.x);
@@ -648,7 +648,7 @@ pub fn circles_containing_point(
     for i in xhome.iter() {
         let (x, y, r) = &circles[*i];
         let (xdiff, ydiff) = (p.x - x, p.y - y);
-        if xdiff*xdiff + ydiff*ydiff <= r*r {
+        if xdiff * xdiff + ydiff * ydiff <= r * r {
             c.push(*i);
         }
     }
