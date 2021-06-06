@@ -36,7 +36,6 @@ impl Sandbox for Circles {
     fn update(&mut self, message: Message) {
         match message {
             Message::ButtonPressed => {
-                self.engine.state.radius = 20.0;
             }
         }
     }
@@ -49,16 +48,12 @@ impl Sandbox for Circles {
             self.engine
                 .view()
                 .map(move |_message| Message::ButtonPressed);
-
-
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
             .scrollbar_width(12)
             .scroller_width(12)
             .push(engine);
-
-
         let content = Column::new().push(button).push(scrollable);
         Container::new(content)
             .width(Length::Fill)
@@ -110,11 +105,8 @@ mod engine {
             let mut frame = Frame::new(bounds.size());
             let radius = self.state.radius;
             let center = frame.center();
-            let circle1 = Path::circle(center, radius);
-            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
-            let circlex = Path::circle(center, 2.0);
-            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
-
+            let circle = Path::circle(center, radius);
+            frame.fill(&circle, Color::from_rgb(0.5, 0.5, 1.0));
             vec![frame.into_geometry()]
         }
     }
