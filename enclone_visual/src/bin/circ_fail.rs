@@ -2,13 +2,15 @@
 
 use engine::Engine;
 use iced::{
-    button, Button, Column, Container, Element, Length, Sandbox, scrollable,
-    Scrollable, Settings, Text
+    button, scrollable, Button, Column, Container, Element, Length, Sandbox, Scrollable, Settings,
+    Text,
 };
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn rotate(r: i64) -> i64 {
-    6_364_136_223_846_793_005i64.wrapping_mul(r).wrapping_add(1_442_695_040_888_963_407)
+    6_364_136_223_846_793_005i64
+        .wrapping_mul(r)
+        .wrapping_add(1_442_695_040_888_963_407)
 }
 
 pub fn main() -> iced::Result {
@@ -58,11 +60,10 @@ impl Sandbox for Circles {
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
             .on_press(Message::ButtonPressed);
-        let engine = 
-            self.engine
-                .view()
-                .map(move |_message| Message::ButtonPressed);
-
+        let engine = self
+            .engine
+            .view()
+            .map(move |_message| Message::ButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
@@ -71,7 +72,6 @@ impl Sandbox for Circles {
             .scroller_width(12)
             // .style(style::Squeak)
             .push(engine);
-
 
         let content = Column::new().push(button).push(scrollable);
         Container::new(content)
@@ -84,13 +84,13 @@ impl Sandbox for Circles {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod engine {
+    use crate::rotate;
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
     use iced_native::Point;
     use iced_native::Vector;
-    use crate::rotate;
 
     #[derive(Default)]
     pub struct State {

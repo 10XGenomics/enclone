@@ -5,7 +5,9 @@ use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn rotate(r: i64) -> i64 {
-    6_364_136_223_846_793_005i64.wrapping_mul(r).wrapping_add(1_442_695_040_888_963_407)
+    6_364_136_223_846_793_005i64
+        .wrapping_mul(r)
+        .wrapping_add(1_442_695_040_888_963_407)
 }
 
 pub fn main() -> iced::Result {
@@ -67,13 +69,13 @@ impl Sandbox for Circles {
 }
 
 mod engine {
+    use crate::rotate;
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
     use iced_native::Point;
     use iced_native::Vector;
-    use crate::rotate;
 
     #[derive(Default)]
     pub struct State {

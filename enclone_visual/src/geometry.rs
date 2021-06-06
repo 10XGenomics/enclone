@@ -41,8 +41,8 @@ pub struct CircleWithToolTip {
 }
 
 pub struct Seg {
-    pub p1: Point,  // start
-    pub p2: Point,  // stop
-    pub w: f32,     // width
+    pub p1: Point, // start
+    pub p2: Point, // stop
+    pub w: f32,    // width
     pub c: Color,
 }

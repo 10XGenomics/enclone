@@ -1,9 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use iced::{
-    Column, Color, Container, Element, Length, Rectangle, Sandbox, scrollable, Scrollable, Settings
-};
 use iced::canvas::{self, Canvas, Cursor, Frame, Geometry, Path};
+use iced::{
+    scrollable, Color, Column, Container, Element, Length, Rectangle, Sandbox, Scrollable, Settings,
+};
 
 pub fn main() -> iced::Result {
     Circles::run(Settings::default())
@@ -31,14 +31,10 @@ impl Sandbox for Circles {
         String::from("Circles")
     }
 
-    fn update(&mut self, _message: Message) {
-    }
+    fn update(&mut self, _message: Message) {}
 
     fn view(&mut self) -> Element<Message> {
-        let engine = 
-            self.engine
-                .view()
-                .map(move |_message| Message::Something);
+        let engine = self.engine.view().map(move |_message| Message::Something);
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
@@ -53,10 +49,8 @@ impl Sandbox for Circles {
     }
 }
 
-
 #[derive(Default)]
-pub struct Engine {
-}
+pub struct Engine {}
 
 #[derive(Debug, Clone)]
 pub enum EngineMessage {}
