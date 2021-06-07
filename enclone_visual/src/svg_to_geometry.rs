@@ -5,7 +5,7 @@
 
 use crate::genometry;
 
-pub fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
+fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
     let mut kv = Vec::<(String, String)>::new();
     let fields = line.split(' ').collect::<Vec<&str>>();
     for j in 0..fields.len() {
@@ -21,6 +21,23 @@ pub fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
         kv.push((key.to_string(), value.to_string()));
     }
     kv
+}
+
+fn dehex(h: [u8; 2]) -> Option<u8> {
+    let mut x = 0 as u8;
+    for p in 0..2 {
+        if h[*p] >= b'0' && h[*p] <= b'9' {
+            x + h[*p] - b'0';
+        } else if h[*p] >= b'A' && h[*p] <= b'Z' {
+            x + h[*p] - b'A' + 10;
+        } else {
+            return None;
+        }
+        if *p == 0 {
+            x *= 16;
+        }
+    }
+    Some(x)
 }
 
 pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
@@ -84,29 +101,19 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             }
             let (mut x, mut y, mut r) = (None, None, None);
             let mut c = None;
+            let mut o = 255 as u8; // opacity
             for m in kv.unwrap().iter() {
-                if *m == "stroke" {
-                } else if *m.0 == "stroke-width" {
-                } else if *m.0 == "cx" {
-                    if !m.parse::<f32>().is_ok() {
-                        return None;
-                    } else {
-                        x = m.1.force_f32();
-                    }
-                } else if *m.0 == "cy" {
-                    if !m.0.parse::<f32>().is_ok() {
-                        return None;
-                    } else {
-                        y = m.1.force_f32();
-                    }
-                } else if *m.0 == "r" {
-                    if !m.0.parse::<f32>().is_ok() {
-                        return None;
-                    } else {
-                        r = m.1.force_f32();
-                    }
-                } else if *m.0 == "fill" && *m.1.starts_with("rgb(" && *m.1.ends_with(")") {
-                    let rgb = *m.0.split(',').collect::<Vec<&str>>();
+                let key = &m.0
+                let value = &m.1;
+                if key == "stroke" || key == "stroke-width" {
+                } else if key == "cx" {
+                    x = value.parse::<f32>().ok();
+                } else if key == "cy" {
+                    y = value.parse::<f32>().ok();
+                } else if key == "r" {
+                    r = value.parse::<f32>().ok();
+                } else if key == "fill" && value.starts_with("rgb(" && value.ends_with(")") {
+                    let rgb = key.split(',').collect::<Vec<&str>>();
                     if rgb.len() != 3 {
                         return None;
                     }
@@ -115,11 +122,32 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                             return None;
                         }
                     }
-                    c = (rgb[0].force_u8(), rgb[1].force_u8(), rgb[2].force_u8());
+                    c = Some((rgb[0].force_u8(), rgb[1].force_u8(), rgb[2].force_u8()));
+                } else if key == "fill" {
+                    let b = value.as_bytes();
+                    if b.len() == 7 && b[0] == b'#' {
+                        let (c1, c2, c3) = (dehex(b[1..=2], dehex(b[3..=4], dehex(b[5..=6]);
+                        if c1.is_some() && c2.is_some() && c3.is_some() {
+                            c = Some((c1.unwrap(), c2.unwrap(), c3.unwrap()));
+                        } else {
+                            return None;
+                        }
+                    } else {
+                        return None;
+                    }
+                } else if key == "opacity" && value.parse::<f32>().is_ok() {
+                    let v = value.force_f32()
+                    if v >= 0 && v <= 1 {
+                        o = (v * 255.0).round() as u8;
+                    }
+                } else {
+                    return None;
                 }
+            }
+            if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
+                return None;
+            }
                 
-                // fill="#FF0000" 
-                // opacity="1" 
 
 ===================================================================================================
 
