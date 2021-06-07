@@ -5,6 +5,31 @@
 
 use crate::genometry;
 
+fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
+    let (mut c1, mut c2, mut c3) = (None, None, None);
+    if value.starts_with("rgb(" && value.ends_with(")") {
+        let rgb = key.split(',').collect::<Vec<&str>>();
+        if rgb.len() != 3 {
+            return None;
+        }
+        c1 = rgb[0].parse::<u8>().ok();
+        c2 = rgb[1].parse::<u8>().ok();
+        c3 = rgb[2].parse::<u8>().ok();
+    } else {
+        let b = value.as_bytes();
+        if b.len() == 7 && b[0] == b'#' {
+            (c1, c2, c3) = (dehex(b[1..=2], dehex(b[3..=4], dehex(b[5..=6]);
+        } else {
+            return None;
+        }
+    }
+    if c1.is_some() && c2.is_some() && c3.is_some() {
+        Some((c1.unwrap(), c2.unwrap(), c3.unwrap()))
+    } else {
+        None
+    }
+}
+
 fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
     let mut kv = Vec::<(String, String)>::new();
     let fields = line.split(' ').collect::<Vec<&str>>();
@@ -129,29 +154,8 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     y = value.parse::<f32>().ok();
                 } else if key == "r" {
                     r = value.parse::<f32>().ok();
-                } else if key == "fill" && value.starts_with("rgb(" && value.ends_with(")") {
-                    let rgb = key.split(',').collect::<Vec<&str>>();
-                    if rgb.len() != 3 {
-                        return None;
-                    }
-                    for j in 0..3 {
-                        if !rgb[j].parse::<u8>().is_ok() {
-                            return None;
-                        }
-                    }
-                    c = Some((rgb[0].force_u8(), rgb[1].force_u8(), rgb[2].force_u8()));
                 } else if key == "fill" {
-                    let b = value.as_bytes();
-                    if b.len() == 7 && b[0] == b'#' {
-                        let (c1, c2, c3) = (dehex(b[1..=2], dehex(b[3..=4], dehex(b[5..=6]);
-                        if c1.is_some() && c2.is_some() && c3.is_some() {
-                            c = Some((c1.unwrap(), c2.unwrap(), c3.unwrap()));
-                        } else {
-                            return None;
-                        }
-                    } else {
-                        return None;
-                    }
+                    c = parse_color(&value);
                 } else if key == "opacity" && value.parse::<f32>().is_ok() {
                     let v = value.force_f32()
                     if v >= 0 && v <= 1 {
@@ -205,13 +209,43 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             if kv.is_none() {
                 return None;
             }
-            let (mut x, mut y, mut width, mut height) = (None, None, None, None);
-
-            // <line opacity="0.1" stroke="#000000" stroke-width="1" x1="103" y1="524" 
-            // x2="103" y2="59"/>
+            let (mut x1, mut y1, mut x2, mut y2) = (None, None, None, None);
+            let mut c = None;
+            let mut o = 255;
+            let mut stroke_width = None;
+            for m in kv.unwrap().iter() {
+                let key = &m.0
+                let value = &m.1;
+                if key == "x1" {
+                    x1 = value.parse::<f32>().ok();
+                } else if key == "y1" {
+                    y1 = value.parse::<f32>().ok();
+                } else if key == "x2" {
+                    x2 = value.parse::<f32>().ok();
+                } else if key == "y2" {
+                    y2 = value.parse::<f32>().ok();
+                } else if key == "stroke" {
+                    c = parse_color(&value);
+                } else if key == "stroke-width" {
+                    stroke_width = value.parse::<f32>().ok();
+                } else if key == "opacity" && value.parse::<f32>().is_ok() {
+                    let v = value.force_f32()
+                    if v >= 0 && v <= 1 {
+                        o = (v * 255.0).round() as u8;
+                    }
+                } else {
+                    return None;
+                }
+            }
+            if x1.is_none() || x2.is_none() || x3.is_none() || x4.is_none() {
+                return None;
+            } else if c.is_none() || stroke_width.is_none() {
+                return None;
+            }
+            // save
+        }
 
 ===================================================================================================
-
 
         } else if tag == "text" {
             // <text x="30" y="432.33">IGHA1</text>
