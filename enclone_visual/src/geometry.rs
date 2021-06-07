@@ -7,6 +7,7 @@ pub enum Thing {
     ArialText,
     Circle,
     CircleWithToolTip,
+    Rectangle,
 }
 
 pub struct Color {

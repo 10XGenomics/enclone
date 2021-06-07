@@ -9,6 +9,19 @@ fn numeric(x: &str) -> Option<f32> {
     x.parse::<f32>().ok()
 }
 
+fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
+    if key == "opacity" && value.parse::<f32>().is_ok() {
+        let v = value.force_f32()
+        if v >= 0 && v <= 1 {
+            *o = (v * 255.0).round() as u8;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (mut c1, mut c2, mut c3) = (None, None, None);
     if value.starts_with("rgb(" && value.ends_with(")") {
@@ -161,11 +174,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     r = value.numeric();
                 } else if key == "fill" {
                     c = parse_color(&value);
-                } else if key == "opacity" && value.parse::<f32>().is_ok() {
-                    let v = value.force_f32()
-                    if v >= 0 && v <= 1 {
-                        o = (v * 255.0).round() as u8;
-                    }
+                } else if get_opacity(&key, &value, &mut o) {
                 } else {
                     return None;
                 }
@@ -205,11 +214,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     c = parse_color(&value);
                 } else if key == "stroke-width" {
                     stroke_width = value.parse::<f32>().ok();
-                } else if key == "opacity" && value.parse::<f32>().is_ok() {
-                    let v = value.force_f32()
-                    if v >= 0 && v <= 1 {
-                        o = (v * 255.0).round() as u8;
-                    }
+                } else if get_opacity(&key, &value, &mut o) {
                 } else {
                     return None;
                 }
@@ -283,12 +288,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 } else if key == "font-family" && value == "arial" {
                 } else if key == "fill" {
                     c = parse_color(&value);
-                } else if key == "opacity" && value.parse::<f32>().is_ok() {
-                    let v = value.force_f32()
-                    if v >= 0 && v <= 1 {
-                        o = (v * 255.0).round() as u8;
-                    }
+                } else if get_opacity(&key, &value, &mut o) {
+                } else {
+                    return None;
                 }
+            }
 
             // dy="0.76em" 
             // dy="0.5ex" 
