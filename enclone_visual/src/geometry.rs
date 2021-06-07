@@ -13,12 +13,32 @@ pub struct Color {
     pub r: u8, // red
     pub g: u8, // green
     pub b: u8, // blue
-    pub t: u8, // translucency
+    pub t: u8, // transparency (255 = not transparent at all)
+}
+
+impl Color {
+    pub fn new(r: u8, g: u8, b: u8, t: u8) -> Color {
+        Color {
+            r: r,
+            g: g,
+            b: b,
+            t: t,
+        }
+    }
 }
 
 pub struct Point {
     pub x: f32,
     pub y: f32,
+}
+
+impl Point {
+    pub fn new(x: f32, y:32) -> Point {
+        Point {
+            x: x,
+            y: y,
+        }
+    }
 }
 
 pub struct Circle {
@@ -45,4 +65,12 @@ pub struct Seg {
     pub p2: Point, // stop
     pub w: f32,    // width
     pub c: Color,
+}
+
+pub struct Rectangle {
+    pub p: Point,            // coordinates of upper left corner
+    pub width: f32,          // width
+    pub height: f32,         // height
+    pub fill_color: Color,   // fill color
+    pub stroke_color: Color, // stroke color
 }

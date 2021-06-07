@@ -3,7 +3,11 @@
 // Attempt to convert an SVG object to geometries.  This is possibly temporary.  It is designed
 // to work only with certain sorts of SVG objects.
 
-use crate::genometry;
+use crate::geometry;
+
+fn numeric(x: &str) -> Option<f32> {
+    x.parse::<f32>().ok()
+}
 
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (mut c1, mut c2, mut c3) = (None, None, None);
@@ -120,6 +124,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
     // Repackage lines into known svg entities.
 
+    let mut geom = Vec::<Geometry>>::new();
     let mut pkgs = Vec::<Vec<String>>::new();
     let mut i = 0;
     while i < lines.len() {
@@ -149,11 +154,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 let value = &m.1;
                 if key == "stroke" || key == "stroke-width" {
                 } else if key == "cx" {
-                    x = value.parse::<f32>().ok();
+                    x = value.numeric();
                 } else if key == "cy" {
-                    y = value.parse::<f32>().ok();
+                    y = value.numeric();
                 } else if key == "r" {
-                    r = value.parse::<f32>().ok();
+                    r = value.numeric();
                 } else if key == "fill" {
                     c = parse_color(&value);
                 } else if key == "opacity" && value.parse::<f32>().is_ok() {
@@ -168,39 +173,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-            // save x, y, r, c, o
-
-        // Process rectangle.
-
-        } else if tag == "rect" {
-            let kv = parse_kv_term(&line);
-            if kv.is_none() {
-                return None;
-            }
-            let (mut x, mut y, mut width, mut height) = (None, None, None, None);
-            for m in kv.unwrap().iter() {
-                let key = &m.0
-                let value = &m.1;
-                if key == "x" {
-                    x = value.parse::<f32>().ok();
-                } else if key == "y" {
-                    y = value.parse::<f32>().ok();
-                } else if key == "width" {
-                    width = value.parse::<f32>().ok();
-                } else if key == "height" {
-                    height = value.parse::<f32>().ok();
-                } else if key == "fill" {
-                    ... could be white ...
-                } else if key == "stroke" {
-                    ... could be black ...
-                } else if key == "stroke-width {
-                    ... could be 2 ...
-                } else {
-                    return None;
-                }
-            }
-            // test for none
-            // save x, y, width, height, ...
+            geom.push( Circle {
+                p: Point(x.unwrap(), y.unwrap()),
+                r: r.unwrap(),
+                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            });
 
         // Process line.
         
@@ -217,13 +194,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 let key = &m.0
                 let value = &m.1;
                 if key == "x1" {
-                    x1 = value.parse::<f32>().ok();
+                    x1 = value.numeric();
                 } else if key == "y1" {
-                    y1 = value.parse::<f32>().ok();
+                    y1 = value.numeric();
                 } else if key == "x2" {
-                    x2 = value.parse::<f32>().ok();
+                    x2 = value.numeric();
                 } else if key == "y2" {
-                    y2 = value.parse::<f32>().ok();
+                    y2 = value.numeric();
                 } else if key == "stroke" {
                     c = parse_color(&value);
                 } else if key == "stroke-width" {
@@ -242,7 +219,44 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            // save
+            geom.push( Seg {
+                p1: Point(x1.unwrap(), y1.unwrap()),
+                p2: Point(x2.unwrap(), y2.unwrap()),
+                w: stroke_width.unwrap(),
+                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            });
+
+        // Process rectangle.
+
+        } else if tag == "rect" {
+            let kv = parse_kv_term(&line);
+            if kv.is_none() {
+                return None;
+            }
+            let (mut x, mut y, mut width, mut height) = (None, None, None, None);
+            for m in kv.unwrap().iter() {
+                let key = &m.0
+                let value = &m.1;
+                if key == "x" {
+                    x = value.numeric();
+                } else if key == "y" {
+                    y = value.numeric();
+                } else if key == "width" {
+                    width = value.numeric();
+                } else if key == "height" {
+                    height = value.numeric();
+                } else if key == "fill" {
+                    ... could be white ...
+                } else if key == "stroke" {
+                    ... could be black ...
+                } else if key == "stroke-width {
+                    ... could be 2 ...
+                } else {
+                    return None;
+                }
+            }
+            // test for none
+            // save x, y, width, height, ...
 
         // Process text.
 
@@ -261,11 +275,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 let key = &m.0
                 let value = &m.1;
                 if key == "x" {
-                    x = value.parse::<f32>().ok();
+                    x = value.numeric();
                 } else if key == "y" {
-                    y = value.parse::<f32>().ok();
+                    y = value.numeric();
                 } else if key == "font-size" {
-                    font_size = value.parse::<f32>().ok();
+                    font_size = value.numeric();
                 } else if key == "font-family" && value == "arial" {
                 } else if key == "fill" {
                     c = parse_color(&value);

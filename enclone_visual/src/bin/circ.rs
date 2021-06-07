@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// color -- see core/src/color.rs
+
 use engine::Engine;
 use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
 use std::time::{SystemTime, UNIX_EPOCH};
