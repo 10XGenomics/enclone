@@ -5,10 +5,6 @@
 
 use crate::geometry;
 
-fn numeric(x: &str) -> Option<f32> {
-    x.parse::<f32>().ok()
-}
-
 fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
     if key == "opacity" && value.parse::<f32>().is_ok() {
         let v = value.force_f32()
@@ -22,6 +18,19 @@ fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
     return false;
 }
 
+fn numeric(x: &str) -> Option<f32> {
+    x.parse::<f32>().ok()
+}
+
+fn get_numeric(key: &str, value: &str, var: &str, x: &mut f32) -> bool {
+    if key == var {
+        *x = numeric(&value);
+        x.is_some();
+    } else {
+        false
+    }
+}
+
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (mut c1, mut c2, mut c3) = (None, None, None);
     if value.starts_with("rgb(" && value.ends_with(")") {
@@ -32,6 +41,8 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
         c1 = rgb[0].parse::<u8>().ok();
         c2 = rgb[1].parse::<u8>().ok();
         c3 = rgb[2].parse::<u8>().ok();
+    } else if value == "white" {
+        (c1, c2, c3) = (Some(255), Some(255), Some(255));
     } else {
         let b = value.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
@@ -166,12 +177,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 let key = &m.0
                 let value = &m.1;
                 if key == "stroke" || key == "stroke-width" {
-                } else if key == "cx" {
-                    x = value.numeric();
-                } else if key == "cy" {
-                    y = value.numeric();
-                } else if key == "r" {
-                    r = value.numeric();
+                } else if get_numeric(&key, &value, "cx", &mut x) {
+                } else if get_numeric(&key, &value, "cy", &mut y) {
+                } else if get_numeric(&key, &value, "r", &mut r) {
                 } else if key == "fill" {
                     c = parse_color(&value);
                 } else if get_opacity(&key, &value, &mut o) {
@@ -202,14 +210,10 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0
                 let value = &m.1;
-                if key == "x1" {
-                    x1 = value.numeric();
-                } else if key == "y1" {
-                    y1 = value.numeric();
-                } else if key == "x2" {
-                    x2 = value.numeric();
-                } else if key == "y2" {
-                    y2 = value.numeric();
+                if get_numeric(&key, &value, "x1", &mut x1) {
+                } else if get_numeric(&key, &value, "y1", &mut y1) {
+                } else if get_numeric(&key, &value, "x2", &mut x2) {
+                } else if get_numeric(&key, &value, "y2", &mut y2) {
                 } else if key == "stroke" {
                     c = parse_color(&value);
                 } else if key == "stroke-width" {
@@ -242,14 +246,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0
                 let value = &m.1;
-                if key == "x" {
-                    x = value.numeric();
-                } else if key == "y" {
-                    y = value.numeric();
-                } else if key == "width" {
-                    width = value.numeric();
-                } else if key == "height" {
-                    height = value.numeric();
+                if get_numeric(&key, &value, "x", &mut x) {
+                } else if get_numeric(&key, &value, "y", &mut y) {
+                } else if get_numeric(&key, &value, "width", &mut width {
+                } else if get_numeric(&key, &value, "y", &mut y) {
+                } else if get_numeric(&key, &value, "width", &mut width {
+                } else if get_numeric(&key, &value, "height", &mut height {
                 } else if key == "fill" {
                     ... could be white ...
                 } else if key == "stroke" {
