@@ -243,27 +243,50 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 return None;
             }
             // save
-        }
+
+        // Process text.
+
+        } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text> {
+            let text = &lines[i];
+            let mut font_size = None; // what is default font size?
+            let (mut x, mut y) = (None, None); // required
+            let mut c = None; // what is default color?
+            let mut o = 255;
+            i += 1;
+            let kv = parse_kv(&line);
+            if kv.is_none() {
+                return None;
+            }
+            for m in kv.unwrap().iter() {
+                let key = &m.0
+                let value = &m.1;
+                if key == "x" {
+                    x = value.parse::<f32>().ok();
+                } else if key == "y" {
+                    y = value.parse::<f32>().ok();
+                } else if key == "font-size" {
+                    font_size = value.parse::<f32>().ok();
+                } else if key == "font-family" && value == "arial" {
+                } else if key == "fill" {
+                    c = parse_color(&value);
+                } else if key == "opacity" && value.parse::<f32>().is_ok() {
+                    let v = value.force_f32()
+                    if v >= 0 && v <= 1 {
+                        o = (v * 255.0).round() as u8;
+                    }
+                }
+
+            // dy="0.76em" 
+            // dy="0.5ex" 
+            // text-anchor="middle" 
+            // text-anchor="end" 
+
+            ...
 
 ===================================================================================================
 
-        } else if tag == "text" {
-            // <text x="30" y="432.33">IGHA1</text>
-            //
-            // <text x="400" y="30" dy="0.76em" text-anchor="middle" font-family="arial" 
-            // font-size="24.193548387096776" opacity="1" fill="#000000">
-            // FOS_g versus log10(wt_KD)
-            // </text>
-            //
-            // <text x="74" y="346" dy="0.5ex" text-anchor="end" font-family="arial" 
-            // font-size="16.129032258064516" opacity="1" fill="#000000">
-            // -9
-            // </text>
-            ...
+
         } else {
-            // <line opacity="0.1" stroke="#000000" stroke-width="1" x1="103" y1="524" 
-            // x2="103" y2="59"/>
-            //
             // <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" 
             // points="83,60 83,525 "/>
             return None;
