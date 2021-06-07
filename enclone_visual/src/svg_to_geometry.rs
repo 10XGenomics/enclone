@@ -17,10 +17,34 @@ fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
         if !value.starts_with('"') || !value.ends_with('"') {
             return None;
         }
-        let value = value.after("\"").rev_before("\"");
-        kv.push((key.to_string(), value.to_string()));
+        value = value.after("\"").rev_before("\"").to_string();
+        if key == "style" {
+            let vals = value.split(';').collect::<Vec<&str>>();
+            for k in 0..vals.len() {
+                if !vals[k].contains(":") {
+                    return None;
+                }
+                let key = vals[k].before(":");
+                let value = vals[k].after(":").to_string();
+                kv.push((key.to_string(), value.to_string()));
+            }
+        } else {
+            kv.push((key.to_string(), value.to_string()));
+        }
     }
     kv
+}
+
+fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
+    let mut line = line.to_string();
+    if line.ends_with(" \>") {
+        line = line.before(" \>");
+    } else if line.ends_with("\>") {
+        line = line.before("\>");
+    } else {
+        return None;
+    }
+    parse_kv(&line)
 }
 
 fn dehex(h: [u8; 2]) -> Option<u8> {
@@ -88,14 +112,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
         // Process circle.
 
         if tag == "circle" {
-            if line.ends_with(" \>") {
-                line = line.before(" \>");
-            } else if line.ends_with("\>") {
-                line = line.before("\>");
-            } else {
-                return None;
-            }
-            let kv = parse_kv(&line);
+            let kv = parse_kv_term(&line);
             if kv.is_none() {
                 return None;
             }
@@ -147,15 +164,55 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-                
+            // save x, y, r, c, o
+
+        // Process rectangle.
+
+        } else if tag == "rect" {
+            let kv = parse_kv_term(&line);
+            if kv.is_none() {
+                return None;
+            }
+            let (mut x, mut y, mut width, mut height) = (None, None, None, None);
+            for m in kv.unwrap().iter() {
+                let key = &m.0
+                let value = &m.1;
+                if key == "x" {
+                    x = value.parse::<f32>().ok();
+                } else if key == "y" {
+                    y = value.parse::<f32>().ok();
+                } else if key == "width" {
+                    width = value.parse::<f32>().ok();
+                } else if key == "height" {
+                    height = value.parse::<f32>().ok();
+                } else if key == "fill" {
+                    ... could be white ...
+                } else if key == "stroke" {
+                    ... could be black ...
+                } else if key == "stroke-width {
+                    ... could be 2 ...
+                } else {
+                    return None;
+                }
+            }
+            // test for none
+            // save x, y, width, height, ...
+
+        // Process line.
+        
+        } else if tag == "line" {
+            let kv = parse_kv_term(&line);
+            if kv.is_none() {
+                return None;
+            }
+            let (mut x, mut y, mut width, mut height) = (None, None, None, None);
+
+            // <line opacity="0.1" stroke="#000000" stroke-width="1" x1="103" y1="524" 
+            // x2="103" y2="59"/>
 
 ===================================================================================================
 
-        } else if tag == "rect" {
-            // <rect x="10" y="407.33" width="147.5" height="260" 
-            // style="fill:white;stroke:black;stroke-width:2" />
 
-            ...
         } else if tag == "text" {
             // <text x="30" y="432.33">IGHA1</text>
             //
