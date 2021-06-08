@@ -43,6 +43,8 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
         c3 = rgb[2].parse::<u8>().ok();
     } else if value == "white" {
         (c1, c2, c3) = (Some(255), Some(255), Some(255));
+    } else if value == "black" {
+        (c1, c2, c3) = (Some(0), Some(0), Some(0));
     } else {
         let b = value.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
@@ -243,6 +245,8 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 return None;
             }
             let (mut x, mut y, mut width, mut height) = (None, None, None, None);
+            let (mut fill_color, mut stroke_color) = (None, None);
+            let mut stroke_width = None;
             for m in kv.unwrap().iter() {
                 let key = &m.0
                 let value = &m.1;
@@ -253,17 +257,40 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 } else if get_numeric(&key, &value, "width", &mut width {
                 } else if get_numeric(&key, &value, "height", &mut height {
                 } else if key == "fill" {
-                    ... could be white ...
+                    fill_color = parse_color(&value);
                 } else if key == "stroke" {
-                    ... could be black ...
+                    stroke_color = parse_color(&value);
                 } else if key == "stroke-width {
-                    ... could be 2 ...
+                    stroke_width = value.parse::<f32>().ok();
                 } else {
                     return None;
                 }
             }
-            // test for none
-            // save x, y, width, height, ...
+            if x.is_none() || y.is_none() || width.is_none() || height.is_none() {
+                return None;
+            }
+            if stroke_width.is_none() ^ stroke_color.is_none() {
+                return None;
+            }
+            if stroke_width.is_none() {
+                geom.push( Rectangle {
+                    p: Point.new(x.unwrap(), y.unwrap()),
+                    width: width.unwrap(),
+                    height: height.unwrap(),
+                    fill_color: fill_color.unwrap(),
+                    stroke_width: 0.0;
+                    stroke_color: Color.new(0, 0, 0, 0),
+                });
+            } else {
+                geom.push( Rectangle {
+                    p: Point.new(x.unwrap(), y.unwrap()),
+                    width: width.unwrap(),
+                    height: height.unwrap(),
+                    fill_color: fill_color.unwrap(),
+                    stroke_width: stroke_width.unwrap(),
+                    stroke_color: stroke_color.unwrap(),
+                });
+            }
 
         // Process text.
 
@@ -281,12 +308,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0
                 let value = &m.1;
-                if key == "x" {
-                    x = value.numeric();
-                } else if key == "y" {
-                    y = value.numeric();
-                } else if key == "font-size" {
-                    font_size = value.numeric();
+                if get_numeric(&key, &value, "x", &mut x {
+                } else if get_numeric(&key, &value, "y", &mut y {
+                } else if get_numeric(&key, &value, "font-size", &mut font_size {
                 } else if key == "font-family" && value == "arial" {
                 } else if key == "fill" {
                     c = parse_color(&value);

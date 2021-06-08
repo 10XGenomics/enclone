@@ -73,5 +73,6 @@ pub struct Rectangle {
     pub width: f32,          // width
     pub height: f32,         // height
     pub fill_color: Color,   // fill color
+    pub stroke_width: f32,   // stroke width
     pub stroke_color: Color, // stroke color
 }
