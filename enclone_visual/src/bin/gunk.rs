@@ -112,6 +112,7 @@ impl Application for EncloneVisual {
                 Command::none()
             }
             Message::ButtonPressed => {
+                println!("pushed");
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     Command::perform(compute(), Message::ComputationDone)
