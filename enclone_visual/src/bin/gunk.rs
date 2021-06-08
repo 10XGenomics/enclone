@@ -1,15 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, text_input, Align, Application, Button, Clipboard, Color, Column, Command, 
     Element, HorizontalAlignment, Image, Row, Rule, Settings, 
-    Subscription, Svg, Text, TextInput, VerticalAlignment,
+    Subscription, Text, TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
 use iced_native::{window, Event};
-use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
 use string_utils::*;
@@ -43,7 +41,6 @@ use ComputeState::*;
 struct EncloneVisual {
     input: text_input::State,
     input_value: String,
-    svg_value: String,
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
@@ -162,16 +159,6 @@ impl Application for EncloneVisual {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
-        // Display the SVG.
-        //
-        // WARNING!  When we changed the width and height to 400, the performance of scolling
-        // in the clonotype table window gradually degraded, becoming less and less responsive.
-        // After a couple minutes, the app crashed, with thirty threads running.
-
-        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
-
         let png = include_bytes!("../../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
@@ -190,7 +177,6 @@ impl Application for EncloneVisual {
                     .push(banner),
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
-            .push(Row::new().spacing(10).push(svg))
             .push(Rule::horizontal(10).style(style::RuleStyle));
 
         use iced_aw::style::{
