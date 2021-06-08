@@ -123,27 +123,12 @@ impl Application for EncloneVisual {
             Message::ButtonPressed => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
-                    USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST.lock().unwrap().push(self.input_value.clone());
-                    PROCESSING_REQUEST.store(true, SeqCst);
                     Command::perform(compute(), Message::ComputationDone)
                 } else {
                     Command::none()
                 }
             }
             Message::ComputationDone(_) => {
-                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                if reply_text.contains("enclone failed") {
-                    reply_text =
-                        format!("enclone failed{}", reply_text.after("enclone failed"));
-                }
-                reply_text += "\n \n"; // papering over truncation bug
-                let mut reply_svg = String::new();
-                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
-                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                }
-                self.output_value = reply_text.to_string();
-                self.svg_value = reply_svg.to_string();
                 self.compute_state = WaitingForRequest;
                 Command::none()
             }
@@ -305,14 +290,7 @@ impl Application for EncloneVisual {
 }
 
 async fn compute() -> Result<Gerbil, String> {
-    let t = Instant::now();
-    while PROCESSING_REQUEST.load(SeqCst) {
-        thread::sleep(Duration::from_millis(10));
-    }
-    println!(
-        "time used processing command = {:.1} seconds\n",
-        elapsed(&t)
-    );
+    thread::sleep(Duration::from_millis(2000));
     Ok(Gerbil{})
 }
 
