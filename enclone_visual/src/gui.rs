@@ -32,6 +32,20 @@ pub async fn launch_gui() -> iced::Result {
     EncloneVisual::run(settings)
 }
 
+#[derive(PartialEq)]
+enum ComputeState {
+    WaitingForRequest,
+    Thinking,
+}
+
+impl Default for ComputeState {
+    fn default() -> ComputeState {
+        WaitingForRequest
+    }
+}
+
+use ComputeState::*;
+
 #[derive(Default)]
 struct EncloneVisual {
     scroll: scrollable::State,
@@ -44,6 +58,8 @@ struct EncloneVisual {
     open_state: button::State,
     modal_state: modal::State<ModalState>,
     should_exit: bool,
+    compute_state: ComputeState,
+    
 }
 
 #[derive(Debug, Clone)]
@@ -74,6 +90,7 @@ impl Application for EncloneVisual {
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
+        x.compute_state = WaitingForRequest;
         (x, Command::none())
     }
 
@@ -104,8 +121,8 @@ impl Application for EncloneVisual {
                 Command::none()
             }
             Message::ButtonPressed => {
-                if self.submit_button_text == "Submit".to_string() {
-                    self.submit_button_text = "thinking".to_string();
+                if self.compute_state == WaitingForRequest {
+                    self.compute_state = Thinking;
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
@@ -127,7 +144,7 @@ impl Application for EncloneVisual {
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
-                self.submit_button_text = "Submit".to_string();
+                self.compute_state = WaitingForRequest;
                 Command::none()
             }
 
@@ -165,7 +182,7 @@ impl Application for EncloneVisual {
         .size(14);
 
         let button = Button::new(&mut self.button, 
-            Text::new(&self.submit_button_text))
+            Text::new(if self.compute_state == WaitingForRequest { "Submit" } else { "thinking" }))
             .padding(10)
             .on_press(Message::ButtonPressed);
 
