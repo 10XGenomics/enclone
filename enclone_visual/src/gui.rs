@@ -41,11 +41,8 @@ struct EncloneVisual {
     svg_value: String,
     button: button::State,
     submit_button_text: String,
-
     open_state: button::State,
     modal_state: modal::State<ModalState>,
-    last_message: Option<Message>,
-
     should_exit: bool,
 }
 
@@ -109,7 +106,6 @@ impl Application for EncloneVisual {
             Message::ButtonPressed => {
                 if self.submit_button_text == "Submit".to_string() {
                     self.submit_button_text = "thinking".to_string();
-                    let t = Instant::now();
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
@@ -119,33 +115,20 @@ impl Application for EncloneVisual {
                 }
             }
             Message::ComputationDone(_) => {
-                    /*
-                    while PROCESSING_REQUEST.load(SeqCst) {
-                        thread::sleep(Duration::from_millis(10));
-                    }
-                    */
-                    let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                    if reply_text.contains("enclone failed") {
-                        reply_text =
-                            format!("enclone failed{}", reply_text.after("enclone failed"));
-                    }
-                    reply_text += "\n \n"; // papering over truncation bug
-
-                    let mut reply_svg = String::new();
-                    if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
-                        reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    }
-                    self.output_value = reply_text.to_string();
-                    self.svg_value = reply_svg.to_string();
-                    self.submit_button_text = "Submit".to_string();
-                    /*
-                    println!(
-                        "time used processing command = {:.1} seconds\n",
-                        elapsed(&t)
-                    );
-                    */
-                    Command::none()
-                // }
+                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                if reply_text.contains("enclone failed") {
+                    reply_text =
+                        format!("enclone failed{}", reply_text.after("enclone failed"));
+                }
+                reply_text += "\n \n"; // papering over truncation bug
+                let mut reply_svg = String::new();
+                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
+                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                }
+                self.output_value = reply_text.to_string();
+                self.svg_value = reply_svg.to_string();
+                self.submit_button_text = "Submit".to_string();
+                Command::none()
             }
 
             // Catch exit (when the upper left red button is pushed) and store DONE to make
@@ -161,8 +144,6 @@ impl Application for EncloneVisual {
                 Command::none()
             }
         }
-        // self.last_message = Some(message);
-        // Command::none()
     }
 
     fn should_exit(&self) -> bool {
@@ -183,7 +164,8 @@ impl Application for EncloneVisual {
         .padding(10)
         .size(14);
 
-        let button = Button::new(&mut self.button, Text::new(&self.submit_button_text))
+        let button = Button::new(&mut self.button, 
+            Text::new(&self.submit_button_text))
             .padding(10)
             .on_press(Message::ButtonPressed);
 
@@ -306,11 +288,14 @@ impl Application for EncloneVisual {
 }
 
 async fn compute() -> Result<Gerbil, String> {
-    println!("computing...............................................................");
+    let t = Instant::now();
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
-    println!("done computing..........................................................");
+    println!(
+        "time used processing command = {:.1} seconds\n",
+        elapsed(&t)
+    );
     Ok(Gerbil{})
 }
 
