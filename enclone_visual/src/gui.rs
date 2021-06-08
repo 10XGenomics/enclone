@@ -50,12 +50,17 @@ struct EncloneVisual {
 }
 
 #[derive(Debug, Clone)]
+struct Gerbil {
+}
+
+#[derive(Debug, Clone)]
 enum Message {
     InputChanged(String),
     ButtonPressed,
     OpenModal,
     CloseModal,
     CancelButtonPressed,
+    ComputationDone(Result<Gerbil, String>),
     EventOccurred(iced_native::Event),
 }
 
@@ -85,10 +90,22 @@ impl Application for EncloneVisual {
        _clipboard: &mut Clipboard,
     ) -> Command<Message> {
         match message {
-            Message::OpenModal => self.modal_state.show(true),
-            Message::CloseModal => self.modal_state.show(false),
-            Message::CancelButtonPressed => self.modal_state.show(false),
-            Message::InputChanged(ref value) => self.input_value = value.to_string(),
+            Message::OpenModal => { 
+                self.modal_state.show(true);
+                Command::none()
+            }
+            Message::CloseModal => {
+                self.modal_state.show(false);
+                Command::none()
+            }
+            Message::CancelButtonPressed => {
+                self.modal_state.show(false);
+                Command::none()
+            }
+            Message::InputChanged(ref value) => {
+                self.input_value = value.to_string();
+                Command::none()
+            }
             Message::ButtonPressed => {
                 if self.submit_button_text == "Submit".to_string() {
                     self.submit_button_text = "thinking".to_string();
@@ -96,9 +113,17 @@ impl Application for EncloneVisual {
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
+                    Command::perform(compute(), Message::ComputationDone)
+                } else {
+                    Command::none()
+                }
+            }
+            Message::ComputationDone(_) => {
+                    /*
                     while PROCESSING_REQUEST.load(SeqCst) {
                         thread::sleep(Duration::from_millis(10));
                     }
+                    */
                     let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
                     if reply_text.contains("enclone failed") {
                         reply_text =
@@ -113,11 +138,14 @@ impl Application for EncloneVisual {
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
                     self.submit_button_text = "Submit".to_string();
+                    /*
                     println!(
                         "time used processing command = {:.1} seconds\n",
                         elapsed(&t)
                     );
-                }
+                    */
+                    Command::none()
+                // }
             }
 
             // Catch exit (when the upper left red button is pushed) and store DONE to make
@@ -130,10 +158,11 @@ impl Application for EncloneVisual {
                     thread::sleep(Duration::from_millis(50));
                     self.should_exit = true;
                 }
+                Command::none()
             }
         }
-        self.last_message = Some(message);
-        Command::none()
+        // self.last_message = Some(message);
+        // Command::none()
     }
 
     fn should_exit(&self) -> bool {
@@ -274,6 +303,15 @@ impl Application for EncloneVisual {
         .on_esc(Message::CloseModal)
         .into()
     }
+}
+
+async fn compute() -> Result<Gerbil, String> {
+    println!("computing...............................................................");
+    while PROCESSING_REQUEST.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
+    println!("done computing..........................................................");
+    Ok(Gerbil{})
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
