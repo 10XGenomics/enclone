@@ -4,11 +4,12 @@ use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, Element, Font,
-    HorizontalAlignment, Image, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
-    TextInput, VerticalAlignment,
+    button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command, 
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, 
+    Subscription, Svg, Text, TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
+use iced_native::{window, Event};
 use perf_stats::*;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -22,12 +23,13 @@ const DEJAVU: Font = Font::External {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn launch_gui() {
+pub async fn launch_gui() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
     settings.window = window_settings;
-    let _ = EncloneVisual::run(settings);
+    settings.exit_on_close_request = false;
+    EncloneVisual::run(settings)
 }
 
 #[derive(Default)]
@@ -43,6 +45,8 @@ struct EncloneVisual {
     open_state: button::State,
     modal_state: modal::State<ModalState>,
     last_message: Option<Message>,
+
+    should_exit: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -52,6 +56,7 @@ enum Message {
     OpenModal,
     CloseModal,
     CancelButtonPressed,
+    EventOccurred(iced_native::Event),
 }
 
 #[derive(Default)]
@@ -59,20 +64,26 @@ struct ModalState {
     cancel_state: button::State,
 }
 
-impl Sandbox for EncloneVisual {
+impl Application for EncloneVisual {
+    type Executor = iced::executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Self {
+    fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
-        x
+        (x, Command::none())
     }
 
     fn title(&self) -> String {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(
+        &mut self, 
+        message: Message,
+       _clipboard: &mut Clipboard,
+    ) -> Command<Message> {
         match message {
             Message::OpenModal => self.modal_state.show(true),
             Message::CloseModal => self.modal_state.show(false),
@@ -108,8 +119,24 @@ impl Sandbox for EncloneVisual {
                     );
                 }
             }
+            Message::EventOccurred(ref event) => {
+                if let Event::Window(window::Event::CloseRequested) = event {
+                    DONE.store(true, SeqCst);
+                    thread::sleep(Duration::from_millis(50));
+                    self.should_exit = true;
+                }
+            }
         }
-        self.last_message = Some(message)
+        self.last_message = Some(message);
+        Command::none()
+    }
+
+    fn should_exit(&self) -> bool {
+        self.should_exit
+    }
+
+    fn subscription(&self) -> Subscription<Message> {
+        iced_native::subscription::events().map(Message::EventOccurred)
     }
 
     fn view(&mut self) -> Element<Message> {
