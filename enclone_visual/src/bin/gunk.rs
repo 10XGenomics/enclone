@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
@@ -17,7 +16,7 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn launch_gui() -> iced::Result {
+fn main() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
@@ -131,7 +130,6 @@ impl Application for EncloneVisual {
 
             Message::EventOccurred(ref event) => {
                 if let Event::Window(window::Event::CloseRequested) = event {
-                    DONE.store(true, SeqCst);
                     thread::sleep(Duration::from_millis(50));
                     self.should_exit = true;
                 }
@@ -173,7 +171,7 @@ impl Application for EncloneVisual {
             .width(Units(300))
             .height(Units(300));
 
-        let png = include_bytes!("../../img/enclone_banner.png").to_vec();
+        let png = include_bytes!("../../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
         let content = Column::new()
@@ -218,7 +216,7 @@ impl Application for EncloneVisual {
 
         let style = Gerbil;
 
-        let version = VERSION.lock().unwrap()[0].clone();
+        let version = "1".to_string();
         let version_float = format!("1e-{}", -version.force_f64().log10());
         Modal::new(&mut self.modal_state, content, move |state| {
             Card::new(
