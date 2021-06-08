@@ -3,7 +3,7 @@
 use iced::Length::Units;
 use iced::{
     button, text_input, Align, Application, Button, Clipboard, Color, Column, Command, 
-    Element, HorizontalAlignment, Image, Row, Rule, Settings, 
+    Container, Element, HorizontalAlignment, Image, Length, Row, Rule, Settings, 
     Subscription, Text, TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -162,23 +162,6 @@ impl Application for EncloneVisual {
         let png = include_bytes!("../../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
-        let content = Column::new()
-            .spacing(20)
-            .padding(20)
-            .max_width(1500) // this governs the max window width upon manual resizing
-            .push(
-                Row::new()
-                    .spacing(230)
-                    .align_items(Align::Center)
-                    .push(
-                        Button::new(&mut self.open_state, Text::new("Help"))
-                            .on_press(Message::OpenModal),
-                    )
-                    .push(banner),
-            )
-            .push(Row::new().spacing(10).push(text_input).push(button))
-            .push(Rule::horizontal(10).style(style::RuleStyle));
-
         use iced_aw::style::{
             card::{Style, StyleSheet},
             colors,
@@ -203,52 +186,19 @@ impl Application for EncloneVisual {
 
         let style = Gerbil;
 
-        let version = "1".to_string();
-        let version_float = format!("1e-{}", -version.force_f64().log10());
-        Modal::new(&mut self.modal_state, content, move |state| {
-            Card::new(
-                Text::new(""),
-                Text::new(&format!(
-                    "Welcome to enclone visual {} = {}!\n\n\
-                     Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
-                     To use enclone visual, type in the box \
-                     (see below)\nand then push the Submit button.  Here are the things \
-                     that you can type:\n\n\
-                     • an enclone command\n\
-                     • an clonotype id (number)\n\
-                     • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                     • q to quit\n\n\
-                     Major limitations of this version:\n\
-                     1. There is no color in the clonotype tables.\n\
-                     2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.\n\
-                     4. Long commands are hard to work with in the input box.\n\
-                     5. Very wide clonotype tables wrap, making them unintelligible, and \
-                     only solvable by window resizing, and sometimes not that.",
-                    version, version_float,
-                ))
-                .height(Units(450))
-                .vertical_alignment(VerticalAlignment::Center),
-            )
-            .style(style)
-            .foot(
-                Row::new().spacing(10).push(
-                    Button::new(
-                        &mut state.cancel_state,
-                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
-                    )
-                    // .width(Length::Fill)
-                    .on_press(Message::CancelButtonPressed),
-                ),
-            )
-            .width(Units(1100))
-            .height(Units(1060))
-            .on_close(Message::CloseModal)
+        let content = Column::new()
+            .spacing(20)
+            .padding(20)
+            .max_width(1500) // this governs the max window width upon manual resizing
+            .push(Row::new().spacing(10).push(text_input).push(button));
+
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
             .into()
-        })
-        .backdrop(Message::CloseModal)
-        .on_esc(Message::CloseModal)
-        .into()
+
     }
 }
 
@@ -276,49 +226,6 @@ mod style {
 
     pub struct Squeak;
 
-    use iced::{scrollable, Color};
+    use iced::Color;
 
-    impl scrollable::StyleSheet for Squeak {
-        fn active(&self) -> scrollable::Scrollbar {
-            scrollable::Scrollbar {
-                background: Color::from_rgb(0.75, 0.75, 0.75).into(),
-                border_radius: 2.0,
-                border_width: 0.0,
-                border_color: Color::TRANSPARENT,
-                scroller: scrollable::Scroller {
-                    color: Color::from_rgb(0.0, 0.0, 0.0),
-                    border_radius: 2.0,
-                    border_width: 0.0,
-                    border_color: Color::TRANSPARENT,
-                },
-            }
-        }
-
-        fn hovered(&self) -> scrollable::Scrollbar {
-            let active = self.active();
-            scrollable::Scrollbar {
-                background: Color {
-                    a: 0.5,
-                    ..Color::from_rgb(0.0, 0.0, 0.0)
-                }
-                .into(),
-                scroller: scrollable::Scroller {
-                    color: Color::from_rgb(0.0, 0.0, 0.0),
-                    ..active.scroller
-                },
-                ..active
-            }
-        }
-
-        fn dragging(&self) -> scrollable::Scrollbar {
-            let hovered = self.hovered();
-            scrollable::Scrollbar {
-                scroller: scrollable::Scroller {
-                    color: Color::from_rgb(0.0, 0.0, 0.0),
-                    ..hovered.scroller
-                },
-                ..hovered
-            }
-        }
-    }
 }
