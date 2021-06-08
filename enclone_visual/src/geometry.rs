@@ -61,11 +61,17 @@ pub struct CircleWithToolTip {
     pub t: String,
 }
 
-pub struct Seg {
+pub struct Segment {
     pub p1: Point, // start
     pub p2: Point, // stop
     pub w: f32,    // width
     pub c: Color,
+}
+
+pub struct PolySegment {
+    pub p: Vec<Point>,  // points
+    pub w: f32,         // width
+    pub c: Color,       // color
 }
 
 pub struct Rectangle {

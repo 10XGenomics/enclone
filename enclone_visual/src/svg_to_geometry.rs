@@ -230,9 +230,62 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push( Seg {
+            geom.push( Segment {
                 p1: Point(x1.unwrap(), y1.unwrap()),
                 p2: Point(x2.unwrap(), y2.unwrap()),
+                w: stroke_width.unwrap(),
+                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            });
+
+        // Process polyline.
+        
+        } else if tag == "polyline" {
+            let kv = parse_kv_term(&line);
+            if kv.is_none() {
+                return None;
+            }
+            let mut p = Option<Vec::<Point>>::new();
+            let mut c = None;
+            let mut o = 255;
+            let mut stroke_width = None;
+            for m in kv.unwrap().iter() {
+                let key = &m.0
+                let value = &m.1;
+                if key == "points" {
+                    let mut points = Vec::<Point>::new();
+                    let ps = value.split(' ').collect::<Vec<&str>>();
+                    for x in ps.iter() {
+                        let z = x.split(',').collect::<Vec<&str>>();
+                        if z.len() != 2 {
+                            return None;
+                        }
+                        let mut p = vec![0.0; 2];
+                        for j in 0..z.len() {
+                            if z[j].parse::<f32>().is_err() {
+                                return None;
+                            } else {
+                                p[j] = z[j].force_f32();
+                            }
+                        }
+                        points.push( Point { x: p[0], y: p[1] } );
+                    }
+                    p = Some(points);
+                } else if key == "stroke" {
+                    c = parse_color(&value);
+                } else if key == "stroke-width" {
+                    stroke_width = value.parse::<f32>().ok();
+                } else if get_opacity(&key, &value, &mut o) {
+                } else {
+                    return None;
+                }
+            }
+            if x1.is_none() || x2.is_none() || x3.is_none() || x4.is_none() {
+                return None;
+            } else if c.is_none() || stroke_width.is_none() {
+                return None;
+            }
+            geom.push( PolySegment {
+                p: points,
                 w: stroke_width.unwrap(),
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             });
@@ -327,12 +380,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
             ...
 
-===================================================================================================
-
-
         } else {
-            // <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" 
-            // points="83,60 83,525 "/>
             return None;
         }
     }
