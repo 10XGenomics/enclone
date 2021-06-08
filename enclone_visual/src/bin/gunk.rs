@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use iced::{
-    button, text_input, Application, Button, Clipboard, Column, Command, 
-    Container, Element, Length, Row, Settings, Subscription, Text, TextInput,
+    button, Application, Button, Clipboard, Column, Command, 
+    Container, Element, Length, Row, Settings, Subscription, Text,
 };
 use iced_native::{window, Event};
 use std::thread;
@@ -33,8 +33,6 @@ use ComputeState::*;
 
 #[derive(Default)]
 struct EncloneVisual {
-    input: text_input::State,
-    input_value: String,
     button: button::State,
     submit_button_text: String,
     should_exit: bool,
@@ -48,7 +46,6 @@ struct Gerbil {
 
 #[derive(Debug, Clone)]
 enum Message {
-    InputChanged(String),
     ButtonPressed,
     ComputationDone(Result<Gerbil, String>),
     EventOccurred(iced_native::Event),
@@ -76,10 +73,6 @@ impl Application for EncloneVisual {
        _clipboard: &mut Clipboard,
     ) -> Command<Message> {
         match message {
-            Message::InputChanged(ref value) => {
-                self.input_value = value.to_string();
-                Command::none()
-            }
             Message::ButtonPressed => {
                 println!("pushed");
                 if self.compute_state == WaitingForRequest {
@@ -134,11 +127,10 @@ impl Application for EncloneVisual {
             .center_x()
             .center_y()
             .into()
-
     }
 }
 
 async fn compute() -> Result<Gerbil, String> {
-    thread::sleep(Duration::from_millis(2000));
+    thread::sleep(Duration::from_millis(3000));
     Ok(Gerbil{})
 }
