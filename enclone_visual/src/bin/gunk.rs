@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use iced::{
-    button, text_input, Application, Button, Clipboard, Color, Column, Command, 
+    button, text_input, Application, Button, Clipboard, Column, Command, 
     Container, Element, Length, Row, Settings, Subscription, Text, TextInput,
 };
 use iced_native::{window, Event};
@@ -131,29 +131,10 @@ impl Application for EncloneVisual {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
-        /*
-        #[derive(Clone, Copy)]
-        pub struct Gerbil;
-
-        impl StyleSheet for Gerbil {
-            fn active(&self) -> Style {
-                Style {
-                    background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    border_width: 0.0,
-                    border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
-                    head_background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    head_text_color: colors::WHITE,
-                    close_color: colors::WHITE,
-                    ..Style::default()
-                }
-            }
-        }
-        */
-
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(1500) // this governs the max window width upon manual resizing
+            .max_width(1500)
             .push(Row::new().spacing(10).push(text_input).push(button));
 
         Container::new(content)
@@ -171,6 +152,7 @@ async fn compute() -> Result<Gerbil, String> {
     Ok(Gerbil{})
 }
 
+/*
 mod style {
 
     pub struct RuleStyle;
@@ -185,7 +167,5 @@ mod style {
             }
         }
     }
-
-    use iced::Color;
-
 }
+*/
