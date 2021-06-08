@@ -6,14 +6,10 @@ use iced::{
 };
 use iced_native::{window, Event};
 use std::thread;
-use std::time::Duration;
 
 fn main() -> iced::Result {
-    let mut settings = Settings::default();
-    let mut window_settings = iced::window::Settings::default();
-    window_settings.size = (500 as u32, 500 as u32); // reasonable minimum size
-    settings.window = window_settings;
-    EncloneVisual::run(settings)
+    let settings = Settings::default();
+    StrangeThing::run(settings)
 }
 
 #[derive(PartialEq)]
@@ -31,7 +27,7 @@ impl Default for ComputeState {
 use ComputeState::*;
 
 #[derive(Default)]
-struct EncloneVisual {
+struct StrangeThing {
     button: button::State,
     should_exit: bool,
     compute_state: ComputeState,
@@ -45,13 +41,13 @@ enum Message {
     EventOccurred(iced_native::Event),
 }
 
-impl Application for EncloneVisual {
+impl Application for StrangeThing {
     type Executor = iced::executor::Default;
     type Message = Message;
     type Flags = ();
 
-    fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
-        let mut x = EncloneVisual::default();
+    fn new(_flags: ()) -> (StrangeThing, Command<Message>) {
+        let mut x = StrangeThing::default();
         x.compute_state = WaitingForRequest;
         (x, Command::none())
     }
@@ -99,11 +95,8 @@ impl Application for EncloneVisual {
     fn view(&mut self) -> Element<Message> {
         let button = Button::new(&mut self.button, 
             Text::new(if self.compute_state == WaitingForRequest { "Submit" } else { "thinking" }))
-            .padding(10)
             .on_press(Message::ButtonPressed);
         let content = Column::new()
-            .spacing(20)
-            .padding(20)
             .push(Row::new().spacing(10).push(button));
         Container::new(content)
             .width(Length::Fill)
@@ -115,6 +108,6 @@ impl Application for EncloneVisual {
 }
 
 async fn compute() -> Result<(), String> {
-    thread::sleep(Duration::from_millis(3000));
+    thread::sleep(std::time::Duration::from_millis(3000));
     Ok(())
 }
