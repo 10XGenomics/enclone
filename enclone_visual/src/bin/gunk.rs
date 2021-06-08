@@ -6,7 +6,6 @@ use iced::{
     Container, Element, HorizontalAlignment, Image, Length, Row, Rule, Settings, 
     Subscription, Text, TextInput, VerticalAlignment,
 };
-use iced_aw::{modal, Card, Modal};
 use iced_native::{window, Event};
 use std::thread;
 use std::time::Duration;
@@ -44,7 +43,6 @@ struct EncloneVisual {
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
-    modal_state: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
     
@@ -58,16 +56,8 @@ struct Gerbil {
 enum Message {
     InputChanged(String),
     ButtonPressed,
-    OpenModal,
-    CloseModal,
-    CancelButtonPressed,
     ComputationDone(Result<Gerbil, String>),
     EventOccurred(iced_native::Event),
-}
-
-#[derive(Default)]
-struct ModalState {
-    cancel_state: button::State,
 }
 
 impl Application for EncloneVisual {
@@ -92,18 +82,6 @@ impl Application for EncloneVisual {
        _clipboard: &mut Clipboard,
     ) -> Command<Message> {
         match message {
-            Message::OpenModal => { 
-                self.modal_state.show(true);
-                Command::none()
-            }
-            Message::CloseModal => {
-                self.modal_state.show(false);
-                Command::none()
-            }
-            Message::CancelButtonPressed => {
-                self.modal_state.show(false);
-                Command::none()
-            }
             Message::InputChanged(ref value) => {
                 self.input_value = value.to_string();
                 Command::none()
@@ -160,7 +138,6 @@ impl Application for EncloneVisual {
             .on_press(Message::ButtonPressed);
 
         let png = include_bytes!("../../../img/enclone_banner.png").to_vec();
-        let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
         use iced_aw::style::{
             card::{Style, StyleSheet},
@@ -183,8 +160,6 @@ impl Application for EncloneVisual {
                 }
             }
         }
-
-        let style = Gerbil;
 
         let content = Column::new()
             .spacing(20)
@@ -223,8 +198,6 @@ mod style {
             }
         }
     }
-
-    pub struct Squeak;
 
     use iced::Color;
 
