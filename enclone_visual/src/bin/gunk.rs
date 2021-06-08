@@ -86,14 +86,8 @@ impl Application for EncloneVisual {
                 self.compute_state = WaitingForRequest;
                 Command::none()
             }
-
-            // Catch exit (when the upper left red button is pushed) and store DONE to make
-            // the server thread exit gracefully.  Otherwise you will get a an error message
-            // and a traceback.
-
             Message::EventOccurred(ref event) => {
                 if let Event::Window(window::Event::CloseRequested) = event {
-                    thread::sleep(Duration::from_millis(50));
                     self.should_exit = true;
                 }
                 Command::none()
