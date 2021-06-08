@@ -35,10 +35,7 @@ pub struct Point {
 
 impl Point {
     pub fn new(x: f32, y: f32) -> Point {
-        Point {
-            x: x,
-            y: y,
-        }
+        Point { x: x, y: y }
     }
 }
 
@@ -69,9 +66,9 @@ pub struct Segment {
 }
 
 pub struct PolySegment {
-    pub p: Vec<Point>,  // points
-    pub w: f32,         // width
-    pub c: Color,       // color
+    pub p: Vec<Point>, // points
+    pub w: f32,        // width
+    pub c: Color,      // color
 }
 
 pub struct Rectangle {

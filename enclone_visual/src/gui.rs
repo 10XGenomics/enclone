@@ -94,7 +94,11 @@ impl Sandbox for EncloneVisual {
                             format!("enclone failed{}", reply_text.after("enclone failed"));
                     }
                     reply_text += "\n \n"; // papering over truncation bug
-                    let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+
+                    let mut reply_svg = String::new();
+                    if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
+                        reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    }
                     self.output_value = reply_text.to_string();
                     self.svg_value = reply_svg.to_string();
                     self.submit_button_text = "Submit".to_string();
@@ -202,9 +206,9 @@ impl Sandbox for EncloneVisual {
                      To use enclone visual, type in the box \
                      (see below)\nand then push the Submit button.  Here are the things \
                      that you can type:\n\n\
-                     • an enclone command, without the enclone part\n\
+                     • an enclone command\n\
                      • an clonotype id (number)\n\
-                     • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                     • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
                      • q to quit\n\n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
