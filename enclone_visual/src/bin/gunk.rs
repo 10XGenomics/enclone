@@ -39,13 +39,9 @@ struct EncloneVisual {
 }
 
 #[derive(Debug, Clone)]
-struct Gerbil {
-}
-
-#[derive(Debug, Clone)]
 enum Message {
     ButtonPressed,
-    ComputationDone(Result<Gerbil, String>),
+    ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
 }
 
@@ -105,12 +101,10 @@ impl Application for EncloneVisual {
             Text::new(if self.compute_state == WaitingForRequest { "Submit" } else { "thinking" }))
             .padding(10)
             .on_press(Message::ButtonPressed);
-
         let content = Column::new()
             .spacing(20)
             .padding(20)
             .push(Row::new().spacing(10).push(button));
-
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
@@ -120,7 +114,7 @@ impl Application for EncloneVisual {
     }
 }
 
-async fn compute() -> Result<Gerbil, String> {
+async fn compute() -> Result<(), String> {
     thread::sleep(Duration::from_millis(3000));
-    Ok(Gerbil{})
+    Ok(())
 }
