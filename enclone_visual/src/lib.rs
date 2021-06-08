@@ -15,7 +15,7 @@ pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
-pub mod svg_to_geometry;
+// pub mod svg_to_geometry;
 
 pub mod proto {
     tonic::include_proto!("enclone");

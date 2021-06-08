@@ -34,7 +34,7 @@ pub struct Point {
 }
 
 impl Point {
-    pub fn new(x: f32, y:32) -> Point {
+    pub fn new(x: f32, y: f32) -> Point {
         Point {
             x: x,
             y: y,
