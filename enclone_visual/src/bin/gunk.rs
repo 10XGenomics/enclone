@@ -1,17 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use iced::Length::Units;
 use iced::{
-    button, text_input, Align, Application, Button, Clipboard, Color, Column, Command, 
-    Container, Element, HorizontalAlignment, Image, Length, Row, Rule, Settings, 
-    Subscription, Text, TextInput, VerticalAlignment,
+    button, text_input, Application, Button, Clipboard, Color, Column, Command, 
+    Container, Element, Length, Row, Settings, Subscription, Text, TextInput,
 };
 use iced_native::{window, Event};
 use std::thread;
 use std::time::Duration;
-use string_utils::*;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 fn main() -> iced::Result {
     let mut settings = Settings::default();
@@ -42,7 +37,6 @@ struct EncloneVisual {
     input_value: String,
     button: button::State,
     submit_button_text: String,
-    open_state: button::State,
     should_exit: bool,
     compute_state: ComputeState,
     
@@ -137,8 +131,6 @@ impl Application for EncloneVisual {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
-        let png = include_bytes!("../../../img/enclone_banner.png").to_vec();
-
         use iced_aw::style::{
             card::{Style, StyleSheet},
             colors,
@@ -181,8 +173,6 @@ async fn compute() -> Result<Gerbil, String> {
     thread::sleep(Duration::from_millis(2000));
     Ok(Gerbil{})
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod style {
 
