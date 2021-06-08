@@ -11,7 +11,7 @@ use std::time::Duration;
 fn main() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
-    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
+    window_settings.size = (500 as u32, 500 as u32); // reasonable minimum size
     settings.window = window_settings;
     settings.exit_on_close_request = false;
     EncloneVisual::run(settings)
@@ -151,21 +151,3 @@ async fn compute() -> Result<Gerbil, String> {
     thread::sleep(Duration::from_millis(2000));
     Ok(Gerbil{})
 }
-
-/*
-mod style {
-
-    pub struct RuleStyle;
-
-    impl iced::rule::StyleSheet for RuleStyle {
-        fn style(&self) -> iced::rule::Style {
-            iced::rule::Style {
-                color: Color::from_rgb(0.0, 1.0, 1.0),
-                width: 3,
-                radius: 1.0,
-                fill_mode: iced::rule::FillMode::Percent(100.0),
-            }
-        }
-    }
-}
-*/
