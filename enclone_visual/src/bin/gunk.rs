@@ -13,7 +13,6 @@ fn main() -> iced::Result {
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (500 as u32, 500 as u32); // reasonable minimum size
     settings.window = window_settings;
-    settings.exit_on_close_request = false;
     EncloneVisual::run(settings)
 }
 
@@ -34,7 +33,6 @@ use ComputeState::*;
 #[derive(Default)]
 struct EncloneVisual {
     button: button::State,
-    submit_button_text: String,
     should_exit: bool,
     compute_state: ComputeState,
     
@@ -58,13 +56,12 @@ impl Application for EncloneVisual {
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         let mut x = EncloneVisual::default();
-        x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         (x, Command::none())
     }
 
     fn title(&self) -> String {
-        String::from("EncloneVisual")
+        String::from("crazy")
     }
 
     fn update(
@@ -112,7 +109,6 @@ impl Application for EncloneVisual {
         let content = Column::new()
             .spacing(20)
             .padding(20)
-            .max_width(1500)
             .push(Row::new().spacing(10).push(button));
 
         Container::new(content)
