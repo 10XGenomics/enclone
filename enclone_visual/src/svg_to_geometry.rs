@@ -373,6 +373,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 }
             }
 
+            // text-anchor can be start, middle or end, and the baseline position of the text
+            // is at the bottom of the text, and this describes the horizontal position
+
             // dy="0.76em" 
             // dy="0.5ex" 
             // text-anchor="middle" 
