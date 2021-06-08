@@ -10,10 +10,9 @@ use iced::{
 };
 use iced_aw::{modal, Card, Modal};
 use iced_native::{window, Event};
-use perf_stats::*;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use string_utils::*;
 
 const DEJAVU: Font = Font::External {
@@ -171,14 +170,6 @@ impl Application for EncloneVisual {
             .padding(10)
             .on_press(Message::ButtonPressed);
 
-        let scrollable = Scrollable::new(&mut self.scroll)
-            .width(Length::Fill)
-            .height(Length::Units(100))
-            .scrollbar_width(12)
-            .scroller_width(12)
-            .style(style::Squeak)
-            .push(Text::new(&self.output_value).font(DEJAVU).size(13));
-
         // Display the SVG.
         //
         // WARNING!  When we changed the width and height to 400, the performance of scolling
@@ -208,13 +199,7 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
-            .push(Rule::horizontal(10).style(style::RuleStyle))
-            .push(
-                Row::new()
-                    .height(Length::Units(1000)) // Height of scrollable window, maybe??
-                    .align_items(Align::Center)
-                    .push(scrollable),
-            );
+            .push(Rule::horizontal(10).style(style::RuleStyle));
 
         use iced_aw::style::{
             card::{Style, StyleSheet},
