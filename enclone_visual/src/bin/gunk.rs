@@ -5,11 +5,9 @@ use iced::{
     Container, Element, Length, Row, Settings, Subscription, Text,
 };
 use iced_native::{window, Event};
-use std::thread;
 
 fn main() -> iced::Result {
-    let settings = Settings::default();
-    StrangeThing::run(settings)
+    StrangeThing::run(Settings::default())
 }
 
 #[derive(PartialEq)]
@@ -108,6 +106,6 @@ impl Application for StrangeThing {
 }
 
 async fn compute() -> Result<(), String> {
-    thread::sleep(std::time::Duration::from_millis(3000));
+    std::thread::sleep(std::time::Duration::from_millis(3000));
     Ok(())
 }
