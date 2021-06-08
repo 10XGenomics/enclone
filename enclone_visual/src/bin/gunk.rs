@@ -117,15 +117,6 @@ impl Application for EncloneVisual {
     }
 
     fn view(&mut self) -> Element<Message> {
-        let text_input = TextInput::new(
-            &mut self.input,
-            "",
-            &self.input_value,
-            Message::InputChanged,
-        )
-        .padding(10)
-        .size(14);
-
         let button = Button::new(&mut self.button, 
             Text::new(if self.compute_state == WaitingForRequest { "Submit" } else { "thinking" }))
             .padding(10)
@@ -135,7 +126,7 @@ impl Application for EncloneVisual {
             .spacing(20)
             .padding(20)
             .max_width(1500)
-            .push(Row::new().spacing(10).push(text_input).push(button));
+            .push(Row::new().spacing(10).push(button));
 
         Container::new(content)
             .width(Length::Fill)
