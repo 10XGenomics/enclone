@@ -119,6 +119,11 @@ impl Application for EncloneVisual {
                     );
                 }
             }
+
+            // Catch exit (when the upper left red button is pushed) and store DONE to make
+            // the server thread exit gracefully.  Otherwise you will get a an error message
+            // and a traceback.
+
             Message::EventOccurred(ref event) => {
                 if let Event::Window(window::Event::CloseRequested) = event {
                     DONE.store(true, SeqCst);
