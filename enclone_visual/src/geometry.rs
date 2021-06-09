@@ -38,6 +38,15 @@ impl Color {
         }
     }
 
+    pub fn from_tuple_plus(x: (u8, u8, u8), t: u8) -> Color {
+        Color {
+            r: x.0,
+            g: x.1,
+            b: x.2,
+            t: t,
+        }
+    }
+
 }
 
 #[derive(Default)]

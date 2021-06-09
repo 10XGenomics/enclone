@@ -37,9 +37,9 @@ fn dehex(h: &[u8]) -> Option<u8> {
     let mut x = 0 as u8;
     for p in 0..2 {
         if h[p] >= b'0' && h[p] <= b'9' {
-            x + h[p] - b'0';
+            x += h[p] - b'0';
         } else if h[p] >= b'A' && h[p] <= b'Z' {
-            x + h[p] - b'A' + 10;
+            x += h[p] - b'A' + 10;
         } else {
             return None;
         }
@@ -51,7 +51,7 @@ fn dehex(h: &[u8]) -> Option<u8> {
 }
 
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
-    let (mut c1, mut c2, mut c3) = (None, None, None);
+    let (c1, c2, c3);
     if x.starts_with("rgb(") && x.ends_with(")") {
         let rgb = x.after("rgb(").rev_before(")").split(',').collect::<Vec<&str>>();
         if rgb.len() != 3 {
@@ -159,7 +159,6 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
     // Repackage lines into known svg entities.
 
     let mut geom = Vec::<Thing>::new();
-    let mut pkgs = Vec::<Vec<String>>::new();
     let mut i = 0;
     while i < lines.len() {
         let mut line = lines[i].clone();
@@ -167,7 +166,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
         if !line.contains(' ') {
             return None;
         }
-        let tag = line.between("<", " ");
+        let tag = line.between("<", " ").to_string();
         if tag == "svg" || tag == "/svg" {
             continue;
         }
@@ -339,7 +338,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
-                    fill_color: Color::from_tuple(fill_color.unwrap()),
+                    fill_color: Color::from_tuple_plus(fill_color.unwrap(), 255),
                     stroke_width: 0.0,
                     stroke_color: Color::new(0, 0, 0, 0),
                 }));
@@ -348,19 +347,19 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
-                    fill_color: fill_color.unwrap(),
+                    fill_color: Color::from_tuple_plus(fill_color.unwrap(), 255),
                     stroke_width: stroke_width.unwrap(),
-                    stroke_color: stroke_color.unwrap(),
+                    stroke_color: Color::from_tuple_plus(stroke_color.unwrap(), 255),
                 }));
             }
 
         // Process text.
 
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
-            let text = &lines[i];
+            let text = lines[i].to_string();
             let mut font_size = None;
             let (mut x, mut y) = (None, None);
-            let mut c = Some((0.0, 0.0, 0.0));
+            let mut c = Some((0, 0, 0));
             let mut o = 255;
             let mut text_anchor = "left".to_string();
             i += 1;
@@ -403,7 +402,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             geom.push( Thing::ArialText( ArialText {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
-                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
                 font_size: font_size.unwrap(),
             }));
@@ -411,5 +410,5 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             return None;
         }
     }
-    geom
+    Some(geom)
 }
