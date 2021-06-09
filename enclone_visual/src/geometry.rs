@@ -77,6 +77,7 @@ pub struct ArialText {
     pub t: String,
     pub font_size: f32,
     pub c: Color,
+    pub rotate: [f32; 3],
 }
 
 pub struct CircleWithToolTip {

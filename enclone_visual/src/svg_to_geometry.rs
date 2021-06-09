@@ -5,6 +5,7 @@
 
 use crate::geometry::*;
 use crate::svg_to_geometry::HorizontalAlignment::*;
+use enclone_core::parse_bsv;
 use string_utils::*;
 
 fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
@@ -91,7 +92,7 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
 
 fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
     let mut kv = Vec::<(String, String)>::new();
-    let fields = line.split(' ').collect::<Vec<&str>>();
+    let fields = parse_bsv(&line);
     for j in 0..fields.len() {
         if !fields[j].contains("=") {
             return None;
@@ -283,8 +284,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             let mut stroke_width = None;
             for m in kv.unwrap().iter() {
                 let key = &m.0;
-                let value = &m.1;
+                let mut value = m.1.clone();
+                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if key == "points" {
+                    if value.ends_with(' ') {
+                        value = value.rev_before(" ").to_string();
+                    }
                     let mut points = Vec::<Point>::new();
                     let ps = value.split(' ').collect::<Vec<&str>>();
                     for x in ps.iter() {
@@ -303,6 +308,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                         points.push(Point { x: p[0], y: p[1] });
                     }
                     p = Some(points);
+                } else if key == "fill" {
                 } else if key == "stroke" {
                     c = parse_color(&value);
                 } else if key == "stroke-width" {
@@ -312,6 +318,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     return None;
                 }
             }
+            println!("testing prereqs"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
@@ -388,6 +395,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             let mut c = Some((0, 0, 0));
             let mut o = 255;
             let mut text_anchor = "left".to_string();
+            let mut rotate = [0.0; 3];
             i += 2;
             println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let kv = parse_kv(&line.rev_before(">"));
@@ -397,6 +405,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
+                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if get_numeric(&key, &value, "x", &mut x) {
                 } else if get_numeric(&key, &value, "y", &mut y) {
                 } else if get_numeric(&key, &value, "font-size", &mut font_size) {
@@ -411,6 +420,22 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     text_anchor = "middle".to_string();
                 } else if key == "text-anchor" && value == "end" {
                     text_anchor = "end".to_string();
+                } else if key == "transform" && value.starts_with("rotate(")
+                    && value.ends_with(")") {
+                    let mut r = value.after("rotate(").rev_before(")").to_string();
+                    r = r.replace(" ", "");
+                    let z = r.split(',').collect::<Vec<&str>>();
+                    if z.len() == 3 {
+                        for j in 0..3 {
+                            let v = z[j].parse::<f32>();
+                            if !v.is_ok() {
+                                return None;
+                            }
+                            rotate[j] = v.unwrap();
+                        }
+                    } else {
+                        return None;
+                    }
                 } else {
                     return None;
                 }
@@ -432,6 +457,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
                 font_size: font_size.unwrap(),
+                rotate: rotate,
             }));
         } else {
             return None;
