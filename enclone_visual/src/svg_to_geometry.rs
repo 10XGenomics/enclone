@@ -166,11 +166,14 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
     while i < lines.len() {
         let mut line = lines[i].clone();
         i += 1;
+        if line == "/svg" {
+            break;
+        }
         if !line.contains(' ') {
             return None;
         }
         let tag = line.between("<", " ").to_string();
-        if tag == "svg" || tag == "/svg" {
+        if tag == "svg" {
             continue;
         }
         line = line.after(" ").to_string();
