@@ -20,7 +20,7 @@ TO DO
 
 9.  Make sure that client and server are the same version.
 
-10. Handle the case where button is pushed twice, etc.
+10. Refactor to keep tokio etc. out of cellranger.
 
 11. Have text-only mode for testing and development.
 
@@ -30,8 +30,6 @@ TO DO
     and any additional stuff like trees.
 
 14. Improve data shown for tooltip.
-
-15. Refactor to keep tokio etc. out of cellranger.
 
 WAITING ON ICED
 
@@ -58,8 +56,8 @@ WAITING ON ICED
     Asked on zulip chat and have not yet gotten a meaningful answer.  However this problem is
     related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
 
-8.  Button text does not change from "Submit" to "thinking".
-    Asked on zulip chat and waiting.
+8.  Button text does not change from "Submit" to "thinking" (but worked around).
+    Submitted as issue 908.
 
 NICE TO HAVE
 
