@@ -139,9 +139,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
         let mut line = String::new();
         let (mut lt, mut gt) = (0, 0);
         for char in svg.chars() {
-            if lt == gt && char == '<' && line.len() > 0 {
-                lines.push(line.clone());
-                line.clear();
+            if lt == gt && char == '<' {
+                if line == "\n" {
+                    line.clear();
+                } else if line.len() > 0 {
+                    lines.push(line.clone());
+                    line.clear();
+                }
             }
             line.push(char);
             if char == '<' {
@@ -150,7 +154,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 gt += 1;
             }
             if lt == gt {
-                lines.push(line.clone());
+                if line != "\n" {
+                    lines.push(line.clone());
+                }
                 line.clear();
             }
         }
@@ -165,6 +171,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
     let mut i = 0;
     while i < lines.len() {
         let mut line = lines[i].clone();
+        println!("line = {} = ${}$", lines[i].len(), lines[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         i += 1;
         if line == "/svg" {
             break;
@@ -181,6 +188,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
         // Process circle.
 
         if tag == "circle" {
+            println!("processing circle"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let kv = parse_kv_term(&line);
             if kv.is_none() {
                 return None;
