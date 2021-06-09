@@ -11,6 +11,6 @@ fn main() {
     let s = read_to_string(&args[1]).unwrap();
     let g = svg_to_geometry(&s);
     if g.is_none() {
-        eprintln!("failed");
+        eprintln!("failed\n");
     }
 }
