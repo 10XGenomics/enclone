@@ -63,17 +63,13 @@ struct EncloneVisual {
 }
 
 #[derive(Debug, Clone)]
-struct Gerbil {
-}
-
-#[derive(Debug, Clone)]
 enum Message {
     InputChanged(String),
     ButtonPressed,
     OpenModal,
     CloseModal,
     CancelButtonPressed,
-    ComputationDone(Result<Gerbil, String>),
+    ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
 }
 
@@ -304,7 +300,7 @@ impl Application for EncloneVisual {
     }
 }
 
-async fn compute() -> Result<Gerbil, String> {
+async fn compute() -> Result<(), String> {
     let t = Instant::now();
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
@@ -313,7 +309,7 @@ async fn compute() -> Result<Gerbil, String> {
         "time used processing command = {:.1} seconds\n",
         elapsed(&t)
     );
-    Ok(Gerbil{})
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
