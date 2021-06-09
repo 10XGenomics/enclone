@@ -31,6 +31,8 @@ TO DO
 
 14. Improve data shown for tooltip.
 
+---------------------------------------------------------------------------------------------------
+
 WAITING ON ICED
 
 1.  Can't cut and paste text from the GUI window, except for the text input box.
@@ -57,7 +59,9 @@ WAITING ON ICED
     related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
 
 8.  Button text does not change from "Submit" to "thinking" (but worked around).
-    Submitted as issue 908.
+    Submitted as issue 908.  This is also bugs/button_text_update_issue.
+
+---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
 
@@ -79,4 +83,3 @@ NICE TO HAVE
 8.  Make "enclone help ..." work.
 
 9.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
-
