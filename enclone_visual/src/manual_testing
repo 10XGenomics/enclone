@@ -17,3 +17,5 @@ MANUAL TESTING
 6. check that clonotype number 0 and too large give errors
 
 7. check that clonotype number 1 is the right clonotype
+
+8. Repeatedly click on the Submit button and make sure it changes to thinking.
