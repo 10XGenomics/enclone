@@ -196,8 +196,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
         }
         line = line.after(" ").to_string();
         println!("tag = {}", tag); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        if i < lines.len() { println!("lines[i] = {}", lines[i]); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        if i+1 < lines.len() { println!("lines[i+1] = {}", lines[i+1]); } // XXXXXXXXXXXXXXXXXXXXXX
+        if i < lines.len() {
+            println!("lines[i] = {}", lines[i]);
+        } // XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        if i + 1 < lines.len() {
+            println!("lines[i+1] = {}", lines[i + 1]);
+        } // XXXXXXXXXXXXXXXXXXXXXX
 
         // Process circle.
 
@@ -420,8 +424,8 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     text_anchor = "middle".to_string();
                 } else if key == "text-anchor" && value == "end" {
                     text_anchor = "end".to_string();
-                } else if key == "transform" && value.starts_with("rotate(")
-                    && value.ends_with(")") {
+                } else if key == "transform" && value.starts_with("rotate(") && value.ends_with(")")
+                {
                     let mut r = value.after("rotate(").rev_before(")").to_string();
                     r = r.replace(" ", "");
                     let z = r.split(',').collect::<Vec<&str>>();
