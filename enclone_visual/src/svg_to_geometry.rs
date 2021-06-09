@@ -144,6 +144,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 if line == "\n" {
                     line.clear();
                 } else if line.len() > 0 {
+                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     lines.push(line.clone());
                     line.clear();
                 }
@@ -154,14 +155,16 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else if char == '>' {
                 gt += 1;
             }
-            if lt == gt {
+            if lt == gt && line.contains('>') {
                 if line != "\n" {
+                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     lines.push(line.clone());
                 }
                 line.clear();
             }
         }
-        if line.len() > 0 {
+        if line.len() > 0 && line != "\n" {
+            println!("residual line = {} = ${}$", line.len(), line); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
             return None;
         }
     }
@@ -379,9 +382,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             let mut c = Some((0, 0, 0));
             let mut o = 255;
             let mut text_anchor = "left".to_string();
-            i += 1;
+            i += 2;
             println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            let kv = parse_kv(&line);
+            let kv = parse_kv(&line.rev_before(">"));
             if kv.is_none() {
                 return None;
             }
