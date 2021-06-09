@@ -1,0 +1,25 @@
+This crate appears to exhibit a bug wherein text is not properly updated in a GUI.
+It was manifested on a MacBook Pro (16-inch, 2019) running macOS 10.15.7.  Possibly it is
+only manifested in connection with trackpad use.
+
+The bug could be in this code or in a Rust crate that it uses.
+
+Instructions:
+1. cargo b
+2. target/debug/button_text_update_issue
+   - a GUI window will open up
+3. move the cursor to over the "Submit" button and tap on the trackpad; do not push to click
+   - you will see "pushed" printed in the originating terminal window
+   - you may or may not see the button text change briefly to "thinking"
+   - the "correct" behavior is to change to "thinking" for three seconds, then revert to "Submit"
+   - buggy behavior: this only happens some of the time
+   - repeatedly closing the GUI window and restarting may help exhibit the problem
+
+This was exhibited on a MacBook Pro (16-inch, 2019) running macOS 10.15.7.
+
+It appears to be possible to eliminate the buggy behavior by adding the single line
+
+                    std::thread::sleep(std::time::Duration::from_millis(10));
+
+after the line
+                    self.compute_state = Thinking;

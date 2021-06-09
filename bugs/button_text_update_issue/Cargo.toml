@@ -1,0 +1,17 @@
+[package]
+name = "button_text_update_issue"
+version = "0.0.1"
+authors = ["David Jaffe <david.jaffe@10xgenomics.com>"]
+edition = "2018"
+
+[dependencies]
+iced = { git = "https://github.com/hecrj/iced", rev = "0e70b11e00e4d8517419a5f09490c9502827d35b", features = ["tokio", "wgpu", "default_system_font", "default", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "0e70b11e00e4d8517419a5f09490c9502827d35b" }
+
+[profile.dev]
+debug = 1
+opt-level = 3
+
+[[bin]]
+name = "button_text_update_issue"
+path = "src/main.rs"

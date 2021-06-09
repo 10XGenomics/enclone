@@ -17,6 +17,10 @@ members = [
     "scroll_crash",
 ]
 
+exclude = [
+    "bugs/button_text_update_issue",
+]
+
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # dev mode profile: setting lto = true or lto = "thin" or codegen-units = 1 or even

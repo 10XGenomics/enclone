@@ -76,7 +76,7 @@ pub fn run_test(
         TEST_FILES_VERSION
     );
     let mut local_pre_arg = format!(
-        "PRE=enclone-data/big_inputs/version{},enclone_main",
+        "PRE=enclone-data/big_inputs/version{},enclone_exec",
         TEST_FILES_VERSION
     );
     if no_pre {
@@ -93,8 +93,8 @@ pub fn run_test(
         emit_bold_escape(&mut log);
         fwriteln!(
             log,
-            "enclone {} {} > enclone_main/testx/inputs/outputs/enclone_{}{}_output; \
-             git add enclone_main/testx/inputs/outputs/enclone_{}{}_output\n",
+            "enclone {} {} > enclone_exec/testx/inputs/outputs/enclone_{}{}_output; \
+             git add enclone_exec/testx/inputs/outputs/enclone_{}{}_output\n",
             local_pre_arg,
             test,
             testname,
@@ -362,7 +362,7 @@ pub fn run_test(
             fwriteln!(
                 log,
                 "enclone {} {} \
-                 > enclone_main/testx/inputs/outputs/enclone_{}{}_output\n",
+                 > enclone_exec/testx/inputs/outputs/enclone_{}{}_output\n",
                 local_pre_arg,
                 test,
                 testname,

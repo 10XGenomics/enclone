@@ -332,7 +332,7 @@ low that poisson variability could cause a real cell to appear fake.</p>
 <p>Next we scan each clonotype having at least two cells, and delete every cell having 
 <code>umitot < umin</code>, with the following qualifications:  
 <ul>
-<li>Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+<li>Let <code>k</code> be the number of cells to be deleted in a clonotype having <code>n</code>
 cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
 probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
 less then <code>0.01</code>.  The more cells are flagged in a clonotype, the more likely this
@@ -364,7 +364,7 @@ cell is at least 500 times greater than the total VDJ UMI count for the given ce
 
 <p>Then we scan each clonotype having at least two cells, and delete every cell marked as above,
 with the following qualification.  
-Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+Let <code>k</code> be the number of cells to be deleted in a clonotype having <code>n</code>
 cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
 probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
 less then <code>0.01</code>.</p>

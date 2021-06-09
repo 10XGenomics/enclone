@@ -4,11 +4,12 @@ use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Button, Color, Column, Element, Font,
-    HorizontalAlignment, Image, Length, Row, Rule, Sandbox, Scrollable, Settings, Svg, Text,
-    TextInput, VerticalAlignment,
+    button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings,
+    Subscription, Svg, Text, TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
+use iced_native::{window, Event};
 use perf_stats::*;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -22,13 +23,28 @@ const DEJAVU: Font = Font::External {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn launch_gui() {
+pub async fn launch_gui() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
     settings.window = window_settings;
-    let _ = EncloneVisual::run(settings);
+    settings.exit_on_close_request = false;
+    EncloneVisual::run(settings)
 }
+
+#[derive(PartialEq)]
+enum ComputeState {
+    WaitingForRequest,
+    Thinking,
+}
+
+impl Default for ComputeState {
+    fn default() -> ComputeState {
+        WaitingForRequest
+    }
+}
+
+use ComputeState::*;
 
 #[derive(Default)]
 struct EncloneVisual {
@@ -38,10 +54,11 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     button: button::State,
-
+    submit_button_text: String,
     open_state: button::State,
     modal_state: modal::State<ModalState>,
-    last_message: Option<Message>,
+    should_exit: bool,
+    compute_state: ComputeState,
 }
 
 #[derive(Debug, Clone)]
@@ -51,6 +68,8 @@ enum Message {
     OpenModal,
     CloseModal,
     CancelButtonPressed,
+    ComputationDone(Result<(), String>),
+    EventOccurred(iced_native::Event),
 }
 
 #[derive(Default)]
@@ -58,53 +77,89 @@ struct ModalState {
     cancel_state: button::State,
 }
 
-impl Sandbox for EncloneVisual {
+impl Application for EncloneVisual {
+    type Executor = iced::executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Self {
-        EncloneVisual::default()
+    fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
+        let mut x = EncloneVisual::default();
+        x.submit_button_text = "Submit".to_string();
+        x.compute_state = WaitingForRequest;
+        (x, Command::none())
     }
 
     fn title(&self) -> String {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
-            Message::OpenModal => self.modal_state.show(true),
-            Message::CloseModal => self.modal_state.show(false),
-            Message::CancelButtonPressed => self.modal_state.show(false),
-            Message::InputChanged(ref value) => self.input_value = value.to_string(),
+            Message::OpenModal => {
+                self.modal_state.show(true);
+                Command::none()
+            }
+            Message::CloseModal => {
+                self.modal_state.show(false);
+                Command::none()
+            }
+            Message::CancelButtonPressed => {
+                self.modal_state.show(false);
+                Command::none()
+            }
+            Message::InputChanged(ref value) => {
+                self.input_value = value.to_string();
+                Command::none()
+            }
             Message::ButtonPressed => {
-                // Need to figure what to do if we are already processing a request, for example
-                // if the user pushes the button twice or enters a second command and pushes the
-                // button before the first one has completed.  For now, do nothing.
-
-                if !PROCESSING_REQUEST.load(SeqCst) {
-                    let t = Instant::now();
+                if self.compute_state == WaitingForRequest {
+                    self.compute_state = Thinking;
+                    // The following sleep is needed to get the button text to consistenly update.
+                    thread::sleep(Duration::from_millis(10));
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
-                    while PROCESSING_REQUEST.load(SeqCst) {
-                        thread::sleep(Duration::from_millis(10));
-                    }
-                    let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                    if reply_text.contains("enclone failed") {
-                        reply_text =
-                            format!("enclone failed{}", reply_text.after("enclone failed"));
-                    }
-                    reply_text += "\n \n"; // papering over truncation bug
-                    let reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    self.output_value = reply_text.to_string();
-                    self.svg_value = reply_svg.to_string();
-                    println!(
-                        "time used processing command = {:.1} seconds\n",
-                        elapsed(&t)
-                    );
+                    Command::perform(compute(), Message::ComputationDone)
+                } else {
+                    Command::none()
                 }
             }
+            Message::ComputationDone(_) => {
+                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                if reply_text.contains("enclone failed") {
+                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
+                }
+                reply_text += "\n \n"; // papering over truncation bug
+                let mut reply_svg = String::new();
+                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
+                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                }
+                self.output_value = reply_text.to_string();
+                self.svg_value = reply_svg.to_string();
+                self.compute_state = WaitingForRequest;
+                Command::none()
+            }
+
+            // Catch exit (when the upper left red button is pushed) and store DONE to make
+            // the server thread exit gracefully.  Otherwise you will get a an error message
+            // and a traceback.
+            Message::EventOccurred(ref event) => {
+                if let Event::Window(window::Event::CloseRequested) = event {
+                    DONE.store(true, SeqCst);
+                    thread::sleep(Duration::from_millis(50));
+                    self.should_exit = true;
+                }
+                Command::none()
+            }
         }
-        self.last_message = Some(message)
+    }
+
+    fn should_exit(&self) -> bool {
+        self.should_exit
+    }
+
+    fn subscription(&self) -> Subscription<Message> {
+        iced_native::subscription::events().map(Message::EventOccurred)
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -117,9 +172,16 @@ impl Sandbox for EncloneVisual {
         .padding(10)
         .size(14);
 
-        let button = Button::new(&mut self.button, Text::new("Submit"))
-            .padding(10)
-            .on_press(Message::ButtonPressed);
+        let button = Button::new(
+            &mut self.button,
+            Text::new(if self.compute_state == WaitingForRequest {
+                "Submit"
+            } else {
+                "thinking"
+            }),
+        )
+        .padding(10)
+        .on_press(Message::ButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
@@ -201,9 +263,9 @@ impl Sandbox for EncloneVisual {
                      To use enclone visual, type in the box \
                      (see below)\nand then push the Submit button.  Here are the things \
                      that you can type:\n\n\
-                     • an enclone command, without the enclone part\n\
+                     • an enclone command\n\
                      • an clonotype id (number)\n\
-                     • d, for a demo, same as BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                     • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
                      • q to quit\n\n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
@@ -237,6 +299,18 @@ impl Sandbox for EncloneVisual {
         .on_esc(Message::CloseModal)
         .into()
     }
+}
+
+async fn compute() -> Result<(), String> {
+    let t = Instant::now();
+    while PROCESSING_REQUEST.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
+    println!(
+        "time used processing command = {:.1} seconds\n",
+        elapsed(&t)
+    );
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

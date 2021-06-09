@@ -462,7 +462,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             loop {
                 thread::sleep(Duration::from_millis(10));
                 if DONE.load(SeqCst) {
-                    break;
+                    cleanup();
+                    std::process::exit(0);
                 }
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
@@ -474,7 +475,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         std::process::exit(0);
                     }
                     if line == "d" {
-                        line = "BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
+                        line = "enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
@@ -493,6 +494,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                 output = r.table.clone();
                             }
                         }
+                    } else if line != "enclone" && !line.starts_with("enclone ") {
+                        output =
+                            "an actual enclone command needs to start with \"enclone\"".to_string();
                     } else {
                         if CONFIG_FILE.lock().unwrap().len() > 0 {
                             line += &mut format!(" CONFIG={}", CONFIG_FILE.lock().unwrap()[0]);
@@ -546,7 +550,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         // Launch GUI.
 
-        launch_gui();
+        launch_gui().await?;
         cleanup();
         return Ok(());
     }

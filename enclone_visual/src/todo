@@ -16,7 +16,7 @@ TO DO
 
 7.  tooltip
 
-8.  the wraparound problem
+8.  Make code work for 2 or more SVG files.
 
 9.  Make sure that client and server are the same version.
 
@@ -33,8 +33,6 @@ TO DO
 
 15. Refactor to keep tokio etc. out of cellranger.
 
-16. Make code work for 0, 2 or more SVG files, see the code svgs[0] which is broken in general.
-
 WAITING ON ICED
 
 1.  Can't cut and paste text from the GUI window, except for the text input box.
@@ -47,13 +45,21 @@ WAITING ON ICED
     Known regression = https:github.com/hecrj/iced/issues/870.
 
 4.  Place the scrollbar on the left side of the scrollable window.
-    Asked on zulip chat if this is possible.
+    Asked on zulip chat if this is possible, but did not get a response.  This is far enough
+    down our list of requests that I don't want to ask further now.
 
 5.  Make the TextInput gracefully handle long inputs.
     This is https:github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
 
 6.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
+
+7.  the wraparound problem
+    Asked on zulip chat and have not yet gotten a meaningful answer.  However this problem is
+    related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
+
+8.  Button text does not change from "Submit" to "thinking".
+    Asked on zulip chat and waiting.
 
 NICE TO HAVE
 

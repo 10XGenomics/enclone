@@ -1,9 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// color -- see core/src/color.rs
-
 use engine::Engine;
-use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
+use iced::{
+    button, scrollable, Button, Column, Container, Element, Length, Sandbox, Scrollable, Settings,
+    Text,
+};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn rotate(r: i64) -> i64 {
@@ -20,6 +21,7 @@ pub fn main() -> iced::Result {
 struct Circles {
     engine: Engine,
     button: button::State,
+    scroll: scrollable::State,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -58,17 +60,28 @@ impl Sandbox for Circles {
         let button = Button::new(&mut self.button, Text::new("Submit"))
             .padding(10)
             .on_press(Message::ButtonPressed);
-        let content = Column::new().push(button).push(
-            self.engine
-                .view()
-                .map(move |_message| Message::ButtonPressed),
-        );
+        let engine = self
+            .engine
+            .view()
+            .map(move |_message| Message::ButtonPressed);
+
+        let scrollable = Scrollable::new(&mut self.scroll)
+            .width(Length::Fill)
+            .height(Length::Units(100))
+            .scrollbar_width(12)
+            .scroller_width(12)
+            // .style(style::Squeak)
+            .push(engine);
+
+        let content = Column::new().push(button).push(scrollable);
         Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 mod engine {
     use crate::rotate;

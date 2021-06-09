@@ -38,7 +38,7 @@ impl Analyzer for EncloneAnalyzer {
 
         // Override the output file
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
-        let mut args = vec!["enclone".to_string()];
+        let mut args = Vec::<String>::new();
         let mut server_debug = false;
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
@@ -52,7 +52,6 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINT".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
-        args.push("INTERNAL".to_string());
         eprintln!("Running enclone:\n  {}", args.join(" "));
         let result = main_enclone(&args).await;
         if result.is_err() {
@@ -85,9 +84,13 @@ impl Analyzer for EncloneAnalyzer {
             *enclone_output = output;
             let mut table = enclone_output.pics.clone();
             table.truncate(100);
+            let mut plot = String::new();
+            if enclone_output.svgs.len() > 0 {
+                plot = enclone_output.svgs[0].clone();
+            }
             response = EncloneResponse {
                 args: req.args,
-                plot: enclone_output.svgs[0].clone(),
+                plot: plot,
                 table: table.join("\n"),
             };
             if server_debug {
