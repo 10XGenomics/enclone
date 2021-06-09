@@ -163,6 +163,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 line.clear();
             }
         }
+        if line.ends_with('\n') {
+            line.truncate(line.len() - 1);
+        }
+        while line.ends_with(' ') {
+            line.truncate(line.len() - 1);
+        }
         if line.len() > 0 && line != "\n" {
             println!("residual line = {} = ${}$", line.len(), line); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
             return None;
