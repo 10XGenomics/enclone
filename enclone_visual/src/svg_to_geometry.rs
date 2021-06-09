@@ -3,12 +3,14 @@
 // Attempt to convert an SVG object to geometries.  This is possibly temporary.  It is designed
 // to work only with certain sorts of SVG objects.
 
-use crate::geometry;
+use crate::geometry::*;
+use crate::svg_to_geometry::HorizontalAlignment::*;
+use string_utils::*;
 
 fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
     if key == "opacity" && value.parse::<f32>().is_ok() {
-        let v = value.force_f32()
-        if v >= 0 && v <= 1 {
+        let v = value.parse::<f32>().unwrap();
+        if v >= 0.0 && v <= 1.0 {
             *o = (v * 255.0).round() as u8;
             return true;
         } else {
@@ -22,10 +24,10 @@ fn numeric(x: &str) -> Option<f32> {
     x.parse::<f32>().ok()
 }
 
-fn get_numeric(key: &str, value: &str, var: &str, x: &mut f32) -> bool {
+fn get_numeric(key: &str, value: &str, var: &str, x: &mut Option<f32>) -> bool {
     if key == var {
         *x = numeric(&value);
-        x.is_some();
+        x.is_some()
     } else {
         false
     }
@@ -33,22 +35,28 @@ fn get_numeric(key: &str, value: &str, var: &str, x: &mut f32) -> bool {
 
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (mut c1, mut c2, mut c3) = (None, None, None);
-    if value.starts_with("rgb(" && value.ends_with(")") {
-        let rgb = key.split(',').collect::<Vec<&str>>();
+    if x.starts_with("rgb(") && x.ends_with(")") {
+        let rgb = x.after("rgb(").rev_before(")").split(',').collect::<Vec<&str>>();
         if rgb.len() != 3 {
             return None;
         }
         c1 = rgb[0].parse::<u8>().ok();
         c2 = rgb[1].parse::<u8>().ok();
         c3 = rgb[2].parse::<u8>().ok();
-    } else if value == "white" {
-        (c1, c2, c3) = (Some(255), Some(255), Some(255));
-    } else if value == "black" {
-        (c1, c2, c3) = (Some(0), Some(0), Some(0));
+    } else if x == "white" {
+        c1 = Some(255);
+        c2 = Some(255);
+        c3 = Some(255);
+    } else if x == "black" {
+        c1 = Some(0);
+        c2 = Some(0);
+        c3 = Some(0);
     } else {
-        let b = value.as_bytes();
+        let b = x.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
-            (c1, c2, c3) = (dehex(b[1..=2], dehex(b[3..=4], dehex(b[5..=6]);
+            c1 = dehex(b[1..=2]);
+            c2 = dehex(b[3..=4]);
+            c3 = dehex(b[5..=6]);
         } else {
             return None;
         }
@@ -92,10 +100,10 @@ fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
 
 fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     let mut line = line.to_string();
-    if line.ends_with(" \>") {
-        line = line.before(" \>");
-    } else if line.ends_with("\>") {
-        line = line.before("\>");
+    if line.ends_with(" \\>") {
+        line = line.before(" \\>");
+    } else if line.ends_with("\\>") {
+        line = line.before("\\>");
     } else {
         return None;
     }
@@ -119,7 +127,7 @@ fn dehex(h: [u8; 2]) -> Option<u8> {
     Some(x)
 }
 
-pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
+pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
     
     // First divide svg into lines of the form <...>, or something between such.
 
@@ -150,7 +158,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
     // Repackage lines into known svg entities.
 
-    let mut geom = Vec::<Geometry>>::new();
+    let mut geom = Vec::<Thing>::new();
     let mut pkgs = Vec::<Vec<String>>::new();
     let mut i = 0;
     while i < lines.len() {
@@ -176,7 +184,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             let mut c = None;
             let mut o = 255 as u8; // opacity
             for m in kv.unwrap().iter() {
-                let key = &m.0
+                let key = &m.0;
                 let value = &m.1;
                 if key == "stroke" || key == "stroke-width" {
                 } else if get_numeric(&key, &value, "cx", &mut x) {
@@ -193,7 +201,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 return None;
             }
             geom.push( Circle {
-                p: Point(x.unwrap(), y.unwrap()),
+                p: Point::new(x.unwrap(), y.unwrap()),
                 r: r.unwrap(),
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             });
@@ -210,7 +218,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             let mut o = 255;
             let mut stroke_width = None;
             for m in kv.unwrap().iter() {
-                let key = &m.0
+                let key = &m.0;
                 let value = &m.1;
                 if get_numeric(&key, &value, "x1", &mut x1) {
                 } else if get_numeric(&key, &value, "y1", &mut y1) {
@@ -225,14 +233,14 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     return None;
                 }
             }
-            if x1.is_none() || x2.is_none() || x3.is_none() || x4.is_none() {
+            if x1.is_none() || x2.is_none() || x2.is_none() || y2.is_none() {
                 return None;
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
             geom.push( Segment {
-                p1: Point(x1.unwrap(), y1.unwrap()),
-                p2: Point(x2.unwrap(), y2.unwrap()),
+                p1: Point::new(x1.unwrap(), y1.unwrap()),
+                p2: Point::new(x2.unwrap(), y2.unwrap()),
                 w: stroke_width.unwrap(),
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             });
@@ -244,12 +252,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             if kv.is_none() {
                 return None;
             }
-            let mut p = Option<Vec::<Point>>::new();
+            let mut p = Option::<Vec<Point>>::new();
             let mut c = None;
             let mut o = 255;
             let mut stroke_width = None;
             for m in kv.unwrap().iter() {
-                let key = &m.0
+                let key = &m.0;
                 let value = &m.1;
                 if key == "points" {
                     let mut points = Vec::<Point>::new();
@@ -264,7 +272,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                             if z[j].parse::<f32>().is_err() {
                                 return None;
                             } else {
-                                p[j] = z[j].force_f32();
+                                p[j] = z[j].parse::<f32>().unwrap();
                             }
                         }
                         points.push( Point { x: p[0], y: p[1] } );
@@ -279,13 +287,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     return None;
                 }
             }
-            if x1.is_none() || x2.is_none() || x3.is_none() || x4.is_none() {
-                return None;
-            } else if c.is_none() || stroke_width.is_none() {
+            if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
             geom.push( PolySegment {
-                p: points,
+                p: p.unwrap(),
                 w: stroke_width.unwrap(),
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             });
@@ -301,19 +307,19 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             let (mut fill_color, mut stroke_color) = (None, None);
             let mut stroke_width = None;
             for m in kv.unwrap().iter() {
-                let key = &m.0
+                let key = &m.0;
                 let value = &m.1;
                 if get_numeric(&key, &value, "x", &mut x) {
                 } else if get_numeric(&key, &value, "y", &mut y) {
-                } else if get_numeric(&key, &value, "width", &mut width {
+                } else if get_numeric(&key, &value, "width", &mut width) {
                 } else if get_numeric(&key, &value, "y", &mut y) {
-                } else if get_numeric(&key, &value, "width", &mut width {
-                } else if get_numeric(&key, &value, "height", &mut height {
+                } else if get_numeric(&key, &value, "width", &mut width) {
+                } else if get_numeric(&key, &value, "height", &mut height) {
                 } else if key == "fill" {
                     fill_color = parse_color(&value);
                 } else if key == "stroke" {
                     stroke_color = parse_color(&value);
-                } else if key == "stroke-width {
+                } else if key == "stroke-width" {
                     stroke_width = value.parse::<f32>().ok();
                 } else {
                     return None;
@@ -327,16 +333,16 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             }
             if stroke_width.is_none() {
                 geom.push( Rectangle {
-                    p: Point.new(x.unwrap(), y.unwrap()),
+                    p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
                     fill_color: fill_color.unwrap(),
-                    stroke_width: 0.0;
-                    stroke_color: Color.new(0, 0, 0, 0),
+                    stroke_width: 0.0,
+                    stroke_color: Color::new(0, 0, 0, 0),
                 });
             } else {
                 geom.push( Rectangle {
-                    p: Point.new(x.unwrap(), y.unwrap()),
+                    p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
                     fill_color: fill_color.unwrap(),
@@ -347,24 +353,24 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
         // Process text.
 
-        } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text> {
+        } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
             let text = &lines[i];
             let mut font_size = None;
             let (mut x, mut y) = (None, None);
             let mut c = Some((0.0, 0.0, 0.0));
             let mut o = 255;
-            let mut text_anchor = "left".to_string()
+            let mut text_anchor = "left".to_string();
             i += 1;
             let kv = parse_kv(&line);
             if kv.is_none() {
                 return None;
             }
             for m in kv.unwrap().iter() {
-                let key = &m.0
+                let key = &m.0;
                 let value = &m.1;
-                if get_numeric(&key, &value, "x", &mut x {
-                } else if get_numeric(&key, &value, "y", &mut y {
-                } else if get_numeric(&key, &value, "font-size", &mut font_size {
+                if get_numeric(&key, &value, "x", &mut x) {
+                } else if get_numeric(&key, &value, "y", &mut y) {
+                } else if get_numeric(&key, &value, "font-size", &mut font_size) {
                 } else if key == "dx" || key == "dy" {
                 } else if key == "font-family" && (value == "arial" || value == "Arial") {
                 } else if key == "fill" {
@@ -383,10 +389,17 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             if font_size.is_none() || x.is_none() || y.is_none() {
                 return None;
             }
+            let halign;
+            if text_anchor == "start" { 
+                halign = Left;
+            } else if text_anchor == "middle" { 
+                halign = Center; 
+            } else { 
+                halign = Right;
+            }
             geom.push( ArialText {
-                p: Point(x.unwrap(), y.unwrap()),
-                halign: if text_anchor == "start" { Left } else if text_anchor == "middle" { Center }
-                    else { Right },
+                p: Point::new(x.unwrap(), y.unwrap()),
+                halign: halign,
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
                 font_size: font_size.unwrap(),
@@ -395,5 +408,5 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             return None;
         }
     }
-    g
+    geom
 }
