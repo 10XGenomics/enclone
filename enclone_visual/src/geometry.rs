@@ -45,10 +45,18 @@ pub struct Circle {
     pub c: Color,
 }
 
+pub enum HorizontalAlignment {
+    Left,
+    Center,
+    Right,
+}
+
 pub struct ArialText {
     pub p: Point,
+    pub halign: HorizontalAlignment,
     pub t: String,
     pub font_size: f32,
+    pub c: Color,
 }
 
 pub struct CircleWithToolTip {

@@ -349,10 +349,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text> {
             let text = &lines[i];
-            let mut font_size = None; // what is default font size?
-            let (mut x, mut y) = (None, None); // required
-            let mut c = None; // what is default color?
+            let mut font_size = None;
+            let (mut x, mut y) = (None, None);
+            let mut c = Some((0.0, 0.0, 0.0));
             let mut o = 255;
+            let mut text_anchor = "left".to_string()
             i += 1;
             let kv = parse_kv(&line);
             if kv.is_none() {
@@ -364,25 +365,32 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 if get_numeric(&key, &value, "x", &mut x {
                 } else if get_numeric(&key, &value, "y", &mut y {
                 } else if get_numeric(&key, &value, "font-size", &mut font_size {
-                } else if key == "font-family" && value == "arial" {
+                } else if key == "dx" || key == "dy" {
+                } else if key == "font-family" && (value == "arial" || value == "Arial") {
                 } else if key == "fill" {
                     c = parse_color(&value);
                 } else if get_opacity(&key, &value, &mut o) {
+                } else if key == "text-anchor" && value == "start" {
+                    text_anchor = "start".to_string();
+                } else if key == "text-anchor" && value == "middle" {
+                    text_anchor = "middle".to_string();
+                } else if key == "text-anchor" && value == "end" {
+                    text_anchor = "end".to_string();
                 } else {
                     return None;
                 }
             }
-
-            // text-anchor can be start, middle or end, and the baseline position of the text
-            // is at the bottom of the text, and this describes the horizontal position
-
-            // dy="0.76em" 
-            // dy="0.5ex" 
-            // text-anchor="middle" 
-            // text-anchor="end" 
-
-            ...
-
+            if font_size.is_none() || x.is_none() || y.is_none() {
+                return None;
+            }
+            geom.push( ArialText {
+                p: Point(x.unwrap(), y.unwrap()),
+                halign: if text_anchor == "start" { Left } else if text_anchor == "middle" { Center }
+                    else { Right },
+                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                t: text,
+                font_size: font_size.unwrap(),
+            });
         } else {
             return None;
         }
