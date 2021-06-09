@@ -19,7 +19,6 @@ pub struct Color {
 }
 
 impl Color {
-
     pub fn new(r: u8, g: u8, b: u8, t: u8) -> Color {
         Color {
             r: r,
@@ -46,7 +45,6 @@ impl Color {
             t: t,
         }
     }
-
 }
 
 #[derive(Default)]

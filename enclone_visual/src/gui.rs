@@ -4,8 +4,8 @@ use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command, 
-    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, 
+    button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings,
     Subscription, Svg, Text, TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
@@ -59,7 +59,6 @@ struct EncloneVisual {
     modal_state: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
-    
 }
 
 #[derive(Debug, Clone)]
@@ -94,13 +93,9 @@ impl Application for EncloneVisual {
         String::from("EncloneVisual")
     }
 
-    fn update(
-        &mut self, 
-        message: Message,
-       _clipboard: &mut Clipboard,
-    ) -> Command<Message> {
+    fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
-            Message::OpenModal => { 
+            Message::OpenModal => {
                 self.modal_state.show(true);
                 Command::none()
             }
@@ -132,8 +127,7 @@ impl Application for EncloneVisual {
             Message::ComputationDone(_) => {
                 let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
                 if reply_text.contains("enclone failed") {
-                    reply_text =
-                        format!("enclone failed{}", reply_text.after("enclone failed"));
+                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
                 reply_text += "\n \n"; // papering over truncation bug
                 let mut reply_svg = String::new();
@@ -149,7 +143,6 @@ impl Application for EncloneVisual {
             // Catch exit (when the upper left red button is pushed) and store DONE to make
             // the server thread exit gracefully.  Otherwise you will get a an error message
             // and a traceback.
-
             Message::EventOccurred(ref event) => {
                 if let Event::Window(window::Event::CloseRequested) = event {
                     DONE.store(true, SeqCst);
@@ -179,10 +172,16 @@ impl Application for EncloneVisual {
         .padding(10)
         .size(14);
 
-        let button = Button::new(&mut self.button, 
-            Text::new(if self.compute_state == WaitingForRequest { "Submit" } else { "thinking" }))
-            .padding(10)
-            .on_press(Message::ButtonPressed);
+        let button = Button::new(
+            &mut self.button,
+            Text::new(if self.compute_state == WaitingForRequest {
+                "Submit"
+            } else {
+                "thinking"
+            }),
+        )
+        .padding(10)
+        .on_press(Message::ButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)

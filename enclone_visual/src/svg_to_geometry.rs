@@ -53,7 +53,11 @@ fn dehex(h: &[u8]) -> Option<u8> {
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (c1, c2, c3);
     if x.starts_with("rgb(") && x.ends_with(")") {
-        let rgb = x.after("rgb(").rev_before(")").split(',').collect::<Vec<&str>>();
+        let rgb = x
+            .after("rgb(")
+            .rev_before(")")
+            .split(',')
+            .collect::<Vec<&str>>();
         if rgb.len() != 3 {
             return None;
         }
@@ -128,7 +132,6 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
 }
 
 pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
-    
     // First divide svg into lines of the form <...>, or something between such.
 
     let mut lines = Vec::<String>::new();
@@ -199,14 +202,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-            geom.push( Thing::Circle( Circle {
+            geom.push(Thing::Circle(Circle {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 r: r.unwrap(),
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             }));
 
         // Process line.
-        
         } else if tag == "line" {
             let kv = parse_kv_term(&line);
             if kv.is_none() {
@@ -237,7 +239,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push( Thing::Segment( Segment {
+            geom.push(Thing::Segment(Segment {
                 p1: Point::new(x1.unwrap(), y1.unwrap()),
                 p2: Point::new(x2.unwrap(), y2.unwrap()),
                 w: stroke_width.unwrap(),
@@ -245,7 +247,6 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             }));
 
         // Process polyline.
-        
         } else if tag == "polyline" {
             let kv = parse_kv_term(&line);
             if kv.is_none() {
@@ -274,7 +275,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                                 p[j] = z[j].parse::<f32>().unwrap();
                             }
                         }
-                        points.push( Point { x: p[0], y: p[1] } );
+                        points.push(Point { x: p[0], y: p[1] });
                     }
                     p = Some(points);
                 } else if key == "stroke" {
@@ -289,14 +290,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push( Thing::PolySegment( PolySegment {
+            geom.push(Thing::PolySegment(PolySegment {
                 p: p.unwrap(),
                 w: stroke_width.unwrap(),
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
             }));
 
         // Process rectangle.
-
         } else if tag == "rect" {
             let kv = parse_kv_term(&line);
             if kv.is_none() {
@@ -334,7 +334,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 return None;
             }
             if stroke_width.is_none() {
-                geom.push( Thing::Rectangle( Rectangle {
+                geom.push(Thing::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -343,7 +343,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     stroke_color: Color::new(0, 0, 0, 0),
                 }));
             } else {
-                geom.push( Thing::Rectangle( Rectangle {
+                geom.push(Thing::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -354,7 +354,6 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             }
 
         // Process text.
-
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
             let text = lines[i].to_string();
             let mut font_size = None;
@@ -392,14 +391,14 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 return None;
             }
             let halign;
-            if text_anchor == "start" { 
+            if text_anchor == "start" {
                 halign = Left;
-            } else if text_anchor == "middle" { 
-                halign = Center; 
-            } else { 
+            } else if text_anchor == "middle" {
+                halign = Center;
+            } else {
                 halign = Right;
             }
-            geom.push( Thing::ArialText( ArialText {
+            geom.push(Thing::ArialText(ArialText {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
