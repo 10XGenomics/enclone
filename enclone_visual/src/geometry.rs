@@ -3,11 +3,12 @@
 // Basic geometric objects, allowing representation of simple SVG files as vectors of such objects.
 
 pub enum Thing {
-    Seg,
-    ArialText,
-    Circle,
-    CircleWithToolTip,
-    Rectangle,
+    Segment(Segment),
+    ArialText(ArialText),
+    Circle(Circle),
+    CircleWithToolTip(CircleWithToolTip),
+    Rectangle(Rectangle),
+    PolySegment(PolySegment),
 }
 
 pub struct Color {
@@ -18,6 +19,7 @@ pub struct Color {
 }
 
 impl Color {
+
     pub fn new(r: u8, g: u8, b: u8, t: u8) -> Color {
         Color {
             r: r,
@@ -26,8 +28,19 @@ impl Color {
             t: t,
         }
     }
+
+    pub fn from_tuple(x: (u8, u8, u8, u8)) -> Color {
+        Color {
+            r: x.0,
+            g: x.1,
+            b: x.2,
+            t: x.3,
+        }
+    }
+
 }
 
+#[derive(Default)]
 pub struct Point {
     pub x: f32,
     pub y: f32,

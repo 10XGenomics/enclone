@@ -33,6 +33,23 @@ fn get_numeric(key: &str, value: &str, var: &str, x: &mut Option<f32>) -> bool {
     }
 }
 
+fn dehex(h: &[u8]) -> Option<u8> {
+    let mut x = 0 as u8;
+    for p in 0..2 {
+        if h[p] >= b'0' && h[p] <= b'9' {
+            x + h[p] - b'0';
+        } else if h[p] >= b'A' && h[p] <= b'Z' {
+            x + h[p] - b'A' + 10;
+        } else {
+            return None;
+        }
+        if p == 0 {
+            x *= 16;
+        }
+    }
+    Some(x)
+}
+
 fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     let (mut c1, mut c2, mut c3) = (None, None, None);
     if x.starts_with("rgb(") && x.ends_with(")") {
@@ -54,9 +71,9 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
     } else {
         let b = x.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
-            c1 = dehex(b[1..=2]);
-            c2 = dehex(b[3..=4]);
-            c3 = dehex(b[5..=6]);
+            c1 = dehex(&b[1..=2]);
+            c2 = dehex(&b[3..=4]);
+            c3 = dehex(&b[5..=6]);
         } else {
             return None;
         }
@@ -95,36 +112,19 @@ fn parse_kv(line: &str) -> Option<Vec<(String, String)>> {
             kv.push((key.to_string(), value.to_string()));
         }
     }
-    kv
+    Some(kv)
 }
 
 fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     let mut line = line.to_string();
     if line.ends_with(" \\>") {
-        line = line.before(" \\>");
+        line = line.before(" \\>").to_string();
     } else if line.ends_with("\\>") {
-        line = line.before("\\>");
+        line = line.before("\\>").to_string();
     } else {
         return None;
     }
     parse_kv(&line)
-}
-
-fn dehex(h: [u8; 2]) -> Option<u8> {
-    let mut x = 0 as u8;
-    for p in 0..2 {
-        if h[*p] >= b'0' && h[*p] <= b'9' {
-            x + h[*p] - b'0';
-        } else if h[*p] >= b'A' && h[*p] <= b'Z' {
-            x + h[*p] - b'A' + 10;
-        } else {
-            return None;
-        }
-        if *p == 0 {
-            x *= 16;
-        }
-    }
-    Some(x)
 }
 
 pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
@@ -162,7 +162,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
     let mut pkgs = Vec::<Vec<String>>::new();
     let mut i = 0;
     while i < lines.len() {
-        let mut line = &lines[i];
+        let mut line = lines[i].clone();
         i += 1;
         if !line.contains(' ') {
             return None;
@@ -200,11 +200,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-            geom.push( Circle {
+            geom.push( Thing::Circle( Circle {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 r: r.unwrap(),
-                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-            });
+                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            }));
 
         // Process line.
         
@@ -238,12 +238,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push( Segment {
+            geom.push( Thing::Segment( Segment {
                 p1: Point::new(x1.unwrap(), y1.unwrap()),
                 p2: Point::new(x2.unwrap(), y2.unwrap()),
                 w: stroke_width.unwrap(),
-                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-            });
+                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            }));
 
         // Process polyline.
         
@@ -252,7 +252,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if kv.is_none() {
                 return None;
             }
-            let mut p = Option::<Vec<Point>>::new();
+            let mut p = Option::<Vec<Point>>::default();
             let mut c = None;
             let mut o = 255;
             let mut stroke_width = None;
@@ -290,11 +290,11 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push( PolySegment {
+            geom.push( Thing::PolySegment( PolySegment {
                 p: p.unwrap(),
                 w: stroke_width.unwrap(),
-                color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-            });
+                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+            }));
 
         // Process rectangle.
 
@@ -331,24 +331,27 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if stroke_width.is_none() ^ stroke_color.is_none() {
                 return None;
             }
+            if fill_color.is_none() {
+                return None;
+            }
             if stroke_width.is_none() {
-                geom.push( Rectangle {
+                geom.push( Thing::Rectangle( Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
-                    fill_color: fill_color.unwrap(),
+                    fill_color: Color::from_tuple(fill_color.unwrap()),
                     stroke_width: 0.0,
                     stroke_color: Color::new(0, 0, 0, 0),
-                });
+                }));
             } else {
-                geom.push( Rectangle {
+                geom.push( Thing::Rectangle( Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
                     fill_color: fill_color.unwrap(),
                     stroke_width: stroke_width.unwrap(),
                     stroke_color: stroke_color.unwrap(),
-                });
+                }));
             }
 
         // Process text.
@@ -397,13 +400,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else { 
                 halign = Right;
             }
-            geom.push( ArialText {
+            geom.push( Thing::ArialText( ArialText {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
                 color: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
                 font_size: font_size.unwrap(),
-            });
+            }));
         } else {
             return None;
         }
