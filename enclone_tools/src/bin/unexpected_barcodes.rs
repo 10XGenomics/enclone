@@ -160,7 +160,9 @@ fn main() {
 
     // Traverse the reads.
 
-    let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
+    let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
+    let mut total_reads = 0;
+    let mut junk = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -184,16 +186,64 @@ fn main() {
                     umi = s[16..28].to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-                    bfu.push((barcode.clone(), fb.clone(), umi.clone()));
+                    total_reads += 1;
+                    if fb == b"GGGGGGGGGGGGGGG" {
+                        junk += 1;
+                    } else {
+                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
+                    }
                 }
             }
         }
     }
-    println!("there are {} read pairs", bfu.len());
+    println!("there are {} read pairs", buf.len());
+    let junk_percent = 100.0 * junk as f64 / total_reads as f64;
+    println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
     println!("\nused {:.1} seconds\n", elapsed(&t));
 
     // Reduce to UMI counts.
 
+    buf.par_sort();
+    let mut singletons = 0;
+    let mut i = 0;
+    while i < buf.len() {
+        let j = next_diff12_3(&buf, i as i32) as usize;
+        let mut sing = true;
+        if i > 0 && buf[i].0 == buf[i-1].0 {
+            sing = false;
+        }
+        if i < buf.len() - 1 && buf[i].0 == buf[i+1].0 {
+            sing = false;
+        }
+        if sing {
+            singletons += 1;
+        }
+        let mut bfs = Vec::<String>::new();
+        for k in i..j {
+            bfs.push(stringme(&buf[k].2));
+        }
+        if i > 0 && buf[i].0 != buf[i-1].0 {
+            println!("");
+        }
+        let mut bfs_unique = bfs.clone();
+        unique_sort(&mut bfs_unique);
+        if bfs_unique.len() > 1 {
+            println!("barcode = {}, umi = {}, fbs = {}",
+                strme(&buf[i].0), strme(&buf[i].1), bfs.iter().format(",")
+            );
+        } else {
+            println!("barcode = {}, umi = {}, fbs = {}",
+                strme(&buf[i].0), strme(&buf[i].1), "unique",
+            );
+        }
+        i = j;
+    }
+    let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
+    println!("singleton fraction = {:.1}%", singleton_percent);
+
+    // BELOW, NEED TO CHANGE BFU TO BUF
+
+    /*
     bfu.par_sort();
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
@@ -257,4 +307,5 @@ fn main() {
     }
     let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     println!("used {:.1} seconds\n", elapsed(&t));
+    */
 }
