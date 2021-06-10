@@ -129,6 +129,7 @@ fn main() {
     let mut barcodes = Vec::<Vec<u8>>::new();
     let mut umis = Vec::<Vec<u8>>::new();
     let mut fbs = Vec::<Vec<u8>>::new();
+    let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     for rf in read_files.iter() {
         let f = format!("{}/{}", read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -155,17 +156,28 @@ fn main() {
                     barcodes.push(barcode.clone());
                     umis.push(umi.clone());
                     fbs.push(fb.clone());
+                    buf.push((barcode.clone(), umi.clone(), fb.clone()));
                 }
             }
         }
     }
     println!("there are {} read pairs", barcodes.len());
-    println!("\nused {:.1} seconds", elapsed(&t));
+    println!("\nused {:.1} seconds\n", elapsed(&t));
+
+    // Unique sort.
+    
+    buf.par_sort();
+    buf.dedup();
+    println!("there are {} uniques", buf.len());
+    println!("\nused {:.1} seconds\n", elapsed(&t));
 
     // Report common feature barcodes.
 
-    println!("\ncommon feature barcodes\n");
-    let mut fbx = fbs.clone();
+    println!("common feature barcodes\n");
+    let mut fbx = Vec::<Vec<u8>>::new();
+    for i in 0..buf.len() {
+        fbx.push(buf[i].2.clone());
+    }
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
