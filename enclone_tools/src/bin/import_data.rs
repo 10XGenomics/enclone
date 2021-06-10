@@ -30,6 +30,9 @@ fn main() {
     for (key, value) in env::vars() {
         if key == "ENCLONE_CONFIG" {
             config_file = value.to_string();
+            if config_file.contains(',') {
+                config_file = config_file.after(",").to_string();
+            }
         }
     }
     let _ = get_config(&config_file, &mut config);
