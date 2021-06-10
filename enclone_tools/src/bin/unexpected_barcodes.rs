@@ -106,6 +106,20 @@ fn main() {
         std::process::exit(1);
     }
 
+    // Find the read files.
+
+    let x = dir_list(&read_path);
+    println!("");
+    for f in x.iter() {
+        for sample_index in si.iter() {
+            for lane in lanes.iter() {
+                if f.contains(&format!("-{}_lane-00{}-", sample_index, lane)) {
+                    println!("{}", f);
+                }
+            }
+        }
+    }
+
     // Report what we found.
 
     println!("\nread path = {}", read_path);
@@ -113,6 +127,7 @@ fn main() {
     println!("sample indices = {}\n", si.iter().format(","));
 }
 
+// /mnt/analysis/marsoc/pipestances/HCKCVDSX2/BCL_PROCESSOR_PD/HCKCVDSX2/2020.0623.2-0/outs/fastq_path
 // read-I1_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
 // read-I2_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
 // read-RA_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
