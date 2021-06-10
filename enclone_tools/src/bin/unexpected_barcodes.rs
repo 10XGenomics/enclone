@@ -120,7 +120,8 @@ fn main() {
 
     println!("\nread path = {}", read_path);
     println!("lanes = {}", lanes.iter().format(","));
-    println!("sample indices = {}\n", si.iter().format(","));
+    println!("sample indices = {}", si.iter().format(","));
+    println!("used {:.1} seconds\n", elapsed(&t));
 
     // Traverse the reads.
 
@@ -150,11 +151,6 @@ fn main() {
                     umi = s[16..28].to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-                    /*
-                    println!("barcode = {}, umi = {}, fb = {}",
-                        strme(&barcode), strme(&umi), strme(&fb),
-                    );
-                    */
                     barcodes.push(barcode.clone());
                     umis.push(umi.clone());
                     fbs.push(fb.clone());
@@ -177,26 +173,3 @@ fn main() {
     }
     println!("\nused {:.1} seconds\n", elapsed(&t));
 }
-
-/*
-
-/mnt/analysis/marsoc/pipestances/HCKCVDSX2/BCL_PROCESSOR_PD/HCKCVDSX2/2020.0623.2-0/outs/fastq_path
-read-I1_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
-read-I2_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
-read-RA_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
-
-RA structure:
-
-@A00836:768:HCKCVDSX2:1:1110:12563:1078 1:N:0:0
-TCTTCGGAGTGCGTGACTTATTGCCCTT
-0123456789012345678901234567
-barcode = 16
-umi = 12
-+
-FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-@A00836:768:HCKCVDSX2:1:1110:12563:1078 4:N:0:0
-ATCGTGGAGAGGTAACTCTGGTAGCGGGAGGGGCCCCATATAAGAAATAGCTTATTGCCCATATAAGAAAGGGCAATAAGTCACGCACTC
-0123456789
-          012345678901234
-
-*/
