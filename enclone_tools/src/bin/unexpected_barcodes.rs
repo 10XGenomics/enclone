@@ -126,9 +126,6 @@ fn main() {
 
     // Traverse the reads.
 
-    let mut barcodes = Vec::<Vec<u8>>::new();
-    let mut umis = Vec::<Vec<u8>>::new();
-    let mut fbs = Vec::<Vec<u8>>::new();
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     for rf in read_files.iter() {
         let f = format!("{}/{}", read_path, rf);
@@ -153,15 +150,12 @@ fn main() {
                     umi = s[16..28].to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-                    barcodes.push(barcode.clone());
-                    umis.push(umi.clone());
-                    fbs.push(fb.clone());
                     buf.push((barcode.clone(), umi.clone(), fb.clone()));
                 }
             }
         }
     }
-    println!("there are {} read pairs", barcodes.len());
+    println!("there are {} read pairs", buf.len());
     println!("\nused {:.1} seconds\n", elapsed(&t));
 
     // Unique sort.
