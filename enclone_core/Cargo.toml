@@ -23,6 +23,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
+attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d0823f6da17f40e3cc1575" }
 bio_edit = { path = "../bio_edit" }
 bytes = ">=0.5.5, <2"

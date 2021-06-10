@@ -3,6 +3,7 @@
 // This file contains the two functions proc_xcr and proc_meta.
 
 use enclone_core::defs::*;
+use enclone_core::fetch_url;
 use io_utils::*;
 use itertools::Itertools;
 use rayon::prelude::*;
@@ -13,32 +14,10 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
-
-fn fetch_url(url: &str) -> Result<String, String> {
-    const TIMEOUT: u64 = 120; // timeout in seconds
-    let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
-    let response = req.send();
-    if response.is_err() {
-        panic!("Failed to access URL {}.", url);
-    }
-    let response = response.unwrap();
-    if !response.is_success() {
-        let msg = response.text().unwrap();
-        if msg.contains("Not found") {
-            return Err(format!(
-                "\nAttempt to access the URL\n{}\nfailed with \"Not found\".  Could there \
-                be something wrong with the id?\n",
-                url
-            ));
-        }
-        return Err(format!("Failed to access URL {}: {}.", url, msg));
-    }
-    Ok(response.text().unwrap())
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

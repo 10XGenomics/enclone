@@ -1347,6 +1347,7 @@ version = "0.5.66"
 dependencies = [
  "amino",
  "ansi_escape",
+ "attohttpc",
  "bio",
  "bio_edit",
  "bytes",

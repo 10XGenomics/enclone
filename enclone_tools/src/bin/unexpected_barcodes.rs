@@ -2,6 +2,8 @@
 
 // Experimental code to find find unexpected feature barcodes.
 
+use enclone_core::*;
+use enclone_core::defs::get_config;
 use flate2::read::MultiGzDecoder;
 use io_utils::*;
 use itertools::Itertools;
@@ -9,6 +11,7 @@ use mirror_sparse_matrix::*;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -22,6 +25,35 @@ fn main() {
     let t = Instant::now();
     let args: Vec<String> = env::args().collect();
     let pipestance = &args[1];
+
+    // Get configuration.
+
+    let mut config = HashMap::<String, String>::new();
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+            if config_file.contains(',') {
+                config_file = config_file.after(",").to_string();
+            }
+        }
+    }
+    let _ = get_config(&config_file, &mut config);
+
+    // Get pipestance path.
+
+    let url = format!("{}/{}", config["ones"], args[1]);
+    let m = fetch_url(&url).unwrap();
+    if m.contains("502 Bad Gateway") {
+        eprintln!(
+            "\nWell, this is sad.  The URL \
+            {} returned a 502 Bad Gateway \
+            message.  Please try again later or ask someone for help.\n",
+            url
+        );
+        std::process::exit(1);
+    }
+    if 0 == 0 { std::process::exit(0); }
 
     // Get read path and lanes and sample indices from the invocation file.
 
