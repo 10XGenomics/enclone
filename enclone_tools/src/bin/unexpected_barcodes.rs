@@ -10,9 +10,9 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::env;
-use std::io::{BufRead, BufReader};
 use std::fs;
 use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -30,8 +30,8 @@ fn main() {
         println!("\n_invocation does not exist\n");
         std::process::exit(1);
     }
-    let mut read_path = String::new();   // path to reads
-    let mut si = Vec::<String>::new();   // sample indices
+    let mut read_path = String::new(); // path to reads
+    let mut si = Vec::<String>::new(); // sample indices
     let mut lanes = Vec::<usize>::new(); // lanes
     {
         let f = open_for_read![&invocation];
@@ -63,7 +63,6 @@ fn main() {
         if read_path.len() == 0 {
             eprintln!("\nfailed to find read path\n");
             std::process::exit(1);
-
         }
         if !path_exists(&read_path) {
             eprintln!("\nread path does not exist");
@@ -133,7 +132,7 @@ fn main() {
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
 
-        // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read, 
+        // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
         // and line 6 is the read that contains the feature barcode.
 
         let mut count = 0;
@@ -160,7 +159,7 @@ fn main() {
     println!("\nused {:.1} seconds\n", elapsed(&t));
 
     // Reduce to UMI counts.
-    
+
     bfu.par_sort();
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
@@ -168,7 +167,7 @@ fn main() {
         let j = next_diff12_3(&bfu, i as i32) as usize;
         let mut n = 1;
         for k in i + 1..j {
-            if bfu[k].2 != bfu[k-1].2 {
+            if bfu[k].2 != bfu[k - 1].2 {
                 n += 1;
             }
         }
