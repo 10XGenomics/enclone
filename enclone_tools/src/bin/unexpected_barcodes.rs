@@ -7,6 +7,7 @@ use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
+use rayon::prelude::*;
 use std::env;
 use std::io::{BufRead, BufReader};
 use std::fs;
@@ -165,7 +166,7 @@ fn main() {
 
     println!("\ncommon feature barcodes\n");
     let mut fbx = fbs.clone();
-    fbx.sort();
+    fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
     for i in 0..10 {
