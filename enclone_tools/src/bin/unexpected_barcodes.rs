@@ -16,15 +16,16 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let pipestance = &args[1];
 
-    // Get read path and sample indices from the invocation file.
+    // Get read path and lanes and sample indices from the invocation file.
 
     let invocation = format!("{}/_invocation", pipestance);
     if !path_exists(&invocation) {
         println!("\n_invocation does not exist\n");
         std::process::exit(1);
     }
-    let mut read_path = String::new(); // path to reads
-    let mut si = Vec::<String>::new(); // sample indices
+    let mut read_path = String::new();   // path to reads
+    let mut si = Vec::<String>::new();   // sample indices
+    let mut lanes = Vec::<usize>::new(); // lanes
     {
         let f = open_for_read![&invocation];
         let mut lines = Vec::<String>::new();
@@ -40,6 +41,14 @@ fn main() {
                     s = s.after("\"");
                     if s.contains("\"") {
                         read_path = s.before("\"").to_string();
+                    }
+                }
+            } else if s.contains("\"lanes\": ") {
+                let mut s = s.after("\"lanes\": ");
+                if s.starts_with("[") && s.ends_with("],") {
+                    s = s.between("[", "],");
+                    if s.parse::<usize>().is_ok() {
+                        lanes.push(s.force_usize());
                     }
                 }
             }
@@ -72,18 +81,24 @@ fn main() {
             }
         }
     }
+    if lanes.len() == 0 {
+        eprintln!("\nfailed to find lanes\n");
+        std::process::exit(1);
+    }
+    let attr = fs::metadata(&read_path).unwrap();
+    if !attr.is_dir() {
+        eprintln!("\nread path is not a directory\n");
+        std::process::exit(1);
+    }
 
     // Check to see if reads exist.
 
-    let attr = fs::metadata(&read_path).unwrap();
     let mut reads_exist = false;
-    if attr.is_dir() {
-        let x = dir_list(&read_path);
-        for i in 0..x.len() {
-            if !x[i].starts_with(".") {
-                reads_exist = true;
-                break;
-            }
+    let x = dir_list(&read_path);
+    for i in 0..x.len() {
+        if !x[i].starts_with(".") {
+            reads_exist = true;
+            break;
         }
     }
     if !reads_exist {
@@ -94,5 +109,10 @@ fn main() {
     // Report what we found.
 
     println!("\nread path = {}", read_path);
-    println!("\nsi = {}", si.iter().format(","));
+    println!("lanes = {}", lanes.iter().format(","));
+    println!("sample indices = {}\n", si.iter().format(","));
 }
+
+// read-I1_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+// read-I2_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+// read-RA_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
