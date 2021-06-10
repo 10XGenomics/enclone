@@ -11,6 +11,7 @@ use mirror_sparse_matrix::*;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
@@ -24,7 +25,6 @@ fn main() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let args: Vec<String> = env::args().collect();
-    let pipestance = &args[1];
 
     // Get configuration.
 
@@ -53,7 +53,9 @@ fn main() {
         );
         std::process::exit(1);
     }
-    if 0 == 0 { std::process::exit(0); }
+    let v: Value = serde_json::from_str(&m).unwrap();
+    let latest = &v["latest_analysis_run"];
+    let pipestance = latest["path"].to_string().between("\"", "\"").to_string();
 
     // Get read path and lanes and sample indices from the invocation file.
 
