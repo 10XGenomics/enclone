@@ -2,17 +2,22 @@
 
 // Experimental code to find find unexpected feature barcodes.
 
+use flate2::read::MultiGzDecoder;
 use io_utils::*;
 use itertools::Itertools;
+use perf_stats::*;
 use pretty_trace::*;
 use std::env;
 use std::io::{BufRead, BufReader};
 use std::fs;
 use std::fs::File;
+use std::time::Instant;
 use string_utils::*;
+use vector_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
+    let t = Instant::now();
     let args: Vec<String> = env::args().collect();
     let pipestance = &args[1];
 
@@ -91,33 +96,24 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Check to see if reads exist.
-
-    let mut reads_exist = false;
-    let x = dir_list(&read_path);
-    for i in 0..x.len() {
-        if !x[i].starts_with(".") {
-            reads_exist = true;
-            break;
-        }
-    }
-    if !reads_exist {
-        eprintln!("\nreads do not exist\n");
-        std::process::exit(1);
-    }
-
     // Find the read files.
 
+    let mut read_files = Vec::<String>::new();
     let x = dir_list(&read_path);
     println!("");
     for f in x.iter() {
         for sample_index in si.iter() {
             for lane in lanes.iter() {
-                if f.contains(&format!("-{}_lane-00{}-", sample_index, lane)) {
+                if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
                     println!("{}", f);
+                    read_files.push(f.clone());
                 }
             }
         }
+    }
+    if read_files.is_empty() {
+        eprintln!("\nreads do not exist\n");
+        std::process::exit(1);
     }
 
     // Report what we found.
@@ -125,9 +121,82 @@ fn main() {
     println!("\nread path = {}", read_path);
     println!("lanes = {}", lanes.iter().format(","));
     println!("sample indices = {}\n", si.iter().format(","));
+
+    // Traverse the reads.
+
+    let mut barcodes = Vec::<Vec<u8>>::new();
+    let mut umis = Vec::<Vec<u8>>::new();
+    let mut fbs = Vec::<Vec<u8>>::new();
+    for rf in read_files.iter() {
+        let f = format!("{}/{}", read_path, rf);
+        let gz = MultiGzDecoder::new(File::open(&f).unwrap());
+        let b = BufReader::new(gz);
+
+        // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read, 
+        // and line 6 is the read that contains the feature barcode.
+
+        let mut count = 0;
+        let mut barcode = Vec::<u8>::new();
+        let mut umi = Vec::<u8>::new();
+        let mut fb;
+        for line in b.lines() {
+            count += 1;
+            if count % 8 == 2 || count % 8 == 6 {
+                let s = line.unwrap();
+                let s = s.as_bytes();
+                if count % 8 == 2 {
+                    assert!(s.len() >= 28);
+                    barcode = s[0..16].to_vec();
+                    umi = s[16..28].to_vec();
+                } else {
+                    fb = s[10..25].to_vec();
+                    /*
+                    println!("barcode = {}, umi = {}, fb = {}",
+                        strme(&barcode), strme(&umi), strme(&fb),
+                    );
+                    */
+                    barcodes.push(barcode.clone());
+                    umis.push(umi.clone());
+                    fbs.push(fb.clone());
+                }
+            }
+        }
+    }
+    println!("there are {} read pairs", barcodes.len());
+    println!("\nused {:.1} seconds", elapsed(&t));
+
+    // Report common feature barcodes.
+
+    println!("\ncommon feature barcodes\n");
+    let mut fbx = fbs.clone();
+    fbx.sort();
+    let mut freq = Vec::<(u32, Vec<u8>)>::new();
+    make_freq(&fbx, &mut freq);
+    for i in 0..10 {
+        println!("{} = {}", strme(&freq[i].1), freq[i].0);
+    }
+    println!("\nused {:.1} seconds\n", elapsed(&t));
 }
 
-// /mnt/analysis/marsoc/pipestances/HCKCVDSX2/BCL_PROCESSOR_PD/HCKCVDSX2/2020.0623.2-0/outs/fastq_path
-// read-I1_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
-// read-I2_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
-// read-RA_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+/*
+
+/mnt/analysis/marsoc/pipestances/HCKCVDSX2/BCL_PROCESSOR_PD/HCKCVDSX2/2020.0623.2-0/outs/fastq_path
+read-I1_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+read-I2_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+read-RA_si-TCACGTTGGG_lane-001-chunk-001.fastq.gz
+
+RA structure:
+
+@A00836:768:HCKCVDSX2:1:1110:12563:1078 1:N:0:0
+TCTTCGGAGTGCGTGACTTATTGCCCTT
+0123456789012345678901234567
+barcode = 16
+umi = 12
++
+FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+@A00836:768:HCKCVDSX2:1:1110:12563:1078 4:N:0:0
+ATCGTGGAGAGGTAACTCTGGTAGCGGGAGGGGCCCCATATAAGAAATAGCTTATTGCCCATATAAGAAAGGGCAATAAGTCACGCACTC
+0123456789
+          012345678901234
+
+*/
