@@ -515,7 +515,7 @@ pub fn proc_lvar2(
             }
             lvar![i, x, fb.clone()];
         } else {
-            let n = x.after("fb").rev_before("n").force_usize() - 1;
+            let n = x.after("fb").rev_before("_n").force_usize() - 1;
             if n >= ncols {
                 lvar_stats1![i, x, "0".to_string()];
             } else {
