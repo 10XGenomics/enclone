@@ -16,7 +16,6 @@ use io_utils::*;
 use itertools::Itertools;
 use mirror_sparse_matrix::*;
 use perf_stats::*;
-use pretty_trace::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -28,10 +27,8 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-fn main() {
-    PrettyTrace::new().on();
+pub fn feature_barcode_matrix(id: usize) -> MirrorSparseMatrix {
     let t = Instant::now();
-    let args: Vec<String> = env::args().collect();
     let verbose = false;
 
     // Get configuration.
@@ -50,7 +47,7 @@ fn main() {
 
     // Get pipestance path.
 
-    let url = format!("{}/{}", config["ones"], args[1]);
+    let url = format!("{}/{}", config["ones"], id);
     let m = fetch_url(&url).unwrap();
     if m.contains("502 Bad Gateway") {
         eprintln!(
@@ -189,7 +186,7 @@ fn main() {
         println!("sample indices = {}", si.iter().format(","));
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    
+
     // Traverse the reads.
 
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
@@ -357,8 +354,9 @@ fn main() {
         }
         i = j;
     }
-    let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
+    let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
+    m
 }
