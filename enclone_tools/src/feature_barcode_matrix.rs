@@ -8,6 +8,7 @@
 // 3. Discard data where a cell barcode has only one read.
 // 4. For a given {cell barcode, umi}, pick the most frequent feature barcode.
 // 5. Report data for only the top 100 feature barcodes.
+// 6. List the barcodes in order by frequency.
 
 use enclone_core::defs::get_config;
 use enclone_core::*;
