@@ -500,14 +500,12 @@ pub fn proc_lvar2(
             n += reg.find_iter(&strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("fb") && 
-        (
-            (x.after("fb").parse::<usize>().is_ok() && x.after("fb").force_usize() >= 1)
-            ||
-            (x.after("fb").ends_with("_n") 
+    } else if x.starts_with("fb")
+        && ((x.after("fb").parse::<usize>().is_ok() && x.after("fb").force_usize() >= 1)
+            || (x.after("fb").ends_with("_n")
                 && x.after("fb").rev_before("_n").parse::<usize>().is_ok()
-                && x.after("fb").rev_before("_n").force_usize() >= 1)
-        ) {
+                && x.after("fb").rev_before("_n").force_usize() >= 1))
+    {
         let ncols = gex_info.fb_top_matrices[0].ncols();
         if !x.ends_with("_n") {
             let n = x.after("fb").force_usize() - 1;

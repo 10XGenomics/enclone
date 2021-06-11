@@ -136,7 +136,10 @@ fn main() {
             for i in (0..dests.len()).rev() {
                 let dest = &dests[i];
                 let target = format!("{}/{}", dest, id);
-                write_to_file(&m, &format!("{}/outs/feature_barcode_matrix_top.bin", target));
+                write_to_file(
+                    &m,
+                    &format!("{}/outs/feature_barcode_matrix_top.bin", target),
+                );
             }
         }
 
