@@ -218,6 +218,8 @@ fn main() {
         }
         if sing {
             singletons += 1;
+            i = j;
+            continue;
         }
         let mut bfs = Vec::<String>::new();
         for k in i..j {
@@ -265,7 +267,7 @@ fn main() {
 
     // Report common feature barcodes.
 
-    const TOP_FEATURE_BARCODES: usize = 1000;
+    const TOP_FEATURE_BARCODES: usize = 100;
     println!("common feature barcodes\n");
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
@@ -299,7 +301,9 @@ fn main() {
         let mut y = Vec::<(i32, i32)>::new();
         for k in i..j {
             let p = bin_position(&tops, &bfn[k].1);
-            y.push((p, bfn[k].2 as i32));
+            if p >= 0 {
+                y.push((p, bfn[k].2 as i32));
+            }
         }
         if !y.is_empty() {
             row_labels.push(stringme(&bfn[i].0));
@@ -308,5 +312,6 @@ fn main() {
         i = j;
     }
     let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
+    write_to_file(&_m, "/mnt/deck5/david.jaffe/mirroor.tmp");
     println!("used {:.1} seconds\n", elapsed(&t));
 }
