@@ -323,7 +323,12 @@ pub fn feature_barcode_matrix(id: usize) -> MirrorSparseMatrix {
     for i in 0..std::cmp::min(TOP_FEATURE_BARCODES, freq.len()) {
         tops.push(freq[i].1.clone());
     }
-    tops.sort();
+    let mut tops_sorted = tops.clone();
+    let mut ids = Vec::<usize>::new();
+    for i in 0..tops.len() {
+        ids.push(i);
+    }
+    sort_sync2(&mut tops_sorted, &mut ids);
     if verbose {
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
@@ -344,9 +349,9 @@ pub fn feature_barcode_matrix(id: usize) -> MirrorSparseMatrix {
         let j = next_diff1_3(&bfn, i as i32) as usize;
         let mut y = Vec::<(i32, i32)>::new();
         for k in i..j {
-            let p = bin_position(&tops, &bfn[k].1);
+            let p = bin_position(&tops_sorted, &bfn[k].1);
             if p >= 0 {
-                y.push((p, bfn[k].2 as i32));
+                y.push((ids[p as usize] as i32, bfn[k].2 as i32));
             }
         }
         if !y.is_empty() {
