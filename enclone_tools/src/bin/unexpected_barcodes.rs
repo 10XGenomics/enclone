@@ -95,8 +95,14 @@ fn main() {
                 let mut s = s.after("\"lanes\": ");
                 if s.starts_with("[") && s.ends_with("],") {
                     s = s.between("[", "],");
-                    if s.parse::<usize>().is_ok() {
-                        lanes.push(s.force_usize());
+                    let l = s.split(',').collect::<Vec<&str>>();
+                    for k in 0..l.len() {
+                        if l[k].parse::<usize>().is_ok() {
+                            lanes.push(l[k].force_usize());
+                        } else {
+                            eprintln!("\nCould not parse lanes.\n");
+                            std::process::exit(1);
+                        }
                     }
                 }
             }
