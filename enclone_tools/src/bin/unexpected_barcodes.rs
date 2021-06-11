@@ -32,6 +32,7 @@ fn main() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let args: Vec<String> = env::args().collect();
+    let verbose = false;
 
     // Get configuration.
 
@@ -68,7 +69,7 @@ fn main() {
 
     let invocation = format!("{}/_invocation", pipestance);
     if !path_exists(&invocation) {
-        println!("\n_invocation does not exist\n");
+        eprintln!("\n_invocation does not exist\n");
         std::process::exit(1);
     }
     let mut read_path = String::new(); // path to reads
@@ -148,12 +149,16 @@ fn main() {
 
     let mut read_files = Vec::<String>::new();
     let x = dir_list(&read_path);
-    println!("");
+    if verbose {
+        println!("");
+    }
     for f in x.iter() {
         for sample_index in si.iter() {
             for lane in lanes.iter() {
                 if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
-                    println!("{}", f);
+                    if verbose {
+                        println!("{}", f);
+                    }
                     read_files.push(f.clone());
                 }
             }
@@ -166,11 +171,13 @@ fn main() {
 
     // Report what we found.
 
-    println!("\nread path = {}", read_path);
-    println!("lanes = {}", lanes.iter().format(","));
-    println!("sample indices = {}", si.iter().format(","));
-    println!("used {:.1} seconds\n", elapsed(&t));
-
+    if verbose {
+        println!("\nread path = {}", read_path);
+        println!("lanes = {}", lanes.iter().format(","));
+        println!("sample indices = {}", si.iter().format(","));
+        println!("used {:.1} seconds\n", elapsed(&t));
+    }
+    
     // Traverse the reads.
 
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
@@ -209,10 +216,12 @@ fn main() {
             }
         }
     }
-    println!("there are {} read pairs", buf.len());
-    let junk_percent = 100.0 * junk as f64 / total_reads as f64;
-    println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
-    println!("\nused {:.1} seconds\n", elapsed(&t));
+    if verbose {
+        println!("there are {} read pairs", buf.len());
+        let junk_percent = 100.0 * junk as f64 / total_reads as f64;
+        println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
+        println!("\nused {:.1} seconds\n", elapsed(&t));
+    }
 
     // Reduce to UMI counts.
 
@@ -260,8 +269,10 @@ fn main() {
         i = j;
     }
     bfu.par_sort();
-    let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
-    println!("singleton fraction = {:.1}%", singleton_percent);
+    if verbose {
+        let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
+        println!("singleton fraction = {:.1}%", singleton_percent);
+    }
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
     while i < bfu.len() {
@@ -275,13 +286,17 @@ fn main() {
         bfn.push((bfu[i].0.clone(), bfu[i].1.clone(), n));
         i = j;
     }
-    println!("there are {} uniques", bfu.len());
-    println!("\nused {:.1} seconds\n", elapsed(&t));
+    if verbose {
+        println!("there are {} uniques", bfu.len());
+        println!("\nused {:.1} seconds\n", elapsed(&t));
+    }
 
     // Report common feature barcodes.
 
     const TOP_FEATURE_BARCODES: usize = 100;
-    println!("common feature barcodes\n");
+    if verbose {
+        println!("common feature barcodes\n");
+    }
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
         fbx.push(bfu[i].1.clone());
@@ -289,19 +304,25 @@ fn main() {
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
-    for i in 0..10 {
-        println!("{} = {}", strme(&freq[i].1), freq[i].0);
+    if verbose {
+        for i in 0..10 {
+            println!("{} = {}", strme(&freq[i].1), freq[i].0);
+        }
     }
     let mut tops = Vec::<Vec<u8>>::new();
     for i in 0..std::cmp::min(TOP_FEATURE_BARCODES, freq.len()) {
         tops.push(freq[i].1.clone());
     }
     tops.sort();
-    println!("\nused {:.1} seconds\n", elapsed(&t));
+    if verbose {
+        println!("\nused {:.1} seconds\n", elapsed(&t));
+    }
 
     // Generate a feature-barcode matrix for the common feature barcodes.
 
-    println!("making mirror sparse matrix");
+    if verbose {
+        println!("making mirror sparse matrix");
+    }
     let mut x = Vec::<Vec<(i32, i32)>>::new();
     let mut row_labels = Vec::<String>::new();
     let mut col_labels = Vec::<String>::new();
@@ -325,5 +346,7 @@ fn main() {
         i = j;
     }
     let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
-    println!("used {:.1} seconds\n", elapsed(&t));
+    if verbose {
+        println!("used {:.1} seconds\n", elapsed(&t));
+    }
 }
