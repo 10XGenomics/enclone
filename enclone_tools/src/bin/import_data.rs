@@ -15,7 +15,9 @@
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use enclone_tools::copy_for_enclone::*;
+use enclone_tools::feature_barcode_matrix::*;
 use io_utils::*;
+use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
@@ -125,6 +127,17 @@ fn main() {
                 std::process::exit(1);
             }
             copy_for_enclone(&format!("{}/..", p), &target);
+        }
+
+        // Build feature barcode matrix for top feature barcodes.
+
+        if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
+            let m = feature_barcode_matrix(id.force_usize());
+            for i in (0..dests.len()).rev() {
+                let dest = &dests[i];
+                let target = format!("{}/{}", dest, id);
+                write_to_file(&m, &format!("{}/outs/feature_barcode_matrix_top.bin", target));
+            }
         }
 
         // Remove moved directories.
