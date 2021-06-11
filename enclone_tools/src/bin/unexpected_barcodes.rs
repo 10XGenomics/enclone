@@ -82,7 +82,8 @@ fn main() {
             let s = line.unwrap();
             lines.push(s.to_string());
         }
-        for j in 0..lines.len() {
+        let mut j = 0;
+        while j < lines.len() {
             let s = &lines[j];
             if s.contains("\"read_path\": ") {
                 let mut s = s.after("\"read_path\": ");
@@ -93,20 +94,31 @@ fn main() {
                     }
                 }
             } else if s.contains("\"lanes\": ") {
-                let mut s = s.after("\"lanes\": ");
-                if s.starts_with("[") && s.ends_with("],") {
-                    s = s.between("[", "],");
-                    let l = s.split(',').collect::<Vec<&str>>();
-                    for k in 0..l.len() {
-                        if l[k].parse::<usize>().is_ok() {
-                            lanes.push(l[k].force_usize());
-                        } else {
-                            eprintln!("\nCould not parse lanes.\n");
-                            std::process::exit(1);
-                        }
+                let mut t = String::new();
+                if lines[j].contains("]") {
+                    t = lines[j].between("[", "]").to_string();
+                } else {
+                    while !lines[j].contains("]") {
+                        t += &lines[j];
+                        j += 1;
+                    }
+                    t = t.replace(" ", "");
+                    t = t.after("[").to_string();
+                    if t.ends_with(",") {
+                        t.truncate(t.len() - 1);
+                    }
+                }
+                let l = t.split(',').collect::<Vec<&str>>();
+                for k in 0..l.len() {
+                    if l[k].parse::<usize>().is_ok() {
+                        lanes.push(l[k].force_usize());
+                    } else {
+                        eprintln!("\nCould not parse lanes.\n");
+                        std::process::exit(1);
                     }
                 }
             }
+            j += 1;
         }
         if read_path.len() == 0 {
             eprintln!("\nfailed to find read path\n");
