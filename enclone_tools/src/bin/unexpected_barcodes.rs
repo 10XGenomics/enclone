@@ -204,6 +204,7 @@ fn main() {
     // Reduce to UMI counts.
 
     buf.par_sort();
+    let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
     let mut singletons = 0;
     let mut i = 0;
     while i < buf.len() {
@@ -222,29 +223,30 @@ fn main() {
         for k in i..j {
             bfs.push(stringme(&buf[k].2));
         }
-        if i > 0 && buf[i].0 != buf[i-1].0 {
-            println!("");
+        let mut uniq = true;
+        for k in i + 1..j {
+            if buf[k].2 != buf[k-1].2 {
+                uniq = false;
+            }
         }
-        let mut bfs_unique = bfs.clone();
-        unique_sort(&mut bfs_unique);
-        if bfs_unique.len() > 1 {
-            println!("barcode = {}, umi = {}, fbs = {}",
-                strme(&buf[i].0), strme(&buf[i].1), bfs.iter().format(",")
-            );
+        if uniq {
+            bfu.push((buf[i].0.clone(), buf[i].2.clone(), buf[i].1.clone()));
         } else {
-            println!("barcode = {}, umi = {}, fbs = {}",
-                strme(&buf[i].0), strme(&buf[i].1), "unique",
-            );
+            // Sloppy, just take the most frequent feature barcode, ignoring quality scores.
+            let mut fs = Vec::<Vec<u8>>::new();
+            for k in i..j {
+                fs.push(buf[k].2.clone());
+            }
+            fs.sort();
+            let mut freq = Vec::<(u32, Vec<u8>)>::new();
+            make_freq(&fs, &mut freq);
+            bfu.push((buf[i].0.clone(), freq[0].1.clone(), buf[i].1.clone()));
         }
         i = j;
     }
+    bfu.par_sort();
     let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
     println!("singleton fraction = {:.1}%", singleton_percent);
-
-    // BELOW, NEED TO CHANGE BFU TO BUF
-
-    /*
-    bfu.par_sort();
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
     while i < bfu.len() {
@@ -307,5 +309,4 @@ fn main() {
     }
     let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     println!("used {:.1} seconds\n", elapsed(&t));
-    */
 }
