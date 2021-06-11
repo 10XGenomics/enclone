@@ -797,7 +797,7 @@ pub fn justification(x: &str) -> u8 {
         || (x.starts_with("fwr") && !x.ends_with("len"))
         || x.starts_with("d1_name")
         || x.starts_with("d2_name")
-        || x.starts_with("fb")
+        || x.starts_with("fb") && !x.ends_with("_n")
     {
         return b'l';
     } else {
