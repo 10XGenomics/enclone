@@ -354,7 +354,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
             }
         }
         if !y.is_empty() {
-            row_labels.push(stringme(&bfn[i].0));
+            row_labels.push(format!("{}-1", strme(&bfn[i].0)));
             x.push(y);
         }
         i = j;
