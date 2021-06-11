@@ -511,7 +511,7 @@ pub fn proc_lvar2(
             let n = x.after("fb").force_usize() - 1;
             let mut fb = String::new();
             if n < ncols {
-                fb = gex_info.fb_top_matrices[0].row_label(n).clone();
+                fb = gex_info.fb_top_matrices[0].col_label(n).clone();
             }
             lvar![i, x, fb.clone()];
         } else {
