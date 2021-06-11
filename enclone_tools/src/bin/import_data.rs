@@ -132,7 +132,7 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
-            let m = feature_barcode_matrix(id.force_usize());
+            let m = feature_barcode_matrix(id.force_usize(), false);
             for i in (0..dests.len()).rev() {
                 let dest = &dests[i];
                 let target = format!("{}/{}", dest, id);

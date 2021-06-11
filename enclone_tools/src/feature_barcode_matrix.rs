@@ -28,9 +28,8 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn feature_barcode_matrix(id: usize) -> MirrorSparseMatrix {
+pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
     let t = Instant::now();
-    let verbose = false;
 
     // Get configuration.
 
