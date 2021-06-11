@@ -1,9 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+//
+// Input = id (integer).
+//
+// Create a cell barcode x feature barcode matrix for the most frequent barcodes.
+// 1. Extract {cell barcode, umi, feature barcode} for each read.
+// 2. Discard feature barcode = GGGGGGGGGGGGGGG.
+// 3. Discard data where a cell barcode has only one read.
+// 4. For a given {cell barcode, umi}, pick the most frequent feature barcode.
+// 5. Report data for only the top 100 feature barcodes.
 
-// Experimental code to find find unexpected feature barcodes.
-
-use enclone_core::*;
 use enclone_core::defs::get_config;
+use enclone_core::*;
 use flate2::read::MultiGzDecoder;
 use io_utils::*;
 use itertools::Itertools;
@@ -210,10 +217,10 @@ fn main() {
     while i < buf.len() {
         let j = next_diff12_3(&buf, i as i32) as usize;
         let mut sing = true;
-        if i > 0 && buf[i].0 == buf[i-1].0 {
+        if i > 0 && buf[i].0 == buf[i - 1].0 {
             sing = false;
         }
-        if i < buf.len() - 1 && buf[i].0 == buf[i+1].0 {
+        if i < buf.len() - 1 && buf[i].0 == buf[i + 1].0 {
             sing = false;
         }
         if sing {
@@ -227,7 +234,7 @@ fn main() {
         }
         let mut uniq = true;
         for k in i + 1..j {
-            if buf[k].2 != buf[k-1].2 {
+            if buf[k].2 != buf[k - 1].2 {
                 uniq = false;
             }
         }
@@ -312,6 +319,5 @@ fn main() {
         i = j;
     }
     let _m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
-    write_to_file(&_m, "/mnt/deck5/david.jaffe/mirroor.tmp");
     println!("used {:.1} seconds\n", elapsed(&t));
 }
