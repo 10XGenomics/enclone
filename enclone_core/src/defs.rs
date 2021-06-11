@@ -720,6 +720,8 @@ pub struct GexInfo {
     pub gex_features: Vec<Vec<String>>,
     pub gex_barcodes: Vec<Vec<String>>,
     pub gex_matrices: Vec<MirrorSparseMatrix>,
+    pub fb_top_matrices: Vec<MirrorSparseMatrix>,
+    pub fb_top_barcodes: Vec<Vec<String>>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
