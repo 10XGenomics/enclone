@@ -836,6 +836,8 @@ pub fn group_and_print_clonotypes(
              xmlns=\"http://www.w3.org/2000/svg\">\n",
             width, height
         );
+        let font_size = 80.0 / n as f64;
+        let dimn = dim as f64 / n as f64;
         for i1 in 0..n {
             for i2 in 0..n {
                 let x = (i1 as f64) * (dim as f64 / n as f64);
@@ -845,11 +847,19 @@ pub fn group_and_print_clonotypes(
                     style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
                     x,
                     y,
-                    dim as f64 / n as f64,
-                    dim as f64 / n as f64,
+                    dimn,
+                    dimn,
                     gray,
                     gray,
                     gray,
+                );
+                svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                    font-size=\"{}\" text-anchor=\"middle\" fill=\"red\" \
+                    dominant-baseline=\"middle\">{}</text>\n",
+                    x + dimn/2.0,
+                    y + dimn/2.0,
+                    font_size,
+                    format!("{:.2}", cos[i1][i2]),
                 );
             }
         }
