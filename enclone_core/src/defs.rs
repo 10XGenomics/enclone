@@ -265,6 +265,8 @@ pub struct PlotOpt {
     pub plot_quad: bool,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
+    pub sim_mat_plot_file: String,
+    pub sim_mat_plot_vars: Vec<String>,
 }
 
 // Allele-finding algorithmic options.

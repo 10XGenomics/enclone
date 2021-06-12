@@ -217,6 +217,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
     unique_sort(&mut bound_vars);
     check_pcols(&ctl, &gex_info, &bound_vars)?;
+    check_pcols(&ctl, &gex_info, &ctl.plot_opt.sim_mat_plot_vars)?;
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
