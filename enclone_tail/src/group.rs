@@ -777,29 +777,32 @@ pub fn group_and_print_clonotypes(
 
     // Execute SIM_MAT_PLOT.
 
-    if ctl.plot_opt.sim_mat_plot.file.len() > 0 {
-        let filename = &ctl.plot_opt.sim_mat_plot.file;
-        let vars = &ctl.plot_opt.sim_mat_plus.vars;
+    if ctl.plot_opt.sim_mat_plot_file.len() > 0 {
+        let filename = &ctl.plot_opt.sim_mat_plot_file;
+        let vars = &ctl.plot_opt.sim_mat_plot_vars;
         let n = vars.len();
-        let mut mat = Vec::Vec<f64>>::new();
+        let mut mat = Vec::<Vec<f64>>::new();
         for i in 0..groups.len() {
             let mut o = Vec::<i32>::new();
             for j in 0..groups[i].len() {
                 o.push(groups[i][j].0);
             }
-            let p = &out_datas[oo][i];
-            let v = Vec::<f64>::new();
-            for k in 0..vars.len() {
-                let mut x = 0.0;
-                if p.contains_key(&vars[k].clone()) {
-                    let x = &p[&vars[k].clone()];
-                    if x.parse::<f64>().is_ok() {
-                        x = x.force_f64();
+            for j in 0..o.len() {
+                let oo = o[j] as usize;
+                let p = &out_datas[oo][i];
+                let mut v = Vec::<f64>::new();
+                for k in 0..vars.len() {
+                    let mut x = 0.0;
+                    if p.contains_key(&vars[k].clone()) {
+                        let z = &p[&vars[k].clone()];
+                        if z.parse::<f64>().is_ok() {
+                            x = z.force_f64();
+                        }
                     }
+                    v.push(x);
                 }
-                v.push(x);
+                mat.push(v);
             }
-            mat.push(v);
         }
         let mut lens = vec![0.0; n];
         for i in 0..n {
@@ -815,7 +818,7 @@ pub fn group_and_print_clonotypes(
                 for j in 0..mat.len() {
                     dot += mat[j][i1] * mat[j][i2];
                 }
-                if lens[i1] == 0 || lens[i2] == 0 {
+                if lens[i1] == 0.0 || lens[i2] == 0.0 {
                     cos[i1][i2] = 0.0;
                 } else {
                     cos[i1][i2] = dot / (lens[i1] * lens[i2]);
@@ -833,11 +836,11 @@ pub fn group_and_print_clonotypes(
         );
         for i1 in 0..n {
             for i2 in 0..n {
-                let x = (i1 as f64) * (dim as f64 / n as f64)
-                let y = (i2 as f64) * (dim as f64 / n as f64)
+                let x = (i1 as f64) * (dim as f64 / n as f64);
+                let y = (i2 as f64) * (dim as f64 / n as f64);
                 let gray = 255 as f64 * cos[i1][i2];
-                svg += "<rect x=\"{}\" y=\"{}\" width =\"{}\" height=\"{}\" \
-                    style=\"fill:\"reg({},{},{})\";stroke:black;stroke-width:1\" />\n",
+                svg += &mut format!("<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                    style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
                     x,
                     y,
                     dim as f64 / n as f64,
