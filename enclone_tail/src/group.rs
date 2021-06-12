@@ -789,14 +789,16 @@ pub fn group_and_print_clonotypes(
             }
             for j in 0..o.len() {
                 let oo = o[j] as usize;
-                let p = &out_datas[oo][i];
                 let mut v = Vec::<f64>::new();
                 for k in 0..vars.len() {
                     let mut x = 0.0;
-                    if p.contains_key(&vars[k].clone()) {
-                        let z = &p[&vars[k].clone()];
-                        if z.parse::<f64>().is_ok() {
-                            x = z.force_f64();
+                    for i in 0..out_datas[oo].len() {
+                        let p = &out_datas[oo][i];
+                        if p.contains_key(&vars[k].clone()) {
+                            let z = &p[&vars[k].clone()];
+                            if z.parse::<f64>().is_ok() {
+                                x = z.force_f64();
+                            }
                         }
                     }
                     v.push(x);
@@ -838,7 +840,7 @@ pub fn group_and_print_clonotypes(
             for i2 in 0..n {
                 let x = (i1 as f64) * (dim as f64 / n as f64);
                 let y = (i2 as f64) * (dim as f64 / n as f64);
-                let gray = 255 as f64 * cos[i1][i2];
+                let gray = 255 as f64 * (1.0 - cos[i1][i2]);
                 svg += &mut format!("<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
                     x,
