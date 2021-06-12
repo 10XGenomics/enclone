@@ -90,7 +90,7 @@ pub fn process_special_arg(
         let mut val = fields[2].to_string();
         val = stringme(&tilde_expand(&val.as_bytes()));
         ctl.plot_opt.plot_xy_filename = val.clone();
-        if val != "stdout" {
+        if val != "stdout" && val != "gui" {
             let f = File::create(&val);
             if f.is_err() {
                 let mut emsg = format!(
