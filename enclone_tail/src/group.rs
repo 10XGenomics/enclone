@@ -775,6 +775,92 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    // Execute SIM_MAT_PLOT.
+
+    if ctl.plot_opt.sim_mat_plot.file.len() > 0 {
+        let filename = &ctl.plot_opt.sim_mat_plot.file;
+        let vars = &ctl.plot_opt.sim_mat_plus.vars;
+        let n = vars.len();
+        let mut mat = Vec::Vec<f64>>::new();
+        for i in 0..groups.len() {
+            let mut o = Vec::<i32>::new();
+            for j in 0..groups[i].len() {
+                o.push(groups[i][j].0);
+            }
+            let p = &out_datas[oo][i];
+            let v = Vec::<f64>::new();
+            for k in 0..vars.len() {
+                let mut x = 0.0;
+                if p.contains_key(&vars[k].clone()) {
+                    let x = &p[&vars[k].clone()];
+                    if x.parse::<f64>().is_ok() {
+                        x = x.force_f64();
+                    }
+                }
+                v.push(x);
+            }
+            mat.push(v);
+        }
+        let mut lens = vec![0.0; n];
+        for i in 0..n {
+            for j in 0..mat.len() {
+                lens[i] += mat[j][i] * mat[j][i];
+            }
+            lens[i] = lens[i].sqrt();
+        }
+        let mut cos = vec![vec![0.0; n]; n];
+        for i1 in 0..n {
+            for i2 in 0..n {
+                let mut dot = 0.0;
+                for j in 0..mat.len() {
+                    dot += mat[j][i1] * mat[j][i2];
+                }
+                if lens[i1] == 0 || lens[i2] == 0 {
+                    cos[i1][i2] = 0.0;
+                } else {
+                    cos[i1][i2] = dot / (lens[i1] * lens[i2]);
+                }
+            }
+        }
+        let dim = 400;
+        let (width, height) = (dim, dim);
+        let mut svg = format!(
+            "<svg version=\"1.1\"\n\
+             baseProfile=\"full\"\n\
+             width=\"{}\" height=\"{}\"\n\
+             xmlns=\"http://www.w3.org/2000/svg\">\n",
+            width, height
+        );
+        for i1 in 0..n {
+            for i2 in 0..n {
+                let x = (i1 as f64) * (dim as f64 / n as f64)
+                let y = (i2 as f64) * (dim as f64 / n as f64)
+                let gray = 255 as f64 * cos[i1][i2];
+                svg += "<rect x=\"{}\" y=\"{}\" width =\"{}\" height=\"{}\" \
+                    style=\"fill:\"reg({},{},{})\";stroke:black;stroke-width:1\" />\n",
+                    x,
+                    y,
+                    dim as f64 / n as f64,
+                    dim as f64 / n as f64,
+                    gray,
+                    gray,
+                    gray,
+                );
+            }
+        }
+        svg += "</svg>";
+        if filename == "stdout" || filename == "gui_stdout" {
+            for line in svg.lines() {
+                println!("{}", line);
+            }
+        } else if filename == "gui" {
+            svgs.push(svg);
+        } else {
+            let mut f = open_for_write_new![&filename];
+            fwrite!(f, "{}", svg);
+        }
+    }
+
     // Execute PLOT_XY.
 
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
@@ -889,7 +975,7 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
+    if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
