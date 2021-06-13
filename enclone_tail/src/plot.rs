@@ -912,9 +912,7 @@ pub fn plot_clonotypes(
 
     // Output the svg file.
 
-    if plot_opt.plot_file != "stdout"
-        && plot_opt.plot_file != "gui"
-        && plot_opt.plot_file != "gui"
+    if plot_opt.plot_file != "stdout" && plot_opt.plot_file != "gui" && plot_opt.plot_file != "gui"
     {
         let f = File::create(&plot_opt.plot_file);
         if f.is_err() {

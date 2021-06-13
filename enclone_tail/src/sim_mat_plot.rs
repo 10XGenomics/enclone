@@ -16,7 +16,6 @@ pub fn sim_mat_plot(
     out_datas: &Vec<Vec<HashMap<String, String>>>,
     svgs: &mut Vec<String>,
 ) {
-
     if ctl.plot_opt.sim_mat_plot_file.len() > 0 {
         let filename = &ctl.plot_opt.sim_mat_plot_file;
         let vars = &ctl.plot_opt.sim_mat_plot_vars;
@@ -73,10 +72,7 @@ pub fn sim_mat_plot(
         let dimn = dim as f64 / n as f64;
         let mut titles = Vec::<String>::new();
         for i in 0..n {
-            titles.push(format!("{} = {}",
-                vars[i],
-                i + 1,
-            ));
+            titles.push(format!("{} = {}", vars[i], i + 1,));
         }
         let mut max_title_width = 0.0 as f64;
         for i in 0..n {
@@ -89,25 +85,28 @@ pub fn sim_mat_plot(
              baseProfile=\"full\"\n\
              width=\"{}\" height=\"{}\"\n\
              xmlns=\"http://www.w3.org/2000/svg\">\n",
-            x0 + width as f64 + sep, sep + height as f64 + sep * 2.0 + font_size
+            x0 + width as f64 + sep,
+            sep + height as f64 + sep * 2.0 + font_size
         );
         for i in 0..n {
             let y = sep + (i as f64) * (dim as f64 / n as f64);
-            svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+            svg += &mut format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                 font-size=\"{}\" text-anchor=\"left\" fill=\"black\" \
                 dominant-baseline=\"middle\">{}</text>\n",
                 sep,
-                y + dimn/2.0,
+                y + dimn / 2.0,
                 font_size,
                 titles[i],
             );
         }
         for i in 0..n {
             let x = x0 + (i as f64) * (dim as f64 / n as f64);
-            svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+            svg += &mut format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                 font-size=\"{}\" text-anchor=\"middle\" fill=\"black\" \
                 dominant-baseline=\"hanging\">{}</text>\n",
-                x + dimn/2.0,
+                x + dimn / 2.0,
                 dim as f64 + sep * 2.0,
                 font_size,
                 format!("{}", i + 1),
@@ -118,21 +117,17 @@ pub fn sim_mat_plot(
                 let x = x0 + (i1 as f64) * (dim as f64 / n as f64);
                 let y = sep + (i2 as f64) * (dim as f64 / n as f64);
                 let gray = 255 as f64 * (1.0 - cos[i1][i2]);
-                svg += &mut format!("<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                svg += &mut format!(
+                    "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
-                    x,
-                    y,
-                    dimn,
-                    dimn,
-                    gray,
-                    gray,
-                    gray,
+                    x, y, dimn, dimn, gray, gray, gray,
                 );
-                svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                svg += &mut format!(
+                    "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                     font-size=\"{}\" text-anchor=\"middle\" fill=\"red\" \
                     dominant-baseline=\"middle\">{}</text>\n",
-                    x + dimn/2.0,
-                    y + dimn/2.0,
+                    x + dimn / 2.0,
+                    y + dimn / 2.0,
                     font_size,
                     format!("{:.2}", cos[i1][i2]),
                 );
