@@ -745,7 +745,7 @@ pub fn plot_clonotypes(
         let n = ngroups;
         let mut max_string_width = 0.0f64;
         for s in group_name.iter() {
-            max_string_width = max_string_width.max(arial_width(s, font_size));
+            max_string_width = max_string_width.max(arial_width(s, font_size as f64));
         }
         let color_bar_width = 50.0;
         let vsep = 3.0;
@@ -856,7 +856,7 @@ pub fn plot_clonotypes(
             labels = origins.clone();
         }
         for s in labels.iter() {
-            max_string_width = max_string_width.max(arial_width(s, font_size));
+            max_string_width = max_string_width.max(arial_width(s, font_size as f64));
         }
 
         // Build the legend.

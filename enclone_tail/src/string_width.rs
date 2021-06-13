@@ -6,7 +6,7 @@ use vector_utils::*;
 // This uses a hardcoded table of widths of Arial 1000 point characters.  The table
 // is incomplete, and we use a fixed value for all other characters.
 
-pub fn arial_width(s: &str, font_size: usize) -> f64 {
+pub fn arial_width(s: &str, font_size: f64) -> f64 {
     const DEFAULT_WIDTH: usize = 1000;
     let mut len = 0;
     for c in s.chars() {

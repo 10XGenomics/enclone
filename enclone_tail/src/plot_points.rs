@@ -114,7 +114,7 @@ pub fn plot_points(
     for t in y_ticks.iter() {
         max_ytick_width = max(
             max_ytick_width,
-            arial_width(&*t, tic_font_size).ceil() as usize,
+            arial_width(&*t, tic_font_size as f64).ceil() as usize,
         );
     }
     let extra = (tic_font_size as f32 * 1.5) as usize;

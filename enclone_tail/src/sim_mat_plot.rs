@@ -2,6 +2,7 @@
 //
 // Execute SIM_MAT_PLOT.
 
+use crate::string_width::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::collections::HashMap;
@@ -29,7 +30,7 @@ pub fn sim_mat_plot(
             for j in 0..o.len() {
                 let oo = o[j] as usize;
                 let mut v = Vec::<f64>::new();
-                for k in 0..vars.len() {
+                for k in 0..n {
                     let mut x = 0.0;
                     for i in 0..out_datas[oo].len() {
                         let p = &out_datas[oo][i];
@@ -68,19 +69,43 @@ pub fn sim_mat_plot(
         }
         let dim = 400;
         let (width, height) = (dim, dim);
+        let font_size = 80.0 / n as f64;
+        let dimn = dim as f64 / n as f64;
+        let mut titles = Vec::<String>::new();
+        for i in 0..n {
+            titles.push(format!("{} = {}",
+                vars[i],
+                i + 1,
+            ));
+        }
+        let mut max_title_width = 0.0 as f64;
+        for i in 0..n {
+            max_title_width = max_title_width.max(arial_width(&titles[i], font_size));
+        }
+        let sep = 10.0;
+        let x0 = max_title_width + sep * 2.0;
         let mut svg = format!(
             "<svg version=\"1.1\"\n\
              baseProfile=\"full\"\n\
              width=\"{}\" height=\"{}\"\n\
              xmlns=\"http://www.w3.org/2000/svg\">\n",
-            width, height
+            x0 + width as f64 + sep, sep + height as f64 + sep
         );
-        let font_size = 80.0 / n as f64;
-        let dimn = dim as f64 / n as f64;
+        for i in 0..titles.len() {
+            let y = sep + (i as f64) * (dim as f64 / n as f64);
+            svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                font-size=\"{}\" text-anchor=\"left\" fill=\"black\" \
+                dominant-baseline=\"middle\">{}</text>\n",
+                sep,
+                y + dimn/2.0,
+                font_size,
+                titles[i],
+            );
+        }
         for i1 in 0..n {
             for i2 in 0..n {
-                let x = (i1 as f64) * (dim as f64 / n as f64);
-                let y = (i2 as f64) * (dim as f64 / n as f64);
+                let x = x0 + (i1 as f64) * (dim as f64 / n as f64);
+                let y = sep + (i2 as f64) * (dim as f64 / n as f64);
                 let gray = 255 as f64 * (1.0 - cos[i1][i2]);
                 svg += &mut format!("<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
