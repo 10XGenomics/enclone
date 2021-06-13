@@ -89,9 +89,9 @@ pub fn sim_mat_plot(
              baseProfile=\"full\"\n\
              width=\"{}\" height=\"{}\"\n\
              xmlns=\"http://www.w3.org/2000/svg\">\n",
-            x0 + width as f64 + sep, sep + height as f64 + sep
+            x0 + width as f64 + sep, sep + height as f64 + sep * 2.0 + font_size
         );
-        for i in 0..titles.len() {
+        for i in 0..n {
             let y = sep + (i as f64) * (dim as f64 / n as f64);
             svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                 font-size=\"{}\" text-anchor=\"left\" fill=\"black\" \
@@ -100,6 +100,17 @@ pub fn sim_mat_plot(
                 y + dimn/2.0,
                 font_size,
                 titles[i],
+            );
+        }
+        for i in 0..n {
+            let x = x0 + (i as f64) * (dim as f64 / n as f64);
+            svg += &mut format!("<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                font-size=\"{}\" text-anchor=\"middle\" fill=\"black\" \
+                dominant-baseline=\"hanging\">{}</text>\n",
+                x + dimn/2.0,
+                dim as f64 + sep * 2.0,
+                font_size,
+                format!("{}", i + 1),
             );
         }
         for i1 in 0..n {
