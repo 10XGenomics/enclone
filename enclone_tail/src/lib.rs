@@ -18,6 +18,7 @@ pub mod plot_points;
 pub mod polygon;
 pub mod print_stats;
 pub mod requirements;
+pub mod sim_mat_plot;
 pub mod string_width;
 pub mod tail;
 pub mod ticks;
