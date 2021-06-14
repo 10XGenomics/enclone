@@ -15,10 +15,10 @@ fn hex(c: u8) -> String {
     let x2 = c % 16;
     let c1 = if x1 < 10 { b'0' + x1 } else { b'A' + x1 - 10 };
     let c2 = if x2 < 10 { b'0' + x2 } else { b'A' + x2 - 10 };
-    strme(&[c1, c2])
+    stringme(&[c1, c2])
 }
 
-fn hex_color(r: usize, g: usize, b:usize) -> String {
+fn hex_color(r: u8, g: u8, b: u8) -> String {
     format!("#{}{}{}", hex(r), hex(g), hex(b))
 }
 
@@ -128,7 +128,7 @@ pub fn sim_mat_plot(
             for i2 in 0..n {
                 let x = x0 + (i1 as f64) * (dim as f64 / n as f64);
                 let y = sep + (i2 as f64) * (dim as f64 / n as f64);
-                let gray = 255 as f64 * (1.0 - cos[i1][i2]);
+                let gray = (255 as f64 * (1.0 - cos[i1][i2])).round() as u8;
                 svg += &mut format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:{};stroke:black;stroke-width:1\" />\n",
