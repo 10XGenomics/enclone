@@ -10,6 +10,18 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use string_utils::*;
 
+fn hex(c: u8) -> String {
+    let x1 = c / 16;
+    let x2 = c % 16;
+    let c1 = if x1 < 10 { b'0' + x1 } else { b'A' + x1 - 10 };
+    let c2 = if x2 < 10 { b'0' + x2 } else { b'A' + x2 - 10 };
+    strme(&[c1, c2])
+}
+
+fn hex_color(r: usize, g: usize, b:usize) -> String {
+    format!("#{}{}{}", hex(r), hex(g), hex(b))
+}
+
 pub fn sim_mat_plot(
     ctl: &EncloneControl,
     groups: &Vec<Vec<(i32, String)>>,
@@ -119,8 +131,8 @@ pub fn sim_mat_plot(
                 let gray = 255 as f64 * (1.0 - cos[i1][i2]);
                 svg += &mut format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
-                    style=\"fill:rgb({},{},{});stroke:black;stroke-width:1\" />\n",
-                    x, y, dimn, dimn, gray, gray, gray,
+                    style=\"fill:{};stroke:black;stroke-width:1\" />\n",
+                    x, y, dimn, dimn, hex_color(gray, gray, gray),
                 );
                 svg += &mut format!(
                     "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
