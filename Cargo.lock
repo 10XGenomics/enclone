@@ -1590,7 +1590,6 @@ dependencies = [
  "iced_native",
  "io_utils",
  "itertools",
- "jpeg-decoder",
  "lazy_static",
  "libc",
  "log",
@@ -1598,15 +1597,11 @@ dependencies = [
  "nix 0.19.1",
  "palaver",
  "perf_stats",
- "pico-args 0.4.2",
- "png",
  "pretty_trace",
  "procfs",
  "prost",
  "resvg 0.14.1",
- "rgb",
  "string_utils",
- "svgfilters 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tiny-skia 0.5.1",
  "tokio",
  "tokio-stream",
@@ -4485,7 +4480,7 @@ dependencies = [
  "pico-args 0.4.2",
  "png",
  "rgb",
- "svgfilters 0.3.0 (git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb)",
+ "svgfilters 0.3.0",
  "tiny-skia 0.5.1",
  "usvg 0.14.1",
 ]
@@ -5043,16 +5038,6 @@ name = "svgfilters"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3016b3217b82ea3bb7cd3b773030222c6acca46c52ef4e64b4e716bd4b25090e"
-dependencies = [
- "float-cmp",
- "rgb",
-]
-
-[[package]]
-name = "svgfilters"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb0dce2fee79ac40c21dafba48565ff7a5fa275e23ffe9ce047a40c9574ba34e"
 dependencies = [
  "float-cmp",
  "rgb",
