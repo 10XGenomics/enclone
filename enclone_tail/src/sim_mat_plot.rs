@@ -101,33 +101,31 @@ pub fn sim_mat_plot(
             sep + height as f64 + sep * 2.0 + font_size
         );
         for i in 0..n {
-            let y = sep + (i as f64) * (dim as f64 / n as f64);
+            let y = sep + (i as f64) * dimn;
             svg += &mut format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
-                font-size=\"{}\" text-anchor=\"left\" fill=\"black\" \
-                dominant-baseline=\"middle\">{}</text>\n",
+                font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
                 sep,
-                y + dimn / 2.0,
+                y + dimn / 2.0 + font_size / 2.0,
                 font_size,
                 titles[i],
             );
         }
         for i in 0..n {
-            let x = x0 + (i as f64) * (dim as f64 / n as f64);
+            let x = x0 + (i as f64) * dimn;
             svg += &mut format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
-                font-size=\"{}\" text-anchor=\"middle\" fill=\"black\" \
-                dominant-baseline=\"hanging\">{}</text>\n",
+                font-size=\"{}\" text-anchor=\"middle\" fill=\"black\">{}</text>\n",
                 x + dimn / 2.0,
-                dim as f64 + sep * 2.0,
+                dim as f64 + sep * 2.0 + font_size,
                 font_size,
                 format!("{}", i + 1),
             );
         }
         for i1 in 0..n {
             for i2 in 0..n {
-                let x = x0 + (i1 as f64) * (dim as f64 / n as f64);
-                let y = sep + (i2 as f64) * (dim as f64 / n as f64);
+                let x = x0 + (i1 as f64) * dimn;
+                let y = sep + (i2 as f64) * dimn;
                 let gray = (255 as f64 * (1.0 - cos[i1][i2])).round() as u8;
                 svg += &mut format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
@@ -136,10 +134,9 @@ pub fn sim_mat_plot(
                 );
                 svg += &mut format!(
                     "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
-                    font-size=\"{}\" text-anchor=\"middle\" fill=\"red\" \
-                    dominant-baseline=\"middle\">{}</text>\n",
+                    font-size=\"{}\" text-anchor=\"middle\" fill=\"red\">{}</text>\n",
                     x + dimn / 2.0,
-                    y + dimn / 2.0,
+                    y + dimn / 2.0 + font_size / 2.0,
                     font_size,
                     format!("{:.2}", cos[i1][i2]),
                 );
