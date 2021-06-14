@@ -27,7 +27,9 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
     };
     let tree = usvg::Tree::from_data(&svg, &usvg).unwrap();
     let fit_to = usvg::FitTo::Original;
-    let size = fit_to.fit_to(tree.svg_node().size.to_screen_size()).unwrap();
+    let size = fit_to
+        .fit_to(tree.svg_node().size.to_screen_size())
+        .unwrap();
     let mut pixmap = tiny_skia::Pixmap::new(size.width(), size.height()).unwrap();
     pixmap.fill(tiny_skia::Color::from_rgba8(255, 255, 255, 255));
     resvg::render(&tree, fit_to, pixmap.as_mut());
@@ -45,4 +47,3 @@ fn load_fonts() -> usvg::fontdb::Database {
     fontdb.set_monospace_family("Courier New");
     fontdb
 }
-

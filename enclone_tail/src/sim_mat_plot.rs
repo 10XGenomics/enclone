@@ -130,7 +130,11 @@ pub fn sim_mat_plot(
                 svg += &mut format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:{};stroke:black;stroke-width:1\" />\n",
-                    x, y, dimn, dimn, hex_color(gray, gray, gray),
+                    x,
+                    y,
+                    dimn,
+                    dimn,
+                    hex_color(gray, gray, gray),
                 );
                 svg += &mut format!(
                     "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
