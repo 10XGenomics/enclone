@@ -286,7 +286,6 @@ impl Application for EncloneVisual {
                         &mut state.cancel_state,
                         Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
                     )
-                    // .width(Length::Fill)
                     .on_press(Message::CancelButtonPressed),
                 ),
             )
