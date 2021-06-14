@@ -208,7 +208,7 @@ impl Application for EncloneVisual {
         let png = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
-        let _svg_as_png =
+        let svg_as_png =
             Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(300));
 
         let content = Column::new()
@@ -226,8 +226,8 @@ impl Application for EncloneVisual {
                     .push(banner),
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
-            .push(Row::new().spacing(10).push(svg))
-            // .push(Row::new().spacing(10).push(svg_as_png))
+            // .push(Row::new().spacing(10).push(svg))
+            .push(Row::new().spacing(10).push(svg_as_png))
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
