@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::convert_svg_to_png::*;
 use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
@@ -53,6 +54,7 @@ struct EncloneVisual {
     input_value: String,
     output_value: String,
     svg_value: String,
+    png_value: Vec<u8>,
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
@@ -136,6 +138,7 @@ impl Application for EncloneVisual {
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
+                self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
                 self.compute_state = WaitingForRequest;
                 Command::none()
             }
@@ -200,9 +203,13 @@ impl Application for EncloneVisual {
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
             .width(Units(300))
             .height(Units(300));
+        let _svg = &svg; // to temporarily prevent warning
 
         let png = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
+
+        let _svg_as_png =
+            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(300));
 
         let content = Column::new()
             .spacing(20)
@@ -220,6 +227,7 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             .push(Row::new().spacing(10).push(svg))
+            // .push(Row::new().spacing(10).push(svg_as_png))
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()

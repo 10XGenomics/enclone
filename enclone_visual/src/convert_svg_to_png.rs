@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-// This code is pretty much copied from the resvg crate, 
+// This code is pretty much copied from the resvg crate,
 // rev = 6b29007311edc5022635362fe56f6e5c0318fdeb, done June 14, 2021.
 
 use usvg::SystemFontDB;
