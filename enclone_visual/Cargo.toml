@@ -46,6 +46,17 @@ tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"
 
+jpeg-decoder = { version = "0.1", default-features = false }
+pico-args = "0.4"
+png = "0.16"
+# resvg = "0.15.0"
+resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
+rgb = "0.8"
+svgfilters = "0.3.0"
+tiny-skia = "0.5.0"
+# usvg = { version = "0.14.1", default-features = false }
+usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
+
 [target.'cfg(target_os = "linux")'.dependencies]
 procfs = "0.9"
 
