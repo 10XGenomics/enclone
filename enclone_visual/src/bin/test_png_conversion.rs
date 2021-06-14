@@ -17,7 +17,7 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         resources_dir: Some(current_dir),
         dpi: 96.0,
         font_family: "Times New Roman".to_string(),
-        font_size: 12.0,
+        font_size: 12.0, // don't think this is used in our applications
         languages: vec!["en".to_string()],
         shape_rendering: usvg::ShapeRendering::default(),
         text_rendering: usvg::TextRendering::default(),
