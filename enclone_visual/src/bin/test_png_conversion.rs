@@ -15,7 +15,7 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
     let usvg = usvg::Options {
         resources_dir: None,
         dpi: 96.0,
-        font_family: "Times New Roman".to_string(),
+        font_family: "Arial".to_string(),
         font_size: 12.0, // don't think this is used in our applications
         languages: vec!["en".to_string()],
         shape_rendering: usvg::ShapeRendering::default(),
