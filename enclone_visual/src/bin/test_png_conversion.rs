@@ -12,9 +12,8 @@ fn main() {
 
 pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
     let fontdb = load_fonts();
-    let current_dir = std::env::current_dir().unwrap();
     let usvg = usvg::Options {
-        resources_dir: Some(current_dir),
+        resources_dir: None,
         dpi: 96.0,
         font_family: "Times New Roman".to_string(),
         font_size: 12.0, // don't think this is used in our applications
