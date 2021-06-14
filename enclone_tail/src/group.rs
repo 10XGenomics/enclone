@@ -894,7 +894,7 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui" {
+    if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
