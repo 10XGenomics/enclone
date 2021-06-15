@@ -95,6 +95,7 @@ struct EncloneVisual {
     should_exit: bool,
     compute_state: ComputeState,
     copy_button: button::State,
+    copy_button_color: Color,
 }
 
 #[derive(Debug, Clone)]
@@ -107,6 +108,8 @@ enum Message {
     ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
     CopyButtonPressed,
+    CopyButtonFlashed(Result<(), String>),
+    // CopyButtonFlashed,
 }
 
 #[derive(Default)]
@@ -123,6 +126,7 @@ impl Application for EncloneVisual {
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
+        x.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         (x, Command::none())
     }
 
@@ -194,7 +198,15 @@ impl Application for EncloneVisual {
 
             Message::CopyButtonPressed => {
                 #[cfg(any(target_os = "macos", target_os = "ios"))]
-                copy_png_bytes_to_mac_clipboard(&self.png_value);
+                {
+                    self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                    copy_png_bytes_to_mac_clipboard(&self.png_value);
+                    Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
+                }
+            }
+
+            Message::CopyButtonFlashed(_) => {
+                self.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
         }
@@ -229,7 +241,8 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
-        let copy_button = Button::new(&mut self.copy_button, Text::new("Copy"))
+        let copy_button = Button::new(&mut self.copy_button, Text::new("Copy")
+            .color(self.copy_button_color))
             .padding(10)
             .on_press(Message::CopyButtonPressed);
 
@@ -370,6 +383,11 @@ async fn compute() -> Result<(), String> {
         "time used processing command = {:.1} seconds\n",
         elapsed(&t)
     );
+    Ok(())
+}
+
+async fn flash_copy_button() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
     Ok(())
 }
 
