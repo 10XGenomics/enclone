@@ -243,7 +243,7 @@ impl Application for EncloneVisual {
 
         // Display the SVG.
         //
-        // WARNING!  When we changed the width and height to 400, the performance of scolling
+        // WARNING!  When we changed the width and height to 400, the performance of scrolling
         // in the clonotype table window gradually degraded, becoming less and less responsive.
         // After a couple minutes, the app crashed, with thirty threads running.
 
