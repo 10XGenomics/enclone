@@ -171,18 +171,20 @@ impl Application for EncloneVisual {
 
             Message::CopyButtonPressed => {
                 let png = &self.png_value;
-                unsafe {
-                    let pool = NSAutoreleasePool::new(nil);
-                    let data = NSData::dataWithBytes_length_(
-                        pool, png.as_ptr() as *const c_void, png.len() as u64);
-                    let object = NSImage::initWithData_(NSImage::alloc(pool), data);
-                    if object != nil {
-                        let pasteboard = NSPasteboard::generalPasteboard(pool);
-                        pasteboard.clearContents();
-                        pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
-                    } else {
-                        eprintln!("\ncopy to pasteboard failed\n");
-                        std::process::exit(1);
+                if png.len() > 0 {
+                    unsafe {
+                        let pool = NSAutoreleasePool::new(nil);
+                        let data = NSData::dataWithBytes_length_(
+                            pool, png.as_ptr() as *const c_void, png.len() as u64);
+                        let object = NSImage::initWithData_(NSImage::alloc(pool), data);
+                        if object != nil {
+                            let pasteboard = NSPasteboard::generalPasteboard(pool);
+                            pasteboard.clearContents();
+                            pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
+                        } else {
+                            eprintln!("\ncopy to pasteboard failed\n");
+                            std::process::exit(1);
+                        }
                     }
                 }
                 Command::none()
@@ -222,7 +224,11 @@ impl Application for EncloneVisual {
 
         let copy_button = Button::new(
             &mut self.copy_button,
-            Text::new("Copy")
+            Text::new(if self.png_value.len() > 0 {
+                "Copy"
+            } else {
+                "(copy button, but nothing to copy yet)"
+            }),
         )
         .padding(10)
         .on_press(Message::CopyButtonPressed);
