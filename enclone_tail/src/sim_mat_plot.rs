@@ -80,7 +80,7 @@ pub fn sim_mat_plot(
         }
         let dim = 500;
         let (width, height) = (dim, dim);
-        let font_size = 80.0 / n as f64;
+        let font_size = 120.0 / n as f64;
         let dimn = dim as f64 / n as f64;
         let mut titles = Vec::<String>::new();
         for i in 0..n {
