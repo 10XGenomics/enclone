@@ -18,9 +18,9 @@ use std::time::{Duration, Instant};
 use string_utils::*;
 
 use cocoa::{
-        appkit::{NSImage, NSPasteboard},
-        base::nil,
-        foundation::{NSArray, NSAutoreleasePool, NSData},
+    appkit::{NSImage, NSPasteboard},
+    base::nil,
+    foundation::{NSArray, NSAutoreleasePool, NSData},
 };
 
 use libc::c_void;
@@ -173,7 +173,10 @@ impl Application for EncloneVisual {
                     unsafe {
                         let pool = NSAutoreleasePool::new(nil);
                         let data = NSData::dataWithBytes_length_(
-                            pool, png.as_ptr() as *const c_void, png.len() as u64);
+                            pool,
+                            png.as_ptr() as *const c_void,
+                            png.len() as u64,
+                        );
                         let object = NSImage::initWithData_(NSImage::alloc(pool), data);
                         if object != nil {
                             let pasteboard = NSPasteboard::generalPasteboard(pool);
@@ -187,7 +190,6 @@ impl Application for EncloneVisual {
                 }
                 Command::none()
             }
-
         }
     }
 
@@ -220,12 +222,9 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
-        let copy_button = Button::new(
-            &mut self.copy_button,
-            Text::new("Copy"),
-        )
-        .padding(10)
-        .on_press(Message::CopyButtonPressed);
+        let copy_button = Button::new(&mut self.copy_button, Text::new("Copy"))
+            .padding(10)
+            .on_press(Message::CopyButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
