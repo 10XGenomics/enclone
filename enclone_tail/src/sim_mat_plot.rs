@@ -130,7 +130,7 @@ pub fn sim_mat_plot(
         for i in 0..n {
             let y = sep + (i as f64) * dimn;
             svg += &mut format!(
-                "<text x=\"{}\" y=\"{}\" font-family=\"DejaVuSansMono\" \
+                "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
                 font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
                 sep,
                 y + dimn / 2.0 + font_size / 2.0,
@@ -144,7 +144,7 @@ pub fn sim_mat_plot(
         for i in 0..n {
             let x = x0 + (i as f64) * dimn;
             svg += &mut format!(
-                "<text x=\"{}\" y=\"{}\" font-family=\"DejaVuSansMono\" \
+                "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
                 font-size=\"{}\" text-anchor=\"middle\" fill=\"black\">{}</text>\n",
                 x + dimn / 2.0,
                 dim as f64 + sep * 2.0 + font_size,
@@ -170,7 +170,7 @@ pub fn sim_mat_plot(
                     hex_color(gray, gray, gray),
                 );
                 svg += &mut format!(
-                    "<text x=\"{}\" y=\"{}\" font-family=\"DejaVuSansMono\" \
+                    "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
                     font-size=\"{}\" text-anchor=\"middle\" fill=\"red\">{}</text>\n",
                     x + dimn / 2.0,
                     y + dimn / 2.0 + font_size / 2.0,
