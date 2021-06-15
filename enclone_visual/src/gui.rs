@@ -216,7 +216,7 @@ impl Application for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .size(14);
+        .size(16);
 
         let button = Button::new(
             &mut self.button,
