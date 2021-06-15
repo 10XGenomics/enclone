@@ -25,6 +25,7 @@ publish = false
 
 [dependencies]
 chrono = "0.4.19"
+cocoa = "0.24"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
@@ -38,6 +39,7 @@ libc = "0.2.85"
 log = "0.4"
 nix = "0.19.1"
 palaver = "0.2.8"
+pasteboard = "0.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }

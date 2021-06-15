@@ -17,6 +17,18 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
+use {
+    cocoa::{
+        appkit::{NSImage, NSPasteboard},
+        base::nil,
+        foundation::{NSArray, NSAutoreleasePool, NSData},
+    },
+    // objc::{class, msg_send, runtime::Object, sel, sel_impl},
+    // structopt::clap::arg_enum,
+};
+
+use libc::c_void;
+
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
@@ -61,6 +73,7 @@ struct EncloneVisual {
     modal_state: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
+    copy_button: button::State,
 }
 
 #[derive(Debug, Clone)]
@@ -72,6 +85,7 @@ enum Message {
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
+    CopyButtonPressed,
 }
 
 #[derive(Default)]
@@ -154,6 +168,26 @@ impl Application for EncloneVisual {
                 }
                 Command::none()
             }
+
+            Message::CopyButtonPressed => {
+                let png = &self.png_value;
+                unsafe {
+                    let pool = NSAutoreleasePool::new(nil);
+                    let data = NSData::dataWithBytes_length_(
+                        pool, png.as_ptr() as *const c_void, png.len() as u64);
+                    let object = NSImage::initWithData_(NSImage::alloc(pool), data);
+                    if object != nil {
+                        let pasteboard = NSPasteboard::generalPasteboard(pool);
+                        pasteboard.clearContents();
+                        pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
+                    } else {
+                        eprintln!("\ncopy to pasteboard failed\n");
+                        std::process::exit(1);
+                    }
+                }
+                Command::none()
+            }
+
         }
     }
 
@@ -185,6 +219,13 @@ impl Application for EncloneVisual {
         )
         .padding(10)
         .on_press(Message::ButtonPressed);
+
+        let copy_button = Button::new(
+            &mut self.copy_button,
+            Text::new("Copy")
+        )
+        .padding(10)
+        .on_press(Message::CopyButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
@@ -227,7 +268,8 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
-            .push(Row::new().spacing(10).push(svg_as_png))
+            // .push(Row::new().spacing(10).push(svg_as_png))
+            .push(Row::new().spacing(10).push(svg_as_png).push(copy_button))
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
