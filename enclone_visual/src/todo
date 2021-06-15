@@ -60,7 +60,8 @@ WAITING ON ICED
     related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
 
 8.  Button text does not change from "Submit" to "thinking" (but worked around).
-    Submitted as issue 908.  This is also bugs/button_text_update_issue.
+    Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
+    on the issue so the ball is in their court.
 
 ---------------------------------------------------------------------------------------------------
 
