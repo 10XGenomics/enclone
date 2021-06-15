@@ -152,7 +152,9 @@ impl Application for EncloneVisual {
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
-                self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
+                if self.svg_value.len() > 0 {
+                    self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
+                }
                 self.compute_state = WaitingForRequest;
                 Command::none()
             }
