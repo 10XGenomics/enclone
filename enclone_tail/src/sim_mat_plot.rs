@@ -73,7 +73,6 @@ pub fn sim_mat_plot(
             }
             means.push(sum / ncells as f64);
         }
-        let _ = means.clone();
         let mut cos = vec![vec![0.0; n]; n];
         for i1 in 0..n {
             for i2 in 0..n {
@@ -92,6 +91,15 @@ pub fn sim_mat_plot(
         let (width, height) = (dim, dim);
         let font_size = 120.0 / n as f64;
         let dimn = dim as f64 / n as f64;
+
+        // Define the row text matrix.
+
+        let mut rtm = Vec::<Vec<String>>::new();
+        rtm.push(vec!["variable".to_string(), "mean".to_string(), "#".to_string()]);
+        for i in 0..n {
+            rtm.push(vec![vars[i].clone(), format!("{:.1}", means[i]), format!("{}", i + 1)]);
+        }
+        let _ = rtm.clone(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         // Define row titles.
 
