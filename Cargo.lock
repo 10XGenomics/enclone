@@ -1603,6 +1603,7 @@ dependencies = [
  "prost",
  "resvg 0.14.1",
  "string_utils",
+ "tables",
  "tiny-skia 0.5.1",
  "tokio",
  "tokio-stream",

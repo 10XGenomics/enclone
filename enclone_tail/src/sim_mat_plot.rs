@@ -2,13 +2,13 @@
 //
 // Execute SIM_MAT_PLOT.
 
-use crate::string_width::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use string_utils::*;
+use tables::*;
 
 fn hex(c: u8) -> String {
     let x1 = c / 16;
@@ -99,17 +99,22 @@ pub fn sim_mat_plot(
         for i in 0..n {
             rtm.push(vec![vars[i].clone(), format!("{:.1}", means[i]), format!("{}", i + 1)]);
         }
-        let _ = rtm.clone(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        let mut log = Vec::<u8>::new();
+        print_tabular(&mut log, &rtm, 2, Some(b"lrl".to_vec()));
+        let slong = strme(&log);
+        let mut lines = Vec::<String>::new();
+        for line in slong.lines() {
+            lines.push(line.to_string());
+        }
+        const DEJA_SANS_MONO_WIDTH_HEIGHT_RATIO: f64 = 0.6; // guess
 
         // Define row titles.
 
-        let mut titles = Vec::<String>::new();
-        for i in 0..n {
-            titles.push(format!("{} = {}", vars[i], i + 1,));
-        }
         let mut max_title_width = 0.0 as f64;
         for i in 0..n {
-            max_title_width = max_title_width.max(arial_width(&titles[i], font_size));
+            max_title_width = max_title_width.max(
+                lines[i].len() as f64 * font_size * DEJA_SANS_MONO_WIDTH_HEIGHT_RATIO
+            );
         }
         let sep = 10.0;
         let x0 = max_title_width + sep * 2.0;
@@ -127,6 +132,14 @@ pub fn sim_mat_plot(
 
         // Add row titles.
 
+        svg += &mut format!(
+            "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
+            font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
+            sep,
+            font_size / 2.0,
+            font_size,
+            lines[0],
+        );
         for i in 0..n {
             let y = sep + (i as f64) * dimn;
             svg += &mut format!(
@@ -135,7 +148,7 @@ pub fn sim_mat_plot(
                 sep,
                 y + dimn / 2.0 + font_size / 2.0,
                 font_size,
-                titles[i],
+                lines[i + 1],
             );
         }
 
