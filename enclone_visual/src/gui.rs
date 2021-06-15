@@ -55,6 +55,10 @@ fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     }
 }
 
+#[cfg(target_os = "linux")]
+fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn launch_gui() -> iced::Result {
@@ -196,9 +200,7 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
-            Message::CopyButtonPressed =>
-            #[cfg(any(target_os = "macos", target_os = "ios"))]
-            {
+            Message::CopyButtonPressed => {
                 self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
                 Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
