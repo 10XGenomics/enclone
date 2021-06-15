@@ -196,13 +196,12 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
-            Message::CopyButtonPressed => {
-                #[cfg(any(target_os = "macos", target_os = "ios"))]
-                {
-                    self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                    copy_png_bytes_to_mac_clipboard(&self.png_value);
-                    Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
-                }
+            Message::CopyButtonPressed =>
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
+            {
+                self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_png_bytes_to_mac_clipboard(&self.png_value);
+                Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
             }
 
             Message::CopyButtonFlashed(_) => {
@@ -241,10 +240,12 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
-        let copy_button = Button::new(&mut self.copy_button, Text::new("Copy")
-            .color(self.copy_button_color))
-            .padding(10)
-            .on_press(Message::CopyButtonPressed);
+        let copy_button = Button::new(
+            &mut self.copy_button,
+            Text::new("Copy").color(self.copy_button_color),
+        )
+        .padding(10)
+        .on_press(Message::CopyButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
