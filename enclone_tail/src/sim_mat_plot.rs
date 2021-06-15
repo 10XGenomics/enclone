@@ -57,18 +57,28 @@ pub fn sim_mat_plot(
                 mat.push(v);
             }
         }
+        let ncells = mat.len();
         let mut lens = vec![0.0; n];
         for i in 0..n {
-            for j in 0..mat.len() {
+            for j in 0..ncells {
                 lens[i] += mat[j][i] * mat[j][i];
             }
             lens[i] = lens[i].sqrt();
         }
+        let mut means = Vec::<f64>::new();
+        for i in 0..n {
+            let mut sum = 0.0;
+            for j in 0..ncells {
+                sum += mat[j][i];
+            }
+            means.push(sum / ncells as f64);
+        }
+        let _ = means.clone();
         let mut cos = vec![vec![0.0; n]; n];
         for i1 in 0..n {
             for i2 in 0..n {
                 let mut dot = 0.0;
-                for j in 0..mat.len() {
+                for j in 0..ncells {
                     dot += mat[j][i1] * mat[j][i2];
                 }
                 if lens[i1] == 0.0 || lens[i2] == 0.0 {
@@ -82,6 +92,9 @@ pub fn sim_mat_plot(
         let (width, height) = (dim, dim);
         let font_size = 120.0 / n as f64;
         let dimn = dim as f64 / n as f64;
+
+        // Define row titles.
+
         let mut titles = Vec::<String>::new();
         for i in 0..n {
             titles.push(format!("{} = {}", vars[i], i + 1,));
@@ -92,6 +105,9 @@ pub fn sim_mat_plot(
         }
         let sep = 10.0;
         let x0 = max_title_width + sep * 2.0;
+
+        // Start making SVG.
+
         let mut svg = format!(
             "<svg version=\"1.1\"\n\
              baseProfile=\"full\"\n\
@@ -100,6 +116,9 @@ pub fn sim_mat_plot(
             x0 + width as f64 + sep,
             sep + height as f64 + sep * 2.0 + font_size
         );
+
+        // Add row titles.
+
         for i in 0..n {
             let y = sep + (i as f64) * dimn;
             svg += &mut format!(
@@ -111,6 +130,9 @@ pub fn sim_mat_plot(
                 titles[i],
             );
         }
+
+        // Print the variable numbers at the bottom.
+
         for i in 0..n {
             let x = x0 + (i as f64) * dimn;
             svg += &mut format!(
@@ -122,6 +144,9 @@ pub fn sim_mat_plot(
                 format!("{}", i + 1),
             );
         }
+
+        // Print the matrix.
+
         for i1 in 0..n {
             for i2 in 0..n {
                 let x = x0 + (i1 as f64) * dimn;
@@ -146,6 +171,9 @@ pub fn sim_mat_plot(
                 );
             }
         }
+
+        // Finish.
+
         svg += "</svg>";
         if filename == "stdout" || filename == "gui_stdout" {
             for line in svg.lines() {
