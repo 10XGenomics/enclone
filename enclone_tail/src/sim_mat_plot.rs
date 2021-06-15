@@ -101,12 +101,13 @@ pub fn sim_mat_plot(
         }
         let mut log = Vec::<u8>::new();
         print_tabular(&mut log, &rtm, 2, Some(b"lrl".to_vec()));
-        let slong = strme(&log);
+        let mut slong = stringme(&log);
+        slong = slong.replace(" ", "\u{00A0}"); // convert spaces to non-breaking spaces
         let mut lines = Vec::<String>::new();
         for line in slong.lines() {
             lines.push(line.to_string());
         }
-        const DEJA_SANS_MONO_WIDTH_HEIGHT_RATIO: f64 = 0.6; // guess
+        const DEJA_SANS_MONO_WIDTH_HEIGHT_RATIO: f64 = 0.42; // guess
 
         // Define row titles.
 
@@ -136,7 +137,7 @@ pub fn sim_mat_plot(
             "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
             font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
             sep,
-            font_size / 2.0,
+            font_size,
             font_size,
             lines[0],
         );
