@@ -705,7 +705,7 @@ pub fn plot_clonotypes(
         WIDTH,
         HEIGHT,
         BOUNDARY,
-        ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui",
+        ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout",
     );
 
     // Calculate the actual height and width of the svg.
