@@ -256,6 +256,11 @@ impl Application for EncloneVisual {
         let svg_as_png =
             Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(300));
 
+        let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
+        if self.png_value.len() > 0 {
+            svg_as_png_row = svg_as_png_row.push(copy_button);
+        }
+
         let content = Column::new()
             .spacing(20)
             .padding(20)
@@ -273,7 +278,7 @@ impl Application for EncloneVisual {
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
             // .push(Row::new().spacing(10).push(svg_as_png))
-            .push(Row::new().spacing(10).push(svg_as_png).push(copy_button))
+            .push(svg_as_png_row)
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
