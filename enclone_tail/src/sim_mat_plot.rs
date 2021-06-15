@@ -138,6 +138,21 @@ pub fn sim_mat_plot(
             sep + height as f64 + sep * 2.0 + font_size
         );
 
+        // Load font if not GUI.
+
+        if ctl.plot_opt.sim_mat_plot_file != "gui" {
+            svg += "\
+              <defs>\n\
+                <style type=\"text/css\">\n\
+                  @font-face {\n\
+                    font-family: \"DejaVu LGC Sans Mono\";\n\
+                    src: url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/\
+                        DejaVuSansMono.ttf');\n\
+                  }\n\
+                </style>\n\
+              </defs>\n";
+        }
+
         // Add row titles.
 
         svg += &mut format!(
