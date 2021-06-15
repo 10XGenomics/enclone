@@ -78,7 +78,7 @@ pub fn sim_mat_plot(
                 }
             }
         }
-        let dim = 400;
+        let dim = 500;
         let (width, height) = (dim, dim);
         let font_size = 80.0 / n as f64;
         let dimn = dim as f64 / n as f64;
