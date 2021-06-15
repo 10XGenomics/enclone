@@ -56,8 +56,7 @@ fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
 }
 
 #[cfg(target_os = "linux")]
-fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {
-}
+fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
