@@ -222,11 +222,7 @@ impl Application for EncloneVisual {
 
         let copy_button = Button::new(
             &mut self.copy_button,
-            Text::new(if self.png_value.len() > 0 {
-                "Copy"
-            } else {
-                "(copy button, but nothing to copy yet)"
-            }),
+            Text::new("Copy"),
         )
         .padding(10)
         .on_press(Message::CopyButtonPressed);
