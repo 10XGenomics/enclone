@@ -32,6 +32,8 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
 
 fn load_fonts() -> usvg::fontdb::Database {
     let mut fontdb = usvg::fontdb::Database::new();
+    let deja = include_bytes!("../../fonts/DejaVuLGCSansMono.ttf").to_vec();
+    fontdb.load_font_data(deja);
     fontdb.load_system_fonts();
     fontdb.set_generic_families();
     fontdb.set_serif_family("Times New Roman");
