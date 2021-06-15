@@ -33,14 +33,14 @@ const DEJAVU: Font = Font::External {
 };
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
+fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
         unsafe {
             let pool = NSAutoreleasePool::new(nil);
             let data = NSData::dataWithBytes_length_(
                 pool,
-                png.as_ptr() as *const c_void,
-                png.len() as u64,
+                bytes.as_ptr() as *const c_void,
+                bytes.len() as u64,
             );
             let object = NSImage::initWithData_(NSImage::alloc(pool), data);
             if object != nil {
@@ -194,7 +194,7 @@ impl Application for EncloneVisual {
 
             Message::CopyButtonPressed => {
                 #[cfg(any(target_os = "macos", target_os = "ios"))]
-                copy_bytes_to_mac_clipboard(&self.png_value);
+                copy_png_bytes_to_mac_clipboard(&self.png_value);
                 Command::none()
             }
         }
