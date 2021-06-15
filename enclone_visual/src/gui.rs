@@ -17,18 +17,43 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use cocoa::{
     appkit::{NSImage, NSPasteboard},
     base::nil,
     foundation::{NSArray, NSAutoreleasePool, NSData},
 };
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use libc::c_void;
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
+    if bytes.len() > 0 {
+        unsafe {
+            let pool = NSAutoreleasePool::new(nil);
+            let data = NSData::dataWithBytes_length_(
+                pool,
+                png.as_ptr() as *const c_void,
+                png.len() as u64,
+            );
+            let object = NSImage::initWithData_(NSImage::alloc(pool), data);
+            if object != nil {
+                let pasteboard = NSPasteboard::generalPasteboard(pool);
+                pasteboard.clearContents();
+                pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
+            } else {
+                eprintln!("\ncopy to pasteboard failed\n");
+                std::process::exit(1);
+            }
+        }
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -168,26 +193,8 @@ impl Application for EncloneVisual {
             }
 
             Message::CopyButtonPressed => {
-                let png = &self.png_value;
-                if png.len() > 0 {
-                    unsafe {
-                        let pool = NSAutoreleasePool::new(nil);
-                        let data = NSData::dataWithBytes_length_(
-                            pool,
-                            png.as_ptr() as *const c_void,
-                            png.len() as u64,
-                        );
-                        let object = NSImage::initWithData_(NSImage::alloc(pool), data);
-                        if object != nil {
-                            let pasteboard = NSPasteboard::generalPasteboard(pool);
-                            pasteboard.clearContents();
-                            pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
-                        } else {
-                            eprintln!("\ncopy to pasteboard failed\n");
-                            std::process::exit(1);
-                        }
-                    }
-                }
+                #[cfg(any(target_os = "macos", target_os = "ios"))]
+                copy_bytes_to_mac_clipboard(&self.png_value);
                 Command::none()
             }
         }

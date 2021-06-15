@@ -25,7 +25,6 @@ publish = false
 
 [dependencies]
 chrono = "0.4.19"
-cocoa = "0.24"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
@@ -56,6 +55,7 @@ usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc502263
 procfs = "0.9"
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+cocoa = "0.24"
 mach = "0.3"
 
 [build-dependencies]
