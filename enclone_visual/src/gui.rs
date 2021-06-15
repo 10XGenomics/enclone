@@ -17,14 +17,10 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
-use {
-    cocoa::{
+use cocoa::{
         appkit::{NSImage, NSPasteboard},
         base::nil,
         foundation::{NSArray, NSAutoreleasePool, NSData},
-    },
-    // objc::{class, msg_send, runtime::Object, sel, sel_impl},
-    // structopt::clap::arg_enum,
 };
 
 use libc::c_void;
