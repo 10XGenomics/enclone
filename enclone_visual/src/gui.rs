@@ -256,7 +256,7 @@ impl Application for EncloneVisual {
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
         let svg_as_png =
-            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(400));
+            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(450));
 
         let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
         if self.png_value.len() > 0 {
