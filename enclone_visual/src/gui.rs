@@ -228,6 +228,7 @@ impl Application for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
+        .font(DEJAVU)
         .size(16);
 
         let button = Button::new(
