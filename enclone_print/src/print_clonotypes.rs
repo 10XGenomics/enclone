@@ -688,6 +688,7 @@ pub fn print_clonotypes(
                         &fate,
                     );
                     stats.append(&mut these_stats.clone());
+                    these_stats.sort_by(|a, b| a.0.cmp(&b.0));
                     if resx.is_err() {
                         res.13 = resx.unwrap_err();
                         return;
