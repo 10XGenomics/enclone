@@ -291,21 +291,44 @@ pub fn setup(
                     days_since_build
                 );
             }
-            let exit_message = format!(
-                "Something has gone badly wrong.  You have probably encountered an internal \
-                error in enclone.\n\n\
-                Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-                above and also the following version information:\n\
-                {} : {}.\n\n\
-                Your command was:\n\n{}\n\n\
-                {}\
-                🌸 Thank you and have a nice day! 🌸",
-                env!("CARGO_PKG_VERSION"),
-                version_string(),
-                args_orig.iter().format(" "),
-                elapsed_message,
-            );
-            PrettyTrace::new().exit_message(&exit_message).on();
+            if !ctl.gen_opt.internal_run {
+                let exit_message = format!(
+                    "Something has gone badly wrong.  You have probably encountered an internal \
+                    error in enclone.\n\n\
+                    Please email us at enclone@10xgenomics.com, including the traceback shown\n\
+                    above and also the following version information:\n\
+                    {} : {}.\n\n\
+                    Your command was:\n\n{}\n\n\
+                    {}\
+                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+                    env!("CARGO_PKG_VERSION"),
+                    version_string(),
+                    args_orig.iter().format(" "),
+                    elapsed_message,
+                );
+                PrettyTrace::new().exit_message(&exit_message).on();
+            } else {
+                let exit_message = format!(
+                    "Something has gone badly wrong.  You have probably encountered an internal \
+                    error in enclone.\n\n\
+                    Here is the version information:\n\
+                    {} : {}.\n\n\
+                    Your command was:\n\n{}\n\n\
+                    {}n\
+                    Thank you for being a happy internal enclone user.  All of this information \
+                    is being\nemailed to enclone@10xgenomics.com, for the developers to \
+                    contemplate.\n\
+                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+                    env!("CARGO_PKG_VERSION"),
+                    version_string(),
+                    args_orig.iter().format(" "),
+                    elapsed_message,
+                );
+                fn exit_function(_msg: &str) {
+                    println!("Made it back alive!\n");
+                }
+                PrettyTrace::new().exit_message(&exit_message).run_this(exit_function).on();
+            }
             let mut nopager = false;
             for i in 1..args_orig.len() {
                 if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {
