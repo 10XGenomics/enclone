@@ -480,6 +480,7 @@ pub fn compute_bu(
     d_all: &Vec<Vec<u32>>,
     ind_all: &Vec<Vec<u32>>,
     mat: &Vec<Vec<Option<usize>>>,
+    _stats: &Vec<(String, Vec<String>)>,
 ) {
     // Very bad computation because of embedded binary search.
 

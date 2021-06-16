@@ -538,6 +538,32 @@ pub fn proc_lvar2(
                 lvar_stats![i, x, format!("{}", median), counts];
             }
         }
+    } else if pass == 2
+        && x.starts_with("fb")
+        && x.ends_with("_n_cell")
+        && x.after("fb").rev_before("_n").parse::<usize>().is_ok()
+        && x.after("fb").rev_before("_n").force_usize() >= 1
+    {
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = x.after("fb").rev_before("_n").force_usize() - 1;
+        let mut counts = Vec::<String>::new();
+        if n >= ncols {
+            for _ in 0..ex.clones.len() {
+                counts.push("0".to_string());
+            }
+        } else {
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                }
+            }
+        }
+        speak!(u, x, format!("{}", counts.iter().format(POUT_SEP)));
     } else if x == "gex" {
         let mut f = Vec::<String>::new();
         for x in fcounts.iter() {
