@@ -146,8 +146,12 @@ pub fn sim_mat_plot(
                 <style type=\"text/css\">\n\
                   @font-face {\n\
                     font-family: \"DejaVu LGC Sans Mono\";\n\
-                    src: url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/\
-                        DejaVuSansMono.ttf');\n\
+                    src: url('https://cdn.jsdelivr.net/npm/@deathbeds/\
+                        jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')\n\
+                    format('woff2'),\n\
+                    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/\
+                        DejaVuSansMono.ttf')\n\
+                    format('truetype');\n\
                   }\n\
                 </style>\n\
               </defs>\n";
