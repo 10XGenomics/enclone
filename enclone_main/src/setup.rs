@@ -8,6 +8,7 @@ use enclone::misc1::*;
 use enclone_args::proc_args::*;
 use enclone_args::proc_args2::*;
 use enclone_core::defs::*;
+use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_core::*;
 use enclone_help::help1::*;
 use enclone_help::help2::*;
@@ -94,6 +95,8 @@ pub fn setup(
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
+            } else if args[i] == "EVIL_EYE" {
+                ctl.evil_eye = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 ctl.gen_opt.html_title = "enclone output".to_string();
@@ -140,6 +143,62 @@ pub fn setup(
                 ctl.gen_opt.config_file = value.to_string();
             }
         }
+
+        // Test for internal run.
+
+        if ctl.evil_eye {
+            println!("testing for internal run");
+        }
+        for (key, value) in env::vars() {
+            if key.contains("USER") && value.ends_with("10xgenomics.com") {
+                if ctl.evil_eye {
+                    println!("getting config");
+                }
+                if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
+                    ctl.gen_opt.internal_run = true;
+                }
+                if ctl.evil_eye {
+                    println!("got config");
+                }
+                break;
+            }
+        }
+        for i in 1..args.len() {
+            if args[i] == "FORCE_EXTERNAL".to_string() {
+                ctl.gen_opt.internal_run = false;
+            }
+        }
+        if ctl.gen_opt.internal_run {
+            if ctl.evil_eye {
+                println!("detected internal run");
+            }
+            let earth_path = format!(
+                "{}/current{}",
+                ctl.gen_opt.config["earth"], TEST_FILES_VERSION
+            );
+            ctl.gen_opt.internal_data_dir = earth_path;
+            let cloud_path = format!(
+                "{}/current{}",
+                ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
+            );
+            if path_exists(&cloud_path) {
+                ctl.gen_opt.internal_data_dir = cloud_path;
+            }
+            ctl.gen_opt.pre = vec![
+                ctl.gen_opt.internal_data_dir.clone(),
+                format!("enclone/test/inputs"),
+                format!("enclone_main"),
+            ];
+        } else if !ctl.gen_opt.cellranger {
+            let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+            ctl.gen_opt.pre = vec![
+                format!("{}/enclone/datasets", home),
+                format!("{}/enclone/datasets2", home),
+            ];
+        }
+
+        // Proceed.
+
         if ctl.gen_opt.html && ctl.gen_opt.svg {
             return Err(format!(
                 "\nBoth HTML and SVG cannot be used at the same time.\n"

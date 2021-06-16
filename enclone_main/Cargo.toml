@@ -24,6 +24,7 @@ amino = "0.1"
 bytes = ">=0.5.5, <2"
 chrono = "0.4.19"
 debruijn = "0.3.2"
+dirs = "3.0.1"
 enclone_com = { path = "../enclone_com" }
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }

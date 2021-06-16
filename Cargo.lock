@@ -1420,6 +1420,7 @@ dependencies = [
  "bytes",
  "chrono",
  "debruijn",
+ "dirs 3.0.2",
  "enclone",
  "enclone_args",
  "enclone_com",
