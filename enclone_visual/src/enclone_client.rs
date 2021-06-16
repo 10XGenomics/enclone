@@ -426,7 +426,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         .arg("-s")
                         .arg("-L")
                         .arg(
-                            "https://github.com/10XGenomics/enclone\
+                            "https://github.com/10XGenomics/enclone/\
                             releases/latest/download/enclone_macos",
                         )
                         .arg("--output")
@@ -438,17 +438,23 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             "Update failed with the following error message:\n{}",
                             strme(&o.stderr)
                         );
+                        std::process::exit(1);
                     }
-                    println!("\nDone, restarting!\n");
+                    println!("Done, restarting!\n");
                     let args: Vec<String> = env::args().collect();
                     let mut args1 = Vec::<String>::new();
                     for i in 1..args.len() {
                         args1.push(args[i].clone());
                     }
-                    let _ = Command::new("enclone")
+                    let o = Command::new("enclone")
                         .args(&args1)
                         .output()
                         .expect("failed to execute enclone restart");
+                    if o.status.code() != Some(0) {
+                        eprintln!("\nSomething went wrong restarting enclone.");
+                        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+                        std::process::exit(1);
+                    }
                     std::process::exit(0);
                 } else {
                     eprintln!(
