@@ -79,6 +79,7 @@ pub fn setup(
     let mut using_pager = false;
     // Provide help if requested.
 
+    let mut no_bug_reports = false;
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -139,6 +140,8 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
+            } else if args[i] == "NO_BUG_REPORTS" {
+                no_bug_reports = true;
             } else if args[i].starts_with("CONFIG=") {
                 ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             } else if args[i] == "NO_KILL" {
@@ -148,6 +151,9 @@ pub fn setup(
         for (key, value) in env::vars() {
             if key == "ENCLONE_CONFIG" {
                 ctl.gen_opt.config_file = value.to_string();
+            }
+            if key == "ENCLONE_NO_BUG_REPORTS" {
+                no_bug_reports = true;
             }
         }
 
@@ -302,7 +308,8 @@ pub fn setup(
                     days_since_build
                 );
             }
-            if !ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0 {
+
+            if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0) || no_bug_reports  {
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\

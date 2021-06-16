@@ -559,14 +559,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         "SVG",
     ];
 
-    // Define arguments that set something to a string that is an input CSV file name.
-
-    let set_string_readable_csv = [("INFO", &mut ctl.gen_opt.info)];
-
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "PRE"];
+    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "NO_BUG_REPORTS", "PRE"];
+
+    // Define arguments that set something to a string that is an input CSV file name.
+
+    let set_string_readable_csv = [("INFO", &mut ctl.gen_opt.info)];
 
     // Traverse arguments.
 
