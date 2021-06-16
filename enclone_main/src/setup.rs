@@ -203,9 +203,9 @@ pub fn setup(
                 format!("{}/enclone/datasets2", home),
             ];
         }
-        if ctl.gen_opt.config.contains_key("remote_host") {
-            let remote_host = &ctl.gen_opt.config["remote_host"];
-            REMOTE_HOST.lock().unwrap().push(remote_host.clone());
+        if ctl.gen_opt.config_file.contains(":") {
+            let remote_host = ctl.gen_opt.config_file.before(":").to_string();
+            REMOTE_HOST.lock().unwrap().push(remote_host);
         }
 
         // Proceed.
@@ -302,7 +302,7 @@ pub fn setup(
                     days_since_build
                 );
             }
-            if !ctl.gen_opt.internal_run {
+            if !ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0 {
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\
@@ -340,7 +340,7 @@ pub fn setup(
                 );
                 fn exit_function(msg: &str) {
                     let msg = format!("{}\n.\n", msg);
-                    if version_string().contains("x86_64") {
+                    if !version_string().contains("macos") {
                         let process = Command::new("mail")
                             .arg("-s")
                             .arg("internal bug report")
@@ -359,7 +359,7 @@ pub fn setup(
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
-                            .arg("internal bug report")
+                            .arg("\"internal bug report\"")
                             .arg("david.jaffe@10xgenomics.com") // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                             // .arg("enclone@10xgenomics.com")
                             .stdin(Stdio::piped())
