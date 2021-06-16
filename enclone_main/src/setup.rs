@@ -18,11 +18,14 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use io_utils::*;
 use itertools::Itertools;
+use lazy_static::lazy_static;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read, Write};
+use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::Mutex;
 use std::time::Instant;
 use string_utils::*;
 use tilde_expand::tilde_expand;
@@ -61,6 +64,10 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+lazy_static! {
+    pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
 
 pub fn setup(
     mut ctl: &mut EncloneControl,
@@ -196,6 +203,10 @@ pub fn setup(
                 format!("{}/enclone/datasets2", home),
             ];
         }
+        if ctl.gen_opt.config.contains_key("remote_host") {
+            let remote_host = &ctl.gen_opt.config["remote_host"];
+            REMOTE_HOST.lock().unwrap().push(remote_host.clone());
+        }
 
         // Proceed.
 
@@ -308,24 +319,57 @@ pub fn setup(
                 );
                 PrettyTrace::new().exit_message(&exit_message).on();
             } else {
+    
+                // Set up to email bug report on panic.  This is only for internal users!
+
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\
                     Here is the version information:\n\
                     {} : {}.\n\n\
                     Your command was:\n\n{}\n\n\
-                    {}n\
+                    {}\
                     Thank you for being a happy internal enclone user.  All of this information \
                     is being\nemailed to enclone@10xgenomics.com, for the developers to \
-                    contemplate.\n\
+                    contemplate.\n\n\
                     🌸 Thank you so much for finding a bug and have a nice day! 🌸",
                     env!("CARGO_PKG_VERSION"),
                     version_string(),
                     args_orig.iter().format(" "),
                     elapsed_message,
                 );
-                fn exit_function(_msg: &str) {
-                    println!("Made it back alive!\n");
+                fn exit_function(msg: &str) {
+                    let msg = format!("{}\n.\n", msg);
+                    if version_string().contains("x86_64") {
+                        let process = Command::new("mail")
+                            .arg("-s")
+                            .arg("internal bug report")
+                            .arg("david.jaffe@10xgenomics.com") // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                            // .arg("enclone@10xgenomics.com")
+                            .stdin(Stdio::piped())
+                            .stdout(Stdio::piped())
+                            .spawn();
+                        let process = process.unwrap();
+                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                        let mut _s = String::new();
+                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+                    } else if REMOTE_HOST.lock().unwrap().len() > 0 {
+                        let remote_host = &REMOTE_HOST.lock().unwrap()[0];
+                        let process = Command::new("ssh")
+                            .arg(&remote_host)
+                            .arg("mail")
+                            .arg("-s")
+                            .arg("internal bug report")
+                            .arg("david.jaffe@10xgenomics.com") // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                            // .arg("enclone@10xgenomics.com")
+                            .stdin(Stdio::piped())
+                            .stdout(Stdio::piped())
+                            .spawn();
+                        let process = process.unwrap();
+                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                        let mut _s = String::new();
+                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+                    }
                 }
                 PrettyTrace::new().exit_message(&exit_message).run_this(exit_function).on();
             }
