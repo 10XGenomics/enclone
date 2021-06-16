@@ -406,8 +406,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 eprintln!("\nremote enclone version = {}", remote_version);
                 eprintln!("local enclone version = {}", local_version);
                 eprintln!("\nYour enclone version is not up to date.");
-                if auto_update
-                {
+                if auto_update {
                     println!(
                         "Automatically updating enclone, following the instructions at \
                         bit.ly/enclone.\n"

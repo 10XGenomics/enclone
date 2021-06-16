@@ -309,7 +309,9 @@ pub fn setup(
                 );
             }
 
-            if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0) || no_bug_reports  {
+            if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0)
+                || no_bug_reports
+            {
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\
@@ -326,7 +328,6 @@ pub fn setup(
                 );
                 PrettyTrace::new().exit_message(&exit_message).on();
             } else {
-    
                 // Set up to email bug report on panic.  This is only for internal users!
 
                 let exit_message = format!(
@@ -376,7 +377,10 @@ pub fn setup(
                         process.stdout.unwrap().read_to_string(&mut _s).unwrap();
                     }
                 }
-                PrettyTrace::new().exit_message(&exit_message).run_this(exit_function).on();
+                PrettyTrace::new()
+                    .exit_message(&exit_message)
+                    .run_this(exit_function)
+                    .on();
             }
             let mut nopager = false;
             for i in 1..args_orig.len() {
