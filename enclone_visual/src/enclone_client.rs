@@ -401,11 +401,34 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             if local_version != remote_version {
                 eprintln!("\nremote enclone version = {}", remote_version);
                 eprintln!("local enclone version = {}", local_version);
-                eprintln!(
-                    "\nYour enclone version is not up to date.\nPlease update, following \
-                    the instructions at bit.ly/enclone, then restart.  Thank you!\n"
-                );
-                std::process::exit(1);
+                eprintln!("\nYour enclone version is not up to date.");
+                if config.contains_key("visual_auto_update")
+                    && config["visual_auto_update"] == "true"
+                {
+                    println!(
+                        "Automatically updating enclone, following the instructions at \
+                        bit.ly/enclone.\nPlease restart when the update has completed.\n"
+                    );
+
+                    let o = Command::new("csh")
+                        .arg("-c")
+                        .arg(&"\"curl -sSf -L bit.ly/enclone_install | bash -s small\"")
+                        .output()
+                        .expect("failed to execute curl");
+                    let m = String::from_utf8(o.stdout).unwrap();
+                    println!("{}", m);
+                    println!(
+                        "Now please retype your enclone command, so that you're \
+                        running the latest version.\n"
+                    );
+                    std::process::exit(0);
+                } else {
+                    eprintln!(
+                        "Please update, following \
+                        the instructions at bit.ly/enclone, then restart.  Thank you!\n"
+                    );
+                    std::process::exit(1);
+                }
             }
         }
 
