@@ -436,10 +436,16 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             strme(&o.stderr)
                         );
                     }
-                    println!(
-                        "Done! Now please retype your enclone command, so that you're \
-                        running the latest version.\n"
-                    );
+                    println!("\nDone, restarting!\n");
+                    let args: Vec<String> = env::args().collect();
+                    let mut args1 = Vec::<String>::new();
+                    for i in 1..args.len() {
+                        args1.push(args[i].clone());
+                    }
+                    let _ = Command::new("enclone")
+                        .args(&args1)
+                        .output()
+                        .expect("failed to execute enclone restart");
                     std::process::exit(0);
                 } else {
                     eprintln!(
