@@ -388,6 +388,25 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 eprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
+            let remote_version;
+            if emsg.contains("enclone version = ")
+                && emsg.after("enclone version = ").contains("\n")
+            {
+                remote_version = emsg.between("enclone version = ", "\n").to_string();
+            } else {
+                eprint!("\nUnable to determine remote enclone version.\n");
+                std::process::exit(1);
+            }
+            let local_version = env!("CARGO_PKG_VERSION");
+            if local_version != remote_version {
+                eprintln!("\nremote enclone version = {}", remote_version);
+                eprintln!("local enclone version = {}", local_version);
+                eprintln!(
+                    "\nYour enclone version is not up to date.\nPlease update, following \
+                    the instructions at bit.ly/enclone, then restart.  Thank you!\n"
+                );
+                std::process::exit(1);
+            }
         }
 
         // Form local URL.
