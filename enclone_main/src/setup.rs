@@ -343,9 +343,8 @@ pub fn setup(
                     if !version_string().contains("macos") {
                         let process = Command::new("mail")
                             .arg("-s")
-                            .arg("internal bug report")
-                            .arg("david.jaffe@10xgenomics.com") // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                            // .arg("enclone@10xgenomics.com")
+                            .arg("internal automated bug report")
+                            .arg("enclone@10xgenomics.com")
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();
@@ -359,9 +358,8 @@ pub fn setup(
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
-                            .arg("\"internal bug report\"")
-                            .arg("david.jaffe@10xgenomics.com") // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                            // .arg("enclone@10xgenomics.com")
+                            .arg("\"internal ug report\"")
+                            .arg("enclone@10xgenomics.com")
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();
