@@ -186,6 +186,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     eprintln!("I am process {}.", std::process::id());
+    eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
