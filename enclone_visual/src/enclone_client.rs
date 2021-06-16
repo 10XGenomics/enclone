@@ -138,6 +138,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let mut filehost = String::new();
     let mut filehost_used = false;
+    let mut auto_update = false;
     if config_name.len() > 0 {
         let mut config_file_contents = String::new();
         if config_name.len() > 0 {
@@ -195,6 +196,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if config_name.len() > 0 {
             let prefix = format!("vis.{}.", config_name);
             for line in config_file_contents.lines() {
+                if line == "visual_auto_update=true" {
+                    auto_update = true;
+                }
                 if line.starts_with(&prefix) {
                     let def = line.after(&prefix);
                     if def.contains("=") {
@@ -402,8 +406,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 eprintln!("\nremote enclone version = {}", remote_version);
                 eprintln!("local enclone version = {}", local_version);
                 eprintln!("\nYour enclone version is not up to date.");
-                if config.contains_key("visual_auto_update")
-                    && config["visual_auto_update"] == "true"
+                if auto_update
                 {
                     println!(
                         "Automatically updating enclone, following the instructions at \
