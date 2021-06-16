@@ -407,18 +407,37 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 {
                     println!(
                         "Automatically updating enclone, following the instructions at \
-                        bit.ly/enclone.\nPlease restart when the update has completed.\n"
+                        bit.ly/enclone.\n"
                     );
-
-                    let o = Command::new("csh")
-                        .arg("-c")
-                        .arg(&"\"curl -sSf -L bit.ly/enclone_install | bash -s small\"")
+                    let mut home = String::new();
+                    for (key, value) in env::vars() {
+                        if key == "HOME" {
+                            home = value.clone();
+                        }
+                    }
+                    if home.len() == 0 {
+                        eprintln!("Weird, unable to determine your home directory.\n");
+                        std::process::exit(1);
+                    }
+                    let o = Command::new("curl")
+                        .arg("-s")
+                        .arg("-L")
+                        .arg(
+                            "https://github.com/10XGenomics/enclone\
+                            releases/latest/download/enclone_macos",
+                        )
+                        .arg("--output")
+                        .arg(&format!("{}/bin/enclone", home))
                         .output()
                         .expect("failed to execute curl");
-                    let m = String::from_utf8(o.stdout).unwrap();
-                    println!("{}", m);
+                    if o.status.code() != Some(0) {
+                        eprintln!(
+                            "Update failed with the following error message:\n{}",
+                            strme(&o.stderr)
+                        );
+                    }
                     println!(
-                        "Now please retype your enclone command, so that you're \
+                        "Done! Now please retype your enclone command, so that you're \
                         running the latest version.\n"
                     );
                     std::process::exit(0);
