@@ -4,12 +4,12 @@ MANUAL TESTING
 
 2. Cut and paste should be possible from clonotype tables.  [BROKEN]
 
-3. Test the help button.
+3. Test the Help button and the Copy button.
 
 4. Make sure each of these commands do not return an error
-   - BCR=123085
+   - enclone BCR=123085
    - d
-   - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+   - enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
    - 10
    - q
 
@@ -20,3 +20,13 @@ MANUAL TESTING
 7. check that clonotype number 1 is the right clonotype
 
 8. Repeatedly click on the Submit button and make sure it changes to thinking.
+
+9. Make sure both enclone VIS and enclone VIS=b work.
+
+10. Test NOPRINT.
+
+11. Test a garbage command.
+
+12. Test cookbook commands.
+
+13. Copy button should "light up" momentarily
