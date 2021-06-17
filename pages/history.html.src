@@ -29,7 +29,13 @@ source code that's available).  We apologize for this asynchrony!  Note however 
 command-line help that comes with your copy of #enclone will always match its behavior.</p>
 
 <hr>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
+<b>6/17/21</b>: Add <code>SIM_MAT_PLOT</code>, to display the pairwise cosine similarity between
+a list of variables, see <a href="../../pages/auto/plot.html">enclone plots</a>.
+</p>
 
 <p>
 <b>6/4/21</b>: Tweak the order of default filters so as to increase the likelihood that clonotypes

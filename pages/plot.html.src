@@ -10,7 +10,7 @@
 <h1>plots</h1>
 
 <p>
-#enclone can create two types of plots:
+#enclone can create these types of plots:
 <ul>
 <li>a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell</li>
 <li>a dotplot of one variable versus another variable</li>
