@@ -346,10 +346,9 @@ impl Application for EncloneVisual {
                      • q to quit\n\n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
-                     2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.\n\
-                     4. Long commands are hard to work with in the input box.\n\
-                     5. Very wide clonotype tables wrap, making them unintelligible, and \
+                     2. Cutting and pasting from clonotype tables doesn't work.\n\
+                     3. Long commands are hard to work with in the input box.\n\
+                     4. Very wide clonotype tables wrap, making them unintelligible, and \
                      only solvable by window resizing, and sometimes not that.",
                     version, version_float,
                 ))
