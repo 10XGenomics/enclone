@@ -556,10 +556,13 @@ pub fn check_one_lvar(
         }
     }
 
-    // Check for fb<n> and fb<n>_n.
+    // Check for fb<n> and fb<n>_n, and _cell versions.
 
     if x.starts_with("fb") {
         let mut y = x.after("fb").to_string();
+        if y.ends_with("_cell") {
+            y = y.rev_before("_cell").to_string();
+        }
         if y.ends_with("_n") {
             y = y.rev_before("_n").to_string();
         }
