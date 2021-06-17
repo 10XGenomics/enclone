@@ -257,6 +257,12 @@ impl Application for EncloneVisual {
             .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
+        // Fix the height of the SVG.  This needs to be set so that there is enough room for
+        // the clonotype tables.  We do not set the width because it's the height that we need
+        // to control.
+
+        const SVG_HEIGHT: u16 = 400;
+
         // Display the SVG.
         //
         // WARNING!  When we changed the width and height to 400, the performance of scrolling
@@ -264,15 +270,14 @@ impl Application for EncloneVisual {
         // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .height(Units(SVG_HEIGHT));
         let _svg = &svg; // to temporarily prevent warning
 
         let png = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
-        let svg_as_png =
-            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(450));
+        let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
+            .height(Units(SVG_HEIGHT));
 
         let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
         if self.png_value.len() > 0 {
