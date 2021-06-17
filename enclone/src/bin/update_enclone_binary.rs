@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// Update the internally public enclone binary.  This is also done by start_release, but sometimes 
+// Update the internally public enclone binary.  This is also done by start_release, but sometimes
 // one wants to update the binary without making a release.
 
 use enclone_core::defs::*;
