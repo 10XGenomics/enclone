@@ -233,6 +233,15 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
                 eprintln!("\nThe file {} is empty.\n", f);
                 std::process::exit(1);
             }
+        } else if s.starts_with("<img src=\"../../img/")
+            && s.after("<img src=\"../../img/").contains(".svg\"")
+        {
+            let svg_filename = s.between("<img src=\"../../img/", "\"");
+            let h = open_for_read![&format!("img/{}", svg_filename)];
+            for linex in h.lines() {
+                let t = linex.unwrap();
+                fwriteln!(g, "{}", t);
+            }
         } else {
             s = s.replace("#enclone", ENCLONE_FORMATTED);
             s = s.replace("#required_fps", &format!("{}", required_fps));
