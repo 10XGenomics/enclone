@@ -14,6 +14,7 @@ pub mod testlist;
 pub mod vdj_features;
 
 use std::env;
+use std::time::Duration;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
@@ -55,4 +56,26 @@ pub fn parse_bsv(x: &str) -> Vec<String> {
         i = j + 1;
     }
     args
+}
+
+pub fn fetch_url(url: &str) -> Result<String, String> {
+    const TIMEOUT: u64 = 120; // timeout in seconds
+    let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
+    let response = req.send();
+    if response.is_err() {
+        panic!("Failed to access URL {}.", url);
+    }
+    let response = response.unwrap();
+    if !response.is_success() {
+        let msg = response.text().unwrap();
+        if msg.contains("Not found") {
+            return Err(format!(
+                "\nAttempt to access the URL\n{}\nfailed with \"Not found\".  Could there \
+                be something wrong with the id?\n",
+                url
+            ));
+        }
+        return Err(format!("Failed to access URL {}: {}.", url, msg));
+    }
+    Ok(response.text().unwrap())
 }

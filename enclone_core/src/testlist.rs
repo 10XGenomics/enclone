@@ -729,7 +729,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 31] = [
+pub const EXTENDED_TESTS: [&str; 32] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -808,6 +808,10 @@ pub const EXTENDED_TESTS: [&str; 31] = [
     // 31. previously this yielded a disconnected clonotype
     r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
          NO_PRE NFORCE"###,
+    // 32. test fb variables
+    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
+         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
+         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
@@ -837,7 +841,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 22] = [
+pub const SITE_EXAMPLES: [(&str, &str); 23] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -965,8 +969,17 @@ pub const SITE_EXAMPLES: [(&str, &str); 22] = [
         "BCR=165808 JALIGN1 CDR3=CARAYDILTGYYERGYSYGWGFDYW \
          HTML=\"VDDJ example\"",
     ),
+    // 23.
+    (
+        "img/sim_mat_plot.svg",
+        "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
+         NOPRINT H5",
+    ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
+//
+// Be very careful: there are svg and html examples above.  Mimic one or the other.
+//
 // 1. cargo b
 // 2. merge_html BUILD
 // 3. ./build

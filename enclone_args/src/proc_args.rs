@@ -4,7 +4,6 @@ use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use crate::process_special_arg::*;
 use enclone_core::defs::*;
-use enclone_core::testlist::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
@@ -57,59 +56,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         }
     }
     args = args2;
-
-    // Test for internal run.
-
-    if ctl.evil_eye {
-        println!("testing for internal run");
-    }
-    for (key, value) in env::vars() {
-        if key.contains("USER") && value.ends_with("10xgenomics.com") {
-            if ctl.evil_eye {
-                println!("getting config");
-            }
-            if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
-                ctl.gen_opt.internal_run = true;
-            }
-            if ctl.evil_eye {
-                println!("got config");
-            }
-            break;
-        }
-    }
-    for i in 1..args.len() {
-        if args[i] == "FORCE_EXTERNAL".to_string() {
-            ctl.gen_opt.internal_run = false;
-        }
-    }
-    if ctl.gen_opt.internal_run {
-        if ctl.evil_eye {
-            println!("detected internal run");
-        }
-        let earth_path = format!(
-            "{}/current{}",
-            ctl.gen_opt.config["earth"], TEST_FILES_VERSION
-        );
-        ctl.gen_opt.internal_data_dir = earth_path;
-        let cloud_path = format!(
-            "{}/current{}",
-            ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
-        );
-        if path_exists(&cloud_path) {
-            ctl.gen_opt.internal_data_dir = cloud_path;
-        }
-        ctl.gen_opt.pre = vec![
-            ctl.gen_opt.internal_data_dir.clone(),
-            format!("enclone/test/inputs"),
-            format!("enclone_main"),
-        ];
-    } else if !ctl.gen_opt.cellranger {
-        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
-        ctl.gen_opt.pre = vec![
-            format!("{}/enclone/datasets", home),
-            format!("{}/enclone/datasets2", home),
-        ];
-    }
 
     // Process special option SPLIT_COMMAND.
 
@@ -613,14 +559,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         "SVG",
     ];
 
-    // Define arguments that set something to a string that is an input CSV file name.
-
-    let set_string_readable_csv = [("INFO", &mut ctl.gen_opt.info)];
-
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "PRE"];
+    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "NO_BUG_REPORTS", "PRE"];
+
+    // Define arguments that set something to a string that is an input CSV file name.
+
+    let set_string_readable_csv = [("INFO", &mut ctl.gen_opt.info)];
 
     // Traverse arguments.
 

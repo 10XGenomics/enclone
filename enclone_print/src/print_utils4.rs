@@ -480,6 +480,7 @@ pub fn compute_bu(
     d_all: &Vec<Vec<u32>>,
     ind_all: &Vec<Vec<u32>>,
     mat: &Vec<Vec<Option<usize>>>,
+    these_stats: &Vec<(String, Vec<String>)>,
 ) {
     // Very bad computation because of embedded binary search.
 
@@ -494,10 +495,12 @@ pub fn compute_bu(
             row.push(format!("$  {}", bc.clone()));
             let ex = &exact_clonotypes[exacts[u]];
             for k in 0..lvars.len() {
+                let var = lvars[k].clone();
+                let p = bin_position1_2(&these_stats, &var);
                 let nr = row.len();
                 let mut filled = false;
                 for l in 0..ctl.origin_info.n() {
-                    if lvars[k] == format!("n_{}", ctl.origin_info.dataset_id[l]) {
+                    if var == format!("n_{}", ctl.origin_info.dataset_id[l]) {
                         let mut n = 0;
                         if di == l {
                             n = 1;
@@ -507,7 +510,19 @@ pub fn compute_bu(
                     }
                 }
                 if filled {
-                } else if lvars[k] == "n_b".to_string() {
+
+                    // Many of the variables (presumably a lot) should be computed by just
+                    // looking up their values in these_stats.  This should allow elimination of a
+                    // lot of the code below.  We give one example here.
+                } else if p >= 0
+                    && var.starts_with("fb")
+                    && var.after("fb").ends_with("_n")
+                    && var.after("fb").rev_before("_n").parse::<usize>().is_ok()
+                    && var.after("fb").rev_before("_n").force_usize() >= 1
+                {
+                    let stats_me = &these_stats[p as usize].1;
+                    row.push(stats_me[bcl.2].clone());
+                } else if var == "n_b".to_string() {
                     let mut n = 0;
                     let li = ex.clones[bcl.2][0].dataset_index;
                     if gex_info.cell_type[li].contains_key(&bc.clone()) {
@@ -516,14 +531,14 @@ pub fn compute_bu(
                         }
                     }
                     row.push(format!("{}", n));
-                } else if lvars[k] == "filter".to_string() {
+                } else if var == "filter".to_string() {
                     let mut f = String::new();
                     if fate[li].contains_key(&bc.clone()) {
                         f = fate[li][&bc.clone()].clone();
                         f = f.between(" ", " ").to_string();
                     }
                     row.push(f);
-                } else if lvars[k] == "n_other".to_string() {
+                } else if var == "n_other".to_string() {
                     let mut n = 0;
                     let di = ex.clones[bcl.2][0].dataset_index;
                     let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
@@ -537,19 +552,19 @@ pub fn compute_bu(
                         n = 1;
                     }
                     row.push(format!("{}", n));
-                } else if lvars[k] == "sec".to_string() {
+                } else if var == "sec".to_string() {
                     let mut n = 0;
                     if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
                         n = ctl.origin_info.secmem[li][&bc.clone()].0;
                     }
                     row.push(format!("{}", n));
-                } else if lvars[k] == "mem".to_string() {
+                } else if var == "mem".to_string() {
                     let mut n = 0;
                     if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
                         n = ctl.origin_info.secmem[li][&bc.clone()].1;
                     }
                     row.push(format!("{}", n));
-                } else if bin_member(&alt_bcs, &lvars[k]) {
+                } else if bin_member(&alt_bcs, &var) {
                     let mut val = String::new();
                     let alt = &ctl.origin_info.alt_bc_fields[li];
                     for j in 0..alt.len() {
@@ -560,45 +575,45 @@ pub fn compute_bu(
                         }
                     }
                     row.push(val);
-                } else if lvars[k] == "datasets".to_string() {
+                } else if var == "datasets".to_string() {
                     row.push(format!("{}", ctl.origin_info.dataset_id[li].clone()));
-                } else if lvars[k] == "origins".to_string() {
+                } else if var == "origins".to_string() {
                     row.push(format!("{}", ctl.origin_info.origin_id[li].clone()));
-                } else if lvars[k] == "donors".to_string() {
+                } else if var == "donors".to_string() {
                     row.push(format!("{}", ctl.origin_info.donor_id[li].clone()));
-                } else if lvars[k] == "clust".to_string() && have_gex {
+                } else if var == "clust".to_string() && have_gex {
                     let mut cid = 0;
                     if gex_info.cluster[li].contains_key(&bc.clone()) {
                         cid = gex_info.cluster[li][&bc.clone()];
                     }
                     row.push(format!("{}", cid));
-                } else if lvars[k].starts_with("pe") && have_gex {
+                } else if var.starts_with("pe") && have_gex {
                     row.push(format!("{}", pe[k][cell_count + bcl.2]));
-                } else if lvars[k].starts_with("npe") && have_gex {
+                } else if var.starts_with("npe") && have_gex {
                     row.push(format!("{}", npe[k][cell_count + bcl.2]));
-                } else if lvars[k].starts_with("ppe") && have_gex {
+                } else if var.starts_with("ppe") && have_gex {
                     row.push(format!("{}", ppe[k][cell_count + bcl.2]));
-                } else if lvars[k] == "cred".to_string() && have_gex {
+                } else if var == "cred".to_string() && have_gex {
                     row.push(format!("{}", cred[k][cell_count + bcl.2]));
-                } else if lvars[k] == "type".to_string() && have_gex {
+                } else if var == "type".to_string() && have_gex {
                     let mut cell_type = "".to_string();
                     if gex_info.cell_type[li].contains_key(&bc.clone()) {
                         cell_type = gex_info.cell_type[li][&bc.clone()].clone();
                     }
                     row.push(cell_type);
-                } else if lvars[k] == "n_gex".to_string() && have_gex {
+                } else if var == "n_gex".to_string() && have_gex {
                     let mut n_gex = 0;
                     if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
                         n_gex = 1;
                     }
                     row.push(format!("{}", n_gex));
-                } else if lvars[k] == "mark".to_string() {
+                } else if var == "mark".to_string() {
                     let mut mark = String::new();
                     if ex.clones[bcl.2][0].marked {
                         mark = "x".to_string();
                     }
                     row.push(mark);
-                } else if lvars[k] == "entropy".to_string() && have_gex {
+                } else if var == "entropy".to_string() && have_gex {
                     // NOTE DUPLICATION WITH CODE BELOW.
                     let mut gex_count = 0;
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
@@ -677,10 +692,10 @@ pub fn compute_bu(
                             gex_count = raw_count;
                         }
                     }
-                    if lvars[k] == "gex".to_string() {
+                    if var == "gex".to_string() {
                         row.push(format!("{}", gex_count.round()));
                     } else {
-                        let mut y = lvars[k].clone();
+                        let mut y = var.clone();
                         if y.contains(':') {
                             y = y.after(":").to_string();
                         }

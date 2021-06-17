@@ -265,6 +265,8 @@ pub struct PlotOpt {
     pub plot_quad: bool,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
+    pub sim_mat_plot_file: String,
+    pub sim_mat_plot_vars: Vec<String>,
 }
 
 // Allele-finding algorithmic options.
@@ -720,6 +722,8 @@ pub struct GexInfo {
     pub gex_features: Vec<Vec<String>>,
     pub gex_barcodes: Vec<Vec<String>>,
     pub gex_matrices: Vec<MirrorSparseMatrix>,
+    pub fb_top_matrices: Vec<MirrorSparseMatrix>,
+    pub fb_top_barcodes: Vec<Vec<String>>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
@@ -795,6 +799,7 @@ pub fn justification(x: &str) -> u8 {
         || (x.starts_with("fwr") && !x.ends_with("len"))
         || x.starts_with("d1_name")
         || x.starts_with("d2_name")
+        || x.starts_with("fb") && !x.ends_with("_n")
     {
         return b'l';
     } else {

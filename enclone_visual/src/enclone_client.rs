@@ -72,7 +72,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.0000000000000000000000000000001";
+    let version = "0.000000000000000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -138,6 +138,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let mut filehost = String::new();
     let mut filehost_used = false;
+    let mut auto_update = false;
     if config_name.len() > 0 {
         let mut config_file_contents = String::new();
         if config_name.len() > 0 {
@@ -195,6 +196,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if config_name.len() > 0 {
             let prefix = format!("vis.{}.", config_name);
             for line in config_file_contents.lines() {
+                if line == "visual_auto_update=true" {
+                    auto_update = true;
+                }
                 if line.starts_with(&prefix) {
                     let def = line.after(&prefix);
                     if def.contains("=") {
@@ -387,6 +391,77 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 eprintln!("\nUnable to determine remote process id.\n");
                 eprintln!("message = {}", emsg);
                 std::process::exit(1);
+            }
+            let remote_version;
+            if emsg.contains("enclone version = ")
+                && emsg.after("enclone version = ").contains("\n")
+            {
+                remote_version = emsg.between("enclone version = ", "\n").to_string();
+            } else {
+                eprint!("\nUnable to determine remote enclone version.\n");
+                std::process::exit(1);
+            }
+            let local_version = env!("CARGO_PKG_VERSION");
+            if local_version != remote_version {
+                eprintln!("\nremote enclone version = {}", remote_version);
+                eprintln!("local enclone version = {}", local_version);
+                eprintln!("\nYour enclone version is not up to date.");
+                if auto_update {
+                    println!(
+                        "Automatically updating enclone, following the instructions at \
+                        bit.ly/enclone.\n"
+                    );
+                    let mut home = String::new();
+                    for (key, value) in env::vars() {
+                        if key == "HOME" {
+                            home = value.clone();
+                        }
+                    }
+                    if home.len() == 0 {
+                        eprintln!("Weird, unable to determine your home directory.\n");
+                        std::process::exit(1);
+                    }
+                    let o = Command::new("curl")
+                        .arg("-s")
+                        .arg("-L")
+                        .arg(
+                            "https://github.com/10XGenomics/enclone/\
+                            releases/latest/download/enclone_macos",
+                        )
+                        .arg("--output")
+                        .arg(&format!("{}/bin/enclone", home))
+                        .output()
+                        .expect("failed to execute curl");
+                    if o.status.code() != Some(0) {
+                        eprintln!(
+                            "Update failed with the following error message:\n{}",
+                            strme(&o.stderr)
+                        );
+                        std::process::exit(1);
+                    }
+                    println!("Done, restarting!\n");
+                    let args: Vec<String> = env::args().collect();
+                    let mut args1 = Vec::<String>::new();
+                    for i in 1..args.len() {
+                        args1.push(args[i].clone());
+                    }
+                    let o = Command::new("enclone")
+                        .args(&args1)
+                        .output()
+                        .expect("failed to execute enclone restart");
+                    if o.status.code() != Some(0) {
+                        eprintln!("\nSomething went wrong restarting enclone.");
+                        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+                        std::process::exit(1);
+                    }
+                    std::process::exit(0);
+                } else {
+                    eprintln!(
+                        "Please update, following \
+                        the instructions at bit.ly/enclone, then restart.  Thank you!\n"
+                    );
+                    std::process::exit(1);
+                }
             }
         }
 

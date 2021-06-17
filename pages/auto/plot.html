@@ -44,10 +44,11 @@ gtag('config', 'UA-58278925-3');
 <h1>plots</h1>
 
 <p>
-<span style="color:rgb(120,123,175);font-weight:900">enclone</span> can create two types of plots:
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> can create these types of plots:
 <ul>
 <li>a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell</li>
 <li>a dotplot of one variable versus another variable</li>
+<li>a matrix plot showing the cosine similarity across cells between variables in a list</li>
 </ul>
 </p>
 
@@ -192,8 +193,13 @@ to the command line.
 
 <h2>plots of one variable versus another</h2>
 
-<p>If <code>xvar</code> and <code>yvar</code> are the names of parseable variables
-(see <a href="../../pages/auto/help.parseable.html">enclone help parseable</a>), then
+<p>If <code>xvar</code> and <code>yvar</code> are the names of variables
+(see
+<a href="../../pages/auto/variables.html">enclone variable inventory</a>,
+<a href="../../pages/auto/help.lvars.html">enclone help lvars</a>,
+<a href="../../pages/auto/help.cvars.html">enclone help cvars</a> and
+<a href="../../pages/auto/help.parseable.html">enclone help parseable</a>), and those variables
+have numeric values, then
 <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can produce a plot of <code>xvar</code> versus <code>yvar</code>, showing a point
 for each exact subclonotype (after all filtering) for which both variables are defined and are 
 numbers.  The syntax is <code>PLOTXY_EXACT="xvar,yvar,filename"</code>.  The file is an 
@@ -205,6 +211,99 @@ have "funny" characters in them.
 <p><b>Example.</b></p>
 <code>enclone BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,plot.svg</code>
 <img src="../../img/two_genes.svg" alt="sample xy plot" title="sample xy plot">
+</p>
+
+<hr>
+
+<h2>plots of cosine similarity between multiple variables</h2>
+
+<p>Given a list of numeric variables, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can display their pairwise correlation, where
+the correlation of two variables is the cosine similarity of their vectors (ranging across cells).
+</p>
+
+<p><b>Example.</b></p>
+<code>enclone BCR=123085 GEX=123217 SIM_MAT_PLOT=plot.svg,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g</code>
+
+<br><br>
+
+<svg version="1.1"
+baseProfile="full"
+width="835.76" height="556"
+xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style type="text/css">
+@font-face {
+font-family: "DejaVu LGC Sans Mono";
+src: url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+format('woff2'),
+url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+format('truetype');
+}
+</style>
+</defs>
+<text x="10" y="26" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">variable    mean  #</text>
+<text x="10" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">CDKN1A_g     3.0  1</text>
+<text x="10" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">CDKN1B_g     0.5  2</text>
+<text x="10" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">RBX1_g       1.0  3</text>
+<text x="10" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">IGLC1_g     19.1  4</text>
+<text x="10" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="left" fill="black">IGLV3-21_g  16.7  5</text>
+<text x="375.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">1</text>
+<text x="475.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">2</text>
+<text x="575.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">3</text>
+<text x="675.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">4</text>
+<text x="775.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">5</text>
+<rect x="325.76" y="10" width="100" height="100" style="fill:#000000;stroke:black;stroke-width:1" />
+<text x="375.76" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">1.00</text>
+<rect x="325.76" y="110" width="100" height="100" style="fill:#848484;stroke:black;stroke-width:1" />
+<text x="375.76" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.48</text>
+<rect x="325.76" y="210" width="100" height="100" style="fill:#747474;stroke:black;stroke-width:1" />
+<text x="375.76" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.55</text>
+<rect x="325.76" y="310" width="100" height="100" style="fill:#EEEEEE;stroke:black;stroke-width:1" />
+<text x="375.76" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.07</text>
+<rect x="325.76" y="410" width="100" height="100" style="fill:#F7F7F7;stroke:black;stroke-width:1" />
+<text x="375.76" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.03</text>
+<rect x="425.76" y="10" width="100" height="100" style="fill:#848484;stroke:black;stroke-width:1" />
+<text x="475.76" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.48</text>
+<rect x="425.76" y="110" width="100" height="100" style="fill:#000000;stroke:black;stroke-width:1" />
+<text x="475.76" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">1.00</text>
+<rect x="425.76" y="210" width="100" height="100" style="fill:#969696;stroke:black;stroke-width:1" />
+<text x="475.76" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.41</text>
+<rect x="425.76" y="310" width="100" height="100" style="fill:#F8F8F8;stroke:black;stroke-width:1" />
+<text x="475.76" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.03</text>
+<rect x="425.76" y="410" width="100" height="100" style="fill:#FEFEFE;stroke:black;stroke-width:1" />
+<text x="475.76" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.00</text>
+<rect x="525.76" y="10" width="100" height="100" style="fill:#747474;stroke:black;stroke-width:1" />
+<text x="575.76" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.55</text>
+<rect x="525.76" y="110" width="100" height="100" style="fill:#969696;stroke:black;stroke-width:1" />
+<text x="575.76" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.41</text>
+<rect x="525.76" y="210" width="100" height="100" style="fill:#000000;stroke:black;stroke-width:1" />
+<text x="575.76" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">1.00</text>
+<rect x="525.76" y="310" width="100" height="100" style="fill:#F3F3F3;stroke:black;stroke-width:1" />
+<text x="575.76" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.05</text>
+<rect x="525.76" y="410" width="100" height="100" style="fill:#E5E5E5;stroke:black;stroke-width:1" />
+<text x="575.76" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.10</text>
+<rect x="625.76" y="10" width="100" height="100" style="fill:#EEEEEE;stroke:black;stroke-width:1" />
+<text x="675.76" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.07</text>
+<rect x="625.76" y="110" width="100" height="100" style="fill:#F8F8F8;stroke:black;stroke-width:1" />
+<text x="675.76" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.03</text>
+<rect x="625.76" y="210" width="100" height="100" style="fill:#F3F3F3;stroke:black;stroke-width:1" />
+<text x="675.76" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.05</text>
+<rect x="625.76" y="310" width="100" height="100" style="fill:#000000;stroke:black;stroke-width:1" />
+<text x="675.76" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">1.00</text>
+<rect x="625.76" y="410" width="100" height="100" style="fill:#A3A3A3;stroke:black;stroke-width:1" />
+<text x="675.76" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.36</text>
+<rect x="725.76" y="10" width="100" height="100" style="fill:#F7F7F7;stroke:black;stroke-width:1" />
+<text x="775.76" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.03</text>
+<rect x="725.76" y="110" width="100" height="100" style="fill:#FEFEFE;stroke:black;stroke-width:1" />
+<text x="775.76" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.00</text>
+<rect x="725.76" y="210" width="100" height="100" style="fill:#E5E5E5;stroke:black;stroke-width:1" />
+<text x="775.76" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.10</text>
+<rect x="725.76" y="310" width="100" height="100" style="fill:#A3A3A3;stroke:black;stroke-width:1" />
+<text x="775.76" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">0.36</text>
+<rect x="725.76" y="410" width="100" height="100" style="fill:#000000;stroke:black;stroke-width:1" />
+<text x="775.76" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="red">1.00</text>
+</svg>
+
 </p>
 
 </body>

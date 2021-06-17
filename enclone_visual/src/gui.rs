@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::convert_svg_to_png::*;
 use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
@@ -16,10 +17,46 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use cocoa::{
+    appkit::{NSImage, NSPasteboard},
+    base::nil,
+    foundation::{NSArray, NSAutoreleasePool, NSData},
+};
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use libc::c_void;
+
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
+    if bytes.len() > 0 {
+        unsafe {
+            let pool = NSAutoreleasePool::new(nil);
+            let data = NSData::dataWithBytes_length_(
+                pool,
+                bytes.as_ptr() as *const c_void,
+                bytes.len() as u64,
+            );
+            let object = NSImage::initWithData_(NSImage::alloc(pool), data);
+            if object != nil {
+                let pasteboard = NSPasteboard::generalPasteboard(pool);
+                pasteboard.clearContents();
+                pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
+            } else {
+                eprintln!("\ncopy to pasteboard failed\n");
+                std::process::exit(1);
+            }
+        }
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -53,12 +90,15 @@ struct EncloneVisual {
     input_value: String,
     output_value: String,
     svg_value: String,
+    png_value: Vec<u8>,
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
     modal_state: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
+    copy_button: button::State,
+    copy_button_color: Color,
 }
 
 #[derive(Debug, Clone)]
@@ -70,6 +110,9 @@ enum Message {
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
+    CopyButtonPressed,
+    CopyButtonFlashed(Result<(), String>),
+    // CopyButtonFlashed,
 }
 
 #[derive(Default)]
@@ -86,6 +129,7 @@ impl Application for EncloneVisual {
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
+        x.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         (x, Command::none())
     }
 
@@ -136,6 +180,9 @@ impl Application for EncloneVisual {
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
+                if self.svg_value.len() > 0 {
+                    self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
+                }
                 self.compute_state = WaitingForRequest;
                 Command::none()
             }
@@ -149,6 +196,17 @@ impl Application for EncloneVisual {
                     thread::sleep(Duration::from_millis(50));
                     self.should_exit = true;
                 }
+                Command::none()
+            }
+
+            Message::CopyButtonPressed => {
+                self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_png_bytes_to_mac_clipboard(&self.png_value);
+                Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
+            }
+
+            Message::CopyButtonFlashed(_) => {
+                self.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
         }
@@ -170,7 +228,8 @@ impl Application for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .size(14);
+        .font(DEJAVU)
+        .size(16);
 
         let button = Button::new(
             &mut self.button,
@@ -183,6 +242,13 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
+        let copy_button = Button::new(
+            &mut self.copy_button,
+            Text::new("Copy").color(self.copy_button_color),
+        )
+        .padding(10)
+        .on_press(Message::CopyButtonPressed);
+
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
@@ -193,16 +259,25 @@ impl Application for EncloneVisual {
 
         // Display the SVG.
         //
-        // WARNING!  When we changed the width and height to 400, the performance of scolling
+        // WARNING!  When we changed the width and height to 400, the performance of scrolling
         // in the clonotype table window gradually degraded, becoming less and less responsive.
         // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
             .width(Units(300))
             .height(Units(300));
+        let _svg = &svg; // to temporarily prevent warning
 
         let png = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
+
+        let svg_as_png =
+            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(450));
+
+        let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
+        if self.png_value.len() > 0 {
+            svg_as_png_row = svg_as_png_row.push(copy_button);
+        }
 
         let content = Column::new()
             .spacing(20)
@@ -219,7 +294,9 @@ impl Application for EncloneVisual {
                     .push(banner),
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
-            .push(Row::new().spacing(10).push(svg))
+            // .push(Row::new().spacing(10).push(svg))
+            // .push(Row::new().spacing(10).push(svg_as_png))
+            .push(svg_as_png_row)
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()
@@ -286,7 +363,6 @@ impl Application for EncloneVisual {
                         &mut state.cancel_state,
                         Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
                     )
-                    // .width(Length::Fill)
                     .on_press(Message::CancelButtonPressed),
                 ),
             )
@@ -310,6 +386,11 @@ async fn compute() -> Result<(), String> {
         "time used processing command = {:.1} seconds\n",
         elapsed(&t)
     );
+    Ok(())
+}
+
+async fn flash_copy_button() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
     Ok(())
 }
 

@@ -25,6 +25,8 @@ pub fn load_gex(
     gex_features: &mut Vec<Vec<String>>,
     gex_barcodes: &mut Vec<Vec<String>>,
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
+    fb_top_barcodes: &mut Vec<Vec<String>>,
+    fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
     cell_type_specified: &mut Vec<bool>,
@@ -51,6 +53,8 @@ pub fn load_gex(
         bool,
         String,
         String,
+        MirrorSparseMatrix,
+        Vec<String>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -67,6 +71,8 @@ pub fn load_gex(
             false,
             String::new(),
             String::new(),
+            MirrorSparseMatrix::new(),
+            Vec::<String>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -520,6 +526,17 @@ pub fn load_gex(
             r.4 = gene_mult;
             r.5 = fb_mult;
 
+            // Read the top feature barcode matrix.
+
+            let top_file = format!("{}/feature_barcode_matrix_top.bin", outs);
+            if path_exists(&top_file) {
+                read_from_file(&mut r.13, &top_file);
+                let nrows = r.13.nrows();
+                for i in 0..nrows {
+                    r.14.push(r.13.row_label(i));
+                }
+            }
+
             // Read the binary matrix file if appropriate.
 
             if bin_file_state == 2 {
@@ -587,12 +604,14 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
         gex_barcodes.push(x2);
         gex_matrices.push(x3);
+        fb_top_matrices.push(x13);
+        fb_top_barcodes.push(x14);
         let mut gex_mult = 1.0;
         if x4.is_some() {
             gex_mult = x4.unwrap();
@@ -621,6 +640,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_features = Vec::<Vec<String>>::new();
     let mut gex_barcodes = Vec::<Vec<String>>::new();
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
+    let mut fb_top_barcodes = Vec::<Vec<String>>::new();
+    let mut fb_top_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
     let mut cell_type_specified = Vec::<bool>::new();
@@ -636,6 +657,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_features,
         &mut gex_barcodes,
         &mut gex_matrices,
+        &mut fb_top_barcodes,
+        &mut fb_top_matrices,
         &mut cluster,
         &mut cell_type,
         &mut cell_type_specified,
@@ -736,6 +759,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         gex_features: gex_features,
         gex_barcodes: gex_barcodes,
         gex_matrices: gex_matrices,
+        fb_top_barcodes: fb_top_barcodes,
+        fb_top_matrices: fb_top_matrices,
         cluster: cluster,
         cell_type: cell_type,
         cell_type_specified: cell_type_specified,

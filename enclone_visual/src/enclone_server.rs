@@ -40,10 +40,13 @@ impl Analyzer for EncloneAnalyzer {
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
+        let mut noprint = false;
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
                 if fields[j] == "SERVER_DEBUG" {
                     server_debug = true;
+                } else if fields[j] == "NOPRINT" {
+                    noprint = true;
                 } else {
                     args.push(fields[j].to_string());
                 }
@@ -84,6 +87,9 @@ impl Analyzer for EncloneAnalyzer {
             *enclone_output = output;
             let mut table = enclone_output.pics.clone();
             table.truncate(100);
+            if noprint {
+                table.truncate(0);
+            }
             let mut plot = String::new();
             if enclone_output.svgs.len() > 0 {
                 plot = enclone_output.svgs[0].clone();
@@ -180,6 +186,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     eprintln!("I am process {}.", std::process::id());
+    eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

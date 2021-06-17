@@ -608,6 +608,7 @@ pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
         extra_args.append(&mut ctl.gen_opt.gene_scan_test.as_ref().unwrap().var.clone());
         extra_args.append(&mut ctl.gen_opt.gene_scan_control.as_ref().unwrap().var.clone());
     }
+    extra_args.append(&mut ctl.plot_opt.sim_mat_plot_vars.clone());
     unique_sort(&mut extra_args);
     extra_args
 }

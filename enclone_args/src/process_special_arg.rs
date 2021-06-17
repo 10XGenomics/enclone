@@ -65,6 +65,41 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
+    } else if arg.starts_with("SIM_MAT_PLOT=") {
+        let fields = arg.after("SIM_MAT_PLOT=").split(',').collect::<Vec<&str>>();
+        if fields.len() < 2 {
+            return Err(format!(
+                "\nSIM_MAT_PLOT requires at least two comma-separated arguments.\n"
+            ));
+        }
+        let mut val = fields[0].to_string();
+        val = stringme(&tilde_expand(&val.as_bytes()));
+        ctl.plot_opt.sim_mat_plot_file = val.clone();
+        if val != "stdout" && val != "gui" {
+            let f = File::create(&val);
+            if f.is_err() {
+                let mut emsg = format!(
+                    "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+                    val
+                );
+                if val.contains("/") {
+                    let dir = val.rev_before("/");
+                    let msg;
+                    if path_exists(&dir) {
+                        msg = "exists";
+                    } else {
+                        msg = "does not exist";
+                    }
+                    emsg += &mut format!("Note that the path {} {}.\n", dir, msg);
+                }
+                return Err(emsg);
+            }
+            remove_file(&val).expect(&format!("could not remove file {}", val));
+        }
+        ctl.plot_opt.sim_mat_plot_vars.clear();
+        for j in 1..fields.len() {
+            ctl.plot_opt.sim_mat_plot_vars.push(fields[j].to_string());
+        }
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
@@ -90,7 +125,7 @@ pub fn process_special_arg(
         let mut val = fields[2].to_string();
         val = stringme(&tilde_expand(&val.as_bytes()));
         ctl.plot_opt.plot_xy_filename = val.clone();
-        if val != "stdout" {
+        if val != "stdout" && val != "gui" {
             let f = File::create(&val);
             if f.is_err() {
                 let mut emsg = format!(

@@ -556,6 +556,33 @@ pub fn check_one_lvar(
         }
     }
 
+    // Check for fb<n> and fb<n>_n, and _cell versions.
+
+    if x.starts_with("fb") {
+        let mut y = x.after("fb").to_string();
+        if y.ends_with("_cell") {
+            y = y.rev_before("_cell").to_string();
+        }
+        if y.ends_with("_n") {
+            y = y.rev_before("_n").to_string();
+        }
+        if y.parse::<usize>().is_ok() && y.force_usize() >= 1 {
+            if ctl.origin_info.n() != 1 {
+                return Err(format!(
+                    "\nThe variables fb<n> and fb<n>_n can only be used if there is just one \
+                        dataset.\n"
+                ));
+            }
+            if !gex_info.fb_top_matrices[0].initialized() {
+                return Err(format!(
+                    "\nThe variables fb<n> and fb<n>_n can only be used if the file \
+                        feature_barcode_matrix_top.bin was generated.\n"
+                ));
+            }
+            return Ok(true);
+        }
+    }
+
     // Check for nd<k>.
 
     if x.starts_with("nd")

@@ -284,3 +284,13 @@ junction region alignment penalties accessible from the command line:
 - JSCORE_GAP_EXTEND
 - JSCORE_GAP_OPEN
 - JSCORE_BITS_MULT
+
+lvars fb<n> and fb<n>_n: for example, fb1 is the 15-base sequence of the most frequent feature
+barcode, and fb1_n is the number of UMIs for that feature barcode
+- only usable if there is just one dataset
+- the file feature_barcode_matrix_top.bin must have been generated
+
+SIM_MAT_PLOT=filename,v1,...,vn
+generate a plot of the all-vs-all per cell cosine similarity for the variables vi
+
+NO_BUG_REPORTS: don't automatically report bugs

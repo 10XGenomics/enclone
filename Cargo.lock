@@ -1347,6 +1347,7 @@ version = "0.5.66"
 dependencies = [
  "amino",
  "ansi_escape",
+ "attohttpc",
  "bio",
  "bio_edit",
  "bytes",
@@ -1419,6 +1420,7 @@ dependencies = [
  "bytes",
  "chrono",
  "debruijn",
+ "dirs 3.0.2",
  "enclone",
  "enclone_args",
  "enclone_com",
@@ -1557,12 +1559,14 @@ dependencies = [
  "enclone",
  "enclone_core",
  "evalexpr",
+ "flate2",
  "fs_extra",
  "hdf5",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
  "pager",
+ "perf_stats",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1579,6 +1583,7 @@ name = "enclone_visual"
 version = "0.5.66"
 dependencies = [
  "chrono",
+ "cocoa",
  "enclone_core",
  "enclone_main",
  "failure",
@@ -1597,11 +1602,15 @@ dependencies = [
  "pretty_trace",
  "procfs",
  "prost",
+ "resvg 0.14.1",
  "string_utils",
+ "tables",
+ "tiny-skia 0.5.1",
  "tokio",
  "tokio-stream",
  "tonic",
  "tonic-build",
+ "usvg 0.14.1",
 ]
 
 [[package]]
@@ -1853,9 +1862,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccfec742e7db963305c1d8fde9edef949b47b01e1664dae127489928633fbea8"
 dependencies = [
  "log",
- "memmap2",
+ "memmap2 0.1.0",
  "ttf-parser 0.9.0",
  "uuid",
+]
+
+[[package]]
+name = "fontdb"
+version = "0.5.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e58903f4f8d5b58c7d300908e4ebe5289c1bfdf5587964330f12023b8ff17fd1"
+dependencies = [
+ "log",
+ "memmap2 0.2.3",
+ "ttf-parser 0.12.1",
 ]
 
 [[package]]
@@ -2751,8 +2771,8 @@ dependencies = [
  "image",
  "log",
  "raw-window-handle",
- "resvg",
- "usvg",
+ "resvg 0.12.0",
+ "usvg 0.12.0",
  "wgpu",
  "wgpu_glyph",
 ]
@@ -2948,6 +2968,15 @@ name = "kurbo"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16cb54cd28cb3d2e964d9444ca185676a94fd9b7cce5f02b22c717947ed8e9a2"
+dependencies = [
+ "arrayvec",
+]
+
+[[package]]
+name = "kurbo"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb348d766edbac91ba1eb83020d96f4f8867924d194393083c15a51f185e6a82"
 dependencies = [
  "arrayvec",
 ]
@@ -3216,6 +3245,15 @@ name = "memmap2"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9b70ca2a6103ac8b665dc150b142ef0e4e89df640c9e6cf295d189c3caebe5a"
+dependencies = [
+ "libc",
+]
+
+[[package]]
+name = "memmap2"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "723e3ebdcdc5c023db1df315364573789f8857c11b631a2fdfad7c00f5c046b4"
 dependencies = [
  "libc",
 ]
@@ -3920,6 +3958,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28b9b4df73455c861d7cbf8be42f01d3b373ed7f02e378d55fa84eafc6f638b1"
 
 [[package]]
+name = "pico-args"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db8bcd96cb740d03149cbad5518db9fd87126a10ab519c011893b1754134c468"
+
+[[package]]
 name = "pin-project"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4064,9 +4108,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.12"
+version = "0.5.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bcd1a3617898c5d6b161645d6faaf1503f471939023df90134c6bb527a0f680"
+checksum = "b318327ecdea61fdf474ed8d05e41826ebcdcdcb092b944b2377be877db55090"
 dependencies = [
  "backtrace",
  "failure",
@@ -4421,12 +4465,27 @@ checksum = "6989baba2fe2d85b0daaea5e897ba842c42bd7bff59cb0c5fb099bdcead70421"
 dependencies = [
  "jpeg-decoder",
  "log",
- "pico-args",
+ "pico-args 0.3.4",
  "png",
  "rgb",
- "svgfilters",
- "tiny-skia",
- "usvg",
+ "svgfilters 0.2.0",
+ "tiny-skia 0.2.0",
+ "usvg 0.12.0",
+]
+
+[[package]]
+name = "resvg"
+version = "0.14.1"
+source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+dependencies = [
+ "jpeg-decoder",
+ "log",
+ "pico-args 0.4.2",
+ "png",
+ "rgb",
+ "svgfilters 0.3.0",
+ "tiny-skia 0.5.1",
+ "usvg 0.14.1",
 ]
 
 [[package]]
@@ -4458,6 +4517,15 @@ name = "roxmltree"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbf7d7b1ea646d380d0e8153158063a6da7efe30ddbf3184042848e3f8a6f671"
+dependencies = [
+ "xmlparser",
+]
+
+[[package]]
+name = "roxmltree"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "921904a62e410e37e215c40381b7117f830d9d89ba60ab5236170541dd25646b"
 dependencies = [
  "xmlparser",
 ]
@@ -4796,7 +4864,7 @@ dependencies = [
  "dlib 0.4.2",
  "lazy_static",
  "log",
- "memmap2",
+ "memmap2 0.1.0",
  "nix 0.18.0",
  "wayland-client",
  "wayland-cursor",
@@ -4979,6 +5047,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "svgfilters"
+version = "0.3.0"
+source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+dependencies = [
+ "float-cmp",
+ "rgb",
+]
+
+[[package]]
 name = "svgtypes"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5137,6 +5214,20 @@ dependencies = [
  "bytemuck",
  "png",
  "wide",
+]
+
+[[package]]
+name = "tiny-skia"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1bf81f2900d2e235220e6f31ec9f63ade6a7f59090c556d74fe949bb3b15e9fe"
+dependencies = [
+ "arrayref",
+ "arrayvec",
+ "bytemuck",
+ "cfg-if 1.0.0",
+ "png",
+ "safe_arch",
 ]
 
 [[package]]
@@ -5495,18 +5586,44 @@ dependencies = [
  "base64 0.13.0",
  "data-url",
  "flate2",
- "fontdb",
- "kurbo",
+ "fontdb 0.3.0",
+ "kurbo 0.7.1",
  "log",
- "memmap2",
- "pico-args",
+ "memmap2 0.1.0",
+ "pico-args 0.3.4",
  "rctree",
- "roxmltree",
+ "roxmltree 0.13.1",
  "rustybuzz",
  "simplecss",
  "siphasher 0.2.3",
  "svgtypes",
  "ttf-parser 0.9.0",
+ "unicode-bidi",
+ "unicode-script",
+ "unicode-vo",
+ "xmlwriter",
+]
+
+[[package]]
+name = "usvg"
+version = "0.14.1"
+source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+dependencies = [
+ "base64 0.13.0",
+ "data-url",
+ "flate2",
+ "fontdb 0.5.4",
+ "kurbo 0.8.0",
+ "log",
+ "memmap2 0.2.3",
+ "pico-args 0.4.2",
+ "rctree",
+ "roxmltree 0.14.1",
+ "rustybuzz",
+ "simplecss",
+ "siphasher 0.2.3",
+ "svgtypes",
+ "ttf-parser 0.12.1",
  "unicode-bidi",
  "unicode-script",
  "unicode-vo",

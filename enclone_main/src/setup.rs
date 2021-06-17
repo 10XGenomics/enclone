@@ -8,6 +8,7 @@ use enclone::misc1::*;
 use enclone_args::proc_args::*;
 use enclone_args::proc_args2::*;
 use enclone_core::defs::*;
+use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_core::*;
 use enclone_help::help1::*;
 use enclone_help::help2::*;
@@ -17,11 +18,14 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use io_utils::*;
 use itertools::Itertools;
+use lazy_static::lazy_static;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read, Write};
+use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::Mutex;
 use std::time::Instant;
 use string_utils::*;
 use tilde_expand::tilde_expand;
@@ -61,6 +65,10 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+lazy_static! {
+    pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
 pub fn setup(
     mut ctl: &mut EncloneControl,
     args: &Vec<String>,
@@ -71,6 +79,7 @@ pub fn setup(
     let mut using_pager = false;
     // Provide help if requested.
 
+    let mut no_bug_reports = false;
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -94,6 +103,8 @@ pub fn setup(
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
+            } else if args[i] == "EVIL_EYE" {
+                ctl.evil_eye = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 ctl.gen_opt.html_title = "enclone output".to_string();
@@ -129,6 +140,8 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
+            } else if args[i] == "NO_BUG_REPORTS" {
+                no_bug_reports = true;
             } else if args[i].starts_with("CONFIG=") {
                 ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             } else if args[i] == "NO_KILL" {
@@ -139,7 +152,70 @@ pub fn setup(
             if key == "ENCLONE_CONFIG" {
                 ctl.gen_opt.config_file = value.to_string();
             }
+            if key == "ENCLONE_NO_BUG_REPORTS" {
+                no_bug_reports = true;
+            }
         }
+
+        // Test for internal run.
+
+        if ctl.evil_eye {
+            println!("testing for internal run");
+        }
+        for (key, value) in env::vars() {
+            if key.contains("USER") && value.ends_with("10xgenomics.com") {
+                if ctl.evil_eye {
+                    println!("getting config");
+                }
+                if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
+                    ctl.gen_opt.internal_run = true;
+                }
+                if ctl.evil_eye {
+                    println!("got config");
+                }
+                break;
+            }
+        }
+        for i in 1..args.len() {
+            if args[i] == "FORCE_EXTERNAL".to_string() {
+                ctl.gen_opt.internal_run = false;
+            }
+        }
+        if ctl.gen_opt.internal_run {
+            if ctl.evil_eye {
+                println!("detected internal run");
+            }
+            let earth_path = format!(
+                "{}/current{}",
+                ctl.gen_opt.config["earth"], TEST_FILES_VERSION
+            );
+            ctl.gen_opt.internal_data_dir = earth_path;
+            let cloud_path = format!(
+                "{}/current{}",
+                ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
+            );
+            if path_exists(&cloud_path) {
+                ctl.gen_opt.internal_data_dir = cloud_path;
+            }
+            ctl.gen_opt.pre = vec![
+                ctl.gen_opt.internal_data_dir.clone(),
+                format!("enclone/test/inputs"),
+                format!("enclone_exec"),
+            ];
+        } else if !ctl.gen_opt.cellranger {
+            let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+            ctl.gen_opt.pre = vec![
+                format!("{}/enclone/datasets", home),
+                format!("{}/enclone/datasets2", home),
+            ];
+        }
+        if ctl.gen_opt.config_file.contains(":") {
+            let remote_host = ctl.gen_opt.config_file.before(":").to_string();
+            REMOTE_HOST.lock().unwrap().push(remote_host);
+        }
+
+        // Proceed.
+
         if ctl.gen_opt.html && ctl.gen_opt.svg {
             return Err(format!(
                 "\nBoth HTML and SVG cannot be used at the same time.\n"
@@ -232,21 +308,80 @@ pub fn setup(
                     days_since_build
                 );
             }
-            let exit_message = format!(
-                "Something has gone badly wrong.  You have probably encountered an internal \
-                error in enclone.\n\n\
-                Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-                above and also the following version information:\n\
-                {} : {}.\n\n\
-                Your command was:\n\n{}\n\n\
-                {}\
-                🌸 Thank you and have a nice day! 🌸",
-                env!("CARGO_PKG_VERSION"),
-                version_string(),
-                args_orig.iter().format(" "),
-                elapsed_message,
-            );
-            PrettyTrace::new().exit_message(&exit_message).on();
+
+            if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0)
+                || no_bug_reports
+            {
+                let exit_message = format!(
+                    "Something has gone badly wrong.  You have probably encountered an internal \
+                    error in enclone.\n\n\
+                    Please email us at enclone@10xgenomics.com, including the traceback shown\n\
+                    above and also the following version information:\n\
+                    {} : {}.\n\n\
+                    Your command was:\n\n{}\n\n\
+                    {}\
+                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+                    env!("CARGO_PKG_VERSION"),
+                    version_string(),
+                    args_orig.iter().format(" "),
+                    elapsed_message,
+                );
+                PrettyTrace::new().exit_message(&exit_message).on();
+            } else {
+                // Set up to email bug report on panic.  This is only for internal users!
+
+                let exit_message = format!(
+                    "Something has gone badly wrong.  You have probably encountered an internal \
+                    error in enclone.\n\n\
+                    Here is the version information:\n\
+                    {} : {}.\n\n\
+                    Your command was:\n\n{}\n\n\
+                    {}\
+                    Thank you for being a happy internal enclone user.  All of this information \
+                    is being\nemailed to enclone@10xgenomics.com, for the developers to \
+                    contemplate.\n\n\
+                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+                    env!("CARGO_PKG_VERSION"),
+                    version_string(),
+                    args_orig.iter().format(" "),
+                    elapsed_message,
+                );
+                fn exit_function(msg: &str) {
+                    let msg = format!("{}\n.\n", msg);
+                    if !version_string().contains("macos") {
+                        let process = Command::new("mail")
+                            .arg("-s")
+                            .arg("internal automated bug report")
+                            .arg("enclone@10xgenomics.com")
+                            .stdin(Stdio::piped())
+                            .stdout(Stdio::piped())
+                            .spawn();
+                        let process = process.unwrap();
+                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                        let mut _s = String::new();
+                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+                    } else if REMOTE_HOST.lock().unwrap().len() > 0 {
+                        let remote_host = &REMOTE_HOST.lock().unwrap()[0];
+                        let process = Command::new("ssh")
+                            .arg(&remote_host)
+                            .arg("mail")
+                            .arg("-s")
+                            .arg("\"internal ug report\"")
+                            .arg("enclone@10xgenomics.com")
+                            .stdin(Stdio::piped())
+                            .stdout(Stdio::piped())
+                            .spawn();
+                        let process = process.unwrap();
+                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                        let mut _s = String::new();
+                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+                    }
+                }
+                PrettyTrace::new()
+                    .exit_message(&exit_message)
+                    .run_this(exit_function)
+                    .on();
+            }
             let mut nopager = false;
             for i in 1..args_orig.len() {
                 if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {

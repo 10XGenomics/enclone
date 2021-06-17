@@ -41,15 +41,22 @@ palaver = "0.2.8"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
+# resvg = "0.15.0"
+resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
 string_utils = "0.1"
+tables = "0.1"
+tiny-skia = "0.5.0"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.4"
+# usvg = { version = "0.14.1", default-features = false }
+usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 procfs = "0.9"
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+cocoa = "0.24"
 mach = "0.3"
 
 [build-dependencies]

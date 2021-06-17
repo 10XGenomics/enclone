@@ -649,6 +649,7 @@ pub fn print_clonotypes(
                     let ex = &exact_clonotypes[clonotype_id];
                     let mut d_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     let mut ind_all = vec![Vec::<u32>::new(); ex.clones.len()];
+                    let mut these_stats = Vec::<(String, Vec<String>)>::new();
                     let resx = row_fill(
                         pass,
                         u,
@@ -676,7 +677,7 @@ pub fn print_clonotypes(
                         &d_readers,
                         &ind_readers,
                         &h5_data,
-                        &mut stats,
+                        &mut these_stats,
                         &vdj_cells,
                         &n_vdj_gex,
                         &lvars,
@@ -686,6 +687,8 @@ pub fn print_clonotypes(
                         &all_vars,
                         &fate,
                     );
+                    stats.append(&mut these_stats.clone());
+                    these_stats.sort_by(|a, b| a.0.cmp(&b.0));
                     if resx.is_err() {
                         res.13 = resx.unwrap_err();
                         return;
@@ -741,6 +744,7 @@ pub fn print_clonotypes(
                         &d_all,
                         &ind_all,
                         &mat,
+                        &these_stats,
                     );
                     cell_count += ex.clones.len();
                 }

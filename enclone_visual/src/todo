@@ -20,7 +20,7 @@ TO DO
 
 9.  Make sure that client and server are the same version.
 
-10. Handle the case where button is pushed twice, etc.
+10. Refactor to keep tokio etc. out of cellranger.
 
 11. Have text-only mode for testing and development.
 
@@ -31,7 +31,7 @@ TO DO
 
 14. Improve data shown for tooltip.
 
-15. Refactor to keep tokio etc. out of cellranger.
+---------------------------------------------------------------------------------------------------
 
 WAITING ON ICED
 
@@ -42,7 +42,8 @@ WAITING ON ICED
     Enabling e.g. multicolor text is on the iced roadmap.
 
 3.  Text in SVG objects does not show up.
-    Known regression = https:github.com/hecrj/iced/issues/870.
+    Known regression = https:github.com/hecrj/iced/issues/870.  Worked around by displaying PNG
+    instead.
 
 4.  Place the scrollbar on the left side of the scrollable window.
     Asked on zulip chat if this is possible, but did not get a response.  This is far enough
@@ -58,8 +59,11 @@ WAITING ON ICED
     Asked on zulip chat and have not yet gotten a meaningful answer.  However this problem is
     related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
 
-8.  Button text does not change from "Submit" to "thinking".
-    Asked on zulip chat and waiting.
+8.  Button text does not change from "Submit" to "thinking" (but worked around).
+    Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
+    on the issue so the ball is in their court.
+
+---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
 

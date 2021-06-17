@@ -7,6 +7,7 @@ MANUAL TESTING
 3. Test the help button.
 
 4. Make sure each of these commands do not return an error
+   - BCR=123085
    - d
    - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
    - 10
@@ -17,3 +18,5 @@ MANUAL TESTING
 6. check that clonotype number 0 and too large give errors
 
 7. check that clonotype number 1 is the right clonotype
+
+8. Repeatedly click on the Submit button and make sure it changes to thinking.

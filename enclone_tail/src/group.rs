@@ -13,6 +13,7 @@ use crate::plot::*;
 use crate::plot_points::*;
 use crate::print_stats::*;
 use crate::requirements::*;
+use crate::sim_mat_plot::*;
 use crate::tree::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
@@ -774,6 +775,10 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
+
+    // Execute SIM_MAT_PLOT.
+
+    sim_mat_plot(&ctl, &groups, &out_datas, svgs);
 
     // Execute PLOT_XY.
 

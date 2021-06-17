@@ -15,3 +15,5 @@ is MIT/Apache-2.0.
 
 The directory bio_edit is a copy of rust-bio, with one modified function, and many other parts
 deleted.
+
+The file convert_svg_to_png.rs is largely copied from the resvg crate.

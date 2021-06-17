@@ -500,6 +500,70 @@ pub fn proc_lvar2(
             n += reg.find_iter(&strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
+    } else if x.starts_with("fb")
+        && ((x.after("fb").parse::<usize>().is_ok() && x.after("fb").force_usize() >= 1)
+            || (x.after("fb").ends_with("_n")
+                && x.after("fb").rev_before("_n").parse::<usize>().is_ok()
+                && x.after("fb").rev_before("_n").force_usize() >= 1))
+    {
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        if !x.ends_with("_n") {
+            let n = x.after("fb").force_usize() - 1;
+            let mut fb = String::new();
+            if n < ncols {
+                fb = gex_info.fb_top_matrices[0].col_label(n).clone();
+            }
+            lvar![i, x, fb.clone()];
+        } else {
+            let n = x.after("fb").rev_before("_n").force_usize() - 1;
+            if n >= ncols {
+                lvar_stats1![i, x, "0".to_string()];
+            } else {
+                let mut counts = Vec::<String>::new();
+                let mut counts_sorted = Vec::<usize>::new();
+                for l in 0..ex.clones.len() {
+                    let bc = ex.clones[l][0].barcode.clone();
+                    let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                    if p < 0 {
+                        counts.push("0".to_string());
+                        counts_sorted.push(0);
+                    } else {
+                        let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                        counts.push(format!("{}", x));
+                        counts_sorted.push(x);
+                    }
+                }
+                counts_sorted.sort();
+                let median = rounded_median(&counts_sorted);
+                lvar_stats![i, x, format!("{}", median), counts];
+            }
+        }
+    } else if pass == 2
+        && x.starts_with("fb")
+        && x.ends_with("_n_cell")
+        && x.after("fb").rev_before("_n").parse::<usize>().is_ok()
+        && x.after("fb").rev_before("_n").force_usize() >= 1
+    {
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = x.after("fb").rev_before("_n").force_usize() - 1;
+        let mut counts = Vec::<String>::new();
+        if n >= ncols {
+            for _ in 0..ex.clones.len() {
+                counts.push("0".to_string());
+            }
+        } else {
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                }
+            }
+        }
+        speak!(u, x, format!("{}", counts.iter().format(POUT_SEP)));
     } else if x == "gex" {
         let mut f = Vec::<String>::new();
         for x in fcounts.iter() {
