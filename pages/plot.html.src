@@ -188,7 +188,7 @@ the correlation of two variables is the cosine similarity of their vectors (rang
 </p>
 
 <p><b>Example.</b></p>
-<code>enclone BCR=123085 GEX=123217 SIM_MAT_PLOT=gui,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g</code>
+<code>enclone BCR=123085 GEX=123217 SIM_MAT_PLOT=plot.svg,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g</code>
 <img src="../../img/sim_mat_plot.svg" alt="example of SIM_MAT_PLOT" title="example of SIM_MAT_PLOT">
 </p>
 

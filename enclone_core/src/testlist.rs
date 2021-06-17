@@ -876,7 +876,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 23] = [
     // 6.
     (
         "pages/auto/illusory5.html",
-        "BCR=128040 GEX=127801 BC=testx/inputs/128024_cells.csv \
+        "BCR=128040 GEX=127801 BC=enclone_exec/testx/inputs/128024_cells.csv \
          CDR3=CARGGTTTYFISW PER_CELL NUMI NUMI_RATIO \
          LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP HTML=\"illusory clonotype expansion 5\"",
     ),
@@ -971,12 +971,15 @@ pub const SITE_EXAMPLES: [(&str, &str); 23] = [
     ),
     // 23.
     (
-        "pages/auto/sim_mat_plot.svg",
-        "BCR=123085 GEX=123217 SIM_MAT_PLOT=gui,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
-         NOPRINT H5 HTML=\"example of SIM_MAT_PLOT\"",
+        "img/sim_mat_plot.svg",
+        "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
+         NOPRINT H5",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
+//
+// Be very careful: there are svg and html examples above.  Mimic one or the other.
+//
 // 1. cargo b
 // 2. merge_html BUILD
 // 3. ./build
