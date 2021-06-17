@@ -200,7 +200,7 @@ pub fn setup(
             ctl.gen_opt.pre = vec![
                 ctl.gen_opt.internal_data_dir.clone(),
                 format!("enclone/test/inputs"),
-                format!("enclone_main"),
+                format!("enclone_exec"),
             ];
         } else if !ctl.gen_opt.cellranger {
             let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
