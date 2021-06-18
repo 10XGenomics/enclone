@@ -18,18 +18,12 @@ TO DO
 
 8.  Make code work for 2 or more SVG files.
 
-9.  Make sure that client and server are the same version.
+9.  Refactor to keep tokio etc. out of cellranger.
 
-10. Refactor to keep tokio etc. out of cellranger.
-
-11. Have text-only mode for testing and development.
-
-12. Need auto-update for binary (at least for Mac).
-
-13. Clonotype printouts need to show not just the pictures, but also the group info
+10. Clonotype printouts need to show not just the pictures, but also the group info
     and any additional stuff like trees.
 
-14. Improve data shown for tooltip.
+11. Improve data shown for tooltip.
 
 ---------------------------------------------------------------------------------------------------
 
