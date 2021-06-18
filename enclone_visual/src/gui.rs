@@ -159,7 +159,7 @@ impl Application for EncloneVisual {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(10));
+                    thread::sleep(Duration::from_millis(20));
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
