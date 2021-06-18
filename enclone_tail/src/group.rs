@@ -322,6 +322,7 @@ pub fn group_and_print_clonotypes(
                 group_ncells += exact_clonotypes[exacts[oo][l]].ncells();
             }
         }
+        let mut glog = Vec::<u8>::new();
         for j in 0..o.len() {
             let oo = o[j] as usize;
 
@@ -372,7 +373,7 @@ pub fn group_and_print_clonotypes(
 
             if !ctl.gen_opt.noprint {
                 if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.clono_group_opt.ngroup) {
-                    fwrite!(logx, "\n"); // NEWLINE 6
+                    fwrite!(glog, "\n"); // NEWLINE 6
                 }
                 let mut s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);
                 if groups[i][j].1.len() > 0 {
@@ -389,12 +390,12 @@ pub fn group_and_print_clonotypes(
                     // The other thing is that the aspect ratio is just a little bit off.
 
                     fwrite!(
-                        logx,
+                        glog,
                         "{}",
                         convert_text_with_ansi_escapes_to_svg(&s, "Menlo", FONT_SIZE)
                     );
                 } else {
-                    fwrite!(logx, "{}", s);
+                    fwrite!(glog, "{}", s);
                 }
             }
             let x = &pics[oo];
@@ -420,14 +421,14 @@ pub fn group_and_print_clonotypes(
             }
             unique_sort(&mut ji);
             for i in 0..ji.len() {
-                fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
+                fwriteln!(glog, "{}", strme(&join_info[ji[i]].3));
             }
 
             // Implement ALIGN<n> and JALIGN<n>.
 
             if !ctl.gen_opt.noprint {
-                logx.append(&mut align_out[&(i, j)].clone());
-                logx.append(&mut jun_align_out[&(i, j)].clone());
+                glog.append(&mut align_out[&(i, j)].clone());
+                glog.append(&mut jun_align_out[&(i, j)].clone());
             }
             if ctl.gen_opt.align_jun_align_consistency {
                 let x = stringme(&align_out_test[&(i, j)]);
@@ -448,14 +449,14 @@ pub fn group_and_print_clonotypes(
                             xlines[xlines.len() - n],
                             ylines[ylines.len() - n],
                         );
-                        logx.append(&mut err.as_bytes().to_vec());
+                        glog.append(&mut err.as_bytes().to_vec());
                         ok = false;
                         break;
                     }
                 }
                 if !ok {
-                    logx.append(&mut b"consistency test failed\n".to_vec());
-                    return Err(format!("{}", strme(&logx)));
+                    glog.append(&mut b"consistency test failed\n".to_vec());
+                    return Err(format!("{}", strme(&glog)));
                 }
             }
 
@@ -469,7 +470,7 @@ pub fn group_and_print_clonotypes(
                 &rsi,
                 &exact_clonotypes,
                 &ctl,
-                &mut logx,
+                &mut glog,
                 &mut clustal_aa,
                 &mut clustal_dna,
             );
@@ -481,7 +482,7 @@ pub fn group_and_print_clonotypes(
                 &rsi,
                 &exact_clonotypes,
                 &ctl,
-                &mut logx,
+                &mut glog,
                 &mut phylip_aa,
                 &mut phylip_dna,
             );
@@ -497,7 +498,7 @@ pub fn group_and_print_clonotypes(
                 &refdata,
                 &dref,
                 &out_datas,
-                &mut logx,
+                &mut glog,
             );
 
             // Generate peer group output.
@@ -506,11 +507,11 @@ pub fn group_and_print_clonotypes(
                 let pg = mammalian_fixed_len_peer_groups(&refdata);
                 if !ctl.gen_opt.peer_group_readable {
                     if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
-                        fwriteln!(logx, "group,clonotype,chain,pos,amino_acid,count");
+                        fwriteln!(glog, "group,clonotype,chain,pos,amino_acid,count");
                     }
                 } else {
                     if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
-                        fwriteln!(logx, "group,clonotype,chain,pos,distribution");
+                        fwriteln!(glog, "group,clonotype,chain,pos,distribution");
                     }
                 }
                 let chain_types = ["IGH", "IGK", "IGL", "TRA", "TRB"];
@@ -556,7 +557,7 @@ pub fn group_and_print_clonotypes(
                         if !ctl.gen_opt.peer_group_readable {
                             for y in pg[id].iter() {
                                 fwriteln!(
-                                    logx,
+                                    glog,
                                     "{},{},{},{},{},{},{}",
                                     i + 1,
                                     j + 1,
@@ -576,7 +577,7 @@ pub fn group_and_print_clonotypes(
                                     s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
                                 }
                                 fwriteln!(
-                                    logx,
+                                    glog,
                                     "{},{},{},{},{},{}",
                                     i + 1,
                                     j + 1,
@@ -603,7 +604,7 @@ pub fn group_and_print_clonotypes(
                 &exact_clonotypes,
                 &ctl,
                 &refdata,
-                &mut logx,
+                &mut glog,
                 &mut fout,
                 &mut faaout,
             );
@@ -620,7 +621,7 @@ pub fn group_and_print_clonotypes(
                 }
                 if ctl.parseable_opt.pout == "stdout".to_string() {
                     if !ctl.gen_opt.noprint || (i == 0 && j == 0) {
-                        fwriteln!(logx, "{}", pcols.iter().format(","));
+                        fwriteln!(glog, "{}", pcols.iter().format(","));
                     }
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
@@ -635,7 +636,7 @@ pub fn group_and_print_clonotypes(
                                     if ctl.parseable_opt.pout != "stdout".to_string() {
                                         fwrite!(pout, ",");
                                     } else {
-                                        fwrite!(logx, ",");
+                                        fwrite!(glog, ",");
                                     }
                                 }
                                 if y.contains_key(c) {
@@ -645,27 +646,27 @@ pub fn group_and_print_clonotypes(
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
                                             fwrite!(pout, "{}", val);
                                         } else {
-                                            fwrite!(logx, "{}", val);
+                                            fwrite!(glog, "{}", val);
                                         }
                                     } else {
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
                                             fwrite!(pout, "\"{}\"", val);
                                         } else {
-                                            fwrite!(logx, "\"{}\"", val);
+                                            fwrite!(glog, "\"{}\"", val);
                                         }
                                     }
                                 } else {
                                     if ctl.parseable_opt.pout != "stdout".to_string() {
                                         fwrite!(pout, "");
                                     } else {
-                                        fwrite!(logx, "");
+                                        fwrite!(glog, "");
                                     }
                                 }
                             }
                             if ctl.parseable_opt.pout != "stdout".to_string() {
                                 fwriteln!(pout, "");
                             } else {
-                                fwriteln!(logx, "");
+                                fwriteln!(glog, "");
                             }
                         } else {
                             let mut row = Vec::<String>::new();
@@ -691,7 +692,7 @@ pub fn group_and_print_clonotypes(
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
                                             fwrite!(pout, ",");
                                         } else {
-                                            fwrite!(logx, ",");
+                                            fwrite!(glog, ",");
                                         }
                                     }
                                     // Test for whether the out_data contain the field.
@@ -719,27 +720,27 @@ pub fn group_and_print_clonotypes(
                                             if ctl.parseable_opt.pout != "stdout".to_string() {
                                                 fwrite!(pout, "{}", val);
                                             } else {
-                                                fwrite!(logx, "{}", val);
+                                                fwrite!(glog, "{}", val);
                                             }
                                         } else {
                                             if ctl.parseable_opt.pout != "stdout".to_string() {
                                                 fwrite!(pout, "\"{}\"", val);
                                             } else {
-                                                fwrite!(logx, "\"{}\"", val);
+                                                fwrite!(glog, "\"{}\"", val);
                                             }
                                         }
                                     } else {
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
                                             fwrite!(pout, "");
                                         } else {
-                                            fwrite!(logx, "");
+                                            fwrite!(glog, "");
                                         }
                                     }
                                 }
                                 if ctl.parseable_opt.pout != "stdout".to_string() {
                                     fwriteln!(pout, "");
                                 } else {
-                                    fwriteln!(logx, "");
+                                    fwriteln!(glog, "");
                                 }
                             }
                         } else {
@@ -770,10 +771,11 @@ pub fn group_and_print_clonotypes(
                         justify.push(justification(&x));
                     }
                     print_tabular(&mut log, &rows, 2, Some(justify));
-                    fwrite!(logx, "{}", strme(&log));
+                    fwrite!(glog, "{}", strme(&log));
                 }
             }
         }
+        logx.append(&mut glog);
     }
 
     // Execute SIM_MAT_PLOT.
