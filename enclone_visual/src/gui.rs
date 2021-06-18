@@ -345,7 +345,7 @@ impl Application for EncloneVisual {
                      (see below)\nand then push the Submit button.  Here are the things \
                      that you can type:\n\n\
                      • an enclone command\n\
-                     • an clonotype id (number)\n\
+                     • an group id (number)\n\
                      • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
                      • q to quit\n\n\
                      Major limitations of this version:\n\
