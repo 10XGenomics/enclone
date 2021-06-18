@@ -22,6 +22,11 @@
 // that look like
 // vis.x.variable=value
 // and in such cases, we use variable=value is the source of variable definitions.
+//
+// enclone VIS -- run the serve locally
+//
+// The special argument SERVER_DEBUG causes the server to print debuggin information.  However
+// you will only see this if you run the server locally using enclone VIS.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
