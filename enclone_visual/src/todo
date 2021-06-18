@@ -50,8 +50,9 @@ WAITING ON ICED
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
 7.  the wraparound problem
-    Asked on zulip chat and have not yet gotten a meaningful answer.  However this problem is
-    related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
+    Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
+    vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
+    issue 307 (scrolling programmatically).
 
 8.  Button text does not change from "Submit" to "thinking" (but worked around).
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
