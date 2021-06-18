@@ -57,6 +57,10 @@ WAITING ON ICED
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
     on the issue so the ball is in their court.
 
+9.  Update to the latest versions of iced and iced_aw.
+    This yielded a compilation error.  Asked on zulip chat if this is possible, could redirect
+    to iced_aw maintainers if no response.
+
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
