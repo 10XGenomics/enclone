@@ -20,10 +20,7 @@ TO DO
 
 9.  Refactor to keep tokio etc. out of cellranger.
 
-10. Clonotype printouts need to show not just the pictures, but also the group info
-    and any additional stuff like trees.
-
-11. Improve data shown for tooltip.
+10. Improve data shown for tooltip.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -86,5 +83,7 @@ NICE TO HAVE
 
 8.  Make "enclone help ..." work.
 
-9.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
+9.  Make summaries viewable.
+
+10. Can a row have one item left aligned and the second center aligned?  Apply to banner.
 
