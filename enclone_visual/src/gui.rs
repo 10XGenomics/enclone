@@ -300,7 +300,6 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
-            // .push(Row::new().spacing(10).push(svg_as_png))
             .push(svg_as_png_row)
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
