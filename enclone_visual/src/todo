@@ -61,6 +61,9 @@ WAITING ON ICED
     This yielded a compilation error.  Asked on zulip chat if this is possible, could redirect
     to iced_aw maintainers if no response.
 
+10. Canvas in scrollable crashes.  Reported on zulip chat, and if there is no response, file 
+    an issue.
+
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
