@@ -173,7 +173,7 @@ impl Application for EncloneVisual {
                 if reply_text.contains("enclone failed") {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
-                reply_text += "\n \n"; // papering over truncation bug
+                reply_text += "\n \n \n"; // papering over truncation bug
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
