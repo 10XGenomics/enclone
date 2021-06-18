@@ -91,7 +91,7 @@ impl Analyzer for EncloneAnalyzer {
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
-                table: table.join("\n"),
+                table: table.join(""),
             };
             if server_debug {
                 println!("sending response as follows:");
