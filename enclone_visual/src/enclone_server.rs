@@ -40,19 +40,16 @@ impl Analyzer for EncloneAnalyzer {
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
-        let mut noprint = false;
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
                 if fields[j] == "SERVER_DEBUG" {
                     server_debug = true;
-                } else if fields[j] == "NOPRINT" {
-                    noprint = true;
                 } else {
                     args.push(fields[j].to_string());
                 }
             }
         }
-        args.push("NOPRINT".to_string());
+        args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         eprintln!("Running enclone:\n  {}", args.join(" "));
@@ -87,9 +84,6 @@ impl Analyzer for EncloneAnalyzer {
             *enclone_output = output;
             let mut table = enclone_output.pics.clone();
             table.truncate(100);
-            if noprint {
-                table.truncate(0);
-            }
             let mut plot = String::new();
             if enclone_output.svgs.len() > 0 {
                 plot = enclone_output.svgs[0].clone();
@@ -120,7 +114,7 @@ impl Analyzer for EncloneAnalyzer {
         let id = req.clonotype_number as usize;
         let enclone_output = self.enclone_output.lock().unwrap();
         if id >= enclone_output.pics.len() {
-            return Err(Status::new(Code::Internal, "clonotype id too large"));
+            return Err(Status::new(Code::Internal, "group id too large"));
         }
 
         // Send back the clonotype picture.

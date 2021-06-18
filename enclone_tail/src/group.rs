@@ -41,6 +41,7 @@ pub fn group_and_print_clonotypes(
     tall: &Instant,
     refdata: &RefData,
     pics: &Vec<String>,
+    group_pics: &mut Vec<String>,
     exacts: &Vec<Vec<usize>>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -263,31 +264,32 @@ pub fn group_and_print_clonotypes(
         // Generate human readable output.  Getting the newlines right is tricky, so
         // they're marked.
 
+        let mut glog = Vec::<u8>::new();
         if !ctl.gen_opt.noprint {
             if !ctl.gen_opt.html && !ctl.clono_group_opt.ngroup {
-                fwriteln!(logx, ""); // NEWLINE 1
+                fwriteln!(glog, ""); // NEWLINE 1
             }
 
             // If we just printed a clonotype box, output a bar.
 
             if last_width > 0 {
                 if ctl.clono_group_opt.ngroup || ctl.gen_opt.html {
-                    fwriteln!(logx, ""); // NEWLINE 2
+                    fwriteln!(glog, ""); // NEWLINE 2
                 }
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_eight_bit_color_escape(&mut log, 44);
-                    fwrite!(logx, "{}", strme(&log));
+                    fwrite!(glog, "{}", strme(&log));
                 }
-                fwrite!(logx, "╺{}╸", "━".repeat(last_width - 2));
+                fwrite!(glog, "╺{}╸", "━".repeat(last_width - 2));
                 if !ctl.clono_group_opt.ngroup {
-                    fwriteln!(logx, ""); // NEWLINE 3
+                    fwriteln!(glog, ""); // NEWLINE 3
                 }
-                fwriteln!(logx, ""); // NEWLINE 4
+                fwriteln!(glog, ""); // NEWLINE 4
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_end_escape(&mut log);
-                    fwrite!(logx, "{}", strme(&log));
+                    fwrite!(glog, "{}", strme(&log));
                 }
             }
 
@@ -298,10 +300,10 @@ pub fn group_and_print_clonotypes(
                     let mut log = Vec::<u8>::new();
                     emit_bold_escape(&mut log);
                     emit_eight_bit_color_escape(&mut log, 27);
-                    fwrite!(logx, "{}", strme(&log));
+                    fwrite!(glog, "{}", strme(&log));
                 }
                 fwrite!(
-                    logx,
+                    glog,
                     "[{}] GROUP = {} CLONOTYPES = {} CELLS",
                     i + 1,
                     o.len(),
@@ -310,9 +312,9 @@ pub fn group_and_print_clonotypes(
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_end_escape(&mut log);
-                    fwrite!(logx, "{}", strme(&log));
+                    fwrite!(glog, "{}", strme(&log));
                 }
-                fwriteln!(logx, ""); // NEWLINE 5
+                fwriteln!(glog, ""); // NEWLINE 5
             }
         }
         let mut group_ncells = 0;
@@ -322,7 +324,6 @@ pub fn group_and_print_clonotypes(
                 group_ncells += exact_clonotypes[exacts[oo][l]].ncells();
             }
         }
-        let mut glog = Vec::<u8>::new();
         for j in 0..o.len() {
             let oo = o[j] as usize;
 
@@ -775,7 +776,10 @@ pub fn group_and_print_clonotypes(
                 }
             }
         }
-        logx.append(&mut glog);
+        group_pics.push(stringme(&glog));
+        if !ctl.gen_opt.noprintx {
+            logx.append(&mut glog);
+        }
     }
 
     // Execute SIM_MAT_PLOT.

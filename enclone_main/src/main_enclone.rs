@@ -851,11 +851,14 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
 
     // Tail code.
+
     let mut svgs = Vec::<String>::new();
+    let mut group_pics = Vec::<String>::new();
     tail_code(
         &tall,
         &refdata,
         &pics,
+        &mut group_pics,
         &exacts,
         &rsi,
         &exact_clonotypes,
@@ -941,7 +944,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         println!("");
     }
     Ok(MainEncloneOutput {
-        pics: pics,
+        pics: group_pics,
         svgs: svgs,
     })
 }
