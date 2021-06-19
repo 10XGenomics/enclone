@@ -5,6 +5,7 @@ use crate::proto::{
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use enclone_core::combine_group_pics::*;
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use itertools::Itertools;
 use log::{error, warn};
@@ -83,7 +84,20 @@ impl Analyzer for EncloneAnalyzer {
             let mut enclone_output = self.enclone_output.lock().unwrap();
             *enclone_output = output;
             let mut table = enclone_output.pics.clone();
-            table.truncate(100);
+            let mut widths = enclone_output.last_widths.clone();
+            if table.len() > 100 {
+                table.truncate(100);
+                widths.truncate(100);
+            }
+            let table_string = combine_group_pics(
+                &table,
+                &widths,
+                enclone_output.noprint,
+                enclone_output.noprintx,
+                enclone_output.html,
+                enclone_output.ngroup,
+                enclone_output.pretty,
+            );
             let mut plot = String::new();
             if enclone_output.svgs.len() > 0 {
                 plot = enclone_output.svgs[0].clone();
@@ -91,7 +105,7 @@ impl Analyzer for EncloneAnalyzer {
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
-                table: table.join(""),
+                table: table_string,
             };
             if server_debug {
                 println!("sending response as follows:");

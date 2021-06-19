@@ -755,9 +755,17 @@ pub fn group_and_print_clonotypes(
     }
     if !ctl.gen_opt.noprintx {
         logx.append(
-            &mut combine_group_pics(&group_pics, &last_widths, &ctl)
-                .as_bytes()
-                .to_vec(),
+            &mut combine_group_pics(
+                &group_pics,
+                &last_widths,
+                ctl.gen_opt.noprint,
+                ctl.gen_opt.noprintx,
+                ctl.gen_opt.html,
+                ctl.clono_group_opt.ngroup,
+                ctl.pretty,
+            )
+            .as_bytes()
+            .to_vec(),
         );
     }
 

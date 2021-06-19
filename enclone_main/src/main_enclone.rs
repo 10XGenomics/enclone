@@ -65,6 +65,11 @@ pub struct MainEncloneOutput {
     pub pics: Vec<String>, // clonotype tables
     pub last_widths: Vec<usize>,
     pub svgs: Vec<String>, // SVG objects
+    pub noprint: bool,
+    pub noprintx: bool,
+    pub html: bool,
+    pub ngroup: bool,
+    pub pretty: bool,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -950,5 +955,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         pics: group_pics,
         last_widths: last_widths,
         svgs: svgs,
+        noprint: ctl.gen_opt.noprint,
+        noprintx: ctl.gen_opt.noprintx,
+        html: ctl.gen_opt.html,
+        ngroup: ctl.clono_group_opt.ngroup,
+        pretty: ctl.pretty,
     })
 }
