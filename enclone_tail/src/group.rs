@@ -37,6 +37,48 @@ use tar::Builder;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+pub fn combine_group_pics(
+    group_pics: &Vec<String>,
+    last_widths: &Vec<usize>,
+    ctl: &EncloneControl,
+) -> String {
+    // Get the newlines right is tricky, so they're marked.
+
+    let mut glog = Vec::<u8>::new();
+    for i in 0..group_pics.len() {
+        if !ctl.gen_opt.noprint {
+            if !ctl.gen_opt.html && !ctl.clono_group_opt.ngroup && !ctl.gen_opt.noprintx {
+                fwriteln!(glog, ""); // NEWLINE 1
+            }
+
+            // If we just printed a clonotype box, output a bar.
+
+            if i > 0 && last_widths[i - 1] > 0 {
+                if ctl.clono_group_opt.ngroup || ctl.gen_opt.html {
+                    fwriteln!(glog, ""); // NEWLINE 2
+                }
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_eight_bit_color_escape(&mut log, 44);
+                    fwrite!(glog, "{}", strme(&log));
+                }
+                fwrite!(glog, "╺{}╸", "━".repeat(last_widths[i - 1] - 2));
+                if !ctl.clono_group_opt.ngroup {
+                    fwriteln!(glog, ""); // NEWLINE 3
+                }
+                fwriteln!(glog, ""); // NEWLINE 4
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_end_escape(&mut log);
+                    fwrite!(glog, "{}", strme(&log));
+                }
+            }
+        }
+        glog.append(&mut group_pics[i].as_bytes().to_vec());
+    }
+    stringme(&glog)
+}
+
 pub fn group_and_print_clonotypes(
     tall: &Instant,
     refdata: &RefData,
@@ -56,6 +98,7 @@ pub fn group_and_print_clonotypes(
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     svgs: &mut Vec<String>,
 ) -> Result<(), String> {
+    let mut last_widths = Vec::<usize>::new();
     // Build index to join info.
 
     let t = Instant::now();
@@ -261,38 +304,10 @@ pub fn group_and_print_clonotypes(
             }
         }
 
-        // Generate human readable output.  Getting the newlines right is tricky, so
-        // they're marked.
+        // Generate human readable output.
 
         let mut glog = Vec::<u8>::new();
         if !ctl.gen_opt.noprint {
-            if !ctl.gen_opt.html && !ctl.clono_group_opt.ngroup {
-                fwriteln!(glog, ""); // NEWLINE 1
-            }
-
-            // If we just printed a clonotype box, output a bar.
-
-            if last_width > 0 {
-                if ctl.clono_group_opt.ngroup || ctl.gen_opt.html {
-                    fwriteln!(glog, ""); // NEWLINE 2
-                }
-                if ctl.pretty {
-                    let mut log = Vec::<u8>::new();
-                    emit_eight_bit_color_escape(&mut log, 44);
-                    fwrite!(glog, "{}", strme(&log));
-                }
-                fwrite!(glog, "╺{}╸", "━".repeat(last_width - 2));
-                if !ctl.clono_group_opt.ngroup {
-                    fwriteln!(glog, ""); // NEWLINE 3
-                }
-                fwriteln!(glog, ""); // NEWLINE 4
-                if ctl.pretty {
-                    let mut log = Vec::<u8>::new();
-                    emit_end_escape(&mut log);
-                    fwrite!(glog, "{}", strme(&log));
-                }
-            }
-
             // If NGROUP is not on, output a GROUP line, including a newline at the end.
 
             if !ctl.clono_group_opt.ngroup {
@@ -777,9 +792,14 @@ pub fn group_and_print_clonotypes(
             }
         }
         group_pics.push(stringme(&glog));
-        if !ctl.gen_opt.noprintx {
-            logx.append(&mut glog);
-        }
+        last_widths.push(last_width);
+    }
+    if !ctl.gen_opt.noprintx {
+        logx.append(
+            &mut combine_group_pics(&group_pics, &last_widths, &ctl)
+                .as_bytes()
+                .to_vec(),
+        );
     }
 
     // Execute SIM_MAT_PLOT.
