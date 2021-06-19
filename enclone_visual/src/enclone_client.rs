@@ -55,9 +55,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     #[cfg(not(any(target_os = "macos", target_os = "ios")))]
     {
-        eprintln!("\nenclone visual only runs on a Mac at present.  Please let us know if you \
-            are interested in running it under Linux or Windows.\n");
-        std::process::exit(1);
+        eprintln!(
+            "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
+            are interested in running it under Linux or Windows.\n"
+        );
+        if 0 == 0 {
+            std::process::exit(1);
+        }
     }
 
     // Set up to catch CTRL-C events.  Parse arguments.
