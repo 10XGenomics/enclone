@@ -616,7 +616,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let response = response.unwrap();
                             let r = response.into_inner();
                             svg_output = r.plot.clone();
-                            output = format!("\n\n{}", r.table);
+                            output = format!("{}", r.table);
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
