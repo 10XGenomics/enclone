@@ -149,7 +149,17 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
         ip_port = args[2].clone();
     }
 
-    // Start server
+    // Force exit after 24 hours.  Although the client is supposed to kill the server, sometimes
+    // this doesn't work for users (for unclear reasons).  This is the fallback.  A more
+    // sophisticated version would wait for a specified period of time after the last activity,
+    // and also communicate with the client before exiting.
+
+    tokio::spawn(async move {
+        std::thread::sleep(Duration::from_secs(60 * 60 * 24));
+        std::process::exit(0);
+    });
+
+    // Start server.
 
     let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
@@ -162,7 +172,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind(addr).await?;
     let local_addr = listener.local_addr()?;
 
-    // thread waits to print PORT for client until we can connect to our own endpoints
+    // Thread waits to print PORT for client until we can connect to our own endpoints.
 
     tokio::spawn(async move {
         let dest = format!("http://{}", local_addr);
