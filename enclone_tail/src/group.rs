@@ -84,6 +84,7 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     group_pics: &mut Vec<String>,
+    last_widths: &mut Vec<usize>,
     exacts: &Vec<Vec<usize>>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -98,7 +99,6 @@ pub fn group_and_print_clonotypes(
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     svgs: &mut Vec<String>,
 ) -> Result<(), String> {
-    let mut last_widths = Vec::<usize>::new();
     // Build index to join info.
 
     let t = Instant::now();
