@@ -1,7 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// This is also in enclone/bugs/canvas_in_scrollable, where we can use the latest version of iced.
-
 use iced::canvas::{self, Canvas, Cursor, Frame, Geometry, Path};
 use iced::{
     scrollable, Color, Column, Container, Element, Length, Rectangle, Sandbox, Scrollable, Settings,

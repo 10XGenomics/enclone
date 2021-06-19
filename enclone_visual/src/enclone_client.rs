@@ -22,6 +22,11 @@
 // that look like
 // vis.x.variable=value
 // and in such cases, we use variable=value is the source of variable definitions.
+//
+// enclone VIS -- run the serve locally
+//
+// The special argument SERVER_DEBUG causes the server to print debuggin information.  However
+// you will only see this if you run the server locally using enclone VIS.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
@@ -46,6 +51,19 @@ use string_utils::*;
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
+    // Fail if not running on a Mac.
+
+    #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+    {
+        eprintln!(
+            "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
+            are interested in running it under Linux or Windows.\n"
+        );
+        if 0 == 0 {
+            std::process::exit(1);
+        }
+    }
+
     // Set up to catch CTRL-C events.  Parse arguments.
 
     let _ = install_signal_handler();
@@ -72,7 +90,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.000000000000000000000000000001";
+    let version = "0.00000000000000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -555,14 +573,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
                         if n == 0 {
-                            output = "clonotype numbers start at 1\n".to_string();
+                            output = "group numbers start at 1\n".to_string();
                         } else {
                             let request = tonic::Request::new(ClonotypeRequest {
                                 clonotype_number: (n - 1) as u32,
                             });
                             let response = client.get_clonotype(request).await;
                             if response.is_err() {
-                                output = "clonotype number is too large\n".to_string();
+                                output = "group number is too large\n".to_string();
                             } else {
                                 let response = response.unwrap();
                                 let r = response.into_inner();
@@ -611,7 +629,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let response = response.unwrap();
                             let r = response.into_inner();
                             svg_output = r.plot.clone();
-                            output = format!("\n\n{}", r.table);
+                            output = format!("{}", r.table);
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);

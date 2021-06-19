@@ -2,6 +2,7 @@
 
 pub mod align_to_vdj_ref;
 pub mod allowed_vars;
+pub mod combine_group_pics;
 pub mod defs;
 pub mod join_one;
 pub mod linear_condition;

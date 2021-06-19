@@ -159,7 +159,7 @@ impl Application for EncloneVisual {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(10));
+                    thread::sleep(Duration::from_millis(20));
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
@@ -173,7 +173,7 @@ impl Application for EncloneVisual {
                 if reply_text.contains("enclone failed") {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
-                reply_text += "\n \n"; // papering over truncation bug
+                reply_text += "\n \n \n"; // papering over truncation bug
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
@@ -257,6 +257,12 @@ impl Application for EncloneVisual {
             .style(style::Squeak)
             .push(Text::new(&self.output_value).font(DEJAVU).size(13));
 
+        // Fix the height of the SVG.  This needs to be set so that there is enough room for
+        // the clonotype tables.  We do not set the width because it's the height that we need
+        // to control.
+
+        const SVG_HEIGHT: u16 = 400;
+
         // Display the SVG.
         //
         // WARNING!  When we changed the width and height to 400, the performance of scrolling
@@ -264,15 +270,14 @@ impl Application for EncloneVisual {
         // After a couple minutes, the app crashed, with thirty threads running.
 
         let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .width(Units(300))
-            .height(Units(300));
+            .height(Units(SVG_HEIGHT));
         let _svg = &svg; // to temporarily prevent warning
 
         let png = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
 
-        let svg_as_png =
-            Image::new(iced::image::Handle::from_memory(self.png_value.clone())).width(Units(450));
+        let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
+            .height(Units(SVG_HEIGHT));
 
         let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
         if self.png_value.len() > 0 {
@@ -295,7 +300,6 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
-            // .push(Row::new().spacing(10).push(svg_as_png))
             .push(svg_as_png_row)
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
@@ -341,15 +345,14 @@ impl Application for EncloneVisual {
                      (see below)\nand then push the Submit button.  Here are the things \
                      that you can type:\n\n\
                      • an enclone command\n\
-                     • an clonotype id (number)\n\
+                     • an group id (number)\n\
                      • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
                      • q to quit\n\n\
                      Major limitations of this version:\n\
                      1. There is no color in the clonotype tables.\n\
-                     2. Text in plots does not show up.\n\
-                     3. Cutting and pasting from clonotype tables doesn't work.\n\
-                     4. Long commands are hard to work with in the input box.\n\
-                     5. Very wide clonotype tables wrap, making them unintelligible, and \
+                     2. Cutting and pasting from clonotype tables doesn't work.\n\
+                     3. Long commands are hard to work with in the input box.\n\
+                     4. Very wide clonotype tables wrap, making them unintelligible, and \
                      only solvable by window resizing, and sometimes not that.",
                     version, version_float,
                 ))

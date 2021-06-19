@@ -63,7 +63,13 @@ use vector_utils::*;
 #[derive(Clone, Debug, Default)]
 pub struct MainEncloneOutput {
     pub pics: Vec<String>, // clonotype tables
+    pub last_widths: Vec<usize>,
     pub svgs: Vec<String>, // SVG objects
+    pub noprint: bool,
+    pub noprintx: bool,
+    pub html: bool,
+    pub ngroup: bool,
+    pub pretty: bool,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -851,11 +857,16 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     }
 
     // Tail code.
+
     let mut svgs = Vec::<String>::new();
+    let mut group_pics = Vec::<String>::new();
+    let mut last_widths = Vec::<usize>::new();
     tail_code(
         &tall,
         &refdata,
         &pics,
+        &mut group_pics,
+        &mut last_widths,
         &exacts,
         &rsi,
         &exact_clonotypes,
@@ -941,7 +952,13 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         println!("");
     }
     Ok(MainEncloneOutput {
-        pics: pics,
+        pics: group_pics,
+        last_widths: last_widths,
         svgs: svgs,
+        noprint: ctl.gen_opt.noprint,
+        noprintx: ctl.gen_opt.noprintx,
+        html: ctl.gen_opt.html,
+        ngroup: ctl.clono_group_opt.ngroup,
+        pretty: ctl.pretty,
     })
 }

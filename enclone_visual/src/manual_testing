@@ -1,22 +1,27 @@
 MANUAL TESTING
 
-1. Type d and then manually scroll up and down for two minutes.  Should not slow down or crash.
+1. enclone VIS=b
+   (a) Type d and then manually scroll up and down for two minutes.  Should not slow down or crash.
+   (b) Scroll to the bottom and make sure the last clonotype is not truncated.
+   (c) Check that group number 0 and too large give errors.
+   (d) Check that group number 1 is the right clonotype.
+   (e) Try to cut and paste from clonotype tables [BROKEN].
+   (f) Test help button.
+   (g) Test that copy button flashes and that it actually copies.
 
-2. Cut and paste should be possible from clonotype tables.  [BROKEN]
+2. Repeat ten times:
+   (a) type enclone VIS
+   (b) type d
+   (c) make sure it says "thinking" briefly and produces output
+   (d) exit.
 
-3. Test the help button.
-
-4. Make sure each of these commands do not return an error
-   - BCR=123085
-   - d
-   - BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
-   - 10
+3. Make sure each of these commands do not return an error
+   - enclone BCR=123085
+   - enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
    - q
 
-5. Scroll to the bottom and make sure that the last clonotype is not truncated.
+4. Test enclone BCR=123085 NOPRINT.
 
-6. check that clonotype number 0 and too large give errors
+5. Test a garbage command.
 
-7. check that clonotype number 1 is the right clonotype
-
-8. Repeatedly click on the Submit button and make sure it changes to thinking.
+6. Test cookbook commands.

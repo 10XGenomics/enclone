@@ -1,6 +1,6 @@
 TO DO
 
-1.  Make sure server dies.
+1.  Improve data shown for tooltip.
 
 2.  Need a regression test.
 
@@ -18,18 +18,7 @@ TO DO
 
 8.  Make code work for 2 or more SVG files.
 
-9.  Make sure that client and server are the same version.
-
-10. Refactor to keep tokio etc. out of cellranger.
-
-11. Have text-only mode for testing and development.
-
-12. Need auto-update for binary (at least for Mac).
-
-13. Clonotype printouts need to show not just the pictures, but also the group info
-    and any additional stuff like trees.
-
-14. Improve data shown for tooltip.
+9.  Refactor to keep tokio etc. out of cellranger.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -56,12 +45,19 @@ WAITING ON ICED
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
 7.  the wraparound problem
-    Asked on zulip chat and have not yet gotten a meaningful answer.  However this problem is
-    related to issue 331 (horizontal scrolling) and issue 307 (scrolling programmatically).
+    Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
+    vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
+    issue 307 (scrolling programmatically).
 
 8.  Button text does not change from "Submit" to "thinking" (but worked around).
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
     on the issue so the ball is in their court.
+
+9.  Update to the latest versions of iced and iced_aw.
+    This yielded a compilation error.  Issue #25 filed on iced_aw.
+
+10. Canvas in scrollable crashes.  Reported on zulip chat, and if there is no response, file 
+    an issue.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -84,4 +80,7 @@ NICE TO HAVE
 
 8.  Make "enclone help ..." work.
 
-9.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
+9.  Make summaries viewable.
+
+10. Can a row have one item left aligned and the second center aligned?  Apply to banner.
+

@@ -5,6 +5,7 @@ use crate::proto::{
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use enclone_core::combine_group_pics::*;
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use itertools::Itertools;
 use log::{error, warn};
@@ -40,19 +41,16 @@ impl Analyzer for EncloneAnalyzer {
         let fields = &req.args.split(' ').collect::<Vec<&str>>();
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
-        let mut noprint = false;
         for j in 0..fields.len() {
             if fields[j].len() > 0 {
                 if fields[j] == "SERVER_DEBUG" {
                     server_debug = true;
-                } else if fields[j] == "NOPRINT" {
-                    noprint = true;
                 } else {
                     args.push(fields[j].to_string());
                 }
             }
         }
-        args.push("NOPRINT".to_string());
+        args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         eprintln!("Running enclone:\n  {}", args.join(" "));
@@ -86,10 +84,20 @@ impl Analyzer for EncloneAnalyzer {
             let mut enclone_output = self.enclone_output.lock().unwrap();
             *enclone_output = output;
             let mut table = enclone_output.pics.clone();
-            table.truncate(100);
-            if noprint {
-                table.truncate(0);
+            let mut widths = enclone_output.last_widths.clone();
+            if table.len() > 100 {
+                table.truncate(100);
+                widths.truncate(100);
             }
+            let table_string = combine_group_pics(
+                &table,
+                &widths,
+                enclone_output.noprint,
+                enclone_output.noprintx,
+                enclone_output.html,
+                enclone_output.ngroup,
+                enclone_output.pretty,
+            );
             let mut plot = String::new();
             if enclone_output.svgs.len() > 0 {
                 plot = enclone_output.svgs[0].clone();
@@ -97,7 +105,7 @@ impl Analyzer for EncloneAnalyzer {
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
-                table: table.join("\n"),
+                table: table_string,
             };
             if server_debug {
                 println!("sending response as follows:");
@@ -120,7 +128,7 @@ impl Analyzer for EncloneAnalyzer {
         let id = req.clonotype_number as usize;
         let enclone_output = self.enclone_output.lock().unwrap();
         if id >= enclone_output.pics.len() {
-            return Err(Status::new(Code::Internal, "clonotype id too large"));
+            return Err(Status::new(Code::Internal, "group id too large"));
         }
 
         // Send back the clonotype picture.
@@ -141,7 +149,17 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
         ip_port = args[2].clone();
     }
 
-    // Start server
+    // Force exit after 24 hours.  Although the client is supposed to kill the server, sometimes
+    // this doesn't work for users (for unclear reasons).  This is the fallback.  A more
+    // sophisticated version would wait for a specified period of time after the last activity,
+    // and also communicate with the client before exiting.
+
+    tokio::spawn(async move {
+        std::thread::sleep(Duration::from_secs(60 * 60 * 24));
+        std::process::exit(0);
+    });
+
+    // Start server.
 
     let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
@@ -154,7 +172,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind(addr).await?;
     let local_addr = listener.local_addr()?;
 
-    // thread waits to print PORT for client until we can connect to our own endpoints
+    // Thread waits to print PORT for client until we can connect to our own endpoints.
 
     tokio::spawn(async move {
         let dest = format!("http://{}", local_addr);

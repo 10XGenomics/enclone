@@ -160,6 +160,7 @@ pub struct GeneralOpt {
     pub mouse: bool,
     pub refname: String,
     pub noprint: bool,
+    pub noprintx: bool,
     pub required_fps: Option<usize>,
     pub required_cells: Option<usize>,
     pub required_clonotypes: Option<usize>,
