@@ -19,7 +19,7 @@ pub fn combine_group_pics(
     let mut glog = Vec::<u8>::new();
     for i in 0..group_pics.len() {
         if !noprint {
-            if !html && !ngroup && !noprintx {
+            if !html && !ngroup && (!noprintx || i > 0) {
                 fwriteln!(glog, ""); // NEWLINE 1
             }
 
