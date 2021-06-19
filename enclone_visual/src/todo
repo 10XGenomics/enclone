@@ -56,8 +56,7 @@ WAITING ON ICED
     on the issue so the ball is in their court.
 
 9.  Update to the latest versions of iced and iced_aw.
-    This yielded a compilation error.  Asked on zulip chat if this is possible, could redirect
-    to iced_aw maintainers if no response.
+    This yielded a compilation error.  Issue #25 filed on iced_aw.
 
 10. Canvas in scrollable crashes.  Reported on zulip chat, and if there is no response, file 
     an issue.
