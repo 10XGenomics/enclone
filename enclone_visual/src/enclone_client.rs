@@ -51,6 +51,15 @@ use string_utils::*;
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
+    // Fail if not running on a Mac.
+
+    #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+    {
+        eprintln!("\nenclone visual only runs on a Mac at present.  Please let us know if you \
+            are interested in running it under Linux or Windows.\n");
+        std::process::exit(1);
+    }
+
     // Set up to catch CTRL-C events.  Parse arguments.
 
     let _ = install_signal_handler();
