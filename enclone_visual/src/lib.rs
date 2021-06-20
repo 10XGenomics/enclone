@@ -12,6 +12,7 @@ use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 
 pub mod convert_svg_to_png;
+pub mod copy_image_to_clipboard;
 pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;

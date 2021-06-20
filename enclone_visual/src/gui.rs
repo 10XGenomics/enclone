@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::convert_svg_to_png::*;
+use crate::copy_image_to_clipboard::*;
 use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
@@ -17,48 +18,10 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-use cocoa::{
-    appkit::{NSImage, NSPasteboard},
-    base::nil,
-    foundation::{NSArray, NSAutoreleasePool, NSData},
-};
-
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-use libc::c_void;
-
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
-
-// Copied with small changes from the pasteboard crate:
-
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
-    if bytes.len() > 0 {
-        unsafe {
-            let pool = NSAutoreleasePool::new(nil);
-            let data = NSData::dataWithBytes_length_(
-                pool,
-                bytes.as_ptr() as *const c_void,
-                bytes.len() as u64,
-            );
-            let object = NSImage::initWithData_(NSImage::alloc(pool), data);
-            if object != nil {
-                let pasteboard = NSPasteboard::generalPasteboard(pool);
-                pasteboard.clearContents();
-                pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
-            } else {
-                eprintln!("\ncopy to pasteboard failed\n");
-                std::process::exit(1);
-            }
-        }
-    }
-}
-
-#[cfg(target_os = "linux")]
-fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
