@@ -32,6 +32,8 @@ const DEJAVU: Font = Font::External {
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
+// Copied with small changes from the pasteboard crate:
+
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
