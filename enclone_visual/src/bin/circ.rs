@@ -1,6 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// color -- see core/src/color.rs
+// Illustrate the following:
+//
+// 1. Display a tooltip message in a Canvas.
+// 2. Make a Canvas change based on pushing a button.
+// 3. Show that a Canvas is stil performant even when it has a large number of objects in it.
 
 use engine::Engine;
 use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
