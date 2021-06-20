@@ -123,9 +123,7 @@ mod engine {
                 if dist <= radius {
                     frame.translate(Vector { x: 100.0, y: 100.0 });
                     frame.fill_text(format!(
-                        "delta = ({:.1}, {:.1}); in circle one at distance {:.1} <= {:.1}",
-                        pos.unwrap().x - center.x,
-                        pos.unwrap().y - center.y,
+                        "in circle one at distance {:.1} <= {:.1}",
                         dist,
                         radius
                     ));
@@ -135,10 +133,6 @@ mod engine {
                     });
                 }
             }
-            let circle1 = Path::circle(center, radius);
-            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
-            let circlex = Path::circle(center, 2.0);
-            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
 
             let mut r = self.state.rand;
             for _ in 0..10000 {
@@ -163,6 +157,11 @@ mod engine {
                 let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
                 frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
             }
+
+            let circle1 = Path::circle(center, radius);
+            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
+            let circlex = Path::circle(center, 2.0);
+            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
 
             vec![frame.into_geometry()]
         }
