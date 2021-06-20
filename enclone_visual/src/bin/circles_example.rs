@@ -59,7 +59,7 @@ impl Sandbox for Circles {
     }
 
     fn view(&mut self) -> Element<Message> {
-        let button = Button::new(&mut self.button, Text::new("Submit"))
+        let button = Button::new(&mut self.button, Text::new("Push"))
             .padding(10)
             .on_press(Message::ButtonPressed);
         let content = Column::new().push(button).push(
