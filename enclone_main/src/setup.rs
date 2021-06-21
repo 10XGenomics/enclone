@@ -67,6 +67,7 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
 
 lazy_static! {
     pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref BUG_REPORT_ADDRESS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 pub fn setup(
@@ -79,7 +80,7 @@ pub fn setup(
     let mut using_pager = false;
     // Provide help if requested.
 
-    let mut no_bug_reports = false;
+    let mut bug_reports = "enclone@10xgenomics.com".to_string();
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -140,8 +141,10 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
-            } else if args[i] == "NO_BUG_REPORTS" {
-                no_bug_reports = true;
+            } else if args[i] == "BUG_REPORTS" {
+                bug_reports = "".to_string();
+            } else if args[i].starts_with("BUG_REPORTS=") {
+                bug_reports = args[i].after("BUG_REPORTS=").to_string();
             } else if args[i].starts_with("CONFIG=") {
                 ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             } else if args[i] == "NO_KILL" {
@@ -152,8 +155,8 @@ pub fn setup(
             if key == "ENCLONE_CONFIG" {
                 ctl.gen_opt.config_file = value.to_string();
             }
-            if key == "ENCLONE_NO_BUG_REPORTS" {
-                no_bug_reports = true;
+            if key == "ENCLONE_BUG_REPORTS" {
+                bug_reports = value.to_string();
             }
         }
 
@@ -309,8 +312,11 @@ pub fn setup(
                 );
             }
 
+            // Set up action on panic.  Note that for 10x Genomics users, and those only,
+            // we may email a bug report.
+
             if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0)
-                || no_bug_reports
+                || bug_reports.len() == 0
             {
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
@@ -346,6 +352,7 @@ pub fn setup(
                     args_orig.iter().format(" "),
                     elapsed_message,
                 );
+                BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.clone());
                 fn exit_function(msg: &str) {
                     let msg = format!("{}\n.\n", msg);
                     if !version_string().contains("macos") {
@@ -362,12 +369,13 @@ pub fn setup(
                         process.stdout.unwrap().read_to_string(&mut _s).unwrap();
                     } else if REMOTE_HOST.lock().unwrap().len() > 0 {
                         let remote_host = &REMOTE_HOST.lock().unwrap()[0];
+                        let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
                         let process = Command::new("ssh")
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
                             .arg("\"internal ug report\"")
-                            .arg("enclone@10xgenomics.com")
+                            .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();
