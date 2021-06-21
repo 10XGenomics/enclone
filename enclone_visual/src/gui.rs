@@ -537,17 +537,15 @@ mod canvas_view {
                                 let ydiff = pos.unwrap().y - circ.p.y;
                                 let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                                 if dist <= circ.r {
+                                    let mut stext = circ.t.clone();
+                                    stext = stext.replace(",", "\n");
                                     frame.translate(Vector { x: 400.0, y: 10.0 });
-
                                     let text = canvas::Text {
-                                        content: circ.t.clone(),
+                                        content: stext,
                                         size: 25.0,
                                         ..canvas::Text::default()
                                     };
-            
                                     frame.fill_text(text);
-
-                                    // frame.fill_text(format!("{}", circ.t));
                                     frame.translate(Vector {
                                         x: -400.0,
                                         y: -10.0,
