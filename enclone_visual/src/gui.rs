@@ -436,7 +436,7 @@ pub fn rotate(r: i64) -> i64 {
         .wrapping_add(1_442_695_040_888_963_407)
 }
 
-mod engine {
+mod canvas_view {
     use crate::gui::rotate;
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
@@ -452,14 +452,14 @@ mod engine {
         pub rand: i64,
     }
 
-    pub struct Engine {
+    pub struct CanvasView {
         pub state: State,
     }
 
     #[derive(Debug, Clone)]
     pub enum Message {}
 
-    impl Default for Engine {
+    impl Default for CanvasView {
         fn default() -> Self {
             Self {
                 state: State::default(),
@@ -467,7 +467,7 @@ mod engine {
         }
     }
 
-    impl Engine {
+    impl CanvasView {
         pub fn _view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
                 .width(Length::Fill)
@@ -476,7 +476,7 @@ mod engine {
         }
     }
 
-    impl<'a> canvas::Program<Message> for Engine {
+    impl<'a> canvas::Program<Message> for CanvasView {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
             let pos = cursor.position_in(&bounds);
             let mut frame = Frame::new(bounds.size());
