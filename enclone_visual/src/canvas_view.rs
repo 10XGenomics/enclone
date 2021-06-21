@@ -51,6 +51,22 @@ impl<'a> canvas::Program<Message> for CanvasView {
             let g = self.state.geometry_value.as_ref().unwrap();
             for i in 0..g.len() {
                 match &g[i] {
+                    crate::geometry::Geometry::PolySegment(segs) => {
+                        for i in 0..segs.p.len() - 1 {
+                            let p = Path::line(
+                                Point {
+                                    x: segs.p[i].x,
+                                    y: segs.p[i].y,
+                                },
+                                Point {
+                                    x: segs.p[i + 1].x,
+                                    y: segs.p[i + 1].y,
+                                },
+                            );
+                            let c = to_color(&segs.c);
+                            frame.stroke(&p, Stroke::default().with_color(c).with_width(segs.w));
+                        }
+                    }
                     crate::geometry::Geometry::Segment(seg) => {
                         let p = Path::line(
                             Point {
