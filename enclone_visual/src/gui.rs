@@ -3,7 +3,6 @@
 use canvas_view::CanvasView;
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
-use crate::geometry::*;
 use crate::svg_to_geometry::*;
 use crate::*;
 use iced::svg::Handle;
@@ -59,7 +58,6 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     png_value: Vec<u8>,
-    geometry_value: Option<Vec<Geometry>>,
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
@@ -68,7 +66,7 @@ struct EncloneVisual {
     compute_state: ComputeState,
     copy_button: button::State,
     copy_button_color: Color,
-    _canvas_view: CanvasView,
+    canvas_view: CanvasView,
 }
 
 #[derive(Debug, Clone)]
@@ -152,7 +150,7 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
-                    self.geometry_value = svg_to_geometry(&reply_svg);
+                    self.canvas_view.state.geometry_value = svg_to_geometry(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
@@ -456,6 +454,7 @@ mod canvas_view {
         pub button_pressed: bool,
         pub radius: f32,
         pub rand: i64,
+        pub geometry_value: Option<Vec<crate::geometry::Geometry>>,
     }
 
     pub struct CanvasView {
