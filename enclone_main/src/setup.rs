@@ -374,7 +374,7 @@ pub fn setup(
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
-                            .arg("\"internal ug report\"")
+                            .arg("\"internal bug report\"")
                             .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
