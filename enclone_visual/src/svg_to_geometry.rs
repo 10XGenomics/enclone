@@ -407,6 +407,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             println!("processing text"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let text = lines[i].to_string();
             println!("text content = {}", text); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            let mut font = "Arial".to_string();
             let mut font_size = None;
             let (mut x, mut y) = (None, None);
             let mut c = Some((0, 0, 0));
@@ -428,6 +429,8 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 } else if get_numeric(&key, &value, "font-size", &mut font_size) {
                 } else if key == "dx" || key == "dy" {
                 } else if key == "font-family" && (value == "arial" || value == "Arial") {
+                } else if key == "font-family" && value == "DejaVu LGC Sans Mono" {
+                    font = "DejaVuSansMono".to_string();
                 } else if key == "fill" {
                     c = parse_color(&value);
                 } else if get_opacity(&key, &value, &mut o) {
@@ -468,11 +471,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else {
                 halign = Right;
             }
-            geom.push(Thing::ArialText(ArialText {
+            geom.push(Thing::Text(Text {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
+                font: font,
                 font_size: font_size.unwrap(),
                 rotate: rotate,
             }));

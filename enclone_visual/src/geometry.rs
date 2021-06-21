@@ -4,7 +4,7 @@
 
 pub enum Thing {
     Segment(Segment),
-    ArialText(ArialText),
+    Text(Text),
     Circle(Circle),
     CircleWithToolTip(CircleWithToolTip),
     Rectangle(Rectangle),
@@ -71,10 +71,11 @@ pub enum HorizontalAlignment {
     Right,
 }
 
-pub struct ArialText {
+pub struct Text {
     pub p: Point,
     pub halign: HorizontalAlignment,
     pub t: String,
+    pub font: String,
     pub font_size: f32,
     pub c: Color,
     pub rotate: [f32; 3],
