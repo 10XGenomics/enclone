@@ -503,7 +503,6 @@ mod canvas_view {
     impl<'a> canvas::Program<Message> for CanvasView {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
-            // let center = frame.center();
             if self.state.geometry_value.is_some() {
                 let g = self.state.geometry_value.as_ref().unwrap();
                 for i in 0..g.len() {
@@ -530,7 +529,6 @@ mod canvas_view {
                     };
                 }
                 let pos = cursor.position_in(&bounds);
-                // let radius = self.state.radius;
                 if pos.is_some() {
                     for i in 0..g.len() {
                         match &g[i] {
@@ -540,7 +538,16 @@ mod canvas_view {
                                 let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                                 if dist <= circ.r {
                                     frame.translate(Vector { x: 400.0, y: 10.0 });
-                                    frame.fill_text(format!("{}", circ.t));
+
+                                    let text = canvas::Text {
+                                        content: circ.t.clone(),
+                                        size: 25.0,
+                                        ..canvas::Text::default()
+                                    };
+            
+                                    frame.fill_text(text);
+
+                                    // frame.fill_text(format!("{}", circ.t));
                                     frame.translate(Vector {
                                         x: -400.0,
                                         y: -10.0,
