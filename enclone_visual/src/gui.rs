@@ -470,14 +470,10 @@ mod canvas_view {
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
     };
-    use iced_native::Point;
-    use iced_native::Vector;
+    use iced_native::{Point, Vector};
 
     #[derive(Default)]
     pub struct State {
-        pub button_pressed: bool,
-        pub radius: f32,
-        pub rand: i64,
         pub geometry_value: Option<Vec<crate::geometry::Geometry>>,
     }
 
