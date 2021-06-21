@@ -336,6 +336,10 @@ pub fn setup(
             } else {
                 // Set up to email bug report on panic.  This is only for internal users!
 
+                let mut contemplate = "".to_string();
+                if bug_reports == "enclone@10xgenomics.com" {
+                    contemplate = ", for the developers to contemplate".to_string();
+                }
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\
@@ -344,13 +348,14 @@ pub fn setup(
                     Your command was:\n\n{}\n\n\
                     {}\
                     Thank you for being a happy internal enclone user.  All of this information \
-                    is being\nemailed to enclone@10xgenomics.com, for the developers to \
-                    contemplate.\n\n\
+                    is being\nemailed to {}{}.\n\n\
                     🌸 Thank you so much for finding a bug and have a nice day! 🌸",
                     env!("CARGO_PKG_VERSION"),
                     version_string(),
                     args_orig.iter().format(" "),
                     elapsed_message,
+                    bug_reports,
+                    contemplate,
                 );
                 BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.clone());
                 fn exit_function(msg: &str) {
