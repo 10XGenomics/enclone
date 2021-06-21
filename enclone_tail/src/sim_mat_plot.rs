@@ -161,14 +161,14 @@ pub fn sim_mat_plot(
 
         svg += &mut format!(
             "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
-            font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
+            font-size=\"{}\" text-anchor=\"start\" fill=\"black\">{}</text>\n",
             sep, font_size, font_size, lines[0],
         );
         for i in 0..n {
             let y = sep + (i as f64) * dimn;
             svg += &mut format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"DejaVu LGC Sans Mono\" \
-                font-size=\"{}\" text-anchor=\"left\" fill=\"black\">{}</text>\n",
+                font-size=\"{}\" text-anchor=\"start\" fill=\"black\">{}</text>\n",
                 sep,
                 y + dimn / 2.0 + font_size / 2.0,
                 font_size,
