@@ -268,6 +268,13 @@ impl Application for EncloneVisual {
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
             graphic_row = graphic_row.push(svg_as_png);
+            if 0 == 1 {
+                graphic_row = graphic_row.push(
+                    self.canvas_view
+                        .view()
+                        .map(move |_message| Message::ButtonPressed),
+                );
+            }
             graphic_row = graphic_row.push(copy_button);
         }
 
@@ -491,7 +498,7 @@ mod canvas_view {
     }
 
     impl CanvasView {
-        pub fn _view<'a>(&'a mut self) -> Element<'a, Message> {
+        pub fn view<'a>(&'a mut self) -> Element<'a, Message> {
             Canvas::new(self)
                 .width(Length::Fill)
                 .height(Length::Fill)
