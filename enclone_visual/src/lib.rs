@@ -11,6 +11,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 
+pub mod canvas_view;
 pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
 pub mod enclone_client;
