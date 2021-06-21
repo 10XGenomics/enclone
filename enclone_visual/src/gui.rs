@@ -268,11 +268,13 @@ impl Application for EncloneVisual {
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
             if self.canvas_view.state.geometry_value.is_some() {
-                graphic_row = graphic_row.push(
-                    self.canvas_view
-                        .view()
-                        .map(move |_message| Message::ButtonPressed),
-                ).height(Units(SVG_HEIGHT));
+                graphic_row = graphic_row
+                    .push(
+                        self.canvas_view
+                            .view()
+                            .map(move |_message| Message::ButtonPressed),
+                    )
+                    .height(Units(SVG_HEIGHT));
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
             }
@@ -516,16 +518,17 @@ mod canvas_view {
                                 circ.r,
                             );
                             let c = &circ.c;
-                            frame.fill(&circle,  
+                            frame.fill(
+                                &circle,
                                 Color {
                                     r: c.r as f32 / 255.0,
                                     g: c.g as f32 / 255.0,
                                     b: c.b as f32 / 255.0,
                                     a: c.t as f32 / 255.0,
-                                }
+                                },
                             );
-                        },
-                        _ => {},
+                        }
+                        _ => {}
                     };
                 }
                 let pos = cursor.position_in(&bounds);
@@ -552,11 +555,10 @@ mod canvas_view {
                                     });
                                     break;
                                 }
-                            },
-                            _ => { },
+                            }
+                            _ => {}
                         };
                     }
-
                 }
             }
             vec![frame.into_geometry()]
