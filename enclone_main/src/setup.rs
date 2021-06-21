@@ -363,11 +363,12 @@ pub fn setup(
                 BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.clone());
                 fn exit_function(msg: &str) {
                     let msg = format!("{}\n.\n", msg);
+                    let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
                     if !version_string().contains("macos") {
                         let process = Command::new("mail")
                             .arg("-s")
                             .arg("internal automated bug report")
-                            .arg("enclone@10xgenomics.com")
+                            .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();
@@ -377,12 +378,11 @@ pub fn setup(
                         process.stdout.unwrap().read_to_string(&mut _s).unwrap();
                     } else if REMOTE_HOST.lock().unwrap().len() > 0 {
                         let remote_host = &REMOTE_HOST.lock().unwrap()[0];
-                        let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
                         let process = Command::new("ssh")
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
-                            .arg("\"internal bug report\"")
+                            .arg("\"internal automated bug report\"")
                             .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
