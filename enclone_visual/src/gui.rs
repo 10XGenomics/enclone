@@ -427,3 +427,108 @@ mod style {
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn rotate(r: i64) -> i64 {
+    6_364_136_223_846_793_005i64
+        .wrapping_mul(r)
+        .wrapping_add(1_442_695_040_888_963_407)
+}
+
+mod engine {
+    use crate::gui::rotate;
+    use iced::{
+        canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
+        Color, Element, Length, Rectangle,
+    };
+    use iced_native::Point;
+    use iced_native::Vector;
+
+    #[derive(Default)]
+    pub struct State {
+        pub button_pressed: bool,
+        pub radius: f32,
+        pub rand: i64,
+    }
+
+    pub struct Engine {
+        pub state: State,
+    }
+
+    #[derive(Debug, Clone)]
+    pub enum Message {}
+
+    impl Default for Engine {
+        fn default() -> Self {
+            Self {
+                state: State::default(),
+            }
+        }
+    }
+
+    impl Engine {
+        pub fn _view<'a>(&'a mut self) -> Element<'a, Message> {
+            Canvas::new(self)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .into()
+        }
+    }
+
+    impl<'a> canvas::Program<Message> for Engine {
+        fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
+            let pos = cursor.position_in(&bounds);
+            let mut frame = Frame::new(bounds.size());
+            let radius = self.state.radius;
+            let center = frame.center();
+            if pos.is_some() {
+                let xdiff = pos.unwrap().x - center.x;
+                let ydiff = pos.unwrap().y - center.y;
+                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                if dist <= radius {
+                    frame.translate(Vector { x: 100.0, y: 100.0 });
+                    frame.fill_text(format!(
+                        "in circle one at distance {:.1} <= {:.1}",
+                        dist, radius
+                    ));
+                    frame.translate(Vector {
+                        x: -100.0,
+                        y: -100.0,
+                    });
+                }
+            }
+
+            let mut r = self.state.rand;
+            for _ in 0..10000 {
+                r = rotate(r);
+                let x = r % 200;
+                r = rotate(r);
+                let y = r % 200;
+                r = rotate(r);
+                let rad = r % 10;
+                let circle2 = Path::circle(
+                    Point {
+                        x: center.x + x as f32,
+                        y: center.y + y as f32,
+                    },
+                    rad as f32,
+                );
+                r = rotate(r);
+                let c1 = 0.7 + (r % 1000) as f32 / 3000.0;
+                r = rotate(r);
+                let c2 = 0.7 + (r % 1000) as f32 / 3000.0;
+                r = rotate(r);
+                let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
+                frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
+            }
+
+            let circle1 = Path::circle(center, radius);
+            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
+            let circlex = Path::circle(center, 2.0);
+            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
+
+            vec![frame.into_geometry()]
+        }
+    }
+}
