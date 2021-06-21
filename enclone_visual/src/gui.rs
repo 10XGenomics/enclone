@@ -2,6 +2,7 @@
 
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
+use crate::geometry::*;
 use crate::svg_to_geometry::*;
 use crate::*;
 use iced::svg::Handle;
@@ -57,6 +58,7 @@ struct EncloneVisual {
     output_value: String,
     svg_value: String,
     png_value: Vec<u8>,
+    geometry_value: Option<Vec<Geometry>>,
     button: button::State,
     submit_button_text: String,
     open_state: button::State,
@@ -148,7 +150,7 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
-                    let _geometry = svg_to_geometry(&reply_svg);
+                    self.geometry_value = svg_to_geometry(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
