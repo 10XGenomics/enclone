@@ -130,7 +130,7 @@ fn circles_to_svg(
         let mut tooltipx = String::new();
         if tooltip {
             tooltipx = format!(
-                " data-tooltip='{{\"group_id\":\"{}\",\"clonotype_id\":\"{}\"}}'",
+                " tooltip=\"group_id={},clonotype_id={}\"",
                 group_index2[i] + 1,
                 clonotype_index2[i] + 1,
             );
