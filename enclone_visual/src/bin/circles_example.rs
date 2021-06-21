@@ -128,8 +128,7 @@ mod engine {
                     frame.translate(Vector { x: 100.0, y: 100.0 });
                     frame.fill_text(format!(
                         "in circle one at distance {:.1} <= {:.1}",
-                        dist,
-                        radius
+                        dist, radius
                     ));
                     frame.translate(Vector {
                         x: -100.0,
