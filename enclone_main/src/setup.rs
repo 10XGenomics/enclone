@@ -188,6 +188,9 @@ pub fn setup(
             if ctl.evil_eye {
                 println!("detected internal run");
             }
+            if ctl.gen_opt.config.contains_key("bug_reports") {
+                bug_reports = ctl.gen_opt.config["bug_reports"].clone();
+            }
             let earth_path = format!(
                 "{}/current{}",
                 ctl.gen_opt.config["earth"], TEST_FILES_VERSION
