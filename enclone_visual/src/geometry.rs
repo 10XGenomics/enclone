@@ -6,7 +6,7 @@ pub enum Thing {
     Segment(Segment),
     Text(Text),
     Circle(Circle),
-    CircleWithToolTip(CircleWithToolTip),
+    CircleWithTooltip(CircleWithTooltip),
     Rectangle(Rectangle),
     PolySegment(PolySegment),
 }
@@ -81,7 +81,7 @@ pub struct Text {
     pub rotate: [f32; 3],
 }
 
-pub struct CircleWithToolTip {
+pub struct CircleWithTooltip {
     pub p: Point,
     pub r: f32,
     pub c: Color,

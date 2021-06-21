@@ -231,11 +231,14 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             let (mut x, mut y, mut r) = (None, None, None);
             let mut c = None;
             let mut o = 255 as u8; // opacity
+            let mut t = String::new();
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
                 println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if key == "stroke" || key == "stroke-width" {
+                } else if key == "tooltip" {
+                    t = value.to_string();
                 } else if get_numeric(&key, &value, "cx", &mut x) {
                 } else if get_numeric(&key, &value, "cy", &mut y) {
                 } else if get_numeric(&key, &value, "r", &mut r) {
@@ -249,11 +252,20 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-            geom.push(Thing::Circle(Circle {
-                p: Point::new(x.unwrap(), y.unwrap()),
-                r: r.unwrap(),
-                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-            }));
+            if t.len() == 0 {
+                geom.push(Thing::Circle(Circle {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                }));
+            } else {
+                geom.push(Thing::CircleWithTooltip(CircleWithTooltip {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                    t: t,
+                }));
+            }
 
         // Process line.
         } else if tag == "line" {
