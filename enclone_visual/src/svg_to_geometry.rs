@@ -137,7 +137,7 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     parse_kv(&line)
 }
 
-pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
+pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
     // First divide svg into lines of the form <...>, or something between such.
 
     let mut lines = Vec::<String>::new();
@@ -182,7 +182,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
 
     // Repackage lines into known svg entities.
 
-    let mut geom = Vec::<Thing>::new();
+    let mut geom = Vec::<Geometry>::new();
     let mut i = 0;
     while i < lines.len() {
         let mut line = lines[i].clone();
@@ -253,13 +253,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 return None;
             }
             if t.len() == 0 {
-                geom.push(Thing::Circle(Circle {
+                geom.push(Geometry::Circle(Circle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     r: r.unwrap(),
                     c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 }));
             } else {
-                geom.push(Thing::CircleWithTooltip(CircleWithTooltip {
+                geom.push(Geometry::CircleWithTooltip(CircleWithTooltip {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     r: r.unwrap(),
                     c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
@@ -298,7 +298,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push(Thing::Segment(Segment {
+            geom.push(Geometry::Segment(Segment {
                 p1: Point::new(x1.unwrap(), y1.unwrap()),
                 p2: Point::new(x2.unwrap(), y2.unwrap()),
                 w: stroke_width.unwrap(),
@@ -355,7 +355,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push(Thing::PolySegment(PolySegment {
+            geom.push(Geometry::PolySegment(PolySegment {
                 p: p.unwrap(),
                 w: stroke_width.unwrap(),
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
@@ -399,7 +399,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 return None;
             }
             if stroke_width.is_none() {
-                geom.push(Thing::Rectangle(Rectangle {
+                geom.push(Geometry::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -408,7 +408,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     stroke_color: Color::new(0, 0, 0, 0),
                 }));
             } else {
-                geom.push(Thing::Rectangle(Rectangle {
+                geom.push(Geometry::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -487,7 +487,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else {
                 halign = Right;
             }
-            geom.push(Thing::Text(Text {
+            geom.push(Geometry::Text(Text {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),

@@ -2,7 +2,7 @@
 
 // Basic geometric objects, allowing representation of simple SVG files as vectors of such objects.
 
-pub enum Thing {
+pub enum Geometry {
     Segment(Segment),
     Text(Text),
     Circle(Circle),
