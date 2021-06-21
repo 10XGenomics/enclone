@@ -2,6 +2,7 @@
 
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
+use crate::svg_to_geometry::*;
 use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
@@ -147,6 +148,7 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
+                    let _geometry = svg_to_geometry(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
