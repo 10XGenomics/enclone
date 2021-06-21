@@ -73,6 +73,10 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
         c1 = Some(0);
         c2 = Some(0);
         c3 = Some(0);
+    } else if x == "red" {
+        c1 = Some(255);
+        c2 = Some(0);
+        c3 = Some(0);
     } else {
         let b = x.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
