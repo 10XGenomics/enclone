@@ -35,6 +35,15 @@ impl CanvasView {
     }
 }
 
+fn to_color(c: &crate::geometry::Color) -> Color {
+    Color {
+        r: c.r as f32 / 255.0,
+        g: c.g as f32 / 255.0,
+        b: c.b as f32 / 255.0,
+        a: c.t as f32 / 255.0,
+    }
+}
+
 impl<'a> canvas::Program<Message> for CanvasView {
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
         let mut frame = Frame::new(bounds.size());
@@ -51,18 +60,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             Point {
                                 x: seg.p2.x,
                                 y: seg.p2.y,
-                            }
+                            },
                         );
-                        let c = Color {
-                            r: seg.c.r as f32 / 255.0,
-                            g: seg.c.g as f32 / 255.0,
-                            b: seg.c.b as f32 / 255.0,
-                            a: seg.c.t as f32 / 255.0,
-                        };
-                        frame.stroke(
-                            &p,
-                            Stroke::default().with_color(c).with_width(seg.w),
-                        );
+                        let c = to_color(&seg.c);
+                        frame.stroke(&p, Stroke::default().with_color(c).with_width(seg.w));
                     }
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
                         let circle = Path::circle(
@@ -73,15 +74,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             circ.r,
                         );
                         let c = &circ.c;
-                        frame.fill(
-                            &circle,
-                            Color {
-                                r: c.r as f32 / 255.0,
-                                g: c.g as f32 / 255.0,
-                                b: c.b as f32 / 255.0,
-                                a: c.t as f32 / 255.0,
-                            },
-                        );
+                        frame.fill(&circle, to_color(c));
                     }
                     crate::geometry::Geometry::Circle(circ) => {
                         let circle = Path::circle(
@@ -92,15 +85,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             circ.r,
                         );
                         let c = &circ.c;
-                        frame.fill(
-                            &circle,
-                            Color {
-                                r: c.r as f32 / 255.0,
-                                g: c.g as f32 / 255.0,
-                                b: c.b as f32 / 255.0,
-                                a: c.t as f32 / 255.0,
-                            },
-                        );
+                        frame.fill(&circle, to_color(c));
                     }
                     _ => {}
                 };
