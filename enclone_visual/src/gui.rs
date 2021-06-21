@@ -500,10 +500,36 @@ mod canvas_view {
 
     impl<'a> canvas::Program<Message> for CanvasView {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
-            let pos = cursor.position_in(&bounds);
             let mut frame = Frame::new(bounds.size());
-            let radius = self.state.radius;
             let center = frame.center();
+            if self.state.geometry_value.is_some() {
+                let g = self.state.geometry_value.as_ref().unwrap();
+                for i in 0..g.len() {
+                    match &g[i] {
+                        crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                            let circle = Path::circle(
+                                Point {
+                                    x: center.x + circ.p.x,
+                                    y: center.y + circ.p.y,
+                                },
+                                circ.r,
+                            );
+                            let c = &circ.c;
+                            frame.fill(&circle,  
+                                Color {
+                                    r: c.r as f32 / 255.0,
+                                    g: c.g as f32 / 255.0,
+                                    b: c.b as f32 / 255.0,
+                                    a: c.t as f32 / 255.0,
+                                }
+                            );
+                        },
+                        _ => {},
+                    };
+                }
+            }
+            let pos = cursor.position_in(&bounds);
+            let radius = self.state.radius;
             if pos.is_some() {
                 let xdiff = pos.unwrap().x - center.x;
                 let ydiff = pos.unwrap().y - center.y;
@@ -522,7 +548,7 @@ mod canvas_view {
             }
 
             let mut r = self.state.rand;
-            for _ in 0..10000 {
+            for _ in 0..10 {
                 r = rotate(r);
                 let x = r % 200;
                 r = rotate(r);
