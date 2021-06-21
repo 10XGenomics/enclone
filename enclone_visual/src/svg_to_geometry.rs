@@ -187,6 +187,19 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
         if line == "</svg>" {
             break;
         }
+
+        // Process defs.  We ignore them.
+
+        if line == "<defs>" {
+            while i < lines.len() && lines[i] != "</defs>" {
+                i += 1;
+            }
+            i += 1;
+            continue;
+        }
+
+        // Keep going.
+
         if !line.contains(' ') {
             return None;
         }
