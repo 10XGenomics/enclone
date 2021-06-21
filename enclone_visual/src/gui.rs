@@ -267,13 +267,14 @@ impl Application for EncloneVisual {
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
-            graphic_row = graphic_row.push(svg_as_png);
-            if 0 == 1 {
+            if self.canvas_view.state.geometry_value.is_some() {
                 graphic_row = graphic_row.push(
                     self.canvas_view
                         .view()
                         .map(move |_message| Message::ButtonPressed),
-                );
+                ).height(Units(SVG_HEIGHT));
+            } else {
+                graphic_row = graphic_row.push(svg_as_png);
             }
             graphic_row = graphic_row.push(copy_button);
         }
@@ -459,14 +460,7 @@ mod style {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn rotate(r: i64) -> i64 {
-    6_364_136_223_846_793_005i64
-        .wrapping_mul(r)
-        .wrapping_add(1_442_695_040_888_963_407)
-}
-
 mod canvas_view {
-    use crate::gui::rotate;
     use iced::{
         canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
         Color, Element, Length, Rectangle,
@@ -509,7 +503,7 @@ mod canvas_view {
     impl<'a> canvas::Program<Message> for CanvasView {
         fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
             let mut frame = Frame::new(bounds.size());
-            let center = frame.center();
+            // let center = frame.center();
             if self.state.geometry_value.is_some() {
                 let g = self.state.geometry_value.as_ref().unwrap();
                 for i in 0..g.len() {
@@ -517,8 +511,8 @@ mod canvas_view {
                         crate::geometry::Geometry::CircleWithTooltip(circ) => {
                             let circle = Path::circle(
                                 Point {
-                                    x: center.x + circ.p.x,
-                                    y: center.y + circ.p.y,
+                                    x: circ.p.x,
+                                    y: circ.p.y,
                                 },
                                 circ.r,
                             );
@@ -535,55 +529,31 @@ mod canvas_view {
                         _ => {},
                     };
                 }
-            }
-            let pos = cursor.position_in(&bounds);
-            let radius = self.state.radius;
-            if pos.is_some() {
-                let xdiff = pos.unwrap().x - center.x;
-                let ydiff = pos.unwrap().y - center.y;
-                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
-                if dist <= radius {
-                    frame.translate(Vector { x: 100.0, y: 100.0 });
-                    frame.fill_text(format!(
-                        "in circle one at distance {:.1} <= {:.1}",
-                        dist, radius
-                    ));
-                    frame.translate(Vector {
-                        x: -100.0,
-                        y: -100.0,
-                    });
+                let pos = cursor.position_in(&bounds);
+                // let radius = self.state.radius;
+                if pos.is_some() {
+                    for i in 0..g.len() {
+                        match &g[i] {
+                            crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                                let xdiff = pos.unwrap().x - circ.p.x;
+                                let ydiff = pos.unwrap().y - circ.p.y;
+                                let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                                if dist <= circ.r {
+                                    frame.translate(Vector { x: 400.0, y: 10.0 });
+                                    frame.fill_text(format!("{}", circ.t));
+                                    frame.translate(Vector {
+                                        x: -400.0,
+                                        y: -10.0,
+                                    });
+                                    break;
+                                }
+                            },
+                            _ => { },
+                        };
+                    }
+
                 }
             }
-
-            let mut r = self.state.rand;
-            for _ in 0..10 {
-                r = rotate(r);
-                let x = r % 200;
-                r = rotate(r);
-                let y = r % 200;
-                r = rotate(r);
-                let rad = r % 10;
-                let circle2 = Path::circle(
-                    Point {
-                        x: center.x + x as f32,
-                        y: center.y + y as f32,
-                    },
-                    rad as f32,
-                );
-                r = rotate(r);
-                let c1 = 0.7 + (r % 1000) as f32 / 3000.0;
-                r = rotate(r);
-                let c2 = 0.7 + (r % 1000) as f32 / 3000.0;
-                r = rotate(r);
-                let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
-                frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
-            }
-
-            let circle1 = Path::circle(center, radius);
-            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
-            let circlex = Path::circle(center, 2.0);
-            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
-
             vec![frame.into_geometry()]
         }
     }

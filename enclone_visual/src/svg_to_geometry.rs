@@ -133,7 +133,7 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     } else {
         return None;
     }
-    println!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // println!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     parse_kv(&line)
 }
 
@@ -149,7 +149,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                 if line == "\n" {
                     line.clear();
                 } else if line.len() > 0 {
-                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    // println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     lines.push(line.clone());
                     line.clear();
                 }
@@ -162,7 +162,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             }
             if lt == gt && line.contains('>') {
                 if line != "\n" {
-                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    // println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     lines.push(line.clone());
                 }
                 line.clear();
@@ -175,7 +175,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             line.truncate(line.len() - 1);
         }
         if line.len() > 0 && line != "\n" {
-            println!("residual line = {} = ${}$", line.len(), line); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("residual line = {} = ${}$", line.len(), line); // XXXXXXXXXXXXXXXXXXXXXXXX
             return None;
         }
     }
@@ -186,7 +186,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
     let mut i = 0;
     while i < lines.len() {
         let mut line = lines[i].clone();
-        println!("\nline = {} = ${}$", lines[i].len(), lines[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        // println!("\nline = {} = ${}$", lines[i].len(), lines[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
         i += 1;
         if line == "</svg>" {
             break;
@@ -212,18 +212,20 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             continue;
         }
         line = line.after(" ").to_string();
-        println!("tag = {}", tag); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        // println!("tag = {}", tag); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        /*
         if i < lines.len() {
             println!("lines[i] = {}", lines[i]);
         } // XXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if i + 1 < lines.len() {
             println!("lines[i+1] = {}", lines[i + 1]);
         } // XXXXXXXXXXXXXXXXXXXXXX
+        */
 
         // Process circle.
 
         if tag == "circle" {
-            println!("processing circle"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("processing circle"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let kv = parse_kv_term(&line);
             if kv.is_none() {
                 return None;
@@ -235,7 +237,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                // println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if key == "stroke" || key == "stroke-width" {
                 } else if key == "tooltip" {
                     t = value.to_string();
@@ -318,7 +320,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let mut value = m.1.clone();
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                // println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if key == "points" {
                     if value.ends_with(' ') {
                         value = value.rev_before(" ").to_string();
@@ -351,7 +353,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
                     return None;
                 }
             }
-            println!("testing prereqs"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("testing prereqs"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
@@ -420,9 +422,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
 
         // Process text.
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
-            println!("processing text"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("processing text"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let text = lines[i].to_string();
-            println!("text content = {}", text); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("text content = {}", text); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let mut font = "Arial".to_string();
             let mut font_size = None;
             let (mut x, mut y) = (None, None);
@@ -431,7 +433,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             let mut text_anchor = "left".to_string();
             let mut rotate = [0.0; 3];
             i += 2;
-            println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            // println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let kv = parse_kv(&line.rev_before(">"));
             if kv.is_none() {
                 return None;
@@ -439,7 +441,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                // println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if get_numeric(&key, &value, "x", &mut x) {
                 } else if get_numeric(&key, &value, "y", &mut y) {
                 } else if get_numeric(&key, &value, "font-size", &mut font_size) {
