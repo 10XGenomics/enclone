@@ -1,10 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use canvas_view::CanvasView;
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
+use crate::geometry::*;
 use crate::svg_to_geometry::*;
 use crate::*;
+use canvas_view::CanvasView;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
@@ -150,7 +151,23 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
-                    self.canvas_view.state.geometry_value = svg_to_geometry(&reply_svg);
+                    let geometry = svg_to_geometry(&reply_svg);
+                    if geometry.is_some() {
+                        let mut ok = true;
+                        for i in 0..geometry.as_ref().unwrap().len() {
+                            if !std::matches!(
+                                geometry.as_ref().unwrap()[i],
+                                Geometry::CircleWithTooltip(_)
+                            ) {
+                                ok = false;
+                            }
+                        }
+                        if ok {
+                            self.canvas_view.state.geometry_value = geometry;
+                        } else {
+                            self.canvas_view.state.geometry_value = None;
+                        }
+                    }
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
