@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use canvas_view::CanvasView;
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
 use crate::geometry::*;
@@ -67,6 +68,7 @@ struct EncloneVisual {
     compute_state: ComputeState,
     copy_button: button::State,
     copy_button_color: Color,
+    _canvas_view: CanvasView,
 }
 
 #[derive(Debug, Clone)]
