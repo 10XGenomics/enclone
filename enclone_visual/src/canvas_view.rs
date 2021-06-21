@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use iced::{
-    canvas::{self, Canvas, Cursor, Frame, Geometry, Path},
+    canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke},
     Color, Element, Length, Rectangle,
 };
 use iced_native::{Point, Vector};
@@ -42,6 +42,28 @@ impl<'a> canvas::Program<Message> for CanvasView {
             let g = self.state.geometry_value.as_ref().unwrap();
             for i in 0..g.len() {
                 match &g[i] {
+                    crate::geometry::Geometry::Segment(seg) => {
+                        let p = Path::line(
+                            Point {
+                                x: seg.p1.x,
+                                y: seg.p1.y,
+                            },
+                            Point {
+                                x: seg.p2.x,
+                                y: seg.p2.y,
+                            }
+                        );
+                        let c = Color {
+                            r: seg.c.r as f32 / 255.0,
+                            g: seg.c.g as f32 / 255.0,
+                            b: seg.c.b as f32 / 255.0,
+                            a: seg.c.t as f32 / 255.0,
+                        };
+                        frame.stroke(
+                            &p,
+                            Stroke::default().with_color(c).with_width(seg.w),
+                        );
+                    }
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
                         let circle = Path::circle(
                             Point {
