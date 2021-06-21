@@ -158,6 +158,9 @@ impl Application for EncloneVisual {
                             if !std::matches!(
                                 geometry.as_ref().unwrap()[i],
                                 Geometry::CircleWithTooltip(_)
+                            ) && !std::matches!(
+                                geometry.as_ref().unwrap()[i],
+                                Geometry::Circle(_)
                             ) {
                                 ok = false;
                             }
@@ -510,6 +513,25 @@ mod canvas_view {
                 for i in 0..g.len() {
                     match &g[i] {
                         crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                            let circle = Path::circle(
+                                Point {
+                                    x: circ.p.x,
+                                    y: circ.p.y,
+                                },
+                                circ.r,
+                            );
+                            let c = &circ.c;
+                            frame.fill(
+                                &circle,
+                                Color {
+                                    r: c.r as f32 / 255.0,
+                                    g: c.g as f32 / 255.0,
+                                    b: c.b as f32 / 255.0,
+                                    a: c.t as f32 / 255.0,
+                                },
+                            );
+                        }
+                        crate::geometry::Geometry::Circle(circ) => {
                             let circle = Path::circle(
                                 Point {
                                     x: circ.p.x,
