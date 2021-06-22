@@ -11,3 +11,7 @@ is unclear and there's no explanation where the files came from.
 
 The reason we're supplying monospace fonts at all is that the only universally available
 monospace font is Courier New, which poorly displays the enclone clonotypes.
+
+LiberationSans-Regular.ttf was downloaded 5/22/21 from 
+https://www.fontsquirrel.com/fonts/liberation-sans.  It is licensed under
+SIL_Open_Font_License.txt.
