@@ -6,17 +6,15 @@ TO DO
 
 3.  Trim features and duplicated crates; reduce binary size.
 
-4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-
-5.  Handle the case where tsh hasn't been started
+4.  Handle the case where tsh hasn't been started
     server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
     kex_exchange_identification: Connection closed by remote host
 
-6.  What do we do about the truncation of printing to fifty clonotypes?
+5.  What do we do about the truncation of printing to fifty clonotypes?
 
-7.  Make code work for 2 or more SVG files.
+6.  Make code work for 2 or more SVG files.
 
-8.  Refactor to keep tokio etc. out of cellranger.
+7.  Refactor to keep tokio etc. out of cellranger.
 
 ---------------------------------------------------------------------------------------------------
 
