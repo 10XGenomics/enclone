@@ -352,6 +352,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stderr(Stdio::piped())
                 .spawn();
         }
+        if verbose {
+            println!("server forked");
+        }
         if !server_process.is_ok() {
             eprintln!(
                 "\nfailed to launch server, err =\n{}.\n",
