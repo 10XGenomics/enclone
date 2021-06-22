@@ -150,7 +150,7 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
-                    let geometry = svg_to_geometry(&reply_svg);
+                    let geometry = svg_to_geometry(&reply_svg, false);
                     if geometry.is_some() {
                         let mut ok = true;
                         for i in 0..geometry.as_ref().unwrap().len() {
