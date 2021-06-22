@@ -14,11 +14,9 @@ TO DO
 
 6.  What do we do about the truncation of printing to fifty clonotypes?
 
-7.  tooltip
+7.  Make code work for 2 or more SVG files.
 
-8.  Make code work for 2 or more SVG files.
-
-9.  Refactor to keep tokio etc. out of cellranger.
+8.  Refactor to keep tokio etc. out of cellranger.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -58,6 +56,9 @@ WAITING ON ICED
 
 10. Canvas in scrollable crashes.  
     Reported as issue #924, waiting for response.
+
+11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+    can't have tooltips.
 
 ---------------------------------------------------------------------------------------------------
 
