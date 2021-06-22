@@ -31,6 +31,7 @@ pub mod proto {
 pub static REMOTE: AtomicBool = AtomicBool::new(false);
 pub static USING_SETUP: AtomicBool = AtomicBool::new(false);
 pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
+pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);

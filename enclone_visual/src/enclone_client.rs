@@ -92,6 +92,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             verbose = true;
         }
     }
+    if verbose {
+        VERBOSE.store(true, SeqCst);
+    }
 
     // Set enclone visual version.
 

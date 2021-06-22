@@ -168,6 +168,8 @@ impl Application for EncloneVisual {
                         } else {
                             self.canvas_view.state.geometry_value = None;
                         }
+                    } else if VERBOSE.load(SeqCst) {
+                        println!("translation from svg to geometries failed");
                     }
                 }
                 self.compute_state = WaitingForRequest;
