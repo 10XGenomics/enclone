@@ -154,12 +154,13 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 }
                                 let mut log = String::new();
                                 print_tabular_vbox(&mut log, &rows, 1, &b"l|r".to_vec(), 
-                                    false, false);
+                                    false, true);
                                 frame.translate(Vector { x: 400.0, y: 10.0 });
                                 let text = canvas::Text {
                                     content: log,
                                     size: 20.0,
                                     font: DEJAVU,
+                                    color: Color::from_rgb(0.8, 0.4, 0.6),
                                     ..canvas::Text::default()
                                 };
                                 frame.fill_text(text);
