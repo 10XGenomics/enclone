@@ -61,8 +61,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         );
                         frame.fill(&r, to_color(&rect.fill_color));
                         let c = to_color(&rect.stroke_color);
-                        frame.stroke(&r, 
-                            Stroke::default().with_color(c).with_width(rect.stroke_width));
+                        frame.stroke(
+                            &r,
+                            Stroke::default()
+                                .with_color(c)
+                                .with_width(rect.stroke_width),
+                        );
                     }
                     crate::geometry::Geometry::PolySegment(segs) => {
                         for i in 0..segs.p.len() - 1 {
