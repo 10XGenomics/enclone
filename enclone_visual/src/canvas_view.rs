@@ -60,16 +60,50 @@ impl<'a> canvas::Program<Message> for CanvasView {
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
         let mut frame = Frame::new(bounds.size());
         if self.state.geometry_value.is_some() {
+            // for now not scaling stroke width, not sure what is optimal
+            // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
+            // should file bug
+            const MAX_HEIGHT: f32 = 400.0;
+            let mut height = 0.0 as f32;
             let g = self.state.geometry_value.as_ref().unwrap();
+            for i in 0..g.len() {
+                match &g[i] {
+                    crate::geometry::Geometry::Text(o) => {
+                        height = height.max(o.p.y);
+                    }
+                    crate::geometry::Geometry::Rectangle(rect) => {
+                        height = height.max(rect.p.y + rect.height);
+                    }
+                    crate::geometry::Geometry::PolySegment(segs) => {
+                        for i in 0..segs.p.len() - 1 {
+                            height = height.max(segs.p[i].y);
+                        }
+                    }
+                    crate::geometry::Geometry::Segment(seg) => {
+                        height = height.max(seg.p1.y);
+                        height = height.max(seg.p2.y);
+                    }
+                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                        height = height.max(circ.p.y + circ.r);
+                    }
+                    crate::geometry::Geometry::Circle(circ) => {
+                        height = height.max(circ.p.y + circ.r);
+                    }
+                };
+            }
+            let mut scale = 1.0;
+            if height > MAX_HEIGHT {
+                scale = MAX_HEIGHT / height;
+            }
             for i in 0..g.len() {
                 match &g[i] {
                     crate::geometry::Geometry::Text(o) => {
                         // rotate not implemented because not a feature yet in iced
                         let x = Text {
                             content: o.t.clone(),
-                            size: o.font_size,
+                            size: o.font_size * scale,
                             color: to_color(&o.c),
-                            position: Point { x: o.p.x, y: o.p.y },
+                            position: Point { x: o.p.x * scale, y: o.p.y * scale },
                             font: match o.font.as_str() {
                                 "DejaVuSansMono" => DEJAVU,
                                 "Arial" => LIBERATION_SANS,
@@ -93,10 +127,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     crate::geometry::Geometry::Rectangle(rect) => {
                         let r = Path::rectangle(
                             Point {
-                                x: rect.p.x,
-                                y: rect.p.y,
+                                x: rect.p.x * scale,
+                                y: rect.p.y * scale,
                             },
-                            Size::new(rect.width, rect.height),
+                            Size::new(rect.width * scale, rect.height * scale),
                         );
                         frame.fill(&r, to_color(&rect.fill_color));
                         let c = to_color(&rect.stroke_color);
@@ -111,12 +145,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         for i in 0..segs.p.len() - 1 {
                             let p = Path::line(
                                 Point {
-                                    x: segs.p[i].x,
-                                    y: segs.p[i].y,
+                                    x: segs.p[i].x * scale,
+                                    y: segs.p[i].y * scale,
                                 },
                                 Point {
-                                    x: segs.p[i + 1].x,
-                                    y: segs.p[i + 1].y,
+                                    x: segs.p[i + 1].x * scale,
+                                    y: segs.p[i + 1].y * scale,
                                 },
                             );
                             let c = to_color(&segs.c);
@@ -126,12 +160,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     crate::geometry::Geometry::Segment(seg) => {
                         let p = Path::line(
                             Point {
-                                x: seg.p1.x,
-                                y: seg.p1.y,
+                                x: seg.p1.x * scale,
+                                y: seg.p1.y * scale,
                             },
                             Point {
-                                x: seg.p2.x,
-                                y: seg.p2.y,
+                                x: seg.p2.x * scale,
+                                y: seg.p2.y * scale,
                             },
                         );
                         let c = to_color(&seg.c);
@@ -140,10 +174,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
                         let circle = Path::circle(
                             Point {
-                                x: circ.p.x,
-                                y: circ.p.y,
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
                             },
-                            circ.r,
+                            circ.r * scale,
                         );
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
@@ -151,10 +185,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     crate::geometry::Geometry::Circle(circ) => {
                         let circle = Path::circle(
                             Point {
-                                x: circ.p.x,
-                                y: circ.p.y,
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
                             },
-                            circ.r,
+                            circ.r * scale,
                         );
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
@@ -166,8 +200,8 @@ impl<'a> canvas::Program<Message> for CanvasView {
                 for i in 0..g.len() {
                     match &g[i] {
                         crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                            let xdiff = pos.unwrap().x - circ.p.x;
-                            let ydiff = pos.unwrap().y - circ.p.y;
+                            let xdiff = pos.unwrap().x - circ.p.x * scale;
+                            let ydiff = pos.unwrap().y - circ.p.y * scale;
                             let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                             if dist <= circ.r {
                                 let stext = circ.t.clone();
