@@ -1619,9 +1619,9 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="110.81" cy="34.09" r="2.93" fill="red" />
 <circle cx="113.74" cy="39.17" r="2.93" fill="red" />
 <circle cx="116.67" cy="44.24" r="2.93" fill="red" />
-<rect x="399.14" y="10" width="91.84" height="60" style="fill:white;stroke:black;stroke-width:2" />
-<text x="419.14" y="35" font-family="Arial" font-size="20">123085</text>
-<circle cx="409.14" cy="30" r="4" fill="blue" />
-<text x="419.14" y="60" font-family="Arial" font-size="20">123089</text>
-<circle cx="409.14" cy="55" r="4" fill="red" />
+<rect x="404.14" y="10" width="91.84" height="60" style="fill:white;stroke:black;stroke-width:2" />
+<text x="424.14" y="35" font-family="Arial" font-size="20">123085</text>
+<circle cx="414.14" cy="30" r="4" fill="blue" />
+<text x="424.14" y="60" font-family="Arial" font-size="20">123089</text>
+<circle cx="414.14" cy="55" r="4" fill="red" />
 </svg>

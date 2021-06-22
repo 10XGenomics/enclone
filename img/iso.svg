@@ -1848,25 +1848,25 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="329.39" cy="47.74" r="2.74" fill="rgb(250,120,250)" />
 <circle cx="332.13" cy="43.00" r="2.74" fill="rgb(250,120,250)" />
 <circle cx="334.86" cy="47.74" r="2.74" fill="rgb(250,120,250)" />
-<rect x="415" y="10" width="147.5" height="260" style="fill:white;stroke:black;stroke-width:2" />
-<text x="435" y="35" font-family="Arial" font-size="20">IGHA1</text>
-<circle cx="425" cy="30" r="4" fill="rgb(0,110,130)" />
-<text x="435" y="60" font-family="Arial" font-size="20">IGHA2</text>
-<circle cx="425" cy="55" r="4" fill="rgb(130,20,160)" />
-<text x="435" y="85" font-family="Arial" font-size="20">IGHD</text>
-<circle cx="425" cy="80" r="4" fill="rgb(0,90,200)" />
-<text x="435" y="110" font-family="Arial" font-size="20">IGHE</text>
-<circle cx="425" cy="105" r="4" fill="rgb(0,160,250)" />
-<text x="435" y="135" font-family="Arial" font-size="20">IGHG1</text>
-<circle cx="425" cy="130" r="4" fill="rgb(250,120,250)" />
-<text x="435" y="160" font-family="Arial" font-size="20">IGHG2</text>
-<circle cx="425" cy="155" r="4" fill="rgb(20,210,220)" />
-<text x="435" y="185" font-family="Arial" font-size="20">IGHG3</text>
-<circle cx="425" cy="180" r="4" fill="rgb(170,10,60)" />
-<text x="435" y="210" font-family="Arial" font-size="20">IGHG4</text>
-<circle cx="425" cy="205" r="4" fill="rgb(10,155,75)" />
-<text x="435" y="235" font-family="Arial" font-size="20">IGHM</text>
-<circle cx="425" cy="230" r="4" fill="rgb(255,130,95)" />
-<text x="435" y="260" font-family="Arial" font-size="20">undetermined</text>
-<circle cx="425" cy="255" r="4" fill="rgb(0,0,0)" />
+<rect x="420" y="10" width="147.5" height="260" style="fill:white;stroke:black;stroke-width:2" />
+<text x="440" y="35" font-family="Arial" font-size="20">IGHA1</text>
+<circle cx="430" cy="30" r="4" fill="rgb(0,110,130)" />
+<text x="440" y="60" font-family="Arial" font-size="20">IGHA2</text>
+<circle cx="430" cy="55" r="4" fill="rgb(130,20,160)" />
+<text x="440" y="85" font-family="Arial" font-size="20">IGHD</text>
+<circle cx="430" cy="80" r="4" fill="rgb(0,90,200)" />
+<text x="440" y="110" font-family="Arial" font-size="20">IGHE</text>
+<circle cx="430" cy="105" r="4" fill="rgb(0,160,250)" />
+<text x="440" y="135" font-family="Arial" font-size="20">IGHG1</text>
+<circle cx="430" cy="130" r="4" fill="rgb(250,120,250)" />
+<text x="440" y="160" font-family="Arial" font-size="20">IGHG2</text>
+<circle cx="430" cy="155" r="4" fill="rgb(20,210,220)" />
+<text x="440" y="185" font-family="Arial" font-size="20">IGHG3</text>
+<circle cx="430" cy="180" r="4" fill="rgb(170,10,60)" />
+<text x="440" y="210" font-family="Arial" font-size="20">IGHG4</text>
+<circle cx="430" cy="205" r="4" fill="rgb(10,155,75)" />
+<text x="440" y="235" font-family="Arial" font-size="20">IGHM</text>
+<circle cx="430" cy="230" r="4" fill="rgb(255,130,95)" />
+<text x="440" y="260" font-family="Arial" font-size="20">undetermined</text>
+<circle cx="430" cy="255" r="4" fill="rgb(0,0,0)" />
 </svg>
