@@ -20,8 +20,8 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
-const DEJAVU: Font = Font::External {
-    name: "DEJAVU",
+const DEJAVU_BOLD: Font = Font::External {
+    name: "DEJAVU_BOLD",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
@@ -215,7 +215,7 @@ impl Application for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .font(DEJAVU)
+        .font(DEJAVU_BOLD)
         .size(16);
 
         let button = Button::new(
@@ -242,7 +242,7 @@ impl Application for EncloneVisual {
             .scrollbar_width(12)
             .scroller_width(12)
             .style(style::Squeak)
-            .push(Text::new(&self.output_value).font(DEJAVU).size(13));
+            .push(Text::new(&self.output_value).font(DEJAVU_BOLD).size(13));
 
         // Fix the height of the SVG.  This needs to be set so that there is enough room for
         // the clonotype tables.  We do not set the width because it's the height that we need

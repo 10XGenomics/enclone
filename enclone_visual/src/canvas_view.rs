@@ -8,7 +8,6 @@ use iced_native::{Font, Point, Vector};
 use string_utils::*;
 use tables::*;
 
-// not bold
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
@@ -76,7 +75,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 "Arial" => LIBERATION_SANS,
                                 _ => LIBERATION_SANS,
                             },
-                            vertical_alignment: VerticalAlignment::Top,
+                            vertical_alignment: VerticalAlignment::Bottom,
                             horizontal_alignment: match o.halign {
                                 crate::geometry::HorizontalAlignment::Left => {
                                     HorizontalAlignment::Left
