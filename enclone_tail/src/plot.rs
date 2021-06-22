@@ -734,6 +734,7 @@ pub fn plot_clonotypes(
             actual_width = actual_width.max(x + r);
         }
     }
+    set_svg_width(svg, actual_width + BOUNDARY as f64);
 
     // Add legend for shading.
 
