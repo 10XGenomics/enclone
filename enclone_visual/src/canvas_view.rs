@@ -103,7 +103,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             content: o.t.clone(),
                             size: o.font_size * scale,
                             color: to_color(&o.c),
-                            position: Point { x: o.p.x * scale, y: o.p.y * scale },
+                            position: Point {
+                                x: o.p.x * scale,
+                                y: o.p.y * scale,
+                            },
                             font: match o.font.as_str() {
                                 "DejaVuSansMono" => DEJAVU,
                                 "Arial" => LIBERATION_SANS,
