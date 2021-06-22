@@ -6,6 +6,7 @@ use crate::proto::{
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
 use enclone_core::combine_group_pics::*;
+use enclone_core::parse_bsv;
 use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
 use itertools::Itertools;
 use log::{error, warn};
@@ -38,7 +39,7 @@ impl Analyzer for EncloneAnalyzer {
         let req: EncloneRequest = request.into_inner();
 
         // Override the output file
-        let fields = &req.args.split(' ').collect::<Vec<&str>>();
+        let fields = parse_bsv(&req.args);
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
         for j in 0..fields.len() {
