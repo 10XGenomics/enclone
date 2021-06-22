@@ -243,8 +243,8 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                     false,
                                     true,
                                 );
-                                let xpos = 50.0 + width * scale;
-                                frame.translate(Vector { x: xpos, y: 10.0 });
+                                let xpos = 20.0 + width * scale;
+                                frame.translate(Vector { x: xpos, y: 0.0 });
                                 let text = canvas::Text {
                                     content: log,
                                     size: 22.0,

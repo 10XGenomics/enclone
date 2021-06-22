@@ -865,7 +865,7 @@ pub fn plot_clonotypes(
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         let legend_height = (font_size + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let mut legend_xstart = actual_width + (BOUNDARY as f64) * 1.5;
+        let mut legend_xstart = actual_width + 20.0;
         let mut legend_ystart = BOUNDARY as f64;
         if using_shading {
             legend_xstart = legend_xstop_shading + 10.0;
