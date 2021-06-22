@@ -63,7 +63,9 @@ impl<'a> canvas::Program<Message> for CanvasView {
             // for now not scaling stroke width, not sure what is optimal
             // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
             // should file bug
-            const MAX_HEIGHT: f32 = 400.0;
+            // This could be 400.0 but we would need to take account of text width
+            // in computing the max.
+            const MAX_HEIGHT: f32 = 395.0;
             let mut height = 0.0 as f32;
             let g = self.state.geometry_value.as_ref().unwrap();
             for i in 0..g.len() {
@@ -105,13 +107,17 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             color: to_color(&o.c),
                             position: Point {
                                 x: o.p.x * scale,
-                                y: o.p.y * scale,
+                                // font bit is compensation for vertical alignment issue
+                                // don't understand why / 4.0 makes sense
+                                y: o.p.y * scale + o.font_size * scale / 4.0,
                             },
                             font: match o.font.as_str() {
                                 "DejaVuSansMono" => DEJAVU,
                                 "Arial" => LIBERATION_SANS,
                                 _ => LIBERATION_SANS,
                             },
+                            // Center doesn't seem to work, should report bug
+                            // nor does Top
                             vertical_alignment: VerticalAlignment::Bottom,
                             horizontal_alignment: match o.halign {
                                 crate::geometry::HorizontalAlignment::Left => {
