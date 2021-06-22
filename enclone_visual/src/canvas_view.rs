@@ -2,7 +2,7 @@
 
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke},
-    Color, Element, Length, Rectangle,
+    Color, Element, Length, Rectangle, Size,
 };
 use iced_native::{Point, Vector};
 
@@ -51,6 +51,19 @@ impl<'a> canvas::Program<Message> for CanvasView {
             let g = self.state.geometry_value.as_ref().unwrap();
             for i in 0..g.len() {
                 match &g[i] {
+                    crate::geometry::Geometry::Rectangle(rect) => {
+                        let r = Path::rectangle(
+                            Point {
+                                x: rect.p.x,
+                                y: rect.p.y,
+                            },
+                            Size::new(rect.width, rect.height),
+                        );
+                        frame.fill(&r, to_color(&rect.fill_color));
+                        let c = to_color(&rect.stroke_color);
+                        frame.stroke(&r, 
+                            Stroke::default().with_color(c).with_width(rect.stroke_width));
+                    }
                     crate::geometry::Geometry::PolySegment(segs) => {
                         for i in 0..segs.p.len() - 1 {
                             let p = Path::line(
