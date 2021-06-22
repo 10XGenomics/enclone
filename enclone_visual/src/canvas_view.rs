@@ -253,10 +253,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                     ..canvas::Text::default()
                                 };
                                 frame.fill_text(text);
-                                frame.translate(Vector {
-                                    x: -xpos,
-                                    y: -10.0,
-                                });
+                                frame.translate(Vector { x: -xpos, y: -10.0 });
                                 break;
                             }
                         }
