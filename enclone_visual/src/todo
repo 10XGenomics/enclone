@@ -60,6 +60,9 @@ WAITING ON ICED
 11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
+12. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
+    Asked on zulip chat if a canvas can know about clicks.
+
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
