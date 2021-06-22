@@ -4,7 +4,13 @@ use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke},
     Color, Element, Length, Rectangle, Size,
 };
-use iced_native::{Point, Vector};
+use iced_native::{Font, Point, Vector};
+
+// not bold
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+};
 
 #[derive(Default)]
 pub struct State {
@@ -138,6 +144,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 let text = canvas::Text {
                                     content: stext,
                                     size: 25.0,
+                                    font: DEJAVU,
                                     ..canvas::Text::default()
                                 };
                                 frame.fill_text(text);
