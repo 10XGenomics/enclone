@@ -430,7 +430,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Geometry>> {
             let (mut x, mut y) = (None, None);
             let mut c = Some((0, 0, 0));
             let mut o = 255;
-            let mut text_anchor = "left".to_string();
+            let mut text_anchor = "start".to_string();
             let mut rotate = [0.0; 3];
             i += 2;
             // println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
