@@ -51,6 +51,8 @@ WAITING ON ICED
 
 9.  Update to the latest versions of iced and iced_aw.
     This yielded a compilation error.  Issue #25 filed on iced_aw.
+    There is a possible solution there and I'm waiting on a precise specification of
+    Cargo.toml entries to test it.
 
 10. Canvas in scrollable crashes.  
     Reported as issue #924, flagged as bug.
