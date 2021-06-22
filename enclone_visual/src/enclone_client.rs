@@ -88,7 +88,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     for (key, _value) in env::vars() {
-        if key == "VERBOSE" {
+        if key == "ENCLONE_VERBOSE" {
             verbose = true;
         }
     }
