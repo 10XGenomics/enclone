@@ -2,7 +2,6 @@
 
 use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
-use crate::geometry::*;
 use crate::svg_to_geometry::*;
 use crate::*;
 use canvas_view::CanvasView;
@@ -155,14 +154,13 @@ impl Application for EncloneVisual {
                     if geometry.is_some() {
                         let mut ok = true;
                         for i in 0..geometry.as_ref().unwrap().len() {
-                            if !std::matches!(
-                                geometry.as_ref().unwrap()[i],
-                                Geometry::CircleWithTooltip(_)
-                            ) && !std::matches!(
-                                geometry.as_ref().unwrap()[i],
-                                Geometry::Circle(_)
-                            ) {
-                                ok = false;
+                            match &geometry.as_ref().unwrap()[i] {
+                                crate::geometry::Geometry::Text(ttt) => {
+                                    if ttt.rotate != [0.0; 3] {
+                                        ok = false;
+                                    }
+                                }
+                                _ => {}
                             }
                         }
                         if ok {
