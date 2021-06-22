@@ -558,6 +558,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         "PRINT_CPU_INFO",
         "PROFILE",
         "SVG",
+        "VERBOSE",
     ];
 
     // Define arguments that do nothing (because already parsed), and which may have

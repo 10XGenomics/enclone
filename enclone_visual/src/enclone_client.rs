@@ -87,6 +87,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
+    for (key, _value) in env::vars() {
+        if key == "VERBOSE" {
+            verbose = true;
+        }
+    }
 
     // Set enclone visual version.
 
