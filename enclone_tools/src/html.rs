@@ -237,10 +237,22 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
             && s.after("<img src=\"../../img/").contains(".svg\"")
         {
             let svg_filename = s.between("<img src=\"../../img/", "\"");
+            let mut has_deja = false;
             let h = open_for_read![&format!("img/{}", svg_filename)];
             for linex in h.lines() {
                 let t = linex.unwrap();
-                fwriteln!(g, "{}", t);
+                if t.contains("Deja") {
+                    has_deja = true;
+                }
+            }
+            if has_deja {
+                let h = open_for_read![&format!("img/{}", svg_filename)];
+                for linex in h.lines() {
+                    let t = linex.unwrap();
+                    fwriteln!(g, "{}", t);
+                }
+            } else {
+                fwriteln!(g, "{}", s);
             }
         } else {
             s = s.replace("#enclone", ENCLONE_FORMATTED);

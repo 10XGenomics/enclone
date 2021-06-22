@@ -897,14 +897,15 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+        let new_height = actual_height.max(legend_height as f64);
+        let new_width = actual_width + legend_width as f64 + 20.0;
         if !using_shading {
             set_svg_height(svg, new_height);
+            set_svg_width(svg, new_width);
         } else {
             if new_height > get_svg_height(&svg) {
                 set_svg_height(svg, new_height);
             }
-            let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
             set_svg_width(svg, new_width);
         }
         *svg += "</svg>";
