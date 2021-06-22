@@ -5,6 +5,8 @@ use iced::{
     Color, Element, Length, Rectangle, Size,
 };
 use iced_native::{Font, Point, Vector};
+use string_utils::*;
+use tables::*;
 
 // not bold
 const DEJAVU: Font = Font::External {
@@ -138,12 +140,25 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let ydiff = pos.unwrap().y - circ.p.y;
                             let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                             if dist <= circ.r {
-                                let mut stext = circ.t.clone();
-                                stext = stext.replace(",", "\n");
+                                let stext = circ.t.clone();
+                                let xs = stext.split(',').collect::<Vec<&str>>();
+                                let mut rows = Vec::<Vec<String>>::new();
+                                for i in 0..xs.len() {
+                                    if i > 0 {
+                                        rows.push(vec!["\\hline".to_string(); 2]);
+                                    }
+                                    let mut row = Vec::<String>::new();
+                                    row.push(xs[i].before("=").to_string());
+                                    row.push(xs[i].after("=").to_string());
+                                    rows.push(row);
+                                }
+                                let mut log = String::new();
+                                print_tabular_vbox(&mut log, &rows, 1, &b"l|r".to_vec(), 
+                                    false, false);
                                 frame.translate(Vector { x: 400.0, y: 10.0 });
                                 let text = canvas::Text {
-                                    content: stext,
-                                    size: 25.0,
+                                    content: log,
+                                    size: 20.0,
                                     font: DEJAVU,
                                     ..canvas::Text::default()
                                 };
