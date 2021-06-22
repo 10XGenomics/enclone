@@ -60,9 +60,6 @@ WAITING ON ICED
 11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
-12. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
-    Asked on zulip chat if a canvas can know about clicks.
-
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
@@ -91,3 +88,6 @@ NICE TO HAVE
 11. Add button to capture the entire enclone visual window.
 
 12. Get copy button to appear right next to the graphic.
+
+13. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
+    Start by reading how the canvas in the game of life example handles clicks.
