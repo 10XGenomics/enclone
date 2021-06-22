@@ -55,7 +55,7 @@ WAITING ON ICED
     This yielded a compilation error.  Issue #25 filed on iced_aw.
 
 10. Canvas in scrollable crashes.  
-    Reported as issue #924, waiting for response.
+    Reported as issue #924, flagged as bug.
 
 11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
