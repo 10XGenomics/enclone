@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use iced::{
-    canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke},
-    Color, Element, Length, Rectangle, Size,
+    canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
+    Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
 };
 use iced_native::{Font, Point, Vector};
 use string_utils::*;
@@ -12,6 +12,11 @@ use tables::*;
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+};
+
+const LIBERATION_SANS: Font = Font::External {
+    name: "LIBERATION_SANS",
+    bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),
 };
 
 #[derive(Default)]
@@ -59,6 +64,33 @@ impl<'a> canvas::Program<Message> for CanvasView {
             let g = self.state.geometry_value.as_ref().unwrap();
             for i in 0..g.len() {
                 match &g[i] {
+                    crate::geometry::Geometry::Text(o) => {
+                        // rotate not implemented because not a feature yet in iced
+                        let x = Text {
+                            content: o.t.clone(),
+                            size: o.font_size,
+                            color: to_color(&o.c),
+                            position: Point { x: o.p.x, y: o.p.y },
+                            font: match o.font.as_str() {
+                                "DejaVuSansMono" => DEJAVU,
+                                "Arial" => LIBERATION_SANS,
+                                _ => LIBERATION_SANS,
+                            },
+                            vertical_alignment: VerticalAlignment::Top,
+                            horizontal_alignment: match o.halign {
+                                crate::geometry::HorizontalAlignment::Left => {
+                                    HorizontalAlignment::Left
+                                }
+                                crate::geometry::HorizontalAlignment::Center => {
+                                    HorizontalAlignment::Center
+                                }
+                                crate::geometry::HorizontalAlignment::Right => {
+                                    HorizontalAlignment::Right
+                                }
+                            },
+                        };
+                        frame.fill_text(x);
+                    }
                     crate::geometry::Geometry::Rectangle(rect) => {
                         let r = Path::rectangle(
                             Point {
@@ -128,7 +160,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
                     }
-                    _ => {}
                 };
             }
             let pos = cursor.position_in(&bounds);
@@ -153,8 +184,14 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                     rows.push(row);
                                 }
                                 let mut log = String::new();
-                                print_tabular_vbox(&mut log, &rows, 1, &b"l|r".to_vec(), 
-                                    false, true);
+                                print_tabular_vbox(
+                                    &mut log,
+                                    &rows,
+                                    1,
+                                    &b"l|r".to_vec(),
+                                    false,
+                                    true,
+                                );
                                 frame.translate(Vector { x: 400.0, y: 10.0 });
                                 let text = canvas::Text {
                                     content: log,
