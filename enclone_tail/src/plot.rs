@@ -897,8 +897,8 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let new_height = actual_height.max(legend_height as f64);
-        let new_width = actual_width + legend_width as f64 + 20.0;
+        let new_height = actual_height.max(legend_height as f64) + BOUNDARY as f64;
+        let new_width = actual_width + legend_width as f64 + 20.0 + BOUNDARY as f64;
         if !using_shading {
             set_svg_height(svg, new_height);
             set_svg_width(svg, new_width);
