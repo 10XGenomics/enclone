@@ -8,7 +8,7 @@ rustflags = ["--codegen=link-args=-Wl,--compress-debug-sections=zlib"]
 # It can only be run from 10x Genomics primarily because it uses a bunch of data files that we 
 # don't distribute.
 
-t = "test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 --test enclone_test4 --test enclone_test_peak_mem --test test_com -- --nocapture"
+t = "test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 --test enclone_test4 --test enclone_test_peak_mem -- --nocapture"
 
 # Note that "./test" exercises this plus a few more tests.
 
