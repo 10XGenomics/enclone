@@ -74,6 +74,7 @@ struct EncloneVisual {
     history_index: usize,
     command_history: Vec<String>,
     command_copy_button: button::State,
+    command_text_button: button::State,
 }
 
 #[derive(Debug, Clone)]
@@ -244,6 +245,7 @@ impl Application for EncloneVisual {
             Message::CommandCopyButtonPressed => {
                 Command::none()
             }
+
         }
     }
 
@@ -293,7 +295,7 @@ impl Application for EncloneVisual {
         const COPY_BUTTON_FONT_SIZE: u16 = 15;
         let copy_button = Button::new(
             &mut self.copy_button,
-            Text::new("Copy").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
+            Text::new("Copy\nimage").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -403,14 +405,23 @@ impl Application for EncloneVisual {
                 }
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
-            graphic_row = graphic_row.push(
+            for i in 0..rows.len() {
+                if i > 0 {
+                    log += "\n";
+                }
+                log += &mut rows[i][0].clone();
+            }
+            log += "\n(click to copy)";
+            graphic_row = graphic_row.push( Button::new(
+                &mut self.command_text_button,
                 Text::new(&log).font(DEJAVU_BOLD).size(12),
+                )
+                .on_press(Message::CommandCopyButtonPressed)
             );
 
             // Add command copy button.
 
-            graphic_row = graphic_row.push(command_copy_button);
+            // graphic_row = graphic_row.push(command_copy_button);
 
             // Add up and down arrows.
 
