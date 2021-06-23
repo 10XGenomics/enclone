@@ -351,16 +351,18 @@ impl Application for EncloneVisual {
 
             // Add command box.
 
-            const MAX_LINE: usize = 40;
+            const MAX_LINE: usize = 45;
             let cmd = &self.command_history[self.history_index - 1];
             let mut rows = Vec::<Vec<String>>::new();
             {
                 let words = cmd.split(' ').collect::<Vec<&str>>();
                 let mut current = String::new();
-                for i in 0..words.len() {
+                let mut i = 0;
+                while i < words.len() {
                     if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_LINE {
                         rows.push(vec![current.clone()]);
                         current.clear();
+                        i -= 1;
                     } else if words[i].len() >= MAX_LINE {
                         let mut w = words[i].as_bytes().to_vec();
                         loop {
@@ -379,13 +381,14 @@ impl Application for EncloneVisual {
                     } else {
                         current += &mut format!(" {}", words[i]);
                     }
+                    i += 1;
                 }
                 if current.len() > 0 {
                     rows.push(vec![current]);
                 }
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, false);
+            print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
             graphic_row = graphic_row.push(
                 Text::new(&log).font(DEJAVU_BOLD).size(12).width(Units(300)),
             );
