@@ -406,13 +406,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if verbose {
             println!("waiting for server response");
         }
+        pub static READ_DONE: AtomicBool = AtomicBool::new(false);
+        thread::spawn(move || {
+            thread::sleep(Duration::from_millis(5000));
+            if !READ_DONE.load(SeqCst) {
+                eprintln!("\nseem to have hit a bad port, can you please restart your command?\n");
+                std::process::exit(1);
+            }
+        });
         server_stdout.read(&mut buffer).unwrap();
+        READ_DONE.store(true, SeqCst);
         println!(
             "time spent waiting to read bytes from server = {:.1} seconds",
             elapsed(&tread)
         );
-        // seems to not be needed
-        // thread::sleep(Duration::from_millis(100));
 
         // Look at stderr.
 
