@@ -73,6 +73,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut verbose = false;
     let mut monitor_threads = false;
     let mut config_name = String::new();
+    let mut fixed_port = None;
     for i in 1..args.len() {
         let arg = &args[i];
         if arg == "VERBOSE" {
@@ -81,10 +82,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             monitor_threads = true;
         } else if arg.starts_with("VIS=") {
             config_name = arg.after("VIS=").to_string();
+        } else if arg.starts_with("PORT=") {
+            fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
+            assert!(fixed_port.unwrap() >= 1024);
         } else if arg != "VIS" {
             eprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name, VERBOSE, and MONITOR_THREADS.\n"
+                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=..., but
+                only for testing.\n"
             );
             std::process::exit(1);
         }
@@ -337,7 +342,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards");
         let nanos = since_the_epoch.subsec_nanos() as u64;
-        let port: u16 = (nanos % 65536) as u16;
+        let mut port: u16 = (nanos % 65536) as u16;
+        if fixed_port.is_some() {
+            port = fixed_port.unwrap();
+        }
         if port < 1024 {
             continue;
         }
