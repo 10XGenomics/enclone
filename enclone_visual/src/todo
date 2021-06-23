@@ -7,7 +7,7 @@ TO DO
 3.  Trim features and duplicated crates; reduce binary size.
 
 4.  Handle the case where tsh hasn't been started
-    server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+    server says this: david.jaffe@....................: Permission denied (publickey).
     kex_exchange_identification: Connection closed by remote host
 
 5.  What do we do about the truncation of printing to fifty clonotypes?
