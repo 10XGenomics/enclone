@@ -69,6 +69,8 @@ struct EncloneVisual {
     copy_button: button::State,
     copy_button_color: Color,
     canvas_view: CanvasView,
+    svg_history: Vec<String>,
+    svg_history_index: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -84,7 +86,6 @@ enum Message {
     EventOccurred(iced_native::Event),
     CopyButtonPressed,
     CopyButtonFlashed(Result<(), String>),
-    // CopyButtonFlashed,
 }
 
 #[derive(Default)]
@@ -149,6 +150,8 @@ impl Application for EncloneVisual {
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    self.svg_history.push(reply_svg.clone());
+                    self.svg_history_index += 1;
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
