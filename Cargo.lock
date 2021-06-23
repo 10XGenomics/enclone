@@ -1361,6 +1361,7 @@ dependencies = [
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
+ "pretty_trace",
  "regex",
  "serde",
  "serde_derive",

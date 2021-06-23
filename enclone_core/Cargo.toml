@@ -27,6 +27,7 @@ attohttpc = { version = "0.12", default-features = false, features = ["compress"
 bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d0823f6da17f40e3cc1575" }
 bio_edit = { path = "../bio_edit" }
 bytes = ">=0.5.5, <2"
+chrono = "0.4.19"
 debruijn = "0.3.2"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "5.0.5"
@@ -36,6 +37,7 @@ itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
+pretty_trace = "0.5"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
 serde_derive = "1.0"
