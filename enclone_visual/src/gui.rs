@@ -93,6 +93,36 @@ struct ModalState {
     cancel_state: button::State,
 }
 
+impl EncloneVisual {
+    pub fn post_svg(&mut self, svg: &str) {
+        self.png_value = convert_svg_to_png(&svg.as_bytes());
+        let geometry = svg_to_geometry(&svg, false);
+        if geometry.is_some() {
+            let mut ok = true;
+            for i in 0..geometry.as_ref().unwrap().len() {
+                match &geometry.as_ref().unwrap()[i] {
+                    crate::geometry::Geometry::Text(ttt) => {
+                        if ttt.rotate != [0.0; 3] {
+                            ok = false;
+                        }
+                    }
+                _ => {}
+                }
+            }
+            if ok {
+                self.canvas_view.state.geometry_value = geometry;
+            } else {
+                self.canvas_view.state.geometry_value = None;
+            }
+        } else {
+            if VERBOSE.load(SeqCst) {
+                println!("translation from svg to geometries failed");
+            }
+            self.canvas_view.state.geometry_value = None;
+        }
+    }
+}
+
 impl Application for EncloneVisual {
     type Executor = iced::executor::Default;
     type Message = Message;
@@ -112,22 +142,27 @@ impl Application for EncloneVisual {
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
+
             Message::OpenModal => {
                 self.modal_state.show(true);
                 Command::none()
             }
+
             Message::CloseModal => {
                 self.modal_state.show(false);
                 Command::none()
             }
+
             Message::CancelButtonPressed => {
                 self.modal_state.show(false);
                 Command::none()
             }
+
             Message::InputChanged(ref value) => {
                 self.input_value = value.to_string();
                 Command::none()
             }
+
             Message::ButtonPressed => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
@@ -141,6 +176,7 @@ impl Application for EncloneVisual {
                     Command::none()
                 }
             }
+
             Message::ComputationDone(_) => {
                 let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
                 if reply_text.contains("enclone failed") {
@@ -156,31 +192,7 @@ impl Application for EncloneVisual {
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
-                    self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
-                    let geometry = svg_to_geometry(&reply_svg, false);
-                    if geometry.is_some() {
-                        let mut ok = true;
-                        for i in 0..geometry.as_ref().unwrap().len() {
-                            match &geometry.as_ref().unwrap()[i] {
-                                crate::geometry::Geometry::Text(ttt) => {
-                                    if ttt.rotate != [0.0; 3] {
-                                        ok = false;
-                                    }
-                                }
-                                _ => {}
-                            }
-                        }
-                        if ok {
-                            self.canvas_view.state.geometry_value = geometry;
-                        } else {
-                            self.canvas_view.state.geometry_value = None;
-                        }
-                    } else {
-                        if VERBOSE.load(SeqCst) {
-                            println!("translation from svg to geometries failed");
-                        }
-                        self.canvas_view.state.geometry_value = None;
-                    }
+                    self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
