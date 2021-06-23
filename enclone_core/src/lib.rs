@@ -13,6 +13,7 @@ pub mod prepare_for_apocalypse;
 pub mod print_tools;
 pub mod slurp;
 pub mod testlist;
+pub mod update_restart;
 pub mod vdj_features;
 
 use lazy_static::*;
