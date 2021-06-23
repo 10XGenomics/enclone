@@ -248,13 +248,13 @@ impl Application for EncloneVisual {
 
         let back_button = Button::new(
             &mut self.back_button,
-            Text::new("⇧").font(DEJAVU_BOLD).size(30),
+            Text::new("⇧").font(DEJAVU_BOLD).size(50),
         )
         .on_press(Message::BackButtonPressed);
 
         let forward_button = Button::new(
             &mut self.forward_button,
-            Text::new("⇩").font(DEJAVU_BOLD).size(30),
+            Text::new("⇩").font(DEJAVU_BOLD).size(50),
         )
         .on_press(Message::ForwardButtonPressed);
 
@@ -295,6 +295,12 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
+        let button_column = Column::new()
+            .spacing(8)
+            .push(copy_button)
+            .push(back_button)
+            .push(forward_button);
+
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
             if self.canvas_view.state.geometry_value.is_some() {
@@ -308,9 +314,7 @@ impl Application for EncloneVisual {
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
             }
-            graphic_row = graphic_row.push(copy_button);
-            graphic_row = graphic_row.push(back_button);
-            graphic_row = graphic_row.push(forward_button);
+            graphic_row = graphic_row.push(button_column);
         }
 
         let content = Column::new()
