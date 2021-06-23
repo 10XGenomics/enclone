@@ -19,6 +19,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
+use tables::*;
 
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",
@@ -70,7 +71,8 @@ struct EncloneVisual {
     copy_button_color: Color,
     canvas_view: CanvasView,
     svg_history: Vec<String>,
-    svg_history_index: usize,
+    history_index: usize,
+    command_history: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -106,7 +108,7 @@ impl EncloneVisual {
                             ok = false;
                         }
                     }
-                _ => {}
+                    _ => {}
                 }
             }
             if ok {
@@ -142,7 +144,6 @@ impl Application for EncloneVisual {
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
-
             Message::OpenModal => {
                 self.modal_state.show(true);
                 Command::none()
@@ -188,7 +189,8 @@ impl Application for EncloneVisual {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
                     if reply_svg.len() > 0 {
                         self.svg_history.push(reply_svg.clone());
-                        self.svg_history_index += 1;
+                        self.history_index += 1;
+                        self.command_history.push(USER_REQUEST.lock().unwrap()[0].clone());
                     }
                 }
                 self.output_value = reply_text.to_string();
@@ -224,15 +226,15 @@ impl Application for EncloneVisual {
             }
 
             Message::BackButtonPressed => {
-                self.svg_history_index -= 1;
-                let x = self.svg_history[self.svg_history_index - 1].clone();
+                self.history_index -= 1;
+                let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 Command::none()
             }
 
             Message::ForwardButtonPressed => {
-                self.svg_history_index += 1;
-                let x = self.svg_history[self.svg_history_index - 1].clone();
+                self.history_index += 1;
+                let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 Command::none()
             }
@@ -318,18 +320,19 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        let mut button_column = Column::new()
-            .spacing(8)
-            .push(copy_button);
-        if self.svg_history_index > 1 {
+        let mut button_column = Column::new().spacing(8).push(copy_button);
+        if self.history_index > 1 {
             button_column = button_column.push(back_button);
         }
-        if self.svg_history_index < self.svg_history.len() {
+        if self.history_index < self.svg_history.len() {
             button_column = button_column.push(forward_button);
         }
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
+
+            // Show the graphic.
+
             if self.canvas_view.state.geometry_value.is_some() {
                 graphic_row = graphic_row
                     .push(
@@ -341,9 +344,54 @@ impl Application for EncloneVisual {
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
             }
+
+            // Add button column.
+
             graphic_row = graphic_row.push(button_column);
-            // graphic_row = graphic_row.push(Text::new(&self.input_value).font(DEJAVU_BOLD).size(12).width(Units(300)));
+
+            // Add command box.
+
+            const MAX_LINE: usize = 40;
+            let cmd = &self.command_history[self.history_index - 1];
+            let mut rows = Vec::<Vec<String>>::new();
+            {
+                let words = cmd.split(' ').collect::<Vec<&str>>();
+                let mut current = String::new();
+                for i in 0..words.len() {
+                    if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_LINE {
+                        rows.push(vec![current.clone()]);
+                        current.clear();
+                    } else if words[i].len() >= MAX_LINE {
+                        let mut w = words[i].as_bytes().to_vec();
+                        loop {
+                            let n = std::cmp::min(MAX_LINE, w.len());
+                            let sub = stringme(&w[0..n]);
+                            if n < w.len() {
+                                rows.push(vec![sub]);
+                                w = w[n..w.len()].to_vec();
+                            } else {
+                                current = stringme(&w);
+                                break;
+                            }
+                        }
+                    } else if current.len() == 0 {
+                        current += &mut words[i].clone();
+                    } else {
+                        current += &mut format!(" {}", words[i]);
+                    }
+                }
+                if current.len() > 0 {
+                    rows.push(vec![current]);
+                }
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, false);
+            graphic_row = graphic_row.push(
+                Text::new(&log).font(DEJAVU_BOLD).size(12).width(Units(300)),
+            );
         }
+
+        // Put it all together.
 
         let content = Column::new()
             .spacing(20)
