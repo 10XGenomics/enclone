@@ -6,6 +6,7 @@
 use crate::geometry::*;
 use crate::svg_to_geometry::HorizontalAlignment::*;
 use enclone_core::parse_bsv;
+use std::collections::HashMap;
 use string_utils::*;
 
 fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
@@ -51,8 +52,9 @@ fn dehex(h: &[u8]) -> Option<u8> {
     Some(x)
 }
 
-fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
+fn parse_color(x: &str, to_rgb: &HashMap<String, String>) -> Option<(u8, u8, u8)> {
     let (c1, c2, c3);
+    let y = x.replace(" ", "").to_lowercase();
     if x.starts_with("rgb(") && x.ends_with(")") {
         let rgb = x
             .after("rgb(")
@@ -65,18 +67,11 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
         c1 = rgb[0].parse::<u8>().ok();
         c2 = rgb[1].parse::<u8>().ok();
         c3 = rgb[2].parse::<u8>().ok();
-    } else if x == "white" {
-        c1 = Some(255);
-        c2 = Some(255);
-        c3 = Some(255);
-    } else if x == "black" {
-        c1 = Some(0);
-        c2 = Some(0);
-        c3 = Some(0);
-    } else if x == "red" {
-        c1 = Some(255);
-        c2 = Some(0);
-        c3 = Some(0);
+    } else if to_rgb.contains_key(&y) {
+        let b = to_rgb[&y].as_bytes();
+        c1 = dehex(&b[1..=2]);
+        c2 = dehex(&b[3..=4]);
+        c3 = dehex(&b[5..=6]);
     } else {
         let b = x.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
@@ -138,7 +133,21 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
 }
 
 pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
-    // First divide svg into lines of the form <...>, or something between such.
+    //
+    // Get color list.
+
+    let mut to_rgb = HashMap::<String, String>::new();
+    {
+        let colors = include_str!["colors"];
+        for line in colors.lines() {
+            if !line.starts_with('#') {
+                let (color, rgb) = (line.before(" "), line.after(" "));
+                to_rgb.insert(color.to_string(), rgb.to_string());
+            }
+        }
+    }
+
+    // Divide svg into lines of the form <...>, or something between such.
 
     let mut lines = Vec::<String>::new();
     {
@@ -259,7 +268,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 } else if get_numeric(&key, &value, "cy", &mut y) {
                 } else if get_numeric(&key, &value, "r", &mut r) {
                 } else if key == "fill" {
-                    c = parse_color(&value);
+                    c = parse_color(&value, &to_rgb);
                 } else if get_opacity(&key, &value, &mut o) {
                 } else {
                     return None;
@@ -301,7 +310,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 } else if get_numeric(&key, &value, "x2", &mut x2) {
                 } else if get_numeric(&key, &value, "y2", &mut y2) {
                 } else if key == "stroke" {
-                    c = parse_color(&value);
+                    c = parse_color(&value, &to_rgb);
                 } else if key == "stroke-width" {
                     stroke_width = value.parse::<f32>().ok();
                 } else if get_opacity(&key, &value, &mut o) {
@@ -361,7 +370,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                     p = Some(points);
                 } else if key == "fill" {
                 } else if key == "stroke" {
-                    c = parse_color(&value);
+                    c = parse_color(&value, &to_rgb);
                 } else if key == "stroke-width" {
                     stroke_width = value.parse::<f32>().ok();
                 } else if get_opacity(&key, &value, &mut o) {
@@ -400,9 +409,9 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 } else if get_numeric(&key, &value, "width", &mut width) {
                 } else if get_numeric(&key, &value, "height", &mut height) {
                 } else if key == "fill" {
-                    fill_color = parse_color(&value);
+                    fill_color = parse_color(&value, &to_rgb);
                 } else if key == "stroke" {
-                    stroke_color = parse_color(&value);
+                    stroke_color = parse_color(&value, &to_rgb);
                 } else if key == "stroke-width" {
                     stroke_width = value.parse::<f32>().ok();
                 } else {
@@ -476,7 +485,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 } else if key == "font-family" && value == "DejaVu LGC Sans Mono" {
                     font = "DejaVuSansMono".to_string();
                 } else if key == "fill" {
-                    c = parse_color(&value);
+                    c = parse_color(&value, &to_rgb);
                 } else if get_opacity(&key, &value, &mut o) {
                 } else if key == "text-anchor" && value == "start" {
                     text_anchor = "start".to_string();
