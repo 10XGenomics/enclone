@@ -32,8 +32,8 @@ use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneReq
 use crate::*;
 use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
-use enclone_core::REMOTE_HOST;
 use enclone_core::update_restart::*;
+use enclone_core::REMOTE_HOST;
 use gui::launch_gui;
 use io_utils::*;
 use itertools::Itertools;

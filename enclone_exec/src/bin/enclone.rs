@@ -4,6 +4,7 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
+use enclone_core::update_restart::*;
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 use enclone_visual::enclone_client::enclone_client;
@@ -23,10 +24,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
     let mut no_kill = false;
+    let mut update = false;
     for i in 1..args.len() {
         if args[i] == "NO_KILL" {
             no_kill = true;
+        } else if args[i] == "UPDATE" {
+            update = true;
         }
+    }
+
+    // Update mode.
+
+    if update {
+        if args.len() != 2 {
+            eprintln!(
+                "\nYou've specified UPDATE, but in update mode, we expect only a single \
+                argument.\nIf you'd like to update, please type just enclone UPDATE.\n"
+            );
+            std::process::exit(1);
+        }
+        update_enclone();
+        std::process::exit(0);
     }
 
     // Client run of enclone.
