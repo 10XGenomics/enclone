@@ -73,6 +73,7 @@ struct EncloneVisual {
     svg_history: Vec<String>,
     history_index: usize,
     command_history: Vec<String>,
+    command_copy_button: button::State,
 }
 
 #[derive(Debug, Clone)]
@@ -86,8 +87,9 @@ enum Message {
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
-    CopyButtonPressed,
-    CopyButtonFlashed(Result<(), String>),
+    GraphicsCopyButtonPressed,
+    GraphicsCopyButtonFlashed(Result<(), String>),
+    CommandCopyButtonPressed,
 }
 
 #[derive(Default)]
@@ -214,13 +216,13 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
-            Message::CopyButtonPressed => {
+            Message::GraphicsCopyButtonPressed => {
                 self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
-                Command::perform(flash_copy_button(), Message::CopyButtonFlashed)
+                Command::perform(flash_copy_button(), Message::GraphicsCopyButtonFlashed)
             }
 
-            Message::CopyButtonFlashed(_) => {
+            Message::GraphicsCopyButtonFlashed(_) => {
                 self.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -236,6 +238,10 @@ impl Application for EncloneVisual {
                 self.history_index += 1;
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
+                Command::none()
+            }
+
+            Message::CommandCopyButtonPressed => {
                 Command::none()
             }
         }
@@ -288,7 +294,13 @@ impl Application for EncloneVisual {
             Text::new("Copy").color(self.copy_button_color),
         )
         .padding(10)
-        .on_press(Message::CopyButtonPressed);
+        .on_press(Message::GraphicsCopyButtonPressed);
+
+        let command_copy_button = Button::new(
+            &mut self.command_copy_button,
+            Text::new("Copy"),
+        )
+        .on_press(Message::CommandCopyButtonPressed);
 
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
@@ -392,6 +404,11 @@ impl Application for EncloneVisual {
             graphic_row = graphic_row.push(
                 Text::new(&log).font(DEJAVU_BOLD).size(12).width(Units(300)),
             );
+
+            // Add command copy button.
+
+            graphic_row = graphic_row.push(command_copy_button);
+
         }
 
         // Put it all together.
