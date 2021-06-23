@@ -8,20 +8,15 @@ MANUAL TESTING
    (e) Try to cut and paste from clonotype tables [BROKEN].
    (f) Test help button.
    (g) Test that copy button flashes and that it actually copies.
+   (h) Test cookbook commands.
+   (i) enclone BCR=123085
+   (j) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+   (k) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
+   (l) enclone woof
+   (m) enclone BCR=123085 NOPRINT
 
 2. Repeat ten times:
    (a) type enclone VIS
    (b) type d
    (c) make sure it says "thinking" briefly and produces output
    (d) exit.
-
-3. Make sure each of these commands do not return an error
-   - enclone BCR=123085
-   - enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
-   - q
-
-4. Test enclone BCR=123085 NOPRINT.
-
-5. Test a garbage command.
-
-6. Test cookbook commands.

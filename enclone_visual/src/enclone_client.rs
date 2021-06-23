@@ -87,10 +87,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
+    for (key, _value) in env::vars() {
+        if key == "ENCLONE_VERBOSE" {
+            verbose = true;
+        }
+    }
+    if verbose {
+        VERBOSE.store(true, SeqCst);
+    }
 
     // Set enclone visual version.
 
-    let version = "0.00000000000000000000000000001";
+    let version = "0.0000000000000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -346,6 +354,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
+        }
+        if verbose {
+            println!("server forked");
         }
         if !server_process.is_ok() {
             eprintln!(

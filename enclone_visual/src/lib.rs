@@ -11,7 +11,9 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 
+pub mod canvas_view;
 pub mod convert_svg_to_png;
+pub mod copy_image_to_clipboard;
 pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;
@@ -29,6 +31,7 @@ pub mod proto {
 pub static REMOTE: AtomicBool = AtomicBool::new(false);
 pub static USING_SETUP: AtomicBool = AtomicBool::new(false);
 pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
+pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);

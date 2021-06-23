@@ -1,6 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// color -- see core/src/color.rs
+// Illustrate the following:
+//
+// 1. Display a tooltip message in a Canvas.
+// 2. Make a Canvas change based on pushing a button.
+// 3. Show that a Canvas is stil performant even when it has a large number of objects in it.
 
 use engine::Engine;
 use iced::{button, Button, Column, Container, Element, Length, Sandbox, Settings, Text};
@@ -55,7 +59,7 @@ impl Sandbox for Circles {
     }
 
     fn view(&mut self) -> Element<Message> {
-        let button = Button::new(&mut self.button, Text::new("Submit"))
+        let button = Button::new(&mut self.button, Text::new("Push"))
             .padding(10)
             .on_press(Message::ButtonPressed);
         let content = Column::new().push(button).push(
@@ -123,11 +127,8 @@ mod engine {
                 if dist <= radius {
                     frame.translate(Vector { x: 100.0, y: 100.0 });
                     frame.fill_text(format!(
-                        "delta = ({:.1}, {:.1}); in circle one at distance {:.1} <= {:.1}",
-                        pos.unwrap().x - center.x,
-                        pos.unwrap().y - center.y,
-                        dist,
-                        radius
+                        "in circle one at distance {:.1} <= {:.1}",
+                        dist, radius
                     ));
                     frame.translate(Vector {
                         x: -100.0,
@@ -135,10 +136,6 @@ mod engine {
                     });
                 }
             }
-            let circle1 = Path::circle(center, radius);
-            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
-            let circlex = Path::circle(center, 2.0);
-            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
 
             let mut r = self.state.rand;
             for _ in 0..10000 {
@@ -163,6 +160,11 @@ mod engine {
                 let c3 = 0.7 + (r % 1000) as f32 / 3000.0;
                 frame.fill(&circle2, Color::from_rgb(c1, c2, c3));
             }
+
+            let circle1 = Path::circle(center, radius);
+            frame.fill(&circle1, Color::from_rgb(0.5, 0.5, 1.0));
+            let circlex = Path::circle(center, 2.0);
+            frame.fill(&circlex, Color::from_rgb(0.0, 0.0, 0.0));
 
             vec![frame.into_geometry()]
         }

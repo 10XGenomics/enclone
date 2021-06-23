@@ -563,7 +563,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "NO_BUG_REPORTS", "PRE"];
+    let set_nothing = [
+        "BC",
+        "BI",
+        "EMAIL",
+        "GEX",
+        "HTML",
+        "BUG_REPORTS",
+        "PRE",
+        "VERBOSE",
+    ];
 
     // Define arguments that set something to a string that is an input CSV file name.
 

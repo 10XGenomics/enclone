@@ -73,6 +73,10 @@ fn parse_color(x: &str) -> Option<(u8, u8, u8)> {
         c1 = Some(0);
         c2 = Some(0);
         c3 = Some(0);
+    } else if x == "red" {
+        c1 = Some(255);
+        c2 = Some(0);
+        c3 = Some(0);
     } else {
         let b = x.as_bytes();
         if b.len() == 7 && b[0] == b'#' {
@@ -129,11 +133,11 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     } else {
         return None;
     }
-    println!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // println!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     parse_kv(&line)
 }
 
-pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
+pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
     // First divide svg into lines of the form <...>, or something between such.
 
     let mut lines = Vec::<String>::new();
@@ -145,7 +149,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 if line == "\n" {
                     line.clear();
                 } else if line.len() > 0 {
-                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    if verbose {
+                        println!("pushing line = {}", line);
+                    }
                     lines.push(line.clone());
                     line.clear();
                 }
@@ -158,7 +164,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             }
             if lt == gt && line.contains('>') {
                 if line != "\n" {
-                    println!("pushing line = {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    if verbose {
+                        println!("pushing line = {}", line);
+                    }
                     lines.push(line.clone());
                 }
                 line.clear();
@@ -171,22 +179,39 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             line.truncate(line.len() - 1);
         }
         if line.len() > 0 && line != "\n" {
-            println!("residual line = {} = ${}$", line.len(), line); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("residual line = {} = ${}$", line.len(), line);
+            }
             return None;
         }
     }
 
     // Repackage lines into known svg entities.
 
-    let mut geom = Vec::<Thing>::new();
+    let mut geom = Vec::<Geometry>::new();
     let mut i = 0;
     while i < lines.len() {
         let mut line = lines[i].clone();
-        println!("\nline = {} = ${}$", lines[i].len(), lines[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        if verbose {
+            println!("\nline = {} = ${}$", lines[i].len(), lines[i]);
+        }
         i += 1;
         if line == "</svg>" {
             break;
         }
+
+        // Process defs.  We ignore them.
+
+        if line == "<defs>" {
+            while i < lines.len() && lines[i] != "</defs>" {
+                i += 1;
+            }
+            i += 1;
+            continue;
+        }
+
+        // Keep going.
+
         if !line.contains(' ') {
             return None;
         }
@@ -195,18 +220,24 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             continue;
         }
         line = line.after(" ").to_string();
-        println!("tag = {}", tag); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        if verbose {
+            println!("tag = {}", tag);
+        }
+        /*
         if i < lines.len() {
             println!("lines[i] = {}", lines[i]);
         } // XXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if i + 1 < lines.len() {
             println!("lines[i+1] = {}", lines[i + 1]);
         } // XXXXXXXXXXXXXXXXXXXXXX
+        */
 
         // Process circle.
 
         if tag == "circle" {
-            println!("processing circle"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("processing circle");
+            }
             let kv = parse_kv_term(&line);
             if kv.is_none() {
                 return None;
@@ -214,11 +245,16 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             let (mut x, mut y, mut r) = (None, None, None);
             let mut c = None;
             let mut o = 255 as u8; // opacity
+            let mut t = String::new();
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                if verbose {
+                    println!("key = {}, value = {}", key, value);
+                }
                 if key == "stroke" || key == "stroke-width" {
+                } else if key == "tooltip" {
+                    t = value.to_string();
                 } else if get_numeric(&key, &value, "cx", &mut x) {
                 } else if get_numeric(&key, &value, "cy", &mut y) {
                 } else if get_numeric(&key, &value, "r", &mut r) {
@@ -232,11 +268,20 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             if x.is_none() || y.is_none() || r.is_none() || c.is_none() {
                 return None;
             }
-            geom.push(Thing::Circle(Circle {
-                p: Point::new(x.unwrap(), y.unwrap()),
-                r: r.unwrap(),
-                c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-            }));
+            if t.len() == 0 {
+                geom.push(Geometry::Circle(Circle {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                }));
+            } else {
+                geom.push(Geometry::CircleWithTooltip(CircleWithTooltip {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                    t: t,
+                }));
+            }
 
         // Process line.
         } else if tag == "line" {
@@ -269,7 +314,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else if c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push(Thing::Segment(Segment {
+            geom.push(Geometry::Segment(Segment {
                 p1: Point::new(x1.unwrap(), y1.unwrap()),
                 p2: Point::new(x2.unwrap(), y2.unwrap()),
                 w: stroke_width.unwrap(),
@@ -289,7 +334,9 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let mut value = m.1.clone();
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                if verbose {
+                    println!("key = {}, value = {}", key, value);
+                }
                 if key == "points" {
                     if value.ends_with(' ') {
                         value = value.rev_before(" ").to_string();
@@ -322,11 +369,13 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     return None;
                 }
             }
-            println!("testing prereqs"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("testing prereqs");
+            }
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
             }
-            geom.push(Thing::PolySegment(PolySegment {
+            geom.push(Geometry::PolySegment(PolySegment {
                 p: p.unwrap(),
                 w: stroke_width.unwrap(),
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
@@ -370,7 +419,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                 return None;
             }
             if stroke_width.is_none() {
-                geom.push(Thing::Rectangle(Rectangle {
+                geom.push(Geometry::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -379,7 +428,7 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
                     stroke_color: Color::new(0, 0, 0, 0),
                 }));
             } else {
-                geom.push(Thing::Rectangle(Rectangle {
+                geom.push(Geometry::Rectangle(Rectangle {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     width: width.unwrap(),
                     height: height.unwrap(),
@@ -391,17 +440,24 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
 
         // Process text.
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
-            println!("processing text"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("processing text");
+            }
             let text = lines[i].to_string();
-            println!("text content = {}", text); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("text content = {}", text);
+            }
+            let mut font = "Arial".to_string();
             let mut font_size = None;
             let (mut x, mut y) = (None, None);
             let mut c = Some((0, 0, 0));
             let mut o = 255;
-            let mut text_anchor = "left".to_string();
+            let mut text_anchor = "start".to_string();
             let mut rotate = [0.0; 3];
             i += 2;
-            println!("calling parse_kv on line {}", line); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if verbose {
+                println!("calling parse_kv on line {}", line);
+            }
             let kv = parse_kv(&line.rev_before(">"));
             if kv.is_none() {
                 return None;
@@ -409,12 +465,16 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
-                println!("key = {}, value = {}", key, value); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                if verbose {
+                    println!("key = {}, value = {}", key, value);
+                }
                 if get_numeric(&key, &value, "x", &mut x) {
                 } else if get_numeric(&key, &value, "y", &mut y) {
                 } else if get_numeric(&key, &value, "font-size", &mut font_size) {
                 } else if key == "dx" || key == "dy" {
                 } else if key == "font-family" && (value == "arial" || value == "Arial") {
+                } else if key == "font-family" && value == "DejaVu LGC Sans Mono" {
+                    font = "DejaVuSansMono".to_string();
                 } else if key == "fill" {
                     c = parse_color(&value);
                 } else if get_opacity(&key, &value, &mut o) {
@@ -455,11 +515,12 @@ pub fn svg_to_geometry(svg: &str) -> Option<Vec<Thing>> {
             } else {
                 halign = Right;
             }
-            geom.push(Thing::ArialText(ArialText {
+            geom.push(Geometry::Text(Text {
                 p: Point::new(x.unwrap(), y.unwrap()),
                 halign: halign,
                 c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 t: text,
+                font: font,
                 font_size: font_size.unwrap(),
                 rotate: rotate,
             }));

@@ -47,18 +47,18 @@ set compile_start = `date +%s`
 
 cargo test --features cpu test_accounting --no-run >& /dev/null
 if ( $status != 0 ) then
-    echo "compilation failed"
+    echo "compilation failed 1"
     exit 1
 endif
 cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
-    --test enclone_test4 --test enclone_test_peak_mem --test test_com --no-run >& /dev/null
+    --test enclone_test4 --test enclone_test_peak_mem --no-run >& /dev/null
 if ( $status != 0 ) then
-    echo "compilation failed"
+    echo "compilation failed 2"
     exit 1
 endif
 cargo test -p enclone_tail --lib --no-run >& /dev/null
 if ( $status != 0 ) then
-    echo "compilation failed"
+    echo "compilation failed 3"
     exit 1
 endif
 set compile_end = `date +%s`
@@ -93,7 +93,7 @@ if ( $arg1 != linkless ) then
     endif
 else
     cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
-        --test enclone_test4 --test enclone_test_peak_mem --test test_com --features linkless \
+        --test enclone_test4 --test enclone_test_peak_mem --features linkless \
         -- --nocapture |& post_process_test
     if ( $status != 0 ) then
         echo "FAILED!"

@@ -67,6 +67,7 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
 
 lazy_static! {
     pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref BUG_REPORT_ADDRESS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 pub fn setup(
@@ -79,7 +80,7 @@ pub fn setup(
     let mut using_pager = false;
     // Provide help if requested.
 
-    let mut no_bug_reports = false;
+    let mut bug_reports = "enclone@10xgenomics.com".to_string();
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -140,8 +141,10 @@ pub fn setup(
                 }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
-            } else if args[i] == "NO_BUG_REPORTS" {
-                no_bug_reports = true;
+            } else if args[i] == "BUG_REPORTS" {
+                bug_reports = "".to_string();
+            } else if args[i].starts_with("BUG_REPORTS=") {
+                bug_reports = args[i].after("BUG_REPORTS=").to_string();
             } else if args[i].starts_with("CONFIG=") {
                 ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             } else if args[i] == "NO_KILL" {
@@ -152,8 +155,8 @@ pub fn setup(
             if key == "ENCLONE_CONFIG" {
                 ctl.gen_opt.config_file = value.to_string();
             }
-            if key == "ENCLONE_NO_BUG_REPORTS" {
-                no_bug_reports = true;
+            if key == "ENCLONE_BUG_REPORTS" {
+                bug_reports = value.to_string();
             }
         }
 
@@ -184,6 +187,9 @@ pub fn setup(
         if ctl.gen_opt.internal_run {
             if ctl.evil_eye {
                 println!("detected internal run");
+            }
+            if ctl.gen_opt.config.contains_key("bug_reports") {
+                bug_reports = ctl.gen_opt.config["bug_reports"].clone();
             }
             let earth_path = format!(
                 "{}/current{}",
@@ -309,8 +315,11 @@ pub fn setup(
                 );
             }
 
+            // Set up action on panic.  Note that for 10x Genomics users, and those only,
+            // we may email a bug report.
+
             if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0)
-                || no_bug_reports
+                || bug_reports.len() == 0
             {
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
@@ -330,6 +339,10 @@ pub fn setup(
             } else {
                 // Set up to email bug report on panic.  This is only for internal users!
 
+                let mut contemplate = "".to_string();
+                if bug_reports == "enclone@10xgenomics.com" {
+                    contemplate = ", for the developers to contemplate".to_string();
+                }
                 let exit_message = format!(
                     "Something has gone badly wrong.  You have probably encountered an internal \
                     error in enclone.\n\n\
@@ -338,21 +351,24 @@ pub fn setup(
                     Your command was:\n\n{}\n\n\
                     {}\
                     Thank you for being a happy internal enclone user.  All of this information \
-                    is being\nemailed to enclone@10xgenomics.com, for the developers to \
-                    contemplate.\n\n\
+                    is being\nemailed to {}{}.\n\n\
                     🌸 Thank you so much for finding a bug and have a nice day! 🌸",
                     env!("CARGO_PKG_VERSION"),
                     version_string(),
                     args_orig.iter().format(" "),
                     elapsed_message,
+                    bug_reports,
+                    contemplate,
                 );
+                BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.clone());
                 fn exit_function(msg: &str) {
                     let msg = format!("{}\n.\n", msg);
+                    let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
                     if !version_string().contains("macos") {
                         let process = Command::new("mail")
                             .arg("-s")
                             .arg("internal automated bug report")
-                            .arg("enclone@10xgenomics.com")
+                            .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();
@@ -366,8 +382,8 @@ pub fn setup(
                             .arg(&remote_host)
                             .arg("mail")
                             .arg("-s")
-                            .arg("\"internal ug report\"")
-                            .arg("enclone@10xgenomics.com")
+                            .arg("\"internal automated bug report\"")
+                            .arg(&bug_report_address)
                             .stdin(Stdio::piped())
                             .stdout(Stdio::piped())
                             .spawn();

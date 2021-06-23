@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 94760160;
+    const ENCLONE_SIZE: usize = 96132424;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;

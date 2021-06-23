@@ -1,7 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::convert_svg_to_png::*;
+use crate::copy_image_to_clipboard::*;
+use crate::svg_to_geometry::*;
 use crate::*;
+use canvas_view::CanvasView;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
@@ -17,46 +20,10 @@ use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-use cocoa::{
-    appkit::{NSImage, NSPasteboard},
-    base::nil,
-    foundation::{NSArray, NSAutoreleasePool, NSData},
-};
-
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-use libc::c_void;
-
-const DEJAVU: Font = Font::External {
-    name: "DEJAVU",
+const DEJAVU_BOLD: Font = Font::External {
+    name: "DEJAVU_BOLD",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
-
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
-    if bytes.len() > 0 {
-        unsafe {
-            let pool = NSAutoreleasePool::new(nil);
-            let data = NSData::dataWithBytes_length_(
-                pool,
-                bytes.as_ptr() as *const c_void,
-                bytes.len() as u64,
-            );
-            let object = NSImage::initWithData_(NSImage::alloc(pool), data);
-            if object != nil {
-                let pasteboard = NSPasteboard::generalPasteboard(pool);
-                pasteboard.clearContents();
-                pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
-            } else {
-                eprintln!("\ncopy to pasteboard failed\n");
-                std::process::exit(1);
-            }
-        }
-    }
-}
-
-#[cfg(target_os = "linux")]
-fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -99,6 +66,7 @@ struct EncloneVisual {
     compute_state: ComputeState,
     copy_button: button::State,
     copy_button_color: Color,
+    canvas_view: CanvasView,
 }
 
 #[derive(Debug, Clone)]
@@ -182,6 +150,30 @@ impl Application for EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 if self.svg_value.len() > 0 {
                     self.png_value = convert_svg_to_png(&reply_svg.as_bytes());
+                    let geometry = svg_to_geometry(&reply_svg, false);
+                    if geometry.is_some() {
+                        let mut ok = true;
+                        for i in 0..geometry.as_ref().unwrap().len() {
+                            match &geometry.as_ref().unwrap()[i] {
+                                crate::geometry::Geometry::Text(ttt) => {
+                                    if ttt.rotate != [0.0; 3] {
+                                        ok = false;
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        if ok {
+                            self.canvas_view.state.geometry_value = geometry;
+                        } else {
+                            self.canvas_view.state.geometry_value = None;
+                        }
+                    } else {
+                        if VERBOSE.load(SeqCst) {
+                            println!("translation from svg to geometries failed");
+                        }
+                        self.canvas_view.state.geometry_value = None;
+                    }
                 }
                 self.compute_state = WaitingForRequest;
                 Command::none()
@@ -228,7 +220,7 @@ impl Application for EncloneVisual {
             Message::InputChanged,
         )
         .padding(10)
-        .font(DEJAVU)
+        .font(DEJAVU_BOLD)
         .size(16);
 
         let button = Button::new(
@@ -255,7 +247,7 @@ impl Application for EncloneVisual {
             .scrollbar_width(12)
             .scroller_width(12)
             .style(style::Squeak)
-            .push(Text::new(&self.output_value).font(DEJAVU).size(13));
+            .push(Text::new(&self.output_value).font(DEJAVU_BOLD).size(13));
 
         // Fix the height of the SVG.  This needs to be set so that there is enough room for
         // the clonotype tables.  We do not set the width because it's the height that we need
@@ -279,9 +271,20 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        let mut svg_as_png_row = Row::new().spacing(10).push(svg_as_png);
+        let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
-            svg_as_png_row = svg_as_png_row.push(copy_button);
+            if self.canvas_view.state.geometry_value.is_some() {
+                graphic_row = graphic_row
+                    .push(
+                        self.canvas_view
+                            .view()
+                            .map(move |_message| Message::ButtonPressed),
+                    )
+                    .height(Units(SVG_HEIGHT));
+            } else {
+                graphic_row = graphic_row.push(svg_as_png);
+            }
+            graphic_row = graphic_row.push(copy_button);
         }
 
         let content = Column::new()
@@ -300,7 +303,7 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
-            .push(svg_as_png_row)
+            .push(graphic_row)
             .push(Rule::horizontal(10).style(style::RuleStyle))
             .push(
                 Row::new()

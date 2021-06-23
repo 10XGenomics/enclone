@@ -130,7 +130,7 @@ fn circles_to_svg(
         let mut tooltipx = String::new();
         if tooltip {
             tooltipx = format!(
-                " data-tooltip='{{\"group_id\":\"{}\",\"clonotype_id\":\"{}\"}}'",
+                " tooltip=\"group_id={},clonotype_id={}\"",
                 group_index2[i] + 1,
                 clonotype_index2[i] + 1,
             );
@@ -734,6 +734,7 @@ pub fn plot_clonotypes(
             actual_width = actual_width.max(x + r);
         }
     }
+    set_svg_width(svg, actual_width + BOUNDARY as f64);
 
     // Add legend for shading.
 
@@ -865,8 +866,8 @@ pub fn plot_clonotypes(
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         let legend_height = (font_size + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let mut legend_xstart = BOUNDARY as f64;
-        let mut legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        let mut legend_xstart = actual_width + 20.0;
+        let mut legend_ystart = BOUNDARY as f64;
         if using_shading {
             legend_xstart = legend_xstop_shading + 10.0;
             legend_ystart = 50.0;
@@ -897,14 +898,15 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+        let new_height = actual_height.max(legend_height as f64) + BOUNDARY as f64;
+        let new_width = actual_width + legend_width as f64 + 20.0 + BOUNDARY as f64;
         if !using_shading {
             set_svg_height(svg, new_height);
+            set_svg_width(svg, new_width);
         } else {
             if new_height > get_svg_height(&svg) {
                 set_svg_height(svg, new_height);
             }
-            let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
             set_svg_width(svg, new_width);
         }
         *svg += "</svg>";

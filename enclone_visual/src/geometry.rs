@@ -2,15 +2,17 @@
 
 // Basic geometric objects, allowing representation of simple SVG files as vectors of such objects.
 
-pub enum Thing {
+#[derive(PartialEq)]
+pub enum Geometry {
     Segment(Segment),
-    ArialText(ArialText),
+    Text(Text),
     Circle(Circle),
-    CircleWithToolTip(CircleWithToolTip),
+    CircleWithTooltip(CircleWithTooltip),
     Rectangle(Rectangle),
     PolySegment(PolySegment),
 }
 
+#[derive(PartialEq)]
 pub struct Color {
     pub r: u8, // red
     pub g: u8, // green
@@ -47,7 +49,7 @@ impl Color {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct Point {
     pub x: f32,
     pub y: f32,
@@ -59,34 +61,40 @@ impl Point {
     }
 }
 
+#[derive(PartialEq)]
 pub struct Circle {
     pub p: Point,
     pub r: f32,
     pub c: Color,
 }
 
+#[derive(PartialEq)]
 pub enum HorizontalAlignment {
     Left,
     Center,
     Right,
 }
 
-pub struct ArialText {
+#[derive(PartialEq)]
+pub struct Text {
     pub p: Point,
     pub halign: HorizontalAlignment,
     pub t: String,
+    pub font: String,
     pub font_size: f32,
     pub c: Color,
     pub rotate: [f32; 3],
 }
 
-pub struct CircleWithToolTip {
+#[derive(PartialEq)]
+pub struct CircleWithTooltip {
     pub p: Point,
     pub r: f32,
     pub c: Color,
     pub t: String,
 }
 
+#[derive(PartialEq)]
 pub struct Segment {
     pub p1: Point, // start
     pub p2: Point, // stop
@@ -94,12 +102,14 @@ pub struct Segment {
     pub c: Color,
 }
 
+#[derive(PartialEq)]
 pub struct PolySegment {
     pub p: Vec<Point>, // points
     pub w: f32,        // width
     pub c: Color,      // color
 }
 
+#[derive(PartialEq)]
 pub struct Rectangle {
     pub p: Point,            // coordinates of upper left corner
     pub width: f32,          // width

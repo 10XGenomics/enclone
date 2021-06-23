@@ -6,19 +6,15 @@ TO DO
 
 3.  Trim features and duplicated crates; reduce binary size.
 
-4.  Vertical placement of legend in PLOT_BY_ISOTYPE is not great.
-
-5.  Handle the case where tsh hasn't been started
-    server says this: david.jaffe@tsh-jump.txgmesh.net: Permission denied (publickey).
+4.  Handle the case where tsh hasn't been started
+    server says this: david.jaffe@....................: Permission denied (publickey).
     kex_exchange_identification: Connection closed by remote host
 
-6.  What do we do about the truncation of printing to fifty clonotypes?
+5.  What do we do about the truncation of printing to fifty clonotypes?
 
-7.  tooltip
+6.  Make code work for 2 or more SVG files.
 
-8.  Make code work for 2 or more SVG files.
-
-9.  Refactor to keep tokio etc. out of cellranger.
+7.  Refactor to keep tokio etc. out of cellranger.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -55,9 +51,14 @@ WAITING ON ICED
 
 9.  Update to the latest versions of iced and iced_aw.
     This yielded a compilation error.  Issue #25 filed on iced_aw.
+    There is a possible solution there and I'm waiting on a precise specification of
+    Cargo.toml entries to test it.
 
-10. Canvas in scrollable crashes.  Reported on zulip chat, and if there is no response, file 
-    an issue.
+10. Canvas in scrollable crashes.  
+    Reported as issue #924, flagged as bug.
+
+11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+    can't have tooltips.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -84,3 +85,9 @@ NICE TO HAVE
 
 10. Can a row have one item left aligned and the second center aligned?  Apply to banner.
 
+11. Add button to capture the entire enclone visual window.
+
+12. Get copy button to appear right next to the graphic.
+
+13. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
+    Start by reading how the canvas in the game of life example handles clicks.
