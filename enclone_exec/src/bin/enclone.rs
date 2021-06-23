@@ -18,6 +18,7 @@ use std::process::Command;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
+use string_utils::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -71,7 +72,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
             size = "large";
         }
-        let _ = Command::new("bash")
+        println!("updating enclone using size = {}", size);
+        let o = Command::new("bash")
             .arg("-c")
             .arg(&format!(
                 "curl -sSf -L bit.ly/enclone_install | bash -s {}",
@@ -79,6 +81,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ))
             .output()
             .expect("failed to execute curl");
+        print!("{}{}", strme(&o.stdout), strme(&o.stderr));
         std::process::exit(0);
     }
 
