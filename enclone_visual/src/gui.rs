@@ -277,15 +277,16 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
+        const FB_BUTTON_FONT_SIZE: u16 = 45;
         let back_button = Button::new(
             &mut self.back_button,
-            Text::new("⇧").font(DEJAVU_BOLD).size(50),
+            Text::new("⇧").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
         )
         .on_press(Message::BackButtonPressed);
 
         let forward_button = Button::new(
             &mut self.forward_button,
-            Text::new("⇩").font(DEJAVU_BOLD).size(50),
+            Text::new("⇩").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
         )
         .on_press(Message::ForwardButtonPressed);
 
@@ -332,15 +333,7 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        let mut button_column = Column::new().spacing(8).push(copy_button);
-        /*
-        if self.history_index > 1 {
-            button_column = button_column.push(back_button);
-        }
-        if self.history_index < self.svg_history.len() {
-            button_column = button_column.push(forward_button);
-        }
-        */
+        let button_column = Column::new().spacing(8).push(copy_button);
 
         let mut button_column2 = Column::new().spacing(8);
         if self.history_index > 1 {
@@ -412,7 +405,7 @@ impl Application for EncloneVisual {
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
             graphic_row = graphic_row.push(
-                Text::new(&log).font(DEJAVU_BOLD).size(12).width(Units(300)),
+                Text::new(&log).font(DEJAVU_BOLD).size(12),
             );
 
             // Add command copy button.
