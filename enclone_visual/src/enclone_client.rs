@@ -410,8 +410,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         thread::spawn(move || {
             thread::sleep(Duration::from_millis(5000));
             if !READ_DONE.load(SeqCst) {
-                eprintln!("\nseem to have hit a bad port, can you please restart your command?\n");
-                std::process::exit(1);
+                println!("darn, we seem to have hit a bad port, so restarting");
+                let args: Vec<String> = env::args().collect();
+                let mut args1 = Vec::<String>::new();
+                for i in 1..args.len() {
+                    args1.push(args[i].clone());
+                }
+                let mut o = Command::new("enclone")
+                    .args(&args1)
+                    .spawn()
+                    .expect("failed to execute enclone restart");
+                let _ = o.wait().expect("failed to wait on child");
+                std::process::exit(0);
             }
         });
         server_stdout.read(&mut buffer).unwrap();
