@@ -299,7 +299,7 @@ impl Application for EncloneVisual {
         const COPY_BUTTON_FONT_SIZE: u16 = 15;
         let copy_button = Button::new(
             &mut self.copy_button,
-            Text::new("Copy\nimage").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
+            Text::new("Copy image").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -333,7 +333,7 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        let button_column = Column::new().spacing(8).push(copy_button);
+        // let button_column = Column::new().spacing(8).push(copy_button);
 
         let mut button_column2 = Column::new().spacing(8);
         if self.history_index > 1 {
@@ -362,7 +362,7 @@ impl Application for EncloneVisual {
 
             // Add button column.
 
-            graphic_row = graphic_row.push(button_column);
+            // graphic_row = graphic_row.push(button_column);
 
             // Add command box.
 
@@ -422,7 +422,7 @@ impl Application for EncloneVisual {
                 Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
                 )
                 .on_press(Message::CommandCopyButtonPressed)
-            );
+            ).push(copy_button);
 
             graphic_row = graphic_row.push(col);
 
