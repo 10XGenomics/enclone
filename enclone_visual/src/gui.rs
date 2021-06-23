@@ -186,8 +186,10 @@ impl Application for EncloneVisual {
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    self.svg_history.push(reply_svg.clone());
-                    self.svg_history_index += 1;
+                    if reply_svg.len() > 0 {
+                        self.svg_history.push(reply_svg.clone());
+                        self.svg_history_index += 1;
+                    }
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
