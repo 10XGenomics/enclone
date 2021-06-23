@@ -222,10 +222,16 @@ impl Application for EncloneVisual {
             }
 
             Message::BackButtonPressed => {
+                self.svg_history_index -= 1;
+                let x = self.svg_history[self.svg_history_index - 1].clone();
+                self.post_svg(&x);
                 Command::none()
             }
 
             Message::ForwardButtonPressed => {
+                self.svg_history_index += 1;
+                let x = self.svg_history[self.svg_history_index - 1].clone();
+                self.post_svg(&x);
                 Command::none()
             }
         }
