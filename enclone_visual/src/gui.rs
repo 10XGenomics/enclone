@@ -298,11 +298,15 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        let button_column = Column::new()
+        let mut button_column = Column::new()
             .spacing(8)
-            .push(copy_button)
-            .push(back_button)
-            .push(forward_button);
+            .push(copy_button);
+        if self.svg_history_index > 1 {
+            button_column = button_column.push(back_button);
+        }
+        if self.svg_history_index < self.svg_history.len() {
+            button_column = button_column.push(forward_button);
+        }
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
