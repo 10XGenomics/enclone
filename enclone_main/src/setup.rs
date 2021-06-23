@@ -3,11 +3,11 @@
 // See README for documentation.
 
 use crate::USING_PAGER;
-use chrono::{TimeZone, Utc};
 use enclone::misc1::*;
 use enclone_args::proc_args::*;
 use enclone_args::proc_args2::*;
 use enclone_core::defs::*;
+use enclone_core::prepare_for_apocalypse::*;
 use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_core::*;
 use enclone_help::help1::*;
@@ -17,15 +17,11 @@ use enclone_help::help4::*;
 use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use io_utils::*;
-use itertools::Itertools;
-use lazy_static::lazy_static;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Write};
-use std::process::{Command, Stdio};
+use std::io::{BufRead, BufReader};
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::Mutex;
 use std::time::Instant;
 use string_utils::*;
 use tilde_expand::tilde_expand;
@@ -64,11 +60,6 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-lazy_static! {
-    pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    pub static ref BUG_REPORT_ADDRESS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-}
 
 pub fn setup(
     mut ctl: &mut EncloneControl,
@@ -217,6 +208,7 @@ pub fn setup(
         }
         if ctl.gen_opt.config_file.contains(":") {
             let remote_host = ctl.gen_opt.config_file.before(":").to_string();
+            REMOTE_HOST.lock().unwrap().clear();
             REMOTE_HOST.lock().unwrap().push(remote_host);
         }
 
@@ -298,106 +290,12 @@ pub fn setup(
         if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let now = Utc::now().naive_utc().timestamp();
-            let build_date = version_string().after(":").between(": ", " :").to_string();
-            let build_datetime = format!("{} 00:00:00", build_date);
-            let then = Utc
-                .datetime_from_str(&build_datetime, "%Y-%m-%d %H:%M:%S")
-                .unwrap()
-                .timestamp();
-            let days_since_build = (now - then) / (60 * 60 * 24);
-            let mut elapsed_message = String::new();
-            if days_since_build > 30 {
-                elapsed_message = format!(
-                    "Your build is {} days old.  You might want to check \
-                    to see if there is a newer build now.\n\n",
-                    days_since_build
-                );
-            }
-
-            // Set up action on panic.  Note that for 10x Genomics users, and those only,
-            // we may email a bug report.
-
-            if (!ctl.gen_opt.internal_run && REMOTE_HOST.lock().unwrap().len() == 0)
-                || bug_reports.len() == 0
-            {
-                let exit_message = format!(
-                    "Something has gone badly wrong.  You have probably encountered an internal \
-                    error in enclone.\n\n\
-                    Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-                    above and also the following version information:\n\
-                    {} : {}.\n\n\
-                    Your command was:\n\n{}\n\n\
-                    {}\
-                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
-                    env!("CARGO_PKG_VERSION"),
-                    version_string(),
-                    args_orig.iter().format(" "),
-                    elapsed_message,
-                );
-                PrettyTrace::new().exit_message(&exit_message).on();
-            } else {
-                // Set up to email bug report on panic.  This is only for internal users!
-
-                let mut contemplate = "".to_string();
-                if bug_reports == "enclone@10xgenomics.com" {
-                    contemplate = ", for the developers to contemplate".to_string();
-                }
-                let exit_message = format!(
-                    "Something has gone badly wrong.  You have probably encountered an internal \
-                    error in enclone.\n\n\
-                    Here is the version information:\n\
-                    {} : {}.\n\n\
-                    Your command was:\n\n{}\n\n\
-                    {}\
-                    Thank you for being a happy internal enclone user.  All of this information \
-                    is being\nemailed to {}{}.\n\n\
-                    🌸 Thank you so much for finding a bug and have a nice day! 🌸",
-                    env!("CARGO_PKG_VERSION"),
-                    version_string(),
-                    args_orig.iter().format(" "),
-                    elapsed_message,
-                    bug_reports,
-                    contemplate,
-                );
-                BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.clone());
-                fn exit_function(msg: &str) {
-                    let msg = format!("{}\n.\n", msg);
-                    let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
-                    if !version_string().contains("macos") {
-                        let process = Command::new("mail")
-                            .arg("-s")
-                            .arg("internal automated bug report")
-                            .arg(&bug_report_address)
-                            .stdin(Stdio::piped())
-                            .stdout(Stdio::piped())
-                            .spawn();
-                        let process = process.unwrap();
-                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
-                        let mut _s = String::new();
-                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
-                    } else if REMOTE_HOST.lock().unwrap().len() > 0 {
-                        let remote_host = &REMOTE_HOST.lock().unwrap()[0];
-                        let process = Command::new("ssh")
-                            .arg(&remote_host)
-                            .arg("mail")
-                            .arg("-s")
-                            .arg("\"internal automated bug report\"")
-                            .arg(&bug_report_address)
-                            .stdin(Stdio::piped())
-                            .stdout(Stdio::piped())
-                            .spawn();
-                        let process = process.unwrap();
-                        process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
-                        let mut _s = String::new();
-                        process.stdout.unwrap().read_to_string(&mut _s).unwrap();
-                    }
-                }
-                PrettyTrace::new()
-                    .exit_message(&exit_message)
-                    .run_this(exit_function)
-                    .on();
-            }
+            prepare_for_apocalypse(
+                &args_orig,
+                (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
+                    && bug_reports.len() == 0,
+                &bug_reports,
+            );
             let mut nopager = false;
             for i in 1..args_orig.len() {
                 if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {

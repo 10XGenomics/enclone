@@ -9,13 +9,21 @@ pub mod linear_condition;
 pub mod mammalian_fixed_len;
 pub mod median;
 pub mod opt_d;
+pub mod prepare_for_apocalypse;
 pub mod print_tools;
 pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;
 
+use lazy_static::*;
 use std::env;
+use std::sync::Mutex;
 use std::time::Duration;
+
+lazy_static! {
+    pub static ref BUG_REPORT_ADDRESS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 

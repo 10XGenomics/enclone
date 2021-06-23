@@ -31,6 +31,8 @@
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::*;
 use enclone_core::parse_bsv;
+use enclone_core::prepare_for_apocalypse::*;
+use enclone_core::REMOTE_HOST;
 use gui::launch_gui;
 use io_utils::*;
 use itertools::Itertools;
@@ -48,6 +50,20 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+fn restart() {
+    let args: Vec<String> = env::args().collect();
+    let mut args1 = Vec::<String>::new();
+    for i in 1..args.len() {
+        args1.push(args[i].clone());
+    }
+    let mut o = Command::new("enclone")
+        .args(&args1)
+        .spawn()
+        .expect("failed to execute enclone restart");
+    let _ = o.wait().expect("failed to wait on child");
+    std::process::exit(0);
+}
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
@@ -71,6 +87,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut verbose = false;
     let mut monitor_threads = false;
     let mut config_name = String::new();
+    let mut fixed_port = None;
     for i in 1..args.len() {
         let arg = &args[i];
         if arg == "VERBOSE" {
@@ -79,10 +96,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             monitor_threads = true;
         } else if arg.starts_with("VIS=") {
             config_name = arg.after("VIS=").to_string();
+        } else if arg.starts_with("PORT=") {
+            fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
+            assert!(fixed_port.unwrap() >= 1024);
         } else if arg != "VIS" {
             eprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name, VERBOSE, and MONITOR_THREADS.\n"
+                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=..., but
+                only for testing.\n"
             );
             std::process::exit(1);
         }
@@ -165,84 +186,104 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut filehost = String::new();
     let mut filehost_used = false;
     let mut auto_update = false;
-    if config_name.len() > 0 {
-        let mut config_file_contents = String::new();
-        if config_name.len() > 0 {
-            for (key, value) in env::vars() {
-                if key == "ENCLONE_CONFIG" {
-                    CONFIG_FILE.lock().unwrap().push(value.to_string());
-                    let hf = value.to_string();
-                    let mut filename = hf.clone();
-                    if hf.contains(":") {
-                        filehost = hf.before(":").to_string();
-                        filename = hf.after(":").to_string();
-                    }
-
-                    // If filename exists on this server, use it, and ignore filehost.
-
-                    if path_exists(&filename) {
-                        config_file_contents = std::fs::read_to_string(&filename).unwrap();
-
-                    // Otherwise, fetch the file from the host.
-                    } else if filehost.len() > 0 {
-                        filehost_used = true;
-                        let t = Instant::now();
-                        let o = Command::new("ssh")
-                            .arg(&filehost)
-                            .arg("cat")
-                            .arg(&filename)
-                            .output()
-                            .expect("failed to execute ssh cat");
-                        println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
-                        if o.status.code() != Some(0) {
-                            let m = String::from_utf8(o.stderr).unwrap();
-                            println!("\ntest ssh failed with error message =\n{}", m);
-                            println!(
-                                "Attempt to ssh to {} as specified by environment variable \
-                                ENCLONE_CONFIG failed.",
-                                filehost,
-                            );
-                            println!("Here are two possible explanations:");
-                            println!("1. The host is wrong.");
-                            println!(
-                                "2. You first need to do something to enable crossing \
-                                      a firewall."
-                            );
-                            println!("   If so, ask one of your colleagues how to do this.\n");
-                            std::process::exit(1);
-                        }
-                        config_file_contents = strme(&o.stdout).to_string();
-                    }
-                }
+    let mut internal = false;
+    let mut config_file_contents = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            CONFIG_FILE.lock().unwrap().push(value.to_string());
+            let hf = value.to_string();
+            let mut filename = hf.clone();
+            if hf.contains(":") {
+                filehost = hf.before(":").to_string();
+                filename = hf.after(":").to_string();
             }
-        }
-
-        // Get configuration.
-
-        if config_name.len() > 0 {
-            let prefix = format!("vis.{}.", config_name);
-            for line in config_file_contents.lines() {
-                if line == "visual_auto_update=true" {
-                    auto_update = true;
-                }
-                if line.starts_with(&prefix) {
-                    let def = line.after(&prefix);
-                    if def.contains("=") {
-                        config.insert(def.before("=").to_string(), def.after("=").to_string());
-                        found = true;
-                    }
-                }
+            if filehost.len() > 0 {
+                REMOTE_HOST.lock().unwrap().push(filehost.clone());
             }
-        }
-        if !found {
-            eprintln!(
-                "\nYou specified the configuration name {}, but the content of that configuration \
-                   was not found.\n",
-                config_name,
-            );
-            std::process::exit(1);
+
+            // If filename exists on this server, use it, and ignore filehost.
+
+            if path_exists(&filename) {
+                config_file_contents = std::fs::read_to_string(&filename).unwrap();
+
+            // Otherwise, fetch the file from the host.
+            } else if filehost.len() > 0 {
+                filehost_used = true;
+                let t = Instant::now();
+                let o = Command::new("ssh")
+                    .arg(&filehost)
+                    .arg("cat")
+                    .arg(&filename)
+                    .output()
+                    .expect("failed to execute ssh cat");
+                println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
+                if o.status.code() != Some(0) {
+                    let m = String::from_utf8(o.stderr).unwrap();
+                    println!("\ntest ssh failed with error message =\n{}", m);
+                    println!(
+                        "Attempt to ssh to {} as specified by environment variable \
+                        ENCLONE_CONFIG failed.",
+                        filehost,
+                    );
+                    println!("Here are two possible explanations:");
+                    println!("1. The host is wrong.");
+                    println!(
+                        "2. You first need to do something to enable crossing \
+                              a firewall."
+                    );
+                    println!("   If so, ask one of your colleagues how to do this.\n");
+                    std::process::exit(1);
+                }
+                config_file_contents = strme(&o.stdout).to_string();
+            }
         }
     }
+
+    // Get configuration.
+
+    for line in config_file_contents.lines() {
+        if line == "visual_auto_update=true" {
+            auto_update = true;
+        }
+        if line == "internal=true" {
+            internal = true;
+        }
+        if config_name.len() > 0 {
+            let prefix = format!("vis.{}.", config_name);
+            if line.starts_with(&prefix) {
+                let def = line.after(&prefix);
+                if def.contains("=") {
+                    config.insert(def.before("=").to_string(), def.after("=").to_string());
+                    found = true;
+                }
+            }
+        }
+    }
+    if config_name.len() > 0 && !found {
+        eprintln!(
+            "\nYou specified the configuration name {}, but the content of that configuration \
+               was not found.\n",
+            config_name,
+        );
+        std::process::exit(1);
+    }
+
+    // Set up proper tracebacks.
+
+    let mut bug_reports = "enclone@10xgenomics.com".to_string();
+    for i in 1..args.len() {
+        if args[i] == "BUG_REPORTS" {
+            bug_reports = "".to_string();
+        } else if args[i].starts_with("BUG_REPORTS=") {
+            bug_reports = args[i].after("BUG_REPORTS=").to_string();
+        }
+    }
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_BUG_REPORTS" {
+            bug_reports = value.to_string();
+        }
+    }
+    prepare_for_apocalypse(&args, internal, &bug_reports);
 
     // Determine if the server is remote.
 
@@ -315,7 +356,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards");
         let nanos = since_the_epoch.subsec_nanos() as u64;
-        let port: u16 = (nanos % 65536) as u16;
+        let mut port: u16 = (nanos % 65536) as u16;
+        if fixed_port.is_some() {
+            port = fixed_port.unwrap();
+        }
         if port < 1024 {
             continue;
         }
@@ -373,13 +417,23 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let mut buffer = [0; 50];
         let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
+        if verbose {
+            println!("waiting for server response");
+        }
+        pub static READ_DONE: AtomicBool = AtomicBool::new(false);
+        thread::spawn(move || {
+            thread::sleep(Duration::from_millis(5000));
+            if !READ_DONE.load(SeqCst) {
+                println!("darn, we seem to have hit a bad port, so restarting");
+                restart();
+            }
+        });
         server_stdout.read(&mut buffer).unwrap();
+        READ_DONE.store(true, SeqCst);
         println!(
             "time spent waiting to read bytes from server = {:.1} seconds",
             elapsed(&tread)
         );
-        // seems to not be needed
-        // thread::sleep(Duration::from_millis(100));
 
         // Look at stderr.
 
@@ -469,21 +523,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         std::process::exit(1);
                     }
                     println!("Done, restarting!\n");
-                    let args: Vec<String> = env::args().collect();
-                    let mut args1 = Vec::<String>::new();
-                    for i in 1..args.len() {
-                        args1.push(args[i].clone());
-                    }
-                    let o = Command::new("enclone")
-                        .args(&args1)
-                        .output()
-                        .expect("failed to execute enclone restart");
-                    if o.status.code() != Some(0) {
-                        eprintln!("\nSomething went wrong restarting enclone.");
-                        eprintln!("stderr =\n{}\n", strme(&o.stderr));
-                        std::process::exit(1);
-                    }
-                    std::process::exit(0);
+                    restart();
                 } else {
                     eprintln!(
                         "Please update, following \
