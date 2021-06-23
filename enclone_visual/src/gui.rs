@@ -289,16 +289,16 @@ impl Application for EncloneVisual {
         )
         .on_press(Message::ForwardButtonPressed);
 
+        const COPY_BUTTON_FONT_SIZE: u16 = 15;
         let copy_button = Button::new(
             &mut self.copy_button,
-            Text::new("Copy").color(self.copy_button_color),
+            Text::new("Copy").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
         )
-        .padding(10)
         .on_press(Message::GraphicsCopyButtonPressed);
 
         let command_copy_button = Button::new(
             &mut self.command_copy_button,
-            Text::new("Copy"),
+            Text::new("Copy").size(COPY_BUTTON_FONT_SIZE),
         )
         .on_press(Message::CommandCopyButtonPressed);
 
@@ -333,11 +333,21 @@ impl Application for EncloneVisual {
             .height(Units(SVG_HEIGHT));
 
         let mut button_column = Column::new().spacing(8).push(copy_button);
+        /*
         if self.history_index > 1 {
             button_column = button_column.push(back_button);
         }
         if self.history_index < self.svg_history.len() {
             button_column = button_column.push(forward_button);
+        }
+        */
+
+        let mut button_column2 = Column::new().spacing(8);
+        if self.history_index > 1 {
+            button_column2 = button_column2.push(back_button);
+        }
+        if self.history_index < self.svg_history.len() {
+            button_column2 = button_column2.push(forward_button);
         }
 
         let mut graphic_row = Row::new().spacing(10);
@@ -408,6 +418,10 @@ impl Application for EncloneVisual {
             // Add command copy button.
 
             graphic_row = graphic_row.push(command_copy_button);
+
+            // Add up and down arrows.
+
+            graphic_row = graphic_row.push(button_column2);
 
         }
 
