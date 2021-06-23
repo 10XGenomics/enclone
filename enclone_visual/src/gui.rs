@@ -341,8 +341,8 @@ impl Application for EncloneVisual {
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
             }
-            // graphic_row = graphic_row.push(Text::new(&self.input_value).font(DEJAVU_BOLD).size(12).width(Units(300)));
             graphic_row = graphic_row.push(button_column);
+            // graphic_row = graphic_row.push(Text::new(&self.input_value).font(DEJAVU_BOLD).size(12).width(Units(300)));
         }
 
         let content = Column::new()
