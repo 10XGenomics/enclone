@@ -11,7 +11,9 @@ MANUAL TESTING
    (h) Test cookbook commands.
    (i) enclone BCR=123085
    (j) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+       check tooltip functionality
    (k) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
+       check tooltip functionality
    (l) enclone woof
    (m) enclone BCR=123085 NOPRINT
 
