@@ -403,6 +403,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let mut buffer = [0; 50];
         let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
+        if verbose {
+            println!("waiting for server response");
+        }
         server_stdout.read(&mut buffer).unwrap();
         println!(
             "time spent waiting to read bytes from server = {:.1} seconds",
