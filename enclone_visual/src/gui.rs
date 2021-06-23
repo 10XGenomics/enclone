@@ -59,6 +59,8 @@ struct EncloneVisual {
     svg_value: String,
     png_value: Vec<u8>,
     button: button::State,
+    back_button: button::State,
+    forward_button: button::State,
     submit_button_text: String,
     open_state: button::State,
     modal_state: modal::State<ModalState>,
@@ -73,6 +75,8 @@ struct EncloneVisual {
 enum Message {
     InputChanged(String),
     ButtonPressed,
+    BackButtonPressed,
+    ForwardButtonPressed,
     OpenModal,
     CloseModal,
     CancelButtonPressed,
@@ -201,6 +205,14 @@ impl Application for EncloneVisual {
                 self.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
+
+            Message::BackButtonPressed => {
+                Command::none()
+            }
+
+            Message::ForwardButtonPressed => {
+                Command::none()
+            }
         }
     }
 
@@ -233,6 +245,18 @@ impl Application for EncloneVisual {
         )
         .padding(10)
         .on_press(Message::ButtonPressed);
+
+        let back_button = Button::new(
+            &mut self.back_button,
+            Text::new("⇧").font(DEJAVU_BOLD).size(30),
+        )
+        .on_press(Message::BackButtonPressed);
+
+        let forward_button = Button::new(
+            &mut self.forward_button,
+            Text::new("⇩").font(DEJAVU_BOLD).size(30),
+        )
+        .on_press(Message::ForwardButtonPressed);
 
         let copy_button = Button::new(
             &mut self.copy_button,
@@ -285,6 +309,8 @@ impl Application for EncloneVisual {
                 graphic_row = graphic_row.push(svg_as_png);
             }
             graphic_row = graphic_row.push(copy_button);
+            graphic_row = graphic_row.push(back_button);
+            graphic_row = graphic_row.push(forward_button);
         }
 
         let content = Column::new()
