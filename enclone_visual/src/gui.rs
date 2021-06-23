@@ -73,6 +73,7 @@ struct EncloneVisual {
     history_index: usize,
     command_history: Vec<String>,
     command_copy_button: button::State,
+    null_button: button::State,
 }
 
 #[derive(Debug, Clone)]
@@ -89,6 +90,7 @@ enum Message {
     GraphicsCopyButtonPressed,
     GraphicsCopyButtonFlashed(Result<(), String>),
     CommandCopyButtonPressed,
+    DoNothing,
 }
 
 #[derive(Default)]
@@ -241,6 +243,10 @@ impl Application for EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
+                Command::none()
+            }
+
+            Message::DoNothing => {
                 Command::none()
             }
 
@@ -403,13 +409,22 @@ impl Application for EncloneVisual {
                 }
                 log += &mut rows[i][0].clone();
             }
-            log += "\n\n(click to copy)";
-            graphic_row = graphic_row.push( Button::new(
-                &mut self.command_copy_button,
+        
+            let col = Column::new().spacing(8).push(
+                Button::new(
+                &mut self.null_button,
                 Text::new(&log).font(DEJAVU_BOLD).size(12),
+                )
+                .on_press(Message::DoNothing)
+            ).push(
+                Button::new(
+                &mut self.command_copy_button,
+                Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
                 )
                 .on_press(Message::CommandCopyButtonPressed)
             );
+
+            graphic_row = graphic_row.push(col);
 
             // Add command copy button.
 
