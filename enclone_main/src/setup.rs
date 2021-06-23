@@ -292,8 +292,8 @@ pub fn setup(
         } else {
             prepare_for_apocalypse(
                 &args_orig,
-               (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
-                && bug_reports.len() == 0,
+                (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
+                    && bug_reports.len() == 0,
                 &bug_reports,
             );
             let mut nopager = false;

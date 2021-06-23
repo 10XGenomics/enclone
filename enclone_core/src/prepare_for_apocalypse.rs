@@ -2,9 +2,9 @@
 
 // Set up response on panic.
 
-use chrono::{TimeZone, Utc};
-use crate::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use crate::version_string;
+use crate::{BUG_REPORT_ADDRESS, REMOTE_HOST};
+use chrono::{TimeZone, Utc};
 use itertools::Itertools;
 use pretty_trace::*;
 use std::env;
@@ -69,7 +69,10 @@ pub fn prepare_for_apocalypse(args: &Vec<String>, email: bool, bug_reports: &str
             bug_reports,
             contemplate,
         );
-        BUG_REPORT_ADDRESS.lock().unwrap().push(bug_reports.to_string());
+        BUG_REPORT_ADDRESS
+            .lock()
+            .unwrap()
+            .push(bug_reports.to_string());
         fn exit_function(msg: &str) {
             let msg = format!("{}\n.\n", msg);
             let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];

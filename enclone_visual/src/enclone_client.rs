@@ -270,7 +270,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     prepare_for_apocalypse(&args, internal, &bug_reports);
-        
+
     // Determine if the server is remote.
 
     let remote = config.contains_key("REMOTE_HOST")
