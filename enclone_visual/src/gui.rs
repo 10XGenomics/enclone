@@ -19,7 +19,6 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
 use string_utils::*;
-use tables::*;
 
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",
@@ -74,7 +73,6 @@ struct EncloneVisual {
     history_index: usize,
     command_history: Vec<String>,
     command_copy_button: button::State,
-    command_text_button: button::State,
 }
 
 #[derive(Debug, Clone)]
@@ -299,12 +297,6 @@ impl Application for EncloneVisual {
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
-        let command_copy_button = Button::new(
-            &mut self.command_copy_button,
-            Text::new("Copy").size(COPY_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::CommandCopyButtonPressed);
-
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
@@ -413,7 +405,7 @@ impl Application for EncloneVisual {
             }
             log += "\n\n(click to copy)";
             graphic_row = graphic_row.push( Button::new(
-                &mut self.command_text_button,
+                &mut self.command_copy_button,
                 Text::new(&log).font(DEJAVU_BOLD).size(12),
                 )
                 .on_press(Message::CommandCopyButtonPressed)
