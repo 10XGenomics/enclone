@@ -27,6 +27,7 @@ path = "src/bin/enclone.rs"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual" }
+io_utils = "0.2"
 nix = "0.19.1"
 pretty_trace = "0.5"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
@@ -38,7 +39,6 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_tools = { path = "../enclone_tools" }
 failure = "0.1.6"
 flate2 = "1.0.20"
-io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 perf_stats = "0.1"
 rayon = "1.4"

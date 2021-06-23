@@ -4,16 +4,17 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
-use enclone_core::update_restart::*;
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 use enclone_visual::enclone_client::enclone_client;
 use enclone_visual::enclone_server::enclone_server;
+use io_utils::*;
 use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::getppid;
 use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
+use std::process::Command;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -43,7 +44,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             );
             std::process::exit(1);
         }
-        update_enclone();
+        let mut home = String::new();
+        for (key, value) in env::vars() {
+            if key == "HOME" {
+                home = value.clone();
+            }
+        }
+        if home.len() == 0 {
+            eprintln!("Weird, unable to determine your home directory.\n");
+            std::process::exit(1);
+        }
+        let datasets = format!("{}/enclone/datasets", home);
+        if !path_exists(&datasets) || !std::path::Path::new(&datasets).is_dir() {
+            eprintln!(
+                "\nSomething odd has happened.  There should be a directory ~/enclone and \
+                inside that, a directory datasets.\n"
+            );
+            std::process::exit(1);
+        }
+        let list = dir_list(&datasets);
+        let size;
+        if list.len() <= 3 {
+            size = "small";
+        } else if list.len() <= 40 {
+            size = "medium";
+        } else {
+            size = "large";
+        }
+        let _ = Command::new("bash")
+            .arg("-c")
+            .arg(&format!(
+                "curl -sSf -L bit.ly/enclone_install | bash -s {}",
+                size
+            ))
+            .output()
+            .expect("failed to execute curl");
         std::process::exit(0);
     }
 
