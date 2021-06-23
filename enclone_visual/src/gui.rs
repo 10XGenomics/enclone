@@ -411,7 +411,7 @@ impl Application for EncloneVisual {
                 }
                 log += &mut rows[i][0].clone();
             }
-            log += "\n(click to copy)";
+            log += "\n\n(click to copy)";
             graphic_row = graphic_row.push( Button::new(
                 &mut self.command_text_button,
                 Text::new(&log).font(DEJAVU_BOLD).size(12),
