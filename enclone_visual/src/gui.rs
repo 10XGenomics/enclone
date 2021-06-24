@@ -333,7 +333,10 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
-            Message::CommandCopyButtonPressed => Command::none(),
+            Message::CommandCopyButtonPressed => {
+                copy_bytes_to_mac_clipboard(&self.command_history[self.history_index - 1].as_bytes());
+                Command::none()
+            }
 
             Message::DoNothing => Command::none(),
         }
