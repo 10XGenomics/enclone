@@ -27,6 +27,43 @@ pub mod proto {
     tonic::include_proto!("enclone");
 }
 
+fn fold(line: &str) -> Vec<String> {
+    const MAX_COMMENT: usize = 60;
+    let mut pieces = Vec::<String>::new();
+    let words = line.split(' ').collect::<Vec<&str>>();
+    let mut current = String::new();
+    let mut i = 0;
+    while i < words.len() {
+        if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_COMMENT {
+            pieces.push(current.clone());
+            current.clear();
+            i -= 1;
+        } else if words[i].len() >= MAX_COMMENT {
+            let mut w = words[i].as_bytes().to_vec();
+            loop {
+                let n = std::cmp::min(MAX_COMMENT, w.len());
+                let sub = stringme(&w[0..n]);
+                if n < w.len() {
+                    pieces.push(sub);
+                    w = w[n..w.len()].to_vec();
+                } else {
+                    current = stringme(&w);
+                    break;
+                }
+            }
+        } else if current.len() == 0 {
+            current += &mut words[i].clone();
+        } else {
+            current += &mut format!(" {}", words[i]);
+        }
+        i += 1;
+    }
+    if current.len() > 0 {
+        pieces.push(current);
+    }
+    pieces
+}
+
 pub fn format_cookbook() -> String {
     let c = include_str!["cookbook"];
     let mut rows = Vec::<Vec<String>>::new();
@@ -37,9 +74,9 @@ pub fn format_cookbook() -> String {
     ];
     rows.push(row);
     let mut row = Vec::<String>::new();
+    const MAX_COMMENT: usize = 60;
     for line in c.lines() {
         if line.len() > 0 {
-            const MAX_COMMENT: usize = 60;
             if row.len() < 2 || line.len() < MAX_COMMENT {
                 row.push(line.to_string());
                 if row.len() == 3 {
@@ -50,38 +87,7 @@ pub fn format_cookbook() -> String {
                     row.clear();
                 }
             } else {
-                let mut pieces = Vec::<String>::new();
-                let words = line.split(' ').collect::<Vec<&str>>();
-                let mut current = String::new();
-                let mut i = 0;
-                while i < words.len() {
-                    if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_COMMENT {
-                        pieces.push(current.clone());
-                        current.clear();
-                        i -= 1;
-                    } else if words[i].len() >= MAX_COMMENT {
-                        let mut w = words[i].as_bytes().to_vec();
-                        loop {
-                            let n = std::cmp::min(MAX_COMMENT, w.len());
-                            let sub = stringme(&w[0..n]);
-                            if n < w.len() {
-                                pieces.push(sub);
-                                w = w[n..w.len()].to_vec();
-                            } else {
-                                current = stringme(&w);
-                                break;
-                            }
-                        }
-                    } else if current.len() == 0 {
-                        current += &mut words[i].clone();
-                    } else {
-                        current += &mut format!(" {}", words[i]);
-                    }
-                    i += 1;
-                }
-                if current.len() > 0 {
-                    pieces.push(current);
-                }
+                let pieces = fold(&line);
                 if rows.len() > 0 {
                     rows.push(vec!["\\hline".to_string(); 3]);
                 }
