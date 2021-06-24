@@ -132,10 +132,6 @@ impl Application for EncloneVisual {
         Command::none()
     }
 
-    fn should_exit(&self) -> bool {
-        self.should_exit
-    }
-
     fn subscription(&self) -> Subscription<Message> {
         iced_native::subscription::events().map(Message::EventOccurred)
     }
