@@ -4,9 +4,9 @@ use crate::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-     button, scrollable, text_input, Align, Button, Clipboard, Color, Column, Command, Element,
-     Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Subscription,
-     Svg, Text, TextInput, VerticalAlignment,
+    button, scrollable, text_input, Align, Button, Clipboard, Color, Column, Command, Element,
+    Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Subscription,
+    Svg, Text, TextInput, VerticalAlignment,
 };
 use iced::Application;
 use iced_aw::{modal, Card, Modal};
