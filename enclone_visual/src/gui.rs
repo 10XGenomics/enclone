@@ -243,7 +243,7 @@ impl Application for EncloneVisual {
                         reply_svg = blank_svg();
                         blank = true;
                     }
-                    if reply_svg.len() > 0 {
+                    if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
                         self.svg_history.push(reply_svg.clone());
                         self.history_index += 1;
                         self.command_history
