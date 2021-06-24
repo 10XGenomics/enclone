@@ -249,7 +249,7 @@ fn test_curl_command() {
         if !path_exists("testx/outputs") {
             eprintln!(
                 "\ntest_curl_command:\n\
-                You need to create the directory enclone_main/testx/outputs.\n\
+                You need to create the directory enclone_exec/testx/outputs.\n\
                 If you run \"./build\" this will be done for you.\n"
             );
             std::process::exit(1);

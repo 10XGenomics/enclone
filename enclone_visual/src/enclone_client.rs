@@ -29,6 +29,7 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
@@ -40,30 +41,14 @@ use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
 use perf_stats::*;
-use std::collections::HashMap;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
-use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-fn restart() {
-    let args: Vec<String> = env::args().collect();
-    let mut args1 = Vec::<String>::new();
-    for i in 1..args.len() {
-        args1.push(args[i].clone());
-    }
-    let mut o = Command::new("enclone")
-        .args(&args1)
-        .spawn()
-        .expect("failed to execute enclone restart");
-    let _ = o.wait().expect("failed to wait on child");
-    std::process::exit(0);
-}
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
@@ -119,7 +104,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.0000000000000000000000000001";
+    let version = "0.000000000000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -189,6 +174,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut internal = false;
     let mut config_file_contents = String::new();
     for (key, value) in env::vars() {
+        if key == "ENCLONE_INTERNAL" {
+            internal = true;
+        }
+
         if key == "ENCLONE_CONFIG" {
             CONFIG_FILE.lock().unwrap().push(value.to_string());
             let hf = value.to_string();
@@ -207,7 +196,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 config_file_contents = std::fs::read_to_string(&filename).unwrap();
 
             // Otherwise, fetch the file from the host.
-            } else if filehost.len() > 0 {
+            } else if filehost.len() > 0 && config_name.len() > 0 {
                 filehost_used = true;
                 let t = Instant::now();
                 let o = Command::new("ssh")
@@ -227,16 +216,19 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     );
                     println!("Here are two possible explanations:");
                     println!("1. The host is wrong.");
+                    println!("2. You are not connected to the internet.");
                     println!(
-                        "2. You first need to do something to enable crossing \
-                              a firewall."
+                        "3. You first need to do something to enable crossing \
+                              a firewall.  If so, ask a colleague.\n"
                     );
-                    println!("   If so, ask one of your colleagues how to do this.\n");
                     std::process::exit(1);
                 }
                 config_file_contents = strme(&o.stdout).to_string();
             }
         }
+    }
+    if internal {
+        INTERNAL.store(true, SeqCst);
     }
 
     // Get configuration.
@@ -411,6 +403,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         let mut server_process = server_process.unwrap();
         let server_process_id = server_process.id();
+        SERVER_PROCESS_PID.store(server_process_id as usize, SeqCst);
 
         // Wait until server has printed something.
 
@@ -425,7 +418,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             thread::sleep(Duration::from_millis(5000));
             if !READ_DONE.load(SeqCst) {
                 println!("darn, we seem to have hit a bad port, so restarting");
-                restart();
+                restart_enclone();
             }
         });
         server_stdout.read(&mut buffer).unwrap();
@@ -490,40 +483,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 eprintln!("local enclone version = {}", local_version);
                 eprintln!("\nYour enclone version is not up to date.");
                 if auto_update {
-                    println!(
-                        "Automatically updating enclone, following the instructions at \
-                        bit.ly/enclone.\n"
-                    );
-                    let mut home = String::new();
-                    for (key, value) in env::vars() {
-                        if key == "HOME" {
-                            home = value.clone();
-                        }
-                    }
-                    if home.len() == 0 {
-                        eprintln!("Weird, unable to determine your home directory.\n");
-                        std::process::exit(1);
-                    }
-                    let o = Command::new("curl")
-                        .arg("-s")
-                        .arg("-L")
-                        .arg(
-                            "https://github.com/10XGenomics/enclone/\
-                            releases/latest/download/enclone_macos",
-                        )
-                        .arg("--output")
-                        .arg(&format!("{}/bin/enclone", home))
-                        .output()
-                        .expect("failed to execute curl");
-                    if o.status.code() != Some(0) {
-                        eprintln!(
-                            "Update failed with the following error message:\n{}",
-                            strme(&o.stderr)
-                        );
-                        std::process::exit(1);
-                    }
+                    update_enclone();
                     println!("Done, restarting!\n");
-                    restart();
+                    restart_enclone();
                 } else {
                     eprintln!(
                         "Please update, following \
@@ -617,9 +579,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
-                    }
-                    if line == "d" {
-                        line = "enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
                     }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();

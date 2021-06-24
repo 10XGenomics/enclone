@@ -6,15 +6,13 @@ TO DO
 
 3.  Trim features and duplicated crates; reduce binary size.
 
-4.  Handle the case where tsh hasn't been started
-    server says this: david.jaffe@....................: Permission denied (publickey).
-    kex_exchange_identification: Connection closed by remote host
+4.  What do we do about the truncation of printing to fifty clonotypes?
 
-5.  What do we do about the truncation of printing to fifty clonotypes?
+5.  Make code work for 2 or more SVG files.
 
-6.  Make code work for 2 or more SVG files.
+6.  Refactor to keep tokio etc. out of cellranger.
 
-7.  Refactor to keep tokio etc. out of cellranger.
+7.  Fix the close button on the upper left.
 
 ---------------------------------------------------------------------------------------------------
 

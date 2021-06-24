@@ -336,8 +336,11 @@ Restart your terminal session; you can now run #enclone.</p>
 
 <p><span style="color:red; font-weight:bold">To update, type the same command!</span>
 <span style="font-weight:bold">
+You can also type <code>enclone UPDATE</code>, which does the same thing.
 Only required files will be downloaded.  
-See <a href="pages/auto/history.html">history</a> for what has changed.</span></p>
+See <a href="pages/auto/history.html">history</a> for the history of changes to 
+#enclone.
+</span></p>
 
 <p>Information about previous releases of #enclone, matching particular Cell Ranger releases is
 <a href="pages/auto/cellranger.html">here</a>, along with an inventory of #enclone changes that

@@ -794,7 +794,7 @@ pub fn group_and_print_clonotypes(
         } else if filename == "gui" {
             // Add tooltip notes.
 
-            let mut svg2 = svg.clone();
+            let mut svg2 = String::new();
             let mut count = 0;
             for line in svg.lines() {
                 let mut s = line.to_string();

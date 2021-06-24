@@ -3,6 +3,7 @@
 // This code is pretty much copied from the resvg crate,
 // rev = 6b29007311edc5022635362fe56f6e5c0318fdeb, done June 14, 2021.
 
+use string_utils::*;
 use usvg::SystemFontDB;
 
 pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
@@ -19,7 +20,15 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         keep_named_groups: false,
         fontdb,
     };
-    let tree = usvg::Tree::from_data(&svg, &usvg).unwrap();
+    let tree = usvg::Tree::from_data(&svg, &usvg);
+    if tree.is_err() {
+        panic!(
+            "svg conversion failed with message {} on\n{}\n",
+            tree.err().unwrap(),
+            strme(svg)
+        );
+    }
+    let tree = tree.unwrap();
     let fit_to = usvg::FitTo::Original;
     let size = fit_to
         .fit_to(tree.svg_node().size.to_screen_size())

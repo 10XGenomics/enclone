@@ -7,8 +7,14 @@
 use cocoa::{
     appkit::{NSImage, NSPasteboard},
     base::nil,
-    foundation::{NSArray, NSAutoreleasePool, NSData},
+    foundation::{NSArray, NSAutoreleasePool, NSData, NSString},
 };
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use objc::{msg_send, runtime::Object, sel, sel_impl};
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+pub type Id = *mut Object;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use libc::c_void;
@@ -38,3 +44,32 @@ pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
 
 #[cfg(not(any(target_os = "macos", target_os = "ios")))]
 pub fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
+
+// intended for strings:
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+pub fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
+    if bytes.len() > 0 {
+        unsafe {
+            let pool = NSAutoreleasePool::new(nil);
+            let data = NSData::dataWithBytes_length_(
+                pool,
+                bytes.as_ptr() as *const c_void,
+                bytes.len() as u64,
+            );
+            let string: Id = msg_send![NSString::alloc(pool), initWithData:data encoding:4];
+            let object = string;
+            if object != nil {
+                let pasteboard = NSPasteboard::generalPasteboard(pool);
+                pasteboard.clearContents();
+                pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
+            } else {
+                eprintln!("\ncopy to pasteboard failed\n");
+                std::process::exit(1);
+            }
+        }
+    }
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+pub fn copy_bytes_to_mac_clipboard(_bytes: &[u8]) {}

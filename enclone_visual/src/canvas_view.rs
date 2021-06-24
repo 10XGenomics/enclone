@@ -247,7 +247,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 frame.translate(Vector { x: xpos, y: 0.0 });
                                 let text = canvas::Text {
                                     content: log,
-                                    size: 22.0,
+                                    size: 18.0,
                                     font: DEJAVU,
                                     color: Color::from_rgb(0.5, 0.3, 0.3),
                                     ..canvas::Text::default()

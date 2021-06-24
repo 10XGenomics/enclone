@@ -28,9 +28,9 @@ chrono = "0.4.19"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
-iced = { version = "0.3", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
-iced_aw = { git = "https://github.com/iced-rs/iced_aw", rev = "3dfce43396af457aaee835dbe281663a41a261ab", default-features = false, features = ["card", "colors", "modal"] }
-iced_native = "0.4"
+iced = { git = "https://github.com/genusistimelord/iced.git", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
+iced_aw = { git = "https://github.com/genusistimelord/iced_aw.git", branch = "iced-main", default-features = false, features = ["card", "colors", "modal"] }
+iced_native = { git = "https://github.com/genusistimelord/iced.git" }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 lazy_static = "1.4"
@@ -58,6 +58,7 @@ procfs = "0.9"
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 cocoa = "0.24"
 mach = "0.3"
+objc = "0.2"
 
 [build-dependencies]
 tonic-build = { version = "0.4", features = [] }

@@ -1,24 +1,25 @@
 MANUAL TESTING
 
 1. enclone VIS=b
-   (a) Type d and then manually scroll up and down for two minutes.  Should not slow down or crash.
+   (a) Type #1 and then manually scroll up and down for two minutes.  Should not slow down or crash.
    (b) Scroll to the bottom and make sure the last clonotype is not truncated.
    (c) Check that group number 0 and too large give errors.
    (d) Check that group number 1 is the right clonotype.
    (e) Try to cut and paste from clonotype tables [BROKEN].
    (f) Test help button.
-   (g) Test that copy button flashes and that it actually copies.
+   (g) Test that copy image button flashes and that it actually copies.
    (h) Test cookbook commands.
-   (i) enclone BCR=123085
-   (j) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
+   (i) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
        check tooltip functionality
-   (k) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
+   (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
        check tooltip functionality
-   (l) enclone woof
-   (m) enclone BCR=123085 NOPRINT
+   (k) enclone woof
+   (l) enclone BCR=123085 NOPRINT
 
 2. Repeat ten times:
    (a) type enclone VIS
-   (b) type d
+   (b) type #1
    (c) make sure it says "thinking" briefly and produces output
    (d) exit.
+
+3. enclone vis and type Help, Dismiss, Help, Dismiss, Help, Dismiss.  Do these respond instantly?
