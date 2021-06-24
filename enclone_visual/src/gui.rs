@@ -9,8 +9,8 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
-    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings,
-    Svg, Text, TextInput, VerticalAlignment,
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Svg, Text,
+    TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
 use iced_aw::{modal, Card, Modal};
@@ -32,7 +32,8 @@ fn blank_svg() -> String {
 xmlns="http://www.w3.org/2000/svg">
 <rect x="0" y="0" width="400" height="400" style="fill:white" />
 </svg>
-"###.to_string()
+"###
+    .to_string()
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -87,13 +88,11 @@ struct EncloneVisual {
     cookbook: HashMap<String, String>,
 
     // parallel vectors:
-
     svg_history: Vec<String>,
     command_history: Vec<String>,
     is_blank: Vec<bool>,
 
     // index of "current" position in those vectors:
-
     history_index: usize,
 }
 
@@ -212,14 +211,18 @@ impl Application for EncloneVisual {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
                     thread::sleep(Duration::from_millis(20));
-                    if self.input_value.starts_with('#') &&
-                        self.cookbook.contains_key(&self.input_value) {
+                    if self.input_value.starts_with('#')
+                        && self.cookbook.contains_key(&self.input_value)
+                    {
                         self.translated_input_value = self.cookbook[&self.input_value].clone();
                     } else {
                         self.translated_input_value = self.input_value.clone();
                     }
                     USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST.lock().unwrap().push(self.translated_input_value.clone());
+                    USER_REQUEST
+                        .lock()
+                        .unwrap()
+                        .push(self.translated_input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
                     Command::perform(compute(), Message::ComputationDone)
                 } else {
@@ -244,7 +247,8 @@ impl Application for EncloneVisual {
                     if reply_svg.len() > 0 {
                         self.svg_history.push(reply_svg.clone());
                         self.history_index += 1;
-                        self.command_history.push(self.translated_input_value.clone());
+                        self.command_history
+                            .push(self.translated_input_value.clone());
                         self.is_blank.push(blank);
                     }
                 }
@@ -270,11 +274,13 @@ impl Application for EncloneVisual {
                 Command::none()
             }
             */
-
             Message::GraphicsCopyButtonPressed => {
                 self.copy_image_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
-                Command::perform(flash_copy_image_button(), Message::GraphicsCopyButtonFlashed)
+                Command::perform(
+                    flash_copy_image_button(),
+                    Message::GraphicsCopyButtonFlashed,
+                )
             }
 
             Message::GraphicsCopyButtonFlashed(_) => {
@@ -296,14 +302,9 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
-            Message::CommandCopyButtonPressed => {
-                Command::none()
-            }
+            Message::CommandCopyButtonPressed => Command::none(),
 
-            Message::DoNothing => {
-                Command::none()
-            }
-
+            Message::DoNothing => Command::none(),
         }
     }
 
@@ -355,7 +356,9 @@ impl Application for EncloneVisual {
         const COPY_BUTTON_FONT_SIZE: u16 = 15;
         let copy_image_button = Button::new(
             &mut self.copy_image_button,
-            Text::new("Copy image").size(COPY_BUTTON_FONT_SIZE).color(self.copy_image_button_color),
+            Text::new("Copy image")
+                .size(COPY_BUTTON_FONT_SIZE)
+                .color(self.copy_image_button_color),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -399,7 +402,6 @@ impl Application for EncloneVisual {
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
-
             // Show the graphic.
 
             if self.canvas_view.state.geometry_value.is_some() {
@@ -463,20 +465,23 @@ impl Application for EncloneVisual {
                 }
                 log += &mut rows[i][0].clone();
             }
-        
-            let mut col = Column::new().spacing(8).push(
-                Button::new(
-                &mut self.null_button,
-                Text::new(&log).font(DEJAVU_BOLD).size(12),
+
+            let mut col = Column::new()
+                .spacing(8)
+                .push(
+                    Button::new(
+                        &mut self.null_button,
+                        Text::new(&log).font(DEJAVU_BOLD).size(12),
+                    )
+                    .on_press(Message::DoNothing),
                 )
-                .on_press(Message::DoNothing)
-            ).push(
-                Button::new(
-                &mut self.command_copy_button,
-                Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
-                )
-                .on_press(Message::CommandCopyButtonPressed)
-            );
+                .push(
+                    Button::new(
+                        &mut self.command_copy_button,
+                        Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+                    )
+                    .on_press(Message::CommandCopyButtonPressed),
+                );
             if !self.is_blank[self.history_index - 1] {
                 col = col.push(copy_image_button);
             }
@@ -486,17 +491,13 @@ impl Application for EncloneVisual {
             // Add up and down arrows.
 
             graphic_row = graphic_row.push(button_column2);
-
         }
 
         // Put it all together.
 
         let left_buttons = Column::new()
             .spacing(8)
-            .push(
-                Button::new(&mut self.exit_state, Text::new("Exit"))
-                    .on_press(Message::Exit),
-            )
+            .push(Button::new(&mut self.exit_state, Text::new("Exit")).on_press(Message::Exit))
             .push(
                 Button::new(&mut self.open_state, Text::new("Help"))
                     .on_press(Message::OpenModalHelp),
@@ -524,11 +525,11 @@ impl Application for EncloneVisual {
             content = content.push(Rule::horizontal(10).style(style::RuleStyle));
         }
         content = content.push(
-                Row::new()
-                    .height(Length::Units(1000)) // Height of scrollable window, maybe??
-                    .align_items(Align::Center)
-                    .push(scrollable),
-            );
+            Row::new()
+                .height(Length::Units(1000)) // Height of scrollable window, maybe??
+                .align_items(Align::Center)
+                .push(scrollable),
+        );
 
         use iced_aw::style::{
             card::{Style, StyleSheet},

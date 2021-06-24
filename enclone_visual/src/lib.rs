@@ -29,7 +29,11 @@ pub mod proto {
 pub fn format_cookbook() -> String {
     let c = include_str!["cookbook"];
     let mut rows = Vec::<Vec<String>>::new();
-    let row = vec!["tag".to_string(), "command".to_string(), "action".to_string()];
+    let row = vec![
+        "tag".to_string(),
+        "command".to_string(),
+        "action".to_string(),
+    ];
     rows.push(row);
     let mut row = Vec::<String>::new();
     for line in c.lines() {
@@ -45,14 +49,7 @@ pub fn format_cookbook() -> String {
         }
     }
     let mut log = String::new();
-    print_tabular_vbox(
-        &mut log,
-        &rows,
-        0,
-        &b"l|l|l".to_vec(),
-        false,
-        true,
-    );
+    print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l".to_vec(), false, true);
     log
 }
 
@@ -66,7 +63,7 @@ pub fn parse_cookbook() -> HashMap<String, String> {
     }
     let mut h = HashMap::<String, String>::new();
     for i in (0..lines.len()).step_by(3) {
-        h.insert(lines[i].clone(), lines[i+1].clone());
+        h.insert(lines[i].clone(), lines[i + 1].clone());
     }
     h
 }

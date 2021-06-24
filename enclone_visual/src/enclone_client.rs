@@ -178,7 +178,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if key == "ENCLONE_INTERNAL" {
             internal = true;
         }
-            
+
         if key == "ENCLONE_CONFIG" {
             CONFIG_FILE.lock().unwrap().push(value.to_string());
             let hf = value.to_string();
@@ -579,7 +579,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     }
                     if line == "d" {
                         line = "enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
-                    } 
+                    }
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
                         if n == 0 {
