@@ -176,6 +176,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut internal = false;
     let mut config_file_contents = String::new();
     for (key, value) in env::vars() {
+        if key == "ENCLONE_INTERNAL" {
+            internal = true;
+        }
+            
         if key == "ENCLONE_CONFIG" {
             CONFIG_FILE.lock().unwrap().push(value.to_string());
             let hf = value.to_string();
@@ -194,7 +198,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 config_file_contents = std::fs::read_to_string(&filename).unwrap();
 
             // Otherwise, fetch the file from the host.
-            } else if filehost.len() > 0 {
+            } else if filehost.len() > 0 && config_name.len() > 0 {
                 filehost_used = true;
                 let t = Instant::now();
                 let o = Command::new("ssh")
