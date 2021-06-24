@@ -22,7 +22,11 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
     };
     let tree = usvg::Tree::from_data(&svg, &usvg);
     if tree.is_err() {
-        panic!("svg conversion failed with message {} on\n{}\n", tree.err().unwrap(), strme(svg));
+        panic!(
+            "svg conversion failed with message {} on\n{}\n",
+            tree.err().unwrap(),
+            strme(svg)
+        );
     }
     let tree = tree.unwrap();
     let fit_to = usvg::FitTo::Original;
