@@ -71,7 +71,7 @@ struct EncloneVisual {
     forward_button: button::State,
     submit_button_text: String,
     open_state: button::State,
-    modal_state: modal::State<ModalState>,
+    modal_state_help: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
     copy_image_button: button::State,
@@ -97,8 +97,8 @@ enum Message {
     ButtonPressed,
     BackButtonPressed,
     ForwardButtonPressed,
-    OpenModal,
-    CloseModal,
+    OpenModalHelp,
+    CloseModalHelp,
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
     EventOccurred(iced_native::Event),
@@ -162,18 +162,18 @@ impl Application for EncloneVisual {
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
-            Message::OpenModal => {
-                self.modal_state.show(true);
+            Message::OpenModalHelp => {
+                self.modal_state_help.show(true);
                 Command::none()
             }
 
-            Message::CloseModal => {
-                self.modal_state.show(false);
+            Message::CloseModalHelp => {
+                self.modal_state_help.show(false);
                 Command::none()
             }
 
             Message::CancelButtonPressed => {
-                self.modal_state.show(false);
+                self.modal_state_help.show(false);
                 Command::none()
             }
 
@@ -466,7 +466,7 @@ impl Application for EncloneVisual {
                     .align_items(Align::Center)
                     .push(
                         Button::new(&mut self.open_state, Text::new("Help"))
-                            .on_press(Message::OpenModal),
+                            .on_press(Message::OpenModalHelp),
                     )
                     .push(banner),
             )
@@ -509,7 +509,7 @@ impl Application for EncloneVisual {
 
         let version = VERSION.lock().unwrap()[0].clone();
         let version_float = format!("1e-{}", -version.force_f64().log10());
-        Modal::new(&mut self.modal_state, content, move |state| {
+        Modal::new(&mut self.modal_state_help, content, move |state| {
             Card::new(
                 Text::new(""),
                 Text::new(&format!(
@@ -545,11 +545,11 @@ impl Application for EncloneVisual {
             )
             .width(Units(1100))
             .height(Units(1060))
-            .on_close(Message::CloseModal)
+            .on_close(Message::CloseModalHelp)
             .into()
         })
-        .backdrop(Message::CloseModal)
-        .on_esc(Message::CloseModal)
+        .backdrop(Message::CloseModalHelp)
+        .on_esc(Message::CloseModalHelp)
         .into()
     }
 }
