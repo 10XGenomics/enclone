@@ -1,11 +1,3 @@
-This is the initial cookbook.  Command lines look like 
-#tag: ...
-and if you type 
-#tag
-into the input box, you'll get that command.
-
----------------------------------------------------------------------------------------------------
-
 Show a honeycomb plot.
 
 #1: enclone BCR=123085 PLOT=gui
