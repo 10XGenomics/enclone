@@ -456,7 +456,7 @@ impl Application for EncloneVisual {
 
         // Put it all together.
 
-        let content = Column::new()
+        let mut content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
@@ -472,9 +472,11 @@ impl Application for EncloneVisual {
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
-            .push(graphic_row)
-            .push(Rule::horizontal(10).style(style::RuleStyle))
-            .push(
+            .push(graphic_row);
+        if !self.command_history.is_empty() {
+            content = content.push(Rule::horizontal(10).style(style::RuleStyle));
+        }
+        content = content.push(
                 Row::new()
                     .height(Length::Units(1000)) // Height of scrollable window, maybe??
                     .align_items(Align::Center)
