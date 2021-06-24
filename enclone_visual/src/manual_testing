@@ -19,7 +19,7 @@ MANUAL TESTING
 
 2. Repeat ten times:
    (a) type enclone VIS
-   (b) type d
+   (b) type #1
    (c) make sure it says "thinking" briefly and produces output
    (d) exit.
 

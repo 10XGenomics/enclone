@@ -568,7 +568,7 @@ impl Application for EncloneVisual {
                          that you can type:\n\n\
                          • an enclone command\n\
                          • an group id (number)\n\
-                         • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                         • a recipe tag (see cookbook)\n\
                          • q to quit\n\n\
                          Major limitations of this version:\n\
                          1. There is no color in the clonotype tables.\n\

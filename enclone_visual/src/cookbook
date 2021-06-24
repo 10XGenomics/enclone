@@ -3,8 +3,8 @@ enclone BCR=123085 PLOT=gui
 Show a honeycomb plot.
 
 #2
-enclone BCR=123085 PLOT_BY_ISOTYPE=gui
-Show a honeycomb plot with cells colored by their isotype.
+enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
+Show a honeycomb plot with cells colored by their isotype, showing only clonotypes having at least five cells.
 
 #3
 enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
