@@ -216,11 +216,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     );
                     println!("Here are two possible explanations:");
                     println!("1. The host is wrong.");
+                    println!("2. You are not connected to the internet.");
                     println!(
-                        "2. You first need to do something to enable crossing \
-                              a firewall."
+                        "3. You first need to do something to enable crossing \
+                              a firewall.  If so, ask a colleague.\n"
                     );
-                    println!("   If so, ask one of your colleagues how to do this.\n");
                     std::process::exit(1);
                 }
                 config_file_contents = strme(&o.stdout).to_string();
