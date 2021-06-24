@@ -571,7 +571,7 @@ impl Application for EncloneVisual {
                          • an group id (number)\n\
                          • a recipe tag (see cookbook)\n\
                          • q to quit\n\n\
-                         Major limitations of this version:\n\
+                         Some limitations of this version:\n\
                          1. There is no color in the clonotype tables.\n\
                          2. Cutting and pasting from clonotype tables doesn't work.\n\
                          3. Long commands are hard to work with in the input box.\n\
