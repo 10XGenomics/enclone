@@ -84,6 +84,8 @@ struct EncloneVisual {
     copy_image_button_color: Color,
     canvas_view: CanvasView,
     command_copy_button: button::State,
+    null_button1: button::State,
+    null_button2: button::State,
     null_button: button::State,
     cookbook: HashMap<String, String>,
 
@@ -381,6 +383,18 @@ impl Application for EncloneVisual {
         )
         .on_press(Message::ForwardButtonPressed);
 
+        let null_button1 = Button::new(
+            &mut self.null_button1,
+            Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
+        )
+        .on_press(Message::DoNothing);
+
+        let null_button2 = Button::new(
+            &mut self.null_button2,
+            Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
+        )
+        .on_press(Message::DoNothing);
+
         const COPY_BUTTON_FONT_SIZE: u16 = 15;
         let copy_image_button = Button::new(
             &mut self.copy_image_button,
@@ -423,9 +437,13 @@ impl Application for EncloneVisual {
         let mut button_column2 = Column::new().spacing(8);
         if self.history_index > 1 {
             button_column2 = button_column2.push(back_button);
+        } else {
+            button_column2 = button_column2.push(null_button1);
         }
         if self.history_index < self.svg_history.len() {
             button_column2 = button_column2.push(forward_button);
+        } else {
+            button_column2 = button_column2.push(null_button2);
         }
 
         let mut graphic_row = Row::new().spacing(10);
