@@ -29,10 +29,10 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
-use enclone_core::update_restart::*;
 use enclone_core::REMOTE_HOST;
 use gui::launch_gui;
 use io_utils::*;
