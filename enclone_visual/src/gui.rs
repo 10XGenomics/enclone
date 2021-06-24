@@ -566,7 +566,9 @@ impl Application for EncloneVisual {
                     ))
                 } else {
                     Text::new(&format!(
-                        "This is the cookbook."
+                        "This is the cookbook.\n\
+                         #1: enclone BCR=123085 PLOT=gui\n\
+                         #2: enclone BCR=123085 PLOT_BY_ISOTYPE=gui\n",
                     ))
                 }
                 .height(Units(450))
