@@ -55,6 +55,7 @@ enum Message {
     OpenModal,
     CloseModal,
     CancelButtonPressed,
+    EventOccurred(iced_native::Event),
 }
 
 #[derive(Default)]
@@ -109,6 +110,13 @@ impl Sandbox for EncloneVisual {
                         "time used processing command = {:.1} seconds\n",
                         elapsed(&t)
                     );
+                }
+            }
+            Message::EventOccurred(ref event) => {
+                if let Event::Window(window::Event::CloseRequested) = event {
+                    DONE.store(true, SeqCst);
+                    thread::sleep(Duration::from_millis(50));
+                    self.should_exit = true;
                 }
             }
         }
