@@ -25,6 +25,14 @@ const DEJAVU_BOLD: Font = Font::External {
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
+fn blank_svg() -> String {
+    r###"<svg version="1.1" baseProfile="full" width="400" height="400"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="400" height="400" style="fill:white" />
+    </svg>
+    "###.to_string()
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn launch_gui() -> iced::Result {
@@ -190,6 +198,9 @@ impl Application for EncloneVisual {
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    if reply_svg.len() == 0 {
+                        reply_svg = blank_svg();
+                    }
                     if reply_svg.len() > 0 {
                         self.svg_history.push(reply_svg.clone());
                         self.history_index += 1;
