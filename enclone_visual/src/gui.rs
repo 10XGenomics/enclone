@@ -382,12 +382,9 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
-        let clear_button = Button::new(
-            &mut self.clear_button,
-            Text::new("Clear")
-        )
-        .padding(10)
-        .on_press(Message::ClearButtonPressed);
+        let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
+            .padding(10)
+            .on_press(Message::ClearButtonPressed);
 
         const FB_BUTTON_FONT_SIZE: u16 = 45;
         let back_button = Button::new(
@@ -599,7 +596,13 @@ impl Application for EncloneVisual {
                     .push(left_buttons)
                     .push(banner),
             )
-            .push(Row::new().spacing(10).push(text_input).push(button).push(clear_button))
+            .push(
+                Row::new()
+                    .spacing(10)
+                    .push(text_input)
+                    .push(button)
+                    .push(clear_button),
+            )
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
         if !self.command_history.is_empty() {
