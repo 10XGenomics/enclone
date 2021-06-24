@@ -154,6 +154,7 @@ impl Application for EncloneVisual {
     type Flags = ();
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
+        COOKBOOK_CONTENTS.lock().unwrap().push(include_str!["cookbook"].to_string());
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
@@ -565,11 +566,7 @@ impl Application for EncloneVisual {
                         version, version_float,
                     ))
                 } else {
-                    Text::new(&format!(
-                        "This is the cookbook.\n\
-                         #1: enclone BCR=123085 PLOT=gui\n\
-                         #2: enclone BCR=123085 PLOT_BY_ISOTYPE=gui\n",
-                    ))
+                    Text::new(&format!("{}", COOKBOOK_CONTENTS.lock().unwrap()[0]))
                 }
                 .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
