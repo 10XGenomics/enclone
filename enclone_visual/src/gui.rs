@@ -235,7 +235,6 @@ impl Application for EncloneVisual {
             }
 
             // same as above except for first line
-
             Message::ExecuteButtonPressed => {
                 self.input_value = self.command_history[self.history_index - 1].clone();
                 if self.compute_state == WaitingForRequest {
@@ -334,7 +333,9 @@ impl Application for EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
-                copy_bytes_to_mac_clipboard(&self.command_history[self.history_index - 1].as_bytes());
+                copy_bytes_to_mac_clipboard(
+                    &self.command_history[self.history_index - 1].as_bytes(),
+                );
                 Command::none()
             }
 
@@ -410,8 +411,7 @@ impl Application for EncloneVisual {
 
         let null_copy_image_button = Button::new(
             &mut self.null_button3,
-            Text::new("          ")
-                .size(COPY_BUTTON_FONT_SIZE)
+            Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -525,11 +525,10 @@ impl Application for EncloneVisual {
 
             let exec_button = Button::new(
                 &mut self.exec_button,
-                Text::new("Execute command")
-                    .size(COPY_BUTTON_FONT_SIZE)
+                Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ExecuteButtonPressed);
-    
+
             let mut col = Column::new()
                 .spacing(8)
                 .align_items(Align::End)
