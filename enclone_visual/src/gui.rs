@@ -65,6 +65,7 @@ struct EncloneVisual {
     scroll: scrollable::State,
     input: text_input::State,
     input_value: String,
+    translated_input_value: String,
     output_value: String,
     svg_value: String,
     png_value: Vec<u8>,
@@ -213,10 +214,12 @@ impl Application for EncloneVisual {
                     thread::sleep(Duration::from_millis(20));
                     if self.input_value.starts_with('#') &&
                         self.cookbook.contains_key(&self.input_value) {
-                        self.input_value = self.cookbook[&self.input_value].clone();
+                        self.translated_input_value = self.cookbook[&self.input_value].clone();
+                    } else {
+                        self.translated_input_value = self.input_value.clone();
                     }
                     USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST.lock().unwrap().push(self.input_value.clone());
+                    USER_REQUEST.lock().unwrap().push(self.translated_input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
                     Command::perform(compute(), Message::ComputationDone)
                 } else {
@@ -241,7 +244,7 @@ impl Application for EncloneVisual {
                     if reply_svg.len() > 0 {
                         self.svg_history.push(reply_svg.clone());
                         self.history_index += 1;
-                        self.command_history.push(USER_REQUEST.lock().unwrap()[0].clone());
+                        self.command_history.push(self.translated_input_value.clone());
                         self.is_blank.push(blank);
                     }
                 }
