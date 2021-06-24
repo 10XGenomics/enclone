@@ -467,6 +467,7 @@ impl Application for EncloneVisual {
 
             let mut col = Column::new()
                 .spacing(8)
+                .align_items(Align::End)
                 .push(
                     Button::new(
                         &mut self.null_button,
