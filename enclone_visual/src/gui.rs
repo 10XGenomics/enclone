@@ -86,6 +86,7 @@ struct EncloneVisual {
     command_copy_button: button::State,
     null_button1: button::State,
     null_button2: button::State,
+    null_button3: button::State,
     null_button: button::State,
     cookbook: HashMap<String, String>,
 
@@ -404,6 +405,14 @@ impl Application for EncloneVisual {
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
+        let null_copy_image_button = Button::new(
+            &mut self.null_button3,
+            Text::new("          ")
+                .size(COPY_BUTTON_FONT_SIZE)
+                .color(self.copy_image_button_color),
+        )
+        .on_press(Message::GraphicsCopyButtonPressed);
+
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
@@ -539,6 +548,8 @@ impl Application for EncloneVisual {
                 );
             if !self.is_blank[self.history_index - 1] {
                 col = col.push(copy_image_button);
+            } else {
+                col = col.push(null_copy_image_button);
             }
             col = col.push(exec_button);
 
