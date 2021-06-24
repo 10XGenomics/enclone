@@ -566,7 +566,7 @@ impl Application for EncloneVisual {
                         version, version_float,
                     ))
                 } else {
-                    Text::new(&format!("{}", COOKBOOK_CONTENTS.lock().unwrap()[0]))
+                    Text::new(&format!("{}", COOKBOOK_CONTENTS.lock().unwrap()[0])).font(DEJAVU_BOLD).size(14)
                 }
                 .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
