@@ -77,11 +77,18 @@ struct EncloneVisual {
     copy_button: button::State,
     copy_button_color: Color,
     canvas_view: CanvasView,
-    svg_history: Vec<String>,
-    history_index: usize,
-    command_history: Vec<String>,
     command_copy_button: button::State,
     null_button: button::State,
+
+    // parallel vectors:
+
+    svg_history: Vec<String>,
+    command_history: Vec<String>,
+    is_blank: Vec<bool>,
+
+    // index of "current" position in those vectors:
+
+    history_index: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -198,13 +205,16 @@ impl Application for EncloneVisual {
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    let mut blank = false;
                     if reply_svg.len() == 0 {
                         reply_svg = blank_svg();
+                        blank = true;
                     }
                     if reply_svg.len() > 0 {
                         self.svg_history.push(reply_svg.clone());
                         self.history_index += 1;
                         self.command_history.push(USER_REQUEST.lock().unwrap()[0].clone());
+                        self.is_blank.push(blank);
                     }
                 }
                 self.output_value = reply_text.to_string();
@@ -344,8 +354,6 @@ impl Application for EncloneVisual {
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
 
-        // let button_column = Column::new().spacing(8).push(copy_button);
-
         let mut button_column2 = Column::new().spacing(8);
         if self.history_index > 1 {
             button_column2 = button_column2.push(back_button);
@@ -421,7 +429,7 @@ impl Application for EncloneVisual {
                 log += &mut rows[i][0].clone();
             }
         
-            let col = Column::new().spacing(8).push(
+            let mut col = Column::new().spacing(8).push(
                 Button::new(
                 &mut self.null_button,
                 Text::new(&log).font(DEJAVU_BOLD).size(12),
@@ -433,13 +441,12 @@ impl Application for EncloneVisual {
                 Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
                 )
                 .on_press(Message::CommandCopyButtonPressed)
-            ).push(copy_button);
+            );
+            if !self.is_blank[self.history_index - 1] {
+                col = col.push(copy_button);
+            }
 
             graphic_row = graphic_row.push(col);
-
-            // Add command copy button.
-
-            // graphic_row = graphic_row.push(command_copy_button);
 
             // Add up and down arrows.
 
