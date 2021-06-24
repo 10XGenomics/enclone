@@ -479,11 +479,12 @@ impl Application for EncloneVisual {
                         Button::new(&mut self.open_state, Text::new("Help"))
                             .on_press(Message::OpenModalHelp),
                     )
-                    .push(
-                        Button::new(&mut self.exit_state, Text::new("Exit"))
-                            .on_press(Message::Exit),
-                    )
                     .push(banner),
+            )
+            .push(Row::new().push(
+                Button::new(&mut self.exit_state, Text::new("Exit"))
+                    .on_press(Message::Exit),
+                )
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
