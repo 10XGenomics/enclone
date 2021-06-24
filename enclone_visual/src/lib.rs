@@ -11,6 +11,7 @@ use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
+use string_utils::*;
 use tables::*;
 
 pub mod canvas_view;
@@ -38,13 +39,59 @@ pub fn format_cookbook() -> String {
     let mut row = Vec::<String>::new();
     for line in c.lines() {
         if line.len() > 0 {
-            row.push(line.to_string());
-            if row.len() == 3 {
+            const MAX_COMMENT: usize = 60;
+            if row.len() < 2 || line.len() < MAX_COMMENT {
+                row.push(line.to_string());
+                if row.len() == 3 {
+                    if rows.len() > 0 {
+                        rows.push(vec!["\\hline".to_string(); 3]);
+                    }
+                    rows.push(row.clone());
+                    row.clear();
+                }
+            } else {
+                let mut pieces = Vec::<String>::new();
+                let words = line.split(' ').collect::<Vec<&str>>();
+                let mut current = String::new();
+                let mut i = 0;
+                while i < words.len() {
+                    if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_COMMENT {
+                        pieces.push(current.clone());
+                        current.clear();
+                        i -= 1;
+                    } else if words[i].len() >= MAX_COMMENT {
+                        let mut w = words[i].as_bytes().to_vec();
+                        loop {
+                            let n = std::cmp::min(MAX_COMMENT, w.len());
+                            let sub = stringme(&w[0..n]);
+                            if n < w.len() {
+                                pieces.push(sub);
+                                w = w[n..w.len()].to_vec();
+                            } else {
+                                current = stringme(&w);
+                                break;
+                            }
+                        }
+                    } else if current.len() == 0 {
+                        current += &mut words[i].clone();
+                    } else {
+                        current += &mut format!(" {}", words[i]);
+                    }
+                    i += 1;
+                }
+                if current.len() > 0 {
+                    pieces.push(current);
+                }
                 if rows.len() > 0 {
                     rows.push(vec!["\\hline".to_string(); 3]);
                 }
+                row.push(pieces[0].clone());
                 rows.push(row.clone());
                 row.clear();
+                for i in 1..pieces.len() {
+                    let row = vec!["".to_string(), "".to_string(), pieces[i].clone()];
+                    rows.push(row.clone());
+                }
             }
         }
     }

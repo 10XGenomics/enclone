@@ -5,3 +5,7 @@ Show a honeycomb plot.
 #2
 enclone BCR=123085 PLOT_BY_ISOTYPE=gui
 Show a honeycomb plot with cells colored by their isotype.
+
+#3
+enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+In this case, because there are not actually any gene expression data, comparing cell calls between GEX (which is actually feature barcode data) and BCR doesn't make sense, and so we need the options ALLOW_INCONSISTENT and NGEX.

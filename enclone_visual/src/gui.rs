@@ -20,7 +20,6 @@ use std::collections::HashMap;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
-use string_utils::*;
 
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",
