@@ -44,6 +44,7 @@ struct EncloneVisual {
     open_state: button::State,
     modal_state: modal::State<ModalState>,
     last_message: Option<Message>,
+
     should_exit: bool,
 }
 
