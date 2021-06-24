@@ -9,6 +9,7 @@ use iced::{
     TextInput, VerticalAlignment,
 };
 use iced_aw::{modal, Card, Modal};
+use iced_native::{window, Event};
 use perf_stats::*;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
