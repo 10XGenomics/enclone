@@ -409,7 +409,6 @@ impl Application for EncloneVisual {
             &mut self.null_button3,
             Text::new("          ")
                 .size(COPY_BUTTON_FONT_SIZE)
-                .color(self.copy_image_button_color),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -525,7 +524,6 @@ impl Application for EncloneVisual {
                 &mut self.exec_button,
                 Text::new("Execute command")
                     .size(COPY_BUTTON_FONT_SIZE)
-                    .color(self.copy_image_button_color)
             )
             .on_press(Message::ExecuteButtonPressed);
     
