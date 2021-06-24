@@ -28,8 +28,8 @@ pub async fn launch_gui() -> iced::Result {
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
     settings.window = window_settings;
-    let _ = EncloneVisual::run(settings);
-    Ok(())
+    settings.exit_on_close_request = false;
+    EncloneVisual::run(settings)
 }
 
 #[derive(Default)]
