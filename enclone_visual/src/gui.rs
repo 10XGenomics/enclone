@@ -427,14 +427,6 @@ impl Application for EncloneVisual {
         if self.history_index < self.svg_history.len() {
             button_column2 = button_column2.push(forward_button);
         }
-        let exec_button = Button::new(
-            &mut self.exec_button,
-            Text::new("Execute command")
-                .size(COPY_BUTTON_FONT_SIZE)
-                .color(self.copy_image_button_color)
-        )
-        .on_press(Message::ExecuteButtonPressed);
-        button_column2 = button_column2.push(exec_button);
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
@@ -502,6 +494,14 @@ impl Application for EncloneVisual {
                 log += &mut rows[i][0].clone();
             }
 
+            let exec_button = Button::new(
+                &mut self.exec_button,
+                Text::new("Execute command")
+                    .size(COPY_BUTTON_FONT_SIZE)
+                    .color(self.copy_image_button_color)
+            )
+            .on_press(Message::ExecuteButtonPressed);
+    
             let mut col = Column::new()
                 .spacing(8)
                 .align_items(Align::End)
@@ -522,6 +522,7 @@ impl Application for EncloneVisual {
             if !self.is_blank[self.history_index - 1] {
                 col = col.push(copy_image_button);
             }
+            col = col.push(exec_button);
 
             graphic_row = graphic_row.push(col);
 
