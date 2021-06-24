@@ -72,6 +72,7 @@ struct EncloneVisual {
     button: button::State,
     back_button: button::State,
     forward_button: button::State,
+    exec_button: button::State,
     submit_button_text: String,
     open_state: button::State,
     open_state_cookbook: button::State,
@@ -101,6 +102,7 @@ enum Message {
     ButtonPressed,
     BackButtonPressed,
     ForwardButtonPressed,
+    ExecuteButtonPressed,
     OpenModalHelp,
     CloseModalHelp,
     OpenModalCookbook,
@@ -206,6 +208,33 @@ impl Application for EncloneVisual {
             }
 
             Message::ButtonPressed => {
+                if self.compute_state == WaitingForRequest {
+                    self.compute_state = Thinking;
+                    // The following sleep is needed to get the button text to consistenly update.
+                    thread::sleep(Duration::from_millis(20));
+                    if self.input_value.starts_with('#')
+                        && self.cookbook.contains_key(&self.input_value)
+                    {
+                        self.translated_input_value = self.cookbook[&self.input_value].clone();
+                    } else {
+                        self.translated_input_value = self.input_value.clone();
+                    }
+                    USER_REQUEST.lock().unwrap().clear();
+                    USER_REQUEST
+                        .lock()
+                        .unwrap()
+                        .push(self.translated_input_value.clone());
+                    PROCESSING_REQUEST.store(true, SeqCst);
+                    Command::perform(compute(), Message::ComputationDone)
+                } else {
+                    Command::none()
+                }
+            }
+
+            // same as above except for first line
+
+            Message::ExecuteButtonPressed => {
+                self.input_value = self.command_history[self.history_index - 1].clone();
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
@@ -398,6 +427,14 @@ impl Application for EncloneVisual {
         if self.history_index < self.svg_history.len() {
             button_column2 = button_column2.push(forward_button);
         }
+        let exec_button = Button::new(
+            &mut self.exec_button,
+            Text::new("Execute command")
+                .size(COPY_BUTTON_FONT_SIZE)
+                .color(self.copy_image_button_color)
+        )
+        .on_press(Message::ExecuteButtonPressed);
+        button_column2 = button_column2.push(exec_button);
 
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
