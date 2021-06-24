@@ -462,7 +462,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             loop {
                 thread::sleep(Duration::from_millis(10));
                 if DONE.load(SeqCst) {
-                    break;
+                    cleanup();
+                    std::process::exit(0);
                 }
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
