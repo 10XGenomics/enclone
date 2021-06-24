@@ -27,10 +27,10 @@ const DEJAVU_BOLD: Font = Font::External {
 
 fn blank_svg() -> String {
     r###"<svg version="1.1" baseProfile="full" width="400" height="400"
-    xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="400" height="400" style="fill:white" />
-    </svg>
-    "###.to_string()
+xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="400" height="400" style="fill:white" />
+</svg>
+"###.to_string()
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
