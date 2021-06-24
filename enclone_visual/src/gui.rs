@@ -55,6 +55,7 @@ enum Message {
     OpenModal,
     CloseModal,
     CancelButtonPressed,
+    EventOccurred(iced_native::Event),
 }
 
 #[derive(Default)]
@@ -79,6 +80,13 @@ impl Sandbox for EncloneVisual {
         match message {
             Message::OpenModal => self.modal_state.show(true),
             Message::CloseModal => self.modal_state.show(false),
+            Message::EventOccurred(ref event) => {
+                if let Event::Window(window::Event::CloseRequested) = event {
+                    DONE.store(true, SeqCst);
+                    thread::sleep(Duration::from_millis(50));
+                    self.should_exit = true;
+                }
+            }
             Message::CancelButtonPressed => self.modal_state.show(false),
             Message::InputChanged(ref value) => self.input_value = value.to_string(),
             Message::ButtonPressed => {
