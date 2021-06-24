@@ -71,6 +71,7 @@ struct EncloneVisual {
     forward_button: button::State,
     submit_button_text: String,
     open_state: button::State,
+    open_state_cookbook: button::State,
     exit_state: button::State,
     modal_state_help: modal::State<ModalState>,
     should_exit: bool,
@@ -100,6 +101,7 @@ enum Message {
     ForwardButtonPressed,
     OpenModalHelp,
     CloseModalHelp,
+    OpenModalCookbook,
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
     // EventOccurred(iced_native::Event),
@@ -111,8 +113,9 @@ enum Message {
 }
 
 #[derive(Default)]
-struct ModalState {
+pub struct ModalState {
     cancel_state: button::State,
+    pub cookbook: bool,
 }
 
 impl EncloneVisual {
@@ -165,6 +168,13 @@ impl Application for EncloneVisual {
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
             Message::OpenModalHelp => {
+                COOKBOOK.store(false, SeqCst);
+                self.modal_state_help.show(true);
+                Command::none()
+            }
+
+            Message::OpenModalCookbook => {
+                COOKBOOK.store(true, SeqCst);
                 self.modal_state_help.show(true);
                 Command::none()
             }
@@ -476,6 +486,10 @@ impl Application for EncloneVisual {
             .push(
                 Button::new(&mut self.open_state, Text::new("Help"))
                     .on_press(Message::OpenModalHelp),
+            )
+            .push(
+                Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
+                    .on_press(Message::OpenModalCookbook),
             );
 
         let mut content = Column::new()
@@ -484,7 +498,7 @@ impl Application for EncloneVisual {
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
-                    .spacing(230)
+                    .spacing(100)
                     .align_items(Align::Center)
                     .push(left_buttons)
                     .push(banner),
@@ -531,24 +545,30 @@ impl Application for EncloneVisual {
         Modal::new(&mut self.modal_state_help, content, move |state| {
             Card::new(
                 Text::new(""),
-                Text::new(&format!(
-                    "Welcome to enclone visual {} = {}!\n\n\
-                     Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
-                     To use enclone visual, type in the box \
-                     (see below)\nand then push the Submit button.  Here are the things \
-                     that you can type:\n\n\
-                     • an enclone command\n\
-                     • an group id (number)\n\
-                     • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
-                     • q to quit\n\n\
-                     Major limitations of this version:\n\
-                     1. There is no color in the clonotype tables.\n\
-                     2. Cutting and pasting from clonotype tables doesn't work.\n\
-                     3. Long commands are hard to work with in the input box.\n\
-                     4. Very wide clonotype tables wrap, making them unintelligible, and \
-                     only solvable by window resizing, and sometimes not that.",
-                    version, version_float,
-                ))
+                if !COOKBOOK.load(SeqCst) {
+                    Text::new(&format!(
+                        "Welcome to enclone visual {} = {}!\n\n\
+                         Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
+                         To use enclone visual, type in the box \
+                         (see below)\nand then push the Submit button.  Here are the things \
+                         that you can type:\n\n\
+                         • an enclone command\n\
+                         • an group id (number)\n\
+                         • d, for a demo, same as enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui\n\
+                         • q to quit\n\n\
+                         Major limitations of this version:\n\
+                         1. There is no color in the clonotype tables.\n\
+                         2. Cutting and pasting from clonotype tables doesn't work.\n\
+                         3. Long commands are hard to work with in the input box.\n\
+                         4. Very wide clonotype tables wrap, making them unintelligible, and \
+                         only solvable by window resizing, and sometimes not that.",
+                        version, version_float,
+                    ))
+                } else {
+                    Text::new(&format!(
+                        "This is the cookbook."
+                    ))
+                }
                 .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
             )
