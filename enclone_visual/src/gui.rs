@@ -23,12 +23,13 @@ const DEJAVU: Font = Font::External {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn launch_gui() {
+pub async fn launch_gui() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
     window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
     settings.window = window_settings;
     let _ = EncloneVisual::run(settings);
+    Ok(())
 }
 
 #[derive(Default)]

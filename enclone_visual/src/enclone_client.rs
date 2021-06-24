@@ -550,7 +550,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         // Launch GUI.
 
-        launch_gui();
+        launch_gui().await?;
         cleanup();
         return Ok(());
     }
