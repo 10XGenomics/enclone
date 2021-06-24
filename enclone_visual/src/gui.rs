@@ -16,6 +16,7 @@ use iced::{
 use iced_aw::{modal, Card, Modal};
 // use iced_native::{window, Event};
 use perf_stats::*;
+use std::collections::HashMap;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -82,6 +83,7 @@ struct EncloneVisual {
     canvas_view: CanvasView,
     command_copy_button: button::State,
     null_button: button::State,
+    cookbook: HashMap<String, String>,
 
     // parallel vectors:
 
@@ -160,6 +162,7 @@ impl Application for EncloneVisual {
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.cookbook = parse_cookbook();
         (x, Command::none())
     }
 
@@ -208,6 +211,10 @@ impl Application for EncloneVisual {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
                     thread::sleep(Duration::from_millis(20));
+                    if self.input_value.starts_with('#') &&
+                        self.cookbook.contains_key(&self.input_value) {
+                        self.input_value = self.cookbook[&self.input_value].clone();
+                    }
                     USER_REQUEST.lock().unwrap().clear();
                     USER_REQUEST.lock().unwrap().push(self.input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);

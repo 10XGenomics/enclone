@@ -41,7 +41,6 @@ use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
 use perf_stats::*;
-use std::collections::HashMap;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
@@ -119,10 +118,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         });
     }
-
-    // Parse the cookbook.
-
-    let cookbook = parse_cookbook();
 
     // Announce.
 
@@ -578,11 +573,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut line = input.to_string();
                     let output;
                     let mut svg_output = String::new();
-                    if line.starts_with('#') {
-                        if cookbook.contains_key(&line) {
-                            line = cookbook[&line].clone();
-                        }
-                    }
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
