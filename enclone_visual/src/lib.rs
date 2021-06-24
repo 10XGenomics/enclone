@@ -210,7 +210,11 @@ pub fn cleanup() {
                     .spawn();
             }
         } else {
-            kill(Pid::from_raw(SERVER_PROCESS_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
+            kill(
+                Pid::from_raw(SERVER_PROCESS_PID.load(SeqCst) as i32),
+                SIGINT_nix,
+            )
+            .unwrap();
         }
     }
 }

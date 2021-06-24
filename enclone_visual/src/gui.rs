@@ -580,7 +580,13 @@ impl Application for EncloneVisual {
                     ))
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
-                    Text::new(&format!("{}{}", preamble, COOKBOOK_CONTENTS.lock().unwrap()[0])).font(DEJAVU_BOLD).size(14)
+                    Text::new(&format!(
+                        "{}{}",
+                        preamble,
+                        COOKBOOK_CONTENTS.lock().unwrap()[0]
+                    ))
+                    .font(DEJAVU_BOLD)
+                    .size(14)
                 }
                 .height(Units(450))
                 .vertical_alignment(VerticalAlignment::Center),
