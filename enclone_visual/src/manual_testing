@@ -23,5 +23,4 @@ MANUAL TESTING
    (c) make sure it says "thinking" briefly and produces output
    (d) exit.
 
-3. Run enclone vis and type Help, Dismiss, Help, Dismiss, Help, Dismiss.  Do these respond
-   instantly?  [BROKEN]
+3. enclone vis and type Help, Dismiss, Help, Dismiss, Help, Dismiss.  Do these respond instantly?

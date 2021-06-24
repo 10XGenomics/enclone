@@ -71,6 +71,7 @@ struct EncloneVisual {
     forward_button: button::State,
     submit_button_text: String,
     open_state: button::State,
+    exit_state: button::State,
     modal_state_help: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
@@ -101,11 +102,12 @@ enum Message {
     CloseModalHelp,
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
-    EventOccurred(iced_native::Event),
+    // EventOccurred(iced_native::Event),
     GraphicsCopyButtonPressed,
     GraphicsCopyButtonFlashed(Result<(), String>),
     CommandCopyButtonPressed,
     DoNothing,
+    Exit,
 }
 
 #[derive(Default)]
@@ -172,6 +174,11 @@ impl Application for EncloneVisual {
                 Command::none()
             }
 
+            Message::Exit => {
+                std::process::exit(0);
+                Command::none()
+            }
+
             Message::CancelButtonPressed => {
                 self.modal_state_help.show(false);
                 Command::none()
@@ -229,6 +236,7 @@ impl Application for EncloneVisual {
             // Catch exit (when the upper left red button is pushed) and store DONE to make
             // the server thread exit gracefully.  Otherwise you will get a an error message
             // and a traceback.
+            /*
             Message::EventOccurred(ref event) => {
                 if let Event::Window(window::Event::CloseRequested) = event {
                     DONE.store(true, SeqCst);
@@ -237,6 +245,7 @@ impl Application for EncloneVisual {
                 }
                 Command::none()
             }
+            */
 
             Message::GraphicsCopyButtonPressed => {
                 self.copy_image_button_color = Color::from_rgb(1.0, 0.0, 0.0);
@@ -274,6 +283,7 @@ impl Application for EncloneVisual {
         }
     }
 
+    /*
     fn should_exit(&self) -> bool {
         self.should_exit
     }
@@ -281,6 +291,7 @@ impl Application for EncloneVisual {
     fn subscription(&self) -> Subscription<Message> {
         iced_native::subscription::events().map(Message::EventOccurred)
     }
+    */
 
     fn view(&mut self) -> Element<Message> {
         let text_input = TextInput::new(
@@ -462,11 +473,15 @@ impl Application for EncloneVisual {
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
-                    .spacing(230)
+                    .spacing(100)
                     .align_items(Align::Center)
                     .push(
                         Button::new(&mut self.open_state, Text::new("Help"))
                             .on_press(Message::OpenModalHelp),
+                    )
+                    .push(
+                        Button::new(&mut self.exit_state, Text::new("Exit"))
+                            .on_press(Message::Exit),
                     )
                     .push(banner),
             )
