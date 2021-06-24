@@ -74,8 +74,8 @@ struct EncloneVisual {
     modal_state: modal::State<ModalState>,
     should_exit: bool,
     compute_state: ComputeState,
-    copy_button: button::State,
-    copy_button_color: Color,
+    copy_image_button: button::State,
+    copy_image_button_color: Color,
     canvas_view: CanvasView,
     command_copy_button: button::State,
     null_button: button::State,
@@ -152,7 +152,7 @@ impl Application for EncloneVisual {
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
-        x.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         (x, Command::none())
     }
 
@@ -239,13 +239,13 @@ impl Application for EncloneVisual {
             }
 
             Message::GraphicsCopyButtonPressed => {
-                self.copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                self.copy_image_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
-                Command::perform(flash_copy_button(), Message::GraphicsCopyButtonFlashed)
+                Command::perform(flash_copy_image_button(), Message::GraphicsCopyButtonFlashed)
             }
 
             Message::GraphicsCopyButtonFlashed(_) => {
-                self.copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                self.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
 
@@ -318,9 +318,9 @@ impl Application for EncloneVisual {
         .on_press(Message::ForwardButtonPressed);
 
         const COPY_BUTTON_FONT_SIZE: u16 = 15;
-        let copy_button = Button::new(
-            &mut self.copy_button,
-            Text::new("Copy image").size(COPY_BUTTON_FONT_SIZE).color(self.copy_button_color),
+        let copy_image_button = Button::new(
+            &mut self.copy_image_button,
+            Text::new("Copy image").size(COPY_BUTTON_FONT_SIZE).color(self.copy_image_button_color),
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
@@ -443,7 +443,7 @@ impl Application for EncloneVisual {
                 .on_press(Message::CommandCopyButtonPressed)
             );
             if !self.is_blank[self.history_index - 1] {
-                col = col.push(copy_button);
+                col = col.push(copy_image_button);
             }
 
             graphic_row = graphic_row.push(col);
@@ -564,7 +564,7 @@ async fn compute() -> Result<(), String> {
     Ok(())
 }
 
-async fn flash_copy_button() -> Result<(), String> {
+async fn flash_copy_image_button() -> Result<(), String> {
     thread::sleep(Duration::from_millis(400));
     Ok(())
 }
