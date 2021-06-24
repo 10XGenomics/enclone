@@ -66,7 +66,12 @@ fn fold(line: &str) -> Vec<String> {
 }
 
 pub fn format_cookbook() -> String {
-    let c = include_str!["cookbook"];
+    let c;
+    if INTERNAL.load(SeqCst) {
+        c = include_str!["cookbook.internal"];
+    } else {
+        c = include_str!["cookbook.external"];
+    }
     let mut rows = Vec::<Vec<String>>::new();
     let row = vec![
         "tag".to_string(),
@@ -126,7 +131,12 @@ pub fn format_cookbook() -> String {
 }
 
 pub fn parse_cookbook() -> HashMap<String, String> {
-    let c = include_str!["cookbook"];
+    let c;
+    if INTERNAL.load(SeqCst) {
+        c = include_str!["cookbook.internal"];
+    } else {
+        c = include_str!["cookbook.external"];
+    }
     let mut lines = Vec::<String>::new();
     for line in c.lines() {
         if line.len() > 0 {
@@ -149,6 +159,7 @@ pub static USING_SETUP: AtomicBool = AtomicBool::new(false);
 pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
+pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);

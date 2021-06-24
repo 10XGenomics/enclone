@@ -227,6 +227,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         }
     }
+    if internal {
+        INTERNAL.store(true, SeqCst);
+    }
 
     // Get configuration.
 
