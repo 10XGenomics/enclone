@@ -10,10 +10,11 @@ use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
     Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings,
-    Subscription, Svg, Text, TextInput, VerticalAlignment,
+    Svg, Text, TextInput, VerticalAlignment,
 };
+// use iced::Subscription;
 use iced_aw::{modal, Card, Modal};
-use iced_native::{window, Event};
+// use iced_native::{window, Event};
 use perf_stats::*;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -74,7 +75,7 @@ struct EncloneVisual {
     open_state_cookbook: button::State,
     exit_state: button::State,
     modal_state_help: modal::State<ModalState>,
-    should_exit: bool,
+    // should_exit: bool,
     compute_state: ComputeState,
     copy_image_button: button::State,
     copy_image_button_color: Color,
@@ -186,7 +187,9 @@ impl Application for EncloneVisual {
             }
 
             Message::Exit => {
-                std::process::exit(0);
+                if true {
+                    std::process::exit(0);
+                }
                 Command::none()
             }
 
