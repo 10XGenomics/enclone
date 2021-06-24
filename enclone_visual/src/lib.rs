@@ -6,6 +6,7 @@ use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
@@ -74,35 +75,53 @@ pub fn format_cookbook() -> String {
     ];
     rows.push(row);
     let mut row = Vec::<String>::new();
-    const MAX_COMMENT: usize = 60;
     for line in c.lines() {
         if line.len() > 0 {
-            if row.len() < 2 || line.len() < MAX_COMMENT {
-                row.push(line.to_string());
-                if row.len() == 3 {
-                    if rows.len() > 0 {
-                        rows.push(vec!["\\hline".to_string(); 3]);
-                    }
-                    rows.push(row.clone());
-                    row.clear();
-                }
-            } else {
-                let pieces = fold(&line);
+            row.push(line.to_string());
+            if row.len() == 3 {
                 if rows.len() > 0 {
                     rows.push(vec!["\\hline".to_string(); 3]);
                 }
-                row.push(pieces[0].clone());
                 rows.push(row.clone());
                 row.clear();
-                for i in 1..pieces.len() {
-                    let row = vec!["".to_string(), "".to_string(), pieces[i].clone()];
-                    rows.push(row.clone());
+            }
+        }
+    }
+    let mut rows2 = Vec::<Vec<String>>::new();
+    for i in 0..rows.len() {
+        /*
+        if i % 2 == 1 {
+            rows2.push(rows[i].clone());
+        }
+        */
+        let m1 = fold(&rows[i][1]);
+        let m2 = fold(&rows[i][2]);
+        if m1.len() == 1 && m2.len() == 1 {
+            rows2.push(rows[i].clone());
+        } else {
+            for j in 0..max(m1.len(), m2.len()) {
+                let mut row = Vec::<String>::new();
+                if j == 0 {
+                    row.push(rows[i][0].clone());
+                } else {
+                    row.push("".to_string());
                 }
+                if j < m1.len() {
+                    row.push(m1[j].clone());
+                } else {
+                    row.push("".to_string());
+                }
+                if j < m2.len() {
+                    row.push(m2[j].clone());
+                } else {
+                    row.push("".to_string());
+                }
+                rows2.push(row);
             }
         }
     }
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l".to_vec(), false, true);
+    print_tabular_vbox(&mut log, &rows2, 0, &b"l|l|l".to_vec(), false, true);
     log
 }
 
