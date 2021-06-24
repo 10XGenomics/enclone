@@ -467,24 +467,27 @@ impl Application for EncloneVisual {
 
         // Put it all together.
 
+        let left_buttons = Column::new()
+            .spacing(8)
+            .push(
+                Button::new(&mut self.exit_state, Text::new("Exit"))
+                    .on_press(Message::Exit),
+            )
+            .push(
+                Button::new(&mut self.open_state, Text::new("Help"))
+                    .on_press(Message::OpenModalHelp),
+            );
+
         let mut content = Column::new()
             .spacing(20)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
-                    .spacing(100)
+                    .spacing(230)
                     .align_items(Align::Center)
-                    .push(
-                        Button::new(&mut self.open_state, Text::new("Help"))
-                            .on_press(Message::OpenModalHelp),
-                    )
+                    .push(left_buttons)
                     .push(banner),
-            )
-            .push(Row::new().push(
-                Button::new(&mut self.exit_state, Text::new("Exit"))
-                    .on_press(Message::Exit),
-                )
             )
             .push(Row::new().spacing(10).push(text_input).push(button))
             // .push(Row::new().spacing(10).push(svg))
