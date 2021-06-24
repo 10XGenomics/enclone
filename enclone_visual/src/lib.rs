@@ -10,6 +10,7 @@ use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
+use tables::*;
 
 pub mod canvas_view;
 pub mod convert_svg_to_png;
@@ -22,6 +23,36 @@ pub mod svg_to_geometry;
 
 pub mod proto {
     tonic::include_proto!("enclone");
+}
+
+pub fn format_cookbook() -> String {
+    let c = include_str!["cookbook"];
+    let mut rows = Vec::<Vec<String>>::new();
+    let row = vec!["tag".to_string(), "command".to_string(), "action".to_string()];
+    rows.push(row);
+    let mut row = Vec::<String>::new();
+    for line in c.lines() {
+        if line.len() > 0 {
+            row.push(line.to_string());
+            if row.len() == 3 {
+                if rows.len() > 0 {
+                    rows.push(vec!["\\hline".to_string(); 3]);
+                }
+                rows.push(row.clone());
+                row.clear();
+            }
+        }
+    }
+    let mut log = String::new();
+    print_tabular_vbox(
+        &mut log,
+        &rows,
+        0,
+        &b"l|l|l".to_vec(),
+        false,
+        true,
+    );
+    log
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -155,7 +155,7 @@ impl Application for EncloneVisual {
     type Flags = ();
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
-        COOKBOOK_CONTENTS.lock().unwrap().push(include_str!["cookbook"].to_string());
+        COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
@@ -569,12 +569,7 @@ impl Application for EncloneVisual {
                         version, version_float,
                     ))
                 } else {
-                    let preamble 
-                        = "This is the initial cookbook.  Command lines look like\n\
-                        #tag: ...\n\
-                        and if you type\n\
-                        #tag\n\
-                        into the input box, you'll get that command.\n\n";
+                    let preamble = "Type the tag into the input box to run the given command.\n\n";
                     Text::new(&format!("{}{}", preamble, COOKBOOK_CONTENTS.lock().unwrap()[0])).font(DEJAVU_BOLD).size(14)
                 }
                 .height(Units(450))

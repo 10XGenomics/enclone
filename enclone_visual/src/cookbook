@@ -1,9 +1,7 @@
+#1
+enclone BCR=123085 PLOT=gui
 Show a honeycomb plot.
 
-#1: enclone BCR=123085 PLOT=gui
-
----------------------------------------------------------------------------------------------------
-
+#2
+enclone BCR=123085 PLOT_BY_ISOTYPE=gui
 Show a honeycomb plot with cells colored by their isotype.
-
-#2: enclone BCR=123085 PLOT_BY_ISOTYPE=gui
