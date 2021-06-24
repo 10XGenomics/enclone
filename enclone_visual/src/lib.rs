@@ -6,6 +6,7 @@ use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use std::collections::HashMap;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -53,6 +54,21 @@ pub fn format_cookbook() -> String {
         true,
     );
     log
+}
+
+pub fn parse_cookbook() -> HashMap<String, String> {
+    let c = include_str!["cookbook"];
+    let mut lines = Vec::<String>::new();
+    for line in c.lines() {
+        if line.len() > 0 {
+            lines.push(line.to_string());
+        }
+    }
+    let mut h = HashMap::<String, String>::new();
+    for i in (0..lines.len()).step_by(3) {
+        h.insert(lines[i].clone(), lines[i+1].clone());
+    }
+    h
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

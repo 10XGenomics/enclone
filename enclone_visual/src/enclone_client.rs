@@ -120,6 +120,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         });
     }
 
+    // Parse the cookbook.
+
+    let cookbook = parse_cookbook();
+
     // Announce.
 
     let version_float = format!("1e-{}", -version.force_f64().log10());
@@ -574,13 +578,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut line = input.to_string();
                     let output;
                     let mut svg_output = String::new();
+                    if line.starts_with('#') {
+                        if cookbook.contains_key(&line) {
+                            line = cookbook[&line].clone();
+                        }
+                    }
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
                     }
                     if line == "d" {
                         line = "enclone BCR=123085 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui".to_string();
-                    }
+                    } 
                     if line.parse::<usize>().is_ok() {
                         let n = line.force_usize();
                         if n == 0 {
