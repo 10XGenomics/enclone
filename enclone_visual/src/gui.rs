@@ -89,6 +89,7 @@ struct EncloneVisual {
     null_button3: button::State,
     null_button: button::State,
     cookbook: HashMap<String, String>,
+    clear_button: button::State,
 
     // parallel vectors:
     svg_history: Vec<String>,
@@ -117,6 +118,7 @@ enum Message {
     CommandCopyButtonPressed,
     DoNothing,
     Exit,
+    ClearButtonPressed,
 }
 
 #[derive(Default)]
@@ -207,6 +209,11 @@ impl Application for EncloneVisual {
 
             Message::InputChanged(ref value) => {
                 self.input_value = value.to_string();
+                Command::none()
+            }
+
+            Message::ClearButtonPressed => {
+                self.input_value.clear();
                 Command::none()
             }
 
@@ -374,6 +381,13 @@ impl Application for EncloneVisual {
         )
         .padding(10)
         .on_press(Message::ButtonPressed);
+
+        let clear_button = Button::new(
+            &mut self.clear_button,
+            Text::new("Clear")
+        )
+        .padding(10)
+        .on_press(Message::ClearButtonPressed);
 
         const FB_BUTTON_FONT_SIZE: u16 = 45;
         let back_button = Button::new(
@@ -585,7 +599,7 @@ impl Application for EncloneVisual {
                     .push(left_buttons)
                     .push(banner),
             )
-            .push(Row::new().spacing(10).push(text_input).push(button))
+            .push(Row::new().spacing(10).push(text_input).push(button).push(clear_button))
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
         if !self.command_history.is_empty() {
