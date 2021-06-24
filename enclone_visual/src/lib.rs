@@ -151,6 +151,7 @@ pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
+pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
@@ -208,6 +209,8 @@ pub fn cleanup() {
                     .stderr(Stdio::piped())
                     .spawn();
             }
+        } else {
+            kill(Pid::from_raw(SERVER_PROCESS_PID.load(SeqCst) as i32), SIGINT_nix).unwrap();
         }
     }
 }

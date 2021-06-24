@@ -400,6 +400,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         let mut server_process = server_process.unwrap();
         let server_process_id = server_process.id();
+        SERVER_PROCESS_PID.store(server_process_id as usize, SeqCst);
 
         // Wait until server has printed something.
 
