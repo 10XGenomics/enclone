@@ -37,7 +37,6 @@ lazy_static = "1.4"
 libc = "0.2.85"
 log = "0.4"
 nix = "0.19.1"
-objc = "0.2"
 palaver = "0.2.8"
 perf_stats = "0.1"
 pretty_trace = "0.5"
@@ -59,6 +58,7 @@ procfs = "0.9"
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 cocoa = "0.24"
 mach = "0.3"
+objc = "0.2"
 
 [build-dependencies]
 tonic-build = { version = "0.4", features = [] }
