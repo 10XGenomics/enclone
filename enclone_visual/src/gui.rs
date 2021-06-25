@@ -93,6 +93,7 @@ struct EncloneVisual {
     null_button: button::State,
     cookbook: HashMap<String, String>,
     clear_button: button::State,
+    window_id: usize,
 
     // parallel vectors:
     svg_history: Vec<String>,
@@ -220,10 +221,9 @@ impl Application for EncloneVisual {
                 self.view();
                 thread::sleep(Duration::from_millis(1000));
                 if COUNT.load(SeqCst) == 0 {
-                    let id = get_window_id();
-                    println!("id = {}", id);
+                    self.window_id = get_window_id();
+                    println!("id = {}", self.window_id); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     self.input_value = "#1".to_string();
-                    if true { std::process::exit(0); }
                 } else if COUNT.load(SeqCst) == 1 {
                     self.input_value = "#2".to_string();
                 } else {
@@ -354,6 +354,18 @@ impl Application for EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
+                    let count = COUNT.load(SeqCst);
+                    println!("running screencapture -l{} test{}.png", self.window_id, count); // XXXXXXXXXXXXXX
+                    let o = std::process::Command::new("screencapture")
+                        .arg(&format!("-l{}", self.window_id))
+                        .arg(&format!("test{}.png", count))
+                        .output()
+                        .expect("failed to execute screencapture");
+                    if o.status.code() != Some(0) {
+                        eprintln!("\nCall to screencapture failed.");
+                        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+                        std::process::exit(1);
+                    }
                     Command::perform(noop(), Message::RunTests)
                 }
             }
