@@ -786,6 +786,8 @@ populated with something (like a down arrow, to go forward to the next state).\n
 }
 
 async fn noop() -> Result<(), String> {
+    // Increasing this time to 2000ms will prevent the screen from going dark on initialization
+    // in test mode.
     thread::sleep(Duration::from_millis(100));
     Ok(())
 }

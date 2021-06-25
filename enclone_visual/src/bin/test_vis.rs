@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::Read;
 use std::process::Command;
 use std::time::Instant;
+use string_utils::*;
 
 fn main() {
     let t = Instant::now();
@@ -21,6 +22,7 @@ fn main() {
         eprintln!("\nnonzero exit code from enclone visual test\n");
         std::process::exit(1);
     }
+    print!("{}", strme(&o.stdout));
     for i in 1..=2 {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
         let mut f = File::open(&format!("enclone_visual/regression_images/test{}.png", i)).unwrap();
