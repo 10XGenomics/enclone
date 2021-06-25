@@ -220,7 +220,10 @@ impl Application for EncloneVisual {
                 self.view();
                 thread::sleep(Duration::from_millis(1000));
                 if COUNT.load(SeqCst) == 0 {
+                    let id = get_window_id();
+                    println!("id = {}", id);
                     self.input_value = "#1".to_string();
+                    if true { std::process::exit(0); }
                 } else if COUNT.load(SeqCst) == 1 {
                     self.input_value = "#2".to_string();
                 } else {
@@ -230,11 +233,6 @@ impl Application for EncloneVisual {
                 thread::sleep(Duration::from_millis(1000));
                 Command::perform(noop(), Message::ButtonPressedX)
             }
-
-
-
-
-
 
             Message::OpenModalHelp => {
                 COOKBOOK.store(false, SeqCst);

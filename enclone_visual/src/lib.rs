@@ -29,6 +29,25 @@ pub mod proto {
     tonic::include_proto!("enclone");
 }
 
+pub fn get_window_id() -> usize {
+    let o = Command::new("GetWindowID")
+        .arg("enclone")
+        .arg("--list")
+        .output()
+        .expect("failed to execute GetWindowID");
+    if o.status.code() != Some(0) {
+        eprintln!("\nCall to GetWindowID failed.\n");
+        std::process::exit(1);
+    }
+    let mut m = String::from_utf8(o.stdout).unwrap();
+    m = m.replace("\n", "");
+    if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
+        eprintln!("\nGetWindowId could not find id\n");
+        std::process::exit(1);
+    }
+    m.after("id=").force_usize()
+}
+
 fn fold(line: &str) -> Vec<String> {
     const MAX_COMMENT: usize = 60;
     let mut pieces = Vec::<String>::new();
