@@ -115,7 +115,6 @@ enum Message {
     OpenModalCookbook,
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
-    ComputationDoneX(Result<(), String>),
     // EventOccurred(iced_native::Event),
     GraphicsCopyButtonPressed,
     GraphicsCopyButtonFlashed(Result<(), String>),
@@ -214,43 +213,11 @@ impl Application for EncloneVisual {
                         .unwrap()
                         .push(self.translated_input_value.clone());
                     PROCESSING_REQUEST.store(true, SeqCst);
-                    Command::perform(compute(), Message::ComputationDoneX)
+                    Command::perform(compute(), Message::ComputationDone)
                 } else {
                     Command::none()
                     // Command::perform(noop(), Message::RunTests)
                 }
-            }
-
-            Message::ComputationDoneX(_) => {
-                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                if reply_text.contains("enclone failed") {
-                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
-                }
-                reply_text += "\n \n \n"; // papering over truncation bug
-                let mut reply_svg = String::new();
-                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
-                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    let mut blank = false;
-                    if reply_svg.len() == 0 {
-                        reply_svg = blank_svg();
-                        blank = true;
-                    }
-                    if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
-                        self.svg_history.push(reply_svg.clone());
-                        self.history_index += 1;
-                        self.command_history
-                            .push(self.translated_input_value.clone());
-                        self.is_blank.push(blank);
-                    }
-                }
-                self.output_value = reply_text.to_string();
-                self.svg_value = reply_svg.to_string();
-                if self.svg_value.len() > 0 {
-                    self.post_svg(&reply_svg);
-                }
-                self.compute_state = WaitingForRequest;
-                Command::perform(noop(), Message::RunTests)
-                // Command::none()
             }
 
             Message::RunTests(_) => {
@@ -392,7 +359,11 @@ impl Application for EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop(), Message::RunTests)
+                }
             }
 
             // Catch exit (when the upper left red button is pushed) and store DONE to make
