@@ -38,6 +38,19 @@ xmlns="http://www.w3.org/2000/svg">
 use std::sync::atomic::AtomicUsize;
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
+fn capture(count: usize, window_id: usize) {
+    let o = std::process::Command::new("screencapture")
+        .arg(&format!("-l{}", window_id))
+        .arg(&format!("test{}.png", count - 1))
+        .output()
+        .expect("failed to execute screencapture");
+    if o.status.code() != Some(0) {
+        eprintln!("\nCall to screencapture failed.");
+        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+        std::process::exit(1);
+    }
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn launch_gui() -> iced::Result {
@@ -227,16 +240,7 @@ impl Application for EncloneVisual {
                     self.input_value = "#2".to_string();
                 } else {
                     let count = COUNT.load(SeqCst) + 1;
-                    let o = std::process::Command::new("screencapture")
-                        .arg(&format!("-l{}", self.window_id))
-                        .arg(&format!("test{}.png", count - 1))
-                        .output()
-                        .expect("failed to execute screencapture");
-                    if o.status.code() != Some(0) {
-                        eprintln!("\nCall to screencapture failed.");
-                        eprintln!("stderr =\n{}\n", strme(&o.stderr));
-                        std::process::exit(1);
-                    }
+                    capture(count, self.window_id);
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
@@ -366,16 +370,7 @@ impl Application for EncloneVisual {
                 } else {
                     let count = COUNT.load(SeqCst);
                     if count > 1 {
-                        let o = std::process::Command::new("screencapture")
-                            .arg(&format!("-l{}", self.window_id))
-                            .arg(&format!("test{}.png", count - 1))
-                            .output()
-                            .expect("failed to execute screencapture");
-                        if o.status.code() != Some(0) {
-                            eprintln!("\nCall to screencapture failed.");
-                            eprintln!("stderr =\n{}\n", strme(&o.stderr));
-                            std::process::exit(1);
-                        }
+                        capture(count, self.window_id);
                     }
                     Command::perform(noop(), Message::RunTests)
                 }
