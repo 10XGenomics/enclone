@@ -23,7 +23,7 @@ fn main() {
         std::process::exit(1);
     }
     print!("{}", strme(&o.stdout));
-    for i in 1..=2 {
+    for i in 1..=3 {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
         let mut f = File::open(&format!("enclone_visual/regression_images/test{}.png", i)).unwrap();
         f.read_to_end(&mut image_old).unwrap();

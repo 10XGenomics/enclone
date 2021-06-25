@@ -234,13 +234,16 @@ impl Application for EncloneVisual {
                 // thread::sleep(Duration::from_millis(1000));
                 self.input_value = "#1".to_string();
                 self.view();
-                if COUNT.load(SeqCst) == 0 {
+                let count = COUNT.load(SeqCst);
+                if count == 0 {
                     self.window_id = get_window_id();
                     self.input_value = "#1".to_string();
-                } else if COUNT.load(SeqCst) == 1 {
+                } else if count == 1 {
                     self.input_value = "#2".to_string();
+                } else if count == 2 {
+                    self.input_value = "#3".to_string();
                 } else {
-                    let count = COUNT.load(SeqCst) + 1;
+                    let count = count + 1;
                     capture(count, self.window_id);
                     std::process::exit(0);
                 }
