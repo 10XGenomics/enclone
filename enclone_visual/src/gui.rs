@@ -203,6 +203,7 @@ impl Application for EncloneVisual {
         match message {
 
             // Identical to ButtonPressed, except for function signature.
+            // This code duplication is horrible and should be fixed.
 
             Message::ButtonPressedX(_) => {
                 if self.compute_state == WaitingForRequest {
