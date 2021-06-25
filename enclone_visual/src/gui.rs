@@ -714,32 +714,8 @@ impl Application for EncloneVisual {
                 Text::new(""),
                 if !COOKBOOK.load(SeqCst) {
                     Text::new(&format!(
-                        "Welcome to enclone visual {} = {}!\n\n\
-                         Please type bit.ly/enclone in a browser to learn more about enclone.\n\n\
-                         To use enclone visual, type in the box \
-                         (see below)\nand then push the Submit button.  Here are the things \
-                         that you can type:\n\n\
-                         • an enclone command\n\
-                         • an group id (number)\n\
-                         • a recipe tag (see cookbook)\n\
-                         • q to quit\n\n\
-
-The enclone visual app view is vertically divided roughly as follows, going downward:\n\
-1. command input line\n\
-2. graphics subwindow\n\
-3. clonotype subwindow.\n\
-The app remembers previous states of 1 and 2, but not 3.  There are buttons in the graphics \n\
-subwindow that allow navigation through previous commands/graphics, and which can also re-execute\n\
-a command to get the clonotypes back.  Some buttons are blank initially.  Those do nothing until \n\
-populated with something (like a down arrow, to go forward to the next state).\n\n\
-
-                         Some limitations of this version:\n\
-                         1. There is no color in the clonotype tables.\n\
-                         2. Cutting and pasting from clonotype tables doesn't work.\n\
-                         3. Long commands are hard to work with in the input box.\n\
-                         4. Very wide clonotype tables wrap, making them unintelligible, and \
-                         only solvable by window resizing, and sometimes not that.",
-                        version, version_float,
+                        "Welcome to enclone visual {} = {}!\n\n{}",
+                        version, version_float, include_str!["help.txt"], 
                     ))
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
