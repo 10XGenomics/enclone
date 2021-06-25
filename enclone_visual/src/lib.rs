@@ -29,6 +29,19 @@ pub mod proto {
     tonic::include_proto!("enclone");
 }
 
+pub fn capture(count: usize, window_id: usize) {
+    let o = std::process::Command::new("screencapture")
+        .arg(&format!("-l{}", window_id))
+        .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
+        .output()
+        .expect("failed to execute screencapture");
+    if o.status.code() != Some(0) {
+        eprintln!("\nCall to screencapture failed.");
+        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+        std::process::exit(1);
+    }
+}
+
 pub fn get_window_id() -> usize {
     let o = Command::new("GetWindowID")
         .arg("enclone")

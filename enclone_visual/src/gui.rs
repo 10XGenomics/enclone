@@ -38,19 +38,6 @@ xmlns="http://www.w3.org/2000/svg">
 use std::sync::atomic::AtomicUsize;
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
-fn capture(count: usize, window_id: usize) {
-    let o = std::process::Command::new("screencapture")
-        .arg(&format!("-l{}", window_id))
-        .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
-        .output()
-        .expect("failed to execute screencapture");
-    if o.status.code() != Some(0) {
-        eprintln!("\nCall to screencapture failed.");
-        eprintln!("stderr =\n{}\n", strme(&o.stderr));
-        std::process::exit(1);
-    }
-}
-
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn launch_gui() -> iced::Result {
