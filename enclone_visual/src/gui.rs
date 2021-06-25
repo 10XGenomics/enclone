@@ -41,7 +41,7 @@ pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 fn capture(count: usize, window_id: usize) {
     let o = std::process::Command::new("screencapture")
         .arg(&format!("-l{}", window_id))
-        .arg(&format!("test{}.png", count - 1))
+        .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
         .output()
         .expect("failed to execute screencapture");
     if o.status.code() != Some(0) {
