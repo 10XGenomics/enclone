@@ -734,6 +734,16 @@ impl Application for EncloneVisual {
                          • an group id (number)\n\
                          • a recipe tag (see cookbook)\n\
                          • q to quit\n\n\
+
+The enclone visual app view is vertically divided roughly as follows, going downward:\n\
+1. command input line\n\
+2. graphics subwindow\n\
+3. clonotype subwindow.\n\
+The app remembers previous states of 1 and 2, but not 3.  There are buttons in the graphics \n\
+subwindow that allow navigation through previous commands/graphics, and which can also re-execute\n\
+a command to get the clonotypes back.  Some buttons are blank initially.  Those do nothing until \n\
+populated with something (like a down arrow, to go forward to the next state).\n\n\
+
                          Some limitations of this version:\n\
                          1. There is no color in the clonotype tables.\n\
                          2. Cutting and pasting from clonotype tables doesn't work.\n\
@@ -752,7 +762,7 @@ impl Application for EncloneVisual {
                     .font(DEJAVU_BOLD)
                     .size(14)
                 }
-                .height(Units(450))
+                .height(Units(600))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style)
