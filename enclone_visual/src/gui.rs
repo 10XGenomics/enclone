@@ -188,12 +188,7 @@ impl Application for EncloneVisual {
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
 
-
-
-
-
-
-            // Same as ButtonPressed, except for last.
+            // Identical to ButtonPressed, except for function signature.
 
             Message::ButtonPressedX(_) => {
                 if self.compute_state == WaitingForRequest {
@@ -216,7 +211,6 @@ impl Application for EncloneVisual {
                     Command::perform(compute(), Message::ComputationDone)
                 } else {
                     Command::none()
-                    // Command::perform(noop(), Message::RunTests)
                 }
             }
 
@@ -766,7 +760,7 @@ impl Application for EncloneVisual {
 }
 
 async fn noop() -> Result<(), String> {
-    thread::sleep(Duration::from_millis(3000));
+    thread::sleep(Duration::from_millis(2000));
     Ok(())
 }
 
