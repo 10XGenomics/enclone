@@ -84,11 +84,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg.starts_with("PORT=") {
             fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
             assert!(fixed_port.unwrap() >= 1024);
+        } else if arg == "TEST" {
+            TEST_MODE.store(true, SeqCst);
         } else if arg != "VIS" {
             eprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=..., but
-                only for testing.\n"
+                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
+                and TEST, but only for testing.\n"
             );
             std::process::exit(1);
         }

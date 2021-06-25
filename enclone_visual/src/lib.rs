@@ -161,6 +161,7 @@ pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
+pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);

@@ -35,6 +35,9 @@ xmlns="http://www.w3.org/2000/svg">
     .to_string()
 }
 
+use std::sync::atomic::AtomicUsize;
+pub static COUNT: AtomicUsize = AtomicUsize::new(0);
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn launch_gui() -> iced::Result {
@@ -112,6 +115,7 @@ enum Message {
     OpenModalCookbook,
     CancelButtonPressed,
     ComputationDone(Result<(), String>),
+    ComputationDoneX(Result<(), String>),
     // EventOccurred(iced_native::Event),
     GraphicsCopyButtonPressed,
     GraphicsCopyButtonFlashed(Result<(), String>),
@@ -119,6 +123,8 @@ enum Message {
     DoNothing,
     Exit,
     ClearButtonPressed,
+    RunTests(Result<(), String>),
+    ButtonPressedX(Result<(), String>),
 }
 
 #[derive(Default)]
@@ -169,7 +175,11 @@ impl Application for EncloneVisual {
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
-        (x, Command::none())
+        if !TEST_MODE.load(SeqCst) {
+            (x, Command::none())
+        } else {
+            (x, Command::perform(noop(), Message::RunTests))
+        }
     }
 
     fn title(&self) -> String {
@@ -178,6 +188,93 @@ impl Application for EncloneVisual {
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
         match message {
+
+
+
+
+
+
+            // Same as ButtonPressed, except for last.
+
+            Message::ButtonPressedX(_) => {
+                if self.compute_state == WaitingForRequest {
+                    self.compute_state = Thinking;
+                    // The following sleep is needed to get the button text to consistenly update.
+                    thread::sleep(Duration::from_millis(20));
+                    if self.input_value.starts_with('#')
+                        && self.cookbook.contains_key(&self.input_value)
+                    {
+                        self.translated_input_value = self.cookbook[&self.input_value].clone();
+                    } else {
+                        self.translated_input_value = self.input_value.clone();
+                    }
+                    USER_REQUEST.lock().unwrap().clear();
+                    USER_REQUEST
+                        .lock()
+                        .unwrap()
+                        .push(self.translated_input_value.clone());
+                    PROCESSING_REQUEST.store(true, SeqCst);
+                    Command::perform(compute(), Message::ComputationDoneX)
+                } else {
+                    Command::none()
+                    // Command::perform(noop(), Message::RunTests)
+                }
+            }
+
+            Message::ComputationDoneX(_) => {
+                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+                if reply_text.contains("enclone failed") {
+                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
+                }
+                reply_text += "\n \n \n"; // papering over truncation bug
+                let mut reply_svg = String::new();
+                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
+                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+                    let mut blank = false;
+                    if reply_svg.len() == 0 {
+                        reply_svg = blank_svg();
+                        blank = true;
+                    }
+                    if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
+                        self.svg_history.push(reply_svg.clone());
+                        self.history_index += 1;
+                        self.command_history
+                            .push(self.translated_input_value.clone());
+                        self.is_blank.push(blank);
+                    }
+                }
+                self.output_value = reply_text.to_string();
+                self.svg_value = reply_svg.to_string();
+                if self.svg_value.len() > 0 {
+                    self.post_svg(&reply_svg);
+                }
+                self.compute_state = WaitingForRequest;
+                Command::perform(noop(), Message::RunTests)
+                // Command::none()
+            }
+
+            Message::RunTests(_) => {
+                thread::sleep(Duration::from_millis(1000));
+                self.input_value = "#1".to_string();
+                self.view();
+                thread::sleep(Duration::from_millis(1000));
+                if COUNT.load(SeqCst) == 0 {
+                    self.input_value = "#1".to_string();
+                } else if COUNT.load(SeqCst) == 1 {
+                    self.input_value = "#2".to_string();
+                } else {
+                    std::process::exit(0);
+                }
+                COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
+                thread::sleep(Duration::from_millis(1000));
+                Command::perform(noop(), Message::ButtonPressedX)
+            }
+
+
+
+
+
+
             Message::OpenModalHelp => {
                 COOKBOOK.store(false, SeqCst);
                 self.modal_state_help.show(true);
@@ -695,6 +792,11 @@ impl Application for EncloneVisual {
         .on_esc(Message::CloseModalHelp)
         .into()
     }
+}
+
+async fn noop() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(3000));
+    Ok(())
 }
 
 async fn compute() -> Result<(), String> {
