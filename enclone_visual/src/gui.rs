@@ -191,6 +191,7 @@ impl Application for EncloneVisual {
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {
+            thread::sleep(Duration::from_millis(1000));
             (x, Command::perform(noop(), Message::RunTests))
         }
     }
@@ -230,10 +231,9 @@ impl Application for EncloneVisual {
             }
 
             Message::RunTests(_) => {
-                thread::sleep(Duration::from_millis(1000));
+                // thread::sleep(Duration::from_millis(1000));
                 self.input_value = "#1".to_string();
                 self.view();
-                thread::sleep(Duration::from_millis(1000));
                 if COUNT.load(SeqCst) == 0 {
                     self.window_id = get_window_id();
                     self.input_value = "#1".to_string();
@@ -245,7 +245,6 @@ impl Application for EncloneVisual {
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
-                thread::sleep(Duration::from_millis(1000));
                 Command::perform(noop(), Message::ButtonPressedX)
             }
 
@@ -787,7 +786,7 @@ populated with something (like a down arrow, to go forward to the next state).\n
 }
 
 async fn noop() -> Result<(), String> {
-    thread::sleep(Duration::from_millis(2000));
+    thread::sleep(Duration::from_millis(100));
     Ok(())
 }
 
