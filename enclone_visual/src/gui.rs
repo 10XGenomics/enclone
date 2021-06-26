@@ -536,11 +536,12 @@ impl Application for EncloneVisual {
             button_column2 = button_column2.push(null_button2);
         }
 
+        let have_canvas = self.canvas_view.state.geometry_value.is_some();
         let mut graphic_row = Row::new().spacing(10);
         if self.png_value.len() > 0 {
             // Show the graphic.
 
-            if self.canvas_view.state.geometry_value.is_some() {
+            if have_canvas {
                 graphic_row = graphic_row
                     .push(
                         self.canvas_view
@@ -605,7 +606,9 @@ impl Application for EncloneVisual {
 
             // Insert space to push the graphic to the left and the command column to the right.
 
-            graphic_row = graphic_row.push(Space::with_width(Length::Fill));
+            if !have_canvas {
+                graphic_row = graphic_row.push(Space::with_width(Length::Fill));
+            }
 
             // Add the command column to the row.
 
