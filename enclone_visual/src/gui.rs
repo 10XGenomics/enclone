@@ -557,38 +557,9 @@ impl Application for EncloneVisual {
             const MAX_LINE: usize = 45;
             let cmd = &self.command_history[self.history_index - 1];
             let mut rows = Vec::<Vec<String>>::new();
-            {
-                let words = cmd.split(' ').collect::<Vec<&str>>();
-                let mut current = String::new();
-                let mut i = 0;
-                while i < words.len() {
-                    if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_LINE {
-                        rows.push(vec![current.clone()]);
-                        current.clear();
-                        i -= 1;
-                    } else if words[i].len() >= MAX_LINE {
-                        let mut w = words[i].as_bytes().to_vec();
-                        loop {
-                            let n = std::cmp::min(MAX_LINE, w.len());
-                            let sub = stringme(&w[0..n]);
-                            if n < w.len() {
-                                rows.push(vec![sub]);
-                                w = w[n..w.len()].to_vec();
-                            } else {
-                                current = stringme(&w);
-                                break;
-                            }
-                        }
-                    } else if current.len() == 0 {
-                        current += &mut words[i].clone();
-                    } else {
-                        current += &mut format!(" {}", words[i]);
-                    }
-                    i += 1;
-                }
-                if current.len() > 0 {
-                    rows.push(vec![current]);
-                }
+            let folds = fold(&cmd, MAX_LINE);
+            for i in 0..folds.len() {
+                rows.push(vec![folds[i].clone()]);
             }
             let mut log = String::new();
             for i in 0..rows.len() {

@@ -61,21 +61,20 @@ pub fn get_window_id() -> usize {
     m.after("id=").force_usize()
 }
 
-fn fold(line: &str) -> Vec<String> {
-    const MAX_COMMENT: usize = 60;
+pub fn fold(line: &str, max_line: usize) -> Vec<String> {
     let mut pieces = Vec::<String>::new();
     let words = line.split(' ').collect::<Vec<&str>>();
     let mut current = String::new();
     let mut i = 0;
     while i < words.len() {
-        if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_COMMENT {
+        if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
             pieces.push(current.clone());
             current.clear();
             i -= 1;
-        } else if words[i].len() >= MAX_COMMENT {
+        } else if words[i].len() >= max_line {
             let mut w = words[i].as_bytes().to_vec();
             loop {
-                let n = std::cmp::min(MAX_COMMENT, w.len());
+                let n = std::cmp::min(max_line, w.len());
                 let sub = stringme(&w[0..n]);
                 if n < w.len() {
                     pieces.push(sub);
@@ -132,8 +131,8 @@ pub fn format_cookbook() -> String {
             rows2.push(rows[i].clone());
         }
         */
-        let m1 = fold(&rows[i][1]);
-        let m2 = fold(&rows[i][2]);
+        let m1 = fold(&rows[i][1], 60);
+        let m2 = fold(&rows[i][2], 60);
         if m1.len() == 1 && m2.len() == 1 {
             rows2.push(rows[i].clone());
         } else {
