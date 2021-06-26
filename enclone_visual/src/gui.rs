@@ -9,8 +9,8 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
-    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Svg, Text,
-    TextInput, VerticalAlignment,
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Space,
+    Svg, Text, TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
 use iced_aw::{modal, Card, Modal};
@@ -602,6 +602,10 @@ impl Application for EncloneVisual {
                 col = col.push(null_copy_image_button);
             }
             col = col.push(exec_button);
+
+            // Insert space to push the graphic to the left and the command column to the right.
+
+            graphic_row = graphic_row.push(Space::with_width(Length::Fill));
 
             // Add the command column to the row.
 
