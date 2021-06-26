@@ -552,10 +552,6 @@ impl Application for EncloneVisual {
                 graphic_row = graphic_row.push(svg_as_png);
             }
 
-            // Add button column.
-
-            // graphic_row = graphic_row.push(button_column);
-
             // Add command box.
 
             const MAX_LINE: usize = 45;
@@ -602,11 +598,15 @@ impl Application for EncloneVisual {
                 log += &mut rows[i][0].clone();
             }
 
+            // Create execute button.
+
             let exec_button = Button::new(
                 &mut self.exec_button,
                 Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ExecuteButtonPressed);
+
+            // Build the command column.
 
             let mut col = Column::new()
                 .spacing(8)
@@ -631,6 +631,8 @@ impl Application for EncloneVisual {
                 col = col.push(null_copy_image_button);
             }
             col = col.push(exec_button);
+
+            // Add the command column to the row.
 
             graphic_row = graphic_row.push(col);
 
