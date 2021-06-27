@@ -22,6 +22,7 @@ pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
+pub mod gui_structures;
 pub mod messages;
 pub mod style;
 pub mod svg_to_geometry;

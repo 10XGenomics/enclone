@@ -4,20 +4,20 @@ use crate::convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
 use crate::svg_to_geometry::*;
 use crate::*;
-use canvas_view::CanvasView;
+use gui_structures::*;
+use gui_structures::ComputeState::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    button, scrollable, text_input, Align, Application, Button, Clipboard, Color, Column, Command,
+    Align, Application, Button, Clipboard, Color, Column, Command,
     Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Space,
     Svg, Text, TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
-use iced_aw::{modal, Card, Modal};
+use iced_aw::{Card, Modal};
 // use iced_native::{window, Event};
 use messages::Message;
 use perf_stats::*;
-use std::collections::HashMap;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -39,67 +39,6 @@ pub async fn launch_gui() -> iced::Result {
     settings.window = window_settings;
     settings.exit_on_close_request = false;
     EncloneVisual::run(settings)
-}
-
-#[derive(PartialEq)]
-enum ComputeState {
-    WaitingForRequest,
-    Thinking,
-}
-
-impl Default for ComputeState {
-    fn default() -> ComputeState {
-        WaitingForRequest
-    }
-}
-
-use ComputeState::*;
-
-#[derive(Default)]
-struct EncloneVisual {
-    scroll: scrollable::State,
-    input: text_input::State,
-    input_value: String,
-    translated_input_value: String,
-    output_value: String,
-    svg_value: String,
-    png_value: Vec<u8>,
-    button: button::State,
-    back_button: button::State,
-    forward_button: button::State,
-    exec_button: button::State,
-    submit_button_text: String,
-    open_state: button::State,
-    open_state_cookbook: button::State,
-    exit_state: button::State,
-    modal_state_help: modal::State<ModalState>,
-    // should_exit: bool,
-    compute_state: ComputeState,
-    copy_image_button: button::State,
-    copy_image_button_color: Color,
-    canvas_view: CanvasView,
-    command_copy_button: button::State,
-    null_button1: button::State,
-    null_button2: button::State,
-    null_button3: button::State,
-    null_button: button::State,
-    cookbook: HashMap<String, String>,
-    clear_button: button::State,
-    window_id: usize,
-
-    // parallel vectors:
-    svg_history: Vec<String>,
-    command_history: Vec<String>,
-    is_blank: Vec<bool>,
-
-    // index of "current" position in those vectors:
-    history_index: usize,
-}
-
-#[derive(Default)]
-pub struct ModalState {
-    cancel_state: button::State,
-    pub cookbook: bool,
 }
 
 impl EncloneVisual {
