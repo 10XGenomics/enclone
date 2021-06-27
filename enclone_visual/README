@@ -2,5 +2,5 @@ For testing on a Mac, first do this
 
 brew install smokris/getwindowid/getwindowid
 
-This puts an executable getwindowid in your path.  We also copied the source code into a directory
+This puts an executable GetWindowID in your path.  We also copied the source code into a directory
 enclone/get_window_id, which in principle could be refactored as a rust function call.
