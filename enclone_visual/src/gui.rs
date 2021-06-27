@@ -15,6 +15,7 @@ use iced::{
 // use iced::Subscription;
 use iced_aw::{modal, Card, Modal};
 // use iced_native::{window, Event};
+use messages::Message;
 use perf_stats::*;
 use std::collections::HashMap;
 use std::sync::atomic::Ordering::SeqCst;
@@ -102,29 +103,6 @@ struct EncloneVisual {
 
     // index of "current" position in those vectors:
     history_index: usize,
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    InputChanged(String),
-    ButtonPressed,
-    BackButtonPressed,
-    ForwardButtonPressed,
-    ExecuteButtonPressed,
-    OpenModalHelp,
-    CloseModalHelp,
-    OpenModalCookbook,
-    CancelButtonPressed,
-    ComputationDone(Result<(), String>),
-    // EventOccurred(iced_native::Event),
-    GraphicsCopyButtonPressed,
-    GraphicsCopyButtonFlashed(Result<(), String>),
-    CommandCopyButtonPressed,
-    DoNothing,
-    Exit,
-    ClearButtonPressed,
-    RunTests(Result<(), String>),
-    ButtonPressedX(Result<(), String>),
 }
 
 #[derive(Default)]
