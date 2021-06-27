@@ -23,6 +23,7 @@ fn main() {
         std::process::exit(1);
     }
     print!("{}", strme(&o.stdout));
+    let mut fail = false;
     for i in 1..=3 {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
         let mut f = File::open(&format!("enclone_visual/regression_images/test{}.png", i)).unwrap();
@@ -44,9 +45,13 @@ fn main() {
             }
         }
         if big_diffs > MAX_DIFFS {
-            eprintln!("\nThere are {} big diffs for test {}.\n", big_diffs, i);
-            std::process::exit(1);
+            eprintln!("\nThere are {} big diffs for test {}.", big_diffs, i);
+            fail = true;
         }
     }
-    println!("\nenclone visual tests completely successfully in {:.1} seconds\n", elapsed(&t));
+    let state = if fail { "unsuccessfully" } else { "successfully" };
+    println!("\nenclone visual tests completely {} in {:.1} seconds\n", state, elapsed(&t));
+    if fail {
+        std::process::exit(1);
+    }
 }
