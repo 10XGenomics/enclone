@@ -358,6 +358,11 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
+
+
+
+
+
         // Define the button complex that is the "control panel".
 
         let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
@@ -416,6 +421,27 @@ impl Application for EncloneVisual {
             button_column2 = button_column2.push(null_button2);
         }
 
+        // Add command box.
+
+        const MAX_LINE: usize = 45;
+        let cmd = &self.command_history[self.history_index - 1];
+        let mut rows = Vec::<Vec<String>>::new();
+        let folds = fold(&cmd, MAX_LINE);
+        for i in 0..folds.len() {
+            rows.push(vec![folds[i].clone()]);
+        }
+        let mut log = String::new();
+        for i in 0..rows.len() {
+            if i > 0 {
+                log += "\n";
+            }
+            log += &mut rows[i][0].clone();
+        }
+
+
+
+
+
         // Build the scrollable for clonotypes.
 
         let scrollable = Scrollable::new(&mut self.scroll)
@@ -463,23 +489,6 @@ impl Application for EncloneVisual {
                     .height(Units(SVG_HEIGHT));
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
-            }
-
-            // Add command box.
-
-            const MAX_LINE: usize = 45;
-            let cmd = &self.command_history[self.history_index - 1];
-            let mut rows = Vec::<Vec<String>>::new();
-            let folds = fold(&cmd, MAX_LINE);
-            for i in 0..folds.len() {
-                rows.push(vec![folds[i].clone()]);
-            }
-            let mut log = String::new();
-            for i in 0..rows.len() {
-                if i > 0 {
-                    log += "\n";
-                }
-                log += &mut rows[i][0].clone();
             }
 
             // Create execute button.
