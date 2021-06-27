@@ -669,9 +669,9 @@ impl Application for EncloneVisual {
         };
 
         #[derive(Clone, Copy)]
-        pub struct Gerbil;
+        pub struct Help;
 
-        impl StyleSheet for Gerbil {
+        impl StyleSheet for Help {
             fn active(&self) -> Style {
                 Style {
                     background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
@@ -685,7 +685,7 @@ impl Application for EncloneVisual {
             }
         }
 
-        let style = Gerbil;
+        let help_style = Help;
 
         let version = VERSION.lock().unwrap()[0].clone();
         let version_float = format!("1e-{}", -version.force_f64().log10());
@@ -710,7 +710,7 @@ impl Application for EncloneVisual {
                 .height(Units(600))
                 .vertical_alignment(VerticalAlignment::Center),
             )
-            .style(style)
+            .style(help_style)
             .foot(
                 Row::new().spacing(10).push(
                     Button::new(
