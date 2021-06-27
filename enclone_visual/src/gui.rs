@@ -419,6 +419,8 @@ impl Application for EncloneVisual {
         .padding(10)
         .on_press(Message::ButtonPressed);
 
+        // Define the button complex that is the "control panel".
+
         let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
             .padding(10)
             .on_press(Message::ClearButtonPressed);
@@ -463,6 +465,20 @@ impl Application for EncloneVisual {
         )
         .on_press(Message::GraphicsCopyButtonPressed);
 
+        let mut button_column2 = Column::new().spacing(8);
+        if self.history_index > 1 {
+            button_column2 = button_column2.push(back_button);
+        } else {
+            button_column2 = button_column2.push(null_button1);
+        }
+        if self.history_index < self.svg_history.len() {
+            button_column2 = button_column2.push(forward_button);
+        } else {
+            button_column2 = button_column2.push(null_button2);
+        }
+
+        // Build the scrollable for clonotypes.
+
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
@@ -492,18 +508,6 @@ impl Application for EncloneVisual {
 
         let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
             .height(Units(SVG_HEIGHT));
-
-        let mut button_column2 = Column::new().spacing(8);
-        if self.history_index > 1 {
-            button_column2 = button_column2.push(back_button);
-        } else {
-            button_column2 = button_column2.push(null_button1);
-        }
-        if self.history_index < self.svg_history.len() {
-            button_column2 = button_column2.push(forward_button);
-        } else {
-            button_column2 = button_column2.push(null_button2);
-        }
 
         let have_canvas = self.canvas_view.state.geometry_value.is_some();
         let mut graphic_row = Row::new().spacing(10);
