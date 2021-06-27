@@ -27,6 +27,15 @@ pub mod style;
 pub mod svg_to_geometry;
 pub mod update_restart;
 
+pub fn blank_svg() -> String {
+    r###"<svg version="1.1" baseProfile="full" width="400" height="400"
+xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="400" height="400" style="fill:white" />
+</svg>
+"###
+    .to_string()
+}
+
 pub mod proto {
     tonic::include_proto!("enclone");
 }

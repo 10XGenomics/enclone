@@ -18,6 +18,7 @@ use iced_aw::{modal, Card, Modal};
 use messages::Message;
 use perf_stats::*;
 use std::collections::HashMap;
+use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -27,16 +28,6 @@ const DEJAVU_BOLD: Font = Font::External {
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
 };
 
-fn blank_svg() -> String {
-    r###"<svg version="1.1" baseProfile="full" width="400" height="400"
-xmlns="http://www.w3.org/2000/svg">
-<rect x="0" y="0" width="400" height="400" style="fill:white" />
-</svg>
-"###
-    .to_string()
-}
-
-use std::sync::atomic::AtomicUsize;
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
