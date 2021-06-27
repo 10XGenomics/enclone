@@ -663,30 +663,6 @@ impl Application for EncloneVisual {
                 .push(scrollable),
         );
 
-        use iced_aw::style::{
-            card::{Style, StyleSheet},
-            colors,
-        };
-
-        #[derive(Clone, Copy)]
-        pub struct Help;
-
-        impl StyleSheet for Help {
-            fn active(&self) -> Style {
-                Style {
-                    background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    border_width: 0.0,
-                    border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
-                    head_background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-                    head_text_color: colors::WHITE,
-                    close_color: colors::WHITE,
-                    ..Style::default()
-                }
-            }
-        }
-
-        let help_style = Help;
-
         let version = VERSION.lock().unwrap()[0].clone();
         let version_float = format!("1e-{}", -version.force_f64().log10());
         Modal::new(&mut self.modal_state_help, content, move |state| {
@@ -710,7 +686,7 @@ impl Application for EncloneVisual {
                 .height(Units(600))
                 .vertical_alignment(VerticalAlignment::Center),
             )
-            .style(help_style)
+            .style(style::Help)
             .foot(
                 Row::new().spacing(10).push(
                     Button::new(
