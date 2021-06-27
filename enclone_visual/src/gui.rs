@@ -583,13 +583,17 @@ impl Application for EncloneVisual {
                 graphic_row = graphic_row.push(Space::with_width(Length::Fill));
             }
 
+            let mut command_complex = Row::new().spacing(10);
+
             // Add the command column to the row.
 
-            graphic_row = graphic_row.push(col);
+            command_complex = command_complex.push(col);
 
             // Add up and down arrows.
 
-            graphic_row = graphic_row.push(button_column2);
+            command_complex = command_complex.push(button_column2);
+
+            graphic_row = graphic_row.push(command_complex);
         }
 
         // Put it all together.
