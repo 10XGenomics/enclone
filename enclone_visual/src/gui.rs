@@ -424,19 +424,55 @@ impl Application for EncloneVisual {
         // Add command box.
 
         const MAX_LINE: usize = 45;
-        let cmd = &self.command_history[self.history_index - 1];
-        let mut rows = Vec::<Vec<String>>::new();
-        let folds = fold(&cmd, MAX_LINE);
-        for i in 0..folds.len() {
-            rows.push(vec![folds[i].clone()]);
-        }
         let mut log = String::new();
-        for i in 0..rows.len() {
-            if i > 0 {
-                log += "\n";
+        if self.history_index >= 1 {
+            let cmd = &self.command_history[self.history_index - 1];
+            let mut rows = Vec::<Vec<String>>::new();
+            let folds = fold(&cmd, MAX_LINE);
+            for i in 0..folds.len() {
+            rows.push(vec![folds[i].clone()]);
             }
-            log += &mut rows[i][0].clone();
+            for i in 0..rows.len() {
+                if i > 0 {
+                    log += "\n";
+                }
+                log += &mut rows[i][0].clone();
+            }
         }
+
+        // Create execute button.
+
+        let exec_button = Button::new(
+            &mut self.exec_button,
+            Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
+        )
+        .on_press(Message::ExecuteButtonPressed);
+
+        // Build the command column.
+
+        let mut col = Column::new()
+            .spacing(8)
+            .align_items(Align::End)
+            .push(
+                Button::new(
+                    &mut self.null_button,
+                    Text::new(&log).font(DEJAVU_BOLD).size(12),
+                )
+                .on_press(Message::DoNothing),
+            )
+            .push(
+                Button::new(
+                    &mut self.command_copy_button,
+                    Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+                )
+                .on_press(Message::CommandCopyButtonPressed),
+            );
+        if self.history_index >= 1 && !self.is_blank[self.history_index - 1] {
+            col = col.push(copy_image_button);
+        } else {
+            col = col.push(null_copy_image_button);
+        }
+        col = col.push(exec_button);
 
 
 
@@ -490,40 +526,6 @@ impl Application for EncloneVisual {
             } else {
                 graphic_row = graphic_row.push(svg_as_png);
             }
-
-            // Create execute button.
-
-            let exec_button = Button::new(
-                &mut self.exec_button,
-                Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
-            )
-            .on_press(Message::ExecuteButtonPressed);
-
-            // Build the command column.
-
-            let mut col = Column::new()
-                .spacing(8)
-                .align_items(Align::End)
-                .push(
-                    Button::new(
-                        &mut self.null_button,
-                        Text::new(&log).font(DEJAVU_BOLD).size(12),
-                    )
-                    .on_press(Message::DoNothing),
-                )
-                .push(
-                    Button::new(
-                        &mut self.command_copy_button,
-                        Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
-                    )
-                    .on_press(Message::CommandCopyButtonPressed),
-                );
-            if !self.is_blank[self.history_index - 1] {
-                col = col.push(copy_image_button);
-            } else {
-                col = col.push(null_copy_image_button);
-            }
-            col = col.push(exec_button);
 
             // Insert space to push the graphic to the left and the command column to the right.
 

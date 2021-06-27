@@ -28,6 +28,7 @@ fn main() {
         .expect("failed to execute enclone visual test");
     if o.status.code() != Some(0) {
         eprintln!("\nnonzero exit code from enclone visual test\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
         std::process::exit(1);
     }
     print!("{}", strme(&o.stdout));
