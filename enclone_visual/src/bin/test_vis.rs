@@ -1,10 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Run some tests of enclone visual on a Mac.  As part of the tests, this opens a window.
+//
+// If you run with the single argument UPDATE, failing results will be replaced.
 
 use perf_stats::*;
 use pretty_trace::*;
-use std::fs::File;
+use std::env;
+use std::fs::{copy, File};
 use std::io::Read;
 use std::process::Command;
 use std::time::Instant;
@@ -13,6 +16,11 @@ use string_utils::*;
 fn main() {
     let t = Instant::now();
     PrettyTrace::new().on();
+    let args: Vec<String> = env::args().collect();
+    let mut update = false;
+    if args.len() >= 2 && args[1] == "UPDATE" {
+        update = true;
+    }
     let o = Command::new("enclone")
         .arg(&"VIS")
         .arg(&"TEST")
@@ -26,9 +34,11 @@ fn main() {
     let mut fail = false;
     for i in 1..=3 {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
-        let mut f = File::open(&format!("enclone_visual/regression_images/test{}.png", i)).unwrap();
+        let old_file = format!("enclone_visual/regression_images/test{}.png", i);
+        let mut f = File::open(&old_file).unwrap();
         f.read_to_end(&mut image_old).unwrap();
-        let mut f = File::open(&format!("enclone_visual/outputs/test{}.png", i)).unwrap();
+        let new_file = format!("enclone_visual/outputs/test{}.png", i);
+        let mut f = File::open(&new_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (_, image_data_old) = png_decoder::decode(&image_old).unwrap();
         let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
@@ -47,6 +57,9 @@ fn main() {
         if big_diffs > MAX_DIFFS {
             eprintln!("\nThere are {} big diffs for test {}.", big_diffs, i);
             fail = true;
+            if update {
+                copy(&new_file, &old_file).unwrap();
+            }
         }
     }
     let state = if fail { "unsuccessfully" } else { "successfully" };
