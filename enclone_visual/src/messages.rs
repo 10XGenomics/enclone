@@ -33,8 +33,32 @@ impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
 
-            // Identical to ButtonPressed, except for function signature.
-            // This code duplication is horrible and should be fixed.
+            // There are two versions of ButtonPressed, one with (_) and one without.  They are
+            // otherwise identical.  It would be very desirable to eliminate this code duplication.
+
+            Message::ButtonPressed => {
+                if self.compute_state == WaitingForRequest {
+                    self.compute_state = Thinking;
+                    // The following sleep is needed to get the button text to consistenly update.
+                    thread::sleep(Duration::from_millis(20));
+                    if self.input_value.starts_with('#')
+                        && self.cookbook.contains_key(&self.input_value)
+                    {
+                        self.translated_input_value = self.cookbook[&self.input_value].clone();
+                    } else {
+                        self.translated_input_value = self.input_value.clone();
+                    }
+                    USER_REQUEST.lock().unwrap().clear();
+                    USER_REQUEST
+                        .lock()
+                        .unwrap()
+                        .push(self.translated_input_value.clone());
+                    PROCESSING_REQUEST.store(true, SeqCst);
+                    Command::perform(compute(), Message::ComputationDone)
+                } else {
+                    Command::none()
+                }
+            }
 
             Message::ButtonPressedX(_) => {
                 if self.compute_state == WaitingForRequest {
@@ -114,30 +138,6 @@ impl EncloneVisual {
             Message::ClearButtonPressed => {
                 self.input_value.clear();
                 Command::none()
-            }
-
-            Message::ButtonPressed => {
-                if self.compute_state == WaitingForRequest {
-                    self.compute_state = Thinking;
-                    // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(20));
-                    if self.input_value.starts_with('#')
-                        && self.cookbook.contains_key(&self.input_value)
-                    {
-                        self.translated_input_value = self.cookbook[&self.input_value].clone();
-                    } else {
-                        self.translated_input_value = self.input_value.clone();
-                    }
-                    USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST
-                        .lock()
-                        .unwrap()
-                        .push(self.translated_input_value.clone());
-                    PROCESSING_REQUEST.store(true, SeqCst);
-                    Command::perform(compute(), Message::ComputationDone)
-                } else {
-                    Command::none()
-                }
             }
 
             // same as above except for first line
