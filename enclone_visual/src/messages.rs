@@ -3,7 +3,7 @@
 use crate::*;
 use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
 use gui_structures::ComputeState::*;
-use iced::{Application, Color, Command};
+use iced::{Color, Command};
 use std::time::Duration;
 
 #[derive(Debug, Clone)]
@@ -61,19 +61,15 @@ impl EncloneVisual {
             }
 
             Message::RunTests(_) => {
-                // thread::sleep(Duration::from_millis(1000));
-                self.input_value = "#1".to_string();
-                self.view();
-                let count = COUNT.load(SeqCst);
+                let tests = ["#1", "#2", "#3"];
+                let mut count = COUNT.load(SeqCst);
                 if count == 0 {
                     self.window_id = get_window_id();
-                    self.input_value = "#1".to_string();
-                } else if count == 1 {
-                    self.input_value = "#2".to_string();
-                } else if count == 2 {
-                    self.input_value = "#3".to_string();
+                }
+                if count < tests.len() {
+                    self.input_value = tests[count].to_string();
                 } else {
-                    let count = count + 1;
+                    count += 1;
                     capture(count, self.window_id);
                     std::process::exit(0);
                 }
