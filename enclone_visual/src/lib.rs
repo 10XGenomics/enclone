@@ -3,7 +3,7 @@
 use convert_svg_to_png::*;
 use crate::gui_structures::EncloneVisual;
 use failure::Error;
-use iced::{Application, Settings};
+use iced::{Application, Font, Settings};
 use lazy_static::lazy_static;
 use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
@@ -31,6 +31,11 @@ pub mod messages;
 pub mod style;
 pub mod svg_to_geometry;
 pub mod update_restart;
+
+const DEJAVU_BOLD: Font = Font::External {
+    name: "DEJAVU_BOLD",
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
+};
 
 impl EncloneVisual {
     pub fn post_svg(&mut self, svg: &str) {
@@ -252,6 +257,8 @@ pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
+
+pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 

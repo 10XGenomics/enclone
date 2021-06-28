@@ -8,7 +8,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     Align, Application, Button, Clipboard, Color, Column, Command,
-    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space,
+    Element, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space,
     Svg, Text, TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
@@ -16,19 +16,9 @@ use iced_aw::{Card, Modal};
 // use iced_native::{window, Event};
 use messages::Message;
 use perf_stats::*;
-use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::{Duration, Instant};
-
-const DEJAVU_BOLD: Font = Font::External {
-    name: "DEJAVU_BOLD",
-    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
-};
-
-pub static COUNT: AtomicUsize = AtomicUsize::new(0);
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 impl Application for EncloneVisual {
     type Executor = iced::executor::Default;
