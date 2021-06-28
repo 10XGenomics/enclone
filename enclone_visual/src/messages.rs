@@ -119,14 +119,19 @@ impl EncloneVisual {
             }
 
             Message::RunTests(_) => {
-                let tests = ["#1", "#2", "#3", ""];
+                let tests = [
+			    ("#1", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
+                    ("#2", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
+                    ("#3", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
+                    ("", Message::BackButtonPressedX as fn(Result<(), String>) -> messages::Message),
+                ];
                 let mut count = COUNT.load(SeqCst);
                 if count == 0 {
                     self.window_id = get_window_id();
                 }
                 if count < tests.len() {
-                    if tests[count].len() > 0 {
-                        self.input_value = tests[count].to_string();
+                    if tests[count].0.len() > 0 {
+                        self.input_value = tests[count].0.to_string();
                     }
                 } else {
                     count += 1;
@@ -134,11 +139,7 @@ impl EncloneVisual {
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
-                if count < 3 {
-                    Command::perform(noop(), Message::SubmitButtonPressedX)
-                } else {
-                    Command::perform(noop(), Message::BackButtonPressedX)
-                }
+                Command::perform(noop(), tests[count].1)
             }
 
             Message::OpenModalHelp => {
