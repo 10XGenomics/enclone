@@ -10,7 +10,7 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     Align, Application, Button, Clipboard, Color, Column, Command,
-    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Settings, Space,
+    Element, Font, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space,
     Svg, Text, TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
@@ -31,15 +31,6 @@ const DEJAVU_BOLD: Font = Font::External {
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub async fn launch_gui() -> iced::Result {
-    let mut settings = Settings::default();
-    let mut window_settings = iced::window::Settings::default();
-    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
-    settings.window = window_settings;
-    settings.exit_on_close_request = false;
-    EncloneVisual::run(settings)
-}
 
 impl EncloneVisual {
     pub fn post_svg(&mut self, svg: &str) {

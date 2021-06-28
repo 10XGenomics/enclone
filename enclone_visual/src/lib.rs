@@ -1,6 +1,8 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use crate::gui_structures::EncloneVisual;
 use failure::Error;
+use iced::{Application, Settings};
 use lazy_static::lazy_static;
 use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
@@ -39,6 +41,15 @@ xmlns="http://www.w3.org/2000/svg">
 
 pub mod proto {
     tonic::include_proto!("enclone");
+}
+
+pub async fn launch_gui() -> iced::Result {
+    let mut settings = Settings::default();
+    let mut window_settings = iced::window::Settings::default();
+    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
+    settings.window = window_settings;
+    settings.exit_on_close_request = false;
+    EncloneVisual::run(settings)
 }
 
 pub fn capture(count: usize, window_id: usize) {
