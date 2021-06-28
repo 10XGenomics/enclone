@@ -13,6 +13,7 @@ use nix::unistd::Pid;
 use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::convert::TryInto;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -214,11 +215,6 @@ pub fn format_cookbook() -> String {
     }
     let mut rows2 = Vec::<Vec<String>>::new();
     for i in 0..rows.len() {
-        /*
-        if i % 2 == 1 {
-            rows2.push(rows[i].clone());
-        }
-        */
         let m1 = fold(&rows[i][1], 60);
         let m2 = fold(&rows[i][2], 60);
         if m1.len() == 1 && m2.len() == 1 {
@@ -281,16 +277,13 @@ pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
+pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
+pub static DONE: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
-
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
-
-pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
-
-pub static DONE: AtomicBool = AtomicBool::new(false);
 
 lazy_static! {
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -387,8 +380,6 @@ pub extern "C" fn exit_handler() {
 // [`/proc/self/stat`](http://man7.org/linux/man-pages/man5/proc.5.html):`num_threads` on Linux,
 // [`task_threads`](http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_threads.html)
 // on macOS.
-
-use std::convert::TryInto;
 
 pub fn thread_count() -> usize {
     #[cfg(any(target_os = "android", target_os = "linux"))]
