@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use convert_svg_to_png::*;
 use crate::gui_structures::EncloneVisual;
 use failure::Error;
 use iced::{Application, Settings};
@@ -15,6 +16,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
 use string_utils::*;
+use svg_to_geometry::*;
 use tables::*;
 
 pub mod canvas_view;
@@ -29,6 +31,36 @@ pub mod messages;
 pub mod style;
 pub mod svg_to_geometry;
 pub mod update_restart;
+
+impl EncloneVisual {
+    pub fn post_svg(&mut self, svg: &str) {
+        self.png_value = convert_svg_to_png(&svg.as_bytes());
+        let geometry = svg_to_geometry(&svg, false);
+        if geometry.is_some() {
+            let mut ok = true;
+            for i in 0..geometry.as_ref().unwrap().len() {
+                match &geometry.as_ref().unwrap()[i] {
+                    crate::geometry::Geometry::Text(ttt) => {
+                        if ttt.rotate != [0.0; 3] {
+                            ok = false;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            if ok {
+                self.canvas_view.state.geometry_value = geometry;
+            } else {
+                self.canvas_view.state.geometry_value = None;
+            }
+        } else {
+            if VERBOSE.load(SeqCst) {
+                println!("translation from svg to geometries failed");
+            }
+            self.canvas_view.state.geometry_value = None;
+        }
+    }
+}
 
 pub fn blank_svg() -> String {
     r###"<svg version="1.1" baseProfile="full" width="400" height="400"
