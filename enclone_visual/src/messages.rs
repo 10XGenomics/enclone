@@ -12,6 +12,7 @@ pub enum Message {
     SubmitButtonPressed,
     SubmitButtonPressedX(Result<(), String>),
     BackButtonPressed,
+    BackButtonPressedX(Result<(), String>),
     ForwardButtonPressed,
     ExecuteButtonPressed,
     OpenModalHelp,
@@ -85,21 +86,59 @@ impl EncloneVisual {
                 }
             }
 
+            // Again, two versions:
+
+            Message::BackButtonPressed => {
+                self.history_index -= 1;
+                let x = self.svg_history[self.history_index - 1].clone();
+                self.post_svg(&x);
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    let count = COUNT.load(SeqCst);
+                    if count > 1 {
+                        capture(count, self.window_id);
+                    }
+                    Command::perform(noop(), Message::RunTests)
+                }
+            }
+
+            Message::BackButtonPressedX(_) => {
+                self.history_index -= 1;
+                let x = self.svg_history[self.history_index - 1].clone();
+                self.post_svg(&x);
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    let count = COUNT.load(SeqCst);
+                    if count > 1 {
+                        capture(count, self.window_id);
+                    }
+                    Command::perform(noop(), Message::RunTests)
+                }
+            }
+
             Message::RunTests(_) => {
-                let tests = ["#1", "#2", "#3"];
+                let tests = ["#1", "#2", "#3", ""];
                 let mut count = COUNT.load(SeqCst);
                 if count == 0 {
                     self.window_id = get_window_id();
                 }
                 if count < tests.len() {
-                    self.input_value = tests[count].to_string();
+                    if count < 3 {
+                        self.input_value = tests[count].to_string();
+                    }
                 } else {
                     count += 1;
                     capture(count, self.window_id);
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
-                Command::perform(noop(), Message::SubmitButtonPressedX)
+                if count < 3 {
+                    Command::perform(noop(), Message::SubmitButtonPressedX)
+                } else {
+                    Command::perform(noop(), Message::BackButtonPressedX)
+                }
             }
 
             Message::OpenModalHelp => {
@@ -230,13 +269,6 @@ impl EncloneVisual {
 
             Message::GraphicsCopyButtonFlashed(_) => {
                 self.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-                Command::none()
-            }
-
-            Message::BackButtonPressed => {
-                self.history_index -= 1;
-                let x = self.svg_history[self.history_index - 1].clone();
-                self.post_svg(&x);
                 Command::none()
             }
 
