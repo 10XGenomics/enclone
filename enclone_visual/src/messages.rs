@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::*;
 use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
+use crate::*;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
 use std::time::Duration;
@@ -33,11 +33,9 @@ pub enum Message {
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
-            // There are two versions of SubmitButtonPressed, one with (_) and one without.  They 
-            // are otherwise identical.  It would be very desirable to eliminate this code 
+            // There are two versions of SubmitButtonPressed, one with (_) and one without.  They
+            // are otherwise identical.  It would be very desirable to eliminate this code
             // duplication.
-
             Message::SubmitButtonPressed => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
@@ -87,7 +85,6 @@ impl EncloneVisual {
             }
 
             // Again, two versions:
-
             Message::BackButtonPressed => {
                 self.history_index -= 1;
                 let x = self.svg_history[self.history_index - 1].clone();
@@ -120,10 +117,25 @@ impl EncloneVisual {
 
             Message::RunTests(_) => {
                 let tests = [
-			    ("#1", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
-                    ("#2", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
-                    ("#3", Message::SubmitButtonPressedX as fn(Result<(), String>) -> messages::Message),
-                    ("", Message::BackButtonPressedX as fn(Result<(), String>) -> messages::Message),
+                    (
+                        "#1",
+                        Message::SubmitButtonPressedX
+                            as fn(Result<(), String>) -> messages::Message,
+                    ),
+                    (
+                        "#2",
+                        Message::SubmitButtonPressedX
+                            as fn(Result<(), String>) -> messages::Message,
+                    ),
+                    (
+                        "#3",
+                        Message::SubmitButtonPressedX
+                            as fn(Result<(), String>) -> messages::Message,
+                    ),
+                    (
+                        "",
+                        Message::BackButtonPressedX as fn(Result<(), String>) -> messages::Message,
+                    ),
                 ];
                 let mut count = COUNT.load(SeqCst);
                 if count == 0 {

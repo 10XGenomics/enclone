@@ -440,7 +440,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let tread = Instant::now();
         server_stderr.read(&mut ebuffer).unwrap();
         if verbose {
-            println!("used {:.1} seconds reading from server stderr", elapsed(&tread));
+            println!(
+                "used {:.1} seconds reading from server stderr",
+                elapsed(&tread)
+            );
         }
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {

@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use convert_svg_to_png::*;
 use crate::copy_image_to_clipboard::*;
 use crate::gui_structures::EncloneVisual;
+use convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
 use lazy_static::lazy_static;

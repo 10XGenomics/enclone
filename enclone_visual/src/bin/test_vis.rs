@@ -63,8 +63,16 @@ fn main() {
             }
         }
     }
-    let state = if fail { "unsuccessfully" } else { "successfully" };
-    println!("\nenclone visual tests completely {} in {:.1} seconds\n", state, elapsed(&t));
+    let state = if fail {
+        "unsuccessfully"
+    } else {
+        "successfully"
+    };
+    println!(
+        "\nenclone visual tests completely {} in {:.1} seconds\n",
+        state,
+        elapsed(&t)
+    );
     if fail {
         std::process::exit(1);
     }

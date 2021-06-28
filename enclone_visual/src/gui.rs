@@ -1,14 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::*;
-use gui_structures::*;
 use gui_structures::ComputeState::*;
+use gui_structures::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Clipboard, Color, Column, Command,
-    Element, HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space,
-    Svg, Text, TextInput, VerticalAlignment,
+    Align, Application, Button, Clipboard, Color, Column, Command, Element, HorizontalAlignment,
+    Image, Length, Row, Rule, Scrollable, Space, Svg, Text, TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
 use iced_aw::{Card, Modal};
@@ -85,32 +84,31 @@ impl Application for EncloneVisual {
 
         let mut command_complex = Row::new().spacing(10);
         {
-    
             const FB_BUTTON_FONT_SIZE: u16 = 45;
             let back_button = Button::new(
                 &mut self.back_button,
                 Text::new("⇧").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::BackButtonPressed);
-    
+
             let forward_button = Button::new(
                 &mut self.forward_button,
                 Text::new("⇩").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ForwardButtonPressed);
-    
+
             let null_button1 = Button::new(
                 &mut self.null_button1,
                 Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DoNothing);
-    
+
             let null_button2 = Button::new(
                 &mut self.null_button2,
                 Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DoNothing);
-    
+
             const COPY_BUTTON_FONT_SIZE: u16 = 15;
             let copy_image_button = Button::new(
                 &mut self.copy_image_button,
@@ -119,13 +117,13 @@ impl Application for EncloneVisual {
                     .color(self.copy_image_button_color),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
-    
+
             let null_copy_image_button = Button::new(
                 &mut self.null_button3,
                 Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
-    
+
             let mut button_column2 = Column::new().spacing(8);
             if self.history_index > 1 {
                 button_column2 = button_column2.push(back_button);
@@ -137,9 +135,9 @@ impl Application for EncloneVisual {
             } else {
                 button_column2 = button_column2.push(null_button2);
             }
-    
+
             // Add command box.
-    
+
             const MAX_LINE: usize = 45;
             let mut log = String::new();
             if self.history_index >= 1 {
@@ -147,7 +145,7 @@ impl Application for EncloneVisual {
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
                 for i in 0..folds.len() {
-                rows.push(vec![folds[i].clone()]);
+                    rows.push(vec![folds[i].clone()]);
                 }
                 for i in 0..rows.len() {
                     if i > 0 {
@@ -156,21 +154,20 @@ impl Application for EncloneVisual {
                     log += &mut rows[i][0].clone();
                 }
             }
-    
+
             // Create execute button.
-    
+
             let exec_button = Button::new(
                 &mut self.exec_button,
                 Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ExecuteButtonPressed);
-    
+
             // Build the command column.
-    
-            let mut col = Column::new()
-                .spacing(8)
-                .align_items(Align::End);
-            col = col.push(
+
+            let mut col = Column::new().spacing(8).align_items(Align::End);
+            col = col
+                .push(
                     Button::new(
                         &mut self.null_button,
                         Text::new(&log).font(DEJAVU_BOLD).size(12),
@@ -310,7 +307,9 @@ impl Application for EncloneVisual {
                 if !COOKBOOK.load(SeqCst) {
                     Text::new(&format!(
                         "Welcome to enclone visual {} = {}!\n\n{}",
-                        version, version_float, include_str!["help.txt"], 
+                        version,
+                        version_float,
+                        include_str!["help.txt"],
                     ))
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
