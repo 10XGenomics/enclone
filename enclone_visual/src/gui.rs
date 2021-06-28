@@ -361,11 +361,6 @@ impl Application for EncloneVisual {
             .padding(10)
             .on_press(Message::ClearButtonPressed);
 
-
-
-
-
-
         // Define the button complex that is the "control panel".
 
         let mut command_complex = Row::new().spacing(10);
@@ -484,10 +479,6 @@ impl Application for EncloneVisual {
 
             command_complex = command_complex.push(button_column2);
         }
-
-
-
-
 
         // Build the scrollable for clonotypes.
 
