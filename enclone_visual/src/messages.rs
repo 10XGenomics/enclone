@@ -125,7 +125,7 @@ impl EncloneVisual {
                     self.window_id = get_window_id();
                 }
                 if count < tests.len() {
-                    if count < 3 {
+                    if tests[count].len() > 0 {
                         self.input_value = tests[count].to_string();
                     }
                 } else {
