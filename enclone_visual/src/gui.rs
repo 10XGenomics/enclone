@@ -357,6 +357,9 @@ impl Application for EncloneVisual {
         )
         .padding(10)
         .on_press(Message::ButtonPressed);
+        let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
+            .padding(10)
+            .on_press(Message::ClearButtonPressed);
 
 
 
@@ -365,114 +368,122 @@ impl Application for EncloneVisual {
 
         // Define the button complex that is the "control panel".
 
-        let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
-            .padding(10)
-            .on_press(Message::ClearButtonPressed);
-
-        const FB_BUTTON_FONT_SIZE: u16 = 45;
-        let back_button = Button::new(
-            &mut self.back_button,
-            Text::new("⇧").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::BackButtonPressed);
-
-        let forward_button = Button::new(
-            &mut self.forward_button,
-            Text::new("⇩").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::ForwardButtonPressed);
-
-        let null_button1 = Button::new(
-            &mut self.null_button1,
-            Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::DoNothing);
-
-        let null_button2 = Button::new(
-            &mut self.null_button2,
-            Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::DoNothing);
-
-        const COPY_BUTTON_FONT_SIZE: u16 = 15;
-        let copy_image_button = Button::new(
-            &mut self.copy_image_button,
-            Text::new("Copy image")
-                .size(COPY_BUTTON_FONT_SIZE)
-                .color(self.copy_image_button_color),
-        )
-        .on_press(Message::GraphicsCopyButtonPressed);
-
-        let null_copy_image_button = Button::new(
-            &mut self.null_button3,
-            Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::GraphicsCopyButtonPressed);
-
-        let mut button_column2 = Column::new().spacing(8);
-        if self.history_index > 1 {
-            button_column2 = button_column2.push(back_button);
-        } else {
-            button_column2 = button_column2.push(null_button1);
-        }
-        if self.history_index < self.svg_history.len() {
-            button_column2 = button_column2.push(forward_button);
-        } else {
-            button_column2 = button_column2.push(null_button2);
-        }
-
-        // Add command box.
-
-        const MAX_LINE: usize = 45;
-        let mut log = String::new();
-        if self.history_index >= 1 {
-            let cmd = &self.command_history[self.history_index - 1];
-            let mut rows = Vec::<Vec<String>>::new();
-            let folds = fold(&cmd, MAX_LINE);
-            for i in 0..folds.len() {
-            rows.push(vec![folds[i].clone()]);
-            }
-            for i in 0..rows.len() {
-                if i > 0 {
-                    log += "\n";
-                }
-                log += &mut rows[i][0].clone();
-            }
-        }
-
-        // Create execute button.
-
-        let exec_button = Button::new(
-            &mut self.exec_button,
-            Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
-        )
-        .on_press(Message::ExecuteButtonPressed);
-
-        // Build the command column.
-
-        let mut col = Column::new()
-            .spacing(8)
-            .align_items(Align::End)
-            .push(
-                Button::new(
-                    &mut self.null_button,
-                    Text::new(&log).font(DEJAVU_BOLD).size(12),
-                )
-                .on_press(Message::DoNothing),
+        let mut command_complex = Row::new().spacing(10);
+        {
+    
+            const FB_BUTTON_FONT_SIZE: u16 = 45;
+            let back_button = Button::new(
+                &mut self.back_button,
+                Text::new("⇧").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
-            .push(
-                Button::new(
-                    &mut self.command_copy_button,
-                    Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+            .on_press(Message::BackButtonPressed);
+    
+            let forward_button = Button::new(
+                &mut self.forward_button,
+                Text::new("⇩").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::ForwardButtonPressed);
+    
+            let null_button1 = Button::new(
+                &mut self.null_button1,
+                Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::DoNothing);
+    
+            let null_button2 = Button::new(
+                &mut self.null_button2,
+                Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::DoNothing);
+    
+            const COPY_BUTTON_FONT_SIZE: u16 = 15;
+            let copy_image_button = Button::new(
+                &mut self.copy_image_button,
+                Text::new("Copy image")
+                    .size(COPY_BUTTON_FONT_SIZE)
+                    .color(self.copy_image_button_color),
+            )
+            .on_press(Message::GraphicsCopyButtonPressed);
+    
+            let null_copy_image_button = Button::new(
+                &mut self.null_button3,
+                Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::GraphicsCopyButtonPressed);
+    
+            let mut button_column2 = Column::new().spacing(8);
+            if self.history_index > 1 {
+                button_column2 = button_column2.push(back_button);
+            } else {
+                button_column2 = button_column2.push(null_button1);
+            }
+            if self.history_index < self.svg_history.len() {
+                button_column2 = button_column2.push(forward_button);
+            } else {
+                button_column2 = button_column2.push(null_button2);
+            }
+    
+            // Add command box.
+    
+            const MAX_LINE: usize = 45;
+            let mut log = String::new();
+            if self.history_index >= 1 {
+                let cmd = &self.command_history[self.history_index - 1];
+                let mut rows = Vec::<Vec<String>>::new();
+                let folds = fold(&cmd, MAX_LINE);
+                for i in 0..folds.len() {
+                rows.push(vec![folds[i].clone()]);
+                }
+                for i in 0..rows.len() {
+                    if i > 0 {
+                        log += "\n";
+                    }
+                    log += &mut rows[i][0].clone();
+                }
+            }
+    
+            // Create execute button.
+    
+            let exec_button = Button::new(
+                &mut self.exec_button,
+                Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::ExecuteButtonPressed);
+    
+            // Build the command column.
+    
+            let mut col = Column::new()
+                .spacing(8)
+                .align_items(Align::End);
+            col = col.push(
+                    Button::new(
+                        &mut self.null_button,
+                        Text::new(&log).font(DEJAVU_BOLD).size(12),
+                    )
+                    .on_press(Message::DoNothing),
                 )
-                .on_press(Message::CommandCopyButtonPressed),
-            );
-        if self.history_index >= 1 && !self.is_blank[self.history_index - 1] {
-            col = col.push(copy_image_button);
-        } else {
-            col = col.push(null_copy_image_button);
+                .push(
+                    Button::new(
+                        &mut self.command_copy_button,
+                        Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+                    )
+                    .on_press(Message::CommandCopyButtonPressed),
+                );
+            if self.history_index >= 1 && !self.is_blank[self.history_index - 1] {
+                col = col.push(copy_image_button);
+            } else {
+                col = col.push(null_copy_image_button);
+            }
+            col = col.push(exec_button);
+
+            // Add the command column to the row.
+
+            command_complex = command_complex.push(col);
+
+            // Add up and down arrows.
+
+            command_complex = command_complex.push(button_column2);
         }
-        col = col.push(exec_button);
 
 
 
@@ -532,16 +543,6 @@ impl Application for EncloneVisual {
             if !have_canvas {
                 graphic_row = graphic_row.push(Space::with_width(Length::Fill));
             }
-
-            let mut command_complex = Row::new().spacing(10);
-
-            // Add the command column to the row.
-
-            command_complex = command_complex.push(col);
-
-            // Add up and down arrows.
-
-            command_complex = command_complex.push(button_column2);
 
             graphic_row = graphic_row.push(command_complex);
         }
