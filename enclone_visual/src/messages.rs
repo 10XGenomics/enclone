@@ -9,7 +9,8 @@ use std::time::Duration;
 #[derive(Debug, Clone)]
 pub enum Message {
     InputChanged(String),
-    ButtonPressed,
+    SubmitButtonPressed,
+    SubmitButtonPressedX(Result<(), String>),
     BackButtonPressed,
     ForwardButtonPressed,
     ExecuteButtonPressed,
@@ -26,17 +27,17 @@ pub enum Message {
     Exit,
     ClearButtonPressed,
     RunTests(Result<(), String>),
-    ButtonPressedX(Result<(), String>),
 }
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
 
-            // There are two versions of ButtonPressed, one with (_) and one without.  They are
-            // otherwise identical.  It would be very desirable to eliminate this code duplication.
+            // There are two versions of SubmitButtonPressed, one with (_) and one without.  They 
+            // are otherwise identical.  It would be very desirable to eliminate this code 
+            // duplication.
 
-            Message::ButtonPressed => {
+            Message::SubmitButtonPressed => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
@@ -60,7 +61,7 @@ impl EncloneVisual {
                 }
             }
 
-            Message::ButtonPressedX(_) => {
+            Message::SubmitButtonPressedX(_) => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
@@ -98,7 +99,7 @@ impl EncloneVisual {
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
-                Command::perform(noop(), Message::ButtonPressedX)
+                Command::perform(noop(), Message::SubmitButtonPressedX)
             }
 
             Message::OpenModalHelp => {
