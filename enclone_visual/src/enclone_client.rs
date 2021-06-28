@@ -40,7 +40,6 @@ use itertools::Itertools;
 use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
-use perf_stats::*;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};

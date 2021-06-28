@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use convert_svg_to_png::*;
+use crate::copy_image_to_clipboard::*;
 use crate::gui_structures::EncloneVisual;
 use failure::Error;
 use iced::{Application, Font, Settings};
@@ -9,12 +10,15 @@ use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
+use std::thread;
+use std::time::{Duration, Instant};
 use string_utils::*;
 use svg_to_geometry::*;
 use tables::*;
@@ -31,6 +35,30 @@ pub mod messages;
 pub mod style;
 pub mod svg_to_geometry;
 pub mod update_restart;
+
+async fn noop() -> Result<(), String> {
+    // Increasing this time to 2000ms will prevent the screen from going dark on initialization
+    // in test mode.
+    thread::sleep(Duration::from_millis(100));
+    Ok(())
+}
+
+async fn compute() -> Result<(), String> {
+    let t = Instant::now();
+    while PROCESSING_REQUEST.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
+    println!(
+        "time used processing command = {:.1} seconds\n",
+        elapsed(&t)
+    );
+    Ok(())
+}
+
+async fn flash_copy_image_button() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
+    Ok(())
+}
 
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",
