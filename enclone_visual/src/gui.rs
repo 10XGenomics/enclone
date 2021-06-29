@@ -89,7 +89,7 @@ impl Application for EncloneVisual {
                 &mut self.back_button,
                 Text::new("⇧").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
-            .on_press(Message::BackButtonPressed);
+            .on_press(Message::BackButtonPressed(Ok(())));
 
             let forward_button = Button::new(
                 &mut self.forward_button,

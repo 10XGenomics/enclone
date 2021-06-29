@@ -11,8 +11,7 @@ pub enum Message {
     InputChanged(String),
     SubmitButtonPressed,
     SubmitButtonPressedX(Result<(), String>),
-    BackButtonPressed,
-    BackButtonPressedX(Result<(), String>),
+    BackButtonPressed(Result<(), String>),
     ForwardButtonPressed,
     ExecuteButtonPressed,
     OpenModalHelp,
@@ -86,23 +85,7 @@ impl EncloneVisual {
                 }
             }
 
-            // Again, two versions:
-            Message::BackButtonPressed => {
-                self.history_index -= 1;
-                let x = self.svg_history[self.history_index - 1].clone();
-                self.post_svg(&x);
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    let count = COUNT.load(SeqCst);
-                    if count > 1 {
-                        capture(count, self.window_id);
-                    }
-                    Command::perform(noop(), Message::RunTests)
-                }
-            }
-
-            Message::BackButtonPressedX(_) => {
+            Message::BackButtonPressed(_) => {
                 self.history_index -= 1;
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
@@ -122,7 +105,7 @@ impl EncloneVisual {
                     ("#1", Message::SubmitButtonPressedX as MsgFn),
                     ("#2", Message::SubmitButtonPressedX as MsgFn),
                     ("#3", Message::SubmitButtonPressedX as MsgFn),
-                    ("", Message::BackButtonPressedX as MsgFn),
+                    ("", Message::BackButtonPressed as MsgFn),
                 ];
                 let mut count = COUNT.load(SeqCst);
                 if count == 0 {
