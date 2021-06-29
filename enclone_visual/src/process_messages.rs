@@ -11,7 +11,6 @@ use std::time::Duration;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
             Message::SubmitButtonPressed(_) => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
@@ -38,6 +37,21 @@ impl EncloneVisual {
 
             Message::BackButtonPressed(_) => {
                 self.history_index -= 1;
+                let x = self.svg_history[self.history_index - 1].clone();
+                self.post_svg(&x);
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    let count = COUNT.load(SeqCst);
+                    if count > 1 {
+                        capture(count, self.window_id);
+                    }
+                    Command::perform(noop(), Message::RunTests)
+                }
+            }
+
+            Message::ForwardButtonPressed(_) => {
+                self.history_index += 1;
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 if !TEST_MODE.load(SeqCst) {
@@ -197,13 +211,6 @@ impl EncloneVisual {
 
             Message::GraphicsCopyButtonFlashed(_) => {
                 self.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-                Command::none()
-            }
-
-            Message::ForwardButtonPressed => {
-                self.history_index += 1;
-                let x = self.svg_history[self.history_index - 1].clone();
-                self.post_svg(&x);
                 Command::none()
             }
 

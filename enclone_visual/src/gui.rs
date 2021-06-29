@@ -95,7 +95,7 @@ impl Application for EncloneVisual {
                 &mut self.forward_button,
                 Text::new("⇩").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
-            .on_press(Message::ForwardButtonPressed);
+            .on_press(Message::ForwardButtonPressed(Ok(())));
 
             let null_button1 = Button::new(
                 &mut self.null_button1,

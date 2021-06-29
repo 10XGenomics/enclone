@@ -5,7 +5,7 @@ pub enum Message {
     InputChanged(String),
     SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
-    ForwardButtonPressed,
+    ForwardButtonPressed(Result<(), String>),
     ExecuteButtonPressed,
     OpenModalHelp,
     CloseModalHelp,

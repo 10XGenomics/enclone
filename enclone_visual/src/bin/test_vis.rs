@@ -5,6 +5,7 @@
 // If you run with the single argument UPDATE, failing results will be replaced.
 
 use enclone_visual::testsuite::TESTS;
+use io_utils::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::env;
@@ -37,6 +38,14 @@ fn main() {
     for i in 1..=TESTS.len() {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
         let old_file = format!("enclone_visual/regression_images/test{}.png", i);
+        if !path_exists(&old_file) {
+            eprintln!(
+                "\nLooks like you've added a test.  Please look at outputs/test{}.png and\n\
+                if it's right, copy to regression_tests and git add it.\n",
+                i,
+            );
+            std::process::exit(1);
+        }
         let mut f = File::open(&old_file).unwrap();
         f.read_to_end(&mut image_old).unwrap();
         let new_file = format!("enclone_visual/outputs/test{}.png", i);
