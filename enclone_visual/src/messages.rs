@@ -9,8 +9,7 @@ use std::time::Duration;
 #[derive(Debug, Clone)]
 pub enum Message {
     InputChanged(String),
-    SubmitButtonPressed,
-    SubmitButtonPressedX(Result<(), String>),
+    SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
     ForwardButtonPressed,
     ExecuteButtonPressed,
@@ -34,34 +33,8 @@ type MsgFn = fn(Result<(), String>) -> messages::Message;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-            // There are two versions of SubmitButtonPressed, one with (_) and one without.  They
-            // are otherwise identical.  It would be very desirable to eliminate this code
-            // duplication.
-            Message::SubmitButtonPressed => {
-                if self.compute_state == WaitingForRequest {
-                    self.compute_state = Thinking;
-                    // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(20));
-                    if self.input_value.starts_with('#')
-                        && self.cookbook.contains_key(&self.input_value)
-                    {
-                        self.translated_input_value = self.cookbook[&self.input_value].clone();
-                    } else {
-                        self.translated_input_value = self.input_value.clone();
-                    }
-                    USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST
-                        .lock()
-                        .unwrap()
-                        .push(self.translated_input_value.clone());
-                    PROCESSING_REQUEST.store(true, SeqCst);
-                    Command::perform(compute(), Message::ComputationDone)
-                } else {
-                    Command::none()
-                }
-            }
 
-            Message::SubmitButtonPressedX(_) => {
+            Message::SubmitButtonPressed(_) => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
@@ -102,9 +75,9 @@ impl EncloneVisual {
 
             Message::RunTests(_) => {
                 let tests = [
-                    ("#1", Message::SubmitButtonPressedX as MsgFn),
-                    ("#2", Message::SubmitButtonPressedX as MsgFn),
-                    ("#3", Message::SubmitButtonPressedX as MsgFn),
+                    ("#1", Message::SubmitButtonPressed as MsgFn),
+                    ("#2", Message::SubmitButtonPressed as MsgFn),
+                    ("#3", Message::SubmitButtonPressed as MsgFn),
                     ("", Message::BackButtonPressed as MsgFn),
                 ];
                 let mut count = COUNT.load(SeqCst);

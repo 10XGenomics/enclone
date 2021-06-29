@@ -75,7 +75,7 @@ impl Application for EncloneVisual {
             }),
         )
         .padding(10)
-        .on_press(Message::SubmitButtonPressed);
+        .on_press(Message::SubmitButtonPressed(Ok(())));
         let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
             .padding(10)
             .on_press(Message::ClearButtonPressed);
@@ -239,7 +239,7 @@ impl Application for EncloneVisual {
                     .push(
                         self.canvas_view
                             .view()
-                            .map(move |_message| Message::SubmitButtonPressed),
+                            .map(move |_message| Message::SubmitButtonPressed(Ok(()))),
                     )
                     .height(Units(SVG_HEIGHT));
             } else {
