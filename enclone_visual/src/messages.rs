@@ -30,6 +30,8 @@ pub enum Message {
     RunTests(Result<(), String>),
 }
 
+type MsgFn = fn(Result<(), String>) -> messages::Message;
+
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
@@ -117,25 +119,10 @@ impl EncloneVisual {
 
             Message::RunTests(_) => {
                 let tests = [
-                    (
-                        "#1",
-                        Message::SubmitButtonPressedX
-                            as fn(Result<(), String>) -> messages::Message,
-                    ),
-                    (
-                        "#2",
-                        Message::SubmitButtonPressedX
-                            as fn(Result<(), String>) -> messages::Message,
-                    ),
-                    (
-                        "#3",
-                        Message::SubmitButtonPressedX
-                            as fn(Result<(), String>) -> messages::Message,
-                    ),
-                    (
-                        "",
-                        Message::BackButtonPressedX as fn(Result<(), String>) -> messages::Message,
-                    ),
+                    ("#1", Message::SubmitButtonPressedX as MsgFn),
+                    ("#2", Message::SubmitButtonPressedX as MsgFn),
+                    ("#3", Message::SubmitButtonPressedX as MsgFn),
+                    ("", Message::BackButtonPressedX as MsgFn),
                 ];
                 let mut count = COUNT.load(SeqCst);
                 if count == 0 {
