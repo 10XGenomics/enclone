@@ -358,25 +358,28 @@ pub fn find_exact_subclonotypes(
         // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
-        for t1 in r..s {
-            for t2 in t1 + 1..s {
-                if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+        let mut bc = Vec::<(String, usize)>::new();
+        for t in r..s {
+            bc.push((tig_bc[t][0].barcode.clone(), t));
+        }
+        bc.sort();
+        let mut i = 0;
+        while i < bc.len() {
+            let j = next_diff1_2(&bc, i as i32) as usize;
+            if j - i >= 2 {
+                for k in i..j {
+                    let t = bc[k].1;
                     if ctl.clono_filt_opt.bc_dup {
-                        to_delete[t1 - r] = true;
-                        to_delete[t2 - r] = true;
+                        to_delete[t - r] = true;
                     }
                     res.2.push((
-                        tig_bc[t1][0].dataset_index,
-                        tig_bc[t1][0].barcode.clone(),
-                        "failed BC_DUP filter".to_string(),
-                    ));
-                    res.2.push((
-                        tig_bc[t2][0].dataset_index,
-                        tig_bc[t2][0].barcode.clone(),
+                        tig_bc[t][0].dataset_index,
+                        tig_bc[t][0].barcode.clone(),
                         "failed BC_DUP filter".to_string(),
                     ));
                 }
             }
+            i = j;
         }
 
         // Create the exact subclonotype.
