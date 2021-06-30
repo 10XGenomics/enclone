@@ -637,6 +637,7 @@ fn test_cpu() {
 // 10. nalgebra and gethostname and xi-unicode OK because currently licensed under Apache-2.0
 //     and there is not NOTICE file.
 // 11. iced_wgpu OK because it is MIT AND OFL-1.1.
+// 12. png-decoder is OK because it is MIT but for some reason cargo-license returns null.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -647,7 +648,7 @@ fn test_licenses() {
     ];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 16] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 17] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
@@ -660,6 +661,7 @@ fn test_licenses() {
         "nalgebra",
         "num_enum",
         "num_enum_derive",
+        "png-decoder",
         "ring",
         "tiny-skia",
         "webpki",
