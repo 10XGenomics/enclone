@@ -162,17 +162,17 @@ pub fn proc_cvar1(
         let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
         let td = &ex.share[mid];
         let tig = &td.seq;
-        let ops =
-            align_to_vdj_ref(
-                &tig,
-                &vref,
-                &dref,
-                &d2ref,
-                &jref,
-                "", // drefname
-                ex.share[mid].left,
-                &ctl,
-            ).0;
+        let ops = align_to_vdj_ref(
+            &tig,
+            &vref,
+            &dref,
+            &d2ref,
+            &jref,
+            "", // drefname
+            ex.share[mid].left,
+            &ctl,
+        )
+        .0;
         let c = cigar(&ops, 0, tig.len(), tig.len());
         cvar_stats1![j, var, c];
     } else if *var == "comp" || *var == "edit" {
