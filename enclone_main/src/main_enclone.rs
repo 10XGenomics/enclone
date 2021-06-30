@@ -385,12 +385,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     // Find exact subclonotypes.
 
-    let texact = Instant::now();
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         return Ok(MainEncloneOutput::default());
     }
-    ctl.perf_stats(&texact, "finding exact subclonotypes");
 
     // Test for consistency between VDJ cells and GEX cells.
 

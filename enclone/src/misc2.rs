@@ -13,6 +13,7 @@ use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -270,6 +271,7 @@ pub fn find_exact_subclonotypes(
     let mut exact_clonotypes = Vec::<ExactClonotype>::new();
     let mut r = 0;
     let mut groups = Vec::<(usize, usize)>::new();
+    let t = Instant::now();
     while r < tig_bc.len() {
         let mut s = r + 1;
         while s < tig_bc.len() {
@@ -312,6 +314,8 @@ pub fn find_exact_subclonotypes(
         groups.push((r, s));
         r = s;
     }
+    ctl.perf_stats(&t, "finding exact subclonotypes one");
+    let t = Instant::now();
     let mut results = Vec::<(usize, Vec<ExactClonotype>, Vec<(usize, String, String)>)>::new();
     for i in 0..groups.len() {
         results.push((i, Vec::new(), Vec::new()));
@@ -406,6 +410,8 @@ pub fn find_exact_subclonotypes(
             });
         }
     });
+    ctl.perf_stats(&t, "finding exact subclonotypes two");
+    let t = Instant::now();
     let mut max_exact = 0;
     for i in 0..results.len() {
         if results[i].1.len() > 0 {
@@ -501,6 +507,7 @@ pub fn find_exact_subclonotypes(
         }
         println!("");
     }
+    ctl.perf_stats(&t, "finding exact subclonotypes three");
     exact_clonotypes
 }
 
