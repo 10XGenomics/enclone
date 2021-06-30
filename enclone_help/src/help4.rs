@@ -721,6 +721,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "a measure of CDR3 complexity, which is the total number of S, D and I",
         );
         h.doc2("symbols in \"edit\" as defined above");
+        h.doc(
+            "cigar",
+            "the CIGAR string that defines the edit of the V..J contig sequence versus",
+        );
+        h.doc2("the universal reference V(D)J concatenation");
 
         h.ldoc(
             "cdr*_aa",

@@ -28,7 +28,7 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
+pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
     let t = Instant::now();
 
     // Get configuration.
@@ -210,6 +210,13 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
                 let s = line.unwrap();
                 let s = s.as_bytes();
                 if count % 8 == 2 {
+                    if s.len() < 28 {
+                        return Err(format!(
+                            "\nencountered read of length {} < 28 in {}\n",
+                            s.len(),
+                            f
+                        ));
+                    }
                     assert!(s.len() >= 28);
                     barcode = s[0..16].to_vec();
                     umi = s[16..28].to_vec();
@@ -363,5 +370,5 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    m
+    Ok(m)
 }

@@ -39,6 +39,7 @@ log = "0.4"
 nix = "0.19.1"
 palaver = "0.2.8"
 perf_stats = "0.1"
+png-decoder = "0.1"
 pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
 # resvg = "0.15.0"

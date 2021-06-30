@@ -1,18 +1,27 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use crate::copy_image_to_clipboard::*;
+use crate::gui_structures::EncloneVisual;
+use convert_svg_to_png::*;
 use failure::Error;
+use iced::{Application, Font, Settings};
 use lazy_static::lazy_static;
 use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
+use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::convert::TryInto;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::Mutex;
+use std::thread;
+use std::time::{Duration, Instant};
 use string_utils::*;
+use svg_to_geometry::*;
 use tables::*;
 
 pub mod canvas_view;
@@ -22,28 +31,143 @@ pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
+pub mod gui_structures;
+pub mod messages;
+pub mod process_messages;
+pub mod style;
 pub mod svg_to_geometry;
+pub mod testsuite;
 pub mod update_restart;
+
+type MsgFn = fn(Result<(), String>) -> messages::Message;
+
+async fn noop() -> Result<(), String> {
+    // Increasing this time to 2000ms will prevent the screen from going dark on initialization
+    // in test mode.
+    thread::sleep(Duration::from_millis(100));
+    Ok(())
+}
+
+async fn compute() -> Result<(), String> {
+    let t = Instant::now();
+    while PROCESSING_REQUEST.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
+    println!(
+        "time used processing command = {:.1} seconds\n",
+        elapsed(&t)
+    );
+    Ok(())
+}
+
+async fn flash_copy_image_button() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
+    Ok(())
+}
+
+const DEJAVU_BOLD: Font = Font::External {
+    name: "DEJAVU_BOLD",
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),
+};
+
+impl EncloneVisual {
+    pub fn post_svg(&mut self, svg: &str) {
+        self.png_value = convert_svg_to_png(&svg.as_bytes());
+        let geometry = svg_to_geometry(&svg, false);
+        if geometry.is_some() {
+            let mut ok = true;
+            for i in 0..geometry.as_ref().unwrap().len() {
+                match &geometry.as_ref().unwrap()[i] {
+                    crate::geometry::Geometry::Text(ttt) => {
+                        if ttt.rotate != [0.0; 3] {
+                            ok = false;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            if ok {
+                self.canvas_view.state.geometry_value = geometry;
+            } else {
+                self.canvas_view.state.geometry_value = None;
+            }
+        } else {
+            if VERBOSE.load(SeqCst) {
+                println!("translation from svg to geometries failed");
+            }
+            self.canvas_view.state.geometry_value = None;
+        }
+    }
+}
+
+pub fn blank_svg() -> String {
+    r###"<svg version="1.1" baseProfile="full" width="400" height="400"
+xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="400" height="400" style="fill:white" />
+</svg>
+"###
+    .to_string()
+}
 
 pub mod proto {
     tonic::include_proto!("enclone");
 }
 
-fn fold(line: &str) -> Vec<String> {
-    const MAX_COMMENT: usize = 60;
+pub async fn launch_gui() -> iced::Result {
+    let mut settings = Settings::default();
+    let mut window_settings = iced::window::Settings::default();
+    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
+    settings.window = window_settings;
+    settings.exit_on_close_request = false;
+    EncloneVisual::run(settings)
+}
+
+pub fn capture(count: usize, window_id: usize) {
+    let o = std::process::Command::new("screencapture")
+        .arg(&format!("-l{}", window_id))
+        .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
+        .output()
+        .expect("failed to execute screencapture");
+    if o.status.code() != Some(0) {
+        eprintln!("\nCall to screencapture failed.");
+        eprintln!("stderr =\n{}\n", strme(&o.stderr));
+        std::process::exit(1);
+    }
+}
+
+pub fn get_window_id() -> usize {
+    let o = Command::new("GetWindowID")
+        .arg("enclone")
+        .arg("--list")
+        .output()
+        .expect("failed to execute GetWindowID");
+    if o.status.code() != Some(0) {
+        eprintln!("\nCall to GetWindowID failed.\n");
+        std::process::exit(1);
+    }
+    let mut m = String::from_utf8(o.stdout).unwrap();
+    m = m.replace("\n", "");
+    if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
+        eprintln!("\nGetWindowId could not find id\n");
+        std::process::exit(1);
+    }
+    m.after("id=").force_usize()
+}
+
+pub fn fold(line: &str, max_line: usize) -> Vec<String> {
     let mut pieces = Vec::<String>::new();
     let words = line.split(' ').collect::<Vec<&str>>();
     let mut current = String::new();
     let mut i = 0;
     while i < words.len() {
-        if current.len() > 0 && current.len() + 1 + words[i].len() > MAX_COMMENT {
+        if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
             pieces.push(current.clone());
             current.clear();
             i -= 1;
-        } else if words[i].len() >= MAX_COMMENT {
+        } else if words[i].len() >= max_line {
             let mut w = words[i].as_bytes().to_vec();
             loop {
-                let n = std::cmp::min(MAX_COMMENT, w.len());
+                let n = std::cmp::min(max_line, w.len());
                 let sub = stringme(&w[0..n]);
                 if n < w.len() {
                     pieces.push(sub);
@@ -95,13 +219,8 @@ pub fn format_cookbook() -> String {
     }
     let mut rows2 = Vec::<Vec<String>>::new();
     for i in 0..rows.len() {
-        /*
-        if i % 2 == 1 {
-            rows2.push(rows[i].clone());
-        }
-        */
-        let m1 = fold(&rows[i][1]);
-        let m2 = fold(&rows[i][2]);
+        let m1 = fold(&rows[i][1], 60);
+        let m2 = fold(&rows[i][2], 60);
         if m1.len() == 1 && m2.len() == 1 {
             rows2.push(rows[i].clone());
         } else {
@@ -161,14 +280,14 @@ pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
+pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
+pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
+pub static DONE: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
-
-pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
-
-pub static DONE: AtomicBool = AtomicBool::new(false);
+pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -265,8 +384,6 @@ pub extern "C" fn exit_handler() {
 // [`/proc/self/stat`](http://man7.org/linux/man-pages/man5/proc.5.html):`num_threads` on Linux,
 // [`task_threads`](http://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_threads.html)
 // on macOS.
-
-use std::convert::TryInto;
 
 pub fn thread_count() -> usize {
     #[cfg(any(target_os = "android", target_os = "linux"))]

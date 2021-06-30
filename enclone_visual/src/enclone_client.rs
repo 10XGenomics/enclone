@@ -28,19 +28,18 @@
 // The special argument SERVER_DEBUG causes the server to print debuggin information.  However
 // you will only see this if you run the server locally using enclone VIS.
 
+use crate::launch_gui;
 use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
 use enclone_core::REMOTE_HOST;
-use gui::launch_gui;
 use io_utils::*;
 use itertools::Itertools;
 use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
-use perf_stats::*;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
@@ -84,11 +83,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg.starts_with("PORT=") {
             fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
             assert!(fixed_port.unwrap() >= 1024);
+        } else if arg == "TEST" {
+            TEST_MODE.store(true, SeqCst);
         } else if arg != "VIS" {
             eprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=..., but
-                only for testing.\n"
+                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
+                and TEST, but only for testing.\n"
             );
             std::process::exit(1);
         }
@@ -384,12 +385,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             local_host = "localhost".to_string();
         } else {
             let ip = "127.0.0.1";
+            let t = Instant::now();
             server_process = Command::new("enclone")
                 .arg("SERVER")
                 .arg(&format!("{}:{}", ip, port))
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
+            println!("used {:.1} seconds launching local server", elapsed(&t));
         }
         if verbose {
             println!("server forked");
@@ -423,16 +426,25 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         });
         server_stdout.read(&mut buffer).unwrap();
         READ_DONE.store(true, SeqCst);
-        println!(
-            "time spent waiting to read bytes from server = {:.1} seconds",
-            elapsed(&tread)
-        );
+        if verbose {
+            println!(
+                "time spent waiting to read bytes from server = {:.1} seconds",
+                elapsed(&tread)
+            );
+        }
 
         // Look at stderr.
 
         let mut ebuffer = [0; 200];
         let server_stderr = server_process.stderr.as_mut().unwrap();
+        let tread = Instant::now();
         server_stderr.read(&mut ebuffer).unwrap();
+        if verbose {
+            println!(
+                "used {:.1} seconds reading from server stderr",
+                elapsed(&tread)
+            );
+        }
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
             if emsg.contains("already in use") {
@@ -503,6 +515,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // Fork remote setup command if needed.
 
         if config.contains_key("REMOTE_SETUP") {
+            let tremote = Instant::now();
             let mut setup = config["REMOTE_SETUP"].clone();
             if setup.starts_with("\"") && setup.ends_with("\"") {
                 setup = setup.after("\"").rev_before("\"").to_string();
@@ -533,6 +546,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             USING_SETUP.store(true, SeqCst);
             // Reducing sleep time below to 500 ms causes frequent failures.
             thread::sleep(Duration::from_millis(1000));
+            if verbose {
+                println!("used {:.1} seconds connecting to remote", elapsed(&tremote));
+            }
         }
 
         // Connect to client.
@@ -540,6 +556,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         if verbose {
             println!("connecting to {}", url);
         }
+        let tconnect = Instant::now();
         let mut client = AnalyzerClient::connect(url.clone()).await;
         if client.is_err() {
             // If connection failed, sleep and try again.  This happens maybe 10% of the time.
@@ -557,6 +574,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             } else {
                 println!("excellent, it's OK now");
             }
+        }
+        if verbose {
+            println!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
         println!("connected");
         println!("time since startup = {:.1} seconds\n", elapsed(&t));

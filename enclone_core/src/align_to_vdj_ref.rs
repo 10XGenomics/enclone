@@ -121,6 +121,53 @@ pub fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// This is the same as bio::Alignment::cigar(&self, hard_clip: bool), but works on a vector
+// of alignment operations, and assumes hard_clip is false.  Code copied from bio source.
+
+pub fn cigar(
+    ops: &Vec<bio::alignment::AlignmentOperation>,
+    xstart: usize,
+    xend: usize,
+    xlen: usize,
+) -> String {
+    use bio::alignment::AlignmentOperation;
+    let clip_str = "S";
+    let add_op = |op: AlignmentOperation, k, cigar: &mut String| match op {
+        AlignmentOperation::Match => cigar.push_str(&format!("{}{}", k, "=")),
+        AlignmentOperation::Subst => cigar.push_str(&format!("{}{}", k, "X")),
+        AlignmentOperation::Del => cigar.push_str(&format!("{}{}", k, "D")),
+        AlignmentOperation::Ins => cigar.push_str(&format!("{}{}", k, "I")),
+        _ => {}
+    };
+
+    let mut cigar = "".to_owned();
+    if ops.is_empty() {
+        return cigar;
+    }
+
+    let mut last = ops[0];
+    if xstart > 0 {
+        cigar.push_str(&format!("{}{}", xstart, clip_str))
+    }
+    let mut k = 1;
+    for &op in ops[1..].iter() {
+        if op == last {
+            k += 1;
+        } else {
+            add_op(last, k, &mut cigar);
+            k = 1;
+        }
+        last = op;
+    }
+    add_op(last, k, &mut cigar);
+    if xlen > xend {
+        cigar.push_str(&format!("{}{}", xlen - xend, clip_str))
+    }
+    cigar
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn align_to_vdj_ref(
     seq: &[u8],
     vref: &[u8],

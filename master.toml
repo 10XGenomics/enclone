@@ -72,6 +72,7 @@ perf_stats = "0.1"
 permutation = "0.2.5"
 petgraph = "0.5"
 plotters = { version = "^0.3.0", default_features = false, features = ["svg_backend", "point_series"] }
+png-decoder = "0.1"
 pretty_trace = "0.5"
 procfs = "0.9"
 prost = { version = ">=0.6.1, <0.8", features = [] }

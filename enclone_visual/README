@@ -1,0 +1,37 @@
+NOTES
+
+---------------------------------------------------------------------------------------------------
+
+1. From a Mac, if you type "enclone VIS", when enclone starts up, it forks enclone in server
+mode, still on the Mac.  We sometimes observe a 9.2 second delay in this operation.  We believe 
+this is attributable to the MacOS Gatekeeper.  Gatekeeper checks executable codesigning.  Probably
+because enclone is not codesigned, Gatekeeper attempts to determine if the enclone executable
+is "ok", and times out after 9.2 seconds.  We think this only happens when the MAC IS OFFLINE.
+Still, when offline, as best we can tell, eventually this behavior stops, but we don't know what
+determines when that happens.  Rebuilding the executable restarts the delays.  Importantly, we
+only know how Gatekeeper behaves on the version of OSX that we've tested.
+
+---------------------------------------------------------------------------------------------------
+
+2.  For automated testing on a Mac, first do this
+
+brew install smokris/getwindowid/getwindowid
+
+This puts an executable GetWindowID in your path.  We also copied the source code into a directory
+enclone/get_window_id, which in principle could be refactored as a rust function call.
+
+The command to test is test_vis.
+
+Again this can be slow because of Gatekeeper behavior, both for enclone, and possibly for
+GetWindowId, which enclone forks.  And again the slowness generally goes away, either if one is
+online or after a period of time.
+
+Note that automated testing causes an enclone visual window to open on your Mac.
+
+---------------------------------------------------------------------------------------------------
+
+3. We have made various attempts to bypass Gatekeeper behavior:
+(a) sudo spctl --master-disable
+(b) xattr -dr com.apple.quarantine path
+(c) system preferences ==> security and privacy ==> Privacy ==> Developer Tools ==> allow apps ...
+However, none seem effective.

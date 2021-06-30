@@ -133,13 +133,16 @@ fn main() {
 
         if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
             let m = feature_barcode_matrix(id.force_usize(), false);
-            for i in (0..dests.len()).rev() {
-                let dest = &dests[i];
-                let target = format!("{}/{}", dest, id);
-                write_to_file(
-                    &m,
-                    &format!("{}/outs/feature_barcode_matrix_top.bin", target),
-                );
+            if m.is_ok() {
+                let m = m.unwrap();
+                for i in (0..dests.len()).rev() {
+                    let dest = &dests[i];
+                    let target = format!("{}/{}", dest, id);
+                    write_to_file(
+                        &m,
+                        &format!("{}/outs/feature_barcode_matrix_top.bin", target),
+                    );
+                }
             }
         }
 

@@ -1,0 +1,26 @@
+Please type bit.ly/enclone in a browser to learn more about enclone.
+
+To use enclone visual, type in the box
+(see below)\nand then push the Submit button.  Here are the things
+that you can type:
+
+• an enclone command
+• an group id (number)
+• a recipe tag (see cookbook)
+• q to quit
+
+The enclone visual app view is vertically divided roughly as follows, going downward:
+1. command input line
+2. graphics subwindow
+3. clonotype subwindow.
+The app remembers previous states of 1 and 2, but not 3.  There are buttons in the graphics
+subwindow that allow navigation through previous commands/graphics, and which can also re-execute
+a command to get the clonotypes back.  Some buttons are blank initially.  Those do nothing until
+populated with something (like a down arrow, to go forward to the next state).
+
+Some limitations of this version:
+1. There is no color in the clonotype tables.
+2. Cutting and pasting from clonotype tables doesn't work.
+3. Long commands are hard to work with in the input box.
+4. Very wide clonotype tables wrap, making them unintelligible, and
+   only solvable by window resizing, and sometimes not that.

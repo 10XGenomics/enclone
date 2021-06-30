@@ -14,6 +14,6 @@ The file polygon.rs uses code taken from the lorikeet-dash crate version 0.1.0, 
 is MIT/Apache-2.0.
 
 The directory bio_edit is a copy of rust-bio, with one modified function, and many other parts
-deleted.
+deleted.  The cigar function is from rust-bio.
 
 The file convert_svg_to_png.rs is largely copied from the resvg crate.

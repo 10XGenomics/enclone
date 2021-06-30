@@ -2,6 +2,7 @@ target
 enclone_exec/test/inputs/version14/85679/outs/raw_feature_bc_matrix/matrix.bin
 enclone_exec/testx/outputs
 enclone-data
+enclone_visual/outputs
 stamps/data_version_in_use
 stamps/last_sweep
 stamps/last_linktest

@@ -126,7 +126,7 @@ jobs:
         run: >
           git rev-list --objects ${{github.event.pull_request.base.sha}}..
           | git cat-file --batch-check='%(objectname) %(objecttype) %(objectsize) %(rest)'
-          | awk '$2 == "blob" && $3 >= 1000000 { print substr($1, 1, 7), $3, $4; fail=1 } END { exit fail }'
+          | awk '$2 == "blob" && $3 >= 1500000 { print substr($1, 1, 7), $3, $4; fail=1 } END { exit fail }'
       - name: Remove the Cargo target directory
         if: github.ref == 'refs/heads/master'
         run: cargo clean
