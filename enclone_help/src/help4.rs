@@ -725,7 +725,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "cigar",
             "the CIGAR string that defines the edit of the V..J contig sequence versus",
         );
-        h.doc2("the universal reference V(D)J concenation");
+        h.doc2("the universal reference V(D)J concatenation");
 
         h.ldoc(
             "cdr*_aa",
