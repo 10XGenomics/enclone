@@ -125,7 +125,7 @@ pub fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
 // of alignment operations, and assumes hard_clip is false.  Code copied from bio source.
 
 pub fn cigar(
-    ops: Vec<bio::alignment::AlignmentOperation>,
+    ops: &Vec<bio::alignment::AlignmentOperation>,
     xstart: usize,
     xend: usize,
     xlen: usize,

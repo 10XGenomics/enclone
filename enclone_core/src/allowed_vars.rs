@@ -44,7 +44,7 @@ pub const LVARS_ALLOWED: [&str; 35] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 90] = [
+pub const CVARS_ALLOWED: [&str; 91] = [
     "var",
     "u",
     "u_min",
@@ -53,6 +53,7 @@ pub const CVARS_ALLOWED: [&str; 90] = [
     "u_μ",
     "comp",
     "edit",
+    "cigar",
     "r",
     "r_min",
     "r_max",
