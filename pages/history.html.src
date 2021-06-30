@@ -33,6 +33,12 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>6/30/21</b>: Add cvar <code>cigar</code> that is the CIGAR string of the V..J contig sequence
+versus the universal reference.  See
+<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.
+</p>
+
+<p>
 <b>6/24/21</b>: Now <code>enclone UPDATE</code> updates to the latest version of #enclone.
 </p>
 
