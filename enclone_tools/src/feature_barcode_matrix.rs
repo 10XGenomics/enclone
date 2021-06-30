@@ -210,6 +210,10 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> MirrorSparseMatrix {
                 let s = line.unwrap();
                 let s = s.as_bytes();
                 if count % 8 == 2 {
+                    if s.len() < 28 {
+                        eprintln!("\nencountered read of length {} < 28 in {}\n", s.len(), f);
+                        std::process::exit(1);
+                    }
                     assert!(s.len() >= 28);
                     barcode = s[0..16].to_vec();
                     umi = s[16..28].to_vec();
