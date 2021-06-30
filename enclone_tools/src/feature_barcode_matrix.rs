@@ -212,7 +212,9 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                 if count % 8 == 2 {
                     if s.len() < 28 {
                         return Err(format!(
-                            "\nencountered read of length {} < 28 in {}\n", s.len(), f
+                            "\nencountered read of length {} < 28 in {}\n",
+                            s.len(),
+                            f
                         ));
                     }
                     assert!(s.len() >= 28);
