@@ -86,7 +86,7 @@ pub struct EncloneIntermediates {
     pub gex_info: GexInfo,
     pub sr: Vec<Vec<f64>>,
     pub ann: String,
-    pub fate: Vec<HashMap<String, String>>,       // GETS MODIFIED SUBSEQUENTLY
+    pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
     pub ctl: EncloneControl,
     pub is_bcr: bool,
     pub tall: Option<Instant>,
@@ -96,6 +96,9 @@ pub struct EncloneIntermediates {
 
 pub fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
     let inter = main_enclone_start(&args)?;
+    if inter.tall.is_none() {
+        return Ok(MainEncloneOutput::default());
+    }
     main_enclone_stop(inter)
 }
 
@@ -729,7 +732,6 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
 }
 
 pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneOutput, String> {
-
     // Unpack inputs.
 
     let to_bc = &inter.to_bc;
@@ -1002,7 +1004,10 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneO
             let fields = s.split(' ').collect::<Vec<&str>>();
             cpu_this_stop = fields[13].force_usize();
         }
-        let (this_used, all_used) = (cpu_this_stop - ctl.gen_opt.cpu_this_start, cpu_all_stop - ctl.gen_opt.cpu_all_start);
+        let (this_used, all_used) = (
+            cpu_this_stop - ctl.gen_opt.cpu_this_start,
+            cpu_all_stop - ctl.gen_opt.cpu_all_start,
+        );
         if ctl.gen_opt.print_cpu {
             println!("{}", this_used);
         } else {
