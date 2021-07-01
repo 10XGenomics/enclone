@@ -83,7 +83,11 @@ pub struct EncloneSetup {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
-    let inter = main_enclone_start(&args)?;
+    let setup = main_enclone_setup(&args)?;
+    if setup.tall.is_none() {
+        return Ok(EncloneState::default());
+    }
+    let inter = main_enclone_start(setup)?;
     if inter.setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
@@ -347,14 +351,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     })
 }
 
-pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
-    // Set up.
-
+pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, String> {
     let tr = Instant::now();
-    let setup = main_enclone_setup(&args)?;
-    if setup.tall.is_none() {
-        return Ok(EncloneIntermediates::default());
-    }
     let ctl = &setup.ctl;
     let gex_info = &setup.gex_info;
     let refdata = &setup.refdata;
