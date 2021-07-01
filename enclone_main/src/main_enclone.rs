@@ -36,7 +36,7 @@ use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
-use enclone_proto::types::DonorReference;
+use enclone_proto::types::DonorReferenceItem;
 use enclone_tail::grouper::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
@@ -73,16 +73,17 @@ pub struct MainEncloneOutput {
     pub pretty: bool,
 }
 
+#[derive(Default)]
 pub struct EncloneIntermediates<'a> {
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
-    pub raw_joins: Vec<(i32, i32)>,
+    pub raw_joins: Vec<Vec<usize>>,
     pub info: Vec<CloneInfo>,
     pub orbits: Vec<Vec<i32>>,
     pub vdj_cells: Vec<Vec<String>>,
     pub refdata: RefData,
     pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
-    pub drefs: Vec<DonorReference>,
+    pub drefs: Vec<DonorReferenceItem>,
     pub gex_info: GexInfo,
     pub h5_data: Vec<(usize, Vec<u32>, Vec<u32>)>,
     pub sr: Vec<Vec<f64>>,
@@ -92,12 +93,17 @@ pub struct EncloneIntermediates<'a> {
     pub fate: Vec<HashMap<String, String>>,       // GETS MODIFIED SUBSEQUENTLY
     pub ctl: EncloneControl,
     pub is_bcr: bool,
-    pub tall: Instant,
+    pub tall: Option<Instant>,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
+    let inter = main_enclone_start(&args).await?;
+    Ok(main_enclone_stop(inter))
+}
+
+pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates<'_>, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
     let args = process_source(&args)?;
@@ -121,14 +127,13 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     if ctl.gen_opt.profile {
         start_profiling(&profiling_blacklist());
     }
-    let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
-            print_cpu = true;
+            ctl.gen_opt.print_cpu = true;
         }
         if args[i] == "PRINT_CPU_INFO" {
-            print_cpu_info = true;
+            ctl.gen_opt.print_cpu_info = true;
         }
         if args[i] == "COMP" || args[i] == "COMPE" {
             comp = true;
@@ -143,8 +148,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     if comp && !comp2 {
         println!("");
     }
-    let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
-    if print_cpu || print_cpu_info {
+    ctl.gen_opt.cpu_all_start = 0;
+    ctl.gen_opt.cpu_this_start = 0;
+    if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
         for line in f.lines() {
             let s = line.unwrap();
@@ -152,19 +158,19 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
-            cpu_all_start = t.before(" ").force_usize();
+            ctl.gen_opt.cpu_all_start = t.before(" ").force_usize();
             break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {
             let s = line.unwrap();
             let fields = s.split(' ').collect::<Vec<&str>>();
-            cpu_this_start = fields[13].force_usize();
+            ctl.gen_opt.cpu_this_start = fields[13].force_usize();
         }
     }
     if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     if ctl.evil_eye {
         println!("calling perf_stats, before setup");
@@ -173,10 +179,10 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx, &args_orig)?;
     if ctl.gen_opt.split {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
 
     // Dump internal ids.
@@ -189,7 +195,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             }
             x.sort();
             println!("\n{}\n", x.iter().format(","));
-            return Ok(MainEncloneOutput::default());
+            return Ok(EncloneIntermediates::default());
         }
     }
 
@@ -348,7 +354,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         &mut log,
     )?;
     if ctl.gen_opt.require_unbroken_ok {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
@@ -373,7 +379,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     search_for_shm_indels(&ctl, &tig_bc);
     if ctl.gen_opt.indels {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
 
     // Record fate of non-cells.
@@ -410,7 +416,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
 
     // Test for consistency between VDJ cells and GEX cells.
@@ -612,7 +618,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
     if ctl.gen_opt.heavy_chain_reuse {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     ctl.perf_stats(&txxx, "in some odds and ends");
 
@@ -786,6 +792,53 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     });
     ctl.perf_stats(&tdi, "setting up readers");
 
+    Ok(EncloneIntermediates {
+        to_bc: to_bc,
+        exact_clonotypes: exact_clonotypes,
+        raw_joins: raw_joins,
+        info: info.to_vec(),
+        orbits: orbits,
+        vdj_cells: vdj_cells,
+        refdata: refdata,
+        join_info: join_info,
+        drefs: drefs,
+        gex_info: gex_info,
+        h5_data: h5_data,
+        sr: sr,
+        ann: ann.to_string(),
+        d_readers: d_readers,
+        ind_readers: ind_readers,
+        fate: fate,
+        ctl: ctl,
+        is_bcr: is_bcr,
+        tall: Some(tall),
+    })
+}
+
+pub async fn main_enclone_stop(mut inter: EncloneIntermediates<'_>) -> Result<MainEncloneOutput, String> {
+
+    // Unpack inputs.
+
+    let to_bc = &inter.to_bc;
+    let exact_clonotypes = &inter.exact_clonotypes;
+    let raw_joins = &inter.raw_joins;
+    let info = &inter.info;
+    let orbits = &inter.orbits;
+    let vdj_cells = &inter.vdj_cells;
+    let refdata = &inter.refdata;
+    let join_info = &inter.join_info;
+    let drefs = &inter.drefs;
+    let gex_info = &inter.gex_info;
+    let h5_data = &inter.h5_data;
+    let sr = &inter.sr;
+    let ann = &inter.ann;
+    let d_readers = &inter.d_readers;
+    let ind_readers = &inter.ind_readers;
+    let mut fate = &mut inter.fate;
+    let ctl = &inter.ctl;
+    let is_bcr = inter.is_bcr;
+    let tall = &inter.tall.unwrap();
+
     // Find and print clonotypes.  (But we don't actually print them here.)
 
     let torb = Instant::now();
@@ -940,7 +993,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         }
     }
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
-    if print_cpu || print_cpu_info {
+    if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
         for line in f.lines() {
             let s = line.unwrap();
@@ -957,8 +1010,8 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             let fields = s.split(' ').collect::<Vec<&str>>();
             cpu_this_stop = fields[13].force_usize();
         }
-        let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
-        if print_cpu {
+        let (this_used, all_used) = (cpu_this_stop - ctl.gen_opt.cpu_this_start, cpu_all_stop - ctl.gen_opt.cpu_all_start);
+        if ctl.gen_opt.print_cpu {
             println!("{}", this_used);
         } else {
             println!(
