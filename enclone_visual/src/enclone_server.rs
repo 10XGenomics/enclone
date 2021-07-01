@@ -236,6 +236,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
             match AnalyzerClient::connect(dest.clone()).await {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
+                        println!("using port {}", local_addr.port());
                         return;
                     }
                     Err(e) => warn!("failed to ping, ({:?}), reattempting in 1s", e),
