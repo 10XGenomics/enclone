@@ -288,13 +288,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
-    
+
     // Process for sec (secreted) or mem (membrane) if specified.
 
     test_sec_mem(&mut ctl)?;
-    if ctl.gen_opt.using_secmem { 
+    if ctl.gen_opt.using_secmem {
         fetch_secmem(&mut ctl)?;
-    }   
+    }
     ctl.perf_stats(&tr, "building reference and other things");
     Ok(EncloneSetup {
         ctl: ctl,
@@ -308,11 +308,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 }
 
 pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
-
     // Set up.
 
     let tr = Instant::now();
     let setup = main_enclone_setup(&args)?;
+    if setup.tall.is_none() {
+        return Ok(EncloneIntermediates::default());
+    }
     let ctl = &setup.ctl;
     let gex_info = &setup.gex_info;
     let refdata = &setup.refdata;
