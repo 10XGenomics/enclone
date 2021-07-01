@@ -57,7 +57,7 @@ impl Analyzer for EncloneAnalyzer {
         eprintln!("Running enclone:\n  {}", args.join(" "));
         let result = main_enclone(&args);
         if result.is_err() {
-            let err_msg = format!("{}", result.unwrap_err().to_string());
+            let err_msg = format!("{}", result.err().unwrap());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
             if server_debug {
                 msg += &mut format!(
@@ -83,7 +83,7 @@ impl Analyzer for EncloneAnalyzer {
         let response;
         {
             let mut enclone_output = self.enclone_output.lock().unwrap();
-            *enclone_output = output;
+            *enclone_output = output.outs;
             let mut table = enclone_output.pics.clone();
             let mut widths = enclone_output.last_widths.clone();
             if table.len() > 100 {

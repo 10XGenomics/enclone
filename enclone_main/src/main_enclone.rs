@@ -63,14 +63,20 @@ pub struct MainEncloneOutput {
     pub pretty: bool,
 }
 
+#[derive(Default)]
+pub struct EncloneState {
+    pub inter: EncloneIntermediates,
+    pub outs: MainEncloneOutput,
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
     let inter = main_enclone_start(&args)?;
     if inter.tall.is_none() {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneState::default());
     }
-    main_enclone_stop(inter)
+    Ok(main_enclone_stop(inter)?)
 }
 
 pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {

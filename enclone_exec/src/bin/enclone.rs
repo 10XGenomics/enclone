@@ -111,7 +111,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //
             // The kill makes the screen flash.  This is pretty horrible.
 
-            eprintln!("{}", res.unwrap_err());
+            eprintln!("{}", res.err().unwrap());
             if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
                 thread::sleep(Duration::from_millis(10));
                 let ppid = getppid();

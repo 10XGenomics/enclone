@@ -49,7 +49,7 @@ pub struct EncloneIntermediates {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneOutput, String> {
+pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState, String> {
     // Unpack inputs.
 
     let to_bc = &inter.to_bc;
@@ -239,7 +239,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneO
             .await
             .unwrap();
         */
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneState::default());
     }
 
     // Tail code.
@@ -340,7 +340,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneO
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
     }
-    Ok(MainEncloneOutput {
+    let outs = MainEncloneOutput {
         pics: group_pics,
         last_widths: last_widths,
         svgs: svgs,
@@ -349,5 +349,9 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneO
         html: ctl.gen_opt.html,
         ngroup: ctl.clono_group_opt.ngroup,
         pretty: ctl.pretty,
+    };
+    Ok(EncloneState {
+        inter: inter,
+        outs: outs,
     })
 }
