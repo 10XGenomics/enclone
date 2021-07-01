@@ -31,7 +31,6 @@ use enclone_args::load_gex::*;
 use enclone_args::proc_args2::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
-use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
@@ -95,12 +94,12 @@ pub struct EncloneIntermediates {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
-    let inter = main_enclone_start(&args).await?;
-    Ok(main_enclone_stop(inter))
+pub fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
+    let inter = main_enclone_start(&args)?;
+    main_enclone_stop(inter)
 }
 
-pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
+pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
     let args = process_source(&args)?;
@@ -729,7 +728,7 @@ pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediat
     })
 }
 
-pub async fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneOutput, String> {
+pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneOutput, String> {
 
     // Unpack inputs.
 
@@ -915,9 +914,11 @@ pub async fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEn
             enclone_client in a separate terminal window, before starting enclone, because\n\
             otherwise the system won't work.  The client should now show a prompt.\n"
         );
+        /*
         enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
             .await
             .unwrap();
+        */
         return Ok(MainEncloneOutput::default());
     }
 

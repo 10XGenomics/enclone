@@ -55,7 +55,7 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         eprintln!("Running enclone:\n  {}", args.join(" "));
-        let result = main_enclone(&args).await;
+        let result = main_enclone(&args);
         if result.is_err() {
             let err_msg = format!("{}", result.unwrap_err().to_string());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);

@@ -96,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Standard run of enclone.
 
     if args.len() < 2 || args[1] != "SERVER" {
-        let res = main_enclone(&mut args).await;
+        let res = main_enclone(&mut args);
         if res.is_err() {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
