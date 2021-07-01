@@ -73,7 +73,7 @@ pub struct MainEncloneOutput {
     pub pretty: bool,
 }
 
-pub struct EncloneIntermediates {
+pub struct EncloneIntermediates<'a> {
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
     pub raw_joins: Vec<(i32, i32)>,
@@ -87,14 +87,13 @@ pub struct EncloneIntermediates {
     pub h5_data: Vec<(usize, Vec<u32>, Vec<u32>)>,
     pub sr: Vec<Vec<f64>>,
     pub ann: String,
+    pub d_readers: Vec<Option<hdf5::Reader<'a>>>, // NEEDS LIFETIME
+    pub ind_readers: Vec<Option<hdf5::Reader<'a>>>, // NEEDS LIFETIME
+    pub fate: Vec<HashMap<String, String>>,       // GETS MODIFIED SUBSEQUENTLY
+    pub ctl: EncloneControl,
+    pub is_bcr: bool,
+    pub tall: Instant,
 }
-
-//  pub ctl: EncloneControl,
-//  pub d_readers: Vec<Option<hdf5::Reader>>,
-//  pub ind_readers: Vec<Option<hdf5::Reader>>,
-//  pub fate: = Vec<HashMap<String, String>>,
-//  pub is_bcr: bool,
-//  pub tall: Instant,
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
