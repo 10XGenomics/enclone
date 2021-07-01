@@ -23,7 +23,7 @@ use tonic::{transport::Server, Code, Request, Response, Status};
 
 pub struct EncloneAnalyzer {
     enclone_command: Arc<Mutex<String>>,
-    enclone_output: Arc<Mutex<MainEncloneOutput>>, // Caches result from main_enclone.
+    enclone_state: Arc<Mutex<EncloneState>>, // caches enclone state
 }
 
 #[tonic::async_trait]
@@ -135,10 +135,10 @@ impl Analyzer for EncloneAnalyzer {
         // Update stored result
         let response;
         {
-            let mut enclone_output = self.enclone_output.lock().unwrap();
-            *enclone_output = output.outs;
-            let mut table = enclone_output.pics.clone();
-            let mut widths = enclone_output.last_widths.clone();
+            let mut enclone_state = self.enclone_state.lock().unwrap();
+            *enclone_state = output;
+            let mut table = enclone_state.outs.pics.clone();
+            let mut widths = enclone_state.outs.last_widths.clone();
             if table.len() > 100 {
                 table.truncate(100);
                 widths.truncate(100);
@@ -146,15 +146,15 @@ impl Analyzer for EncloneAnalyzer {
             let table_string = combine_group_pics(
                 &table,
                 &widths,
-                enclone_output.noprint,
-                enclone_output.noprintx,
-                enclone_output.html,
-                enclone_output.ngroup,
-                enclone_output.pretty,
+                enclone_state.outs.noprint,
+                enclone_state.outs.noprintx,
+                enclone_state.outs.html,
+                enclone_state.outs.ngroup,
+                enclone_state.outs.pretty,
             );
             let mut plot = String::new();
-            if enclone_output.svgs.len() > 0 {
-                plot = enclone_output.svgs[0].clone();
+            if enclone_state.outs.svgs.len() > 0 {
+                plot = enclone_state.outs.svgs[0].clone();
             }
             response = EncloneResponse {
                 args: req.args,
@@ -180,13 +180,13 @@ impl Analyzer for EncloneAnalyzer {
     ) -> Result<Response<ClonotypeResponse>, Status> {
         let req: ClonotypeRequest = request.into_inner();
         let id = req.clonotype_number as usize;
-        let enclone_output = self.enclone_output.lock().unwrap();
-        if id >= enclone_output.pics.len() {
+        let enclone_state = self.enclone_state.lock().unwrap();
+        if id >= enclone_state.outs.pics.len() {
             return Err(Status::new(Code::Internal, "group id too large"));
         }
 
         // Send back the clonotype picture.
-        let table = &enclone_output.pics[id];
+        let table = &enclone_state.outs.pics[id];
         Ok(Response::new(ClonotypeResponse {
             table: table.to_string(),
         }))
@@ -217,10 +217,10 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
-    let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
+    let enclone_state = Arc::new(Mutex::new(EncloneState::default()));
     let analyzer = EncloneAnalyzer {
         enclone_command: Arc::clone(&enclone_command),
-        enclone_output: Arc::clone(&enclone_output),
+        enclone_state: Arc::clone(&enclone_state),
     };
 
     let listener = TcpListener::bind(addr).await?;
