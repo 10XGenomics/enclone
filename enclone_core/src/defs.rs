@@ -454,6 +454,7 @@ pub struct EncloneControl {
     pub parseable_opt: ParseableOpt,      // parseable output options
     pub toy: bool,                        // toy with phylogeny
     pub evil_eye: bool,                   // extra printing to try to trace hangs
+    pub pathlist: Vec<String>,            // list of input files
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;

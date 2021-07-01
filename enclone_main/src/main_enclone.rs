@@ -296,6 +296,25 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         fetch_secmem(&mut ctl)?;
     }
     ctl.perf_stats(&tr, "building reference and other things");
+
+    // Get VDJ data paths.
+
+    for li in 0..ctl.origin_info.dataset_path.len() {
+        let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
+        let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
+        if !path_exists(&json) && !path_exists(&json_lz4) {
+            return Err(format!("\ncan't find {} or {}\n", json, json_lz4));
+        } else {
+            if path_exists(&json) {
+                ctl.pathlist.push(json);
+            } else {
+                ctl.pathlist.push(json_lz4);
+            }
+        }
+    }
+
+    // Return.
+
     Ok(EncloneSetup {
         ctl: ctl,
         refdata: refdata,
