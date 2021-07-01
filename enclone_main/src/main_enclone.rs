@@ -40,6 +40,7 @@ use pretty_trace::*;
 use std::{
     collections::HashMap,
     env,
+    fs,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     time::Instant,
@@ -310,6 +311,25 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             } else {
                 ctl.pathlist.push(json_lz4);
             }
+        }
+    }
+
+    // Get last modified info for pathlist.
+
+    for i in 0..ctl.pathlist.len() {
+        let metadata = fs::metadata(&ctl.pathlist[i]);
+        if metadata.is_err() {
+            return Err(format!("\nUnable to get file metadata for {}.\n",
+                ctl.pathlist[i],
+            ));
+        }
+        let modified = metadata.unwrap().modified();
+        if modified.is_err() {
+            return Err(format!("\nUnable to determine modification date of {}.\n",
+                ctl.pathlist[i],
+            ));
+        } else {
+            ctl.last_modified.push(modified.unwrap());
         }
     }
 

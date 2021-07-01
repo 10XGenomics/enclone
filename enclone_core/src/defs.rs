@@ -14,7 +14,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::sync::atomic::AtomicBool;
-use std::time::Instant;
+use std::time::{Instant, SystemTime};
 use string_utils::*;
 use vector_utils::*;
 
@@ -455,6 +455,7 @@ pub struct EncloneControl {
     pub toy: bool,                        // toy with phylogeny
     pub evil_eye: bool,                   // extra printing to try to trace hangs
     pub pathlist: Vec<String>,            // list of input files
+    pub last_modified: Vec<SystemTime>,   // last modified for pathlist
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;
