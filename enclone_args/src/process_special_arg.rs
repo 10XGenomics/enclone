@@ -678,7 +678,8 @@ pub fn process_special_arg(
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
     } else if arg.starts_with("META=") {
         let f = arg.after("META=");
-        metas.push(f.to_string());
+        let f = stringme(&tilde_expand(&f.as_bytes()));
+        metas.push(f);
     } else if arg.starts_with("METAX=") {
         let f = arg.after("METAX=");
         metaxs.push(f.to_string());
