@@ -69,17 +69,28 @@ pub struct EncloneState {
     pub outs: MainEncloneOutput,
 }
 
+#[derive(Default)]
+pub struct EncloneSetup {
+    pub ctl: EncloneControl,
+    pub ann: String,
+    pub gex_info: GexInfo,
+    pub tall: Option<Instant>,
+    pub refdata: RefData,
+    pub is_bcr: bool,
+    pub to_ref_index: HashMap<usize, usize>,
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
     let inter = main_enclone_start(&args)?;
-    if inter.tall.is_none() {
+    if inter.setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
     Ok(main_enclone_stop(inter)?)
 }
 
-pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
+pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
     let args = process_source(&args)?;
@@ -146,7 +157,7 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
     }
     if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(EncloneIntermediates::default());
+        return Ok(EncloneSetup::default());
     }
     if ctl.evil_eye {
         println!("calling perf_stats, before setup");
@@ -155,10 +166,10 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx, &args_orig)?;
     if ctl.gen_opt.split {
-        return Ok(EncloneIntermediates::default());
+        return Ok(EncloneSetup::default());
     }
     if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
-        return Ok(EncloneIntermediates::default());
+        return Ok(EncloneSetup::default());
     }
 
     // Dump internal ids.
@@ -171,7 +182,7 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
             }
             x.sort();
             println!("\n{}\n", x.iter().format(","));
-            return Ok(EncloneIntermediates::default());
+            return Ok(EncloneSetup::default());
         }
     }
 
@@ -253,11 +264,11 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
             "\nNo data and no TCR or BCR data have been specified.\n"
         ));
     }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    ctl.perf_stats(&tr, "starting reference");
 
     // Build reference data.
 
+    let tr = Instant::now();
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();
@@ -274,33 +285,58 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
         to_ref_index.insert(refdata.id[i] as usize, i);
     }
 
+    // Determine if the species is human or mouse or unknown.
+
+    ctl.gen_opt.species = species(&refdata);
+    
+    // Process for sec (secreted) or mem (membrane) if specified.
+
+    test_sec_mem(&mut ctl)?;
+    if ctl.gen_opt.using_secmem { 
+        fetch_secmem(&mut ctl)?;
+    }   
+    ctl.perf_stats(&tr, "building reference and other things");
+    Ok(EncloneSetup {
+        ctl: ctl,
+        refdata: refdata,
+        ann: ann.to_string(),
+        gex_info: gex_info,
+        tall: Some(tall),
+        is_bcr: is_bcr,
+        to_ref_index: to_ref_index,
+    })
+}
+
+pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
+
+    // Set up.
+
+    let tr = Instant::now();
+    let setup = main_enclone_setup(&args)?;
+    let ctl = &setup.ctl;
+    let gex_info = &setup.gex_info;
+    let refdata = &setup.refdata;
+    let is_bcr = setup.is_bcr;
+    let to_ref_index = &setup.to_ref_index;
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Flag defective reference sequences.
 
     let mut log = Vec::<u8>::new();
     let mut broken = Vec::<bool>::new();
     flag_defective(&ctl, &refdata, &mut log, &mut broken);
-
-    // Determine if the species is human or mouse or unknown.
-
-    ctl.gen_opt.species = species(&refdata);
-
-    // Process for sec (secreted) or mem (membrane) if specified.
-
-    test_sec_mem(&mut ctl)?;
-    ctl.perf_stats(&tr, "building reference and other things");
-    if ctl.gen_opt.using_secmem {
-        fetch_secmem(&mut ctl)?;
-    }
+    ctl.perf_stats(&tr, "flagging defective references");
 
     // Parse the json annotations file.
 
+    let tparse = Instant::now();
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut vdj_cells = Vec::<Vec<String>>::new();
     let mut gex_cells = Vec::<Vec<String>>::new();
     let mut gex_cells_specified = Vec::<bool>::new();
-    let tparse = Instant::now();
     parse_json_annotations_files(
-        &mut ctl,
+        &ctl,
         &mut tig_bc,
         &refdata,
         &to_ref_index,
@@ -687,23 +723,18 @@ pub fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, St
         }
     }
     ctl.perf_stats(&tmark, "marking vdj noncells");
-
     Ok(EncloneIntermediates {
+        setup: setup,
         to_bc: to_bc,
         exact_clonotypes: exact_clonotypes,
         raw_joins: raw_joins,
         info: info.to_vec(),
         orbits: orbits,
         vdj_cells: vdj_cells,
-        refdata: refdata,
         join_info: join_info,
         drefs: drefs,
-        gex_info: gex_info,
         sr: sr,
-        ann: ann.to_string(),
         fate: fate,
-        ctl: ctl,
         is_bcr: is_bcr,
-        tall: Some(tall),
     })
 }

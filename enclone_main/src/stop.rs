@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use self::refx::*;
 use crate::main_enclone::*;
 use crate::opt_d_val::*;
 use crate::subset::*;
@@ -23,28 +22,23 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
-use vdj_ann::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[derive(Default)]
 pub struct EncloneIntermediates {
+    pub setup: EncloneSetup,
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
     pub raw_joins: Vec<Vec<usize>>,
     pub info: Vec<CloneInfo>,
     pub orbits: Vec<Vec<i32>>,
     pub vdj_cells: Vec<Vec<String>>,
-    pub refdata: RefData,
     pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
     pub drefs: Vec<DonorReferenceItem>,
-    pub gex_info: GexInfo,
     pub sr: Vec<Vec<f64>>,
-    pub ann: String,
     pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
-    pub ctl: EncloneControl,
     pub is_bcr: bool,
-    pub tall: Option<Instant>,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -58,16 +52,16 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let info = &inter.info;
     let orbits = &inter.orbits;
     let vdj_cells = &inter.vdj_cells;
-    let refdata = &inter.refdata;
+    let refdata = &inter.setup.refdata;
     let join_info = &inter.join_info;
     let drefs = &inter.drefs;
-    let gex_info = &inter.gex_info;
+    let gex_info = &inter.setup.gex_info;
     let sr = &inter.sr;
-    let ann = &inter.ann;
+    let ann = &inter.setup.ann;
     let mut fate = &mut inter.fate;
-    let ctl = &inter.ctl;
+    let ctl = &inter.setup.ctl;
     let is_bcr = inter.is_bcr;
-    let tall = &inter.tall.unwrap();
+    let tall = &inter.setup.tall.unwrap();
 
     // Load the GEX and FB data.
 
