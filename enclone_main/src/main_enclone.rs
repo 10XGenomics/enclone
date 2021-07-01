@@ -74,7 +74,7 @@ pub struct MainEncloneOutput {
 }
 
 #[derive(Default)]
-pub struct EncloneIntermediates<'a> {
+pub struct EncloneIntermediates {
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
     pub raw_joins: Vec<Vec<usize>>,
@@ -85,11 +85,8 @@ pub struct EncloneIntermediates<'a> {
     pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
     pub drefs: Vec<DonorReferenceItem>,
     pub gex_info: GexInfo,
-    pub h5_data: Vec<(usize, Vec<u32>, Vec<u32>)>,
     pub sr: Vec<Vec<f64>>,
     pub ann: String,
-    pub d_readers: Vec<Option<hdf5::Reader<'a>>>, // NEEDS LIFETIME
-    pub ind_readers: Vec<Option<hdf5::Reader<'a>>>, // NEEDS LIFETIME
     pub fate: Vec<HashMap<String, String>>,       // GETS MODIFIED SUBSEQUENTLY
     pub ctl: EncloneControl,
     pub is_bcr: bool,
@@ -103,7 +100,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     Ok(main_enclone_stop(inter))
 }
 
-pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates<'_>, String> {
+pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediates, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
     let args = process_source(&args)?;
@@ -712,6 +709,47 @@ pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediat
     }
     ctl.perf_stats(&tmark, "marking vdj noncells");
 
+    Ok(EncloneIntermediates {
+        to_bc: to_bc,
+        exact_clonotypes: exact_clonotypes,
+        raw_joins: raw_joins,
+        info: info.to_vec(),
+        orbits: orbits,
+        vdj_cells: vdj_cells,
+        refdata: refdata,
+        join_info: join_info,
+        drefs: drefs,
+        gex_info: gex_info,
+        sr: sr,
+        ann: ann.to_string(),
+        fate: fate,
+        ctl: ctl,
+        is_bcr: is_bcr,
+        tall: Some(tall),
+    })
+}
+
+pub async fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<MainEncloneOutput, String> {
+
+    // Unpack inputs.
+
+    let to_bc = &inter.to_bc;
+    let exact_clonotypes = &inter.exact_clonotypes;
+    let raw_joins = &inter.raw_joins;
+    let info = &inter.info;
+    let orbits = &inter.orbits;
+    let vdj_cells = &inter.vdj_cells;
+    let refdata = &inter.refdata;
+    let join_info = &inter.join_info;
+    let drefs = &inter.drefs;
+    let gex_info = &inter.gex_info;
+    let sr = &inter.sr;
+    let ann = &inter.ann;
+    let mut fate = &mut inter.fate;
+    let ctl = &inter.ctl;
+    let is_bcr = inter.is_bcr;
+    let tall = &inter.tall.unwrap();
+
     // Load the GEX and FB data.
 
     let tdi = Instant::now();
@@ -791,53 +829,6 @@ pub async fn main_enclone_start(args: &Vec<String>) -> Result<EncloneIntermediat
         }
     });
     ctl.perf_stats(&tdi, "setting up readers");
-
-    Ok(EncloneIntermediates {
-        to_bc: to_bc,
-        exact_clonotypes: exact_clonotypes,
-        raw_joins: raw_joins,
-        info: info.to_vec(),
-        orbits: orbits,
-        vdj_cells: vdj_cells,
-        refdata: refdata,
-        join_info: join_info,
-        drefs: drefs,
-        gex_info: gex_info,
-        h5_data: h5_data,
-        sr: sr,
-        ann: ann.to_string(),
-        d_readers: d_readers,
-        ind_readers: ind_readers,
-        fate: fate,
-        ctl: ctl,
-        is_bcr: is_bcr,
-        tall: Some(tall),
-    })
-}
-
-pub async fn main_enclone_stop(mut inter: EncloneIntermediates<'_>) -> Result<MainEncloneOutput, String> {
-
-    // Unpack inputs.
-
-    let to_bc = &inter.to_bc;
-    let exact_clonotypes = &inter.exact_clonotypes;
-    let raw_joins = &inter.raw_joins;
-    let info = &inter.info;
-    let orbits = &inter.orbits;
-    let vdj_cells = &inter.vdj_cells;
-    let refdata = &inter.refdata;
-    let join_info = &inter.join_info;
-    let drefs = &inter.drefs;
-    let gex_info = &inter.gex_info;
-    let h5_data = &inter.h5_data;
-    let sr = &inter.sr;
-    let ann = &inter.ann;
-    let d_readers = &inter.d_readers;
-    let ind_readers = &inter.ind_readers;
-    let mut fate = &mut inter.fate;
-    let ctl = &inter.ctl;
-    let is_bcr = inter.is_bcr;
-    let tall = &inter.tall.unwrap();
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
