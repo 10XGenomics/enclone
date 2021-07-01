@@ -7,7 +7,8 @@ use crate::proto::{
 };
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
-use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
+use enclone_main::main_enclone::*;
+use enclone_main::stop::*;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
@@ -55,7 +56,59 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         eprintln!("Running enclone:\n  {}", args.join(" "));
-        let result = main_enclone(&args);
+        let setup = main_enclone_setup(&args);
+        if setup.is_err() {
+            let err_msg = format!("{}", setup.err().unwrap());
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
+            }
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
+        }
+        let setup = setup.unwrap();
+        if setup.tall.is_none() {
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: String::new(),
+            };
+            return Ok(Response::new(response));
+        }
+        let inter = main_enclone_start(setup);
+        if inter.is_err() {
+            let err_msg = format!("{}", inter.err().unwrap());
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
+            }
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
+        }
+        let inter = inter.unwrap();
+        if inter.setup.tall.is_none() {
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: String::new(),
+            };
+            return Ok(Response::new(response));
+        }
+        let result = main_enclone_stop(inter);
         if result.is_err() {
             let err_msg = format!("{}", result.err().unwrap());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
