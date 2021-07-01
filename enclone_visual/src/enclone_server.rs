@@ -236,14 +236,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
             match AnalyzerClient::connect(dest.clone()).await {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
-                        println!("For debugging:");
-                        println!(
-                            "  grpcurl -plaintext -import-path ./enclone \
-                             -proto ./enclone/server.proto 127.0.0.1:{}",
-                            local_addr.port()
-                        );
-                        println!("To run the client (in another terminal window):");
-                        println!("  cd enclone_client; yarn start");
                         return;
                     }
                     Err(e) => warn!("failed to ping, ({:?}), reattempting in 1s", e),
