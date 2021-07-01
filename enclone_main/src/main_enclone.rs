@@ -36,6 +36,7 @@ use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
+use enclone_proto::types::DonorReference;
 use enclone_tail::grouper::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
@@ -71,6 +72,29 @@ pub struct MainEncloneOutput {
     pub ngroup: bool,
     pub pretty: bool,
 }
+
+pub struct EncloneIntermediates {
+    pub to_bc: HashMap<(usize, usize), Vec<String>>,
+    pub exact_clonotypes: Vec<ExactClonotype>,
+    pub raw_joins: Vec<(i32, i32)>,
+    pub info: Vec<CloneInfo>,
+    pub orbits: Vec<Vec<i32>>,
+    pub vdj_cells: Vec<Vec<String>>,
+    pub refdata: RefData,
+    pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
+    pub drefs: Vec<DonorReference>,
+    pub gex_info: GexInfo,
+    pub h5_data: Vec<(usize, Vec<u32>, Vec<u32>)>,
+    pub sr: Vec<Vec<f64>>,
+    pub ann: String,
+}
+
+//  pub ctl: EncloneControl,
+//  pub d_readers: Vec<Option<hdf5::Reader>>,
+//  pub ind_readers: Vec<Option<hdf5::Reader>>,
+//  pub fate: = Vec<HashMap<String, String>>,
+//  pub is_bcr: bool,
+//  pub tall: Instant,
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
