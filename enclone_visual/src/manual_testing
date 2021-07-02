@@ -23,3 +23,8 @@ MANUAL TESTING
    (d) exit.
 
 3. enclone vis and type Help, Dismiss, Help, Dismiss, Help, Dismiss.  Do these respond instantly?
+
+4. enclone VIS=b
+   - enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui
+   - this is a large dataset, so the canvas is huge
+   - make sure scrolling is smooth and that tooltip responds essentially instantly
