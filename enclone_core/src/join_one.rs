@@ -123,7 +123,7 @@ pub fn join_one(
     }
     unique_sort(&mut donors1);
     unique_sort(&mut donors2);
-    if !ctl.clono_filt_opt.donor {
+    if !ctl.clono_filt_opt_def.donor {
         if donors1.len() > 0 && donors2.len() > 0 && donors1 != donors2 {
             return false;
         }

@@ -508,7 +508,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
         }
     }
-    if ctl.clono_filt_opt.weak_foursies {
+    if ctl.clono_filt_opt_def.weak_foursies {
         erase_if(&mut exact_clonotypes, &to_delete);
     }
 
@@ -709,7 +709,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     let gbc = &gex_info.gex_cell_barcodes[li];
                     if !bin_member(&gbc, &bc) {
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
-                        if !ctl.clono_filt_opt.ngex {
+                        if !ctl.clono_filt_opt_def.ngex {
                             to_delete[k] = true;
                         }
                     }
@@ -751,7 +751,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Mark VDJ noncells.
 
     let tmark = Instant::now();
-    if ctl.clono_filt_opt.non_cell_mark {
+    if ctl.clono_filt_opt_def.non_cell_mark {
         for i in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[i];
             for j in 0..ex.clones.len() {

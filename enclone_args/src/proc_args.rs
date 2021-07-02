@@ -129,14 +129,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.clono_filt_opt.min_umi = 0;
     ctl.clono_filt_opt.max_chains = 1000000;
     ctl.clono_filt_opt.qual_filter = true;
-    ctl.clono_filt_opt.weak_chains = true;
-    ctl.clono_filt_opt.weak_onesies = true;
-    ctl.clono_filt_opt.weak_foursies = true;
-    ctl.clono_filt_opt.doublet = true;
-    ctl.clono_filt_opt.bc_dup = true;
+    ctl.clono_filt_opt_def.weak_chains = true;
+    ctl.clono_filt_opt_def.weak_onesies = true;
+    ctl.clono_filt_opt_def.weak_foursies = true;
+    ctl.clono_filt_opt_def.doublet = true;
+    ctl.clono_filt_opt_def.bc_dup = true;
     ctl.clono_filt_opt.max_datasets = 1000000000;
-    ctl.clono_filt_opt.umi_filt = true;
-    ctl.clono_filt_opt.umi_ratio_filt = true;
+    ctl.clono_filt_opt_def.umi_filt = true;
+    ctl.clono_filt_opt_def.umi_ratio_filt = true;
     ctl.clono_filt_opt.max_exacts = 1_000_000_000;
 
     ctl.clono_print_opt.amino = vec![
@@ -199,7 +199,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             ctl.gen_opt.mark_stats2 = true;
         }
         if is_simple_arg(&args[i], "MARKED_B")? {
-            ctl.clono_filt_opt.marked_b = true;
+            ctl.clono_filt_opt_def.marked_b = true;
         }
     }
     if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
@@ -377,17 +377,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("MAIT", &mut ctl.clono_filt_opt.mait),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
         ("MEAN", &mut ctl.clono_print_opt.mean),
-        ("MIX_DONORS", &mut ctl.clono_filt_opt.donor),
+        ("MIX_DONORS", &mut ctl.clono_filt_opt_def.donor),
         ("MOUSE", &mut ctl.gen_opt.mouse),
         ("NCELL", &mut ctl.gen_opt.ncell),
-        ("NCROSS", &mut ctl.clono_filt_opt.ncross),
+        ("NCROSS", &mut ctl.clono_filt_opt_def.ncross),
         ("NEWICK", &mut ctl.gen_opt.newick),
-        ("NGEX", &mut ctl.clono_filt_opt.ngex),
+        ("NGEX", &mut ctl.clono_filt_opt_def.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.clono_group_opt.ngroup),
         ("NIMPROPER", &mut ctl.merge_all_impropers),
         ("NO_UNCAP_SIM", &mut ctl.gen_opt.no_uncap_sim),
-        ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
+        ("NON_CELL_MARK", &mut ctl.clono_filt_opt_def.non_cell_mark),
         ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOPRINTX", &mut ctl.gen_opt.noprintx),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
@@ -419,32 +419,32 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.gen_opt.toy),
         ("TOY_COM", &mut ctl.gen_opt.toy_com),
-        ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
+        ("UMI_FILT_MARK", &mut ctl.clono_filt_opt_def.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
-            &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
+            &mut ctl.clono_filt_opt_def.umi_ratio_filt_mark,
         ),
         ("UNACCOUNTED", &mut ctl.perf_opt.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
         ("WEAK", &mut ctl.gen_opt.weak),
-        ("WHITEF", &mut ctl.clono_filt_opt.whitef),
+        ("WHITEF", &mut ctl.clono_filt_opt_def.whitef),
     ];
 
     // Define arguments that set something to false.
 
     let mut set_false = vec![
         ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
-        ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
-        ("NDOUBLET", &mut ctl.clono_filt_opt.doublet),
-        ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
+        ("NBC_DUP", &mut ctl.clono_filt_opt_def.bc_dup),
+        ("NDOUBLET", &mut ctl.clono_filt_opt_def.doublet),
+        ("NFOURSIE_KILL", &mut ctl.clono_filt_opt_def.weak_foursies),
         ("NMERGE_ONESIES", &mut ctl.join_alg_opt.merge_onesies_ctl),
         ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
         ("NSILENT", &mut ctl.silent),
-        ("NUMI", &mut ctl.clono_filt_opt.umi_filt),
-        ("NUMI_RATIO", &mut ctl.clono_filt_opt.umi_ratio_filt),
-        ("NWEAK_CHAINS", &mut ctl.clono_filt_opt.weak_chains),
-        ("NWEAK_ONESIES", &mut ctl.clono_filt_opt.weak_onesies),
+        ("NUMI", &mut ctl.clono_filt_opt_def.umi_filt),
+        ("NUMI_RATIO", &mut ctl.clono_filt_opt_def.umi_ratio_filt),
+        ("NWEAK_CHAINS", &mut ctl.clono_filt_opt_def.weak_chains),
+        ("NWEAK_ONESIES", &mut ctl.clono_filt_opt_def.weak_onesies),
         ("PRINT_FAILED_JOINS", &mut ctl.join_print_opt.quiet),
     ];
 

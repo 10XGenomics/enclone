@@ -30,7 +30,7 @@ pub fn merge_onesies(
         let mut onesies = Vec::<usize>::new();
         for i in 0..info.len() {
             if to_orbit[i].is_some() && info[i].tigs.len() == 1 {
-                if !ctl.clono_filt_opt.weak_onesies || !disintegrated[info[i].clonotype_index] {
+                if !ctl.clono_filt_opt_def.weak_onesies || !disintegrated[info[i].clonotype_index] {
                     onesies.push(i);
                 }
             }
@@ -78,7 +78,7 @@ pub fn merge_onesies(
 
                 // Test for donor mixing.
 
-                if !ctl.clono_filt_opt.donor {
+                if !ctl.clono_filt_opt_def.donor {
                     let mut donors = vec![Vec::<Option<usize>>::new(); 2];
                     let orbs = [&orb1, &orb2];
                     for (pass, orb) in orbs.iter().enumerate() {

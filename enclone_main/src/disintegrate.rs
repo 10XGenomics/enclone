@@ -18,7 +18,7 @@ pub fn disintegrate_onesies(
     join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
 ) {
-    if ctl.clono_filt_opt.weak_onesies {
+    if ctl.clono_filt_opt_def.weak_onesies {
         let t = Instant::now();
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
         let mut to_info = HashMap::<usize, usize>::new();

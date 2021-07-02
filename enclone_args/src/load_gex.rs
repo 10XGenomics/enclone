@@ -313,7 +313,7 @@ pub fn load_gex(
                 }
             } else if ctl.gen_opt.mark_stats
                 || ctl.gen_opt.mark_stats2
-                || ctl.clono_filt_opt.marked_b
+                || ctl.clono_filt_opt_def.marked_b
             {
                 r.11 = format!(
                     "\nIf you use MARK_STATS or MARK_STATS2 or MARKED_B, celltypes.csv has to \

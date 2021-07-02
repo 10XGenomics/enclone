@@ -67,7 +67,7 @@ pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
 
 // Clonotyping algorithm heuristics.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct ClonotypeHeuristics {
     pub max_diffs: usize,
     pub max_degradation: usize,
@@ -77,7 +77,7 @@ pub struct ClonotypeHeuristics {
 
 // Origin info data structure.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct OriginInfo {
     // parallel vectors
     pub descrips: Vec<String>,     // map dataset index to dataset long name
@@ -117,7 +117,7 @@ impl OriginInfo {
 
 // Miscellaneous general options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct GeneralOpt {
     pub pre: Vec<String>,
     pub insertions: bool,
@@ -208,8 +208,6 @@ pub struct GeneralOpt {
     pub color_by_rarity_pc: f64,
     pub species: String, // human or mouse or unknown, determined from the reference sequence
     pub using_secmem: bool,
-    pub const_igh: Option<Regex>,
-    pub const_igkl: Option<Regex>,
     pub diff_style: String,
     pub accept_broken: bool,
     pub require_unbroken_ok: bool,
@@ -251,7 +249,7 @@ pub struct GeneralOpt {
     pub toy: bool,      // toy with phylogeny
 }
 
-// Some plot options.
+// Some plot options.  Note that plot options are not allowed to affect intermediate computation.
 
 #[derive(Clone, Default)]
 pub struct PlotOpt {
@@ -276,7 +274,7 @@ pub struct PlotOpt {
 
 // Allele-finding algorithmic options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct AlleleAlgOpt {
     pub min_mult: usize,
     pub min_alt: usize,
@@ -284,7 +282,7 @@ pub struct AlleleAlgOpt {
 
 // Allele-finding print options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct AllelePrintOpt {
     pub con: bool,       // print alternate consensus sequences
     pub con_trace: bool, // tracing for con
@@ -292,7 +290,7 @@ pub struct AllelePrintOpt {
 
 // Join printing options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct JoinPrintOpt {
     pub seq: bool,     // print sequences of contigs, before truncation to V..J
     pub ann: bool,     // print annotations of contigs
@@ -304,7 +302,7 @@ pub struct JoinPrintOpt {
 
 // Join algorithmic options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct JoinAlgOpt {
     pub max_score: f64,          // max score for join
     pub easy: bool,              // make joins even if core condition violated
@@ -316,6 +314,27 @@ pub struct JoinAlgOpt {
 
 // Clonotype filtering options.
 // These fall into 2 categories: 1) on by default and 2) user-specified.
+// Note that ClonoFiltOpt options are not allowed to affect intermediate computation. 
+
+#[derive(Default, PartialEq)]
+pub struct ClonoFiltOptDefault {
+    pub marked_b: bool, // only print clonotypes having a mark and which are typed as B cells
+    pub donor: bool, // allow cells from different donors to be placed in the same clonotype
+    pub weak_foursies: bool, // filter weak foursies
+    pub ngex: bool,          // turn off gex filtering,
+    pub non_cell_mark: bool,
+    pub weak_onesies: bool, // filter weak onesies
+    pub doublet: bool, // filter putative doublets
+    pub fcell: Vec<Node>, // constraints from FCELL
+    pub umi_filt: bool, // umi count filter
+    pub umi_filt_mark: bool, // umi count filter (but only mark)
+    pub umi_ratio_filt: bool, // umi ratio filter
+    pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
+    pub weak_chains: bool, // filter weak chains from clonotypes
+    pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
+    pub ncross: bool,        // turn off cross filtering,
+    pub bc_dup: bool, // filter duplicated barcodes within an exact subclonotype
+}
 
 #[derive(Default)]
 pub struct ClonoFiltOpt {
@@ -327,11 +346,8 @@ pub struct ClonoFiltOpt {
     pub min_dataset_ratio: usize, // see "enclone help filter"
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
-    pub ngex: bool,          // turn off gex filtering,
-    pub ncross: bool,        // turn off cross filtering,
     pub cdr3: Option<Regex>, // only show clonotypes whose CDR3_AA matches regular expression
     pub cdr3_lev: String,    // only show clonotypes whose CDR3_AA matches Levenshtein dist pattern
-    pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
     pub protect_bads: bool,  // protect bads from deletion
     pub fail_only: bool,     // only print fails
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
@@ -344,33 +360,22 @@ pub struct ClonoFiltOpt {
     pub cdiff: bool, // only show clonotypes having a constant region difference
     pub del: bool,   // only show clonotypes exhibiting a deletion
     pub qual_filter: bool, // filter out exact subclonotypes having a weak base
-    pub weak_chains: bool, // filter weak chains from clonotypes
-    pub weak_onesies: bool, // filter weak onesies
-    pub weak_foursies: bool, // filter weak foursies
-    pub bc_dup: bool, // filter duplicated barcodes within an exact subclonotype
-    pub donor: bool, // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub bound_type: Vec<String>, // types of those bounds
     pub barcode: Vec<String>, // requires one of these barcodes
-    pub umi_filt: bool, // umi count filter
-    pub umi_filt_mark: bool, // umi count filter (but only mark)
-    pub non_cell_mark: bool,
     pub marked: bool,              // only print clonotypes having a mark
-    pub marked_b: bool, // only print clonotypes having a mark and which are typed as B cells
-    pub umi_ratio_filt: bool, // umi ratio filter
-    pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
-    pub fcell: Vec<Node>, // constraints from FCELL
     pub inkt: bool,
     pub mait: bool,
-    pub doublet: bool, // filter putative doublets
     pub d_inconsistent: bool,
     pub d_none: bool,
     pub d_second: bool,
+    pub const_igh: Option<Regex>,
+    pub const_igkl: Option<Regex>,
 }
 
 // Clonotype printing options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct ClonoPrintOpt {
     pub bu: bool,                                      // print barcodes and UMI counts
     pub seqc: bool, // print V..J sequence for each chain if constant across clonotype
@@ -390,7 +395,7 @@ pub struct ClonoPrintOpt {
 
 // Clonotype grouping options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct ClonoGroupOpt {
     // SYMMETRIC AND ASYMMETRIC
     pub ngroup: bool,     // do not print group headers
@@ -417,7 +422,7 @@ pub struct ClonoGroupOpt {
 
 // Parseable output options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct ParseableOpt {
     pub pout: String,             // name of parseable output file
     pub pchains: String,          // number of chains to show in parseable output
@@ -429,7 +434,7 @@ pub struct ParseableOpt {
 
 // Computational performance options.
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct PerfOpt {
     pub comp: bool,         // print computational performance stats
     pub comp2: bool,        // print more detailed computational performance stats
@@ -438,7 +443,8 @@ pub struct PerfOpt {
 }
 
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given
-// run of enclone.
+// run of enclone.  If you add something to this, be sure to update the "changed" section in
+// enclone_server.rs, if needed.
 
 #[derive(Default)]
 pub struct EncloneControl {
@@ -457,6 +463,7 @@ pub struct EncloneControl {
     pub allele_print_opt: AllelePrintOpt, // print options for allele finding
     pub join_alg_opt: JoinAlgOpt,         // algorithmic options for join
     pub join_print_opt: JoinPrintOpt,     // printing options for join operations
+    pub clono_filt_opt_def: ClonoFiltOptDefault,   // default filtering options for clonotypes
     pub clono_filt_opt: ClonoFiltOpt,     // filtering options for clonotypes
     pub clono_print_opt: ClonoPrintOpt,   // printing options for clonotypes
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes

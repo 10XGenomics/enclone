@@ -75,7 +75,7 @@ pub fn finish_join(
     // Tally whitelist contamination.
     // WARNING: THIS ONLY WORKS IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.
 
-    let mut white = ctl.clono_filt_opt.whitef;
+    let mut white = ctl.clono_filt_opt_def.whitef;
     for j in 0..ctl.clono_print_opt.cvars.len() {
         if ctl.clono_print_opt.cvars[j] == "white" {
             white = true;

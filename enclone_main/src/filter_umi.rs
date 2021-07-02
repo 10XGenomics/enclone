@@ -87,7 +87,7 @@ pub fn filter_umi(
                 println!("umin = {:.2}", umin[l]);
             }
         }
-        // if ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
+        // if ctl.clono_filt_opt_def.umi_filt || ctl.clono_filt_opt_def.umi_filt_mark {
         const MIN_BASELINE_CELLS: usize = 20;
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
@@ -156,7 +156,7 @@ pub fn filter_umi(
                                     } else if pass == 3 && protected {
                                         if ex.share.len() == 1 {
                                             to_delete[k] = true;
-                                            if ctl.clono_filt_opt.umi_filt_mark {
+                                            if ctl.clono_filt_opt_def.umi_filt_mark {
                                                 ex.clones[k][0].marked = true;
                                             }
                                         }
@@ -166,7 +166,7 @@ pub fn filter_umi(
                                             || ex.share.len() == 1
                                         {
                                             to_delete[k] = true;
-                                            if ctl.clono_filt_opt.umi_filt_mark {
+                                            if ctl.clono_filt_opt_def.umi_filt_mark {
                                                 ex.clones[k][0].marked = true;
                                             }
                                         }
@@ -189,7 +189,7 @@ pub fn filter_umi(
                                     );
                                 }
                             }
-                            if ctl.clono_filt_opt.umi_filt {
+                            if ctl.clono_filt_opt_def.umi_filt {
                                 erase_if(&mut ex.clones, &to_delete);
                             }
                         }
@@ -283,7 +283,7 @@ pub fn filter_umi(
                     let ex = &mut exact_clonotypes[x.clonotype_index];
                     for l in 0..ex.ncells() {
                         if to_delete[j][l] {
-                            if ctl.clono_filt_opt.umi_ratio_filt_mark {
+                            if ctl.clono_filt_opt_def.umi_ratio_filt_mark {
                                 ex.clones[l][0].marked = true;
                             }
                             nbads += 1;
@@ -299,7 +299,7 @@ pub fn filter_umi(
                                 );
                             }
                         }
-                        if ctl.clono_filt_opt.umi_ratio_filt {
+                        if ctl.clono_filt_opt_def.umi_ratio_filt {
                             erase_if(&mut ex.clones, &to_delete[j]);
                             if ex.ncells() == 0 {
                                 to_deletex[j] = true;
@@ -308,7 +308,7 @@ pub fn filter_umi(
                     }
                 }
                 if pass == 2 {
-                    if ctl.clono_filt_opt.umi_ratio_filt {
+                    if ctl.clono_filt_opt_def.umi_ratio_filt {
                         erase_if(&mut o, &to_deletex);
                     }
                     if !o.is_empty() {

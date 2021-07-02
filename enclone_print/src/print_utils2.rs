@@ -669,7 +669,7 @@ pub fn row_fill(
                 needed = true;
             } else if *var == "u_cell" || *var == "r_cell" {
                 needed = true;
-            } else if *var == "white" || ctl.clono_filt_opt.whitef {
+            } else if *var == "white" || ctl.clono_filt_opt_def.whitef {
                 needed = true;
             }
             if extra_args.contains(&varc) {

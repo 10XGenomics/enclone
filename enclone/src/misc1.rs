@@ -290,7 +290,7 @@ pub fn cross_filter(
                     tig_bc[i][0].barcode.clone(),
                     "failed CROSS filter".to_string(),
                 );
-                if !ctl.clono_filt_opt.ncross {
+                if !ctl.clono_filt_opt_def.ncross {
                     to_delete[i] = true;
                 }
                 break;

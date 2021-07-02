@@ -370,7 +370,7 @@ pub fn process_special_arg(
         if !compiled.is_ok() {
             return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
-        ctl.clono_filt_opt.fcell.push(compiled.unwrap());
+        ctl.clono_filt_opt_def.fcell.push(compiled.unwrap());
     } else if is_simple_arg(&arg, "FAIL_ONLY=true")? {
         ctl.clono_filt_opt.fail_only = true;
     } else if arg.starts_with("LEGEND=") {
@@ -617,7 +617,7 @@ pub fn process_special_arg(
                 arg.after("CONST_IGH=")
             ));
         }
-        ctl.gen_opt.const_igh = Some(reg.unwrap());
+        ctl.clono_filt_opt.const_igh = Some(reg.unwrap());
     } else if arg.starts_with("CONST_IGKL=") {
         let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGKL=")));
         if !reg.is_ok() {
@@ -626,7 +626,7 @@ pub fn process_special_arg(
                 arg.after("CONST_IGKL=")
             ));
         }
-        ctl.gen_opt.const_igkl = Some(reg.unwrap());
+        ctl.clono_filt_opt.const_igkl = Some(reg.unwrap());
     } else if arg.starts_with("CDR3=") {
         let fields = arg.split('|').collect::<Vec<&str>>();
         let mut lev = true;
