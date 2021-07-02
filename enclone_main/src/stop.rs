@@ -28,6 +28,11 @@ use string_utils::*;
 #[derive(Default)]
 pub struct EncloneIntermediates {
     pub setup: EncloneSetup,
+    pub ex: EncloneExacts,
+}
+
+#[derive(Default, Clone)]
+pub struct EncloneExacts {
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
     pub raw_joins: Vec<Vec<usize>>,
@@ -46,21 +51,21 @@ pub struct EncloneIntermediates {
 pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState, String> {
     // Unpack inputs.
 
-    let to_bc = &inter.to_bc;
-    let exact_clonotypes = &inter.exact_clonotypes;
-    let raw_joins = &inter.raw_joins;
-    let info = &inter.info;
-    let orbits = &inter.orbits;
-    let vdj_cells = &inter.vdj_cells;
+    let to_bc = &inter.ex.to_bc;
+    let exact_clonotypes = &inter.ex.exact_clonotypes;
+    let raw_joins = &inter.ex.raw_joins;
+    let info = &inter.ex.info;
+    let orbits = &inter.ex.orbits;
+    let vdj_cells = &inter.ex.vdj_cells;
     let refdata = &inter.setup.refdata;
-    let join_info = &inter.join_info;
-    let drefs = &inter.drefs;
+    let join_info = &inter.ex.join_info;
+    let drefs = &inter.ex.drefs;
     let gex_info = &inter.setup.gex_info;
-    let sr = &inter.sr;
+    let sr = &inter.ex.sr;
     let ann = &inter.setup.ann;
-    let mut fate = &mut inter.fate;
+    let mut fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
-    let is_bcr = inter.is_bcr;
+    let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
 
     // Load the GEX and FB data.

@@ -90,7 +90,7 @@ impl Analyzer for EncloneAnalyzer {
         // * plot_opt.
         // More exceptions could be added.
 
-        let last_setup = self.enclone_state.lock().unwrap().inter.setup;
+        let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
         let mut changed = false;
         if setup.ctl.perf_opt != last_setup.ctl.perf_opt {
             changed = true;
@@ -151,7 +151,12 @@ impl Analyzer for EncloneAnalyzer {
 
         let result;
         if !changed {
-            result = main_enclone_stop(&self.enclone_state.lock().unwrap().inter);
+            result = main_enclone_stop(
+                EncloneIntermediates {
+                    setup: setup,
+                    ex: self.enclone_state.lock().unwrap().inter.ex.clone(),
+                }
+            );
         } else {
             let inter = main_enclone_start(setup);
             if inter.is_err() {
