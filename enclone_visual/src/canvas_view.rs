@@ -83,7 +83,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
         // Suppose we have geometries.
 
-        let mut frame = Frame::new(bounds.size());
         let pos = cursor.position_in(&bounds);
 
         // Use cached geometries if possible.
@@ -180,6 +179,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
         if height > MAX_HEIGHT {
             scale = MAX_HEIGHT / height;
         }
+        let mut frame = Frame::new(bounds.size());
         for i in 0..g.len() {
             match &g[i] {
                 crate::geometry::Geometry::Text(o) => {
@@ -287,7 +287,9 @@ impl<'a> canvas::Program<Message> for CanvasView {
                 }
             };
         }
+        let mut v = vec![frame.into_geometry()];
         if pos.is_some() {
+            let mut frame = Frame::new(bounds.size());
             for i in 0..g.len() {
                 match &g[i] {
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
@@ -333,8 +335,8 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     _ => {}
                 };
             }
+            v.append(&mut vec![frame.into_geometry()]);
         }
-        let v = vec![frame.into_geometry()];
         OUT_GEOMETRIES.lock().unwrap().clear();
         OUT_GEOMETRIES.lock().unwrap().append(&mut v.clone());
         v
