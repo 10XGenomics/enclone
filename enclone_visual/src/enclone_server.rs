@@ -82,6 +82,27 @@ impl Analyzer for EncloneAnalyzer {
             };
             return Ok(Response::new(response));
         }
+
+
+
+
+        /*
+        let last_setup = self.enclone_state.lock().unwrap().inter.setup;
+        let mut changed = false;
+        if setup.ctl.pathlist != last_setup.ctl.pathlist {
+            changed = true;
+        }
+        if !changed && setup.ctl.last_modified != last_setup.ctl.last_modified {
+            changed = true;
+        }
+        if !changed && setup.ctl.origin_info != last_setup.ctl.origin_info {
+            changed = true;
+        }
+        */
+
+
+
+
         let inter = main_enclone_start(setup);
         if inter.is_err() {
             let err_msg = format!("{}", inter.err().unwrap());
