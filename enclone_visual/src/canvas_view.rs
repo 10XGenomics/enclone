@@ -92,39 +92,42 @@ impl<'a> canvas::Program<Message> for CanvasView {
         // or
         // if IN_GEOMETRIES.lock().unwrap() == self.state.geometry_value.as_ref().unwrap() {
 
+        let mut pos_same = true;
         let last_pos_is_some = POS_IS_SOME.load(SeqCst);
-        let mut same = true;
         if !last_pos_is_some && pos.is_none() {
         } else if last_pos_is_some && pos.is_none() {
-            same = false;
+            pos_same = false;
         } else if !last_pos_is_some && pos.is_some() {
-            same = false;
+            pos_same = false;
         } else if POS.lock().unwrap().x != pos.unwrap().x {
-            same = false;
+            pos_same = false;
         } else if POS.lock().unwrap().y != pos.unwrap().y {
-            same = false;
+            pos_same = false;
         }
-        if same {
-            let in_geometries = &self.state.geometry_value.as_ref().unwrap();
-            if IN_GEOMETRIES.lock().unwrap().len() != in_geometries.len() {
-                same = false;
-            } else {
-                for i in 0..in_geometries.len() {
-                    if IN_GEOMETRIES.lock().unwrap()[i] != in_geometries[i] {
-                        same = false;
-                        break;
-                    }
+        let mut geom_same = true;
+        let in_geometries = &self.state.geometry_value.as_ref().unwrap();
+        if IN_GEOMETRIES.lock().unwrap().len() != in_geometries.len() {
+            geom_same = false;
+        } else {
+            for i in 0..in_geometries.len() {
+                if IN_GEOMETRIES.lock().unwrap()[i] != in_geometries[i] {
+                    geom_same = false;
+                    break;
                 }
             }
         }
-        if same {
-            return OUT_GEOMETRIES.lock().unwrap().clone();
+        if pos_same && geom_same {
+            let mut v = OUT_GEOMETRIES.lock().unwrap().clone();
+            v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
+            return v;
         }
-        IN_GEOMETRIES.lock().unwrap().clear();
-        IN_GEOMETRIES
-            .lock()
-            .unwrap()
-            .append(&mut self.state.geometry_value.as_ref().unwrap().clone());
+        if !geom_same {
+            IN_GEOMETRIES.lock().unwrap().clear();
+            IN_GEOMETRIES
+                .lock()
+                .unwrap()
+                .append(&mut self.state.geometry_value.as_ref().unwrap().clone());
+        }
         if pos.is_none() {
             POS_IS_SOME.store(false, SeqCst);
         } else {
@@ -132,16 +135,18 @@ impl<'a> canvas::Program<Message> for CanvasView {
             POS.lock().unwrap().y = pos.unwrap().y;
         }
 
+        // Compute width and height and scale.
+        //
         // for now not scaling stroke width, not sure what is optimal
         // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
         // should file bug
         // This could be 400.0 but we would need to take account of text width
         // in computing the max.
 
+        let g = self.state.geometry_value.as_ref().unwrap();
         const MAX_HEIGHT: f32 = 395.0;
         let mut height = 0.0 as f32;
         let mut width = 0.0 as f32;
-        let g = self.state.geometry_value.as_ref().unwrap();
         for i in 0..g.len() {
             match &g[i] {
                 crate::geometry::Geometry::Text(o) => {
@@ -179,116 +184,129 @@ impl<'a> canvas::Program<Message> for CanvasView {
         if height > MAX_HEIGHT {
             scale = MAX_HEIGHT / height;
         }
-        let mut frame = Frame::new(bounds.size());
-        for i in 0..g.len() {
-            match &g[i] {
-                crate::geometry::Geometry::Text(o) => {
-                    // rotate not implemented because not a feature yet in iced
-                    let x = Text {
-                        content: o.t.clone(),
-                        size: o.font_size * scale,
-                        color: to_color(&o.c),
-                        position: Point {
-                            x: o.p.x * scale,
-                            // font bit is compensation for vertical alignment issue
-                            // don't understand why / 4.0 makes sense
-                            y: o.p.y * scale + o.font_size * scale / 4.0,
-                        },
-                        font: match o.font.as_str() {
-                            "DejaVuSansMono" => DEJAVU,
-                            "Arial" => LIBERATION_SANS,
-                            _ => LIBERATION_SANS,
-                        },
-                        // Center doesn't seem to work, should report bug
-                        // nor does Top
-                        vertical_alignment: VerticalAlignment::Bottom,
-                        horizontal_alignment: match o.halign {
-                            crate::geometry::HorizontalAlignment::Left => {
-                                HorizontalAlignment::Left
-                            }
-                            crate::geometry::HorizontalAlignment::Center => {
-                                HorizontalAlignment::Center
-                            }
-                            crate::geometry::HorizontalAlignment::Right => {
-                                HorizontalAlignment::Right
-                            }
-                        },
-                    };
-                    frame.fill_text(x);
-                }
-                crate::geometry::Geometry::Rectangle(rect) => {
-                    let r = Path::rectangle(
-                        Point {
-                            x: rect.p.x * scale,
-                            y: rect.p.y * scale,
-                        },
-                        Size::new(rect.width * scale, rect.height * scale),
-                    );
-                    frame.fill(&r, to_color(&rect.fill_color));
-                    let c = to_color(&rect.stroke_color);
-                    frame.stroke(
-                        &r,
-                        Stroke::default()
-                            .with_color(c)
-                            .with_width(rect.stroke_width),
-                    );
-                }
-                crate::geometry::Geometry::PolySegment(segs) => {
-                    for i in 0..segs.p.len() - 1 {
+
+        // Rebuild geometries if needed.
+
+        let mut v;
+        if geom_same {
+            v = OUT_GEOMETRIES.lock().unwrap().clone();
+        } else {
+            let mut frame = Frame::new(bounds.size());
+            for i in 0..g.len() {
+                match &g[i] {
+                    crate::geometry::Geometry::Text(o) => {
+                        // rotate not implemented because not a feature yet in iced
+                        let x = Text {
+                            content: o.t.clone(),
+                            size: o.font_size * scale,
+                            color: to_color(&o.c),
+                            position: Point {
+                                x: o.p.x * scale,
+                                // font bit is compensation for vertical alignment issue
+                                // don't understand why / 4.0 makes sense
+                                y: o.p.y * scale + o.font_size * scale / 4.0,
+                            },
+                            font: match o.font.as_str() {
+                                "DejaVuSansMono" => DEJAVU,
+                                "Arial" => LIBERATION_SANS,
+                                _ => LIBERATION_SANS,
+                            },
+                            // Center doesn't seem to work, should report bug
+                            // nor does Top
+                            vertical_alignment: VerticalAlignment::Bottom,
+                            horizontal_alignment: match o.halign {
+                                crate::geometry::HorizontalAlignment::Left => {
+                                    HorizontalAlignment::Left
+                                }
+                                crate::geometry::HorizontalAlignment::Center => {
+                                    HorizontalAlignment::Center
+                                }
+                                crate::geometry::HorizontalAlignment::Right => {
+                                    HorizontalAlignment::Right
+                                }
+                            },
+                        };
+                        frame.fill_text(x);
+                    }
+                    crate::geometry::Geometry::Rectangle(rect) => {
+                        let r = Path::rectangle(
+                            Point {
+                                x: rect.p.x * scale,
+                                y: rect.p.y * scale,
+                            },
+                            Size::new(rect.width * scale, rect.height * scale),
+                        );
+                        frame.fill(&r, to_color(&rect.fill_color));
+                        let c = to_color(&rect.stroke_color);
+                        frame.stroke(
+                            &r,
+                            Stroke::default()
+                                .with_color(c)
+                                .with_width(rect.stroke_width),
+                        );
+                    }
+                    crate::geometry::Geometry::PolySegment(segs) => {
+                        for i in 0..segs.p.len() - 1 {
+                            let p = Path::line(
+                                Point {
+                                    x: segs.p[i].x * scale,
+                                    y: segs.p[i].y * scale,
+                                },
+                                Point {
+                                    x: segs.p[i + 1].x * scale,
+                                    y: segs.p[i + 1].y * scale,
+                                },
+                            );
+                            let c = to_color(&segs.c);
+                            frame.stroke(&p, Stroke::default().with_color(c).with_width(segs.w));
+                        }
+                    }
+                    crate::geometry::Geometry::Segment(seg) => {
                         let p = Path::line(
                             Point {
-                                x: segs.p[i].x * scale,
-                                y: segs.p[i].y * scale,
+                                x: seg.p1.x * scale,
+                                y: seg.p1.y * scale,
                             },
                             Point {
-                                x: segs.p[i + 1].x * scale,
-                                y: segs.p[i + 1].y * scale,
+                                x: seg.p2.x * scale,
+                                y: seg.p2.y * scale,
                             },
                         );
-                        let c = to_color(&segs.c);
-                        frame.stroke(&p, Stroke::default().with_color(c).with_width(segs.w));
+                        let c = to_color(&seg.c);
+                        frame.stroke(&p, Stroke::default().with_color(c).with_width(seg.w));
                     }
-                }
-                crate::geometry::Geometry::Segment(seg) => {
-                    let p = Path::line(
-                        Point {
-                            x: seg.p1.x * scale,
-                            y: seg.p1.y * scale,
-                        },
-                        Point {
-                            x: seg.p2.x * scale,
-                            y: seg.p2.y * scale,
-                        },
-                    );
-                    let c = to_color(&seg.c);
-                    frame.stroke(&p, Stroke::default().with_color(c).with_width(seg.w));
-                }
-                crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                    let circle = Path::circle(
-                        Point {
-                            x: circ.p.x * scale,
-                            y: circ.p.y * scale,
-                        },
-                        circ.r * scale,
-                    );
-                    let c = &circ.c;
-                    frame.fill(&circle, to_color(c));
-                }
-                crate::geometry::Geometry::Circle(circ) => {
-                    let circle = Path::circle(
-                        Point {
-                            x: circ.p.x * scale,
-                            y: circ.p.y * scale,
-                        },
-                        circ.r * scale,
-                    );
-                    let c = &circ.c;
-                    frame.fill(&circle, to_color(c));
-                }
-            };
+                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                        let circle = Path::circle(
+                            Point {
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
+                            },
+                            circ.r * scale,
+                        );
+                        let c = &circ.c;
+                        frame.fill(&circle, to_color(c));
+                    }
+                    crate::geometry::Geometry::Circle(circ) => {
+                        let circle = Path::circle(
+                            Point {
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
+                            },
+                            circ.r * scale,
+                        );
+                        let c = &circ.c;
+                        frame.fill(&circle, to_color(c));
+                    }
+                };
+            }
+            v = vec![frame.into_geometry()];
+            OUT_GEOMETRIES.lock().unwrap().clear();
+            OUT_GEOMETRIES.lock().unwrap().append(&mut v.clone());
         }
-        let mut v = vec![frame.into_geometry()];
-        if pos.is_some() {
+        if pos_same && pos.is_some() {
+            v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
+        }
+        if !pos_same && pos.is_some() {
             let mut frame = Frame::new(bounds.size());
             for i in 0..g.len() {
                 match &g[i] {
@@ -335,10 +353,11 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     _ => {}
                 };
             }
-            v.append(&mut vec![frame.into_geometry()]);
+            let mut w = vec![frame.into_geometry()];
+            OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clear();
+            OUT_GEOMETRIES_TOOLTIP.lock().unwrap().append(&mut w.clone());
+            v.append(&mut w);
         }
-        OUT_GEOMETRIES.lock().unwrap().clear();
-        OUT_GEOMETRIES.lock().unwrap().append(&mut v.clone());
         v
     }
 }
