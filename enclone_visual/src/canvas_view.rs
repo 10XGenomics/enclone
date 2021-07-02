@@ -5,6 +5,10 @@ use iced::{
     Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
 };
 use iced_native::{Font, Point, Vector};
+use lazy_static::lazy_static;
+use std::sync::atomic::Ordering::SeqCst;
+use std::sync::atomic::AtomicBool;
+use std::sync::Mutex;
 use string_utils::*;
 use tables::*;
 
@@ -17,6 +21,13 @@ const LIBERATION_SANS: Font = Font::External {
     name: "LIBERATION_SANS",
     bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),
 };
+
+lazy_static! {
+    pub static ref IN_GEOMETRIES: Mutex<Vec<crate::geometry::Geometry>> = Mutex::new(Vec::<crate::geometry::Geometry>::new());
+    pub static ref OUT_GEOMETRIES: Mutex<Vec<Geometry>> = Mutex::new(Vec::<Geometry>::new());
+    pub static ref POS: Mutex<Point> = Mutex::new(Point::default());
+}
+pub static POS_IS_SOME: AtomicBool = AtomicBool::new(false);
 
 #[derive(Default)]
 pub struct State {
@@ -57,14 +68,62 @@ fn to_color(c: &crate::geometry::Color) -> Color {
 }
 
 impl<'a> canvas::Program<Message> for CanvasView {
-    fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
+    fn draw(& self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
         let mut frame = Frame::new(bounds.size());
         if self.state.geometry_value.is_some() {
+            let pos = cursor.position_in(&bounds);
+
+            // Use cached geometries if possible.
+            //
+            // Annoyingly, can't do this:
+            // if pos_changed = POS.lock().unwrap() != pos {
+            // or
+            // if IN_GEOMETRIES.lock().unwrap() == self.state.geometry_value.as_ref().unwrap() {
+
+            let last_pos_is_some = POS_IS_SOME.load(SeqCst);
+            let mut same = true;
+            if !last_pos_is_some && pos.is_none() {
+            } else if last_pos_is_some && pos.is_none() {
+                same = false;
+            } else if !last_pos_is_some && pos.is_some() {
+                same = false;
+            } else if POS.lock().unwrap().x != pos.unwrap().x {
+                same = false;
+            } else if POS.lock().unwrap().y != pos.unwrap().y {
+                same = false;
+            }
+            if same {
+                let in_geometries = &self.state.geometry_value.as_ref().unwrap();
+                if IN_GEOMETRIES.lock().unwrap().len() != in_geometries.len() {
+                    same = false;
+                } else {
+                    for i in 0..in_geometries.len() {
+                        if IN_GEOMETRIES.lock().unwrap()[i] != in_geometries[i] {
+                            same = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if same {
+                return OUT_GEOMETRIES.lock().unwrap().clone();
+            }
+            IN_GEOMETRIES.lock().unwrap().clear();
+            IN_GEOMETRIES.lock().unwrap().append(
+                &mut self.state.geometry_value.as_ref().unwrap().clone());
+            if pos.is_none() {
+                POS_IS_SOME.store(false, SeqCst);
+            } else {
+                POS.lock().unwrap().x = pos.unwrap().x;
+                POS.lock().unwrap().y = pos.unwrap().y;
+            }
+    
             // for now not scaling stroke width, not sure what is optimal
             // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
             // should file bug
             // This could be 400.0 but we would need to take account of text width
             // in computing the max.
+
             const MAX_HEIGHT: f32 = 395.0;
             let mut height = 0.0 as f32;
             let mut width = 0.0 as f32;
@@ -213,7 +272,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     }
                 };
             }
-            let pos = cursor.position_in(&bounds);
             if pos.is_some() {
                 for i in 0..g.len() {
                     match &g[i] {
@@ -262,6 +320,9 @@ impl<'a> canvas::Program<Message> for CanvasView {
                 }
             }
         }
-        vec![frame.into_geometry()]
+        let v = vec![frame.into_geometry()];
+        OUT_GEOMETRIES.lock().unwrap().clear();
+        OUT_GEOMETRIES.lock().unwrap().append(&mut v.clone());
+        v
     }
 }
