@@ -283,11 +283,11 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     }
     let deltas = format!("{:.2}", delta);
     ctl.perf_stats(&tall, "total");
-    if ctl.comp {
+    if ctl.perf_opt.comp {
         println!("used {} seconds unaccounted for", deltas);
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
-    if ctl.comp_enforce {
+    if ctl.perf_opt.comp_enforce {
         if deltas.force_f64() > 0.03 {
             return Err(format!(
                 "\nUnaccounted time = {} seconds, but COMPE option required that it \

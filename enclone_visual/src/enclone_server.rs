@@ -83,9 +83,6 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
 
-
-
-
         /*
         let last_setup = self.enclone_state.lock().unwrap().inter.setup;
         let mut changed = false;
@@ -99,9 +96,6 @@ impl Analyzer for EncloneAnalyzer {
             changed = true;
         }
         */
-
-
-
 
         let inter = main_enclone_start(setup);
         if inter.is_err() {

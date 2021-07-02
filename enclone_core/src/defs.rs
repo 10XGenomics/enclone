@@ -247,6 +247,8 @@ pub struct GeneralOpt {
     pub max_heavies: usize,
     pub cpu_all_start: usize,
     pub cpu_this_start: usize,
+    pub evil_eye: bool, // extra printing to try to trace hangs
+    pub toy: bool,      // toy with phylogeny
 }
 
 // Some plot options.
@@ -425,21 +427,28 @@ pub struct ParseableOpt {
     pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype
 }
 
+// Computational performance options.
+
+#[derive(Default)]
+pub struct PerfOpt {
+    pub comp: bool,         // print computational performance stats
+    pub comp2: bool,        // print more detailed computational performance stats
+    pub unaccounted: bool,  // show unaccounted time at each step
+    pub comp_enforce: bool, // comp plus enforce no unaccounted time
+}
+
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given
 // run of enclone.
 
 #[derive(Default)]
 pub struct EncloneControl {
+    pub perf_opt: PerfOpt,                // computational performance options
     pub start_time: Option<Instant>,      // enclone start time
     pub gen_opt: GeneralOpt,              // miscellaneous general options
     pub plot_opt: PlotOpt,                // plot options
     pub pretty: bool,                     // use escape characters to enhance view
     pub silent: bool,                     // turn off extra logging
     pub force: bool,                      // make joins even if redundant
-    pub comp: bool,                       // print computational performance stats
-    pub comp2: bool,                      // print more detailed computational performance stats
-    pub unaccounted: bool,                // show unaccounted time at each step
-    pub comp_enforce: bool,               // comp plus enforce no unaccounted time
     pub debug_table_printing: bool,       // turn on debugging for table printing
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics
@@ -452,8 +461,6 @@ pub struct EncloneControl {
     pub clono_print_opt: ClonoPrintOpt,   // printing options for clonotypes
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
     pub parseable_opt: ParseableOpt,      // parseable output options
-    pub toy: bool,                        // toy with phylogeny
-    pub evil_eye: bool,                   // extra printing to try to trace hangs
     pub pathlist: Vec<String>,            // list of input files
     pub last_modified: Vec<SystemTime>,   // last modified for pathlist
 }
@@ -466,7 +473,7 @@ impl EncloneControl {
         let used = elapsed(&t);
         let t2 = Instant::now();
         let mut usedx = String::new();
-        if self.comp {
+        if self.perf_opt.comp {
             let peak = peak_mem_usage_gb();
             let ipeak = (100.0 * peak).round();
             let peak_mem = format!("peak mem = {:.2} GB", peak);
@@ -489,7 +496,7 @@ impl EncloneControl {
 
         let used2 = elapsed(&t2);
         let used2x = format!("{:.2}", used2);
-        if self.comp {
+        if self.perf_opt.comp {
             if used2x != "0.00" {
                 println!("used {} seconds computing perf stats for {}", used2x, msg);
             }
@@ -503,7 +510,7 @@ impl EncloneControl {
 
         // Report unaccounted time.
 
-        if self.comp && self.unaccounted && msg != "total" {
+        if self.perf_opt.comp && self.perf_opt.unaccounted && msg != "total" {
             let delta;
             unsafe {
                 delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;

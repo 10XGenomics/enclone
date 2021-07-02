@@ -109,10 +109,10 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ctl.gen_opt.profile = true;
         }
         if arg == "EVIL_EYE" {
-            ctl.evil_eye = true;
+            ctl.gen_opt.evil_eye = true;
         }
     }
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
@@ -130,7 +130,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             comp = true;
         }
         if args[i] == "COMPE" {
-            ctl.comp_enforce = true;
+            ctl.perf_opt.comp_enforce = true;
         }
         if args[i] == "COMP2" {
             comp2 = true;
@@ -163,7 +163,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
         return Ok(EncloneSetup::default());
     }
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");

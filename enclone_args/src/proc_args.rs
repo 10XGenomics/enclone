@@ -16,7 +16,7 @@ use tilde_expand::*;
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     // Knobs.
 
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("processing args");
     }
     let targs = Instant::now();
@@ -59,7 +59,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Process special option SPLIT_COMMAND.
 
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("at split command");
     }
     if ctl.gen_opt.split {
@@ -94,7 +94,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Set up general options.
 
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("setting up general options");
     }
     ctl.gen_opt.h5_pre = true;
@@ -417,14 +417,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             &mut ctl.plot_opt.plot_by_isotype_nolegend,
         ),
         ("TOP_GENES", &mut ctl.gen_opt.top_genes),
-        ("TOY", &mut ctl.toy),
+        ("TOY", &mut ctl.gen_opt.toy),
         ("TOY_COM", &mut ctl.gen_opt.toy_com),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
             &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
         ),
-        ("UNACCOUNTED", &mut ctl.unaccounted),
+        ("UNACCOUNTED", &mut ctl.perf_opt.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
         ("WEAK", &mut ctl.gen_opt.weak),
@@ -582,12 +582,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Traverse arguments.
 
     let mut processed = vec![true; args.len()];
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("starting main args loop");
     }
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
-        if ctl.evil_eye {
+        if ctl.gen_opt.evil_eye {
             println!("processing arg = {}", arg);
         }
 
@@ -683,7 +683,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable[j].1;
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("creating file {} to test writability", val);
                 }
                 let f = File::create(&val);
@@ -704,11 +704,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     }
                     return Err(msgx);
                 }
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("removing file {}", val);
                 }
                 remove_file(&val).expect(&format!("could not remove file {}", val));
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("removal of file {} complete", val);
                 }
                 continue 'args_loop;
@@ -724,7 +724,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable_or_stdout[j].1;
                 if *val != "stdout" {
-                    if ctl.evil_eye {
+                    if ctl.gen_opt.evil_eye {
                         println!("creating file {} to test writability, not stdout", val);
                     }
                     let f = File::create(&val);
@@ -745,12 +745,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         }
                         return Err(msgx);
                     }
-                    if ctl.evil_eye {
+                    if ctl.gen_opt.evil_eye {
                         println!("removing file {}", val);
                     }
                     remove_file(&val).expect(&format!("could not remove file {}", val));
                 }
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("removal of file {} complete", val);
                 }
                 continue 'args_loop;
@@ -768,7 +768,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
                 }
                 if let Err(e) = File::open(&val) {
@@ -777,7 +777,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         val, e
                     ));
                 }
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("file open complete");
                 }
                 continue 'args_loop;
@@ -835,7 +835,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Process remaining args.
 
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("processing remaining args");
     }
     for i in 1..args.len() {
