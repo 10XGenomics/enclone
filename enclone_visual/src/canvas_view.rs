@@ -26,8 +26,8 @@ lazy_static! {
     pub static ref IN_GEOMETRIES: Mutex<Vec<crate::geometry::Geometry>> =
         Mutex::new(Vec::<crate::geometry::Geometry>::new());
     pub static ref OUT_GEOMETRIES: Mutex<Vec<Geometry>> = Mutex::new(Vec::<Geometry>::new());
-    pub static ref OUT_GEOMETRIES_TOOLTIP:
-        Mutex<Vec<Geometry>> = Mutex::new(Vec::<Geometry>::new());
+    pub static ref OUT_GEOMETRIES_TOOLTIP: Mutex<Vec<Geometry>> =
+        Mutex::new(Vec::<Geometry>::new());
     pub static ref POS: Mutex<Point> = Mutex::new(Point::default());
 }
 pub static POS_IS_SOME: AtomicBool = AtomicBool::new(false);
@@ -72,9 +72,8 @@ fn to_color(c: &crate::geometry::Color) -> Color {
 
 impl<'a> canvas::Program<Message> for CanvasView {
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
-
         // Suppose there is no geometry.
-    
+
         if self.state.geometry_value.is_none() {
             POS_IS_SOME.store(false, SeqCst);
             IN_GEOMETRIES.lock().unwrap().clear();
@@ -328,14 +327,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 rows.push(row);
                             }
                             let mut log = String::new();
-                            print_tabular_vbox(
-                                &mut log,
-                                &rows,
-                                1,
-                                &b"l|r".to_vec(),
-                                false,
-                                true,
-                            );
+                            print_tabular_vbox(&mut log, &rows, 1, &b"l|r".to_vec(), false, true);
                             let xpos = 15.0 + width * scale;
                             frame.translate(Vector { x: xpos, y: 0.0 });
                             let text = canvas::Text {
@@ -355,7 +347,10 @@ impl<'a> canvas::Program<Message> for CanvasView {
             }
             let mut w = vec![frame.into_geometry()];
             OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clear();
-            OUT_GEOMETRIES_TOOLTIP.lock().unwrap().append(&mut w.clone());
+            OUT_GEOMETRIES_TOOLTIP
+                .lock()
+                .unwrap()
+                .append(&mut w.clone());
             v.append(&mut w);
         }
         v
