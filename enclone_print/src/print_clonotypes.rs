@@ -23,7 +23,7 @@ use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::max;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -546,6 +546,10 @@ pub fn print_clonotypes(
                     }
                 }
                 let lvars = lvarsc.clone();
+                let mut lvarsh = HashSet::<String>::new();
+                for x in lvars.iter() {
+                    lvarsh.insert(x.to_string());
+                }
 
                 // Now build table content.
 
@@ -682,6 +686,7 @@ pub fn print_clonotypes(
                         &vdj_cells,
                         &n_vdj_gex,
                         &lvars,
+                        &lvarsh,
                         &nd_fields,
                         &peer_groups,
                         &extra_args,

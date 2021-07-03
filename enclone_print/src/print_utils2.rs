@@ -14,7 +14,7 @@ use enclone_core::median::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -56,6 +56,7 @@ pub fn row_fill(
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
+    lvarsh: &HashSet<String>,
     nd_fields: &Vec<String>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     extra_args: &Vec<String>,
@@ -144,7 +145,8 @@ pub fn row_fill(
     let mut total_counts = Vec::<usize>::new();
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
-    if lvars.contains(&"entropy".to_string()) {
+    let have_entropy = lvarsh.contains(&"entropy".to_string());
+    if have_entropy {
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
             let bc = ex.clones[l][0].barcode.clone();
@@ -219,7 +221,7 @@ pub fn row_fill(
                         let f = row[j].0;
                         let n = row[j].1;
                         if gex_info.is_gex[li][f] {
-                            if lvars.contains(&"entropy".to_string()) {
+                            if have_entropy {
                                 let q = n as f64 / total_counts[l] as f64;
                                 entropy -= q * q.log2();
                             }
@@ -251,7 +253,7 @@ pub fn row_fill(
                     for j in 0..d.len() {
                         if gex_info.is_gex[li][ind[j] as usize] {
                             let n = d[j] as usize;
-                            if lvars.contains(&"entropy".to_string()) {
+                            if lvarsh.contains(&"entropy".to_string()) {
                                 let q = n as f64 / total_counts[l] as f64;
                                 entropy -= q * q.log2();
                             }
@@ -304,19 +306,19 @@ pub fn row_fill(
     if ctl.parseable_opt.pout.len() == 0 {
     } else if ctl.parseable_opt.pcols.is_empty() {
         for i in 0..LVARS_ALLOWED.len() {
-            if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
+            if !lvarsh.contains(&LVARS_ALLOWED[i].to_string()) {
                 all_lvars.push(LVARS_ALLOWED[i].to_string());
             }
         }
     } else {
         for i in 0..ctl.parseable_opt.pcols.len() {
-            if !lvars.contains(&ctl.parseable_opt.pcols[i].to_string()) {
+            if !lvarsh.contains(&ctl.parseable_opt.pcols[i].to_string()) {
                 all_lvars.push(ctl.parseable_opt.pcols[i].to_string());
             }
         }
     }
     for x in extra_args.iter() {
-        if !lvars.contains(&x) {
+        if !lvarsh.contains(&*x) {
             all_lvars.push(x.clone());
         }
     }
