@@ -83,6 +83,7 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
 
+        /*
         // Check for change to setup that could change intermediates.  We are very conservative
         // about this, and only allow changes to:
         // * start_time
@@ -146,6 +147,7 @@ impl Analyzer for EncloneAnalyzer {
         if setup.ctl.last_modified != last_setup.ctl.last_modified {
             changed = true;
         }
+        */
 
         let inter = main_enclone_start(setup);
         if inter.is_err() {
