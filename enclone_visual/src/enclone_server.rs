@@ -147,32 +147,32 @@ impl Analyzer for EncloneAnalyzer {
             changed = true;
         }
 
-            let inter = main_enclone_start(setup);
-            if inter.is_err() {
-                let err_msg = format!("{}", inter.err().unwrap());
-                let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
-                if server_debug {
-                    msg += &mut format!(
-                        "The arguments provided to the server were\n{}.\n",
-                        args.iter().format(" ")
-                    );
-                }
-                let response = EncloneResponse {
-                    args: req.args,
-                    plot: String::new(),
-                    table: msg,
-                };
-                return Ok(Response::new(response));
+        let inter = main_enclone_start(setup);
+        if inter.is_err() {
+            let err_msg = format!("{}", inter.err().unwrap());
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
             }
-            let inter = inter.unwrap();
-            if inter.setup.tall.is_none() {
-                let response = EncloneResponse {
-                    args: req.args,
-                    plot: String::new(),
-                    table: String::new(),
-                };
-                return Ok(Response::new(response));
-            }
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
+        }
+        let inter = inter.unwrap();
+        if inter.setup.tall.is_none() {
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: String::new(),
+            };
+            return Ok(Response::new(response));
+        }
         let result = main_enclone_stop(inter);
         if result.is_err() {
             let err_msg = format!("{}", result.err().unwrap());
