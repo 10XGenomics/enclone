@@ -84,15 +84,67 @@ impl Analyzer for EncloneAnalyzer {
         }
 
         /*
-        let last_setup = self.enclone_state.lock().unwrap().inter.setup;
+        // Check for change to setup that could change intermediates.  We are very conservative
+        // about this, and only allow changes to:
+        // * start_time
+        // * clono_filt_opt
+        // * plot_opt.
+        // More exceptions could be added.
+
+        let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
         let mut changed = false;
+        if setup.ctl.perf_opt != last_setup.ctl.perf_opt {
+            changed = true;
+        }
+        if setup.ctl.gen_opt != last_setup.ctl.gen_opt {
+            changed = true;
+        }
+        if setup.ctl.pretty != last_setup.ctl.pretty {
+            changed = true;
+        }
+        if setup.ctl.silent != last_setup.ctl.silent {
+            changed = true;
+        }
+        if setup.ctl.force != last_setup.ctl.force {
+            changed = true;
+        }
+        if setup.ctl.debug_table_printing != last_setup.ctl.debug_table_printing {
+            changed = true;
+        }
+        if setup.ctl.merge_all_impropers != last_setup.ctl.merge_all_impropers {
+            changed = true;
+        }
+        if setup.ctl.heur != last_setup.ctl.heur {
+            changed = true;
+        }
+        if setup.ctl.origin_info != last_setup.ctl.origin_info {
+            changed = true;
+        }
+        if setup.ctl.clono_filt_opt_def != last_setup.ctl.clono_filt_opt_def {
+            changed = true;
+        }
+        if setup.ctl.allele_alg_opt != last_setup.ctl.allele_alg_opt {
+            changed = true;
+        }
+        if setup.ctl.allele_print_opt != last_setup.ctl.allele_print_opt {
+            changed = true;
+        }
+        if setup.ctl.join_alg_opt != last_setup.ctl.join_alg_opt {
+            changed = true;
+        }
+        if setup.ctl.clono_print_opt != last_setup.ctl.clono_print_opt {
+            changed = true;
+        }
+        if setup.ctl.clono_group_opt != last_setup.ctl.clono_group_opt {
+            changed = true;
+        }
+        if setup.ctl.parseable_opt != last_setup.ctl.parseable_opt {
+            changed = true;
+        }
         if setup.ctl.pathlist != last_setup.ctl.pathlist {
             changed = true;
         }
-        if !changed && setup.ctl.last_modified != last_setup.ctl.last_modified {
-            changed = true;
-        }
-        if !changed && setup.ctl.origin_info != last_setup.ctl.origin_info {
+        if setup.ctl.last_modified != last_setup.ctl.last_modified {
             changed = true;
         }
         */
