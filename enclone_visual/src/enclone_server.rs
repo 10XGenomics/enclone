@@ -83,7 +83,6 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
 
-        /*
         // Check for change to setup that could change intermediates.  We are very conservative
         // about this, and only allow changes to:
         // * start_time
@@ -91,8 +90,9 @@ impl Analyzer for EncloneAnalyzer {
         // * plot_opt.
         // More exceptions could be added.
 
-        let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
         let mut changed = false;
+        {
+        let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
         if setup.ctl.perf_opt != last_setup.ctl.perf_opt {
             changed = true;
         }
@@ -147,7 +147,8 @@ impl Analyzer for EncloneAnalyzer {
         if setup.ctl.last_modified != last_setup.ctl.last_modified {
             changed = true;
         }
-        */
+
+        }
 
         let inter = main_enclone_start(setup);
         if inter.is_err() {
