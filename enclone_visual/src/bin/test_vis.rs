@@ -79,7 +79,7 @@ fn main() {
         "successfully"
     };
     let used = elapsed(&t);
-    const MAX_TIME: f64 = 11.0;
+    const MAX_TIME: f64 = 11.1;
     if used > MAX_TIME {
         eprintln!(
             "\nUsed {:.1} seconds, exceeding max test time of {} seconds.",
