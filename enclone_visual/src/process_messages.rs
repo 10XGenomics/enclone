@@ -6,7 +6,7 @@ use crate::testsuite::TESTS;
 use crate::*;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
@@ -14,6 +14,7 @@ impl EncloneVisual {
             Message::SubmitButtonPressed(_) => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
+                    self.start_command = Some(Instant::now());
                     // The following sleep is needed to get the button text to consistenly update.
                     thread::sleep(Duration::from_millis(20));
                     if self.input_value.starts_with('#')
@@ -176,6 +177,10 @@ impl EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
+                println!(
+                    "total time to run command = {:.1} seconds\n",
+                    elapsed(&self.start_command.unwrap())
+                );
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
