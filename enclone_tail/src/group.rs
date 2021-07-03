@@ -21,6 +21,7 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
 use enclone_core::print_tools::*;
+use enclone_core::set_speakers::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use itertools::*;
