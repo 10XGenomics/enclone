@@ -83,107 +83,47 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
 
-        // Check for change to setup that could change intermediates.  We are very conservative
-        // about this, and only allow changes to:
-        // * start_time
-        // * clono_filt_opt
-        // * plot_opt.
-        // More exceptions could be added.
-
-        let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
+        /*
+        let last_setup = self.enclone_state.lock().unwrap().inter.setup;
         let mut changed = false;
-        if setup.ctl.perf_opt != last_setup.ctl.perf_opt {
-            changed = true;
-        }
-        if setup.ctl.gen_opt != last_setup.ctl.gen_opt {
-            changed = true;
-        }
-        if setup.ctl.pretty != last_setup.ctl.pretty {
-            changed = true;
-        }
-        if setup.ctl.silent != last_setup.ctl.silent {
-            changed = true;
-        }
-        if setup.ctl.force != last_setup.ctl.force {
-            changed = true;
-        }
-        if setup.ctl.debug_table_printing != last_setup.ctl.debug_table_printing {
-            changed = true;
-        }
-        if setup.ctl.merge_all_impropers != last_setup.ctl.merge_all_impropers {
-            changed = true;
-        }
-        if setup.ctl.heur != last_setup.ctl.heur {
-            changed = true;
-        }
-        if setup.ctl.origin_info != last_setup.ctl.origin_info {
-            changed = true;
-        }
-        if setup.ctl.clono_filt_opt_def != last_setup.ctl.clono_filt_opt_def {
-            changed = true;
-        }
-        if setup.ctl.allele_alg_opt != last_setup.ctl.allele_alg_opt {
-            changed = true;
-        }
-        if setup.ctl.allele_print_opt != last_setup.ctl.allele_print_opt {
-            changed = true;
-        }
-        if setup.ctl.join_alg_opt != last_setup.ctl.join_alg_opt {
-            changed = true;
-        }
-        if setup.ctl.clono_print_opt != last_setup.ctl.clono_print_opt {
-            changed = true;
-        }
-        if setup.ctl.clono_group_opt != last_setup.ctl.clono_group_opt {
-            changed = true;
-        }
-        if setup.ctl.parseable_opt != last_setup.ctl.parseable_opt {
-            changed = true;
-        }
         if setup.ctl.pathlist != last_setup.ctl.pathlist {
             changed = true;
         }
-        if setup.ctl.last_modified != last_setup.ctl.last_modified {
+        if !changed && setup.ctl.last_modified != last_setup.ctl.last_modified {
             changed = true;
         }
-
-        // Now proceed with the computation.
-
-        let result;
-        if !changed {
-            result = main_enclone_stop(EncloneIntermediates {
-                setup: setup,
-                ex: self.enclone_state.lock().unwrap().inter.ex.clone(),
-            });
-        } else {
-            let inter = main_enclone_start(setup);
-            if inter.is_err() {
-                let err_msg = format!("{}", inter.err().unwrap());
-                let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
-                if server_debug {
-                    msg += &mut format!(
-                        "The arguments provided to the server were\n{}.\n",
-                        args.iter().format(" ")
-                    );
-                }
-                let response = EncloneResponse {
-                    args: req.args,
-                    plot: String::new(),
-                    table: msg,
-                };
-                return Ok(Response::new(response));
-            }
-            let inter = inter.unwrap();
-            if inter.setup.tall.is_none() {
-                let response = EncloneResponse {
-                    args: req.args,
-                    plot: String::new(),
-                    table: String::new(),
-                };
-                return Ok(Response::new(response));
-            }
-            result = main_enclone_stop(inter);
+        if !changed && setup.ctl.origin_info != last_setup.ctl.origin_info {
+            changed = true;
         }
+        */
+
+        let inter = main_enclone_start(setup);
+        if inter.is_err() {
+            let err_msg = format!("{}", inter.err().unwrap());
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
+            }
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
+        }
+        let inter = inter.unwrap();
+        if inter.setup.tall.is_none() {
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: String::new(),
+            };
+            return Ok(Response::new(response));
+        }
+        let result = main_enclone_stop(inter);
         if result.is_err() {
             let err_msg = format!("{}", result.err().unwrap());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);

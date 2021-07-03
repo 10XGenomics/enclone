@@ -765,18 +765,16 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     ctl.perf_stats(&tmark, "marking vdj noncells");
     Ok(EncloneIntermediates {
         setup: setup,
-        ex: EncloneExacts {
-            to_bc: to_bc,
-            exact_clonotypes: exact_clonotypes,
-            raw_joins: raw_joins,
-            info: info.to_vec(),
-            orbits: orbits,
-            vdj_cells: vdj_cells,
-            join_info: join_info,
-            drefs: drefs,
-            sr: sr,
-            fate: fate,
-            is_bcr: is_bcr,
-        },
+        to_bc: to_bc,
+        exact_clonotypes: exact_clonotypes,
+        raw_joins: raw_joins,
+        info: info.to_vec(),
+        orbits: orbits,
+        vdj_cells: vdj_cells,
+        join_info: join_info,
+        drefs: drefs,
+        sr: sr,
+        fate: fate,
+        is_bcr: is_bcr,
     })
 }
