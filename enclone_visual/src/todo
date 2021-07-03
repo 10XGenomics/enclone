@@ -90,3 +90,5 @@ NICE TO HAVE
 13. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
     Start by reading how the canvas in the game of life example handles clicks.
 
+14. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+    exhibits weird fluctuations in darkness.

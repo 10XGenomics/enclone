@@ -96,7 +96,7 @@ pub fn setup(
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
             } else if args[i] == "EVIL_EYE" {
-                ctl.evil_eye = true;
+                ctl.gen_opt.evil_eye = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 ctl.gen_opt.html_title = "enclone output".to_string();
@@ -153,18 +153,18 @@ pub fn setup(
 
         // Test for internal run.
 
-        if ctl.evil_eye {
+        if ctl.gen_opt.evil_eye {
             println!("testing for internal run");
         }
         for (key, value) in env::vars() {
             if key.contains("USER") && value.ends_with("10xgenomics.com") {
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("getting config");
                 }
                 if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
                     ctl.gen_opt.internal_run = true;
                 }
-                if ctl.evil_eye {
+                if ctl.gen_opt.evil_eye {
                     println!("got config");
                 }
                 break;
@@ -176,7 +176,7 @@ pub fn setup(
             }
         }
         if ctl.gen_opt.internal_run {
-            if ctl.evil_eye {
+            if ctl.gen_opt.evil_eye {
                 println!("detected internal run");
             }
             if ctl.gen_opt.config.contains_key("bug_reports") {
@@ -260,11 +260,11 @@ pub fn setup(
             nopretty = true;
         }
         if is_simple_arg(&args[i], "COMP")? || args[i] == "COMPE" {
-            ctl.comp = true;
+            ctl.perf_opt.comp = true;
         }
         if is_simple_arg(&args[i], "COMP2")? {
-            ctl.comp = true;
-            ctl.comp2 = true;
+            ctl.perf_opt.comp = true;
+            ctl.perf_opt.comp2 = true;
         }
         if is_simple_arg(&args[i], "CELLRANGER")? {
             ctl.gen_opt.cellranger = true;
@@ -276,7 +276,7 @@ pub fn setup(
 
     // Turn on pretty trace.
 
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("about to turn on pretty trace");
     }
     if !nopretty && !ctl.gen_opt.cellranger {

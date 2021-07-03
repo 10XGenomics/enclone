@@ -5,7 +5,7 @@ To use enclone visual, type in the box
 that you can type:
 
 • an enclone command
-• an group id (number)
+• a group id (number)
 • a recipe tag (see cookbook)
 • q to quit
 
@@ -17,6 +17,9 @@ The app remembers previous states of 1 and 2, but not 3.  There are buttons in t
 subwindow that allow navigation through previous commands/graphics, and which can also re-execute
 a command to get the clonotypes back.  Some buttons are blank initially.  Those do nothing until
 populated with something (like a down arrow, to go forward to the next state).
+
+If you run a command, and then run a similar command after it, enclone visual may elide some
+calculations from the previous command, so as to respond faster.
 
 Some limitations of this version:
 1. There is no color in the clonotype tables.

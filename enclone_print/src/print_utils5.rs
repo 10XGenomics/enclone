@@ -194,7 +194,7 @@ pub fn delete_weaks(
     // Mark for deletion exact subclonotypes, based on CONST_IGH and CONST_IGKL
     // (see enclone help special).
 
-    if ctl.gen_opt.const_igh.is_some() {
+    if ctl.clono_filt_opt.const_igh.is_some() {
         for u in 0..nexacts {
             let mut ok = false;
             let ex = &exact_clonotypes[exacts[u]];
@@ -202,7 +202,7 @@ pub fn delete_weaks(
                 if ex.share[m].left && ex.share[m].c_ref_id.is_some() {
                     let id = ex.share[m].c_ref_id.unwrap();
                     if ctl
-                        .gen_opt
+                        .clono_filt_opt
                         .const_igh
                         .as_ref()
                         .unwrap()
@@ -217,7 +217,7 @@ pub fn delete_weaks(
             }
         }
     }
-    if ctl.gen_opt.const_igkl.is_some() {
+    if ctl.clono_filt_opt.const_igkl.is_some() {
         for u in 0..nexacts {
             let mut ok = false;
             let ex = &exact_clonotypes[exacts[u]];
@@ -225,7 +225,7 @@ pub fn delete_weaks(
                 if !ex.share[m].left && ex.share[m].c_ref_id.is_some() {
                     let id = ex.share[m].c_ref_id.unwrap();
                     if ctl
-                        .gen_opt
+                        .clono_filt_opt
                         .const_igkl
                         .as_ref()
                         .unwrap()

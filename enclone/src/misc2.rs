@@ -299,7 +299,7 @@ pub fn find_exact_subclonotypes(
                     // Check for different donors if MIX_DONORS specified on command line.
                     // Note funky redundancy in checking each chain
 
-                    || ( !ctl.clono_filt_opt.donor
+                    || ( !ctl.clono_filt_opt_def.donor
                         && tig_bc[r][m].donor_index != tig_bc[s][m].donor_index )
                 {
                     ok = false;
@@ -369,7 +369,7 @@ pub fn find_exact_subclonotypes(
             if j - i >= 2 {
                 for k in i..j {
                     let t = bc[k].1;
-                    if ctl.clono_filt_opt.bc_dup {
+                    if ctl.clono_filt_opt_def.bc_dup {
                         to_delete[t - r] = true;
                     }
                     res.2.push((

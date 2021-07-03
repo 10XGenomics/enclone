@@ -93,7 +93,7 @@ pub fn survives_filter(
 
     // Marked clonotypes which are also B cells by annotation
 
-    if ctl.clono_filt_opt.marked_b {
+    if ctl.clono_filt_opt_def.marked_b {
         let mut marked_b = false;
         for s in exacts.iter() {
             let ex = &exact_clonotypes[*s];

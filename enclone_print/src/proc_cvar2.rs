@@ -658,7 +658,7 @@ pub fn proc_cvar2(
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
-    } else if *var == "white" || ctl.clono_filt_opt.whitef {
+    } else if *var == "white" || ctl.clono_filt_opt_def.whitef {
         let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -706,7 +706,7 @@ pub fn proc_cvar2(
             cx[col][j] = format!("{:.1}", junk_rate);
         }
         // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if ctl.clono_filt_opt.whitef && junk_rate == 0.0
+        if ctl.clono_filt_opt_def.whitef && junk_rate == 0.0
         /* && pass == 1 */
         {
             bads[u] = true;

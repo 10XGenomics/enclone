@@ -6,6 +6,8 @@ use rayon::prelude::*;
 // Pack circles of given radii, which should be in descending order.  Return centers for the
 // circles.  There is probably a literature on this, and this is probably a very crappy algorithm.
 //
+// Should google "d3 circle packing algorithm".  The code is open source.
+//
 // quad: force into first quadrant rather than anywhere
 //
 // Blacklisted polygons are avoided.

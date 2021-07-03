@@ -13,7 +13,7 @@ pub fn filter_by_fcell(
     info: &Vec<CloneInfo>,
     exact_clonotypes: &mut Vec<ExactClonotype>,
 ) {
-    if !ctl.clono_filt_opt.fcell.is_empty() {
+    if !ctl.clono_filt_opt_def.fcell.is_empty() {
         let mut orbits2 = Vec::<Vec<i32>>::new();
         for i in 0..orbits.len() {
             let mut o = orbits[i].clone();
@@ -26,7 +26,7 @@ pub fn filter_by_fcell(
                     let li = ex.clones[k][0].dataset_index;
                     let bc = &ex.clones[k][0].barcode;
                     let mut keep = true;
-                    for x in ctl.clono_filt_opt.fcell.iter() {
+                    for x in ctl.clono_filt_opt_def.fcell.iter() {
                         let alt = &ctl.origin_info.alt_bc_fields[li];
                         let vars = x.iter_variable_identifiers().collect::<Vec<&str>>();
                         let mut vals = Vec::<String>::new();

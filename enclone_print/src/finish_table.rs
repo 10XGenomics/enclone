@@ -246,7 +246,7 @@ pub fn finish_table(
     // Add phylogeny.
 
     let nexacts = exacts.len();
-    if ctl.toy {
+    if ctl.gen_opt.toy {
         let mut vrefs = Vec::<Vec<u8>>::new();
         let mut jrefs = Vec::<Vec<u8>>::new();
         for cx in 0..cols {

@@ -794,7 +794,7 @@ pub fn read_json(
 // Parse the JSON annotations file(s).
 
 pub fn parse_json_annotations_files(
-    mut ctl: &mut EncloneControl,
+    ctl: &EncloneControl,
     tig_bc: &mut Vec<Vec<TigData>>,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
@@ -873,7 +873,7 @@ pub fn parse_json_annotations_files(
     let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
-        ctl.gen_opt.cr_version = results[i].4.clone();
+        // ctl.gen_opt.cr_version = results[i].4.clone();
         if results[i].4.len() == 0 {
             versions.push("≤3.1".to_string());
         } else {

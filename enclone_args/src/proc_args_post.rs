@@ -232,13 +232,13 @@ pub fn proc_args_post(
             ));
         }
     }
-    if ctl.clono_filt_opt.umi_filt && ctl.clono_filt_opt.umi_filt_mark {
+    if ctl.clono_filt_opt_def.umi_filt && ctl.clono_filt_opt_def.umi_filt_mark {
         return Err(format!(
             "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \
             the filter,\nas otherwise nothing will be marked.\n"
         ));
     }
-    if ctl.clono_filt_opt.umi_ratio_filt && ctl.clono_filt_opt.umi_ratio_filt_mark {
+    if ctl.clono_filt_opt_def.umi_ratio_filt && ctl.clono_filt_opt_def.umi_ratio_filt_mark {
         return Err(format!(
             "\nIf you use UMI_RATIO_FILT_MARK, you should also use NUMI_RATIO, to turn off \
             the filter,\nas otherwise nothing will be marked.\n"
@@ -301,7 +301,7 @@ pub fn proc_args_post(
         }
     }
     unique_sort(&mut alt_bcs);
-    for con in ctl.clono_filt_opt.fcell.iter() {
+    for con in ctl.clono_filt_opt_def.fcell.iter() {
         for var in con.iter_variable_identifiers() {
             if !bin_member(&alt_bcs, &var.to_string()) {
                 return Err(format!(
@@ -426,7 +426,7 @@ pub fn proc_args_post(
     ctl.origin_info.tag_list = tags;
     for i in 0..ctl.origin_info.donor_for_bc.len() {
         if ctl.origin_info.donor_for_bc[i].len() > 0 {
-            ctl.clono_filt_opt.donor = true;
+            ctl.clono_filt_opt_def.donor = true;
         }
     }
     ctl.perf_stats(&t, "after main args loop 2");

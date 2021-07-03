@@ -78,10 +78,22 @@ fn main() {
     } else {
         "successfully"
     };
+    let used = elapsed(&t);
+    const MAX_TIME: f64 = 11.0;
+    if used > MAX_TIME {
+        eprintln!(
+            "\nUsed {:.1} seconds, exceeding max test time of {} seconds.",
+            used, MAX_TIME,
+        );
+        eprintln!(
+            "You might want to retry a second time.  Note that if you're disconnected from\n\
+            the internet, then the Mac Gatekeeper could introduce very long delays.\n"
+        );
+        std::process::exit(1);
+    }
     println!(
         "\nenclone visual tests completely {} in {:.1} seconds\n",
-        state,
-        elapsed(&t)
+        state, used,
     );
     if fail {
         std::process::exit(1);

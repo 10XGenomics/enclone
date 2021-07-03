@@ -10,12 +10,11 @@ use crate::fcell::*;
 use crate::filter_umi::*;
 use crate::flag_defective::*;
 use crate::inconsistent::*;
-use crate::opt_d_val::*;
 use crate::populate_features::*;
 use crate::sec_mem::*;
 use crate::setup::*;
 use crate::some_filters::*;
-use crate::subset::*;
+use crate::stop::*;
 use crate::vars::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
@@ -31,26 +30,18 @@ use enclone_args::load_gex::*;
 use enclone_args::proc_args2::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
-use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
-use enclone_print::print_clonotypes::*;
-use enclone_tail::grouper::*;
-use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use pretty_trace::*;
-use rayon::prelude::*;
-use stats_utils::*;
 use std::{
     collections::HashMap,
-    env,
+    env, fs,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
-    thread, time,
     time::Instant,
 };
 use stirling_numbers::*;
@@ -72,9 +63,38 @@ pub struct MainEncloneOutput {
     pub pretty: bool,
 }
 
+#[derive(Default)]
+pub struct EncloneState {
+    pub inter: EncloneIntermediates,
+    pub outs: MainEncloneOutput,
+}
+
+#[derive(Default)]
+pub struct EncloneSetup {
+    pub ctl: EncloneControl,
+    pub ann: String,
+    pub gex_info: GexInfo,
+    pub tall: Option<Instant>,
+    pub refdata: RefData,
+    pub is_bcr: bool,
+    pub to_ref_index: HashMap<usize, usize>,
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
+    let setup = main_enclone_setup(&args)?;
+    if setup.tall.is_none() {
+        return Ok(EncloneState::default());
+    }
+    let inter = main_enclone_start(setup)?;
+    if inter.setup.tall.is_none() {
+        return Ok(EncloneState::default());
+    }
+    Ok(main_enclone_stop(inter)?)
+}
+
+pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
     let args = process_source(&args)?;
@@ -89,29 +109,28 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             ctl.gen_opt.profile = true;
         }
         if arg == "EVIL_EYE" {
-            ctl.evil_eye = true;
+            ctl.gen_opt.evil_eye = true;
         }
     }
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
         start_profiling(&profiling_blacklist());
     }
-    let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
-            print_cpu = true;
+            ctl.gen_opt.print_cpu = true;
         }
         if args[i] == "PRINT_CPU_INFO" {
-            print_cpu_info = true;
+            ctl.gen_opt.print_cpu_info = true;
         }
         if args[i] == "COMP" || args[i] == "COMPE" {
             comp = true;
         }
         if args[i] == "COMPE" {
-            ctl.comp_enforce = true;
+            ctl.perf_opt.comp_enforce = true;
         }
         if args[i] == "COMP2" {
             comp2 = true;
@@ -120,8 +139,9 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     if comp && !comp2 {
         println!("");
     }
-    let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
-    if print_cpu || print_cpu_info {
+    ctl.gen_opt.cpu_all_start = 0;
+    ctl.gen_opt.cpu_this_start = 0;
+    if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
         for line in f.lines() {
             let s = line.unwrap();
@@ -129,31 +149,31 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
-            cpu_all_start = t.before(" ").force_usize();
+            ctl.gen_opt.cpu_all_start = t.before(" ").force_usize();
             break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {
             let s = line.unwrap();
             let fields = s.split(' ').collect::<Vec<&str>>();
-            cpu_this_start = fields[13].force_usize();
+            ctl.gen_opt.cpu_this_start = fields[13].force_usize();
         }
     }
     if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneSetup::default());
     }
-    if ctl.evil_eye {
+    if ctl.gen_opt.evil_eye {
         println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx, &args_orig)?;
     if ctl.gen_opt.split {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneSetup::default());
     }
     if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneSetup::default());
     }
 
     // Dump internal ids.
@@ -166,7 +186,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             }
             x.sort();
             println!("\n{}\n", x.iter().format(","));
-            return Ok(MainEncloneOutput::default());
+            return Ok(EncloneSetup::default());
         }
     }
 
@@ -248,11 +268,11 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             "\nNo data and no TCR or BCR data have been specified.\n"
         ));
     }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    ctl.perf_stats(&tr, "starting reference");
 
     // Build reference data.
 
+    let tr = Instant::now();
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();
@@ -269,12 +289,6 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         to_ref_index.insert(refdata.id[i] as usize, i);
     }
 
-    // Flag defective reference sequences.
-
-    let mut log = Vec::<u8>::new();
-    let mut broken = Vec::<bool>::new();
-    flag_defective(&ctl, &refdata, &mut log, &mut broken);
-
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
@@ -282,20 +296,87 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     // Process for sec (secreted) or mem (membrane) if specified.
 
     test_sec_mem(&mut ctl)?;
-    ctl.perf_stats(&tr, "building reference and other things");
     if ctl.gen_opt.using_secmem {
         fetch_secmem(&mut ctl)?;
     }
+    ctl.perf_stats(&tr, "building reference and other things");
+
+    // Get VDJ data paths.
+
+    for li in 0..ctl.origin_info.dataset_path.len() {
+        let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
+        let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
+        if !path_exists(&json) && !path_exists(&json_lz4) {
+            return Err(format!("\ncan't find {} or {}\n", json, json_lz4));
+        } else {
+            if path_exists(&json) {
+                ctl.pathlist.push(json);
+            } else {
+                ctl.pathlist.push(json_lz4);
+            }
+        }
+    }
+
+    // Get last modified info for pathlist.
+
+    for i in 0..ctl.pathlist.len() {
+        let metadata = fs::metadata(&ctl.pathlist[i]);
+        if metadata.is_err() {
+            return Err(format!(
+                "\nUnable to get file metadata for {}.\n",
+                ctl.pathlist[i],
+            ));
+        }
+        let modified = metadata.unwrap().modified();
+        if modified.is_err() {
+            return Err(format!(
+                "\nUnable to determine modification date of {}.\n",
+                ctl.pathlist[i],
+            ));
+        } else {
+            ctl.last_modified.push(modified.unwrap());
+        }
+    }
+
+    // Return.
+
+    Ok(EncloneSetup {
+        ctl: ctl,
+        refdata: refdata,
+        ann: ann.to_string(),
+        gex_info: gex_info,
+        tall: Some(tall),
+        is_bcr: is_bcr,
+        to_ref_index: to_ref_index,
+    })
+}
+
+pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, String> {
+    let tr = Instant::now();
+    let ctl = &setup.ctl;
+    let gex_info = &setup.gex_info;
+    let refdata = &setup.refdata;
+    let is_bcr = setup.is_bcr;
+    let to_ref_index = &setup.to_ref_index;
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Flag defective reference sequences.
+
+    let mut log = Vec::<u8>::new();
+    let mut broken = Vec::<bool>::new();
+    flag_defective(&ctl, &refdata, &mut log, &mut broken);
+    ctl.perf_stats(&tr, "flagging defective references");
 
     // Parse the json annotations file.
 
+    let tparse = Instant::now();
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut vdj_cells = Vec::<Vec<String>>::new();
     let mut gex_cells = Vec::<Vec<String>>::new();
     let mut gex_cells_specified = Vec::<bool>::new();
-    let tparse = Instant::now();
     parse_json_annotations_files(
-        &mut ctl,
+        &ctl,
         &mut tig_bc,
         &refdata,
         &to_ref_index,
@@ -325,7 +406,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         &mut log,
     )?;
     if ctl.gen_opt.require_unbroken_ok {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
@@ -350,7 +431,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     search_for_shm_indels(&ctl, &tig_bc);
     if ctl.gen_opt.indels {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
 
     // Record fate of non-cells.
@@ -387,7 +468,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
 
     // Test for consistency between VDJ cells and GEX cells.
@@ -427,7 +508,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
             }
         }
     }
-    if ctl.clono_filt_opt.weak_foursies {
+    if ctl.clono_filt_opt_def.weak_foursies {
         erase_if(&mut exact_clonotypes, &to_delete);
     }
 
@@ -589,7 +670,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
     if ctl.gen_opt.heavy_chain_reuse {
-        return Ok(MainEncloneOutput::default());
+        return Ok(EncloneIntermediates::default());
     }
     ctl.perf_stats(&txxx, "in some odds and ends");
 
@@ -628,7 +709,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
                     let gbc = &gex_info.gex_cell_barcodes[li];
                     if !bin_member(&gbc, &bc) {
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
-                        if !ctl.clono_filt_opt.ngex {
+                        if !ctl.clono_filt_opt_def.ngex {
                             to_delete[k] = true;
                         }
                     }
@@ -670,7 +751,7 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
     // Mark VDJ noncells.
 
     let tmark = Instant::now();
-    if ctl.clono_filt_opt.non_cell_mark {
+    if ctl.clono_filt_opt_def.non_cell_mark {
         for i in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[i];
             for j in 0..ex.clones.len() {
@@ -682,281 +763,20 @@ pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Strin
         }
     }
     ctl.perf_stats(&tmark, "marking vdj noncells");
-
-    // Load the GEX and FB data.
-
-    let tdi = Instant::now();
-    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
-    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
-    for li in 0..ctl.origin_info.n() {
-        if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
-            let x = gex_info.h5_data[li].as_ref();
-            if x.is_none() {
-                // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
-                // CAUSING PUSH TO D_READERS BELOW TO FAIL.
-                eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
-                eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
-                let current = env::current_dir().unwrap();
-                println!(
-                    "The current working directory is {}",
-                    current.canonicalize().unwrap().display()
-                );
-                if path_exists(&ctl.origin_info.gex_path[li]) {
-                    eprintln!(
-                        "The directory that is supposed to contain \
-                        raw_feature_bc_matrix.h5 exists."
-                    );
-                    let list = dir_list(&ctl.origin_info.gex_path[li]);
-                    eprintln!(
-                        "This directory is {} and its contents are:",
-                        ctl.origin_info.gex_path[li]
-                    );
-                    for i in 0..list.len() {
-                        eprintln!("{}.  {}", i + 1, list[i]);
-                    }
-                    let h5_path =
-                        format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
-                    eprintln!("H5 path = {}.", h5_path);
-                    if !path_exists(&h5_path) {
-                        let mut msg = format!("H5 path {} does not exist.\n", h5_path);
-                        msg += "Retrying a few times to see if it appears.\n";
-                        for _ in 0..5 {
-                            msg += "Sleeping for 0.1 seconds.";
-                            thread::sleep(time::Duration::from_millis(100));
-                            if !path_exists(&h5_path) {
-                                msg += "Now h5 path does not exist.\n";
-                            } else {
-                                msg += "Now h5 path exists.\n";
-                                break;
-                            }
-                        }
-                        msg += "Aborting.\n";
-                        return Err(msg);
-                    } else {
-                        println!("h5 path exists.");
-                    }
-                } else {
-                    println!("Path exists.");
-                }
-                println!("");
-            }
-            d_readers.push(Some(x.unwrap().as_reader()));
-            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
-        } else {
-            d_readers.push(None);
-            ind_readers.push(None);
-        }
-    }
-    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
-    for li in 0..ctl.origin_info.n() {
-        h5_data.push((li, Vec::new(), Vec::new()));
-    }
-    h5_data.par_iter_mut().for_each(|res| {
-        let li = res.0;
-        if ctl.origin_info.gex_path[li].len() > 0
-            && !gex_info.gex_matrices[li].initialized()
-            && ctl.gen_opt.h5_pre
-        {
-            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
-            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
-        }
-    });
-    ctl.perf_stats(&tdi, "setting up readers");
-
-    // Find and print clonotypes.  (But we don't actually print them here.)
-
-    let torb = Instant::now();
-    let mut pics = Vec::<String>::new();
-    let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
-    let mut in_center = Vec::<bool>::new();
-    let mut rsi = Vec::<ColInfo>::new(); // ditto
-    let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
-    let mut tests = Vec::<usize>::new();
-    let mut controls = Vec::<usize>::new();
-    print_clonotypes(
-        is_bcr,
-        &to_bc,
-        &sr,
-        &refdata,
-        &drefs,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &orbits,
-        &raw_joins,
-        &gex_info,
-        &vdj_cells,
-        &d_readers,
-        &ind_readers,
-        &h5_data,
-        &mut pics,
-        &mut exacts,
-        &mut in_center,
-        &mut rsi,
-        &mut out_datas,
-        &mut tests,
-        &mut controls,
-        &mut fate,
-    )?;
-
-    // Lock data structures so they can't be changed accidentally.
-
-    let ctl = ctl;
-    let refdata = refdata;
-    let exact_clonotypes = exact_clonotypes;
-    let exacts = exacts;
-    let pics = pics;
-
-    // Process the SUBSET_JSON option.
-
-    subset_json(&ctl, &exact_clonotypes, &exacts, &ann);
-    ctl.perf_stats(&torb, "making orbits");
-
-    // Assign a D segment to each "left" column in a clonotype (if we need this information).
-    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
-    // though the true values have to be the same.  This is also true for V and J segments,
-    // although they are less likely to vary.
-
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
-    make_opt_d_val(
-        &ctl,
-        &exact_clonotypes,
-        &exacts,
-        &rsi,
-        &refdata,
-        &drefs,
-        &mut opt_d_val,
-    );
-
-    // Group clonotypes.
-    let t = Instant::now();
-    let groups = grouper(
-        &refdata,
-        &exacts,
-        &in_center,
-        &exact_clonotypes,
-        &ctl,
-        &rsi,
-        &opt_d_val,
-    );
-    ctl.perf_stats(&t, "in grouper");
-    // Process TOY_COM option.
-
-    if ctl.gen_opt.toy_com {
-        println!(
-            "\nHello, enclone is now in server mode.  Hopefully you have already started\n\
-            enclone_client in a separate terminal window, before starting enclone, because\n\
-            otherwise the system won't work.  The client should now show a prompt.\n"
-        );
-        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
-            .await
-            .unwrap();
-        return Ok(MainEncloneOutput::default());
-    }
-
-    // Tail code.
-
-    let mut svgs = Vec::<String>::new();
-    let mut group_pics = Vec::<String>::new();
-    let mut last_widths = Vec::<usize>::new();
-    tail_code(
-        &tall,
-        &refdata,
-        &pics,
-        &mut group_pics,
-        &mut last_widths,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &mut out_datas,
-        &join_info,
-        &gex_info,
-        &vdj_cells,
-        &fate,
-        &tests,
-        &controls,
-        &h5_data,
-        &d_readers,
-        &ind_readers,
-        &drefs,
-        &groups,
-        &opt_d_val,
-        &mut svgs,
-    )?;
-
-    // Report profiling.
-
-    if ctl.gen_opt.profile {
-        let t = Instant::now();
-        stop_profiling();
-        ctl.perf_stats(&t, "summarizing profiling");
-    }
-
-    // Report computational performance.
-
-    let delta;
-    unsafe {
-        delta = elapsed(&tall) - WALLCLOCK;
-    }
-    let deltas = format!("{:.2}", delta);
-    ctl.perf_stats(&tall, "total");
-    if ctl.comp {
-        println!("used {} seconds unaccounted for", deltas);
-        println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
-    }
-    if ctl.comp_enforce {
-        if deltas.force_f64() > 0.03 {
-            return Err(format!(
-                "\nUnaccounted time = {} seconds, but COMPE option required that it \
-                be at most 0.03.\n\n\
-                Note that this may fail for a small fraction of runs, even though \
-                nothing is wrong.\n",
-                deltas
-            ));
-        }
-    }
-    let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
-    if print_cpu || print_cpu_info {
-        let f = open_for_read!["/proc/stat"];
-        for line in f.lines() {
-            let s = line.unwrap();
-            let mut t = s.after("cpu");
-            while t.starts_with(' ') {
-                t = t.after(" ");
-            }
-            cpu_all_stop = t.before(" ").force_usize();
-            break;
-        }
-        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
-        for line in f.lines() {
-            let s = line.unwrap();
-            let fields = s.split(' ').collect::<Vec<&str>>();
-            cpu_this_stop = fields[13].force_usize();
-        }
-        let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
-        if print_cpu {
-            println!("{}", this_used);
-        } else {
-            println!(
-                "used cpu = {} = {:.1}% of total",
-                this_used,
-                percent_ratio(this_used, all_used)
-            );
-        }
-    }
-
-    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
-        println!("");
-    }
-    Ok(MainEncloneOutput {
-        pics: group_pics,
-        last_widths: last_widths,
-        svgs: svgs,
-        noprint: ctl.gen_opt.noprint,
-        noprintx: ctl.gen_opt.noprintx,
-        html: ctl.gen_opt.html,
-        ngroup: ctl.clono_group_opt.ngroup,
-        pretty: ctl.pretty,
+    Ok(EncloneIntermediates {
+        setup: setup,
+        ex: EncloneExacts {
+            to_bc: to_bc,
+            exact_clonotypes: exact_clonotypes,
+            raw_joins: raw_joins,
+            info: info.to_vec(),
+            orbits: orbits,
+            vdj_cells: vdj_cells,
+            join_info: join_info,
+            drefs: drefs,
+            sr: sr,
+            fate: fate,
+            is_bcr: is_bcr,
+        },
     })
 }

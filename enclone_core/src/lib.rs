@@ -11,6 +11,7 @@ pub mod median;
 pub mod opt_d;
 pub mod prepare_for_apocalypse;
 pub mod print_tools;
+pub mod set_speakers;
 pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;

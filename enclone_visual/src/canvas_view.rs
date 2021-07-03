@@ -5,6 +5,10 @@ use iced::{
     Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
 };
 use iced_native::{Font, Point, Vector};
+use lazy_static::lazy_static;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering::SeqCst;
+use std::sync::Mutex;
 use string_utils::*;
 use tables::*;
 
@@ -17,6 +21,16 @@ const LIBERATION_SANS: Font = Font::External {
     name: "LIBERATION_SANS",
     bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),
 };
+
+lazy_static! {
+    pub static ref IN_GEOMETRIES: Mutex<Vec<crate::geometry::Geometry>> =
+        Mutex::new(Vec::<crate::geometry::Geometry>::new());
+    pub static ref OUT_GEOMETRIES: Mutex<Vec<Geometry>> = Mutex::new(Vec::<Geometry>::new());
+    pub static ref OUT_GEOMETRIES_TOOLTIP: Mutex<Vec<Geometry>> =
+        Mutex::new(Vec::<Geometry>::new());
+    pub static ref POS: Mutex<Point> = Mutex::new(Point::default());
+}
+pub static POS_IS_SOME: AtomicBool = AtomicBool::new(false);
 
 #[derive(Default)]
 pub struct State {
@@ -58,54 +72,125 @@ fn to_color(c: &crate::geometry::Color) -> Color {
 
 impl<'a> canvas::Program<Message> for CanvasView {
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
-        let mut frame = Frame::new(bounds.size());
-        if self.state.geometry_value.is_some() {
-            // for now not scaling stroke width, not sure what is optimal
-            // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
-            // should file bug
-            // This could be 400.0 but we would need to take account of text width
-            // in computing the max.
-            const MAX_HEIGHT: f32 = 395.0;
-            let mut height = 0.0 as f32;
-            let mut width = 0.0 as f32;
-            let g = self.state.geometry_value.as_ref().unwrap();
-            for i in 0..g.len() {
-                match &g[i] {
-                    crate::geometry::Geometry::Text(o) => {
-                        height = height.max(o.p.y);
-                        // not right: need to add text length
-                        width = width.max(o.p.x);
-                    }
-                    crate::geometry::Geometry::Rectangle(rect) => {
-                        height = height.max(rect.p.y + rect.height);
-                        width = width.max(rect.p.x + rect.width);
-                    }
-                    crate::geometry::Geometry::PolySegment(segs) => {
-                        for i in 0..segs.p.len() - 1 {
-                            height = height.max(segs.p[i].y);
-                            width = width.max(segs.p[i].x);
-                        }
-                    }
-                    crate::geometry::Geometry::Segment(seg) => {
-                        height = height.max(seg.p1.y);
-                        height = height.max(seg.p2.y);
-                        width = width.max(seg.p1.x);
-                        width = width.max(seg.p2.x);
-                    }
-                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                        height = height.max(circ.p.y + circ.r);
-                        width = width.max(circ.p.x + circ.r);
-                    }
-                    crate::geometry::Geometry::Circle(circ) => {
-                        height = height.max(circ.p.y + circ.r);
-                        width = width.max(circ.p.x + circ.r);
-                    }
-                };
+        // Suppose there is no geometry.
+
+        if self.state.geometry_value.is_none() {
+            POS_IS_SOME.store(false, SeqCst);
+            IN_GEOMETRIES.lock().unwrap().clear();
+            return Vec::new();
+        }
+
+        // Suppose we have geometries.
+
+        let pos = cursor.position_in(&bounds);
+
+        // Use cached geometries if possible.
+        //
+        // Annoyingly, can't do this:
+        // if pos_changed = POS.lock().unwrap() != pos {
+        // or
+        // if IN_GEOMETRIES.lock().unwrap() == self.state.geometry_value.as_ref().unwrap() {
+
+        let mut pos_same = true;
+        let last_pos_is_some = POS_IS_SOME.load(SeqCst);
+        if !last_pos_is_some && pos.is_none() {
+        } else if last_pos_is_some && pos.is_none() {
+            pos_same = false;
+        } else if !last_pos_is_some && pos.is_some() {
+            pos_same = false;
+        } else if POS.lock().unwrap().x != pos.unwrap().x {
+            pos_same = false;
+        } else if POS.lock().unwrap().y != pos.unwrap().y {
+            pos_same = false;
+        }
+        let mut geom_same = true;
+        let in_geometries = &self.state.geometry_value.as_ref().unwrap();
+        if IN_GEOMETRIES.lock().unwrap().len() != in_geometries.len() {
+            geom_same = false;
+        } else {
+            for i in 0..in_geometries.len() {
+                if IN_GEOMETRIES.lock().unwrap()[i] != in_geometries[i] {
+                    geom_same = false;
+                    break;
+                }
             }
-            let mut scale = 1.0;
-            if height > MAX_HEIGHT {
-                scale = MAX_HEIGHT / height;
-            }
+        }
+        if pos_same && geom_same {
+            let mut v = OUT_GEOMETRIES.lock().unwrap().clone();
+            v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
+            return v;
+        }
+        if !geom_same {
+            IN_GEOMETRIES.lock().unwrap().clear();
+            IN_GEOMETRIES
+                .lock()
+                .unwrap()
+                .append(&mut self.state.geometry_value.as_ref().unwrap().clone());
+        }
+        if pos.is_none() {
+            POS_IS_SOME.store(false, SeqCst);
+        } else {
+            POS.lock().unwrap().x = pos.unwrap().x;
+            POS.lock().unwrap().y = pos.unwrap().y;
+        }
+
+        // Compute width and height and scale.
+        //
+        // for now not scaling stroke width, not sure what is optimal
+        // scaling seems to be needed only because .height(SVG_WIDTH) doesn't work on a canvas
+        // should file bug
+        // This could be 400.0 but we would need to take account of text width
+        // in computing the max.
+
+        let g = self.state.geometry_value.as_ref().unwrap();
+        const MAX_HEIGHT: f32 = 395.0;
+        let mut height = 0.0 as f32;
+        let mut width = 0.0 as f32;
+        for i in 0..g.len() {
+            match &g[i] {
+                crate::geometry::Geometry::Text(o) => {
+                    height = height.max(o.p.y);
+                    // not right: need to add text length
+                    width = width.max(o.p.x);
+                }
+                crate::geometry::Geometry::Rectangle(rect) => {
+                    height = height.max(rect.p.y + rect.height);
+                    width = width.max(rect.p.x + rect.width);
+                }
+                crate::geometry::Geometry::PolySegment(segs) => {
+                    for i in 0..segs.p.len() - 1 {
+                        height = height.max(segs.p[i].y);
+                        width = width.max(segs.p[i].x);
+                    }
+                }
+                crate::geometry::Geometry::Segment(seg) => {
+                    height = height.max(seg.p1.y);
+                    height = height.max(seg.p2.y);
+                    width = width.max(seg.p1.x);
+                    width = width.max(seg.p2.x);
+                }
+                crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
+                crate::geometry::Geometry::Circle(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
+            };
+        }
+        let mut scale = 1.0;
+        if height > MAX_HEIGHT {
+            scale = MAX_HEIGHT / height;
+        }
+
+        // Rebuild geometries if needed.
+
+        let mut v;
+        if geom_same {
+            v = OUT_GEOMETRIES.lock().unwrap().clone();
+        } else {
+            let mut frame = Frame::new(bounds.size());
             for i in 0..g.len() {
                 match &g[i] {
                     crate::geometry::Geometry::Text(o) => {
@@ -213,55 +298,61 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     }
                 };
             }
-            let pos = cursor.position_in(&bounds);
-            if pos.is_some() {
-                for i in 0..g.len() {
-                    match &g[i] {
-                        crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                            let xdiff = pos.unwrap().x - circ.p.x * scale;
-                            let ydiff = pos.unwrap().y - circ.p.y * scale;
-                            let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
-                            if dist <= circ.r {
-                                let stext = circ.t.clone();
-                                let xs = stext.split(',').collect::<Vec<&str>>();
-                                let mut rows = Vec::<Vec<String>>::new();
-                                for i in 0..xs.len() {
-                                    if i > 0 {
-                                        rows.push(vec!["\\hline".to_string(); 2]);
-                                    }
-                                    let mut row = Vec::<String>::new();
-                                    row.push(xs[i].before("=").to_string());
-                                    row.push(xs[i].after("=").to_string());
-                                    rows.push(row);
-                                }
-                                let mut log = String::new();
-                                print_tabular_vbox(
-                                    &mut log,
-                                    &rows,
-                                    1,
-                                    &b"l|r".to_vec(),
-                                    false,
-                                    true,
-                                );
-                                let xpos = 15.0 + width * scale;
-                                frame.translate(Vector { x: xpos, y: 0.0 });
-                                let text = canvas::Text {
-                                    content: log,
-                                    size: 18.0,
-                                    font: DEJAVU,
-                                    color: Color::from_rgb(0.5, 0.3, 0.3),
-                                    ..canvas::Text::default()
-                                };
-                                frame.fill_text(text);
-                                frame.translate(Vector { x: -xpos, y: -10.0 });
-                                break;
-                            }
-                        }
-                        _ => {}
-                    };
-                }
-            }
+            v = vec![frame.into_geometry()];
+            OUT_GEOMETRIES.lock().unwrap().clear();
+            OUT_GEOMETRIES.lock().unwrap().append(&mut v.clone());
         }
-        vec![frame.into_geometry()]
+        if pos_same && pos.is_some() {
+            v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
+        }
+        if !pos_same && pos.is_some() {
+            let mut frame = Frame::new(bounds.size());
+            for i in 0..g.len() {
+                match &g[i] {
+                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                        let xdiff = pos.unwrap().x - circ.p.x * scale;
+                        let ydiff = pos.unwrap().y - circ.p.y * scale;
+                        let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                        if dist <= circ.r {
+                            let stext = circ.t.clone();
+                            let xs = stext.split(',').collect::<Vec<&str>>();
+                            let mut rows = Vec::<Vec<String>>::new();
+                            for i in 0..xs.len() {
+                                if i > 0 {
+                                    rows.push(vec!["\\hline".to_string(); 2]);
+                                }
+                                let mut row = Vec::<String>::new();
+                                row.push(xs[i].before("=").to_string());
+                                row.push(xs[i].after("=").to_string());
+                                rows.push(row);
+                            }
+                            let mut log = String::new();
+                            print_tabular_vbox(&mut log, &rows, 1, &b"l|r".to_vec(), false, true);
+                            let xpos = 15.0 + width * scale;
+                            frame.translate(Vector { x: xpos, y: 0.0 });
+                            let text = canvas::Text {
+                                content: log,
+                                size: 18.0,
+                                font: DEJAVU,
+                                color: Color::from_rgb(0.5, 0.3, 0.3),
+                                ..canvas::Text::default()
+                            };
+                            frame.fill_text(text);
+                            frame.translate(Vector { x: -xpos, y: -10.0 });
+                            break;
+                        }
+                    }
+                    _ => {}
+                };
+            }
+            let mut w = vec![frame.into_geometry()];
+            OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clear();
+            OUT_GEOMETRIES_TOOLTIP
+                .lock()
+                .unwrap()
+                .append(&mut w.clone());
+            v.append(&mut w);
+        }
+        v
     }
 }

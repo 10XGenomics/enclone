@@ -19,7 +19,7 @@ pub fn delete_doublets(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
 ) {
-    if ctl.clono_filt_opt.doublet {
+    if ctl.clono_filt_opt_def.doublet {
         // Define pure subclonotypes.  To do this we break each clonotype up by chain signature.
         // Note duplication of code with print_clonotypes.rs.  And this is doing some
         // superfluous compute.

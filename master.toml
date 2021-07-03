@@ -101,5 +101,5 @@ tonic = "0.4"
 tonic-build = { version = "0.4", features = [] }
 # usvg = { version = "0.14.1", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="6e69244cbb9802fe720e990f9387673b96475ae0" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="65c2a623e7e7509e5f4718862995c3cb4f31ea35" }
 vector_utils = "0.1.3"

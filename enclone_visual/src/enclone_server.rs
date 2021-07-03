@@ -7,7 +7,8 @@ use crate::proto::{
 };
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
-use enclone_main::main_enclone::{main_enclone, MainEncloneOutput};
+use enclone_main::main_enclone::*;
+use enclone_main::stop::*;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
@@ -22,7 +23,7 @@ use tonic::{transport::Server, Code, Request, Response, Status};
 
 pub struct EncloneAnalyzer {
     enclone_command: Arc<Mutex<String>>,
-    enclone_output: Arc<Mutex<MainEncloneOutput>>, // Caches result from main_enclone.
+    enclone_state: Arc<Mutex<EncloneState>>, // caches enclone state
 }
 
 #[tonic::async_trait]
@@ -55,9 +56,139 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         eprintln!("Running enclone:\n  {}", args.join(" "));
-        let result = main_enclone(&args).await;
+        let setup = main_enclone_setup(&args);
+        if setup.is_err() {
+            let err_msg = format!("{}", setup.err().unwrap());
+            let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+            if server_debug {
+                msg += &mut format!(
+                    "The arguments provided to the server were\n{}.\n",
+                    args.iter().format(" ")
+                );
+            }
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: msg,
+            };
+            return Ok(Response::new(response));
+        }
+        let setup = setup.unwrap();
+        if setup.tall.is_none() {
+            let response = EncloneResponse {
+                args: req.args,
+                plot: String::new(),
+                table: String::new(),
+            };
+            return Ok(Response::new(response));
+        }
+
+        // Check for change to setup that could change intermediates.  We are very conservative
+        // about this, and only allow changes to:
+        // * start_time
+        // * clono_filt_opt
+        // * plot_opt.
+        // More exceptions could be added.
+
+        let mut changed = false;
+        {
+            // last_setup must be scoped or enclone VIS will mysteriously fail
+            let last_setup = &self.enclone_state.lock().unwrap().inter.setup;
+            if setup.ctl.perf_opt != last_setup.ctl.perf_opt {
+                changed = true;
+            }
+            if setup.ctl.gen_opt != last_setup.ctl.gen_opt {
+                changed = true;
+            }
+            if setup.ctl.pretty != last_setup.ctl.pretty {
+                changed = true;
+            }
+            if setup.ctl.silent != last_setup.ctl.silent {
+                changed = true;
+            }
+            if setup.ctl.force != last_setup.ctl.force {
+                changed = true;
+            }
+            if setup.ctl.debug_table_printing != last_setup.ctl.debug_table_printing {
+                changed = true;
+            }
+            if setup.ctl.merge_all_impropers != last_setup.ctl.merge_all_impropers {
+                changed = true;
+            }
+            if setup.ctl.heur != last_setup.ctl.heur {
+                changed = true;
+            }
+            if setup.ctl.origin_info != last_setup.ctl.origin_info {
+                changed = true;
+            }
+            if setup.ctl.clono_filt_opt_def != last_setup.ctl.clono_filt_opt_def {
+                changed = true;
+            }
+            if setup.ctl.allele_alg_opt != last_setup.ctl.allele_alg_opt {
+                changed = true;
+            }
+            if setup.ctl.allele_print_opt != last_setup.ctl.allele_print_opt {
+                changed = true;
+            }
+            if setup.ctl.join_alg_opt != last_setup.ctl.join_alg_opt {
+                changed = true;
+            }
+            if setup.ctl.clono_print_opt != last_setup.ctl.clono_print_opt {
+                changed = true;
+            }
+            if setup.ctl.clono_group_opt != last_setup.ctl.clono_group_opt {
+                changed = true;
+            }
+            if setup.ctl.parseable_opt != last_setup.ctl.parseable_opt {
+                changed = true;
+            }
+            if setup.ctl.pathlist != last_setup.ctl.pathlist {
+                changed = true;
+            }
+            if setup.ctl.last_modified != last_setup.ctl.last_modified {
+                changed = true;
+            }
+        }
+
+        // Now proceed with the computation.
+
+        let result;
+        if !changed {
+            result = main_enclone_stop(EncloneIntermediates {
+                setup: setup,
+                ex: self.enclone_state.lock().unwrap().inter.ex.clone(),
+            });
+        } else {
+            let inter = main_enclone_start(setup);
+            if inter.is_err() {
+                let err_msg = format!("{}", inter.err().unwrap());
+                let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
+                if server_debug {
+                    msg += &mut format!(
+                        "The arguments provided to the server were\n{}.\n",
+                        args.iter().format(" ")
+                    );
+                }
+                let response = EncloneResponse {
+                    args: req.args,
+                    plot: String::new(),
+                    table: msg,
+                };
+                return Ok(Response::new(response));
+            }
+            let inter = inter.unwrap();
+            if inter.setup.tall.is_none() {
+                let response = EncloneResponse {
+                    args: req.args,
+                    plot: String::new(),
+                    table: String::new(),
+                };
+                return Ok(Response::new(response));
+            }
+            result = main_enclone_stop(inter);
+        }
         if result.is_err() {
-            let err_msg = format!("{}", result.unwrap_err().to_string());
+            let err_msg = format!("{}", result.err().unwrap());
             let mut msg = format!("enclone failed, here is the error message:\n{}\n", err_msg);
             if server_debug {
                 msg += &mut format!(
@@ -82,10 +213,10 @@ impl Analyzer for EncloneAnalyzer {
         // Update stored result
         let response;
         {
-            let mut enclone_output = self.enclone_output.lock().unwrap();
-            *enclone_output = output;
-            let mut table = enclone_output.pics.clone();
-            let mut widths = enclone_output.last_widths.clone();
+            let mut enclone_state = self.enclone_state.lock().unwrap();
+            *enclone_state = output;
+            let mut table = enclone_state.outs.pics.clone();
+            let mut widths = enclone_state.outs.last_widths.clone();
             if table.len() > 100 {
                 table.truncate(100);
                 widths.truncate(100);
@@ -93,15 +224,15 @@ impl Analyzer for EncloneAnalyzer {
             let table_string = combine_group_pics(
                 &table,
                 &widths,
-                enclone_output.noprint,
-                enclone_output.noprintx,
-                enclone_output.html,
-                enclone_output.ngroup,
-                enclone_output.pretty,
+                enclone_state.outs.noprint,
+                enclone_state.outs.noprintx,
+                enclone_state.outs.html,
+                enclone_state.outs.ngroup,
+                enclone_state.outs.pretty,
             );
             let mut plot = String::new();
-            if enclone_output.svgs.len() > 0 {
-                plot = enclone_output.svgs[0].clone();
+            if enclone_state.outs.svgs.len() > 0 {
+                plot = enclone_state.outs.svgs[0].clone();
             }
             response = EncloneResponse {
                 args: req.args,
@@ -127,13 +258,13 @@ impl Analyzer for EncloneAnalyzer {
     ) -> Result<Response<ClonotypeResponse>, Status> {
         let req: ClonotypeRequest = request.into_inner();
         let id = req.clonotype_number as usize;
-        let enclone_output = self.enclone_output.lock().unwrap();
-        if id >= enclone_output.pics.len() {
+        let enclone_state = self.enclone_state.lock().unwrap();
+        if id >= enclone_state.outs.pics.len() {
             return Err(Status::new(Code::Internal, "group id too large"));
         }
 
         // Send back the clonotype picture.
-        let table = &enclone_output.pics[id];
+        let table = &enclone_state.outs.pics[id];
         Ok(Response::new(ClonotypeResponse {
             table: table.to_string(),
         }))
@@ -164,10 +295,10 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     let addr = ip_port;
     let enclone_command = Arc::new(Mutex::new("".to_string()));
-    let enclone_output = Arc::new(Mutex::new(MainEncloneOutput::default()));
+    let enclone_state = Arc::new(Mutex::new(EncloneState::default()));
     let analyzer = EncloneAnalyzer {
         enclone_command: Arc::clone(&enclone_command),
-        enclone_output: Arc::clone(&enclone_output),
+        enclone_state: Arc::clone(&enclone_state),
     };
 
     let listener = TcpListener::bind(addr).await?;
@@ -183,14 +314,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
             match AnalyzerClient::connect(dest.clone()).await {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
-                        println!("For debugging:");
-                        println!(
-                            "  grpcurl -plaintext -import-path ./enclone \
-                             -proto ./enclone/server.proto 127.0.0.1:{}",
-                            local_addr.port()
-                        );
-                        println!("To run the client (in another terminal window):");
-                        println!("  cd enclone_client; yarn start");
+                        println!("using port {}", local_addr.port());
                         return;
                     }
                     Err(e) => warn!("failed to ping, ({:?}), reattempting in 1s", e),

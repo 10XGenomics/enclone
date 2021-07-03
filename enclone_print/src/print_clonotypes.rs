@@ -18,6 +18,7 @@ use crate::print_utils5::*;
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
+use enclone_core::set_speakers::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;

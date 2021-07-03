@@ -55,6 +55,7 @@ pub fn load_gex(
         String,
         MirrorSparseMatrix,
         Vec<String>,
+        Vec<String>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -73,6 +74,7 @@ pub fn load_gex(
             String::new(),
             MirrorSparseMatrix::new(),
             Vec::<String>::new(),
+            Vec::<String>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -85,6 +87,7 @@ pub fn load_gex(
     //    somehow the parallelism is not working.
     // 2. We know where the time is spent in the loop, and this is marked below.
     results.par_iter_mut().for_each(|r| {
+        let pathlist = &mut r.15;
         let i = r.0;
         if gex_outs[i].len() > 0 {
             // First define the path where the GEX files should live, and make sure that the path
@@ -117,6 +120,7 @@ pub fn load_gex(
             for x in h5p.iter() {
                 let p = format!("{}/{}", outs, x);
                 if path_exists(&p) {
+                    pathlist.push(p.clone());
                     h5_path = p;
                     break;
                 }
@@ -162,6 +166,7 @@ pub fn load_gex(
             for x in analysis.iter() {
                 pca_file = format!("{}/pca/10_components/projection.csv", x);
                 if path_exists(&pca_file) {
+                    pathlist.push(pca_file.clone());
                     break;
                 }
             }
@@ -172,6 +177,7 @@ pub fn load_gex(
             for x in analysis.iter() {
                 cluster_file = format!("{}/clustering/graphclust/clusters.csv", x);
                 if path_exists(&cluster_file) {
+                    pathlist.push(cluster_file.clone());
                     break;
                 }
             }
@@ -196,6 +202,8 @@ pub fn load_gex(
                         f
                     );
                     return;
+                } else {
+                    pathlist.push(f.to_string());
                 }
             }
 
@@ -219,6 +227,7 @@ pub fn load_gex(
                 let c = &csvs[i];
                 if path_exists(&c) {
                     csv = c.clone();
+                    pathlist.push(c.to_string());
                     break;
                 }
             }
@@ -246,6 +255,7 @@ pub fn load_gex(
                         bin_file_state = 3;
                     }
                 } else {
+                    pathlist.push(bin_file.clone());
                     // THE FOLLOWING LINE HAS BEEN OBSERVED TO FAIL SPORADICALLY.  THIS HAS
                     // HAPPENED MULTIPLE TIMES.  THE FAIL WAS IN
                     // binary_read_to_ref::<u32>(&mut ff, &mut x[0], 11).unwrap();
@@ -287,6 +297,7 @@ pub fn load_gex(
             // Read cell types.
 
             if path_exists(&types_file) {
+                pathlist.push(types_file.clone());
                 let f = open_userfile_for_read(&types_file);
                 let mut count = 0;
                 for line in f.lines() {
@@ -302,7 +313,7 @@ pub fn load_gex(
                 }
             } else if ctl.gen_opt.mark_stats
                 || ctl.gen_opt.mark_stats2
-                || ctl.clono_filt_opt.marked_b
+                || ctl.clono_filt_opt_def.marked_b
             {
                 r.11 = format!(
                     "\nIf you use MARK_STATS or MARK_STATS2 or MARKED_B, celltypes.csv has to \
@@ -530,6 +541,7 @@ pub fn load_gex(
 
             let top_file = format!("{}/feature_barcode_matrix_top.bin", outs);
             if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
                 read_from_file(&mut r.13, &top_file);
                 let nrows = r.13.nrows();
                 for i in 0..nrows {
@@ -576,6 +588,9 @@ pub fn load_gex(
         }
         unique_sort(&mut r.6);
     });
+    for i in 0..results.len() {
+        ctl.pathlist.append(&mut results[i].15.clone());
+    }
     ctl.perf_stats(&t, "in load_gex main loop");
 
     // Test for error.
@@ -604,7 +619,7 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);

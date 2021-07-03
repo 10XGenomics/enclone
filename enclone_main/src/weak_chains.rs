@@ -75,7 +75,7 @@ pub fn weak_chains(
             for j in 0..cols {
                 if ncells[j] <= 20 && 8 * ncells[j] < total_cells {
                     for d in col_entries[j].iter() {
-                        if ctl.clono_filt_opt.weak_chains {
+                        if ctl.clono_filt_opt_def.weak_chains {
                             res.2.push(exacts[*d]);
                         }
                         let ex = &exact_clonotypes[exacts[*d]];

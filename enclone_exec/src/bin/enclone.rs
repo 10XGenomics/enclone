@@ -96,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Standard run of enclone.
 
     if args.len() < 2 || args[1] != "SERVER" {
-        let res = main_enclone(&mut args).await;
+        let res = main_enclone(&mut args);
         if res.is_err() {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
@@ -111,7 +111,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //
             // The kill makes the screen flash.  This is pretty horrible.
 
-            eprintln!("{}", res.unwrap_err());
+            eprintln!("{}", res.err().unwrap());
             if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
                 thread::sleep(Duration::from_millis(10));
                 let ppid = getppid();
