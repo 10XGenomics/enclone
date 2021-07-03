@@ -314,26 +314,26 @@ pub struct JoinAlgOpt {
 
 // Clonotype filtering options.
 // These fall into 2 categories: 1) on by default and 2) user-specified.
-// Note that ClonoFiltOpt options are not allowed to affect intermediate computation. 
+// Note that ClonoFiltOpt options are not allowed to affect intermediate computation.
 
 #[derive(Default, PartialEq)]
 pub struct ClonoFiltOptDefault {
     pub marked_b: bool, // only print clonotypes having a mark and which are typed as B cells
-    pub donor: bool, // allow cells from different donors to be placed in the same clonotype
+    pub donor: bool,    // allow cells from different donors to be placed in the same clonotype
     pub weak_foursies: bool, // filter weak foursies
-    pub ngex: bool,          // turn off gex filtering,
+    pub ngex: bool,     // turn off gex filtering,
     pub non_cell_mark: bool,
-    pub weak_onesies: bool, // filter weak onesies
-    pub doublet: bool, // filter putative doublets
-    pub fcell: Vec<Node>, // constraints from FCELL
-    pub umi_filt: bool, // umi count filter
-    pub umi_filt_mark: bool, // umi count filter (but only mark)
-    pub umi_ratio_filt: bool, // umi ratio filter
+    pub weak_onesies: bool,        // filter weak onesies
+    pub doublet: bool,             // filter putative doublets
+    pub fcell: Vec<Node>,          // constraints from FCELL
+    pub umi_filt: bool,            // umi count filter
+    pub umi_filt_mark: bool,       // umi count filter (but only mark)
+    pub umi_ratio_filt: bool,      // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
-    pub weak_chains: bool, // filter weak chains from clonotypes
-    pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
-    pub ncross: bool,        // turn off cross filtering,
-    pub bc_dup: bool, // filter duplicated barcodes within an exact subclonotype
+    pub weak_chains: bool,         // filter weak chains from clonotypes
+    pub whitef: bool,              // only show clonotypes exhibiting whitelist contamination
+    pub ncross: bool,              // turn off cross filtering,
+    pub bc_dup: bool,              // filter duplicated barcodes within an exact subclonotype
 }
 
 #[derive(Default)]
@@ -363,7 +363,7 @@ pub struct ClonoFiltOpt {
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub bound_type: Vec<String>, // types of those bounds
     pub barcode: Vec<String>, // requires one of these barcodes
-    pub marked: bool,              // only print clonotypes having a mark
+    pub marked: bool, // only print clonotypes having a mark
     pub inkt: bool,
     pub mait: bool,
     pub d_inconsistent: bool,
@@ -463,7 +463,7 @@ pub struct EncloneControl {
     pub allele_print_opt: AllelePrintOpt, // print options for allele finding
     pub join_alg_opt: JoinAlgOpt,         // algorithmic options for join
     pub join_print_opt: JoinPrintOpt,     // printing options for join operations
-    pub clono_filt_opt_def: ClonoFiltOptDefault,   // default filtering options for clonotypes
+    pub clono_filt_opt_def: ClonoFiltOptDefault, // default filtering options for clonotypes
     pub clono_filt_opt: ClonoFiltOpt,     // filtering options for clonotypes
     pub clono_print_opt: ClonoPrintOpt,   // printing options for clonotypes
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes

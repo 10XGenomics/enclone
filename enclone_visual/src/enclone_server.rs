@@ -151,12 +151,10 @@ impl Analyzer for EncloneAnalyzer {
 
         let result;
         if !changed {
-            result = main_enclone_stop(
-                EncloneIntermediates {
-                    setup: setup,
-                    ex: self.enclone_state.lock().unwrap().inter.ex.clone(),
-                }
-            );
+            result = main_enclone_stop(EncloneIntermediates {
+                setup: setup,
+                ex: self.enclone_state.lock().unwrap().inter.ex.clone(),
+            });
         } else {
             let inter = main_enclone_start(setup);
             if inter.is_err() {
