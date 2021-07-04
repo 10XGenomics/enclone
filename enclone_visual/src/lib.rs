@@ -61,7 +61,6 @@ async fn compute() -> Result<(), String> {
 }
 
 async fn flash_copy_image_button() -> Result<(), String> {
-    thread::sleep(Duration::from_millis(400));
     Ok(())
 }
 

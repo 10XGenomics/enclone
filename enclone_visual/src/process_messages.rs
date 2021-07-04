@@ -214,10 +214,19 @@ impl EncloneVisual {
             }
 
             Message::GraphicsCopyButtonFlashed(_) => {
+                // Convert to PNG and copy to clipboard, and flash the button for the maximum of
+                // the conversion time and MIN_FLASH_SECONDS.
+                const MIN_FLASH_SECONDS: f64 = 0.4;
+                let t = Instant::now();
                 if self.png_value.is_empty() {
                     self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
                 }
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
+                let used = elapsed(&t);
+                let extra = MIN_FLASH_SECONDS - used;
+                if extra > 0.0 {
+                    thread::sleep(Duration::from_millis((extra * 1000.0).round() as u64));
+                }
                 self.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
