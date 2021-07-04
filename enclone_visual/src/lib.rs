@@ -72,8 +72,9 @@ const DEJAVU_BOLD: Font = Font::External {
 
 impl EncloneVisual {
     pub fn post_svg(&mut self, svg: &str) {
-        self.png_value = convert_svg_to_png(&svg.as_bytes());
+        self.png_value.clear();
         let geometry = svg_to_geometry(&svg, false);
+        let mut using_geometry = false;
         if geometry.is_some() {
             let mut ok = true;
             for i in 0..geometry.as_ref().unwrap().len() {
@@ -87,15 +88,15 @@ impl EncloneVisual {
                 }
             }
             if ok {
+                using_geometry = true;
                 self.canvas_view.state.geometry_value = geometry;
-            } else {
-                self.canvas_view.state.geometry_value = None;
             }
-        } else {
-            if VERBOSE.load(SeqCst) {
-                println!("translation from svg to geometries failed");
-            }
+        } else if VERBOSE.load(SeqCst) {
+            println!("translation from svg to geometries failed");
+        }
+        if !using_geometry {
             self.canvas_view.state.geometry_value = None;
+            self.png_value = convert_svg_to_png(&svg.as_bytes());
         }
     }
 }

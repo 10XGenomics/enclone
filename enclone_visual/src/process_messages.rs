@@ -207,6 +207,9 @@ impl EncloneVisual {
             */
             Message::GraphicsCopyButtonPressed => {
                 self.copy_image_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                if self.png_value.is_empty() {
+                    self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
+                }
                 copy_png_bytes_to_mac_clipboard(&self.png_value);
                 Command::perform(
                     flash_copy_image_button(),
