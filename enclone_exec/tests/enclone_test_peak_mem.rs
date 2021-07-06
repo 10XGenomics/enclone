@@ -38,7 +38,9 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test peak memory.  This is designed for one server at 10x Genomics
+// Test peak memory.  This is designed for one server at 10x Genomics.  This used to test for
+// *less* memory than expected, but at a certain point, we started observing cases where the
+// memory was lower, and then on a subsequent run went back to expected value.
 //
 // This is in a separate file because doing so makes it possible to run just this one test,
 // and have it run by ./test, and have it not run by the CI.
