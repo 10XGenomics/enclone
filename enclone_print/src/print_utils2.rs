@@ -61,6 +61,7 @@ pub fn row_fill(
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     extra_args: &Vec<String>,
     all_vars: &Vec<String>,
+    need_gex: bool,
     fate: &Vec<HashMap<String, String>>,
 ) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
@@ -139,6 +140,7 @@ pub fn row_fill(
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
+    let mut count_unsorted = Vec::<usize>::new();
     let mut fcounts = Vec::<f64>::new();
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
@@ -199,97 +201,99 @@ pub fn row_fill(
         }
     }
     let mut entropies = Vec::<f64>::new();
-    for l in 0..ex.clones.len() {
-        let li = ex.clones[l][0].dataset_index;
-        let bc = ex.clones[l][0].barcode.clone();
-        if !gex_info.gex_barcodes.is_empty() {
-            if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
-                n_gex += 1;
-                n_gexs.push(1);
-            } else {
-                n_gexs.push(0);
-            }
-            let mut count = 0;
-            let mut fcount = 0.0;
-            let mut entropy = 0.0;
-            let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-            if p >= 0 {
-                let mut raw_count = 0;
-                if gex_info.gex_matrices[li].initialized() {
-                    let row = gex_info.gex_matrices[li].row(p as usize);
-                    for j in 0..row.len() {
-                        let f = row[j].0;
-                        let n = row[j].1;
-                        if gex_info.is_gex[li][f] {
-                            if have_entropy {
-                                let q = n as f64 / total_counts[l] as f64;
-                                entropy -= q * q.log2();
-                            }
-                            raw_count += n;
-                        }
-                    }
-                } else {
-                    let z1 = gex_info.h5_indptr[li][p as usize] as usize;
-                    let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                    let d: Vec<u32>;
-                    let ind: Vec<u32>;
-                    if ctl.gen_opt.h5_pre {
-                        d = h5_data[li].1[z1..z2].to_vec();
-                        ind = h5_data[li].2[z1..z2].to_vec();
-                    } else {
-                        d = d_readers[li]
-                            .as_ref()
-                            .unwrap()
-                            .read_slice(s![z1..z2])
-                            .unwrap()
-                            .to_vec();
-                        ind = ind_readers[li]
-                            .as_ref()
-                            .unwrap()
-                            .read_slice(s![z1..z2])
-                            .unwrap()
-                            .to_vec();
-                    }
-                    for j in 0..d.len() {
-                        if gex_info.is_gex[li][ind[j] as usize] {
-                            let n = d[j] as usize;
-                            if lvarsh.contains(&"entropy".to_string()) {
-                                let q = n as f64 / total_counts[l] as f64;
-                                entropy -= q * q.log2();
-                            }
-                            raw_count += n;
-                        }
-                    }
-                    d_all[l] = d;
-                    ind_all[l] = ind;
-                }
-                if !ctl.gen_opt.full_counts {
-                    count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
-                    fcount = raw_count as f64 * gex_info.gex_mults[li];
-                } else {
-                    count = (raw_count as f64).round() as usize;
-                    fcount = raw_count as f64;
-                }
-            }
-            counts.push(count);
-            fcounts.push(fcount);
-            entropies.push(entropy);
-        }
-    }
-    let count_unsorted = counts.clone();
-    counts.sort();
-    for n in counts.iter() {
-        if *n < 100 {
-            *gex_low += 1;
-        }
-    }
     let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
-    if counts.len() > 0 {
-        gex_median = rounded_median(&counts);
-        gex_min = counts[0];
-        gex_max = counts[counts.len() - 1];
-        gex_sum = fcounts.iter().sum::<f64>();
-        gex_mean = gex_sum / fcounts.len() as f64;
+    if have_entropy || need_gex {
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = ex.clones[l][0].barcode.clone();
+            if !gex_info.gex_barcodes.is_empty() {
+                if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                    n_gex += 1;
+                    n_gexs.push(1);
+                } else {
+                    n_gexs.push(0);
+                }
+                let mut count = 0;
+                let mut fcount = 0.0;
+                let mut entropy = 0.0;
+                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                if p >= 0 {
+                    let mut raw_count = 0;
+                    if gex_info.gex_matrices[li].initialized() {
+                        let row = gex_info.gex_matrices[li].row(p as usize);
+                        for j in 0..row.len() {
+                            let f = row[j].0;
+                            let n = row[j].1;
+                            if gex_info.is_gex[li][f] {
+                                if have_entropy {
+                                    let q = n as f64 / total_counts[l] as f64;
+                                    entropy -= q * q.log2();
+                                }
+                                raw_count += n;
+                            }
+                        }
+                    } else {
+                        let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                        let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
+                        let d: Vec<u32>;
+                        let ind: Vec<u32>;
+                        if ctl.gen_opt.h5_pre {
+                            d = h5_data[li].1[z1..z2].to_vec();
+                            ind = h5_data[li].2[z1..z2].to_vec();
+                        } else {
+                            d = d_readers[li]
+                                .as_ref()
+                                .unwrap()
+                                .read_slice(s![z1..z2])
+                                .unwrap()
+                                .to_vec();
+                            ind = ind_readers[li]
+                                .as_ref()
+                                .unwrap()
+                                .read_slice(s![z1..z2])
+                                .unwrap()
+                                .to_vec();
+                        }
+                        for j in 0..d.len() {
+                            if gex_info.is_gex[li][ind[j] as usize] {
+                                let n = d[j] as usize;
+                                if lvarsh.contains(&"entropy".to_string()) {
+                                    let q = n as f64 / total_counts[l] as f64;
+                                    entropy -= q * q.log2();
+                                }
+                                raw_count += n;
+                            }
+                        }
+                        d_all[l] = d;
+                        ind_all[l] = ind;
+                    }
+                    if !ctl.gen_opt.full_counts {
+                        count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                        fcount = raw_count as f64 * gex_info.gex_mults[li];
+                    } else {
+                        count = (raw_count as f64).round() as usize;
+                        fcount = raw_count as f64;
+                    }
+                }
+                counts.push(count);
+                fcounts.push(fcount);
+                entropies.push(entropy);
+            }
+        }
+        count_unsorted = counts.clone();
+        counts.sort();
+        for n in counts.iter() {
+            if *n < 100 {
+                *gex_low += 1;
+            }
+        }
+        if counts.len() > 0 {
+            gex_median = rounded_median(&counts);
+            gex_min = counts[0];
+            gex_max = counts[counts.len() - 1];
+            gex_sum = fcounts.iter().sum::<f64>();
+            gex_mean = gex_sum / fcounts.len() as f64;
+        }
     }
     let entropies_unsorted = entropies.clone();
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());

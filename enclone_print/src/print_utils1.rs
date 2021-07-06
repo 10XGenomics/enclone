@@ -15,6 +15,66 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn compute_field_types(
+    ctl: &EncloneControl,
+    rsi: &ColInfo,
+    show_aa: &Vec<Vec<usize>>,
+) -> Vec<Vec<u8>> {
+    let cols = rsi.mat.len();
+    let mut field_types = vec![Vec::new(); cols];
+    for cx in 0..cols {
+        let mut ft = vec![0 as u8; show_aa[cx].len()];
+        let cs1 = rsi.cdr1_starts[cx];
+        let cs2 = rsi.cdr2_starts[cx];
+        let cs3 = rsi.cdr3_starts[cx];
+        let n3 = rsi.cdr3_lens[cx];
+        let fs1 = rsi.fr1_starts[cx];
+        let fs2 = rsi.fr2_starts[cx];
+        let fs3 = rsi.fr3_starts[cx];
+        let show_cdr1 = cs1.is_some()
+            && fs2.is_some()
+            && cs1.unwrap() <= fs2.unwrap()
+            && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
+        let show_cdr2 = cs2.is_some()
+            && fs3.is_some()
+            && cs2.unwrap() <= fs3.unwrap()
+            && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
+        let show_cdr3 = ctl.clono_print_opt.amino.contains(&"cdr3".to_string());
+        let show_fwr1 = cs1.is_some()
+            && rsi.fr1_starts[cx] <= cs1.unwrap()
+            && ctl.clono_print_opt.amino.contains(&"fwr1".to_string());
+        let show_fwr2 = fs2.is_some()
+            && cs2.is_some()
+            && fs2.unwrap() <= cs2.unwrap()
+            && ctl.clono_print_opt.amino.contains(&"fwr2".to_string());
+        let show_fwr3 = fs3.is_some()
+            && fs3.unwrap() <= rsi.cdr3_starts[cx]
+            && ctl.clono_print_opt.amino.contains(&"fwr3".to_string());
+        let show_fwr4 = ctl.clono_print_opt.amino.contains(&"fwr4".to_string());
+        for (j, p) in show_aa[cx].iter().enumerate() {
+            if show_cdr1 && *p >= cs1.unwrap() / 3 && *p < fs2.unwrap() / 3 {
+                ft[j] = 1;
+            } else if show_cdr2 && *p >= cs2.unwrap() / 3 && *p < fs3.unwrap() / 3 {
+                ft[j] = 2;
+            } else if show_cdr3 && *p >= cs3 / 3 && *p < cs3 / 3 + n3 {
+                ft[j] = 3;
+            } else if show_fwr1 && *p >= fs1 / 3 && *p < cs1.unwrap() / 3 {
+                ft[j] = 4;
+            } else if show_fwr2 && *p >= fs2.unwrap() / 3 && *p < cs2.unwrap() / 3 {
+                ft[j] = 5;
+            } else if show_fwr3 && *p >= fs3.unwrap() / 3 && *p < rsi.cdr3_starts[cx] / 3 {
+                ft[j] = 6;
+            } else if show_fwr4 && *p >= cs3 / 3 + n3 {
+                ft[j] = 7;
+            }
+        }
+        field_types[cx] = ft;
+    }
+    field_types
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn make_table(
     ctl: &EncloneControl,
     rows: &mut Vec<Vec<String>>,
