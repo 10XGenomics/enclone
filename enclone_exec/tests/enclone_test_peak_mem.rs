@@ -55,7 +55,7 @@ fn test_peak_memory() {
     // Specify mem requirements.
 
     let dataset = "BCR=123085";
-    let expected_mb = 362.7;
+    let expected_mb = 369.6;
 
     let max_percent_dev = 0.5;
 
@@ -123,7 +123,7 @@ fn test_peak_memory() {
         mean += mems[i];
     }
     mean /= mems.len() as f64;
-    let dev = 100.0 * (mean - expected_mb).abs() / expected_mb;
+    let dev = 100.0 * (mean - expected_mb) / expected_mb;
     let msg = format!(
         "Peak mem of {:.1} MB observed, which differs from expected value of {} by {:.2}%.",
         mean, expected_mb, dev

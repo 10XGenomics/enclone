@@ -518,6 +518,7 @@ pub fn print_clonotypes(
                         for m in i + 1..lvars.len() {
                             lvarsc.push(lvars[m].clone());
                         }
+                        break;
                     }
                 }
                 let lvars = lvarsc.clone();
