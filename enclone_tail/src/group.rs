@@ -58,6 +58,7 @@ pub fn group_and_print_clonotypes(
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     svgs: &mut Vec<String>,
+    summary: &mut String,
 ) -> Result<(), String> {
     // Build index to join info.
 
@@ -828,6 +829,7 @@ pub fn group_and_print_clonotypes(
 
     let mut nclono2 = 0;
     let mut two_chain = 0;
+    let mut slog = Vec::<u8>::new();
     print_stats(
         &tall,
         &exacts,
@@ -837,11 +839,13 @@ pub fn group_and_print_clonotypes(
         &gex_info,
         &vdj_cells,
         &fate,
-        &mut logx,
+        &mut slog,
         &mut nclono2,
         &mut two_chain,
         &opt_d_val,
     );
+    *summary = stringme(&slog);
+    logx.append(&mut slog);
 
     // Print to stdout.
 

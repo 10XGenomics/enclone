@@ -56,6 +56,7 @@ pub struct MainEncloneOutput {
     pub pics: Vec<String>, // clonotype tables
     pub last_widths: Vec<usize>,
     pub svgs: Vec<String>, // SVG objects
+    pub summary: String,   // summary
     pub noprint: bool,
     pub noprintx: bool,
     pub html: bool,

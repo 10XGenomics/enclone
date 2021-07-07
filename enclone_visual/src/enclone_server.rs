@@ -52,6 +52,7 @@ impl Analyzer for EncloneAnalyzer {
                 }
             }
         }
+        args.push("SUMMARY".to_string());
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
