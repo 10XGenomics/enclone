@@ -89,7 +89,7 @@ impl Analyzer for EncloneAnalyzer {
         // Check for change to setup that could change intermediates.  We are very conservative
         // about this, and only allow changes to:
         // * start_time
-        // * clono_filt_opt
+        // * clono_filt_opt or clono_print_opt
         // * plot_opt.
         // More exceptions could be added.
 
@@ -134,9 +134,6 @@ impl Analyzer for EncloneAnalyzer {
                 changed = true;
             }
             if setup.ctl.join_alg_opt != last_setup.ctl.join_alg_opt {
-                changed = true;
-            }
-            if setup.ctl.clono_print_opt != last_setup.ctl.clono_print_opt {
                 changed = true;
             }
             if setup.ctl.clono_group_opt != last_setup.ctl.clono_group_opt {
