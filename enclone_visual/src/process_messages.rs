@@ -6,7 +6,7 @@ use crate::testsuite::TESTS;
 use crate::*;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
@@ -14,6 +14,7 @@ impl EncloneVisual {
             Message::SubmitButtonPressed(_) => {
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
+                    self.start_command = Some(Instant::now());
                     // The following sleep is needed to get the button text to consistenly update.
                     thread::sleep(Duration::from_millis(20));
                     if self.input_value.starts_with('#')
@@ -176,6 +177,10 @@ impl EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
+                println!(
+                    "total time to run command = {:.1} seconds\n",
+                    elapsed(&self.start_command.unwrap())
+                );
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -202,7 +207,6 @@ impl EncloneVisual {
             */
             Message::GraphicsCopyButtonPressed => {
                 self.copy_image_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                copy_png_bytes_to_mac_clipboard(&self.png_value);
                 Command::perform(
                     flash_copy_image_button(),
                     Message::GraphicsCopyButtonFlashed,
@@ -210,6 +214,19 @@ impl EncloneVisual {
             }
 
             Message::GraphicsCopyButtonFlashed(_) => {
+                // Convert to PNG and copy to clipboard, and flash the button for the maximum of
+                // the conversion time and MIN_FLASH_SECONDS.
+                const MIN_FLASH_SECONDS: f64 = 0.4;
+                let t = Instant::now();
+                if self.png_value.is_empty() {
+                    self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
+                }
+                copy_png_bytes_to_mac_clipboard(&self.png_value);
+                let used = elapsed(&t);
+                let extra = MIN_FLASH_SECONDS - used;
+                if extra > 0.0 {
+                    thread::sleep(Duration::from_millis((extra * 1000.0).round() as u64));
+                }
                 self.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }

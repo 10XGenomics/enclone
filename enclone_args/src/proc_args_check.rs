@@ -12,6 +12,41 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn involves_gex_fb(x: &String) -> bool {
+    let ends0 = [
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
+    ];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let mut ends = Vec::<String>::new();
+    for z in ends0.iter() {
+        for y in suffixes.iter() {
+            ends.push(format!("{}{}", z, y));
+        }
+    }
+    let mut x = x.clone();
+    if x.contains(':') {
+        x = x.rev_after(":").to_string();
+    }
+    if x.ends_with("_cell") {
+        x = x.rev_before("_cell").to_string();
+    }
+    for y in ends.iter() {
+        if x.ends_with(y) {
+            return true;
+        }
+    }
+    return x == "gex"
+        || x.starts_with("gex_")
+        || x == "n_gex"
+        || x == "clust"
+        || x == "type"
+        || x == "entropy"
+        || x == "cred"
+        || x == "cred_cell";
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn is_pattern(x: &String, parseable: bool) -> bool {
     let ends0 = [
         "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",

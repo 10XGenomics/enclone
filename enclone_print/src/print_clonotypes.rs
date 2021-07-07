@@ -15,6 +15,7 @@ use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
+use enclone_args::proc_args_check::involves_gex_fb;
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
@@ -23,7 +24,7 @@ use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::max;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -71,6 +72,31 @@ pub fn print_clonotypes(
     // Compute extra args.
 
     let extra_args = extra_args(&ctl);
+
+    // Determine if any lvars need gex info.
+
+    let mut need_gex = false;
+    {
+        let mut all_lvars = lvars.clone();
+        if ctl.parseable_opt.pout.len() == 0 {
+        } else if ctl.parseable_opt.pcols.is_empty() {
+            for i in 0..LVARS_ALLOWED.len() {
+                all_lvars.push(LVARS_ALLOWED[i].to_string());
+            }
+        } else {
+            for i in 0..ctl.parseable_opt.pcols.len() {
+                all_lvars.push(ctl.parseable_opt.pcols[i].to_string());
+            }
+        }
+        for x in extra_args.iter() {
+            all_lvars.push(x.clone());
+        }
+        for x in all_lvars.iter() {
+            if involves_gex_fb(&*x) {
+                need_gex = true;
+            }
+        }
+    }
 
     // Define parseable output columns.  The entire machinery for parseable output is controlled
     // by macros that begin with "speak".
@@ -423,58 +449,7 @@ pub fn print_clonotypes(
 
                 // Define field types corresponding to the amino acid positions to show.
 
-                let mut field_types = vec![Vec::new(); cols];
-                for cx in 0..cols {
-                    let mut ft = vec![0 as u8; show_aa[cx].len()];
-                    let cs1 = rsi.cdr1_starts[cx];
-                    let cs2 = rsi.cdr2_starts[cx];
-                    let cs3 = rsi.cdr3_starts[cx];
-                    let n3 = rsi.cdr3_lens[cx];
-                    let fs1 = rsi.fr1_starts[cx];
-                    let fs2 = rsi.fr2_starts[cx];
-                    let fs3 = rsi.fr3_starts[cx];
-                    let show_cdr1 = cs1.is_some()
-                        && fs2.is_some()
-                        && cs1.unwrap() <= fs2.unwrap()
-                        && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
-                    let show_cdr2 = cs2.is_some()
-                        && fs3.is_some()
-                        && cs2.unwrap() <= fs3.unwrap()
-                        && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
-                    let show_cdr3 = ctl.clono_print_opt.amino.contains(&"cdr3".to_string());
-                    let show_fwr1 = cs1.is_some()
-                        && rsi.fr1_starts[cx] <= cs1.unwrap()
-                        && ctl.clono_print_opt.amino.contains(&"fwr1".to_string());
-                    let show_fwr2 = fs2.is_some()
-                        && cs2.is_some()
-                        && fs2.unwrap() <= cs2.unwrap()
-                        && ctl.clono_print_opt.amino.contains(&"fwr2".to_string());
-                    let show_fwr3 = fs3.is_some()
-                        && fs3.unwrap() <= rsi.cdr3_starts[cx]
-                        && ctl.clono_print_opt.amino.contains(&"fwr3".to_string());
-                    let show_fwr4 = ctl.clono_print_opt.amino.contains(&"fwr4".to_string());
-                    for (j, p) in show_aa[cx].iter().enumerate() {
-                        if show_cdr1 && *p >= cs1.unwrap() / 3 && *p < fs2.unwrap() / 3 {
-                            ft[j] = 1;
-                        } else if show_cdr2 && *p >= cs2.unwrap() / 3 && *p < fs3.unwrap() / 3 {
-                            ft[j] = 2;
-                        } else if show_cdr3 && *p >= cs3 / 3 && *p < cs3 / 3 + n3 {
-                            ft[j] = 3;
-                        } else if show_fwr1 && *p >= fs1 / 3 && *p < cs1.unwrap() / 3 {
-                            ft[j] = 4;
-                        } else if show_fwr2 && *p >= fs2.unwrap() / 3 && *p < cs2.unwrap() / 3 {
-                            ft[j] = 5;
-                        } else if show_fwr3
-                            && *p >= fs3.unwrap() / 3
-                            && *p < rsi.cdr3_starts[cx] / 3
-                        {
-                            ft[j] = 6;
-                        } else if show_fwr4 && *p >= cs3 / 3 + n3 {
-                            ft[j] = 7;
-                        }
-                    }
-                    field_types[cx] = ft;
-                }
+                let field_types = compute_field_types(&ctl, &rsi, &show_aa);
 
                 // Build varmat.
 
@@ -543,9 +518,14 @@ pub fn print_clonotypes(
                         for m in i + 1..lvars.len() {
                             lvarsc.push(lvars[m].clone());
                         }
+                        break;
                     }
                 }
                 let lvars = lvarsc.clone();
+                let mut lvarsh = HashSet::<String>::new();
+                for x in lvars.iter() {
+                    lvarsh.insert(x.to_string());
+                }
 
                 // Now build table content.
 
@@ -682,10 +662,12 @@ pub fn print_clonotypes(
                         &vdj_cells,
                         &n_vdj_gex,
                         &lvars,
+                        &lvarsh,
                         &nd_fields,
                         &peer_groups,
                         &extra_args,
                         &all_vars,
+                        need_gex,
                         &fate,
                     );
                     stats.append(&mut these_stats.clone());

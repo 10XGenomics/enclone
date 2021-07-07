@@ -223,15 +223,12 @@ impl Application for EncloneVisual {
             .height(Units(SVG_HEIGHT));
         let _svg = &svg; // to temporarily prevent warning
 
-        let png = include_bytes!("../../img/enclone_banner.png").to_vec();
-        let banner = Image::new(iced::image::Handle::from_memory(png)).width(Units(500));
-
-        let svg_as_png = Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
-            .height(Units(SVG_HEIGHT));
+        let png_banner = include_bytes!("../../img/enclone_banner.png").to_vec();
+        let banner = Image::new(iced::image::Handle::from_memory(png_banner)).width(Units(500));
 
         let have_canvas = self.canvas_view.state.geometry_value.is_some();
         let mut graphic_row = Row::new().spacing(10);
-        if self.png_value.len() > 0 {
+        if self.svg_value.len() > 0 {
             // Show the graphic.
 
             if have_canvas {
@@ -243,6 +240,9 @@ impl Application for EncloneVisual {
                     )
                     .height(Units(SVG_HEIGHT));
             } else {
+                let svg_as_png =
+                    Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
+                        .height(Units(SVG_HEIGHT));
                 graphic_row = graphic_row.push(svg_as_png);
             }
 

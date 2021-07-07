@@ -79,11 +79,14 @@ fn main() {
         "successfully"
     };
     let used = elapsed(&t);
-    const MAX_TIME: f64 = 11.0;
-    if used > MAX_TIME {
+    const EXPECTED_TIME: f64 = 10.7;
+    const MAX_PERCENT_OVER: f64 = 2.0;
+    let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
+    if percent_over > MAX_PERCENT_OVER {
         eprintln!(
-            "\nUsed {:.1} seconds, exceeding max test time of {} seconds.",
-            used, MAX_TIME,
+            "\nUsed {:.1} seconds, exceeding expected test time of {:.1} seconds by {:.1}%, \
+                versus max allowed = {}%.",
+            used, EXPECTED_TIME, percent_over, MAX_PERCENT_OVER,
         );
         eprintln!(
             "You might want to retry a second time.  Note that if you're disconnected from\n\

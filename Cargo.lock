@@ -1487,6 +1487,7 @@ dependencies = [
  "bytes",
  "debruijn",
  "edit-distance",
+ "enclone_args",
  "enclone_core",
  "enclone_proto",
  "equiv",

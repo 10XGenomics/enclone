@@ -483,7 +483,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         h.doc2("clonotype.  The first field is n_<d1>, where d1 is the name of the dataset");
         h.doc2("having the most cells in the clonotype.  If k ≥ 2, then you'll get a");
         h.doc2("\"runner-up\" field n_<d2>, etc.  Finally you get a field n_other, however");
-        h.doc2("fields will be elided if they represent no cells.");
+        h.doc2("fields will be elided if they represent no cells.  Use a variable of this");
+        h.doc2("type at most once.");
         h.ldoc(
             "near",
             "Hamming distance of V..J DNA sequence to nearest neighbor",

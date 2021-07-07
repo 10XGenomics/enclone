@@ -7,6 +7,7 @@ use iced::{button, scrollable, text_input, Color};
 use iced_aw::modal;
 // use iced_native::{window, Event};
 use std::collections::HashMap;
+use std::time::Instant;
 
 #[derive(PartialEq)]
 pub enum ComputeState {
@@ -53,6 +54,7 @@ pub struct EncloneVisual {
     pub cookbook: HashMap<String, String>,
     pub clear_button: button::State,
     pub window_id: usize,
+    pub start_command: Option<Instant>,
 
     // parallel vectors:
     pub svg_history: Vec<String>,
