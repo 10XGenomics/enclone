@@ -28,3 +28,5 @@ MANUAL TESTING
    - enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui
    - this is a large dataset, so the canvas is huge
    - make sure scrolling is smooth and that tooltip responds essentially instantly
+
+5. test summary
