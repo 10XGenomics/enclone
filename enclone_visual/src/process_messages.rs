@@ -42,7 +42,10 @@ impl EncloneVisual {
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
+                SUMMARY_CONTENTS
+                    .lock()
+                    .unwrap()
+                    .push(self.summary_value.clone());
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -60,7 +63,10 @@ impl EncloneVisual {
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
+                SUMMARY_CONTENTS
+                    .lock()
+                    .unwrap()
+                    .push(self.summary_value.clone());
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -192,7 +198,10 @@ impl EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
+                SUMMARY_CONTENTS
+                    .lock()
+                    .unwrap()
+                    .push(self.summary_value.clone());
                 if self.svg_value.len() > 0 {
                     self.post_svg(&reply_svg);
                 }

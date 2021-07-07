@@ -318,12 +318,9 @@ impl Application for EncloneVisual {
                         include_str!["help.txt"],
                     ))
                 } else if SUMMARY.load(SeqCst) {
-                    Text::new(&format!(
-                        "{}",
-                        SUMMARY_CONTENTS.lock().unwrap()[0]
-                    ))
-                    .font(DEJAVU_BOLD)
-                    .size(14)
+                    Text::new(&format!("{}", SUMMARY_CONTENTS.lock().unwrap()[0]))
+                        .font(DEJAVU_BOLD)
+                        .size(14)
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
                     Text::new(&format!(
