@@ -71,6 +71,7 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: msg,
+                summary: String::new(),
             };
             return Ok(Response::new(response));
         }
@@ -80,6 +81,7 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: String::new(),
+                summary: String::new(),
             };
             return Ok(Response::new(response));
         }
@@ -174,6 +176,7 @@ impl Analyzer for EncloneAnalyzer {
                     args: req.args,
                     plot: String::new(),
                     table: msg,
+                    summary: String::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -183,6 +186,7 @@ impl Analyzer for EncloneAnalyzer {
                     args: req.args,
                     plot: String::new(),
                     table: String::new(),
+                    summary: String::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -201,6 +205,7 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: msg,
+                summary: String::new(),
             };
             return Ok(Response::new(response));
         }
@@ -239,12 +244,14 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: plot,
                 table: table_string,
+                summary: enclone_state.outs.summary.clone(),
             };
             if server_debug {
                 println!("sending response as follows:");
                 println!("args = {}", response.args);
                 println!("plot = {}", response.plot);
                 println!("table = {}", response.table);
+                println!("summary = {}", response.summary);
             }
         }
         if server_debug {

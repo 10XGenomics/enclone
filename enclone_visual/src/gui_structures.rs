@@ -32,10 +32,12 @@ pub struct EncloneVisual {
     pub output_value: String,
     pub svg_value: String,
     pub png_value: Vec<u8>,
+    pub summary_value: String,
     pub button: button::State,
     pub back_button: button::State,
     pub forward_button: button::State,
     pub exec_button: button::State,
+    pub summary_button: button::State,
     pub submit_button_text: String,
     pub open_state: button::State,
     pub open_state_cookbook: button::State,
@@ -58,6 +60,7 @@ pub struct EncloneVisual {
 
     // parallel vectors:
     pub svg_history: Vec<String>,
+    pub summary_history: Vec<String>,
     pub command_history: Vec<String>,
     pub is_blank: Vec<bool>,
 

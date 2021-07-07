@@ -279,6 +279,7 @@ pub static USING_SETUP: AtomicBool = AtomicBool::new(false);
 pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
+pub static SUMMARY: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
@@ -295,8 +296,10 @@ lazy_static! {
     pub static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

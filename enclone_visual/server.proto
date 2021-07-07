@@ -24,6 +24,7 @@ message EncloneResponse {
   string args = 1;
   string plot = 2; // SVG.
   string table = 3; // Full clonotype table as terminal text.
+  string summary = 4;
 }
 
 message ClonotypeRequest {

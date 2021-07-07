@@ -155,13 +155,18 @@ impl Application for EncloneVisual {
                 }
             }
 
-            // Create execute button.
+            // Create execute and summary buttons.
 
             let exec_button = Button::new(
                 &mut self.exec_button,
                 Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ExecuteButtonPressed);
+            let summary_button = Button::new(
+                &mut self.summary_button,
+                Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::OpenModalSummary);
 
             // Build the command column.
 
@@ -187,6 +192,7 @@ impl Application for EncloneVisual {
                 col = col.push(null_copy_image_button);
             }
             col = col.push(exec_button);
+            col = col.push(summary_button);
 
             // Add the command column to the row.
 
@@ -304,13 +310,20 @@ impl Application for EncloneVisual {
         Modal::new(&mut self.modal_state_help, content, move |state| {
             Card::new(
                 Text::new(""),
-                if !COOKBOOK.load(SeqCst) {
+                if !COOKBOOK.load(SeqCst) && !SUMMARY.load(SeqCst) {
                     Text::new(&format!(
                         "Welcome to enclone visual {} = {}!\n\n{}",
                         version,
                         version_float,
                         include_str!["help.txt"],
                     ))
+                } else if SUMMARY.load(SeqCst) {
+                    Text::new(&format!(
+                        "{}",
+                        SUMMARY_CONTENTS.lock().unwrap()[0]
+                    ))
+                    .font(DEJAVU_BOLD)
+                    .size(14)
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
                     Text::new(&format!(

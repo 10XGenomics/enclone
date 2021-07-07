@@ -40,6 +40,9 @@ impl EncloneVisual {
                 self.history_index -= 1;
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
+                self.summary_value = self.summary_history[self.history_index - 1].clone();
+                SUMMARY_CONTENTS.lock().unwrap().clear();
+                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -55,6 +58,9 @@ impl EncloneVisual {
                 self.history_index += 1;
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
+                self.summary_value = self.summary_history[self.history_index - 1].clone();
+                SUMMARY_CONTENTS.lock().unwrap().clear();
+                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -86,12 +92,21 @@ impl EncloneVisual {
 
             Message::OpenModalHelp => {
                 COOKBOOK.store(false, SeqCst);
+                SUMMARY.store(false, SeqCst);
                 self.modal_state_help.show(true);
                 Command::none()
             }
 
             Message::OpenModalCookbook => {
                 COOKBOOK.store(true, SeqCst);
+                SUMMARY.store(false, SeqCst);
+                self.modal_state_help.show(true);
+                Command::none()
+            }
+
+            Message::OpenModalSummary => {
+                COOKBOOK.store(false, SeqCst);
+                SUMMARY.store(true, SeqCst);
                 self.modal_state_help.show(true);
                 Command::none()
             }
@@ -155,6 +170,7 @@ impl EncloneVisual {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
                 reply_text += "\n \n \n"; // papering over truncation bug
+                let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
@@ -165,6 +181,7 @@ impl EncloneVisual {
                     }
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
                         self.svg_history.push(reply_svg.clone());
+                        self.summary_history.push(reply_summary.clone());
                         self.history_index += 1;
                         self.command_history
                             .push(self.translated_input_value.clone());
@@ -173,6 +190,9 @@ impl EncloneVisual {
                 }
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
+                self.summary_value = reply_summary.to_string();
+                SUMMARY_CONTENTS.lock().unwrap().clear();
+                SUMMARY_CONTENTS.lock().unwrap().push(self.summary_value.clone());
                 if self.svg_value.len() > 0 {
                     self.post_svg(&reply_svg);
                 }
