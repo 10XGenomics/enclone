@@ -96,7 +96,7 @@ fn main() {
     };
     let used = elapsed(&t);
     const EXPECTED_TIME: f64 = 10.7;
-    const MAX_PERCENT_OVER: f64 = 3.5;
+    const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
         eprintln!(
