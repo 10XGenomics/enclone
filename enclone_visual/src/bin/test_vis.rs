@@ -110,9 +110,32 @@ fn main() {
         );
         std::process::exit(1);
     }
+
+    // Get peak memory.  This is sensitive to changes of a few percent or so.
+
+    let maxrss_children;
+    unsafe {
+        let mut rusage: libc::rusage = std::mem::zeroed();
+        let retval = libc::getrusage(libc::RUSAGE_CHILDREN, &mut rusage as *mut _);
+        assert_eq!(retval, 0);
+        maxrss_children = rusage.ru_maxrss;
+    }
+    let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
+    const MAX_PEAK_MEM: f64 = 97.7; // expected to be exceeded roughly 10% of the time
+    if peak_mem_mb > MAX_PEAK_MEM {
+        eprintln!(
+            "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
+            peak_mem_mb, MAX_PEAK_MEM,
+        );
+        eprintln!("This happens occasionally, so please retry.\n");
+        std::process::exit(1);
+    }
+
+    // Report.
+
     println!(
-        "\nenclone visual tests completely {} in {:.1} seconds\n",
-        state, used,
+        "\nenclone visual tests completely {} in {:.1} seconds using {:.1} MB\n",
+        state, used, peak_mem_mb,
     );
     if fail {
         std::process::exit(1);
