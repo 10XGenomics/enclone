@@ -342,7 +342,7 @@ impl Application for EncloneVisual {
                 Row::new().spacing(10).push(
                     Button::new(
                         &mut state.cancel_state,
-                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
+                        Text::new("Vanish!").horizontal_alignment(HorizontalAlignment::Left),
                     )
                     .on_press(Message::CancelButtonPressed),
                 ),
