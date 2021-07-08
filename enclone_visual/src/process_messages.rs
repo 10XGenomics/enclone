@@ -41,6 +41,7 @@ impl EncloneVisual {
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
+                self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -62,6 +63,7 @@ impl EncloneVisual {
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
+                self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -177,6 +179,7 @@ impl EncloneVisual {
                 }
                 reply_text += "\n \n \n"; // papering over truncation bug
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+                let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
@@ -188,6 +191,7 @@ impl EncloneVisual {
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
                         self.svg_history.push(reply_svg.clone());
                         self.summary_history.push(reply_summary.clone());
+                        self.table_comp_history.push(reply_table_comp.clone());
                         self.history_index += 1;
                         self.command_history
                             .push(self.translated_input_value.clone());
@@ -197,6 +201,7 @@ impl EncloneVisual {
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
+                self.table_comp_value = reply_table_comp.clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()

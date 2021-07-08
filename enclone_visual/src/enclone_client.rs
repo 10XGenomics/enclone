@@ -669,8 +669,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
                         SERVER_REPLY_SUMMARY.lock().unwrap().clear();
                         SERVER_REPLY_SUMMARY.lock().unwrap().push(summary);
-                        SERVER_TABLE_COMP.lock().unwrap().clear();
-                        SERVER_TABLE_COMP.lock().unwrap().push(table_comp);
+                        SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
+                        SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
                     }
                     SERVER_REPLY_TEXT.lock().unwrap().clear();
                     SERVER_REPLY_TEXT.lock().unwrap().push(output.clone());

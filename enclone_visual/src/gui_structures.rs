@@ -33,6 +33,7 @@ pub struct EncloneVisual {
     pub svg_value: String,
     pub png_value: Vec<u8>,
     pub summary_value: String,
+    pub table_comp_value: Vec<u8>,
     pub button: button::State,
     pub back_button: button::State,
     pub forward_button: button::State,
@@ -62,6 +63,7 @@ pub struct EncloneVisual {
     pub svg_history: Vec<String>,
     pub summary_history: Vec<String>,
     pub command_history: Vec<String>,
+    pub table_comp_history: Vec<Vec<u8>>,
     pub is_blank: Vec<bool>,
 
     // index of "current" position in those vectors:
