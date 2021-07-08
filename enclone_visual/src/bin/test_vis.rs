@@ -74,7 +74,7 @@ fn main() {
             std::process::exit(1);
         }
         const BIG: isize = 6;
-        const MAX_DIFFS: usize = 400;
+        const MAX_DIFFS: usize = 477;
         let mut big_diffs = 0;
         for i in 0..image_data_old.len() {
             if ((image_data_old[i] as isize) - (image_data_new[i] as isize)).abs() > BIG {
