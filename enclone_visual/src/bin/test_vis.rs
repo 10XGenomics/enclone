@@ -16,8 +16,24 @@ use std::time::Instant;
 use string_utils::*;
 
 fn main() {
-    let t = Instant::now();
     PrettyTrace::new().on();
+
+    // Run enclone once to get it in cache.  This doesn't totally make sense but seems to improve
+    // the reproducibility of timing of the actual work.
+
+    let o = Command::new("enclone")
+        .arg(&"--version")
+        .output()
+        .expect("failed to execute enclone visual pretest");
+    if o.status.code() != Some(0) {
+        eprintln!("\nnonzero exit code from enclone visual pretest\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
+        std::process::exit(1);
+    }
+
+    // Now proceed with the test.
+
+    let t = Instant::now();
     let args: Vec<String> = env::args().collect();
     let mut update = false;
     if args.len() >= 2 && args[1] == "UPDATE" {
