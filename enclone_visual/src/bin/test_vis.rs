@@ -121,7 +121,7 @@ fn main() {
         maxrss_children = rusage.ru_maxrss;
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 97.7; // expected to be exceeded roughly 10% of the time
+    const MAX_PEAK_MEM: f64 = 98.0; // expected to be exceeded roughly 10% of the time
     if peak_mem_mb > MAX_PEAK_MEM {
         eprintln!(
             "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
