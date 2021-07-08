@@ -28,6 +28,7 @@ chrono = "0.4.19"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"
+flate2 = "1.0.20"
 iced = { git = "https://github.com/genusistimelord/iced.git", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
 iced_aw = { git = "https://github.com/genusistimelord/iced_aw.git", branch = "iced-main", default-features = false, features = ["card", "colors", "modal"] }
 iced_native = { git = "https://github.com/genusistimelord/iced.git" }
@@ -44,6 +45,8 @@ pretty_trace = "0.5"
 prost = { version = ">=0.6.1, <0.8", features = [] }
 # resvg = "0.15.0"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
+serde = "1.0.90"
+serde_json = "*"
 string_utils = "0.1"
 tables = "0.1"
 tiny-skia = "0.5.0"

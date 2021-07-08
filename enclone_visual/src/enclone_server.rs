@@ -9,6 +9,7 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
+use flate2::{Compress, Compression, FlushCompress};
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
@@ -72,6 +73,7 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: msg,
                 summary: String::new(),
+                table_comp: Vec::<u8>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -82,6 +84,7 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: String::new(),
                 summary: String::new(),
+                table_comp: Vec::<u8>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -174,6 +177,7 @@ impl Analyzer for EncloneAnalyzer {
                     plot: String::new(),
                     table: msg,
                     summary: String::new(),
+                    table_comp: Vec::<u8>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -184,6 +188,7 @@ impl Analyzer for EncloneAnalyzer {
                     plot: String::new(),
                     table: String::new(),
                     summary: String::new(),
+                    table_comp: Vec::<u8>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -203,6 +208,7 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: msg,
                 summary: String::new(),
+                table_comp: Vec::<u8>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -237,11 +243,20 @@ impl Analyzer for EncloneAnalyzer {
             if enclone_state.outs.svgs.len() > 0 {
                 plot = enclone_state.outs.svgs[0].clone();
             }
+            let full_table = enclone_state.outs.pics.clone();
+            let serialized = serde_json::to_string(&full_table)
+                .unwrap()
+                .as_bytes()
+                .to_vec();
+            let mut gzipped = Vec::<u8>::new();
+            let mut f = Compress::new(Compression::new(6), true);
+            Compress::compress(&mut f, &serialized, &mut gzipped, FlushCompress::None).unwrap();
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
                 table: table_string,
                 summary: enclone_state.outs.summary.clone(),
+                table_comp: gzipped,
             };
             if server_debug {
                 println!("sending response as follows:");
