@@ -22,10 +22,10 @@ bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d
 bytes = ">=0.5.5, <2"
 byteorder = "1.4.2"
 failure = "0.1.6"
-prost = { version = ">=0.6.1, <0.8", features = [] }
+prost = { version = ">=0.8", features = [] }
 serde = "1.0.90"
 serde_derive = "1.0"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="65c2a623e7e7509e5f4718862995c3cb4f31ea35" }
 
 [build-dependencies]
-prost-build = ">=0.6.1, <0.8"
+prost-build = ">=0.8"
