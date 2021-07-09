@@ -44,8 +44,9 @@ pub struct EncloneVisual {
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
     pub start_command: Option<Instant>,
-
+    //
     // button states:
+    //
     pub button: button::State,
     pub back_button: button::State,
     pub forward_button: button::State,
@@ -60,15 +61,18 @@ pub struct EncloneVisual {
     pub null_button3: button::State,
     pub null_button: button::State,
     pub clear_button: button::State,
-
-    // parallel vectors:
-    pub svg_history: Vec<String>,         // each entry is an SVG
-    pub summary_history: Vec<String>,     // each entry is a summary
-    pub command_history: Vec<String>,     // each entry is the originating command
-    pub table_comp_history: Vec<Vec<u8>>, // each entry is the compressed list of all tables
-    pub is_blank: Vec<bool>,              // set if the SVG is empty
-
+    //
+    // parallel vectors, with one entry for each command entered in the text box:
+    //
+    pub svg_history: Vec<String>,              // each entry is an SVG
+    pub summary_history: Vec<String>,          // each entry is a summary
+    pub command_history: Vec<String>,          // each entry is the originating command
+    pub displayed_tables_history: Vec<String>, // each entry is the tables that are displayed
+    pub table_comp_history: Vec<Vec<u8>>,      // each entry is the compressed list of all tables
+    pub is_blank: Vec<bool>,                   // set if the SVG is empty
+    //
     // index of "current" position in those vectors:
+    //
     pub history_index: usize,
 }
 

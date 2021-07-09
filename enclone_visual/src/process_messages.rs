@@ -41,6 +41,7 @@ impl EncloneVisual {
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
+                self.output_value = self.displayed_tables_history[self.history_index - 1].clone();
                 self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
@@ -63,6 +64,7 @@ impl EncloneVisual {
                 let x = self.svg_history[self.history_index - 1].clone();
                 self.post_svg(&x);
                 self.summary_value = self.summary_history[self.history_index - 1].clone();
+                self.output_value = self.displayed_tables_history[self.history_index - 1].clone();
                 self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
@@ -191,6 +193,7 @@ impl EncloneVisual {
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
                         self.svg_history.push(reply_svg.clone());
                         self.summary_history.push(reply_summary.clone());
+                        self.displayed_tables_history.push(reply_text.clone());
                         self.table_comp_history.push(reply_table_comp.clone());
                         self.history_index += 1;
                         self.command_history

@@ -12,8 +12,9 @@ that you can type:
 The enclone visual app view is vertically divided roughly as follows, going downward:
 1. command input line
 2. graphics subwindow
-3. clonotype subwindow.
-The app remembers previous states of 1 and 2, but not 3.  There are buttons in the graphics
+3. clonotype subwindow
+4. separately, a summary table, which pops up if you push the Summary button.
+The app remembers all this.  There are buttons in the graphics
 subwindow that allow navigation through previous commands/graphics, and which can also re-execute
 a command to get the clonotypes back.  Some buttons are blank initially.  Those do nothing until
 populated with something (like a down arrow, to go forward to the next state).
