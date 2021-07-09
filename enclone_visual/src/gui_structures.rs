@@ -62,6 +62,14 @@ pub struct EncloneVisual {
     pub null_button: button::State,
     pub clear_button: button::State,
     //
+    // more or less uniqued history:
+    //
+    pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
+    pub summary_hist_uniq: Vec<String>, // each entry is a summary
+    pub command_hist_uniq: Vec<String>, // each entry is the originating command
+    pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
+    pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
+    //
     // parallel vectors, with one entry for each command entered in the text box:
     //
     pub svg_history: Vec<String>,              // each entry is an SVG
