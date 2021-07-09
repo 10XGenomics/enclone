@@ -34,37 +34,39 @@ pub struct EncloneVisual {
     pub png_value: Vec<u8>,
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
+    pub submit_button_text: String,
+    pub open_state: button::State,
+    pub modal_state_help: modal::State<ModalState>,
+    // pub should_exit: bool,
+    pub compute_state: ComputeState,
+    pub copy_image_button_color: Color,
+    pub canvas_view: CanvasView,
+    pub cookbook: HashMap<String, String>,
+    pub window_id: usize,
+    pub start_command: Option<Instant>,
+
+    // button states:
     pub button: button::State,
     pub back_button: button::State,
     pub forward_button: button::State,
     pub exec_button: button::State,
     pub summary_button: button::State,
-    pub submit_button_text: String,
-    pub open_state: button::State,
     pub open_state_cookbook: button::State,
     pub exit_state: button::State,
-    pub modal_state_help: modal::State<ModalState>,
-    // pub should_exit: bool,
-    pub compute_state: ComputeState,
     pub copy_image_button: button::State,
-    pub copy_image_button_color: Color,
-    pub canvas_view: CanvasView,
     pub command_copy_button: button::State,
     pub null_button1: button::State,
     pub null_button2: button::State,
     pub null_button3: button::State,
     pub null_button: button::State,
-    pub cookbook: HashMap<String, String>,
     pub clear_button: button::State,
-    pub window_id: usize,
-    pub start_command: Option<Instant>,
 
     // parallel vectors:
-    pub svg_history: Vec<String>,
-    pub summary_history: Vec<String>,
-    pub command_history: Vec<String>,
-    pub table_comp_history: Vec<Vec<u8>>,
-    pub is_blank: Vec<bool>,
+    pub svg_history: Vec<String>,         // each entry is an SVG
+    pub summary_history: Vec<String>,     // each entry is a summary
+    pub command_history: Vec<String>,     // each entry is the originating command
+    pub table_comp_history: Vec<Vec<u8>>, // each entry is the compressed list of all tables
+    pub is_blank: Vec<bool>,              // set if the SVG is empty
 
     // index of "current" position in those vectors:
     pub history_index: usize,
