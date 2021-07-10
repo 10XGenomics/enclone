@@ -122,12 +122,12 @@ fn main() {
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
     const MAX_PEAK_MEM: f64 = 98.0; // expected to be exceeded roughly 10% of the time
+    eprintln!(
+        "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
+        peak_mem_mb, MAX_PEAK_MEM,
+    );
     if peak_mem_mb > MAX_PEAK_MEM {
-        eprintln!(
-            "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
-            peak_mem_mb, MAX_PEAK_MEM,
-        );
-        eprintln!("This happens occasionally, so please retry.\n");
+        eprintln!("That's too high.  This happens occasionally, so please retry.\n");
         std::process::exit(1);
     }
 
