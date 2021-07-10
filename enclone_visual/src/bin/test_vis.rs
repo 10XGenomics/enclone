@@ -53,18 +53,18 @@ fn main() {
     let mut fail = false;
     for i in 1..=TESTS.len() {
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
-        let old_file = format!("enclone_visual/regression_images/test{}.png", i);
+        let old_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
         if !path_exists(&old_file) {
             eprintln!(
-                "\nLooks like you've added a test.  Please look at outputs/test{}.png and\n\
+                "\nLooks like you've added a test.  Please look at outputs/{}.png and\n\
                 if it's right, copy to regression_tests and git add it.\n",
-                i,
+                TESTS[i - 1].2,
             );
             std::process::exit(1);
         }
         let mut f = File::open(&old_file).unwrap();
         f.read_to_end(&mut image_old).unwrap();
-        let new_file = format!("enclone_visual/outputs/test{}.png", i);
+        let new_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (_, image_data_old) = png_decoder::decode(&image_old).unwrap();
