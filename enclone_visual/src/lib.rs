@@ -124,6 +124,7 @@ pub async fn launch_gui() -> iced::Result {
 
 pub fn capture(count: usize, window_id: usize) {
     let o = std::process::Command::new("screencapture")
+        .arg("-x")
         .arg(&format!("-l{}", window_id))
         .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
         .output()
