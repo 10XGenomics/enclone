@@ -602,24 +602,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         cleanup();
                         std::process::exit(0);
                     }
-                    if line.parse::<usize>().is_ok() {
-                        let n = line.force_usize();
-                        if n == 0 {
-                            output = "group numbers start at 1\n".to_string();
-                        } else {
-                            let request = tonic::Request::new(ClonotypeRequest {
-                                clonotype_number: (n - 1) as u32,
-                            });
-                            let response = client.get_clonotype(request).await;
-                            if response.is_err() {
-                                output = "group number is too large\n".to_string();
-                            } else {
-                                let response = response.unwrap();
-                                let r = response.into_inner();
-                                output = r.table.clone();
-                            }
-                        }
-                    } else if line != "enclone" && !line.starts_with("enclone ") {
+                    if line != "enclone" && !line.starts_with("enclone ") {
                         output =
                             "an actual enclone command needs to start with \"enclone\"".to_string();
                     } else {
