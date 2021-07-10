@@ -14,27 +14,63 @@ impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::SubmitButtonPressed(_) => {
-                if self.compute_state == WaitingForRequest {
-                    self.compute_state = Thinking;
-                    self.start_command = Some(Instant::now());
-                    // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(20));
-                    if self.input_value.starts_with('#')
-                        && self.cookbook.contains_key(&self.input_value)
-                    {
-                        self.translated_input_value = self.cookbook[&self.input_value].clone();
-                    } else {
-                        self.translated_input_value = self.input_value.clone();
-                    }
-                    USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST
-                        .lock()
-                        .unwrap()
-                        .push(self.translated_input_value.clone());
-                    PROCESSING_REQUEST.store(true, SeqCst);
-                    Command::perform(compute(), Message::ComputationDone)
+                if self.compute_state != WaitingForRequest {
+                        Command::none()
                 } else {
-                    Command::none()
+                    if self.input_value.parse::<usize>().is_ok() {
+                        self.translated_input_value = self.input_value.clone();
+                        let id = self.input_value.force_usize();
+                        let mut reply_text;
+                        if self.command_history.is_empty() {
+                            reply_text = "Group identifier can only be supplied if another \
+                                command has already been run.".to_string();
+                        } else if id == 0 {
+                            reply_text = "Group identifiers start at 1".to_string();
+                        } else if id > self.current_tables.len() {
+                            reply_text = "Group identifier is too large.".to_string();
+                        } else {
+                            reply_text = self.current_tables[id - 1].clone();
+                            reply_text += "\n \n \n"; // papering over truncation bug in display
+                        }
+                        self.svg_history.push(self.svg_history[self.svg_history.len() - 1]);
+                        self.summary_history.push(self.summary_history[self.summary_history.len() - 1]);
+                        self.displayed_tables_history.push(self.displayed_tables_history[self.displayed_tables_history.len() - 1]);
+                        self.table_comp_history.push(self.table_comp_history[self.table_comp_history.len() - 1]);
+                        self.command_history.push(self.command_hist_uniq.len());
+                        self.command_hist_uniq.push(self.input_value.clone());
+                        self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
+                        self.history_index += 1;
+                        self.output_value = reply_text.to_string();
+                        if !TEST_MODE.load(SeqCst) {
+                            Command::none()
+                        } else {
+                            let count = COUNT.load(SeqCst);
+                            if count > 1 {
+                                capture(count, self.window_id);
+                            }
+                            Command::perform(noop(), Message::RunTests)
+                        }
+                    } else {
+                        self.compute_state = Thinking;
+                        self.start_command = Some(Instant::now());
+                        // The following sleep is needed to get the button text to consistenly 
+                        // update.
+                        thread::sleep(Duration::from_millis(20));
+                        if self.input_value.starts_with('#')
+                            && self.cookbook.contains_key(&self.input_value)
+                        {
+                            self.translated_input_value = self.cookbook[&self.input_value].clone();
+                        } else {
+                            self.translated_input_value = self.input_value.clone();
+                        }
+                        USER_REQUEST.lock().unwrap().clear();
+                        USER_REQUEST
+                            .lock()
+                            .unwrap()
+                            .push(self.translated_input_value.clone());
+                        PROCESSING_REQUEST.store(true, SeqCst);
+                        Command::perform(compute(), Message::ComputationDone)
+                    }
                 }
             }
 
