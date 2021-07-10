@@ -191,7 +191,6 @@ impl EncloneVisual {
                         blank = true;
                     }
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
-
                         // Store values.
                         //
                         // We want to push as little as possible onto the hist_uniq vectors,
@@ -207,7 +206,6 @@ impl EncloneVisual {
                             self.svg_history.push(len);
                             self.svg_hist_uniq.push(reply_svg.clone());
                         }
-
                         let len = self.summary_hist_uniq.len();
                         if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
                             self.summary_history.push(len - 1);
@@ -215,7 +213,6 @@ impl EncloneVisual {
                             self.summary_history.push(len);
                             self.summary_hist_uniq.push(reply_summary.clone());
                         }
-
                         let len = self.displayed_tables_hist_uniq.len();
                         if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
                             self.displayed_tables_history.push(len - 1);
@@ -223,7 +220,6 @@ impl EncloneVisual {
                             self.displayed_tables_history.push(len);
                             self.displayed_tables_hist_uniq.push(reply_text.clone());
                         }
-
                         let len = self.table_comp_hist_uniq.len();
                         if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
                             self.table_comp_history.push(len - 1);
@@ -231,21 +227,15 @@ impl EncloneVisual {
                             self.table_comp_history.push(len);
                             self.table_comp_hist_uniq.push(reply_table_comp.clone());
                         }
-
                         let len = self.command_hist_uniq.len();
-                        if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value {
+                        if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value
+                        {
                             self.command_history.push(len - 1);
                         } else {
                             self.command_history.push(len);
-                            self.command_hist_uniq.push(self.translated_input_value.clone());
+                            self.command_hist_uniq
+                                .push(self.translated_input_value.clone());
                         }
-
-                        /*
-                        self.command_history.push(self.command_hist_uniq.len());
-                        self.command_hist_uniq
-                            .push(self.translated_input_value.clone());
-                        */
-
                         self.is_blank.push(blank);
                         self.history_index += 1;
                     }
