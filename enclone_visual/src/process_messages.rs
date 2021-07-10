@@ -32,10 +32,10 @@ impl EncloneVisual {
                             reply_text = self.current_tables[id - 1].clone();
                             reply_text += "\n \n \n"; // papering over truncation bug in display
                         }
-                        self.svg_history.push(self.svg_history[self.svg_history.len() - 1]);
-                        self.summary_history.push(self.summary_history[self.summary_history.len() - 1]);
-                        self.displayed_tables_history.push(self.displayed_tables_history[self.displayed_tables_history.len() - 1]);
-                        self.table_comp_history.push(self.table_comp_history[self.table_comp_history.len() - 1]);
+                        self.svg_history.push(*self.svg_history.last().unwrap());
+                        self.summary_history.push(*self.summary_history.last().unwrap());
+                        self.displayed_tables_history.push(*self.displayed_tables_history.last().unwrap());
+                        self.table_comp_history.push(*self.table_comp_history.last().unwrap());
                         self.command_history.push(self.command_hist_uniq.len());
                         self.command_hist_uniq.push(self.input_value.clone());
                         self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
