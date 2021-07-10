@@ -224,18 +224,28 @@ impl EncloneVisual {
                             self.displayed_tables_hist_uniq.push(reply_text.clone());
                         }
 
-                        /*
-                        self.displayed_tables_history
-                            .push(self.displayed_tables_hist_uniq.len());
-                        self.displayed_tables_hist_uniq.push(reply_text.clone());
-                        */
+                        let len = self.table_comp_hist_uniq.len();
+                        if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
+                            self.table_comp_history.push(len - 1);
+                        } else {
+                            self.table_comp_history.push(len);
+                            self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                        }
 
-                        self.table_comp_history
-                            .push(self.table_comp_hist_uniq.len());
-                        self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                        let len = self.command_hist_uniq.len();
+                        if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value {
+                            self.command_history.push(len - 1);
+                        } else {
+                            self.command_history.push(len);
+                            self.command_hist_uniq.push(self.translated_input_value.clone());
+                        }
+
+                        /*
                         self.command_history.push(self.command_hist_uniq.len());
                         self.command_hist_uniq
                             .push(self.translated_input_value.clone());
+                        */
+
                         self.is_blank.push(blank);
                         self.history_index += 1;
                     }
