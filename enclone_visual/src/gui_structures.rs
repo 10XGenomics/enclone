@@ -45,6 +45,12 @@ pub struct EncloneVisual {
     pub window_id: usize,
     pub start_command: Option<Instant>,
     //
+    // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
+    // strings (allowing for compression to extend across the vector); see also
+    // table_comp_hist_uniq[i], which is compressed, but doesn't allow access to individual entries
+    //
+    pub current_tables: Vec<String>,
+    //
     // button states:
     //
     pub button: button::State,

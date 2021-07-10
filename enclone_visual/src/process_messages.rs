@@ -4,8 +4,10 @@ use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
+use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
+use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
@@ -226,6 +228,10 @@ impl EncloneVisual {
                         } else {
                             self.table_comp_history.push(len);
                             self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                            let mut gunzipped = Vec::<u8>::new();
+                            let mut d = GzDecoder::new(&*reply_table_comp);
+                            d.read_to_end(&mut gunzipped).unwrap();
+                            self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                         }
                         let len = self.command_hist_uniq.len();
                         if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value

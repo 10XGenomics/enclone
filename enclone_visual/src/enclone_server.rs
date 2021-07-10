@@ -9,11 +9,13 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
-use flate2::{Compress, Compression, FlushCompress};
+use flate2::Compression;
+use flate2::write::GzEncoder;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
+use std::io::Write;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -248,9 +250,9 @@ impl Analyzer for EncloneAnalyzer {
                 .unwrap()
                 .as_bytes()
                 .to_vec();
-            let mut gzipped = Vec::<u8>::new();
-            let mut f = Compress::new(Compression::new(6), true);
-            Compress::compress(&mut f, &serialized, &mut gzipped, FlushCompress::None).unwrap();
+            let mut e = GzEncoder::new(Vec::new(), Compression::default());
+            let _ = e.write_all(&serialized);
+            let gzipped = e.finish().unwrap();
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
