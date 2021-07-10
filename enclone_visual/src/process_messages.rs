@@ -38,11 +38,11 @@ impl EncloneVisual {
 
             Message::BackButtonPressed(_) => {
                 self.history_index -= 1;
-                let x = self.svg_history[self.history_index - 1].clone();
+                let x = self.svg_current();
                 self.post_svg(&x);
-                self.summary_value = self.summary_history[self.history_index - 1].clone();
-                self.output_value = self.displayed_tables_history[self.history_index - 1].clone();
-                self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
+                self.summary_value = self.summary_current();
+                self.output_value = self.displayed_tables_current();
+                self.table_comp_value = self.table_comp_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -61,11 +61,11 @@ impl EncloneVisual {
 
             Message::ForwardButtonPressed(_) => {
                 self.history_index += 1;
-                let x = self.svg_history[self.history_index - 1].clone();
+                let x = self.svg_current();
                 self.post_svg(&x);
-                self.summary_value = self.summary_history[self.history_index - 1].clone();
-                self.output_value = self.displayed_tables_history[self.history_index - 1].clone();
-                self.table_comp_value = self.table_comp_history[self.history_index - 1].clone();
+                self.summary_value = self.summary_current();
+                self.output_value = self.displayed_tables_current();
+                self.table_comp_value = self.table_comp_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -150,7 +150,7 @@ impl EncloneVisual {
 
             // same as above except for first line
             Message::ExecuteButtonPressed => {
-                self.input_value = self.command_history[self.history_index - 1].clone();
+                self.input_value = self.command_current();
                 if self.compute_state == WaitingForRequest {
                     self.compute_state = Thinking;
                     // The following sleep is needed to get the button text to consistenly update.
@@ -191,14 +191,21 @@ impl EncloneVisual {
                         blank = true;
                     }
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
-                        self.svg_history.push(reply_svg.clone());
-                        self.summary_history.push(reply_summary.clone());
-                        self.displayed_tables_history.push(reply_text.clone());
-                        self.table_comp_history.push(reply_table_comp.clone());
-                        self.history_index += 1;
-                        self.command_history
+                        self.svg_history.push(self.svg_hist_uniq.len());
+                        self.svg_hist_uniq.push(reply_svg.clone());
+                        self.summary_history.push(self.summary_hist_uniq.len());
+                        self.summary_hist_uniq.push(reply_summary.clone());
+                        self.displayed_tables_history
+                            .push(self.displayed_tables_hist_uniq.len());
+                        self.displayed_tables_hist_uniq.push(reply_text.clone());
+                        self.table_comp_history
+                            .push(self.table_comp_hist_uniq.len());
+                        self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                        self.command_history.push(self.command_hist_uniq.len());
+                        self.command_hist_uniq
                             .push(self.translated_input_value.clone());
                         self.is_blank.push(blank);
+                        self.history_index += 1;
                     }
                 }
                 self.output_value = reply_text.to_string();
@@ -269,9 +276,7 @@ impl EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
-                copy_bytes_to_mac_clipboard(
-                    &self.command_history[self.history_index - 1].as_bytes(),
-                );
+                copy_bytes_to_mac_clipboard(&self.command_current().as_bytes());
                 Command::none()
             }
 

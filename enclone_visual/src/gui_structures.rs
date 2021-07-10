@@ -64,20 +64,20 @@ pub struct EncloneVisual {
     //
     // more or less uniqued history:
     //
-    pub svg_hist_uniq: Vec<String>,              // each entry is an SVG
-    pub summary_hist_uniq: Vec<String>,          // each entry is a summary
-    pub command_hist_uniq: Vec<String>,          // each entry is the originating command
+    pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
+    pub summary_hist_uniq: Vec<String>, // each entry is a summary
+    pub command_hist_uniq: Vec<String>, // each entry is the originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
-    pub table_comp_hist_uniq: Vec<Vec<u8>>,      // each entry is the compressed list of all tables
+    pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //
-    pub svg_history: usize,              // each entry is an SVG
-    pub summary_history: usize,          // each entry is a summary
-    pub command_history: usize,          // each entry is the originating command
-    pub displayed_tables_history: usize, // each entry is the tables that are displayed
-    pub table_comp_history: usize,       // each entry is the compressed list of all tables
-    pub is_blank: Vec<bool>,             // set if the SVG is empty
+    pub svg_history: Vec<usize>,              // each entry is an SVG
+    pub summary_history: Vec<usize>,          // each entry is a summary
+    pub command_history: Vec<usize>,          // each entry is the originating command
+    pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
+    pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
+    pub is_blank: Vec<bool>,                  // set if the SVG is empty
     //
     // index of "current" position in those vectors, plus one:
     //
@@ -91,22 +91,22 @@ pub struct ModalState {
 }
 
 impl EncloneVisual {
-    pub fn hi() -> usize {
+    pub fn hi(&self) -> usize {
         self.history_index - 1
     }
-    pub fn svg_current() -> &Vec<String> {
-        return &self.svg_hist_uniq[self.svg_history[self.hi]];
+    pub fn svg_current(&self) -> String {
+        return self.svg_hist_uniq[self.svg_history[self.hi()]].clone();
     }
-    pub fn summary_current() -> &Vec<String> {
-        return &self.summary_hist_uniq[self.summary_history[self.hi]];
+    pub fn summary_current(&self) -> String {
+        return self.summary_hist_uniq[self.summary_history[self.hi()]].clone();
     }
-    pub fn command_current() -> &Vec<String> {
-        return &self.command_hist_uniq[self.command_history[self.hi]];
+    pub fn command_current(&self) -> String {
+        return self.command_hist_uniq[self.command_history[self.hi()]].clone();
     }
-    pub fn displayed_tables_current() -> &Vec<Vec<u8>> {
-        return &self.displayed_tables_hist_uniq[self.displayed_tables_history[self.hi]];
+    pub fn displayed_tables_current(&self) -> String {
+        return self.displayed_tables_hist_uniq[self.displayed_tables_history[self.hi()]].clone();
     }
-    pub fn table_comp_current() -> &Vec<String> {
-        return &self.table_comp_hist_uniq[self.table_comp_history[self.hi]];
+    pub fn table_comp_current(&self) -> Vec<u8> {
+        return self.table_comp_hist_uniq[self.table_comp_history[self.hi()]].clone();
     }
 }
