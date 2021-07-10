@@ -192,7 +192,7 @@ impl EncloneVisual {
                         reply_svg = blank_svg();
                         blank = true;
                     }
-                    if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
+                    if true /* reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() */ {
                         // Store values.
                         //
                         // We want to push as little as possible onto the hist_uniq vectors,
