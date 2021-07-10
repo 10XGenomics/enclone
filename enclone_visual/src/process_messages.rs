@@ -235,8 +235,7 @@ impl EncloneVisual {
                     self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 }
                 let len = self.command_hist_uniq.len();
-                if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value
-                {
+                if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value {
                     self.command_history.push(len - 1);
                 } else {
                     self.command_history.push(len);
