@@ -198,32 +198,6 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            // same as above except for first line
-            Message::ExecuteButtonPressed => {
-                self.input_value = self.command_current();
-                if self.compute_state == WaitingForRequest {
-                    self.compute_state = Thinking;
-                    // The following sleep is needed to get the button text to consistenly update.
-                    thread::sleep(Duration::from_millis(20));
-                    if self.input_value.starts_with('#')
-                        && self.cookbook.contains_key(&self.input_value)
-                    {
-                        self.translated_input_value = self.cookbook[&self.input_value].clone();
-                    } else {
-                        self.translated_input_value = self.input_value.clone();
-                    }
-                    USER_REQUEST.lock().unwrap().clear();
-                    USER_REQUEST
-                        .lock()
-                        .unwrap()
-                        .push(self.translated_input_value.clone());
-                    PROCESSING_REQUEST.store(true, SeqCst);
-                    Command::perform(compute(), Message::ComputationDone)
-                } else {
-                    Command::none()
-                }
-            }
-
             Message::ComputationDone(_) => {
                 let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
                 if reply_text.contains("enclone failed") {

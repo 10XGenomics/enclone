@@ -156,13 +156,8 @@ impl Application for EncloneVisual {
                 }
             }
 
-            // Create execute and summary buttons.
+            // Create summary buttons.
 
-            let exec_button = Button::new(
-                &mut self.exec_button,
-                Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
-            )
-            .on_press(Message::ExecuteButtonPressed);
             let summary_button = Button::new(
                 &mut self.summary_button,
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
@@ -192,7 +187,6 @@ impl Application for EncloneVisual {
             } else {
                 col = col.push(null_copy_image_button);
             }
-            col = col.push(exec_button);
             col = col.push(summary_button);
 
             // Add the command column to the row.
