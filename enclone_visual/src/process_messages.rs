@@ -191,10 +191,31 @@ impl EncloneVisual {
                         blank = true;
                     }
                     if reply_svg.len() > 0 && self.input_value.parse::<usize>().is_err() {
-                        self.svg_history.push(self.svg_hist_uniq.len());
-                        self.svg_hist_uniq.push(reply_svg.clone());
-                        self.summary_history.push(self.summary_hist_uniq.len());
-                        self.summary_hist_uniq.push(reply_summary.clone());
+
+                        // Store values.
+                        //
+                        // We want to push as little as possible onto the hist_uniq vectors,
+                        // and we want to do this as rapidly as possible.  The code here is not
+                        // optimal, for two reasons:
+                        // 1. We only compare to the last entry.
+                        // 2. We make comparisons in cases where we should already know the answer.
+
+                        let len = self.svg_hist_uniq.len();
+                        if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
+                            self.svg_history.push(len - 1);
+                        } else {
+                            self.svg_history.push(len);
+                            self.svg_hist_uniq.push(reply_svg.clone());
+                        }
+
+                        let len = self.summary_hist_uniq.len();
+                        if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
+                            self.summary_history.push(len - 1);
+                        } else {
+                            self.summary_history.push(len);
+                            self.summary_hist_uniq.push(reply_summary.clone());
+                        }
+
                         self.displayed_tables_history
                             .push(self.displayed_tables_hist_uniq.len());
                         self.displayed_tables_hist_uniq.push(reply_text.clone());
