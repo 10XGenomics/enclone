@@ -15,7 +15,7 @@ impl EncloneVisual {
         match message {
             Message::SubmitButtonPressed(_) => {
                 if self.compute_state != WaitingForRequest {
-                        Command::none()
+                    Command::none()
                 } else {
                     if self.input_value.parse::<usize>().is_ok() {
                         self.translated_input_value = self.input_value.clone();
@@ -23,7 +23,8 @@ impl EncloneVisual {
                         let mut reply_text;
                         if self.command_history.is_empty() {
                             reply_text = "Group identifier can only be supplied if another \
-                                command has already been run.".to_string();
+                                command has already been run."
+                                .to_string();
                         } else if id == 0 {
                             reply_text = "Group identifiers start at 1".to_string();
                         } else if id > self.current_tables.len() {
@@ -33,9 +34,12 @@ impl EncloneVisual {
                             reply_text += "\n \n \n"; // papering over truncation bug in display
                         }
                         self.svg_history.push(*self.svg_history.last().unwrap());
-                        self.summary_history.push(*self.summary_history.last().unwrap());
-                        self.displayed_tables_history.push(*self.displayed_tables_history.last().unwrap());
-                        self.table_comp_history.push(*self.table_comp_history.last().unwrap());
+                        self.summary_history
+                            .push(*self.summary_history.last().unwrap());
+                        self.displayed_tables_history
+                            .push(*self.displayed_tables_history.last().unwrap());
+                        self.table_comp_history
+                            .push(*self.table_comp_history.last().unwrap());
                         self.command_history.push(self.command_hist_uniq.len());
                         self.command_hist_uniq.push(self.input_value.clone());
                         self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
@@ -53,7 +57,7 @@ impl EncloneVisual {
                     } else {
                         self.compute_state = Thinking;
                         self.start_command = Some(Instant::now());
-                        // The following sleep is needed to get the button text to consistenly 
+                        // The following sleep is needed to get the button text to consistenly
                         // update.
                         thread::sleep(Duration::from_millis(20));
                         if self.input_value.starts_with('#')
