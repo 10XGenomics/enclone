@@ -179,7 +179,7 @@ impl EncloneVisual {
                 if reply_text.contains("enclone failed") {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
-                reply_text += "\n \n \n"; // papering over truncation bug
+                reply_text += "\n \n \n"; // papering over truncation bug in display
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
@@ -216,9 +216,20 @@ impl EncloneVisual {
                             self.summary_hist_uniq.push(reply_summary.clone());
                         }
 
+                        let len = self.displayed_tables_hist_uniq.len();
+                        if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
+                            self.displayed_tables_history.push(len - 1);
+                        } else {
+                            self.displayed_tables_history.push(len);
+                            self.displayed_tables_hist_uniq.push(reply_text.clone());
+                        }
+
+                        /*
                         self.displayed_tables_history
                             .push(self.displayed_tables_hist_uniq.len());
                         self.displayed_tables_hist_uniq.push(reply_text.clone());
+                        */
+
                         self.table_comp_history
                             .push(self.table_comp_hist_uniq.len());
                         self.table_comp_hist_uniq.push(reply_table_comp.clone());
