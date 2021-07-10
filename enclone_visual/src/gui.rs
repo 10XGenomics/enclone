@@ -142,7 +142,7 @@ impl Application for EncloneVisual {
             let mut log = String::new();
             if self.history_index >= 1 {
                 let cmd =
-                    self.command_hist_uniq[self.command_history[self.history_index - 1]].clone();
+                    self.translated_input_hist_uniq[self.translated_input_history[self.history_index - 1]].clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
                 for i in 0..folds.len() {
@@ -290,7 +290,7 @@ impl Application for EncloneVisual {
             )
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
-        if !self.command_history.is_empty() {
+        if !self.input_history.is_empty() {
             content = content.push(Rule::horizontal(10).style(style::RuleStyle));
         }
         content = content.push(

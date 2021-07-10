@@ -21,7 +21,7 @@ impl EncloneVisual {
                         self.translated_input_value = self.input_value.clone();
                         let id = self.input_value.force_usize();
                         let mut reply_text;
-                        if self.command_history.is_empty() {
+                        if self.input_history.is_empty() {
                             reply_text = "Group identifier can only be supplied if another \
                                 command has already been run."
                                 .to_string();
@@ -40,10 +40,12 @@ impl EncloneVisual {
                             .push(*self.displayed_tables_history.last().unwrap());
                         self.table_comp_history
                             .push(*self.table_comp_history.last().unwrap());
-                        self.command_history.push(self.command_hist_uniq.len());
-                        self.command_hist_uniq.push(self.input_value.clone());
+                        self.input_history.push(self.input_hist_uniq.len());
+                        self.input_hist_uniq.push(self.input_value.clone());
+                        self.translated_input_history.push(self.translated_input_hist_uniq.len());
+                        self.translated_input_hist_uniq.push(self.translated_input_value.clone());
                         self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
-                        self.history_index += 1;
+                        self.history_index = self.input_history.len();
                         self.output_value = reply_text.to_string();
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
@@ -85,6 +87,8 @@ impl EncloneVisual {
                 self.summary_value = self.summary_current();
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
+                self.input_value = self.input_current();
+                self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -112,6 +116,8 @@ impl EncloneVisual {
                 self.summary_value = self.summary_current();
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
+                self.input_value = self.input_current();
+                self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()
@@ -256,16 +262,25 @@ impl EncloneVisual {
                     d.read_to_end(&mut gunzipped).unwrap();
                     self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 }
-                let len = self.command_hist_uniq.len();
-                if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value {
-                    self.command_history.push(len - 1);
+                let len = self.input_hist_uniq.len();
+                if len > 0 && self.input_hist_uniq[len - 1] == self.input_value {
+                    self.input_history.push(len - 1);
                 } else {
-                    self.command_history.push(len);
-                    self.command_hist_uniq
+                    self.input_history.push(len);
+                    self.input_hist_uniq
+                        .push(self.input_value.clone());
+                }
+                let len = self.translated_input_hist_uniq.len();
+                if len > 0 
+                    && self.translated_input_hist_uniq[len - 1] == self.translated_input_value {
+                    self.translated_input_history.push(len - 1);
+                } else {
+                    self.translated_input_history.push(len);
+                    self.translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
                 }
                 self.is_blank.push(blank);
-                self.history_index += 1;
+                self.history_index = self.input_history.len();
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
@@ -334,7 +349,7 @@ impl EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
-                copy_bytes_to_mac_clipboard(&self.command_current().as_bytes());
+                copy_bytes_to_mac_clipboard(&self.translated_input_current().as_bytes());
                 Command::none()
             }
 

@@ -82,7 +82,7 @@ fn main() {
             }
         }
         if big_diffs > MAX_DIFFS {
-            eprintln!("\nThere are {} big diffs for test {}.", big_diffs, i);
+            eprintln!("\nThere are {} big diffs for {}.", big_diffs, TESTS[i - 1].2);
             fail = true;
             if update {
                 copy(&new_file, &old_file).unwrap();
@@ -95,7 +95,7 @@ fn main() {
         "successfully"
     };
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 10.7;
+    const EXPECTED_TIME: f64 = 15.3;
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
@@ -121,7 +121,7 @@ fn main() {
         maxrss_children = rusage.ru_maxrss;
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 98.0; // expected to be exceeded roughly 10% of the time
+    const MAX_PEAK_MEM: f64 = 139.0; // expected to be exceeded roughly 10% of the time
     eprintln!(
         "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
         peak_mem_mb, MAX_PEAK_MEM,

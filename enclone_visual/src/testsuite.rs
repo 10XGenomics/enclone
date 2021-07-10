@@ -3,10 +3,25 @@
 use crate::messages::*;
 use crate::*;
 
-pub const TESTS: [(&str, MsgFn, &str); 5] = [
-    ("#1", Message::SubmitButtonPressed as MsgFn, "test1"),
-    ("#2", Message::SubmitButtonPressed as MsgFn, "test2"),
-    ("#3", Message::SubmitButtonPressed as MsgFn, "test3"),
-    ("", Message::BackButtonPressed as MsgFn, "test4"),
-    ("", Message::ForwardButtonPressed as MsgFn, "test5"),
+const SUBMIT: fn(Result<(), std::string::String>) -> messages::Message 
+    = Message::SubmitButtonPressed as MsgFn;
+
+const BACK: fn(Result<(), std::string::String>) -> messages::Message 
+    = Message::BackButtonPressed as MsgFn;
+
+const FORWARD: fn(Result<(), std::string::String>) -> messages::Message 
+    = Message::ForwardButtonPressed as MsgFn;
+
+pub const TESTS: [(&str, MsgFn, &str); 11] = [
+    ("#1", SUBMIT, "test1"),  // enclone BCR=123085 PLOT=gui MIN_CELLS=5
+    ("10", SUBMIT, "test1b"),
+    ("#2", SUBMIT, "test2"),  // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
+    ("#3", SUBMIT, "test3"),  // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
+    ("", BACK, "test4"),
+    ("", FORWARD, "test5"),
+    ("#4", SUBMIT, "test6"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+    ("10", SUBMIT, "test7"),
+    ("", BACK, "test8"),
+    ("", BACK, "test9"),
+    ("10", SUBMIT, "test10"),
 ];

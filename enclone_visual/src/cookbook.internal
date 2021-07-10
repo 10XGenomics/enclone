@@ -7,7 +7,7 @@ enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
 Show a honeycomb plot with cells colored by their isotype.
 
 #3
-enclone BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,gui
+enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
 Plot the UMI counts for the genes HLA-A versus CD74 versus each other.
 
 #4

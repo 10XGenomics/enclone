@@ -72,7 +72,8 @@ pub struct EncloneVisual {
     //
     pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
     pub summary_hist_uniq: Vec<String>, // each entry is a summary
-    pub command_hist_uniq: Vec<String>, // each entry is the originating command
+    pub input_hist_uniq: Vec<String>, // each entry is the originating command
+    pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
     //
@@ -80,7 +81,8 @@ pub struct EncloneVisual {
     //
     pub svg_history: Vec<usize>,              // each entry is an SVG
     pub summary_history: Vec<usize>,          // each entry is a summary
-    pub command_history: Vec<usize>,          // each entry is the originating command
+    pub input_history: Vec<usize>,            // each entry is the originating command
+    pub translated_input_history: Vec<usize>, // each entry is the translated originating command
     pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
     pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
     pub is_blank: Vec<bool>,                  // set if the SVG is empty
@@ -106,8 +108,11 @@ impl EncloneVisual {
     pub fn summary_current(&self) -> String {
         return self.summary_hist_uniq[self.summary_history[self.hi()]].clone();
     }
-    pub fn command_current(&self) -> String {
-        return self.command_hist_uniq[self.command_history[self.hi()]].clone();
+    pub fn input_current(&self) -> String {
+        return self.input_hist_uniq[self.input_history[self.hi()]].clone();
+    }
+    pub fn translated_input_current(&self) -> String {
+        return self.translated_input_hist_uniq[self.translated_input_history[self.hi()]].clone();
     }
     pub fn displayed_tables_current(&self) -> String {
         return self.displayed_tables_hist_uniq[self.displayed_tables_history[self.hi()]].clone();
