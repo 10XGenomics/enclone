@@ -1439,7 +1439,6 @@ dependencies = [
  "dirs 3.0.2",
  "enclone",
  "enclone_args",
- "enclone_com",
  "enclone_core",
  "enclone_help",
  "enclone_print",
