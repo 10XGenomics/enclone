@@ -86,6 +86,10 @@ impl EncloneVisual {
                     .lock()
                     .unwrap()
                     .push(self.summary_value.clone());
+                let mut gunzipped = Vec::<u8>::new();
+                let mut d = GzDecoder::new(&*self.table_comp_value);
+                d.read_to_end(&mut gunzipped).unwrap();
+                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -109,6 +113,10 @@ impl EncloneVisual {
                     .lock()
                     .unwrap()
                     .push(self.summary_value.clone());
+                let mut gunzipped = Vec::<u8>::new();
+                let mut d = GzDecoder::new(&*self.table_comp_value);
+                d.read_to_end(&mut gunzipped).unwrap();
+                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
