@@ -185,66 +185,66 @@ impl EncloneVisual {
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
+                let mut blank = false;
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
                     reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    let mut blank = false;
                     if reply_svg.len() == 0 {
                         reply_svg = blank_svg();
                         blank = true;
                     }
-
-                    // Store values.
-                    //
-                    // We want to push as little as possible onto the hist_uniq vectors,
-                    // and we want to do this as rapidly as possible.  The code here is not
-                    // optimal, for two reasons:
-                    // 1. We only compare to the last entry.
-                    // 2. We make comparisons in cases where we should already know the answer.
-
-                    let len = self.svg_hist_uniq.len();
-                    if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
-                        self.svg_history.push(len - 1);
-                    } else {
-                        self.svg_history.push(len);
-                        self.svg_hist_uniq.push(reply_svg.clone());
-                    }
-                    let len = self.summary_hist_uniq.len();
-                    if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
-                        self.summary_history.push(len - 1);
-                    } else {
-                        self.summary_history.push(len);
-                        self.summary_hist_uniq.push(reply_summary.clone());
-                    }
-                    let len = self.displayed_tables_hist_uniq.len();
-                    if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
-                        self.displayed_tables_history.push(len - 1);
-                    } else {
-                        self.displayed_tables_history.push(len);
-                        self.displayed_tables_hist_uniq.push(reply_text.clone());
-                    }
-                    let len = self.table_comp_hist_uniq.len();
-                    if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                        self.table_comp_history.push(len - 1);
-                    } else {
-                        self.table_comp_history.push(len);
-                        self.table_comp_hist_uniq.push(reply_table_comp.clone());
-                        let mut gunzipped = Vec::<u8>::new();
-                        let mut d = GzDecoder::new(&*reply_table_comp);
-                        d.read_to_end(&mut gunzipped).unwrap();
-                        self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
-                    }
-                    let len = self.command_hist_uniq.len();
-                    if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value
-                    {
-                        self.command_history.push(len - 1);
-                    } else {
-                        self.command_history.push(len);
-                        self.command_hist_uniq
-                            .push(self.translated_input_value.clone());
-                    }
-                    self.is_blank.push(blank);
-                    self.history_index += 1;
                 }
+
+                // Store values.
+                //
+                // We want to push as little as possible onto the hist_uniq vectors,
+                // and we want to do this as rapidly as possible.  The code here is not
+                // optimal, for two reasons:
+                // 1. We only compare to the last entry.
+                // 2. We make comparisons in cases where we should already know the answer.
+
+                let len = self.svg_hist_uniq.len();
+                if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
+                    self.svg_history.push(len - 1);
+                } else {
+                    self.svg_history.push(len);
+                    self.svg_hist_uniq.push(reply_svg.clone());
+                }
+                let len = self.summary_hist_uniq.len();
+                if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
+                    self.summary_history.push(len - 1);
+                } else {
+                    self.summary_history.push(len);
+                    self.summary_hist_uniq.push(reply_summary.clone());
+                }
+                let len = self.displayed_tables_hist_uniq.len();
+                if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
+                    self.displayed_tables_history.push(len - 1);
+                } else {
+                    self.displayed_tables_history.push(len);
+                    self.displayed_tables_hist_uniq.push(reply_text.clone());
+                }
+                let len = self.table_comp_hist_uniq.len();
+                if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
+                    self.table_comp_history.push(len - 1);
+                } else {
+                    self.table_comp_history.push(len);
+                    self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                    let mut gunzipped = Vec::<u8>::new();
+                    let mut d = GzDecoder::new(&*reply_table_comp);
+                    d.read_to_end(&mut gunzipped).unwrap();
+                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                }
+                let len = self.command_hist_uniq.len();
+                if len > 0 && self.command_hist_uniq[len - 1] == self.translated_input_value
+                {
+                    self.command_history.push(len - 1);
+                } else {
+                    self.command_history.push(len);
+                    self.command_hist_uniq
+                        .push(self.translated_input_value.clone());
+                }
+                self.is_blank.push(blank);
+                self.history_index += 1;
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
