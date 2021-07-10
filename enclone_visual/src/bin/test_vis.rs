@@ -82,7 +82,11 @@ fn main() {
             }
         }
         if big_diffs > MAX_DIFFS {
-            eprintln!("\nThere are {} big diffs for {}.", big_diffs, TESTS[i - 1].2);
+            eprintln!(
+                "\nThere are {} big diffs for {}.",
+                big_diffs,
+                TESTS[i - 1].2
+            );
             fail = true;
             if update {
                 copy(&new_file, &old_file).unwrap();

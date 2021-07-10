@@ -141,8 +141,9 @@ impl Application for EncloneVisual {
             const MAX_LINE: usize = 45;
             let mut log = String::new();
             if self.history_index >= 1 {
-                let cmd =
-                    self.translated_input_hist_uniq[self.translated_input_history[self.history_index - 1]].clone();
+                let cmd = self.translated_input_hist_uniq
+                    [self.translated_input_history[self.history_index - 1]]
+                    .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
                 for i in 0..folds.len() {

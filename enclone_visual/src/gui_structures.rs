@@ -72,7 +72,7 @@ pub struct EncloneVisual {
     //
     pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
     pub summary_hist_uniq: Vec<String>, // each entry is a summary
-    pub input_hist_uniq: Vec<String>, // each entry is the originating command
+    pub input_hist_uniq: Vec<String>,   // each entry is the originating command
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
