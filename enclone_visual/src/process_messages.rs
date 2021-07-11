@@ -7,6 +7,7 @@ use crate::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
+use itertools::Itertools;
 use std::io::Read;
 use std::time::{Duration, Instant};
 
@@ -33,6 +34,22 @@ impl EncloneVisual {
                             reply_text = self.current_tables[id - 1].clone();
                             reply_text += "\n \n \n"; // papering over truncation bug in display
                         }
+                        self.input_history.push(self.input_hist_uniq.len());
+                        self.input_hist_uniq.push(self.input_value.clone());
+
+                        let new = self.translated_input_current();
+                        let args = new.split(' ').collect::<Vec<&str>>();
+                        let mut args2 = Vec::<String>::new();
+                        for x in args.iter() {
+                            if x.len() > 0 && !x.starts_with("G=") {
+                                args2.push(x.to_string());
+                            }
+                        }
+                        args2.push(format!("G={}", id));
+                        self.translated_input_history
+                            .push(self.translated_input_hist_uniq.len());
+                        self.translated_input_hist_uniq
+                            .push(args2.iter().format(" ").to_string());
                         self.svg_history.push(*self.svg_history.last().unwrap());
                         self.summary_history
                             .push(*self.summary_history.last().unwrap());
@@ -40,12 +57,6 @@ impl EncloneVisual {
                             .push(*self.displayed_tables_history.last().unwrap());
                         self.table_comp_history
                             .push(*self.table_comp_history.last().unwrap());
-                        self.input_history.push(self.input_hist_uniq.len());
-                        self.input_hist_uniq.push(self.input_value.clone());
-                        self.translated_input_history
-                            .push(self.translated_input_hist_uniq.len());
-                        self.translated_input_hist_uniq
-                            .push(self.translated_input_value.clone());
                         self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
                         self.history_index = self.input_history.len();
                         self.output_value = reply_text.to_string();
