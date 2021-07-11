@@ -35,7 +35,6 @@ pub struct EncloneVisual {
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
     pub submit_button_text: String,
-    pub open_state: button::State,
     pub modal_state_help: modal::State<ModalState>,
     // pub should_exit: bool,
     pub compute_state: ComputeState,
@@ -67,6 +66,7 @@ pub struct EncloneVisual {
     pub null_button3: button::State,
     pub null_button: button::State,
     pub clear_button: button::State,
+    pub open_state: button::State,
     //
     // more or less uniqued history:
     //
