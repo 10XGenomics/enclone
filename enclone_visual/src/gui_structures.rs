@@ -43,6 +43,7 @@ pub struct EncloneVisual {
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
     pub start_command: Option<Instant>,
+    pub group_request: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also

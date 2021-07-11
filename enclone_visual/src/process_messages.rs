@@ -36,7 +36,6 @@ impl EncloneVisual {
                         }
                         self.input_history.push(self.input_hist_uniq.len());
                         self.input_hist_uniq.push(self.input_value.clone());
-
                         let new = self.translated_input_current();
                         let args = new.split(' ').collect::<Vec<&str>>();
                         let mut args2 = Vec::<String>::new();
@@ -72,8 +71,7 @@ impl EncloneVisual {
                     } else {
                         self.compute_state = Thinking;
                         self.start_command = Some(Instant::now());
-                        // The following sleep is needed to get the button text to consistenly
-                        // update.
+                        // The following sleep is needed for button text to consistenly update.
                         thread::sleep(Duration::from_millis(20));
                         if self.input_value.starts_with('#')
                             && self.cookbook.contains_key(&self.input_value)
@@ -82,11 +80,21 @@ impl EncloneVisual {
                         } else {
                             self.translated_input_value = self.input_value.clone();
                         }
+                        let trans = self.translated_input_value.clone();
+                        let args = trans.split(' ').collect::<Vec<&str>>();
+                        let mut args2 = Vec::<String>::new();
+                        for x in args.iter() {
+                            if x.len() > 0 {
+                                if x.starts_with("G=") {
+                                    self.group_request = x.after("G=").to_string();
+                                } else {
+                                    args2.push(x.to_string());
+                                }
+                            }
+                        }
+                        let trans = args2.iter().format(" ").to_string();
                         USER_REQUEST.lock().unwrap().clear();
-                        USER_REQUEST
-                            .lock()
-                            .unwrap()
-                            .push(self.translated_input_value.clone());
+                        USER_REQUEST.lock().unwrap().push(trans);
                         PROCESSING_REQUEST.store(true, SeqCst);
                         Command::perform(compute(), Message::ComputationDone)
                     }
@@ -227,9 +235,47 @@ impl EncloneVisual {
                         clonotypes to see."
                         .to_string();
                 }
+
+                // Start storing values.
+
+                let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
+                let len = self.table_comp_hist_uniq.len();
+                if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
+                    self.table_comp_history.push(len - 1);
+                } else {
+                    self.table_comp_history.push(len);
+                    self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                    let mut gunzipped = Vec::<u8>::new();
+                    let mut d = GzDecoder::new(&*reply_table_comp);
+                    d.read_to_end(&mut gunzipped).unwrap();
+                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                }
+
+                // See if G=... option was used.
+
+                if self.group_request.len() > 0 {
+                    let id = &self.group_request;
+                    let mut illegal = false;
+                    if !id.parse::<usize>().is_ok() || id.force_usize() == 0 {
+                        illegal = true;
+                    }
+                    if id.force_usize() > self.current_tables.len() {
+                        illegal = true;
+                    }
+                    if illegal {
+                        reply_text =
+                            "Illegal use of G=... argument.  The value must be a positive \
+                            integer, and cannot exceed the number of groups."
+                                .to_string();
+                    } else {
+                        reply_text = self.current_tables[id.force_usize() - 1].clone();
+                    }
+                }
+
+                // Keep going.
+
                 reply_text += "\n \n \n"; // papering over truncation bug in display
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
-                let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
                 let mut blank = false;
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
@@ -240,7 +286,7 @@ impl EncloneVisual {
                     }
                 }
 
-                // Store values.
+                // Continue storing values.
                 //
                 // We want to push as little as possible onto the hist_uniq vectors,
                 // and we want to do this as rapidly as possible.  The code here is not
@@ -268,17 +314,6 @@ impl EncloneVisual {
                 } else {
                     self.displayed_tables_history.push(len);
                     self.displayed_tables_hist_uniq.push(reply_text.clone());
-                }
-                let len = self.table_comp_hist_uniq.len();
-                if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.table_comp_history.push(len - 1);
-                } else {
-                    self.table_comp_history.push(len);
-                    self.table_comp_hist_uniq.push(reply_table_comp.clone());
-                    let mut gunzipped = Vec::<u8>::new();
-                    let mut d = GzDecoder::new(&*reply_table_comp);
-                    d.read_to_end(&mut gunzipped).unwrap();
-                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 }
                 let len = self.input_hist_uniq.len();
                 if len > 0 && self.input_hist_uniq[len - 1] == self.input_value {
