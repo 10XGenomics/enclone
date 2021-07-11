@@ -62,11 +62,7 @@ impl EncloneVisual {
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
                         } else {
-                            let count = COUNT.load(SeqCst);
-                            if count > 1 {
-                                capture(count, self.window_id);
-                            }
-                            Command::perform(noop(), Message::RunTests)
+                            Command::perform(noop(), Message::Capture)
                         }
                     } else {
                         self.compute_state = Thinking;
@@ -122,11 +118,7 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    let count = COUNT.load(SeqCst);
-                    if count > 1 {
-                        capture(count, self.window_id);
-                    }
-                    Command::perform(noop(), Message::RunTests)
+                    Command::perform(noop(), Message::Capture)
                 }
             }
 
@@ -151,16 +143,12 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    let count = COUNT.load(SeqCst);
-                    if count > 1 {
-                        capture(count, self.window_id);
-                    }
-                    Command::perform(noop(), Message::RunTests)
+                    Command::perform(noop(), Message::Capture)
                 }
             }
 
             Message::RunTests(_) => {
-                let mut count = COUNT.load(SeqCst);
+                let count = COUNT.load(SeqCst);
                 if count == 0 {
                     self.window_id = get_window_id();
                 }
@@ -169,8 +157,6 @@ impl EncloneVisual {
                         self.input_value = TESTS[count].0.to_string();
                     }
                 } else {
-                    count += 1;
-                    capture(count, self.window_id);
                     std::process::exit(0);
                 }
                 COUNT.store(COUNT.load(SeqCst) + 1, SeqCst);
@@ -348,19 +334,23 @@ impl EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
-                println!(
+                eprintln!(
                     "total time to run command = {:.1} seconds\n",
                     elapsed(&self.start_command.unwrap())
                 );
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    let count = COUNT.load(SeqCst);
-                    if count > 1 {
-                        capture(count, self.window_id);
-                    }
-                    Command::perform(noop(), Message::RunTests)
+                    Command::perform(noop(), Message::Capture)
                 }
+            }
+
+            Message::Capture(_) => {
+                let count = COUNT.load(SeqCst);
+                if count >= 1 {
+                    capture(count, self.window_id);
+                }
+                Command::perform(noop(), Message::RunTests)
             }
 
             // Catch exit (when the upper left red button is pushed) and store DONE to make

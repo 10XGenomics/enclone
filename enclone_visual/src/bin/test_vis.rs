@@ -100,7 +100,7 @@ fn main() {
         "successfully"
     };
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 15.3;
+    const EXPECTED_TIME: f64 = 17.7; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
@@ -126,12 +126,16 @@ fn main() {
         maxrss_children = rusage.ru_maxrss;
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 139.0; // expected to be exceeded roughly 10% of the time
+    const MAX_PEAK_MEM: f64 = 131.6; // this is supposed to be the lowest observed value
+    const MAX_PERCENT_OVER_MEM: f64 = 16.2;
+    let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
+
     eprintln!(
-        "\nObserved peak mem of {:.1} MB versus expected max of {:.1} MB.",
-        peak_mem_mb, MAX_PEAK_MEM,
+        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} seconds by {:.1}%, \
+            versus max allowed = {}%.",
+        peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
     );
-    if peak_mem_mb > MAX_PEAK_MEM {
+    if percent_over > MAX_PERCENT_OVER_MEM {
         eprintln!("That's too high.  This happens occasionally, so please retry.\n");
         std::process::exit(1);
     }

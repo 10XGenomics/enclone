@@ -20,4 +20,5 @@ pub enum Message {
     Exit,
     ClearButtonPressed,
     RunTests(Result<(), String>),
+    Capture(Result<(), String>),
 }
