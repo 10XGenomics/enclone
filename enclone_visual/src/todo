@@ -90,3 +90,5 @@ NICE TO HAVE
 
 13. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
+
+14. Reduce regression image sizes by decompressing them and then restoring at lower resolution.
