@@ -56,7 +56,8 @@ fn main() {
         let old_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
         if !path_exists(&old_file) {
             eprintln!(
-                "\nLooks like you've added a test.  Please look at outputs/{}.png and\n\
+                "\nLooks like you've added a test.  Please look at \
+                enclone_visual/outputs/{}.png and\n\
                 if it's right, copy to regression_tests and git add it.\n",
                 TESTS[i - 1].2,
             );

@@ -270,6 +270,7 @@ impl EncloneVisual {
                     } else {
                         reply_text = self.current_tables[id.force_usize() - 1].clone();
                     }
+                    self.group_request.clear();
                 }
 
                 // Keep going.
