@@ -211,6 +211,11 @@ impl EncloneVisual {
                 if reply_text.contains("enclone failed") {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
+                if reply_text.len() == 0 {
+                    reply_text = "Looks like you used the NOPRINT option, and there are no \
+                        clonotypes to see."
+                        .to_string();
+                }
                 reply_text += "\n \n \n"; // papering over truncation bug in display
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
