@@ -20,7 +20,9 @@ fn main() {
             let new_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
             let mut f = File::open(&new_file).unwrap();
             f.read_to_end(&mut image_new).unwrap();
-            let (_, image_data_old) = png_decoder::decode(&image_old).unwrap();
+            let (header, image_data_old) = png_decoder::decode(&image_old).unwrap();
+            let (width, height) = (header.width as usize, header.height as usize);
+            println!("\nimage is {} x {}\n", width, height);
             let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
             if image_data_old.len() != image_data_new.len() {
                 eprintln!("\nimage size for test {} changed", i);
@@ -30,14 +32,20 @@ fn main() {
             const MAX_DIFFS: usize = 477;
             let mut big_diffs = 0;
             for i in 0..image_data_old.len() {
-                if ((image_data_old[i] as isize) - (image_data_new[i] as isize)).abs() > BIG {
-                    println!("i = {}", i);
+                let (vold, vnew) = (image_data_old[i], image_data_new[i]);
+                if ((vold as isize) - (vnew as isize)).abs() > BIG {
+                    let x = i / (height * 4);
+                    let y = (i % (height * 4)) / 4;
+                    let c = i % 4;
+                    println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
+                        x, y, c, vold, vnew
+                    );
                     big_diffs += 1;
                 }
             }
             if big_diffs > MAX_DIFFS {
                 eprintln!(
-                    "\nThere are {} big diffs for {}.",
+                    "\nThere are {} big diffs for {}.\n",
                     big_diffs,
                     TESTS[i - 1].2
                 );
