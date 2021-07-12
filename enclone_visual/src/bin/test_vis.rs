@@ -104,7 +104,7 @@ fn main() {
         }
     }
     let state = if fail {
-        "unsuccessfully"
+        "UNSUCCESSFULLY"
     } else {
         "successfully"
     };
