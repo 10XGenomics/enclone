@@ -42,6 +42,7 @@ pub fn tail_code(
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     svgs: &mut Vec<String>,
+    summary: &mut String,
 ) -> Result<(), String> {
     // Print clonotypes.
 
@@ -64,6 +65,7 @@ pub fn tail_code(
         &groups,
         &opt_d_val,
         svgs,
+        summary,
     )?;
 
     // Do gene scan.

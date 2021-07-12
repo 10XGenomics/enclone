@@ -2,6 +2,7 @@
 
 use crate::copy_image_to_clipboard::*;
 use crate::gui_structures::EncloneVisual;
+use crate::testsuite::TESTS;
 use convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
@@ -25,6 +26,7 @@ use svg_to_geometry::*;
 use tables::*;
 
 pub mod canvas_view;
+pub mod compare_images;
 pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
 pub mod enclone_client;
@@ -123,15 +125,22 @@ pub async fn launch_gui() -> iced::Result {
 }
 
 pub fn capture(count: usize, window_id: usize) {
-    let o = std::process::Command::new("screencapture")
-        .arg(&format!("-l{}", window_id))
-        .arg(&format!("enclone_visual/outputs/test{}.png", count - 1))
-        .output()
-        .expect("failed to execute screencapture");
-    if o.status.code() != Some(0) {
-        eprintln!("\nCall to screencapture failed.");
-        eprintln!("stderr =\n{}\n", strme(&o.stderr));
-        std::process::exit(1);
+    if TESTS[count - 1].2.len() > 0 {
+        thread::sleep(Duration::from_millis(20));
+        let o = std::process::Command::new("screencapture")
+            .arg("-x")
+            .arg(&format!("-l{}", window_id))
+            .arg(&format!(
+                "enclone_visual/outputs/{}.png",
+                TESTS[count - 1].2
+            ))
+            .output()
+            .expect("failed to execute screencapture");
+        if o.status.code() != Some(0) {
+            eprintln!("\nCall to screencapture failed.");
+            eprintln!("stderr =\n{}\n", strme(&o.stderr));
+            std::process::exit(1);
+        }
     }
 }
 
@@ -279,6 +288,7 @@ pub static USING_SETUP: AtomicBool = AtomicBool::new(false);
 pub static CLEANED_UP: AtomicBool = AtomicBool::new(false);
 pub static VERBOSE: AtomicBool = AtomicBool::new(false);
 pub static COOKBOOK: AtomicBool = AtomicBool::new(false);
+pub static SUMMARY: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
@@ -295,8 +305,13 @@ lazy_static! {
     pub static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<usize>>> =
+        Mutex::new(Vec::<Vec<usize>>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

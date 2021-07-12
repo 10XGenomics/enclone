@@ -100,6 +100,38 @@ pub fn process_special_arg(
         for j in 1..fields.len() {
             ctl.plot_opt.sim_mat_plot_vars.push(fields[j].to_string());
         }
+    } else if arg.starts_with("G=") {
+        let mut x = Vec::<usize>::new();
+        let s = arg.after("G=").split(',').collect::<Vec<&str>>();
+        let mut ok = false;
+        for i in 0..s.len() {
+            if s[i].parse::<usize>().is_ok() {
+                let n = s[i].force_usize();
+                if n >= 1 {
+                    x.push(n);
+                    ok = true;
+                }
+            } else if s[i].contains("-") {
+                let (a, b) = (s[i].before("-"), s[i].after("-"));
+                if a.parse::<usize>().is_ok() && b.parse::<usize>().is_ok() {
+                    let (a, b) = (a.force_usize(), b.force_usize());
+                    if 1 <= a && a <= b {
+                        for j in a..=b {
+                            x.push(j);
+                        }
+                        ok = true;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return Err(format!(
+                "\nArgument to G= must be a comma separated list of positive integers or \
+                    hyphenated rangers of positive integers.\n"
+            ));
+        }
+        unique_sort(&mut x);
+        ctl.gen_opt.group_post_filter = Some(x);
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {

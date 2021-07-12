@@ -18,7 +18,7 @@ publish = false
 
 [dependencies]
 assert_cmd = "1.0.3"
-bio = { git = "https://github.com/rust-bio/rust-bio", rev = "9f1452b128fbdbeb54d0823f6da17f40e3cc1575" }
+bio = ">=0.35"
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
 dirs = "3.0.1"
@@ -31,14 +31,14 @@ pager = "0.16.0"
 permutation = "0.2.5"
 petgraph = "0.5"
 pretty_trace = "0.5"
-prost = { version = ">=0.6.1, <0.8", features = [] }
-prost-build = ">=0.6.1, <0.8"
+prost = { version = ">=0.8", features = [] }
+prost-build = ">=0.8"
 rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
 serde_derive = "1.0"
 stats_utils = "0.1"
-stirling_numbers = "0.1.3"
+stirling_numbers = "0.1"
 string_utils = "0.1"
 tar = "0.4.33"
 tilde-expand = "0.1.1"

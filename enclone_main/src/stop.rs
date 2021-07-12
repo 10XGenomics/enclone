@@ -246,6 +246,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut svgs = Vec::<String>::new();
     let mut group_pics = Vec::<String>::new();
     let mut last_widths = Vec::<usize>::new();
+    let mut summary = String::new();
     tail_code(
         &tall,
         &refdata,
@@ -270,6 +271,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &groups,
         &opt_d_val,
         &mut svgs,
+        &mut summary,
     )?;
 
     // Report profiling.
@@ -343,6 +345,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         pics: group_pics,
         last_widths: last_widths,
         svgs: svgs,
+        summary: summary,
         noprint: ctl.gen_opt.noprint,
         noprintx: ctl.gen_opt.noprintx,
         html: ctl.gen_opt.html,

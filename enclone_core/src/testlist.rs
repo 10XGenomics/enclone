@@ -109,7 +109,7 @@ pub const GTESTS: [&str; 13] = [
          AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
 ];
 
-pub const TESTS: [&str; 238] = [
+pub const TESTS: [&str; 239] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -700,6 +700,8 @@ pub const TESTS: [&str; 238] = [
     r###"--help NO_PRE EXPECT_OK"###,
     // 238. test cigar
     r###"BCR=123085 AMINO=cdr3 POUT=stdout PCOLS=cigar2 CDR3=CTRSSTTPRDPTMIVVAYYYYGMDVW"###,
+    // 239. test group post filtering
+    r###"BCR=123085 G=2,100-101 NGROUP"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

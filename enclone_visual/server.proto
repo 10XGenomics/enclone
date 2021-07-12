@@ -22,8 +22,11 @@ message EncloneRequest {
 
 message EncloneResponse {
   string args = 1;
-  string plot = 2; // SVG.
-  string table = 3; // Full clonotype table as terminal text.
+  string plot = 2; // SVG
+  string table = 3; // partial clonotype table as terminal text
+  string summary = 4;
+  bytes table_comp = 5; // full clonotype table as terminal text, compressed
+  repeated uint32 last_widths = 6;
 }
 
 message ClonotypeRequest {

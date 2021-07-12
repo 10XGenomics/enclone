@@ -141,7 +141,9 @@ impl Application for EncloneVisual {
             const MAX_LINE: usize = 45;
             let mut log = String::new();
             if self.history_index >= 1 {
-                let cmd = &self.command_history[self.history_index - 1];
+                let cmd = self.translated_input_hist_uniq
+                    [self.translated_input_history[self.history_index - 1]]
+                    .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
                 for i in 0..folds.len() {
@@ -155,13 +157,13 @@ impl Application for EncloneVisual {
                 }
             }
 
-            // Create execute button.
+            // Create summary buttons.
 
-            let exec_button = Button::new(
-                &mut self.exec_button,
-                Text::new("Execute command").size(COPY_BUTTON_FONT_SIZE),
+            let summary_button = Button::new(
+                &mut self.summary_button,
+                Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
-            .on_press(Message::ExecuteButtonPressed);
+            .on_press(Message::OpenModalSummary);
 
             // Build the command column.
 
@@ -186,7 +188,7 @@ impl Application for EncloneVisual {
             } else {
                 col = col.push(null_copy_image_button);
             }
-            col = col.push(exec_button);
+            col = col.push(summary_button);
 
             // Add the command column to the row.
 
@@ -289,7 +291,7 @@ impl Application for EncloneVisual {
             )
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
-        if !self.command_history.is_empty() {
+        if !self.input_history.is_empty() {
             content = content.push(Rule::horizontal(10).style(style::RuleStyle));
         }
         content = content.push(
@@ -304,13 +306,20 @@ impl Application for EncloneVisual {
         Modal::new(&mut self.modal_state_help, content, move |state| {
             Card::new(
                 Text::new(""),
-                if !COOKBOOK.load(SeqCst) {
+                if !COOKBOOK.load(SeqCst) && !SUMMARY.load(SeqCst) {
                     Text::new(&format!(
                         "Welcome to enclone visual {} = {}!\n\n{}",
                         version,
                         version_float,
                         include_str!["help.txt"],
                     ))
+                } else if SUMMARY.load(SeqCst) {
+                    let summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+                    let nlines = summary.chars().filter(|&n| n == '\n').count();
+                    let font_size = (15 * nlines) / 38;
+                    Text::new(&format!("{}", summary))
+                        .font(DEJAVU_BOLD)
+                        .size(font_size as u16)
                 } else {
                     let preamble = "Type the tag into the input box to run the given command.\n\n";
                     Text::new(&format!(
@@ -321,7 +330,7 @@ impl Application for EncloneVisual {
                     .font(DEJAVU_BOLD)
                     .size(14)
                 }
-                .height(Units(700))
+                .height(Units(800))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style::Help)
@@ -329,7 +338,7 @@ impl Application for EncloneVisual {
                 Row::new().spacing(10).push(
                     Button::new(
                         &mut state.cancel_state,
-                        Text::new("Dismiss").horizontal_alignment(HorizontalAlignment::Left),
+                        Text::new("Vanish!").horizontal_alignment(HorizontalAlignment::Left),
                     )
                     .on_press(Message::CancelButtonPressed),
                 ),

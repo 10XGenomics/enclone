@@ -9,10 +9,13 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
+use std::io::Write;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -52,6 +55,7 @@ impl Analyzer for EncloneAnalyzer {
                 }
             }
         }
+        args.push("SUMMARY".to_string());
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
@@ -70,6 +74,9 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: msg,
+                summary: String::new(),
+                table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -79,6 +86,9 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: String::new(),
+                summary: String::new(),
+                table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -86,7 +96,7 @@ impl Analyzer for EncloneAnalyzer {
         // Check for change to setup that could change intermediates.  We are very conservative
         // about this, and only allow changes to:
         // * start_time
-        // * clono_filt_opt
+        // * clono_filt_opt or clono_print_opt
         // * plot_opt.
         // More exceptions could be added.
 
@@ -133,9 +143,6 @@ impl Analyzer for EncloneAnalyzer {
             if setup.ctl.join_alg_opt != last_setup.ctl.join_alg_opt {
                 changed = true;
             }
-            if setup.ctl.clono_print_opt != last_setup.ctl.clono_print_opt {
-                changed = true;
-            }
             if setup.ctl.clono_group_opt != last_setup.ctl.clono_group_opt {
                 changed = true;
             }
@@ -173,6 +180,9 @@ impl Analyzer for EncloneAnalyzer {
                     args: req.args,
                     plot: String::new(),
                     table: msg,
+                    summary: String::new(),
+                    table_comp: Vec::<u8>::new(),
+                    last_widths: Vec::<u32>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -182,6 +192,9 @@ impl Analyzer for EncloneAnalyzer {
                     args: req.args,
                     plot: String::new(),
                     table: String::new(),
+                    summary: String::new(),
+                    table_comp: Vec::<u8>::new(),
+                    last_widths: Vec::<u32>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -200,6 +213,9 @@ impl Analyzer for EncloneAnalyzer {
                 args: req.args,
                 plot: String::new(),
                 table: msg,
+                summary: String::new(),
+                table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -221,6 +237,10 @@ impl Analyzer for EncloneAnalyzer {
                 table.truncate(100);
                 widths.truncate(100);
             }
+            let mut last_widths = Vec::<u32>::new();
+            for i in 0..widths.len() {
+                last_widths.push(widths[i] as u32);
+            }
             let table_string = combine_group_pics(
                 &table,
                 &widths,
@@ -234,16 +254,28 @@ impl Analyzer for EncloneAnalyzer {
             if enclone_state.outs.svgs.len() > 0 {
                 plot = enclone_state.outs.svgs[0].clone();
             }
+            let full_table = enclone_state.outs.pics.clone();
+            let serialized = serde_json::to_string(&full_table)
+                .unwrap()
+                .as_bytes()
+                .to_vec();
+            let mut e = GzEncoder::new(Vec::new(), Compression::default());
+            let _ = e.write_all(&serialized);
+            let gzipped = e.finish().unwrap();
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,
                 table: table_string,
+                summary: enclone_state.outs.summary.clone(),
+                table_comp: gzipped,
+                last_widths: last_widths,
             };
             if server_debug {
                 println!("sending response as follows:");
                 println!("args = {}", response.args);
                 println!("plot = {}", response.plot);
                 println!("table = {}", response.table);
+                println!("summary = {}", response.summary);
             }
         }
         if server_debug {

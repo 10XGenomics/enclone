@@ -29,7 +29,7 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::launch_gui;
-use crate::proto::{analyzer_client::AnalyzerClient, ClonotypeRequest, EncloneRequest};
+use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest};
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
@@ -596,28 +596,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut line = input.to_string();
                     let output;
                     let mut svg_output = String::new();
+                    let mut summary = String::new();
+                    let mut table_comp = Vec::<u8>::new();
+                    let mut last_widths = Vec::<usize>::new();
                     if line == "q" {
                         cleanup();
                         std::process::exit(0);
                     }
-                    if line.parse::<usize>().is_ok() {
-                        let n = line.force_usize();
-                        if n == 0 {
-                            output = "group numbers start at 1\n".to_string();
-                        } else {
-                            let request = tonic::Request::new(ClonotypeRequest {
-                                clonotype_number: (n - 1) as u32,
-                            });
-                            let response = client.get_clonotype(request).await;
-                            if response.is_err() {
-                                output = "group number is too large\n".to_string();
-                            } else {
-                                let response = response.unwrap();
-                                let r = response.into_inner();
-                                output = r.table.clone();
-                            }
-                        }
-                    } else if line != "enclone" && !line.starts_with("enclone ") {
+                    if line != "enclone" && !line.starts_with("enclone ") {
                         output =
                             "an actual enclone command needs to start with \"enclone\"".to_string();
                     } else {
@@ -660,9 +646,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let r = response.into_inner();
                             svg_output = r.plot.clone();
                             output = format!("{}", r.table);
+                            table_comp = r.table_comp.clone();
+                            for x in r.last_widths.iter() {
+                                last_widths.push(*x as usize);
+                            }
+                            summary = r.summary.clone();
                         }
                         SERVER_REPLY_SVG.lock().unwrap().clear();
                         SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
+                        SERVER_REPLY_SUMMARY.lock().unwrap().clear();
+                        SERVER_REPLY_SUMMARY.lock().unwrap().push(summary);
+                        SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
+                        SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
+                        SERVER_REPLY_LAST_WIDTHS.lock().unwrap().clear();
+                        SERVER_REPLY_LAST_WIDTHS.lock().unwrap().push(last_widths);
                     }
                     SERVER_REPLY_TEXT.lock().unwrap().clear();
                     SERVER_REPLY_TEXT.lock().unwrap().push(output.clone());

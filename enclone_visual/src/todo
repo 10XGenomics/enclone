@@ -79,17 +79,22 @@ NICE TO HAVE
 
 8.  Make "enclone help ..." work.
 
-9.  Make summaries viewable.
+9.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
 
-10. Can a row have one item left aligned and the second center aligned?  Apply to banner.
+10. Add button to capture the entire enclone visual window.
 
-11. Add button to capture the entire enclone visual window.
+11. Get copy button to appear right next to the graphic.
 
-12. Get copy button to appear right next to the graphic.
-
-13. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
+12. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
     Start by reading how the canvas in the game of life example handles clicks.
 
-14. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+13. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
+14. Reduce regression image sizes by decompressing them and then restoring at lower resolution.
+    Alternatively, the pixel counts for the top 10 colors are typically invariant to +/- 1.
+    Maybe there is a literature on approximate image invariants.
+
+15. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+    things down, and gzipped representation of tables is crappy because it doesn't allow access
+    to individual elements without unzipping everything.

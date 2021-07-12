@@ -3,10 +3,30 @@
 use crate::messages::*;
 use crate::*;
 
-pub const TESTS: [(&str, MsgFn); 5] = [
-    ("#1", Message::SubmitButtonPressed as MsgFn),
-    ("#2", Message::SubmitButtonPressed as MsgFn),
-    ("#3", Message::SubmitButtonPressed as MsgFn),
-    ("", Message::BackButtonPressed as MsgFn),
-    ("", Message::ForwardButtonPressed as MsgFn),
+const SUBMIT: fn(Result<(), std::string::String>) -> messages::Message =
+    Message::SubmitButtonPressed as MsgFn;
+
+const BACK: fn(Result<(), std::string::String>) -> messages::Message =
+    Message::BackButtonPressed as MsgFn;
+
+const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
+    Message::ForwardButtonPressed as MsgFn;
+
+#[rustfmt::skip]
+pub const TESTS: [(&str, MsgFn, &str); 15] = [
+    ("enclone woof", SUBMIT, ""), // this is a crash test
+    ("#1", SUBMIT, "test1"),      // enclone BCR=123085 PLOT=gui MIN_CELLS=5
+    ("", BACK, ""),
+    ("", FORWARD, ""),
+    ("10", SUBMIT, "test1b"),
+    ("enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12", SUBMIT, "test1c"),
+    ("#2", SUBMIT, "test2"), // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
+    ("#3", SUBMIT, "test3"), // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
+    ("", BACK, "test4"),
+    ("", FORWARD, "test5"),
+    ("#4", SUBMIT, "test6"), // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+    ("10", SUBMIT, "test7"),
+    ("", BACK, "test8"),
+    ("", BACK, "test9"),
+    ("10", SUBMIT, "test10"),
 ];

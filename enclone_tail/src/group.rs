@@ -58,6 +58,7 @@ pub fn group_and_print_clonotypes(
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     svgs: &mut Vec<String>,
+    summary: &mut String,
 ) -> Result<(), String> {
     // Build index to join info.
 
@@ -754,6 +755,22 @@ pub fn group_and_print_clonotypes(
         group_pics.push(stringme(&glog));
         last_widths.push(last_width);
     }
+    if ctl.gen_opt.group_post_filter.as_ref().is_some() {
+        let x = &ctl.gen_opt.group_post_filter.as_ref().unwrap();
+        if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
+            return Err(format!(
+                "\nArgument to G= references a group id that exceeds the number of groups.\n"
+            ));
+        }
+        let mut group_pics2 = Vec::<String>::new();
+        let mut last_widths2 = Vec::<usize>::new();
+        for i in 0..x.len() {
+            group_pics2.push(group_pics[x[i] - 1].clone());
+            last_widths2.push(last_widths[x[i] - 1]);
+        }
+        *group_pics = group_pics2;
+        *last_widths = last_widths2;
+    }
     if !ctl.gen_opt.noprintx {
         logx.append(
             &mut combine_group_pics(
@@ -828,6 +845,7 @@ pub fn group_and_print_clonotypes(
 
     let mut nclono2 = 0;
     let mut two_chain = 0;
+    let mut slog = Vec::<u8>::new();
     print_stats(
         &tall,
         &exacts,
@@ -837,11 +855,13 @@ pub fn group_and_print_clonotypes(
         &gex_info,
         &vdj_cells,
         &fate,
-        &mut logx,
+        &mut slog,
         &mut nclono2,
         &mut two_chain,
         &opt_d_val,
     );
+    *summary = stringme(&slog);
+    logx.append(&mut slog);
 
     // Print to stdout.
 
