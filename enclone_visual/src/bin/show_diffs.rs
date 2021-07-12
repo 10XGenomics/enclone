@@ -31,22 +31,24 @@ fn main() {
             const BIG: isize = 0;
             const MAX_DIFFS: usize = 477;
             let mut big_diffs = 0;
-            for i in 0..image_data_old.len() {
-                let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
-                let x = i / (height * 4);
-                let y = (i % (height * 4)) / 4;
-                let c = i % 4;
-                if c == 3 && vold <= 14 && vnew <= 14 {
-                    continue;
-                }
-                if c == 3 && (vold - vnew).abs() <= 5 {
-                    continue;
-                }
-                if (vold - vnew).abs() > BIG {
-                    println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
-                        x, y, c, vold, vnew
-                    );
-                    big_diffs += 1;
+            for x in 0..width {
+                for y in 0..height {
+                    for c in 0..4 {
+                        let i = x * (height * 4) + y * 4 + c;
+                        let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
+                        if c == 3 && vold <= 14 && vnew <= 14 {
+                            continue;
+                        }
+                        if c == 3 && (vold - vnew).abs() <= 5 {
+                            continue;
+                        }
+                        if (vold - vnew).abs() > BIG {
+                            println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
+                                x, y, c, vold, vnew
+                            );
+                            big_diffs += 1;
+                        }
+                    }
                 }
             }
             if big_diffs > MAX_DIFFS {
