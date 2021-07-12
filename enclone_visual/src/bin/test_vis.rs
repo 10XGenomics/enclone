@@ -4,6 +4,8 @@
 //
 // If you run with the single argument UPDATE, failing results will be replaced.
 //
+// Argument: QUIET.
+//
 // See also show_diffs.
 
 use enclone_visual::compare_images::*;
@@ -45,8 +47,12 @@ fn main() {
     let t = Instant::now();
     let args: Vec<String> = env::args().collect();
     let mut update = false;
+    let mut quiet = false;
     if args.len() >= 2 && args[1] == "UPDATE" {
         update = true;
+    }
+    if args.len() >= 2 && args[1] == "QUIET" {
+        quiet = true;
     }
     let o = Command::new("enclone")
         .arg(&"VIS")
@@ -58,7 +64,9 @@ fn main() {
         eprintln!("stderr =\n{}", strme(&o.stderr));
         std::process::exit(1);
     }
-    print!("{}", strme(&o.stdout));
+    if !quiet {
+        print!("{}", strme(&o.stdout));
+    }
     let mut fail = false;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
