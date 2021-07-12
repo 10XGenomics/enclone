@@ -12,8 +12,9 @@ const BACK: fn(Result<(), std::string::String>) -> messages::Message =
 const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
     Message::ForwardButtonPressed as MsgFn;
 
-pub const TESTS: [(&str, MsgFn, &str); 12] = [
-    ("#1", SUBMIT, "test1"), // enclone BCR=123085 PLOT=gui MIN_CELLS=5
+pub const TESTS: [(&str, MsgFn, &str); 13] = [
+    ("enclone woof", SUBMIT, ""), // this is a crash test
+    ("#1", SUBMIT, "test1"),      // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("10", SUBMIT, "test1b"),
     (
         "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12",

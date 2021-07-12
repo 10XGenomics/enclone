@@ -124,20 +124,22 @@ pub async fn launch_gui() -> iced::Result {
 }
 
 pub fn capture(count: usize, window_id: usize) {
-    thread::sleep(Duration::from_millis(20));
-    let o = std::process::Command::new("screencapture")
-        .arg("-x")
-        .arg(&format!("-l{}", window_id))
-        .arg(&format!(
-            "enclone_visual/outputs/{}.png",
-            TESTS[count - 1].2
-        ))
-        .output()
-        .expect("failed to execute screencapture");
-    if o.status.code() != Some(0) {
-        eprintln!("\nCall to screencapture failed.");
-        eprintln!("stderr =\n{}\n", strme(&o.stderr));
-        std::process::exit(1);
+    if TESTS[count - 1].2.len() > 0 {
+        thread::sleep(Duration::from_millis(20));
+        let o = std::process::Command::new("screencapture")
+            .arg("-x")
+            .arg(&format!("-l{}", window_id))
+            .arg(&format!(
+                "enclone_visual/outputs/{}.png",
+                TESTS[count - 1].2
+            ))
+            .output()
+            .expect("failed to execute screencapture");
+        if o.status.code() != Some(0) {
+            eprintln!("\nCall to screencapture failed.");
+            eprintln!("stderr =\n{}\n", strme(&o.stderr));
+            std::process::exit(1);
+        }
     }
 }
 

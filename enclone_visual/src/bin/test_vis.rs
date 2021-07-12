@@ -58,6 +58,9 @@ fn main() {
     print!("{}", strme(&o.stdout));
     let mut fail = false;
     for i in 1..=TESTS.len() {
+        if TESTS[i - 1].2.len() == 0 {
+            continue;
+        }
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
         let old_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
         if !path_exists(&old_file) {
