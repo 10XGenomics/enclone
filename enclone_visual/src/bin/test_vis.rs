@@ -68,6 +68,7 @@ fn main() {
         print!("{}", strme(&o.stdout));
     }
     let mut fail = false;
+    const BIG_DIFFS: usize = 5;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
@@ -96,7 +97,7 @@ fn main() {
             std::process::exit(1);
         }
         let big_diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
-        if big_diffs > 0 {
+        if big_diffs > BIG_DIFFS {
             eprintln!(
                 "\nThere are {} big diffs for {}.",
                 big_diffs,
