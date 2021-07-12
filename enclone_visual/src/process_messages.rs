@@ -4,47 +4,91 @@ use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
+use enclone_core::combine_group_pics::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
 use itertools::Itertools;
 use std::io::Read;
 use std::time::{Duration, Instant};
+use vector_utils::*;
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::SubmitButtonPressed(_) => {
+                let mut group_spec = true;
+                let mut group_ids = Vec::<usize>::new();
+                let s = &self.input_value.split(',').collect::<Vec<&str>>();
+                for i in 0..s.len() {
+                    let mut ok = false;
+                    if s[i].parse::<usize>().is_ok() {
+                        let n = s[i].force_usize();
+                        if n >= 1 {
+                            group_ids.push(n);
+                            ok = true;
+                        }
+                    } else if s[i].contains("-") {
+                        let (a, b) = (s[i].before("-"), s[i].after("-"));
+                        if a.parse::<usize>().is_ok() && b.parse::<usize>().is_ok() {
+                            let (a, b) = (a.force_usize(), b.force_usize());
+                            if 1 <= a && a <= b {
+                                for j in a..=b {
+                                    group_ids.push(j);
+                                }
+                                ok = true;
+                            }
+                        }
+                    }
+                    if !ok {
+                        group_spec = false;
+                    }
+                }
+                if group_ids.is_empty() {
+                    group_spec = false;
+                }
+                unique_sort(&mut group_ids);
                 if self.compute_state != WaitingForRequest {
                     Command::none()
                 } else {
-                    if self.input_value.parse::<usize>().is_ok() {
+                    if group_spec {
                         self.translated_input_value = self.input_value.clone();
-                        let id = self.input_value.force_usize();
                         let mut reply_text;
+                        let new = self.translated_input_current();
+                        let args = new.split(' ').collect::<Vec<&str>>();
                         if self.input_history.is_empty() {
                             reply_text = "Group identifier can only be supplied if another \
                                 command has already been run."
                                 .to_string();
-                        } else if id == 0 {
-                            reply_text = "Group identifiers start at 1".to_string();
-                        } else if id > self.current_tables.len() {
+                        } else if group_ids[group_ids.len() - 1] > self.current_tables.len() {
                             reply_text = "Group identifier is too large.".to_string();
                         } else {
-                            reply_text = self.current_tables[id - 1].clone();
+                            let mut group_pics = Vec::<String>::new();
+                            let mut last_widths = Vec::<usize>::new();
+                            for x in group_ids.iter() {
+                                group_pics.push(self.current_tables[*x - 1].clone());
+                                last_widths.push(self.last_widths_value[*x - 1]);
+                            }
+                            reply_text = combine_group_pics(
+                                &group_pics,
+                                &last_widths,
+                                args.contains(&"NOPRINT"),
+                                true, // .noprintx
+                                args.contains(&"HTML"),
+                                args.contains(&"NGROUP"),
+                                false, // .pretty
+                            );
                             reply_text += "\n \n \n"; // papering over truncation bug in display
                         }
                         self.input_history.push(self.input_hist_uniq.len());
                         self.input_hist_uniq.push(self.input_value.clone());
-                        let new = self.translated_input_current();
-                        let args = new.split(' ').collect::<Vec<&str>>();
                         let mut args2 = Vec::<String>::new();
                         for x in args.iter() {
                             if x.len() > 0 && !x.starts_with("G=") {
                                 args2.push(x.to_string());
                             }
                         }
-                        args2.push(format!("G={}", id));
+                        args2.push(format!("G={}", self.input_value));
                         self.translated_input_history
                             .push(self.translated_input_hist_uniq.len());
                         self.translated_input_hist_uniq
@@ -56,6 +100,8 @@ impl EncloneVisual {
                             .push(*self.displayed_tables_history.last().unwrap());
                         self.table_comp_history
                             .push(*self.table_comp_history.last().unwrap());
+                        self.last_widths_history
+                            .push(*self.last_widths_history.last().unwrap());
                         self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
                         self.history_index = self.input_history.len();
                         self.output_value = reply_text.to_string();
@@ -76,21 +122,11 @@ impl EncloneVisual {
                         } else {
                             self.translated_input_value = self.input_value.clone();
                         }
-                        let trans = self.translated_input_value.clone();
-                        let args = trans.split(' ').collect::<Vec<&str>>();
-                        let mut args2 = Vec::<String>::new();
-                        for x in args.iter() {
-                            if x.len() > 0 {
-                                if x.starts_with("G=") {
-                                    self.group_request = x.after("G=").to_string();
-                                } else {
-                                    args2.push(x.to_string());
-                                }
-                            }
-                        }
-                        let trans = args2.iter().format(" ").to_string();
                         USER_REQUEST.lock().unwrap().clear();
-                        USER_REQUEST.lock().unwrap().push(trans);
+                        USER_REQUEST
+                            .lock()
+                            .unwrap()
+                            .push(self.translated_input_value.clone());
                         PROCESSING_REQUEST.store(true, SeqCst);
                         Command::perform(compute(), Message::ComputationDone)
                     }
@@ -104,6 +140,7 @@ impl EncloneVisual {
                 self.summary_value = self.summary_current();
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
+                self.last_widths_value = self.last_widths_current();
                 self.input_value = self.input_current();
                 self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
@@ -129,6 +166,7 @@ impl EncloneVisual {
                 self.summary_value = self.summary_current();
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
+                self.last_widths_value = self.last_widths_current();
                 self.input_value = self.input_current();
                 self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
@@ -237,32 +275,11 @@ impl EncloneVisual {
                     self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 }
 
-                // See if G=... option was used.
-
-                if self.group_request.len() > 0 {
-                    let id = &self.group_request;
-                    let mut illegal = false;
-                    if !id.parse::<usize>().is_ok() || id.force_usize() == 0 {
-                        illegal = true;
-                    }
-                    if id.force_usize() > self.current_tables.len() {
-                        illegal = true;
-                    }
-                    if illegal {
-                        reply_text =
-                            "Illegal use of G=... argument.  The value must be a positive \
-                            integer, and cannot exceed the number of groups."
-                                .to_string();
-                    } else {
-                        reply_text = self.current_tables[id.force_usize() - 1].clone();
-                    }
-                    self.group_request.clear();
-                }
-
                 // Keep going.
 
                 reply_text += "\n \n \n"; // papering over truncation bug in display
                 let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+                let reply_last_widths = SERVER_REPLY_LAST_WIDTHS.lock().unwrap()[0].clone();
                 let mut reply_svg = String::new();
                 let mut blank = false;
                 if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
@@ -281,6 +298,13 @@ impl EncloneVisual {
                 // 1. We only compare to the last entry.
                 // 2. We make comparisons in cases where we should already know the answer.
 
+                let len = self.last_widths_hist_uniq.len();
+                if len > 0 && self.last_widths_hist_uniq[len - 1] == reply_last_widths {
+                    self.last_widths_history.push(len - 1);
+                } else {
+                    self.last_widths_history.push(len);
+                    self.last_widths_hist_uniq.push(reply_last_widths.clone());
+                }
                 let len = self.svg_hist_uniq.len();
                 if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
                     self.svg_history.push(len - 1);
@@ -325,6 +349,7 @@ impl EncloneVisual {
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
                 self.table_comp_value = reply_table_comp.clone();
+                self.last_widths_value = reply_last_widths.clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
                     .lock()

@@ -1628,6 +1628,7 @@ dependencies = [
  "tonic",
  "tonic-build",
  "usvg 0.14.1",
+ "vector_utils",
 ]
 
 [[package]]

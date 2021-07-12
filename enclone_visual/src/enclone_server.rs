@@ -76,6 +76,7 @@ impl Analyzer for EncloneAnalyzer {
                 table: msg,
                 summary: String::new(),
                 table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -87,6 +88,7 @@ impl Analyzer for EncloneAnalyzer {
                 table: String::new(),
                 summary: String::new(),
                 table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -180,6 +182,7 @@ impl Analyzer for EncloneAnalyzer {
                     table: msg,
                     summary: String::new(),
                     table_comp: Vec::<u8>::new(),
+                    last_widths: Vec::<u32>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -191,6 +194,7 @@ impl Analyzer for EncloneAnalyzer {
                     table: String::new(),
                     summary: String::new(),
                     table_comp: Vec::<u8>::new(),
+                    last_widths: Vec::<u32>::new(),
                 };
                 return Ok(Response::new(response));
             }
@@ -211,6 +215,7 @@ impl Analyzer for EncloneAnalyzer {
                 table: msg,
                 summary: String::new(),
                 table_comp: Vec::<u8>::new(),
+                last_widths: Vec::<u32>::new(),
             };
             return Ok(Response::new(response));
         }
@@ -231,6 +236,10 @@ impl Analyzer for EncloneAnalyzer {
             if table.len() > 100 {
                 table.truncate(100);
                 widths.truncate(100);
+            }
+            let mut last_widths = Vec::<u32>::new();
+            for i in 0..widths.len() {
+                last_widths.push(widths[i] as u32);
             }
             let table_string = combine_group_pics(
                 &table,
@@ -259,6 +268,7 @@ impl Analyzer for EncloneAnalyzer {
                 table: table_string,
                 summary: enclone_state.outs.summary.clone(),
                 table_comp: gzipped,
+                last_widths: last_widths,
             };
             if server_debug {
                 println!("sending response as follows:");

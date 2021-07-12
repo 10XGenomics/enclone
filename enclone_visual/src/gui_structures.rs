@@ -34,6 +34,7 @@ pub struct EncloneVisual {
     pub png_value: Vec<u8>,
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
+    pub last_widths_value: Vec<usize>,
     pub submit_button_text: String,
     pub modal_state_help: modal::State<ModalState>,
     // pub should_exit: bool,
@@ -43,7 +44,6 @@ pub struct EncloneVisual {
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
     pub start_command: Option<Instant>,
-    pub group_request: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -77,6 +77,7 @@ pub struct EncloneVisual {
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
+    pub last_widths_hist_uniq: Vec<Vec<usize>>,
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //
@@ -86,7 +87,8 @@ pub struct EncloneVisual {
     pub translated_input_history: Vec<usize>, // each entry is the translated originating command
     pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
     pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
-    pub is_blank: Vec<bool>,                  // set if the SVG is empty
+    pub last_widths_history: Vec<usize>,
+    pub is_blank: Vec<bool>, // set if the SVG is empty
     //
     // index of "current" position in those vectors, plus one:
     //
@@ -120,5 +122,8 @@ impl EncloneVisual {
     }
     pub fn table_comp_current(&self) -> Vec<u8> {
         return self.table_comp_hist_uniq[self.table_comp_history[self.hi()]].clone();
+    }
+    pub fn last_widths_current(&self) -> Vec<usize> {
+        return self.last_widths_hist_uniq[self.last_widths_history[self.hi()]].clone();
     }
 }
