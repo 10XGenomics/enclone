@@ -13,9 +13,11 @@ const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
     Message::ForwardButtonPressed as MsgFn;
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 13] = [
+pub const TESTS: [(&str, MsgFn, &str); 15] = [
     ("enclone woof", SUBMIT, ""), // this is a crash test
     ("#1", SUBMIT, "test1"),      // enclone BCR=123085 PLOT=gui MIN_CELLS=5
+    ("", BACK, ""),
+    ("", FORWARD, ""),
     ("10", SUBMIT, "test1b"),
     ("enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12", SUBMIT, "test1c"),
     ("#2", SUBMIT, "test2"), // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
