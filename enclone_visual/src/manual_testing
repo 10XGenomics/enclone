@@ -8,13 +8,12 @@ MANUAL TESTING
    (e) Try to cut and paste from clonotype tables [BROKEN].
    (f) Test help button.
    (g) Test that copy image button flashes and that it actually copies.
-   (h) Test cookbook commands.
+   (h) Test cookbook commands #5 and #6.
    (i) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
        check tooltip functionality
    (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
        check tooltip functionality
-   (k) enclone woof
-   (l) enclone BCR=123085 NOPRINT
+   (k) enclone BCR=123085 NOPRINT
 
 2. Repeat ten times:
    (a) type enclone VIS
