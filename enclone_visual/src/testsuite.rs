@@ -12,15 +12,12 @@ const BACK: fn(Result<(), std::string::String>) -> messages::Message =
 const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
     Message::ForwardButtonPressed as MsgFn;
 
+#[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 13] = [
     ("enclone woof", SUBMIT, ""), // this is a crash test
     ("#1", SUBMIT, "test1"),      // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("10", SUBMIT, "test1b"),
-    (
-        "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12",
-        SUBMIT,
-        "test1c",
-    ),
+    ("enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12", SUBMIT, "test1c"),
     ("#2", SUBMIT, "test2"), // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
     ("#3", SUBMIT, "test3"), // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
     ("", BACK, "test4"),
