@@ -28,15 +28,21 @@ fn main() {
                 eprintln!("\nimage size for test {} changed", i);
                 std::process::exit(1);
             }
-            const BIG: isize = 6;
+            const BIG: isize = 0;
             const MAX_DIFFS: usize = 477;
             let mut big_diffs = 0;
             for i in 0..image_data_old.len() {
-                let (vold, vnew) = (image_data_old[i], image_data_new[i]);
-                if ((vold as isize) - (vnew as isize)).abs() > BIG {
-                    let x = i / (height * 4);
-                    let y = (i % (height * 4)) / 4;
-                    let c = i % 4;
+                let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
+                let x = i / (height * 4);
+                let y = (i % (height * 4)) / 4;
+                let c = i % 4;
+                if c == 3 && vold <= 14 && vnew <= 14 {
+                    continue;
+                }
+                if c == 3 && (vold - vnew).abs() <= 5 {
+                    continue;
+                }
+                if (vold - vnew).abs() > BIG {
                     println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
                         x, y, c, vold, vnew
                     );
