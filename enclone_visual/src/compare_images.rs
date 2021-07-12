@@ -17,7 +17,7 @@ pub fn compare_images(
 ) -> usize {
     const BIG: isize = 4;
     const MAX_GRAY_DIFF: isize = 80;
-    let mut results = Vec::<(usize, usize, Vec::<u8>)>::new();
+    let mut results = Vec::<(usize, usize, Vec<u8>)>::new();
     for x in 0..width {
         results.push((x, 0, Vec::new()));
     }
@@ -26,7 +26,6 @@ pub fn compare_images(
         let mut olds = Vec::<isize>::new();
         let mut news = Vec::<isize>::new();
         for y in 0..height {
-
             // Test for small grayscale differences, ignoring transparency.
 
             olds.clear();
@@ -50,9 +49,14 @@ pub fn compare_images(
                 let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
                 if (vold - vnew).abs() > BIG {
                     if verbose {
-                        fwriteln!(res.2, 
+                        fwriteln!(
+                            res.2,
                             "x = {}, y = {}, c = {}, vold = {}, vnew = {}",
-                            x, y, c, vold, vnew
+                            x,
+                            y,
+                            c,
+                            vold,
+                            vnew
                         );
                     }
                     res.1 += 1;
@@ -67,4 +71,3 @@ pub fn compare_images(
     }
     big_diffs
 }
-
