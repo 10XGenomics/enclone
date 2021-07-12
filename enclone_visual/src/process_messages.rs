@@ -148,10 +148,14 @@ impl EncloneVisual {
                     .lock()
                     .unwrap()
                     .push(self.summary_value.clone());
-                let mut gunzipped = Vec::<u8>::new();
-                let mut d = GzDecoder::new(&*self.table_comp_value);
-                d.read_to_end(&mut gunzipped).unwrap();
-                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                if self.table_comp_value.len() > 0 {
+                    let mut gunzipped = Vec::<u8>::new();
+                    let mut d = GzDecoder::new(&*self.table_comp_value);
+                    d.read_to_end(&mut gunzipped).unwrap();
+                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                } else {
+                    self.current_tables.clear();
+                }
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -174,10 +178,14 @@ impl EncloneVisual {
                     .lock()
                     .unwrap()
                     .push(self.summary_value.clone());
-                let mut gunzipped = Vec::<u8>::new();
-                let mut d = GzDecoder::new(&*self.table_comp_value);
-                d.read_to_end(&mut gunzipped).unwrap();
-                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                if self.table_comp_value.len() > 0 {
+                    let mut gunzipped = Vec::<u8>::new();
+                    let mut d = GzDecoder::new(&*self.table_comp_value);
+                    d.read_to_end(&mut gunzipped).unwrap();
+                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                } else {
+                    self.current_tables.clear();
+                }
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -251,10 +259,8 @@ impl EncloneVisual {
 
             Message::ComputationDone(_) => {
                 let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                let mut failed = false;
                 if reply_text.contains("enclone failed") {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
-                    failed = true;
                 }
                 if reply_text.len() == 0 {
                     reply_text = "Looks like you used the NOPRINT option, and there are no \
@@ -271,7 +277,7 @@ impl EncloneVisual {
                 } else {
                     self.table_comp_history.push(len);
                     self.table_comp_hist_uniq.push(reply_table_comp.clone());
-                    if !failed {
+                    if self.table_comp_value.len() > 0 {
                         let mut gunzipped = Vec::<u8>::new();
                         let mut d = GzDecoder::new(&*reply_table_comp);
                         d.read_to_end(&mut gunzipped).unwrap();
