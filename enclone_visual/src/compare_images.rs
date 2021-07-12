@@ -23,12 +23,14 @@ pub fn compare_images(
     }
     results.par_iter_mut().for_each(|res| {
         let x = res.0;
+        let mut olds = Vec::<isize>::new();
+        let mut news = Vec::<isize>::new();
         for y in 0..height {
 
             // Test for small grayscale differences, ignoring transparency.
 
-            let mut olds = Vec::<isize>::new();
-            let mut news = Vec::<isize>::new();
+            olds.clear();
+            news.clear();
             for c in 0..3 {
                 let i = x * (height * 4) + y * 4 + c;
                 let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
