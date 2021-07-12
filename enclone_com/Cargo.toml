@@ -31,4 +31,4 @@ string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tokio-util = { version = "0.6", features = ["net"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="42caa7eddd1137893fb2133afcc14767a737787d" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
