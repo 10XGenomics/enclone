@@ -372,6 +372,7 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
+                    self.sanity_check();
                     Command::perform(noop(), Message::Capture)
                 }
             }

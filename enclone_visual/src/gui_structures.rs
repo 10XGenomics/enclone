@@ -126,4 +126,14 @@ impl EncloneVisual {
     pub fn last_widths_current(&self) -> Vec<usize> {
         return self.last_widths_hist_uniq[self.last_widths_history[self.hi()]].clone();
     }
+    pub fn sanity_check(&self) {
+        let n = self.svg_history.len();
+        assert_eq!(n, self.summary_history.len());
+        assert_eq!(n, self.input_history.len());
+        assert_eq!(n, self.translated_input_history.len());
+        assert_eq!(n, self.displayed_tables_history.len());
+        assert_eq!(n, self.table_comp_history.len());
+        assert_eq!(n, self.last_widths_history.len());
+        assert_eq!(n, self.is_blank.len());
+    }
 }
