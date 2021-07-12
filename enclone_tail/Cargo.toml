@@ -41,7 +41,7 @@ ndarray = ">= 0.14"
 perf_stats = "0.1"
 plotters = { version = "^0.3.0", default_features = false, features = ["svg_backend", "point_series"] }
 pretty_trace = "0.5"
-rayon = "1.4"
+rayon = "1.5"
 serde = "1.0.90"
 serde_derive = "1.0"
 serde_json = "*"
