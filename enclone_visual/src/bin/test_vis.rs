@@ -1,8 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
-
+//
 // Run some tests of enclone visual on a Mac.  As part of the tests, this opens a window.
 //
 // If you run with the single argument UPDATE, failing results will be replaced.
+//
+// See also show_diffs.
 
 use enclone_visual::testsuite::TESTS;
 use io_utils::*;
