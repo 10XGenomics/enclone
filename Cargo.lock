@@ -1617,6 +1617,7 @@ dependencies = [
  "pretty_trace",
  "procfs",
  "prost 0.8.0",
+ "rayon",
  "resvg 0.14.1",
  "serde",
  "serde_json",

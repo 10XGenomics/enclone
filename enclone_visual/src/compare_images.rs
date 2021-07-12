@@ -2,6 +2,10 @@
 //
 // Compare two images.
 
+use io_utils::*;
+use rayon::prelude::*;
+use std::io::Write;
+use string_utils::*;
 use vector_utils::*;
 
 pub fn compare_images(
@@ -13,8 +17,12 @@ pub fn compare_images(
 ) -> usize {
     const BIG: isize = 4;
     const MAX_GRAY_DIFF: isize = 80;
-    let mut big_diffs = 0;
+    let mut results = Vec::<(usize, usize, Vec::<u8>)>::new();
     for x in 0..width {
+        results.push((x, 0, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let x = res.0;
         for y in 0..height {
 
             // Test for small grayscale differences, ignoring transparency.
@@ -40,14 +48,20 @@ pub fn compare_images(
                 let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
                 if (vold - vnew).abs() > BIG {
                     if verbose {
-                        println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
+                        fwriteln!(res.2, 
+                            "x = {}, y = {}, c = {}, vold = {}, vnew = {}",
                             x, y, c, vold, vnew
                         );
                     }
-                    big_diffs += 1;
+                    res.1 += 1;
                 }
             }
         }
+    });
+    let mut big_diffs = 0;
+    for x in 0..results.len() {
+        print!("{}", strme(&results[x].2));
+        big_diffs += results[x].1;
     }
     big_diffs
 }
