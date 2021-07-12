@@ -98,3 +98,4 @@ NICE TO HAVE
 15. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
+
