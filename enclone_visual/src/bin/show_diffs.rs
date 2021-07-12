@@ -2,12 +2,12 @@
 //
 // Show differences for one test, after having run test_vis.
 
+use enclone_visual::compare_images::*;
 use enclone_visual::testsuite::TESTS;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::Read;
-use vector_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -29,42 +29,7 @@ fn main() {
                 eprintln!("\nimage size for test {} changed", i);
                 std::process::exit(1);
             }
-            const BIG: isize = 2;
-            const MAX_GRAY_DIFF: isize = 80;
-            let mut big_diffs = 0;
-            for x in 0..width {
-                for y in 0..height {
-
-                    // Test for small grayscale differences, ignoring transparency.
-
-                    let mut olds = Vec::<isize>::new();
-                    let mut news = Vec::<isize>::new();
-                    for c in 0..3 {
-                        let i = x * (height * 4) + y * 4 + c;
-                        let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
-                        olds.push(vold);
-                        news.push(vnew);
-                    }
-                    unique_sort(&mut olds);
-                    unique_sort(&mut news);
-                    if olds.solo() && news.solo() && (olds[0] - news[0]).abs() <= MAX_GRAY_DIFF {
-                        continue;
-                    }
-
-                    // Test for other differences.
-
-                    for c in 0..4 {
-                        let i = x * (height * 4) + y * 4 + c;
-                        let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
-                        if (vold - vnew).abs() > BIG {
-                            println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
-                                x, y, c, vold, vnew
-                            );
-                            big_diffs += 1;
-                        }
-                    }
-                }
-            }
+            let big_diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
             eprintln!(
                 "\nThere are {} big diffs for {}.\n",
                 big_diffs,
