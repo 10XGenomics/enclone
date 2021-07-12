@@ -7,6 +7,7 @@ use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use vector_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -28,20 +29,33 @@ fn main() {
                 eprintln!("\nimage size for test {} changed", i);
                 std::process::exit(1);
             }
-            const BIG: isize = 0;
-            const MAX_DIFFS: usize = 477;
+            const BIG: isize = 2;
+            const MAX_GRAY_DIFF: isize = 80;
             let mut big_diffs = 0;
             for x in 0..width {
                 for y in 0..height {
+
+                    // Test for small grayscale differences, ignoring transparency.
+
+                    let mut olds = Vec::<isize>::new();
+                    let mut news = Vec::<isize>::new();
+                    for c in 0..3 {
+                        let i = x * (height * 4) + y * 4 + c;
+                        let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
+                        olds.push(vold);
+                        news.push(vnew);
+                    }
+                    unique_sort(&mut olds);
+                    unique_sort(&mut news);
+                    if olds.solo() && news.solo() && (olds[0] - news[0]).abs() <= MAX_GRAY_DIFF {
+                        continue;
+                    }
+
+                    // Test for other differences.
+
                     for c in 0..4 {
                         let i = x * (height * 4) + y * 4 + c;
                         let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
-                        if c == 3 && vold <= 14 && vnew <= 14 {
-                            continue;
-                        }
-                        if c == 3 && (vold - vnew).abs() <= 5 {
-                            continue;
-                        }
                         if (vold - vnew).abs() > BIG {
                             println!("x = {}, y = {}, c = {}, vold = {}, vnew = {}",
                                 x, y, c, vold, vnew
@@ -51,13 +65,11 @@ fn main() {
                     }
                 }
             }
-            if big_diffs > MAX_DIFFS {
-                eprintln!(
-                    "\nThere are {} big diffs for {}.\n",
-                    big_diffs,
-                    TESTS[i - 1].2
-                );
-            }
+            eprintln!(
+                "\nThere are {} big diffs for {}.\n",
+                big_diffs,
+                TESTS[i - 1].2
+            );
         }
     }
 }
