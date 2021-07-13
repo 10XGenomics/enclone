@@ -31,8 +31,8 @@ pager = "0.16.0"
 permutation = "0.2.5"
 petgraph = "0.5"
 pretty_trace = "0.5"
-prost = { version = ">=0.8", features = [] }
-prost-build = ">=0.8"
+prost = { version = ">=0.7, <=0.8", features = [] }
+prost-build = ">=0.7, <=0.8"
 rayon = "1.5"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"

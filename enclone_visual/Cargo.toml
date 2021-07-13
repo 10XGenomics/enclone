@@ -42,7 +42,7 @@ palaver = "0.2.8"
 perf_stats = "0.1"
 png-decoder = "0.1"
 pretty_trace = "0.5"
-prost = { version = ">=0.8", features = [] }
+prost = { version = ">=0.7, <=0.8", features = [] }
 rayon = "1.5"
 # resvg = "0.15.0"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
