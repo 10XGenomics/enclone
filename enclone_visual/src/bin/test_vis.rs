@@ -22,6 +22,7 @@ use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
+    let tall = Instant::now();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
@@ -161,6 +162,48 @@ fn main() {
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // TEST FOR STRAY PROCESSES
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    let o = Command::new("ps")
+        .arg(&"ux")
+        .output()
+        .expect("failed to execute ps");
+    let out = strme(&o.stdout);
+    for line in out.lines() {
+        if line.contains("ssh -p") {
+            eprintln!(
+                "\nLooks like you may have a stray process running:\n{}\n\n\
+                Treating this as an error.\n",
+                line
+            );
+            std::process::exit(1);
+        }
+    }
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            let host = value.before(":");
+            let o = Command::new("ssh")
+                .arg(&host)
+                .arg(&"ps x")
+                .output()
+                .expect("failed to execute ssh");
+            let out = strme(&o.stdout);
+            for line in out.lines() {
+                if line.contains("enclone") {
+                    eprintln!(
+                        "\nLooks like you may have a stray process running on the \
+                        remote server:\n{}\n\n\
+                        Treating this as an error.\n",
+                        line
+                    );
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // DONE, REPORT STATUS
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -168,6 +211,7 @@ fn main() {
         "\nenclone visual tests completely {} in {:.1} seconds using {:.1} MB\n",
         state, used, peak_mem_mb,
     );
+    println!("actual total time = {:.1} seconds\n", elapsed(&tall));
     if fail {
         std::process::exit(1);
     }
