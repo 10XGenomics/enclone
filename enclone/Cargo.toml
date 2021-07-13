@@ -25,8 +25,6 @@ ansi_escape = "0.1"
 assert_cmd = "1.0.3"
 bio = ">=0.35"
 debruijn = "0.3.2"
-dirs = "3.0.1"
-enclone_args = { path = "../enclone_args" }
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
@@ -46,7 +44,6 @@ serde_derive = "1.0"
 serde_json = "*"
 stats_utils = "0.1"
 string_utils = "0.1"
-tilde-expand = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
 vector_utils = "0.1.3"
 

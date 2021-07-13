@@ -23,12 +23,9 @@ publish = false
 bytes = ">=0.5.5, <2"
 enclone_core = { path = "../enclone_core" }
 enclone_tail = { path = "../enclone_tail" }
-futures = { version = "0.3.0", features = [] }
 io_utils = "0.2"
 lazy_static = "1.4"
 pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1", features = ["net"] }
-tokio-util = { version = "0.6", features = ["net"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }

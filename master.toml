@@ -36,7 +36,6 @@ file-lock = "1.1.20"
 flate2 = "1.0.20"
 float-ord = "0.2.0"
 fs_extra = "1.1"
-futures = { version = "0.3.0", features = [] }
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1.2"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
@@ -92,7 +91,6 @@ tilde-expand = "0.1.1"
 tiny-skia = "0.5.0"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
-tokio-util = { version = "0.6", features = ["net"] }
 tonic = "0.5"
 tonic-build = { version = "0.5", features = [] }
 # usvg = { version = "0.14.1", default-features = false }
