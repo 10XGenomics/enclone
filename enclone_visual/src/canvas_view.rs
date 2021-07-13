@@ -72,7 +72,7 @@ fn to_color(c: &crate::geometry::Color) -> Color {
 }
 
 impl CanvasView {
-    fn _dimensions(&self) -> (f32, f32) {
+    fn dimensions(&self) -> (f32, f32) {
         let g = self.state.geometry_value.as_ref().unwrap();
         let mut height = 0.0 as f32;
         let mut width = 0.0 as f32;
@@ -235,41 +235,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
         let g = self.state.geometry_value.as_ref().unwrap();
         const MAX_HEIGHT: f32 = 395.0;
-        let mut height = 0.0 as f32;
-        let mut width = 0.0 as f32;
-        for i in 0..g.len() {
-            match &g[i] {
-                crate::geometry::Geometry::Text(o) => {
-                    height = height.max(o.p.y);
-                    // not right: need to add text length
-                    width = width.max(o.p.x);
-                }
-                crate::geometry::Geometry::Rectangle(rect) => {
-                    height = height.max(rect.p.y + rect.height);
-                    width = width.max(rect.p.x + rect.width);
-                }
-                crate::geometry::Geometry::PolySegment(segs) => {
-                    for i in 0..segs.p.len() - 1 {
-                        height = height.max(segs.p[i].y);
-                        width = width.max(segs.p[i].x);
-                    }
-                }
-                crate::geometry::Geometry::Segment(seg) => {
-                    height = height.max(seg.p1.y);
-                    height = height.max(seg.p2.y);
-                    width = width.max(seg.p1.x);
-                    width = width.max(seg.p2.x);
-                }
-                crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                    height = height.max(circ.p.y + circ.r);
-                    width = width.max(circ.p.x + circ.r);
-                }
-                crate::geometry::Geometry::Circle(circ) => {
-                    height = height.max(circ.p.y + circ.r);
-                    width = width.max(circ.p.x + circ.r);
-                }
-            };
-        }
+        let (width, height) = self.dimensions();
         let mut scale = 1.0;
         if height > MAX_HEIGHT {
             scale = MAX_HEIGHT / height;
