@@ -1,8 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
-    Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
+    mouse, Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
 };
 use iced_native::{Font, Point, Vector};
 use lazy_static::lazy_static;
@@ -71,6 +72,54 @@ fn to_color(c: &crate::geometry::Color) -> Color {
 }
 
 impl<'a> canvas::Program<Message> for CanvasView {
+    fn update(
+        &mut self,
+        event: Event,
+        bounds: Rectangle,
+        cursor: Cursor,
+    ) -> (event::Status, Option<Message>) {
+        let _cursor_position = if let Some(position) = cursor.position_in(&bounds) {
+            position
+        } else {
+            return (event::Status::Ignored, None);
+        };
+        match event {
+            Event::Mouse(mouse_event) => match mouse_event {
+                mouse::Event::ButtonPressed(button) => {
+                    let message = match button {
+                        mouse::Button::Left => {
+                            // println!("left mouse button pressed"); // XXXXXXXXXXXXXXXXXXXXXXXXXX
+                            /*
+                            let g = self.state.geometry_value.as_ref().unwrap();
+                            let pos = cursor.position_in(&bounds);
+                            for i in 0..g.len() {
+                                match &g[i] {
+                                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                                        let xdiff = pos.unwrap().x - circ.p.x * scale;
+                                        let ydiff = pos.unwrap().y - circ.p.y * scale;
+                                        let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                                        if dist <= circ.r {
+                                            println!("clicked on {}", i); // XXXXXXXXXXXXXXXXXXXXXX
+                                            // ...
+                                            break;
+                                        }
+                                    }
+                                    _ => {}
+                                }
+                            }
+                            */
+                            None
+                        }
+                        _ => None,
+                    };
+                    (event::Status::Captured, message)
+                }
+                _ => (event::Status::Captured, None),
+            },
+            _ => (event::Status::Captured, None),
+        }
+    }
+
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
         // Suppose there is no geometry.
 
