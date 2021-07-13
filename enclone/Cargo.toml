@@ -22,6 +22,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
+assert_cmd = "1.0.3"
 bio = ">=0.35"
 debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
