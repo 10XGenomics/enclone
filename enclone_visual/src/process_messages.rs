@@ -102,8 +102,8 @@ impl EncloneVisual {
                         self.svg_history.push(*self.svg_history.last().unwrap());
                         self.summary_history
                             .push(*self.summary_history.last().unwrap());
-                        self.displayed_tables_history
-                            .push(*self.displayed_tables_history.last().unwrap());
+                        self.displayed_tables_history.push(self.displayed_tables_hist_uniq.len());
+                        self.displayed_tables_hist_uniq.push(reply_text.to_string());
                         self.table_comp_history
                             .push(*self.table_comp_history.last().unwrap());
                         self.last_widths_history

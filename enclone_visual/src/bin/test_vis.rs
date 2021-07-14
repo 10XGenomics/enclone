@@ -88,38 +88,21 @@ fn main() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
         }
-        let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
+        let mut image_new = Vec::<u8>::new();
         let old_png_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
-        if !path_exists(&old_png_file) {
-            eprintln!(
-                "\nLooks like you've added a test.  Please look at \
-                enclone_visual/outputs/{}.png and\n\
-                if it's right, copy to regression_tests and git add it.\n",
-                TESTS[i - 1].2,
-            );
-            std::process::exit(1);
-        }
-        let mut f = File::open(&old_png_file).unwrap();
-        f.read_to_end(&mut image_old).unwrap();
-
         let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (header, image_data_new) = png_decoder::decode(&image_new).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
 
-        // Read in the old jpg file as a bit image.
-
-        let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
-        let file = open_for_read![&old_jpg_file];
-        let mut decoder = Decoder::new(BufReader::new(file));
-        let image_data_old = decoder.decode().expect("failed to decode image");
-
         // Convert the new png file to a jpg, and read that back in as a bit image.
 
         let new_jpg_file = format!("{}.jpg", new_png_file.rev_before(".png"));
         {
             let quality = 1 as u8; // lowest quality
+            // This file removal is to circumvent a bug in Carbon Black.
+            std::fs::remove_file(&new_jpg_file).unwrap();
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
@@ -130,6 +113,25 @@ fn main() {
         let file = open_for_read![&new_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
         let image_data_new = decoder.decode().expect("failed to decode image");
+
+        // Check for existence of old jpg file.
+
+        let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
+        if !path_exists(&old_jpg_file) {
+            eprintln!(
+                "\nLooks like you've added a test.  Please look at \
+                enclone_visual/outputs/{}.png and\n\
+                if it's right, copy it and the jpg file to regression_tests and git add the jpg.\n",
+                TESTS[i - 1].2,
+            );
+            std::process::exit(1);
+        }
+
+        // Read in the old jpg file as a bit image.
+
+        let file = open_for_read![&old_jpg_file];
+        let mut decoder = Decoder::new(BufReader::new(file));
+        let image_data_old = decoder.decode().expect("failed to decode image");
 
         // Test for differences.
 
@@ -158,7 +160,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 22.0; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 23.2; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
