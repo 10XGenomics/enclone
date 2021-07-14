@@ -6,7 +6,6 @@ use io_utils::*;
 use rayon::prelude::*;
 use std::io::Write;
 use string_utils::*;
-use vector_utils::*;
 
 pub fn compare_images(
     image_data_old: &Vec<u8>,
@@ -16,35 +15,14 @@ pub fn compare_images(
     verbose: bool,
 ) -> usize {
     const BIG: isize = 4;
-    const MAX_GRAY_DIFF: isize = 80;
     let mut results = Vec::<(usize, usize, Vec<u8>)>::new();
     for x in 0..width {
         results.push((x, 0, Vec::new()));
     }
     results.par_iter_mut().for_each(|res| {
         let x = res.0;
-        let mut olds = Vec::<isize>::new();
-        let mut news = Vec::<isize>::new();
         for y in 0..height {
-            // Test for small grayscale differences.
-
-            /*
-            olds.clear();
-            news.clear();
-            for c in 0..2 {
-                let i = x * (height * 3) + y * 3 + c;
-                let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
-                olds.push(vold);
-                news.push(vnew);
-            }
-            unique_sort(&mut olds);
-            unique_sort(&mut news);
-            if olds.solo() && news.solo() && (olds[0] - news[0]).abs() <= MAX_GRAY_DIFF {
-                continue;
-            }
-            */
-
-            // Test for other differences.
+            // Test for differences.
 
             for c in 0..3 {
                 let i = x * (height * 3) + 3 * 3 + c;
