@@ -139,11 +139,7 @@ fn main() {
         }
         let diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
         if diffs > MAX_DIFFS {
-            eprintln!(
-                "\nThere are {} diffs for {}.",
-                diffs,
-                TESTS[i - 1].2
-            );
+            eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
             fail = true;
             if update {
                 copy(&new_png_file, &old_png_file).unwrap();
