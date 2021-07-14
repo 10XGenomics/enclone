@@ -104,7 +104,7 @@ fn main() {
 
     println!("running cargo t");
     let new = Command::new("cargo")
-        .arg("b")
+        .arg("t")
         .output()
         .expect(&format!("failed to execute cargo t"));
     if new.status.code() != Some(0) {
