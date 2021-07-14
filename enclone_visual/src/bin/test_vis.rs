@@ -101,23 +101,14 @@ fn main() {
         let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
-        let (header, image_data_old) = png_decoder::decode(&image_old).unwrap();
+        let (header, _) = png_decoder::decode(&image_old).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
 
         let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
 
-        // Convert the old png file to a jpg, and read that back in as a bit image.
+        // Read in the old jpg file as a bit image.
         
         let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
-        {
-        let quality = 1 as u8; // lowest quality
-        // The file removal is here to avoid triggering CarbonBlack.  This is very flaky.
-        std::fs::remove_file(&old_jpg_file).unwrap();
-        let mut f = open_for_write_new![&old_jpg_file];
-        let mut buff = BufWriter::new(&mut f);
-        let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
-        encoder.encode(&image_data_old, width as u32, height as u32, Rgba8).unwrap();
-        }
         let file = open_for_read![&old_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
         let image_data_old = decoder.decode().expect("failed to decode image");
