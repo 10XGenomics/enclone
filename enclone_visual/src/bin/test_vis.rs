@@ -25,10 +25,10 @@ use std::time::Instant;
 use string_utils::*;
 
 use image::codecs::jpeg::JpegEncoder;
-use std::io::BufWriter;
 use image::ColorType::Rgba8;
-use std::io::BufReader;
 use jpeg_decoder::Decoder;
+use std::io::BufReader;
+use std::io::BufWriter;
 
 fn main() {
     PrettyTrace::new().on();
@@ -109,7 +109,7 @@ fn main() {
         let (width, height) = (header.width as usize, header.height as usize);
 
         // Read in the old jpg file as a bit image.
-        
+
         let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
         let file = open_for_read![&old_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
@@ -123,7 +123,9 @@ fn main() {
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
-            encoder.encode(&image_data_new, width as u32, height as u32, Rgba8).unwrap();
+            encoder
+                .encode(&image_data_new, width as u32, height as u32, Rgba8)
+                .unwrap();
         }
         let file = open_for_read![&new_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
