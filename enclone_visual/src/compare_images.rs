@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 //
-// Compare two images.
+// Compare two RGB8 images.
 
 use io_utils::*;
 use rayon::prelude::*;
@@ -26,8 +26,9 @@ pub fn compare_images(
         let mut olds = Vec::<isize>::new();
         let mut news = Vec::<isize>::new();
         for y in 0..height {
-            // Test for small grayscale differences, ignoring transparency.
+            // Test for small grayscale differences.
 
+            /*
             olds.clear();
             news.clear();
             for c in 0..2 {
@@ -41,6 +42,7 @@ pub fn compare_images(
             if olds.solo() && news.solo() && (olds[0] - news[0]).abs() <= MAX_GRAY_DIFF {
                 continue;
             }
+            */
 
             // Test for other differences.
 
