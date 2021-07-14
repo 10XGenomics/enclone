@@ -614,8 +614,10 @@ pub fn plot_clonotypes(
             let f = open_for_read![&ctl.plot_opt.honey_in.as_ref().unwrap()];
             for line in f.lines() {
                 let s = line.unwrap();
-                if !s.contains(",") || !s.before(",").parse::<usize>().is_ok()
-                    || !s.after(",").parse::<usize>().is_ok() {
+                if !s.contains(",")
+                    || !s.before(",").parse::<usize>().is_ok()
+                    || !s.after(",").parse::<usize>().is_ok()
+                {
                     return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
                 }
                 honey_map_in.push((s.before(",").force_usize(), s.after(",").force_usize()));
@@ -659,10 +661,10 @@ pub fn plot_clonotypes(
                     fwriteln!(f, "{},{}", honey_map_out[i].0, honey_map_out[i].1);
                 }
             }
-
         } else {
             if honey_map_in.len() != clusters.len() {
-                return Err(format!("\nHONEY_IN file appears to come from data having {} clusters, \
+                return Err(format!(
+                    "\nHONEY_IN file appears to come from data having {} clusters, \
                     whereas the current data have {} clusters.\n",
                     honey_map_in.len(),
                     clusters.len(),

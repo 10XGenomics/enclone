@@ -101,7 +101,7 @@ fn main() {
         let new_jpg_file = format!("{}.jpg", new_png_file.rev_before(".png"));
         {
             let quality = 1 as u8; // lowest quality
-            // This file removal is to circumvent a bug in Carbon Black.
+                                   // This file removal is to circumvent a bug in Carbon Black.
             std::fs::remove_file(&new_jpg_file).unwrap();
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
