@@ -17,8 +17,10 @@ impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::GroupClicked(_message) => {
-                eprintln!("group clicked message detected");
-                Command::none()
+                let group_id = GROUP_ID.load(SeqCst);
+                self.input_value = format!("{}", group_id);
+                GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                Command::perform(noop(), Message::SubmitButtonPressed)
             }
             Message::SubmitButtonPressed(_) => {
                 let mut group_spec = true;

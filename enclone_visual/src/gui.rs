@@ -201,12 +201,6 @@ impl Application for EncloneVisual {
 
         // Build the scrollable for clonotypes.
 
-        if GROUP_ID_CLICKED_ON.load(SeqCst) {
-            let group_id = GROUP_ID.load(SeqCst);
-            self.input_value = format!("{}", group_id);
-            self.output_value = self.current_tables[group_id - 1].clone();
-            GROUP_ID_CLICKED_ON.store(false, SeqCst);
-        }
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
