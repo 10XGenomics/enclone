@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::GROUP_ID;
+use crate::GROUP_ID_CLICKED_ON;
 use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
@@ -43,7 +45,9 @@ pub struct CanvasView {
 }
 
 #[derive(Debug, Clone)]
-pub enum Message {}
+pub enum Message {
+    GroupClick,
+}
 
 impl Default for CanvasView {
     fn default() -> Self {
@@ -139,6 +143,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             if height > MAX_HEIGHT {
                                 scale = MAX_HEIGHT / height;
                             }
+                            let mut group_id = None;
                             let pos = cursor.position_in(&bounds);
                             for i in 0..g.len() {
                                 match &g[i] {
@@ -149,22 +154,26 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                         if dist <= circ.r {
                                             let stext = circ.t.clone();
                                             let xs = stext.split(',').collect::<Vec<&str>>();
-                                            let mut group_id = None;
                                             for j in 0..xs.len() {
                                                 if xs[j].starts_with("group_id=") {
-                                                    group_id = Some(xs[j].after("=").to_string());
+                                                    group_id = Some(xs[j].after("=").force_usize());
                                                 }
                                             }
                                             let group_id = group_id.unwrap();
                                             println!("clicked on group {}", group_id); // XXXXXXXXX
-                                            // ...
+                                            GROUP_ID_CLICKED_ON.store(true, SeqCst);
+                                            GROUP_ID.store(group_id, SeqCst);
                                             break;
                                         }
                                     }
                                     _ => {}
                                 }
                             }
-                            None
+                            if group_id.is_some() {
+                                Some(Message::GroupClick)
+                            } else {
+                                None
+                            }
                         }
                         _ => None,
                     };

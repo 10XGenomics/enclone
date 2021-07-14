@@ -21,4 +21,5 @@ pub enum Message {
     ClearButtonPressed,
     RunTests(Result<(), String>),
     Capture(Result<(), String>),
+    GroupClicked(crate::canvas_view::Message),
 }
