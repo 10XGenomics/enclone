@@ -136,7 +136,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                 mouse::Event::ButtonPressed(button) => {
                     let message = match button {
                         mouse::Button::Left => {
-                            // println!("left mouse button pressed"); // XXXXXXXXXXXXXXXXXXXXXXXXXX
                             let g = self.state.geometry_value.as_ref().unwrap();
                             let (_width, height) = self.dimensions();
                             let mut scale = 1.0;
@@ -160,7 +159,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                                 }
                                             }
                                             let group_id = group_id.unwrap();
-                                            println!("clicked on group {}", group_id); // XXXXXXXXX
                                             GROUP_ID_CLICKED_ON.store(true, SeqCst);
                                             GROUP_ID.store(group_id, SeqCst);
                                             break;
