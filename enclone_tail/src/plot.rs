@@ -609,32 +609,72 @@ pub fn plot_clonotypes(
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
 
-        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-        for i in 0..ids.len() {
-            let id = ids[i];
-            let mut c = clusters[id].0.clone();
-            unique_sort(&mut c);
-            if c.solo() {
-                ccc.push((clusters[i].0.len(), c[0].clone(), i));
+        let mut honey_map_in = Vec::<(usize, usize)>::new();
+        if ctl.plot_opt.honey_in.is_some() {
+            let f = open_for_read![&ctl.plot_opt.honey_in.as_ref().unwrap()];
+            for line in f.lines() {
+                let s = line.unwrap();
+                if !s.contains(",")
+                    || !s.before(",").parse::<usize>().is_ok()
+                    || !s.after(",").parse::<usize>().is_ok()
+                {
+                    return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+                }
+                honey_map_in.push((s.before(",").force_usize(), s.after(",").force_usize()));
             }
         }
-        ccc.sort();
-        let mut i = 0;
-        while i < ccc.len() {
-            let j = next_diff1_3(&ccc, i as i32) as usize;
-            let mut angle = vec![(0.0, 0); j - i];
-            for k in i..j {
-                let id = ccc[k].2;
-                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
-            }
-            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            for k in i..j {
-                let new_id = angle[k - i].1;
-                for u in 0..clusters[ids[new_id]].0.len() {
-                    clusters[ids[new_id]].0[u] = ccc[k].1.clone();
+        let mut honey_map_out = Vec::<(usize, usize)>::new();
+        if ctl.plot_opt.honey_in.is_none() {
+            let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+            for i in 0..ids.len() {
+                let id = ids[i];
+                let mut c = clusters[id].0.clone();
+                unique_sort(&mut c);
+                if c.solo() {
+                    ccc.push((clusters[i].0.len(), c[0].clone(), i));
+                } else {
+                    honey_map_out.push((i, i));
                 }
             }
-            i = j;
+            ccc.sort();
+            let mut i = 0;
+            while i < ccc.len() {
+                let j = next_diff1_3(&ccc, i as i32) as usize;
+                let mut angle = vec![(0.0, 0); j - i];
+                for k in i..j {
+                    let id = ccc[k].2;
+                    angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
+                }
+                angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                for k in i..j {
+                    let new_id = angle[k - i].1;
+                    honey_map_out.push((ids[new_id], ccc[k].2));
+                    for u in 0..clusters[ids[new_id]].0.len() {
+                        clusters[ids[new_id]].0[u] = ccc[k].1.clone();
+                    }
+                }
+                i = j;
+            }
+            if ctl.plot_opt.honey_out.len() > 0 {
+                let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
+                for i in 0..honey_map_out.len() {
+                    fwriteln!(f, "{},{}", honey_map_out[i].0, honey_map_out[i].1);
+                }
+            }
+        } else {
+            if honey_map_in.len() != clusters.len() {
+                return Err(format!(
+                    "\nHONEY_IN file appears to come from data having {} clusters, \
+                    whereas the current data have {} clusters.\n",
+                    honey_map_in.len(),
+                    clusters.len(),
+                ));
+            }
+            let mut clusters2 = clusters.clone();
+            for i in 0..clusters.len() {
+                clusters2[honey_map_in[i].0].0 = clusters[honey_map_in[i].1].0.clone();
+            }
+            clusters = clusters2;
         }
     }
     ctl.perf_stats(&t, "plotting clonotypes");

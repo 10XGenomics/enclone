@@ -1,8 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::GROUP_ID;
+use crate::GROUP_ID_CLICKED_ON;
+use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
-    Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
+    mouse, Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
 };
 use iced_native::{Font, Point, Vector};
 use lazy_static::lazy_static;
@@ -42,7 +45,9 @@ pub struct CanvasView {
 }
 
 #[derive(Debug, Clone)]
-pub enum Message {}
+pub enum Message {
+    GroupClick,
+}
 
 impl Default for CanvasView {
     fn default() -> Self {
@@ -70,7 +75,114 @@ fn to_color(c: &crate::geometry::Color) -> Color {
     }
 }
 
+impl CanvasView {
+    fn dimensions(&self) -> (f32, f32) {
+        let g = self.state.geometry_value.as_ref().unwrap();
+        let mut height = 0.0 as f32;
+        let mut width = 0.0 as f32;
+        for i in 0..g.len() {
+            match &g[i] {
+                crate::geometry::Geometry::Text(o) => {
+                    height = height.max(o.p.y);
+                    // not right: need to add text length
+                    width = width.max(o.p.x);
+                }
+                crate::geometry::Geometry::Rectangle(rect) => {
+                    height = height.max(rect.p.y + rect.height);
+                    width = width.max(rect.p.x + rect.width);
+                }
+                crate::geometry::Geometry::PolySegment(segs) => {
+                    for i in 0..segs.p.len() - 1 {
+                        height = height.max(segs.p[i].y);
+                        width = width.max(segs.p[i].x);
+                    }
+                }
+                crate::geometry::Geometry::Segment(seg) => {
+                    height = height.max(seg.p1.y);
+                    height = height.max(seg.p2.y);
+                    width = width.max(seg.p1.x);
+                    width = width.max(seg.p2.x);
+                }
+                crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
+                crate::geometry::Geometry::Circle(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
+            };
+        }
+        (width, height)
+    }
+}
+
+const MAX_HEIGHT: f32 = 395.0;
+
 impl<'a> canvas::Program<Message> for CanvasView {
+    fn update(
+        &mut self,
+        event: Event,
+        bounds: Rectangle,
+        cursor: Cursor,
+    ) -> (event::Status, Option<Message>) {
+        let _cursor_position = if let Some(position) = cursor.position_in(&bounds) {
+            position
+        } else {
+            return (event::Status::Ignored, None);
+        };
+        match event {
+            Event::Mouse(mouse_event) => match mouse_event {
+                mouse::Event::ButtonPressed(button) => {
+                    let message = match button {
+                        mouse::Button::Left => {
+                            let g = self.state.geometry_value.as_ref().unwrap();
+                            let (_width, height) = self.dimensions();
+                            let mut scale = 1.0;
+                            if height > MAX_HEIGHT {
+                                scale = MAX_HEIGHT / height;
+                            }
+                            let mut group_id = None;
+                            let pos = cursor.position_in(&bounds);
+                            for i in 0..g.len() {
+                                match &g[i] {
+                                    crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                                        let xdiff = pos.unwrap().x - circ.p.x * scale;
+                                        let ydiff = pos.unwrap().y - circ.p.y * scale;
+                                        let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                                        if dist <= circ.r {
+                                            let stext = circ.t.clone();
+                                            let xs = stext.split(',').collect::<Vec<&str>>();
+                                            for j in 0..xs.len() {
+                                                if xs[j].starts_with("group_id=") {
+                                                    group_id = Some(xs[j].after("=").force_usize());
+                                                }
+                                            }
+                                            let group_id = group_id.unwrap();
+                                            GROUP_ID_CLICKED_ON.store(true, SeqCst);
+                                            GROUP_ID.store(group_id, SeqCst);
+                                            break;
+                                        }
+                                    }
+                                    _ => {}
+                                }
+                            }
+                            if group_id.is_some() {
+                                Some(Message::GroupClick)
+                            } else {
+                                None
+                            }
+                        }
+                        _ => None,
+                    };
+                    (event::Status::Captured, message)
+                }
+                _ => (event::Status::Captured, None),
+            },
+            _ => (event::Status::Captured, None),
+        }
+    }
+
     fn draw(&self, bounds: Rectangle, cursor: Cursor) -> Vec<Geometry> {
         // Suppose there is no geometry.
 
@@ -143,42 +255,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
         // in computing the max.
 
         let g = self.state.geometry_value.as_ref().unwrap();
-        const MAX_HEIGHT: f32 = 395.0;
-        let mut height = 0.0 as f32;
-        let mut width = 0.0 as f32;
-        for i in 0..g.len() {
-            match &g[i] {
-                crate::geometry::Geometry::Text(o) => {
-                    height = height.max(o.p.y);
-                    // not right: need to add text length
-                    width = width.max(o.p.x);
-                }
-                crate::geometry::Geometry::Rectangle(rect) => {
-                    height = height.max(rect.p.y + rect.height);
-                    width = width.max(rect.p.x + rect.width);
-                }
-                crate::geometry::Geometry::PolySegment(segs) => {
-                    for i in 0..segs.p.len() - 1 {
-                        height = height.max(segs.p[i].y);
-                        width = width.max(segs.p[i].x);
-                    }
-                }
-                crate::geometry::Geometry::Segment(seg) => {
-                    height = height.max(seg.p1.y);
-                    height = height.max(seg.p2.y);
-                    width = width.max(seg.p1.x);
-                    width = width.max(seg.p2.x);
-                }
-                crate::geometry::Geometry::CircleWithTooltip(circ) => {
-                    height = height.max(circ.p.y + circ.r);
-                    width = width.max(circ.p.x + circ.r);
-                }
-                crate::geometry::Geometry::Circle(circ) => {
-                    height = height.max(circ.p.y + circ.r);
-                    width = width.max(circ.p.x + circ.r);
-                }
-            };
-        }
+        let (width, height) = self.dimensions();
         let mut scale = 1.0;
         if height > MAX_HEIGHT {
             scale = MAX_HEIGHT / height;

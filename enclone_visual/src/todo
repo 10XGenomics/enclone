@@ -2,17 +2,13 @@ TO DO
 
 1.  Improve data shown for tooltip.
 
-2.  Need a regression test.
+2.  Trim features and duplicated crates; reduce binary size.
 
-3.  Trim features and duplicated crates; reduce binary size.
+3.  What do we do about the truncation of printing to fifty clonotypes?
 
-4.  What do we do about the truncation of printing to fifty clonotypes?
+4.  Make code work for 2 or more SVG files.
 
-5.  Make code work for 2 or more SVG files.
-
-6.  Refactor to keep tokio etc. out of cellranger.
-
-7.  Fix the close button on the upper left.
+5.  Fix the close button on the upper left.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -38,7 +34,7 @@ WAITING ON ICED
 6.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
-7.  the wraparound problem
+7.  The wraparound problem.
     Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
     vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
     issue 307 (scrolling programmatically).
@@ -83,19 +79,10 @@ NICE TO HAVE
 
 10. Add button to capture the entire enclone visual window.
 
-11. Get copy button to appear right next to the graphic.
-
-12. Clicking or tapping on a clonotype should cause that clonotype to be displayed.
-    Start by reading how the canvas in the game of life example handles clicks.
-
-13. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+11. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
-14. Reduce regression image sizes by decompressing them and then restoring at lower resolution.
-    Alternatively, the pixel counts for the top 10 colors are typically invariant to +/- 1.
-    Maybe there is a literature on approximate image invariants.
-
-15. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+12. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
 

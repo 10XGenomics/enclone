@@ -29,3 +29,5 @@ MANUAL TESTING
    - make sure scrolling is smooth and that tooltip responds essentially instantly
 
 5. test summary
+
+6. test that group clicks work

@@ -16,6 +16,12 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::GroupClicked(_message) => {
+                let group_id = GROUP_ID.load(SeqCst);
+                self.input_value = format!("{}", group_id);
+                GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                Command::perform(noop(), Message::SubmitButtonPressed)
+            }
             Message::SubmitButtonPressed(_) => {
                 let mut group_spec = true;
                 let mut group_ids = Vec::<usize>::new();
@@ -97,7 +103,8 @@ impl EncloneVisual {
                         self.summary_history
                             .push(*self.summary_history.last().unwrap());
                         self.displayed_tables_history
-                            .push(*self.displayed_tables_history.last().unwrap());
+                            .push(self.displayed_tables_hist_uniq.len());
+                        self.displayed_tables_hist_uniq.push(reply_text.to_string());
                         self.table_comp_history
                             .push(*self.table_comp_history.last().unwrap());
                         self.last_widths_history
@@ -271,6 +278,7 @@ impl EncloneVisual {
                 // Start storing values.
 
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
+                self.table_comp_value = reply_table_comp.clone();
                 let len = self.table_comp_hist_uniq.len();
                 if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
                     self.table_comp_history.push(len - 1);
@@ -360,7 +368,6 @@ impl EncloneVisual {
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
-                self.table_comp_value = reply_table_comp.clone();
                 self.last_widths_value = reply_last_widths.clone();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS

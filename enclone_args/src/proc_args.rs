@@ -514,6 +514,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let set_string_writeable = [
         ("BINARY", &mut ctl.gen_opt.binary),
         ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("HONEY_OUT", &mut ctl.plot_opt.honey_out),
         ("PROTO", &mut ctl.gen_opt.proto),
         ("SUBSET_JSON", &mut ctl.gen_opt.subset_json),
     ];
@@ -529,6 +530,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             "CLONOTYPE_GROUP_NAMES",
             &mut ctl.gen_opt.clonotype_group_names,
         ),
+        ("HONEY_IN", &mut ctl.plot_opt.honey_in),
         ("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata),
     ];
 

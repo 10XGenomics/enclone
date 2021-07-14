@@ -33,6 +33,12 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>7/14/21</b>: Add new arguments <code>HONEY_OUT</code> and <code>HONEY_IN</code> to allow
+preservation of cell positions between two honeycomb plots of the same data.  Please see
+<a href="../../pages/auto/plot.html">enclone plots</a>.
+</p>
+
+<p>
 <b>6/30/21</b>: Add cvar <code>cigar</code> that is the CIGAR string of the V..J contig sequence
 versus the universal reference.  See
 <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.

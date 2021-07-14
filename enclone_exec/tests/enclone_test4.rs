@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 93740648;
+    const ENCLONE_SIZE: usize = 95583536;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -413,5 +413,50 @@ fn test_authors() {
             );
             std::process::exit(1);
         }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 35. Test HONEY_OUT and HONEY_IN.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_honey() {
+    let cmd1 = "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" \
+        HONEY_OUT=testx/outputs/honey NOPRINT";
+    let cmd2 = "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout HONEY_IN=testx/outputs/honey NOPRINT";
+    let args1 = cmd1.split(' ').collect::<Vec<&str>>();
+    let args2 = cmd2.split(' ').collect::<Vec<&str>>();
+    let new1 = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args1)
+        .output()
+        .expect(&format!("failed to execute test_honey 1"));
+    if new1.status.code() != Some(0) {
+        eprintln!(
+            "\ntest_honey 1: failed to execute, stderr =\n{}",
+            strme(&new1.stderr),
+        );
+        std::process::exit(1);
+    }
+    let new2 = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args2)
+        .output()
+        .expect(&format!("failed to execute test_honey 2"));
+    if new2.status.code() != Some(0) {
+        eprintln!(
+            "\ntest_honey 2: failed to execute, stderr =\n{}",
+            strme(&new2.stderr),
+        );
+        std::process::exit(1);
+    }
+    let out = strme(&new2.stdout);
+    let expected = include_str!["../testx/inputs/outputs/test_honey.svg"];
+    if out != expected {
+        eprintln!("\ntest honey yielded changed answer\n");
+        std::process::exit(1);
     }
 }

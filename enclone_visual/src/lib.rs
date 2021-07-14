@@ -293,11 +293,13 @@ pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 pub static DONE: AtomicBool = AtomicBool::new(false);
+pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
+pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
