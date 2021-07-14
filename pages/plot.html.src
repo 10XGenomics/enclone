@@ -157,6 +157,17 @@ to the command line.
 
 <hr>
 
+<p>
+When #enclone creates a honeycomb plot, it tries to rearrange clonotypes so as to place
+identically colored clonotypes next to each other.  If you want to create two plots of the 
+same data, in which the positions of the cells are fixed by the first plot, you can do
+this by providing an argument <code>HONEY_OUT=filename</code> to a first #enclone command,
+and then <code>HONEY_IN=filename</code> to a second #enclone command, where both commands
+refer to the same file.
+</p>
+
+<hr>
+
 <h2>plots of one variable versus another</h2>
 
 <p>If <code>xvar</code> and <code>yvar</code> are the names of variables

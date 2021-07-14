@@ -270,6 +270,8 @@ pub struct PlotOpt {
     pub legend: Vec<(String, String)>,
     pub sim_mat_plot_file: String,
     pub sim_mat_plot_vars: Vec<String>,
+    pub honey_in: Option<String>,
+    pub honey_out: String,
 }
 
 // Allele-finding algorithmic options.
