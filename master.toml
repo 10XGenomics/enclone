@@ -72,8 +72,8 @@ plotters = { version = "^0.3.0", default_features = false, features = ["svg_back
 png-decoder = "0.1"
 pretty_trace = "0.5"
 procfs = "0.9"
-prost = { version = ">=0.7, <=0.8", features = [] }
-prost-build = ">=0.7, <=0.8"
+prost = { version = "0.8", features = [] }
+prost-build = "0.8"
 rand = ">=0.7.3, <0.9"
 rayon = "1.5"
 # resvg = "0.15.0"
