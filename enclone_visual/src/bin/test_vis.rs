@@ -6,6 +6,10 @@
 //
 // Argument: QUIET.
 //
+// This code works by comparing lowest resolution JPEG files.  We use that format to avoid
+// having larger files in git.  A better solution would be to use lowest resolution
+// JPEG2000 files, which would be even smaller.
+//
 // See also show_diffs.
 
 use enclone_visual::compare_images::*;
@@ -101,10 +105,8 @@ fn main() {
         let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
-        let (header, _) = png_decoder::decode(&image_old).unwrap();
+        let (header, image_data_new) = png_decoder::decode(&image_new).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
-
-        let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
 
         // Read in the old jpg file as a bit image.
         
@@ -117,11 +119,11 @@ fn main() {
 
         let new_jpg_file = format!("{}.jpg", new_png_file.rev_before(".png"));
         {
-        let quality = 1 as u8; // lowest quality
-        let mut f = open_for_write_new![&new_jpg_file];
-        let mut buff = BufWriter::new(&mut f);
-        let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
-        encoder.encode(&image_data_new, width as u32, height as u32, Rgba8).unwrap();
+            let quality = 1 as u8; // lowest quality
+            let mut f = open_for_write_new![&new_jpg_file];
+            let mut buff = BufWriter::new(&mut f);
+            let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+            encoder.encode(&image_data_new, width as u32, height as u32, Rgba8).unwrap();
         }
         let file = open_for_read![&new_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
@@ -158,7 +160,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 21.3; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 22.0; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
