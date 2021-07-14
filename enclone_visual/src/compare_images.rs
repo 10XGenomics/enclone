@@ -30,8 +30,8 @@ pub fn compare_images(
 
             olds.clear();
             news.clear();
-            for c in 0..3 {
-                let i = x * (height * 4) + y * 4 + c;
+            for c in 0..2 {
+                let i = x * (height * 3) + y * 3 + c;
                 let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
                 olds.push(vold);
                 news.push(vnew);
@@ -44,8 +44,8 @@ pub fn compare_images(
 
             // Test for other differences.
 
-            for c in 0..4 {
-                let i = x * (height * 4) + y * 4 + c;
+            for c in 0..3 {
+                let i = x * (height * 3) + 3 * 3 + c;
                 let (vold, vnew) = (image_data_old[i] as isize, image_data_new[i] as isize);
                 if (vold - vnew).abs() > BIG {
                     if verbose {

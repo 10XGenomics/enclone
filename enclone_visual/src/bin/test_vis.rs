@@ -20,6 +20,12 @@ use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
 
+use image::codecs::jpeg::JpegEncoder;
+use std::io::BufWriter;
+use image::ColorType::Rgba8;
+use std::io::BufReader;
+use jpeg_decoder::Decoder;
+
 fn main() {
     PrettyTrace::new().on();
     let tall = Instant::now();
@@ -87,12 +93,38 @@ fn main() {
         }
         let mut f = File::open(&old_file).unwrap();
         f.read_to_end(&mut image_old).unwrap();
+
         let new_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (header, image_data_old) = png_decoder::decode(&image_old).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
         let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
+        
+        let outfile = format!("{}.jpg", old_file.rev_before(".png"));
+        {
+        let quality = 1 as u8; // lowest quality
+        let mut f = open_for_write_new![&outfile];
+        let mut buff = BufWriter::new(&mut f);
+        let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+        encoder.encode(&image_data_old, width as u32, height as u32, Rgba8).unwrap();
+        }
+        let file = open_for_read![&outfile];
+        let mut decoder = Decoder::new(BufReader::new(file));
+        let image_data_old = decoder.decode().expect("failed to decode image");
+        
+        let outfile = format!("{}.jpg", new_file.rev_before(".png"));
+        {
+        let quality = 1 as u8; // lowest quality
+        let mut f = open_for_write_new![&outfile];
+        let mut buff = BufWriter::new(&mut f);
+        let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+        encoder.encode(&image_data_new, width as u32, height as u32, Rgba8).unwrap();
+        }
+        let file = open_for_read![&outfile];
+        let mut decoder = Decoder::new(BufReader::new(file));
+        let image_data_new = decoder.decode().expect("failed to decode image");
+
         if image_data_old.len() != image_data_new.len() {
             eprintln!("\nimage size for test {} changed", i);
             std::process::exit(1);

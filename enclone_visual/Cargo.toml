@@ -32,8 +32,10 @@ flate2 = "1.0.20"
 iced = { git = "https://github.com/genusistimelord/iced.git", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
 iced_aw = { git = "https://github.com/genusistimelord/iced_aw.git", branch = "iced-main", default-features = false, features = ["card", "colors", "modal"] }
 iced_native = { git = "https://github.com/genusistimelord/iced.git" }
+image = "0.23"
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
+jpeg-decoder = "0.1"
 lazy_static = "1.4"
 libc = "0.2.98"
 log = "0.4"
