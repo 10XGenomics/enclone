@@ -139,7 +139,7 @@ fn main() {
             eprintln!("\nimage size for test {} changed", i);
             std::process::exit(1);
         }
-        let diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
+        let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
         if diffs > MAX_DIFFS {
             eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
             fail = true;
