@@ -113,6 +113,8 @@ impl CanvasView {
     }
 }
 
+const MAX_HEIGHT: f32 = 395.0;
+
 impl<'a> canvas::Program<Message> for CanvasView {
     fn update(
         &mut self,
@@ -131,8 +133,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     let message = match button {
                         mouse::Button::Left => {
                             // println!("left mouse button pressed"); // XXXXXXXXXXXXXXXXXXXXXXXXXX
-                            /*
                             let g = self.state.geometry_value.as_ref().unwrap();
+                            let (_width, height) = self.dimensions();
+                            let mut scale = 1.0;
+                            if height > MAX_HEIGHT {
+                                scale = MAX_HEIGHT / height;
+                            }
                             let pos = cursor.position_in(&bounds);
                             for i in 0..g.len() {
                                 match &g[i] {
@@ -149,7 +155,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                     _ => {}
                                 }
                             }
-                            */
                             None
                         }
                         _ => None,
@@ -234,7 +239,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
         // in computing the max.
 
         let g = self.state.geometry_value.as_ref().unwrap();
-        const MAX_HEIGHT: f32 = 395.0;
         let (width, height) = self.dimensions();
         let mut scale = 1.0;
         if height > MAX_HEIGHT {
