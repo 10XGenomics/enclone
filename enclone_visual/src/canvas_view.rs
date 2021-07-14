@@ -147,7 +147,16 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                         let ydiff = pos.unwrap().y - circ.p.y * scale;
                                         let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
                                         if dist <= circ.r {
-                                            println!("clicked on {}", i); // XXXXXXXXXXXXXXXXXXXXXX
+                                            let stext = circ.t.clone();
+                                            let xs = stext.split(',').collect::<Vec<&str>>();
+                                            let mut group_id = None;
+                                            for j in 0..xs.len() {
+                                                if xs[j].starts_with("group_id=") {
+                                                    group_id = Some(xs[j].after("=").to_string());
+                                                }
+                                            }
+                                            let group_id = group_id.unwrap();
+                                            println!("clicked on group {}", group_id); // XXXXXXXXX
                                             // ...
                                             break;
                                         }
