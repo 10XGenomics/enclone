@@ -29,6 +29,10 @@ use jpeg_decoder::Decoder;
 fn main() {
     PrettyTrace::new().on();
     let tall = Instant::now();
+    if !path_exists("enclone_visual") {
+        eprintln!("\nYou need to run this from the top level directory of the enclone repo.\n");
+        std::process::exit(1);
+    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
@@ -81,8 +85,8 @@ fn main() {
             continue;
         }
         let (mut image_old, mut image_new) = (Vec::<u8>::new(), Vec::<u8>::new());
-        let old_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
-        if !path_exists(&old_file) {
+        let old_png_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
+        if !path_exists(&old_png_file) {
             eprintln!(
                 "\nLooks like you've added a test.  Please look at \
                 enclone_visual/outputs/{}.png and\n\
@@ -91,39 +95,48 @@ fn main() {
             );
             std::process::exit(1);
         }
-        let mut f = File::open(&old_file).unwrap();
+        let mut f = File::open(&old_png_file).unwrap();
         f.read_to_end(&mut image_old).unwrap();
 
-        let new_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
-        let mut f = File::open(&new_file).unwrap();
+        let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
+        let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (header, image_data_old) = png_decoder::decode(&image_old).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
+
         let (_, image_data_new) = png_decoder::decode(&image_new).unwrap();
+
+        // Convert the old png file to a jpg, and read that back in as a bit image.
         
-        let outfile = format!("{}.jpg", old_file.rev_before(".png"));
+        let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
         {
         let quality = 1 as u8; // lowest quality
-        let mut f = open_for_write_new![&outfile];
+        // The file removal is here to avoid triggering CarbonBlack.  This is very flaky.
+        std::fs::remove_file(&old_jpg_file).unwrap();
+        let mut f = open_for_write_new![&old_jpg_file];
         let mut buff = BufWriter::new(&mut f);
         let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
         encoder.encode(&image_data_old, width as u32, height as u32, Rgba8).unwrap();
         }
-        let file = open_for_read![&outfile];
+        let file = open_for_read![&old_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
         let image_data_old = decoder.decode().expect("failed to decode image");
-        
-        let outfile = format!("{}.jpg", new_file.rev_before(".png"));
+
+        // Convert the new png file to a jpg, and read that back in as a bit image.
+
+        let new_jpg_file = format!("{}.jpg", new_png_file.rev_before(".png"));
         {
         let quality = 1 as u8; // lowest quality
-        let mut f = open_for_write_new![&outfile];
+        let mut f = open_for_write_new![&new_jpg_file];
         let mut buff = BufWriter::new(&mut f);
         let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
         encoder.encode(&image_data_new, width as u32, height as u32, Rgba8).unwrap();
         }
-        let file = open_for_read![&outfile];
+        let file = open_for_read![&new_jpg_file];
         let mut decoder = Decoder::new(BufReader::new(file));
         let image_data_new = decoder.decode().expect("failed to decode image");
+
+        // Test for differences.
 
         if image_data_old.len() != image_data_new.len() {
             eprintln!("\nimage size for test {} changed", i);
@@ -138,7 +151,8 @@ fn main() {
             );
             fail = true;
             if update {
-                copy(&new_file, &old_file).unwrap();
+                copy(&new_png_file, &old_png_file).unwrap();
+                copy(&new_jpg_file, &old_jpg_file).unwrap();
             }
         }
     }

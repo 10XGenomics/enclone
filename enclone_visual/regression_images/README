@@ -1,0 +1,5 @@
+The .jpg files are tracked by git.  
+
+THe .png files are not.  They should be current if you've been making successive commits
+on the same branch, but other operations (like backing up on the same branch) could cause
+them to be out of data.  We could add a tool to update them.
