@@ -83,7 +83,7 @@ fn main() {
         print!("{}", strme(&o.stdout));
     }
     let mut fail = false;
-    const BIG_DIFFS: usize = 5;
+    const MAX_DIFFS: usize = 5;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
@@ -137,11 +137,11 @@ fn main() {
             eprintln!("\nimage size for test {} changed", i);
             std::process::exit(1);
         }
-        let big_diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
-        if big_diffs > BIG_DIFFS {
+        let diffs = compare_images(&image_data_old, &image_data_new, width, height, true);
+        if diffs > MAX_DIFFS {
             eprintln!(
-                "\nThere are {} big diffs for {}.",
-                big_diffs,
+                "\nThere are {} diffs for {}.",
+                diffs,
                 TESTS[i - 1].2
             );
             fail = true;
