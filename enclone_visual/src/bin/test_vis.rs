@@ -83,7 +83,7 @@ fn main() {
         print!("{}", strme(&o.stdout));
     }
     let mut fail = false;
-    const MAX_DIFFS: usize = 5;
+    const MAX_DIFFS: usize = 0;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
