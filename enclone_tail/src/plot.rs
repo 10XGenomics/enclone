@@ -16,6 +16,7 @@ use crate::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::time::Instant;
@@ -411,11 +412,11 @@ pub fn plot_clonotypes(
     let mut radius = Vec::<f64>::new();
     let mut color = Vec::<String>::new();
     let mut barcodes = Vec::<String>::new();
-    let mut group_index = Vec::<usize>::new();
+    let mut group_index = HashMap::<usize, usize>::new();
     let mut clonotype_index = Vec::<usize>::new();
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
-            group_index.push(i);
+            group_index.insert(groups[i][j].0 as usize, i);
             clonotype_index.push(j);
         }
     }
@@ -428,7 +429,7 @@ pub fn plot_clonotypes(
             center.push((clusters[i].1[j].0, clusters[i].1[j].1));
             radius.push(1.0);
             let ind = clusters[i].2;
-            group_index2.push(group_index[ind]);
+            group_index2.push(group_index[&ind]);
             clonotype_index2.push(clonotype_index[ind]);
         }
     }

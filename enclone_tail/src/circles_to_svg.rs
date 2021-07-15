@@ -10,7 +10,7 @@ pub fn circles_to_svg(
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
-    _barcodes: &Vec<String>,
+    barcodes: &Vec<String>,
     shades: &Vec<Polygon>,
     shade_colors: &Vec<String>,
     shade_enclosures: &Vec<Polygon>,
@@ -94,9 +94,10 @@ pub fn circles_to_svg(
         let mut tooltipx = String::new();
         if tooltip {
             tooltipx = format!(
-                " tooltip=\"group_id={},clonotype_id={}\"",
+                " tooltip=\"group_id={},clonotype_id={},barcode={}\"",
                 group_index2[i] + 1,
                 clonotype_index2[i] + 1,
+                barcodes[i],
             );
         }
         out += &format!(
