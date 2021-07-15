@@ -20,38 +20,29 @@ WAITING ON ICED
 2.  Pretty, not plain.
     Enabling e.g. multicolor text is on the iced roadmap.
 
-3.  Text in SVG objects does not show up.
-    Known regression = https:github.com/hecrj/iced/issues/870.  Worked around by displaying PNG
-    instead.
-
-4.  Place the scrollbar on the left side of the scrollable window.
+3.  Place the scrollbar on the left side of the scrollable window.
     Asked on zulip chat if this is possible, but did not get a response.  This is far enough
     down our list of requests that I don't want to ask further now.
 
-5.  Make the TextInput gracefully handle long inputs.
+4.  Make the TextInput gracefully handle long inputs.
     This is https:github.com/hecrj/iced/issues/320.  Fix targetted for 1.0.
 
-6.  Flaky behavior scrolling large texts.
+5.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
-7.  The wraparound problem.
+6.  The wraparound problem.
     Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
     vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
     issue 307 (scrolling programmatically).
 
-8.  Button text does not change from "Submit" to "thinking" (but worked around).
+7.  Button text does not change from "Submit" to "thinking" (but worked around).
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
     on the issue so the ball is in their court.
 
-9.  Update to the latest versions of iced and iced_aw.
-    This yielded a compilation error.  Issue #25 filed on iced_aw.
-    There is a possible solution there and I'm waiting on a precise specification of
-    Cargo.toml entries to test it.
-
-10. Canvas in scrollable crashes.  
+8.  Canvas in scrollable crashes.  
     Reported as issue #924, flagged as bug.
 
-11. Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+9.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
 ---------------------------------------------------------------------------------------------------
@@ -67,22 +58,19 @@ NICE TO HAVE
 
 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
 
-5.  Enable plotting after initially starting GUI.
+5.  Put plots in a scrollable window.
 
-6.  Put plots in a scrollable window.
+6.  Add scale slider for plots.
 
-7.  Add scale slider for plots.
+7.  Make "enclone help ..." work.
 
-8.  Make "enclone help ..." work.
+8.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
 
-9.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
+9.  Add button to capture the entire enclone visual window.
 
-10. Add button to capture the entire enclone visual window.
-
-11. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+10. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
-12. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+11. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
-
