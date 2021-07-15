@@ -110,6 +110,16 @@ if ( $status != 0 ) then
     exit 1
 endif
 
+##### TEST FOR A WEIRD PROBLEM #####
+
+if ( -f enclone_exec/stdout ) then
+    echo "\nWeird, the file enclone_exec/stdout exists and it should not.  One possibilty is"
+    echo "that the code incorrectly tested for writing stdout, and then (in principle) deleted"
+    echo "it, but something went wrong because parallel processes were doing the same thing."
+    echo "This error mode is stochstic.\n"
+    exit 1
+endif
+
 ##### REPORT TIME USED #####
 
 set end = `date +%s`

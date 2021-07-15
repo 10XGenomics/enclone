@@ -687,35 +687,37 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 *(set_string_writeable[j].1) =
                     stringme(&tilde_expand(set_string_writeable[j].1.as_bytes()));
                 let val = &(set_string_writeable[j].1);
-                if ctl.gen_opt.evil_eye {
-                    println!("creating file {} to test writability", val);
-                }
-                let f = File::create(&val);
-                if f.is_err() {
-                    let mut msgx = format!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
-                        val
-                    );
-                    if val.contains("/") {
-                        let dir = val.rev_before("/");
-                        let msg;
-                        if path_exists(&dir) {
-                            msg = "exists";
-                        } else {
-                            msg = "does not exist";
-                        }
-                        msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
+                if *val != "stdout" && *val != "stdouth" {
+                    if ctl.gen_opt.evil_eye {
+                        println!("creating file {} to test writability", val);
                     }
-                    return Err(msgx);
+                    let f = File::create(&val);
+                    if f.is_err() {
+                        let mut msgx = format!(
+                            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+                            val
+                        );
+                        if val.contains("/") {
+                            let dir = val.rev_before("/");
+                            let msg;
+                            if path_exists(&dir) {
+                                msg = "exists";
+                            } else {
+                                msg = "does not exist";
+                            }
+                            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
+                        }
+                        return Err(msgx);
+                    }
+                    if ctl.gen_opt.evil_eye {
+                        println!("removing file {}", val);
+                    }
+                    remove_file(&val).expect(&format!("could not remove file {}", val));
+                    if ctl.gen_opt.evil_eye {
+                        println!("removal of file {} complete", val);
+                    }
+                    continue 'args_loop;
                 }
-                if ctl.gen_opt.evil_eye {
-                    println!("removing file {}", val);
-                }
-                remove_file(&val).expect(&format!("could not remove file {}", val));
-                if ctl.gen_opt.evil_eye {
-                    println!("removal of file {} complete", val);
-                }
-                continue 'args_loop;
             }
         }
 
@@ -730,7 +732,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     &set_string_writeable_or_stdout[j].1.as_bytes(),
                 ));
                 let val = &(set_string_writeable[j].1);
-                if *val != "stdout" {
+                if *val != "stdout" && *val != "stdouth" {
                     if ctl.gen_opt.evil_eye {
                         println!("creating file {} to test writability, not stdout", val);
                     }
