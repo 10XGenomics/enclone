@@ -9,6 +9,7 @@ pub mod display_tree;
 pub mod fasta;
 pub mod group;
 pub mod grouper;
+pub mod group_colors;
 pub mod hex;
 pub mod neighbor;
 pub mod newick;
