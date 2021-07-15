@@ -125,6 +125,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "arboard"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47044a1809e2953fe6d084312b81dcb7d9ffc24fee45aa39e5b938f66f75b8a8"
+dependencies = [
+ "clipboard-win",
+ "core-graphics 0.21.0",
+ "image",
+ "log",
+ "objc",
+ "objc-foundation",
+ "objc_id",
+ "once_cell",
+ "parking_lot",
+ "scopeguard",
+ "thiserror",
+ "winapi 0.3.9",
+ "x11rb",
+]
+
+[[package]]
 name = "array-macro"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -863,6 +884,18 @@ dependencies = [
 
 [[package]]
 name = "core-graphics"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52a67c4378cf203eace8fb6567847eb641fd6ff933c1145a115c6ee820ebb978"
+dependencies = [
+ "bitflags",
+ "core-foundation 0.9.1",
+ "foreign-types",
+ "libc",
+]
+
+[[package]]
+name = "core-graphics"
 version = "0.22.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "269f35f69b542b80e736a20a89a05215c0ce80c2c03c514abb2e318b78379d86"
@@ -1271,7 +1304,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1299,7 +1332,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "rayon",
  "regex",
@@ -1341,7 +1374,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
@@ -1372,7 +1405,7 @@ dependencies = [
  "failure",
  "flate2",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "nix 0.20.0",
  "perf_stats",
  "pretty_trace",
@@ -1392,7 +1425,7 @@ dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
  "tables",
 ]
@@ -1418,7 +1451,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "log",
@@ -1458,7 +1491,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -1507,7 +1540,7 @@ dependencies = [
  "float-ord",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -1540,7 +1573,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1558,6 +1591,7 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.76"
 dependencies = [
+ "arboard",
  "chrono",
  "cocoa",
  "enclone_core",
@@ -1569,7 +1603,7 @@ dependencies = [
  "iced_native",
  "image",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "jpeg-decoder",
  "lazy_static",
  "libc",
@@ -1588,6 +1622,7 @@ dependencies = [
  "serde_json",
  "string_utils",
  "tables",
+ "tilde-expand",
  "tiny-skia 0.5.1",
  "tokio",
  "tokio-stream",
@@ -4595,7 +4630,7 @@ version = "0.5.76"
 dependencies = [
  "failure",
  "iced",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "log",

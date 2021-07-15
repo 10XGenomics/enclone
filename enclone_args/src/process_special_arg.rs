@@ -75,7 +75,7 @@ pub fn process_special_arg(
         let mut val = fields[0].to_string();
         val = stringme(&tilde_expand(&val.as_bytes()));
         ctl.plot_opt.sim_mat_plot_file = val.clone();
-        if val != "stdout" && val != "gui" {
+        if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);
             if f.is_err() {
                 let mut emsg = format!(
@@ -157,7 +157,7 @@ pub fn process_special_arg(
         let mut val = fields[2].to_string();
         val = stringme(&tilde_expand(&val.as_bytes()));
         ctl.plot_opt.plot_xy_filename = val.clone();
-        if val != "stdout" && val != "gui" {
+        if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);
             if f.is_err() {
                 let mut emsg = format!(

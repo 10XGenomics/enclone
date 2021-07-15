@@ -19,8 +19,16 @@ pub type Id = *mut Object;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use libc::c_void;
 
+#[cfg(target_os = "linux")]
+use arboard::{Clipboard, ImageData};
+
+#[cfg(target_os = "linux")]
+use string_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
+pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
         unsafe {
             let pool = NSAutoreleasePool::new(nil);
@@ -42,13 +50,28 @@ pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "ios")))]
-pub fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
+#[cfg(target_os = "linux")]
+pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
+    let (header, image_data) = png_decoder::decode(&bytes).unwrap();
+    let (width, height) = (header.width as usize, header.height as usize);
+    let mut clipboard = Clipboard::new().unwrap();
+    let img_data = ImageData {
+        width: width,
+        height: height,
+        bytes: image_data.into(),
+    };
+    clipboard.set_image(img_data).unwrap();
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
+pub fn copy_png_bytes_to_clipboard(_bytes: &[u8]) {}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // intended for strings:
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
+pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
         unsafe {
             let pool = NSAutoreleasePool::new(nil);
@@ -71,5 +94,14 @@ pub fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
     }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+#[cfg(target_os = "linux")]
+pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
+    if bytes.len() > 0 {
+        let mut clipboard = Clipboard::new().unwrap();
+        let the_string = strme(&bytes);
+        clipboard.set_text(the_string.into()).unwrap();
+    }
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
 pub fn copy_bytes_to_mac_clipboard(_bytes: &[u8]) {}

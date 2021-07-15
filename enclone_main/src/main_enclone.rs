@@ -549,6 +549,12 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     ctl.perf_stats(&talt, "finding alt alleles");
     if ctl.gen_opt.dref_file.len() > 0 {
         let f = File::create(&ctl.gen_opt.dref_file);
+        if f.is_err() {
+            eprintln!(
+                "\nError trying to write ctl.gen_opt.dref_file = {}.",
+                ctl.gen_opt.dref_file
+            );
+        }
         let mut f = BufWriter::new(f.unwrap());
         let mut count = 0;
         for i in 0..alt_refs.len() {

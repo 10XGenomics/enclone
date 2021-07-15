@@ -51,6 +51,7 @@ serde = "1.0.90"
 serde_json = "*"
 string_utils = "0.1"
 tables = "0.1"
+tilde-expand = "0.1.1"
 tiny-skia = "0.5.0"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
@@ -60,6 +61,7 @@ usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc502263
 vector_utils = "0.1.3"
 
 [target.'cfg(target_os = "linux")'.dependencies]
+arboard = "1"
 procfs = "0.9"
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]

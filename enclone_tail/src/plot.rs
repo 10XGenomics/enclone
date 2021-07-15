@@ -5,13 +5,18 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::assign_cell_color::*;
+use crate::circles_to_svg::*;
+use crate::group_colors::*;
 use crate::hex::*;
 use crate::pack_circles::*;
 use crate::polygon::*;
 use crate::string_width::*;
+use crate::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::time::Instant;
@@ -21,158 +26,15 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Change the width or height of an svg document.
-
-fn set_svg_width(svg: &mut String, new_width: f64) {
-    let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
-    *svg = format!("{}width=\"{}\"{}", svg1, new_width, svg2);
-}
-
-fn set_svg_height(svg: &mut String, new_height: f64) {
-    let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
-    *svg = format!("{}height=\"{}\"{}", svg1, new_height, svg2);
-}
-
-fn get_svg_height(svg: &String) -> f64 {
-    svg.between("height=\"", "\"").force_f64()
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Given a collection of circles having specified colors, create an svg string that shows the
-// circles on a canvas of fixed size.  The circles are moved and resized accordingly.
-// Also shades smoothed polygons.  Also add tooltip notes if requested.
-
-fn circles_to_svg(
-    center: &Vec<(f64, f64)>,
-    radius: &Vec<f64>,
-    color: &Vec<String>,
-    shades: &Vec<Polygon>,
-    shade_colors: &Vec<String>,
-    shade_enclosures: &Vec<Polygon>,
-    group_index2: &Vec<usize>,
-    clonotype_index2: &Vec<usize>,
-    width: usize,
-    height: usize,
-    boundary: usize,
-    tooltip: bool,
-) -> String {
-    let n = center.len();
-    assert!(!center.is_empty());
-    assert!(radius.len() == n);
-    assert!(color.len() == n);
-    assert!(boundary < width);
-    assert!(boundary < height);
-    for i in 0..n {
-        assert!(radius[i] > 0.0);
-    }
-    let mut out = format!(
-        "<svg version=\"1.1\"\n\
-         baseProfile=\"full\"\n\
-         width=\"{}\" height=\"{}\"\n\
-         xmlns=\"http://www.w3.org/2000/svg\">\n",
-        width, height
-    );
-    let mut center = center.clone();
-    let mut radius = radius.clone();
-    let mut xmin = center[0].0;
-    let mut xmax = center[0].0;
-    let mut ymin = center[0].1;
-    let mut ymax = center[0].1;
-    for i in 0..n {
-        xmin = xmin.min(center[i].0 - radius[i]);
-        xmax = xmax.max(center[i].0 + radius[i]);
-        ymin = ymin.min(center[i].1 - radius[i]);
-        ymax = ymax.max(center[i].1 + radius[i]);
-    }
-    for i in 0..shades.len() {
-        for j in 0..shades[i].v.len() {
-            xmin = xmin.min(shade_enclosures[i].v[j].x);
-            xmax = xmax.max(shade_enclosures[i].v[j].x);
-            ymin = ymin.min(shade_enclosures[i].v[j].y);
-            ymax = ymax.max(shade_enclosures[i].v[j].y);
-        }
-    }
-    let width = width - boundary;
-    let height = height - boundary;
-    let scale = ((width as f64) / (xmax - xmin)).min((height as f64) / (ymax - ymin));
-    for i in 0..n {
-        center[i].0 -= xmin;
-        center[i].1 -= ymin;
-        center[i].0 *= scale;
-        center[i].1 *= scale;
-        radius[i] *= scale;
-        center[i].0 += boundary as f64;
-        center[i].1 += boundary as f64;
-    }
-    let mut shades = shades.clone();
-    for i in 0..shades.len() {
-        for j in 0..shades[i].v.len() {
-            shades[i].v[j].x -= xmin;
-            shades[i].v[j].y -= ymin;
-            shades[i].v[j].x *= scale;
-            shades[i].v[j].y *= scale;
-            shades[i].v[j].x += boundary as f64;
-            shades[i].v[j].y += boundary as f64;
-        }
-    }
-    for (g, p) in shades.iter().enumerate() {
-        out += "<path d=\"";
-        const BOUNDING_CURVE_BOUND: f64 = 15.0; // must be smaller than POLYGON_ENLARGEMENT
-        out += &format!("{}", p.catmull_bezier_bounded_svg(BOUNDING_CURVE_BOUND));
-        out += "\" ";
-        out += &format!("fill=\"{}\"\n", shade_colors[g]);
-        out += " stroke=\"rgb(150,150,150)\"";
-        out += " stroke-width=\"0.2\"";
-        out += "/>\n";
-    }
-    for i in 0..center.len() {
-        let mut tooltipx = String::new();
-        if tooltip {
-            tooltipx = format!(
-                " tooltip=\"group_id={},clonotype_id={}\"",
-                group_index2[i] + 1,
-                clonotype_index2[i] + 1,
-            );
-        }
-        out += &format!(
-            "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
-            tooltipx, center[i].0, center[i].1, radius[i], color[i]
-        );
-    }
-    out += "</svg>\n";
-    out
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Here, and in "enclone help color", we swap the order of colors, placing the last three before
-// the first three.  This is because the last three seem to make a better three-color palette.
-
-fn substitute_enclone_color(color: &mut String) {
-    if *color == "@1".to_string() {
-        *color = "rgb(0,95,175)".to_string();
-    } else if *color == "@2".to_string() {
-        *color = "rgb(215,135,175)".to_string();
-    } else if *color == "@3".to_string() {
-        *color = "rgb(0,175,135)".to_string();
-    } else if *color == "@4".to_string() {
-        *color = "rgb(215,95,0)".to_string();
-    } else if *color == "@5".to_string() {
-        *color = "rgb(95,175,255)".to_string();
-    } else if *color == "@6".to_string() {
-        *color = "rgb(215,175,0)".to_string();
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn plot_clonotypes(
     ctl: &EncloneControl,
     plot_opt: &PlotOpt, // overrides ctl
     refdata: &RefData,
+    // exacts: One entry for each clonotype.
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    // groups: There is one entry for each group of clonotypes.  The first entries of the inner
+    // vectors indexes into exacts, and the second entry (String) is not used here.
     groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
 ) -> Result<(), String> {
@@ -207,7 +69,7 @@ pub fn plot_clonotypes(
             region names.  If this is a problem, please let us know and we will generalize it.\n"
         ));
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize)>::new();
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<String>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
     let mut origins = Vec::<String>::new();
@@ -217,6 +79,7 @@ pub fn plot_clonotypes(
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
+        let mut barcodes = Vec::<String>::new();
         let mut n = 0;
 
         // For PLOT_BY_MARK, find the dataset having the largest number of cells.
@@ -240,81 +103,31 @@ pub fn plot_clonotypes(
 
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
-            for j in 0..ex.clones.len() {
-                let mut color = "black".to_string();
 
-                // Determine color for PLOT_BY_ISOTYPE.
+            // Traverse the cells in the exact subclonotype.
 
+            for k in 0..ex.clones.len() {
+                barcodes.push(ex.clones[k][0].barcode.clone());
                 if plot_opt.plot_by_isotype {
-                    let mut crefs = Vec::<Option<usize>>::new();
-                    for l in 0..ex.share.len() {
-                        if ex.share[l].left {
-                            crefs.push(ex.share[l].c_ref_id);
-                        }
-                    }
-                    unique_sort(&mut crefs);
-                    let mut color_id = 0;
-                    if crefs.solo() && crefs[0].is_some() {
-                        let c = &refdata.name[crefs[0].unwrap()];
-                        // Note that is possible for p to be -1 in the following.  This is known
-                        // to happen if a heavy chain V gene is on the same contig as a light
-                        // chain C gene (which may be an artifact).  There is an example in
-                        // enclone_main/testx/inputs/flaky.
-                        let p = bin_position(&const_names, &c);
-                        color_id = (1 + p) as usize;
-                    }
-                    if plot_opt.plot_by_isotype_color.is_empty() {
-                        let x = print_color13(color_id);
-                        color = format!("rgb({},{},{})", x.0, x.1, x.2);
-                    } else {
-                        color = plot_opt.plot_by_isotype_color[color_id].clone();
-                    }
-
-                // Determine color for PLOT_BY_MARK.
                 } else if plot_opt.plot_by_mark {
-                    let dom = ex.clones[j][0].dataset_index == dsx;
-                    let marked = ex.clones[j][0].marked;
-                    if dom {
-                        if !marked {
-                            color = "red".to_string();
-                        } else {
-                            color = "rgb(255,200,200)".to_string();
-                        }
-                    } else {
-                        if !marked {
-                            color = "blue".to_string();
-                        } else {
-                            color = "rgb(200,200,255)".to_string();
-                        }
-                    }
-
-                // Determine color in other cases.
                 } else {
-                    if ex.clones[j][0].origin_index.is_some() {
-                        let s = &ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()];
+                    if ex.clones[k][0].origin_index.is_some() {
+                        let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
                         origins.push(s.clone());
-                        if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
-                            color = ctl.gen_opt.origin_color_map[s].clone();
-                        }
-                    }
-                    if ctl.gen_opt.origin_color_map.is_empty() {
-                        let mut dataset_colors = false;
-                        for c in ctl.origin_info.color.iter() {
-                            if !c.is_empty() {
-                                dataset_colors = true;
-                            }
-                        }
-                        let di = ex.clones[j][0].dataset_index;
-                        if dataset_colors {
-                            color = ctl.origin_info.color[di].clone();
-                        } else {
-                            let bc = &ex.clones[j][0].barcode;
-                            if ctl.origin_info.barcode_color[di].contains_key(bc) {
-                                color = ctl.origin_info.barcode_color[di][bc].clone();
-                            }
-                        }
                     }
                 }
+                let color = assign_cell_color(
+                    &ctl,
+                    &plot_opt,
+                    &refdata,
+                    &const_names,
+                    dsx,
+                    &exacts,
+                    &exact_clonotypes,
+                    i,
+                    j,
+                    k,
+                );
                 colors.push(color);
                 coords.push(hex_coord(n, 1.0));
                 n += 1;
@@ -322,11 +135,10 @@ pub fn plot_clonotypes(
         }
         unique_sort(&mut origins);
 
-        // Move the colors around to get vertical separation, e.g. blues on the left, reds
-        // on the right.
+        // Move colors around to get vertical separation, e.g. blues on left, reds on right.
 
-        colors.sort();
         coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sort_sync2(&mut colors, &mut barcodes);
 
         // Substitute enclone colors.
 
@@ -342,11 +154,12 @@ pub fn plot_clonotypes(
                 radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
         }
         radius += SEP;
-        clusters.push((colors, coords, i));
+        clusters.push((colors, coords, i, barcodes));
         radii.push(radius);
     }
 
-    // Set group specification.
+    // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
+    // Note that CLONOTYPE_GROUP_NAMES is probably broken now.
 
     let mut group_id = vec![0; radii.len()];
     let mut group_color = vec!["".to_string()];
@@ -449,7 +262,7 @@ pub fn plot_clonotypes(
             }
         }
 
-        // Define group ids.
+        // Define group ids and colors.
 
         group_id.clear();
         for i in 0..new_group_names.len() {
@@ -458,104 +271,12 @@ pub fn plot_clonotypes(
                 group_id.push(p as usize);
             }
         }
-
-        // Build colors.
-
-        let sum = 40; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
-        let mut rand = 0i64;
-        let mut points = Vec::<(f64, f64, f64)>::new();
-        while points.len() < 10_000 {
-            let rand1 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand2 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand1)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand3 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand2)
-                .wrapping_add(1_442_695_040_888_963_407);
-            rand = rand3;
-            let mut r1 = (rand1 % 1_000_000i64) as f64 / 1_000_000.0;
-            let mut r2 = (rand2 % 1_000_000i64) as f64 / 1_000_000.0;
-            let mut r3 = (rand3 % 1_000_000i64) as f64 / 1_000_000.0;
-            r1 = (r1 + 1.0) / 2.0;
-            r2 = (r2 + 1.0) / 2.0;
-            r3 = (r3 + 1.0) / 2.0;
-            let r = r1 + r2 + r3;
-            if r > 0.0 {
-                r1 /= r;
-                r2 /= r;
-                r3 /= r;
-                points.push((r1, r2, r3));
-            }
-        }
-
-        // Prepopulate colors with what appear to be an optimal sequence.  This is as measured by
-        // distance from each other.  These colors are not optimal relative to color blindness.
-
-        let mut fracs = vec![
-            (1.0, 0.0, 0.0),
-            (0.0, 1.0, 0.0),
-            (0.0, 0.0, 1.0),
-            (1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0),
-            (0.0, 1.0 / 3.0, 2.0 / 3.0),
-            (1.0 / 3.0, 2.0 / 3.0, 0.0),
-            (2.0 / 3.0, 1.0 / 3.0, 0.0),
-            (2.0 / 3.0, 0.0, 1.0 / 3.0),
-            (0.0, 2.0 / 3.0, 1.0 / 3.0),
-            (1.0 / 3.0, 0.0, 2.0 / 3.0),
-            (5.0 / 9.0, 2.0 / 9.0, 2.0 / 9.0),
-            (4.0 / 9.0, 1.0 / 9.0, 4.0 / 9.0),
-            (7.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0),
-            (1.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0),
-            (2.0 / 9.0, 5.0 / 9.0, 2.0 / 9.0),
-            (4.0 / 9.0, 4.0 / 9.0, 1.0 / 9.0),
-            (2.0 / 9.0, 2.0 / 9.0, 5.0 / 9.0),
-            (1.0 / 9.0, 1.0 / 9.0, 7.0 / 9.0),
-            (1.0 / 9.0, 7.0 / 9.0, 1.0 / 9.0),
-            (1.0 / 9.0, 2.0 / 9.0, 6.0 / 9.0),
-            (3.0 / 9.0, 1.0 / 9.0, 5.0 / 9.0),
-            (3.0 / 9.0, 2.0 / 9.0, 4.0 / 9.0),
-            (1.0 / 9.0, 8.0 / 9.0, 0.0 / 9.0),
-            (3.0 / 9.0, 4.0 / 9.0, 2.0 / 9.0),
-            (5.0 / 9.0, 3.0 / 9.0, 1.0 / 9.0),
-        ];
-        if fracs.len() >= group_name.len() {
-            fracs.truncate(group_name.len());
-
-        // Add more colors if needed.
-        } else {
-            for _ in fracs.len()..group_name.len() {
-                let mut max_dist = 0.0;
-                let mut best = (0.0, 0.0, 0.0);
-                for p in points.iter() {
-                    let mut min_dist = 100.0_f64;
-                    for q in fracs.iter() {
-                        let d = (p.0 - q.0) * (p.0 - q.0)
-                            + (p.1 - q.1) * (p.1 - q.1)
-                            + (p.2 - q.2) * (p.2 - q.2);
-                        min_dist = min_dist.min(d);
-                    }
-                    if min_dist > max_dist {
-                        max_dist = min_dist;
-                        best = *p;
-                    }
-                }
-                fracs.push(best);
-            }
-        }
-        group_color.clear();
-        for i in 0..fracs.len() {
-            let r = 255 - (fracs[i].0 * sum as f64).round() as usize;
-            let g = 255 - (fracs[i].1 * sum as f64).round() as usize;
-            let b = 255 - (fracs[i].2 * sum as f64).round() as usize;
-            group_color.push(format!("rgb({},{},{})", r, g, b));
-        }
+        group_color = make_group_colors(group_name.len());
     }
-    let ngroups = group_color.len();
+    let ngroups = group_color.len(); // THESE ARE SHADING GROUPS!
     ctl.perf_stats(&t, "in preamble to plotting clonotypes");
 
-    // Traverse the groups.
+    // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
     let t = Instant::now();
     let using_shading = ngroups > 1 || group_color[0].len() > 0;
@@ -565,7 +286,7 @@ pub fn plot_clonotypes(
     let mut shade_enclosures = Vec::<Polygon>::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
-        // Gather the group.
+        // Gather the group.  In the default case, ids = 0..(number of clusters).
 
         let mut ids = Vec::<usize>::new();
         let mut radiix = Vec::<f64>::new();
@@ -626,11 +347,13 @@ pub fn plot_clonotypes(
         let mut honey_map_out = Vec::<(usize, usize)>::new();
         if ctl.plot_opt.honey_in.is_none() {
             let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+            let mut clusters2 = clusters.clone();
             for i in 0..ids.len() {
                 let id = ids[i];
                 let mut c = clusters[id].0.clone();
                 unique_sort(&mut c);
                 if c.solo() {
+                    // Note confusion here between the last argument, i, and clusters[i].2:
                     ccc.push((clusters[i].0.len(), c[0].clone(), i));
                 } else {
                     honey_map_out.push((i, i));
@@ -648,13 +371,15 @@ pub fn plot_clonotypes(
                 angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
                 for k in i..j {
                     let new_id = angle[k - i].1;
-                    honey_map_out.push((ids[new_id], ccc[k].2));
-                    for u in 0..clusters[ids[new_id]].0.len() {
-                        clusters[ids[new_id]].0[u] = ccc[k].1.clone();
-                    }
+                    let id = ccc[k].2;
+                    honey_map_out.push((ids[new_id], id));
+                    clusters2[ids[new_id]].0 = clusters[id].0.clone();
+                    clusters2[ids[new_id]].2 = clusters[id].2;
+                    clusters2[ids[new_id]].3 = clusters[id].3.clone();
                 }
                 i = j;
             }
+            clusters = clusters2;
             if ctl.plot_opt.honey_out.len() > 0 {
                 let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
                 for i in 0..honey_map_out.len() {
@@ -672,7 +397,11 @@ pub fn plot_clonotypes(
             }
             let mut clusters2 = clusters.clone();
             for i in 0..clusters.len() {
-                clusters2[honey_map_in[i].0].0 = clusters[honey_map_in[i].1].0.clone();
+                let new = honey_map_in[i].0;
+                let old = honey_map_in[i].1;
+                clusters2[new].0 = clusters[old].0.clone();
+                clusters2[new].2 = clusters[old].2;
+                clusters2[new].3 = clusters[old].3.clone();
             }
             clusters = clusters2;
         }
@@ -691,11 +420,12 @@ pub fn plot_clonotypes(
     let mut center = Vec::<(f64, f64)>::new();
     let mut radius = Vec::<f64>::new();
     let mut color = Vec::<String>::new();
-    let mut group_index = Vec::<usize>::new();
+    let mut barcodes = Vec::<String>::new();
+    let mut group_index = HashMap::<usize, usize>::new();
     let mut clonotype_index = Vec::<usize>::new();
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
-            group_index.push(i);
+            group_index.insert(groups[i][j].0 as usize, i);
             clonotype_index.push(j);
         }
     }
@@ -704,10 +434,11 @@ pub fn plot_clonotypes(
     for i in 0..clusters.len() {
         for j in 0..clusters[i].0.len() {
             color.push(clusters[i].0[j].clone());
+            barcodes.push(clusters[i].3[j].clone());
             center.push((clusters[i].1[j].0, clusters[i].1[j].1));
             radius.push(1.0);
             let ind = clusters[i].2;
-            group_index2.push(group_index[ind]);
+            group_index2.push(group_index[&ind]);
             clonotype_index2.push(clonotype_index[ind]);
         }
     }
@@ -737,6 +468,7 @@ pub fn plot_clonotypes(
         &center,
         &radius,
         &color,
+        &barcodes,
         &shades,
         &shade_colors,
         &shade_enclosures,

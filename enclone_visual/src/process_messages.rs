@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
+use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
@@ -427,7 +427,7 @@ impl EncloneVisual {
                 if self.png_value.is_empty() {
                     self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
                 }
-                copy_png_bytes_to_mac_clipboard(&self.png_value);
+                copy_png_bytes_to_clipboard(&self.png_value);
                 let used = elapsed(&t);
                 let extra = MIN_FLASH_SECONDS - used;
                 if extra > 0.0 {
@@ -438,7 +438,7 @@ impl EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
-                copy_bytes_to_mac_clipboard(&self.translated_input_current().as_bytes());
+                copy_bytes_to_clipboard(&self.translated_input_current().as_bytes());
                 Command::none()
             }
 

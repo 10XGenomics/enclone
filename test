@@ -110,6 +110,20 @@ if ( $status != 0 ) then
     exit 1
 endif
 
+##### TEST FOR A WEIRD PROBLEM #####
+
+if ( -f enclone_exec/stdout ) then
+    echo "\nWeird, the file enclone_exec/stdout exists and it should not.  One possibilty is"
+    echo "that the code incorrectly tested for writing stdout, and then (in principle) deleted"
+    echo "it, but something went wrong because parallel processes were doing the same thing."
+    echo "Another possibility is that stdout was specified as an argument in a test, and the"
+    echo "argument was not recognized as special.  This error mode can be stochastic."
+    echo "If this failure occurs, and you can't trace its source, try creating a file"
+    echo "enclone_exec/stdout that lacks write permission.  This should cause a traceback to"
+    echo "be omitted when an attempt is made to write the file.\n"
+    exit 1
+endif
+
 ##### REPORT TIME USED #####
 
 set end = `date +%s`

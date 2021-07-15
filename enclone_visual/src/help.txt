@@ -23,6 +23,9 @@ populated with something (like a down arrow, to go forward to the next state).
 If you run a command, and then run a similar command after it, enclone visual may elide some
 calculations from the previous command, so as to respond faster.
 
+If you move your mouse over a cell in a honeycomb plot, you'll see some information.  If you tap
+or click on a cell, then the corresponding group will be displayed in the clonotype window.
+
 Some limitations of this version:
 1. There is no color in the clonotype tables.
 2. Cutting and pasting from clonotype tables doesn't work.

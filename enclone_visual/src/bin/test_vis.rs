@@ -14,21 +14,19 @@
 
 use enclone_visual::compare_images::*;
 use enclone_visual::testsuite::TESTS;
+use image::codecs::jpeg::JpegEncoder;
+use image::ColorType::Rgba8;
 use io_utils::*;
+use jpeg_decoder::Decoder;
 use perf_stats::*;
 use pretty_trace::*;
 use std::env;
 use std::fs::{copy, File};
-use std::io::Read;
+use std::io::{BufReader, BufWriter, Read};
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
-
-use image::codecs::jpeg::JpegEncoder;
-use image::ColorType::Rgba8;
-use jpeg_decoder::Decoder;
-use std::io::BufReader;
-use std::io::BufWriter;
+use tilde_expand::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -241,6 +239,27 @@ fn main() {
             }
         }
     }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // MAC TESTS THAT DON'T REALLY BELONG HERE BUT DON'T HAVE A BETTER HOME
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Test that a particular case of tilde expansion works on a Mac.
+
+    let o = Command::new("enclone")
+        .arg("BCR=123085")
+        .arg("MIN_CELLS=10")
+        .arg("PLOT_BY_ISOTYPE=gui")
+        .arg("HONEY_OUT=~/enclone_temp_test_file")
+        .arg("NOPRINT")
+        .output()
+        .expect("failed to execute enclone tilde test");
+    if o.status.code() != Some(0) {
+        eprintln!("\nnonzero exit code from enclone tilde test\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
+        std::process::exit(1);
+    }
+    std::fs::remove_file(&strme(&tilde_expand("~/enclone_temp_test_file".as_bytes()))).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // DONE, REPORT STATUS

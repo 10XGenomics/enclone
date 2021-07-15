@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 95583536;
+    const ENCLONE_SIZE: usize = 96568936;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -182,7 +182,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 46;
+    const DUPPED_CRATES: usize = 47;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
@@ -426,9 +426,9 @@ fn test_authors() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_honey() {
-    let cmd1 = "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" \
+    let cmd1 = "BCR=123085:123089 PLOT=\"gui_stdout,s1->blue,s2->red\" \
         HONEY_OUT=testx/outputs/honey NOPRINT";
-    let cmd2 = "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout HONEY_IN=testx/outputs/honey NOPRINT";
+    let cmd2 = "BCR=123085:123089 PLOT_BY_ISOTYPE=gui_stdout HONEY_IN=testx/outputs/honey NOPRINT";
     let args1 = cmd1.split(' ').collect::<Vec<&str>>();
     let args2 = cmd2.split(' ').collect::<Vec<&str>>();
     let new1 = Command::new(env!("CARGO_BIN_EXE_enclone"))

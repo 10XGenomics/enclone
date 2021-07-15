@@ -138,7 +138,7 @@ impl Application for EncloneVisual {
 
             // Add command box.
 
-            const MAX_LINE: usize = 43;
+            const MAX_LINE: usize = 35;
             let mut log = String::new();
             if self.history_index >= 1 {
                 let cmd = self.translated_input_hist_uniq
