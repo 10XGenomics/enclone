@@ -426,9 +426,9 @@ fn test_authors() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_honey() {
-    let cmd1 = "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" \
+    let cmd1 = "BCR=123085:123089 PLOT=\"gui_stdout,s1->blue,s2->red\" \
         HONEY_OUT=testx/outputs/honey NOPRINT";
-    let cmd2 = "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout HONEY_IN=testx/outputs/honey NOPRINT";
+    let cmd2 = "BCR=123085:123089 PLOT_BY_ISOTYPE=gui_stdout HONEY_IN=testx/outputs/honey NOPRINT";
     let args1 = cmd1.split(' ').collect::<Vec<&str>>();
     let args2 = cmd2.split(' ').collect::<Vec<&str>>();
     let new1 = Command::new(env!("CARGO_BIN_EXE_enclone"))
