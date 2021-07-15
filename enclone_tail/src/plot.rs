@@ -371,11 +371,9 @@ pub fn plot_clonotypes(
                 angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
                 for k in i..j {
                     let new_id = angle[k - i].1;
-                    honey_map_out.push((ids[new_id], ccc[k].2));
-                    for u in 0..clusters[ids[new_id]].0.len() {
-                        clusters2[ids[new_id]].0[u] = ccc[k].1.clone();
-                    }
                     let id = ccc[k].2;
+                    honey_map_out.push((ids[new_id], id));
+                    clusters2[ids[new_id]].0 = clusters[id].0.clone();
                     clusters2[ids[new_id]].2 = clusters[id].2;
                     clusters2[ids[new_id]].3 = clusters[id].3.clone();
                 }
