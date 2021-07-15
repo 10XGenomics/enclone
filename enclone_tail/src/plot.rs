@@ -6,6 +6,7 @@
 // the cells.
 
 use crate::*;
+use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::group_colors::*;
 use crate::hex::*;
@@ -100,81 +101,30 @@ pub fn plot_clonotypes(
 
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
-            for j in 0..ex.clones.len() {
-                let mut color = "black".to_string();
 
-                // Determine color for PLOT_BY_ISOTYPE.
+            // Traverse the cells in the exact subclonotype.
 
+            for k in 0..ex.clones.len() {
                 if plot_opt.plot_by_isotype {
-                    let mut crefs = Vec::<Option<usize>>::new();
-                    for l in 0..ex.share.len() {
-                        if ex.share[l].left {
-                            crefs.push(ex.share[l].c_ref_id);
-                        }
-                    }
-                    unique_sort(&mut crefs);
-                    let mut color_id = 0;
-                    if crefs.solo() && crefs[0].is_some() {
-                        let c = &refdata.name[crefs[0].unwrap()];
-                        // Note that is possible for p to be -1 in the following.  This is known
-                        // to happen if a heavy chain V gene is on the same contig as a light
-                        // chain C gene (which may be an artifact).  There is an example in
-                        // enclone_main/testx/inputs/flaky.
-                        let p = bin_position(&const_names, &c);
-                        color_id = (1 + p) as usize;
-                    }
-                    if plot_opt.plot_by_isotype_color.is_empty() {
-                        let x = print_color13(color_id);
-                        color = format!("rgb({},{},{})", x.0, x.1, x.2);
-                    } else {
-                        color = plot_opt.plot_by_isotype_color[color_id].clone();
-                    }
-
-                // Determine color for PLOT_BY_MARK.
                 } else if plot_opt.plot_by_mark {
-                    let dom = ex.clones[j][0].dataset_index == dsx;
-                    let marked = ex.clones[j][0].marked;
-                    if dom {
-                        if !marked {
-                            color = "red".to_string();
-                        } else {
-                            color = "rgb(255,200,200)".to_string();
-                        }
-                    } else {
-                        if !marked {
-                            color = "blue".to_string();
-                        } else {
-                            color = "rgb(200,200,255)".to_string();
-                        }
-                    }
-
-                // Determine color in other cases.
                 } else {
-                    if ex.clones[j][0].origin_index.is_some() {
-                        let s = &ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()];
+                    if ex.clones[k][0].origin_index.is_some() {
+                        let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
                         origins.push(s.clone());
-                        if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
-                            color = ctl.gen_opt.origin_color_map[s].clone();
-                        }
-                    }
-                    if ctl.gen_opt.origin_color_map.is_empty() {
-                        let mut dataset_colors = false;
-                        for c in ctl.origin_info.color.iter() {
-                            if !c.is_empty() {
-                                dataset_colors = true;
-                            }
-                        }
-                        let di = ex.clones[j][0].dataset_index;
-                        if dataset_colors {
-                            color = ctl.origin_info.color[di].clone();
-                        } else {
-                            let bc = &ex.clones[j][0].barcode;
-                            if ctl.origin_info.barcode_color[di].contains_key(bc) {
-                                color = ctl.origin_info.barcode_color[di][bc].clone();
-                            }
-                        }
                     }
                 }
+                let color = assign_cell_color(
+                    &ctl,
+                    &plot_opt,
+                    &refdata,
+                    &const_names,
+                    dsx,
+                    &exacts,
+                    &exact_clonotypes,
+                    i,
+                    j,
+                    k,
+                );
                 colors.push(color);
                 coords.push(hex_coord(n, 1.0));
                 n += 1;
