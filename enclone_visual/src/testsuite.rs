@@ -27,7 +27,7 @@ pub const TESTS: [(&str, MsgFn, &str); 17] = [
     ("", BACK, "test4"),
     ("", FORWARD, "test5"),
     ("#4", SUBMIT, "test6"), // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
-    ("10", SUBMIT, "test7"),
+    ("200", SUBMIT, "test7"),
     ("", BACK, "test8"),
     ("", BACK, "test9"),
     ("10", SUBMIT, "test10"),
