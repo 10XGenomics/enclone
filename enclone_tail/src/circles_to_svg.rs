@@ -10,6 +10,7 @@ pub fn circles_to_svg(
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
+    _barcodes: &Vec<String>,
     shades: &Vec<Polygon>,
     shade_colors: &Vec<String>,
     shade_enclosures: &Vec<Polygon>,

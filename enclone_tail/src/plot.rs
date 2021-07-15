@@ -68,7 +68,7 @@ pub fn plot_clonotypes(
             region names.  If this is a problem, please let us know and we will generalize it.\n"
         ));
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize)>::new();
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<String>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
     let mut origins = Vec::<String>::new();
@@ -138,7 +138,6 @@ pub fn plot_clonotypes(
 
         coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
         sort_sync2(&mut colors, &mut barcodes);
-        let _barcodes = barcodes; // **************************************************************
 
         // Substitute enclone colors.
 
@@ -154,7 +153,7 @@ pub fn plot_clonotypes(
                 radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
         }
         radius += SEP;
-        clusters.push((colors, coords, i));
+        clusters.push((colors, coords, i, barcodes));
         radii.push(radius);
     }
 
@@ -411,6 +410,7 @@ pub fn plot_clonotypes(
     let mut center = Vec::<(f64, f64)>::new();
     let mut radius = Vec::<f64>::new();
     let mut color = Vec::<String>::new();
+    let mut barcodes = Vec::<String>::new();
     let mut group_index = Vec::<usize>::new();
     let mut clonotype_index = Vec::<usize>::new();
     for i in 0..groups.len() {
@@ -424,6 +424,7 @@ pub fn plot_clonotypes(
     for i in 0..clusters.len() {
         for j in 0..clusters[i].0.len() {
             color.push(clusters[i].0[j].clone());
+            barcodes.push(clusters[i].3[j].clone());
             center.push((clusters[i].1[j].0, clusters[i].1[j].1));
             radius.push(1.0);
             let ind = clusters[i].2;
@@ -457,6 +458,7 @@ pub fn plot_clonotypes(
         &center,
         &radius,
         &color,
+        &barcodes,
         &shades,
         &shade_colors,
         &shade_enclosures,
