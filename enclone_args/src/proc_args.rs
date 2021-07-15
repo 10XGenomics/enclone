@@ -502,8 +502,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("CONFIG", &mut ctl.gen_opt.config_file),
         ("EXT", &mut ctl.gen_opt.ext),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
-        ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
-        ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
         ("POUT", &mut ctl.parseable_opt.pout),
         ("REF", &mut ctl.gen_opt.refname),
         ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
@@ -521,7 +519,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Define arguments that set something to a string that is an output file name or stdout.
 
-    let set_string_writeable_or_stdout = [("PEER_GROUP", &mut ctl.gen_opt.peer_group_filename)];
+    let set_string_writeable_or_stdout = [
+        ("PEER_GROUP", &mut ctl.gen_opt.peer_group_filename),
+        ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
+        ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
+    ];
 
     // Define arguments that set something to a string that is an input file name.
 
