@@ -272,10 +272,10 @@ pub fn plot_clonotypes(
         }
         group_color = make_group_colors(group_name.len());
     }
-    let ngroups = group_color.len();
+    let ngroups = group_color.len(); // THESE ARE SHADING GROUPS!
     ctl.perf_stats(&t, "in preamble to plotting clonotypes");
 
-    // Traverse the groups, if CLONOTYPE_GROUP_NAMES was specified.
+    // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
     let t = Instant::now();
     let using_shading = ngroups > 1 || group_color[0].len() > 0;
@@ -285,7 +285,7 @@ pub fn plot_clonotypes(
     let mut shade_enclosures = Vec::<Polygon>::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
-        // Gather the group.
+        // Gather the group.  In the default case, ids = 0..(number of clusters).
 
         let mut ids = Vec::<usize>::new();
         let mut radiix = Vec::<f64>::new();
