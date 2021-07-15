@@ -508,7 +508,7 @@ dependencies = [
 
 [[package]]
 name = "bio_edit"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -1291,7 +1291,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1304,7 +1304,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1324,7 +1324,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -1332,7 +1332,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "rayon",
  "regex",
@@ -1345,7 +1345,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_com"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "bytes",
  "enclone_core",
@@ -1360,7 +1360,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1374,7 +1374,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
@@ -1393,7 +1393,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -1405,7 +1405,7 @@ dependencies = [
  "failure",
  "flate2",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "nix 0.20.0",
  "perf_stats",
  "pretty_trace",
@@ -1420,19 +1420,19 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "string_utils",
  "tables",
 ]
 
 [[package]]
 name = "enclone_main"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "amino",
  "bytes",
@@ -1451,7 +1451,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "lazy_static",
  "libc",
  "log",
@@ -1475,7 +1475,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1491,7 +1491,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -1510,7 +1510,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "bio",
  "byteorder",
@@ -1525,7 +1525,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "align_tools",
  "amino",
@@ -1540,7 +1540,7 @@ dependencies = [
  "float-ord",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -1561,7 +1561,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -1573,7 +1573,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1589,7 +1589,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "arboard",
  "chrono",
@@ -1603,7 +1603,7 @@ dependencies = [
  "iced_native",
  "image",
  "io_utils",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "jpeg-decoder",
  "lazy_static",
  "libc",
@@ -4626,11 +4626,11 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "scroll_crash"
-version = "0.5.76"
+version = "0.5.77"
 dependencies = [
  "failure",
  "iced",
- "itertools 0.10.1",
+ "itertools 0.9.0",
  "lazy_static",
  "libc",
  "log",
