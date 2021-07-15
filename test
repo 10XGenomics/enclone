@@ -116,7 +116,8 @@ if ( -f enclone_exec/stdout ) then
     echo "\nWeird, the file enclone_exec/stdout exists and it should not.  One possibilty is"
     echo "that the code incorrectly tested for writing stdout, and then (in principle) deleted"
     echo "it, but something went wrong because parallel processes were doing the same thing."
-    echo "This error mode is stochstic.\n"
+    echo "Another possibility is that stdout was specified as an argument in a test, and the"
+    echo "argument was not recognized as special.  This error mode can be stochastic.\n"
     exit 1
 endif
 
