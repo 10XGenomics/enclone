@@ -22,6 +22,8 @@ use libc::c_void;
 #[cfg(target_os = "linux")]
 use arboard::Clipboard;
 
+use string_utils::*;
+
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
