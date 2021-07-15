@@ -78,6 +78,7 @@ pub fn plot_clonotypes(
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
+        let mut barcodes = Vec::<String>::new();
         let mut n = 0;
 
         // For PLOT_BY_MARK, find the dataset having the largest number of cells.
@@ -105,6 +106,7 @@ pub fn plot_clonotypes(
             // Traverse the cells in the exact subclonotype.
 
             for k in 0..ex.clones.len() {
+                barcodes.push(ex.clones[k][0].barcode.clone());
                 if plot_opt.plot_by_isotype {
                 } else if plot_opt.plot_by_mark {
                 } else {
@@ -135,6 +137,7 @@ pub fn plot_clonotypes(
         // Move the colors around to get vertical separation, e.g. blues on the left, reds
         // on the right.
 
+        let _barcodes = barcodes; // **************************************************************
         colors.sort();
         coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
