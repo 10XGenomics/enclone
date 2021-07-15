@@ -1622,6 +1622,7 @@ dependencies = [
  "serde_json",
  "string_utils",
  "tables",
+ "tilde-expand",
  "tiny-skia 0.5.1",
  "tokio",
  "tokio-stream",
