@@ -372,6 +372,7 @@ pub fn plot_clonotypes(
                     for u in 0..clusters[ids[new_id]].0.len() {
                         clusters[ids[new_id]].0[u] = ccc[k].1.clone();
                     }
+                    clusters[ids[new_id]].2 = ccc[k].2;
                 }
                 i = j;
             }
