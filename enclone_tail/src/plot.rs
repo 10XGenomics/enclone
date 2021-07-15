@@ -347,6 +347,7 @@ pub fn plot_clonotypes(
         let mut honey_map_out = Vec::<(usize, usize)>::new();
         if ctl.plot_opt.honey_in.is_none() {
             let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+            let mut clusters2 = clusters.clone();
             for i in 0..ids.len() {
                 let id = ids[i];
                 let mut c = clusters[id].0.clone();
@@ -372,12 +373,15 @@ pub fn plot_clonotypes(
                     let new_id = angle[k - i].1;
                     honey_map_out.push((ids[new_id], ccc[k].2));
                     for u in 0..clusters[ids[new_id]].0.len() {
-                        clusters[ids[new_id]].0[u] = ccc[k].1.clone();
+                        clusters2[ids[new_id]].0[u] = ccc[k].1.clone();
                     }
-                    clusters[ids[new_id]].2 = ccc[k].2;
+                    let id = ccc[k].2;
+                    clusters2[ids[new_id]].2 = clusters[id].2;
+                    clusters2[ids[new_id]].3 = clusters[id].3.clone();
                 }
                 i = j;
             }
+            clusters = clusters2;
             if ctl.plot_opt.honey_out.len() > 0 {
                 let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
                 for i in 0..honey_map_out.len() {
