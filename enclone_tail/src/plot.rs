@@ -28,8 +28,11 @@ pub fn plot_clonotypes(
     ctl: &EncloneControl,
     plot_opt: &PlotOpt, // overrides ctl
     refdata: &RefData,
+    // exacts: One entry for each clonotype.
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    // groups: There is one entry for each group of clonotypes.  The first entries of the inner
+    // vectors indexes into exacts, and the second entry (String) is not used here.
     groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
 ) -> Result<(), String> {
