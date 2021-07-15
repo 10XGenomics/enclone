@@ -244,8 +244,11 @@ fn main() {
     // MAC TESTS THAT DON'T REALLY BELONG HERE BUT DON'T HAVE A BETTER HOME
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Test that a particular case of tilde expansion works on a Mac.
+
     let o = Command::new("enclone")
         .arg("BCR=123085")
+        .arg("MIN_CELLS=10")
         .arg("PLOT_BY_ISOTYPE=gui")
         .arg("HONEY_OUT=~/enclone_temp_test_file")
         .arg("NOPRINT")
