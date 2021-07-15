@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::copy_image_to_clipboard::copy_bytes_to_mac_clipboard;
+use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
@@ -438,7 +438,7 @@ impl EncloneVisual {
             }
 
             Message::CommandCopyButtonPressed => {
-                copy_bytes_to_mac_clipboard(&self.translated_input_current().as_bytes());
+                copy_bytes_to_clipboard(&self.translated_input_current().as_bytes());
                 Command::none()
             }
 

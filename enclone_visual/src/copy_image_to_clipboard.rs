@@ -19,6 +19,9 @@ pub type Id = *mut Object;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use libc::c_void;
 
+#[cfg(target_os = "linux")]
+use arboard::Clipboard;
+
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
@@ -42,13 +45,22 @@ pub fn copy_png_bytes_to_mac_clipboard(bytes: &[u8]) {
     }
 }
 
+#[cfg(target_os = "linux")]
+pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
+    if bytes.len() > 0 {
+        let mut clipboard = Clipboard::new().unwrap();
+        let the_string = strme(&bytes);
+        clipboard.set_text(the_string.into()).unwrap();
+    }
+}
+
 #[cfg(not(any(target_os = "macos", target_os = "ios")))]
 pub fn copy_png_bytes_to_mac_clipboard(_bytes: &[u8]) {}
 
 // intended for strings:
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub fn copy_bytes_to_mac_clipboard(bytes: &[u8]) {
+pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
         unsafe {
             let pool = NSAutoreleasePool::new(nil);

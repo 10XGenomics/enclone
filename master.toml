@@ -8,6 +8,7 @@
 align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
+arboard = "1"
 assert_cmd = "1.0.3"
 async-trait = "0.1"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
