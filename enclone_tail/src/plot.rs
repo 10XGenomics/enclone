@@ -397,7 +397,11 @@ pub fn plot_clonotypes(
             }
             let mut clusters2 = clusters.clone();
             for i in 0..clusters.len() {
-                clusters2[honey_map_in[i].0].0 = clusters[honey_map_in[i].1].0.clone();
+                let new = honey_map_in[i].0;
+                let old = honey_map_in[i].1;
+                clusters2[new].0 = clusters[old].0.clone();
+                clusters2[new].2 = clusters[old].2;
+                clusters2[new].3 = clusters[old].3.clone();
             }
             clusters = clusters2;
         }
