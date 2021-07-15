@@ -3,6 +3,7 @@
 extern crate enclone_core;
 
 pub mod align_n;
+pub mod circles_to_svg;
 pub mod clustal;
 pub mod display_tree;
 pub mod fasta;
