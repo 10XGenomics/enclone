@@ -134,12 +134,11 @@ pub fn plot_clonotypes(
         }
         unique_sort(&mut origins);
 
-        // Move the colors around to get vertical separation, e.g. blues on the left, reds
-        // on the right.
+        // Move colors around to get vertical separation, e.g. blues on left, reds on right.
 
-        let _barcodes = barcodes; // **************************************************************
-        colors.sort();
         coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sort_sync2(&mut colors, &mut barcodes);
+        let _barcodes = barcodes; // **************************************************************
 
         // Substitute enclone colors.
 
