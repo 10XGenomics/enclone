@@ -159,6 +159,7 @@ pub fn plot_clonotypes(
     }
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
+    // Note that CLONOTYPE_GROUP_NAMES is probably broken now.
 
     let mut group_id = vec![0; radii.len()];
     let mut group_color = vec!["".to_string()];
@@ -351,6 +352,7 @@ pub fn plot_clonotypes(
                 let mut c = clusters[id].0.clone();
                 unique_sort(&mut c);
                 if c.solo() {
+                    // Note confusion here between the last argument, i, and clusters[i].2:
                     ccc.push((clusters[i].0.len(), c[0].clone(), i));
                 } else {
                     honey_map_out.push((i, i));
