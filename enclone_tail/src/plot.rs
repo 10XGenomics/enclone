@@ -5,7 +5,6 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
-use crate::*;
 use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::group_colors::*;
@@ -13,6 +12,7 @@ use crate::hex::*;
 use crate::pack_circles::*;
 use crate::polygon::*;
 use crate::string_width::*;
+use crate::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;

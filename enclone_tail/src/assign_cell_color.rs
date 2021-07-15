@@ -52,7 +52,6 @@ pub fn assign_cell_color(
         }
 
     // Determine color for PLOT_BY_MARK.
-
     } else if plot_opt.plot_by_mark {
         let dom = ex.clones[k][0].dataset_index == dsx;
         let marked = ex.clones[k][0].marked;
@@ -71,7 +70,6 @@ pub fn assign_cell_color(
         }
 
     // Determine color in other cases.
-
     } else {
         if ex.clones[k][0].origin_index.is_some() {
             let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];

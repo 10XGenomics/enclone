@@ -70,7 +70,6 @@ pub fn make_group_colors(ngroups: usize) -> Vec<String> {
         fracs.truncate(ngroups);
 
     // Add more colors if needed.
-
     } else {
         for _ in fracs.len()..ngroups {
             let mut max_dist = 0.0;
