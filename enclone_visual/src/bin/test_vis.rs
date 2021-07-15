@@ -246,7 +246,7 @@ fn main() {
 
     let o = Command::new("enclone")
         .arg("BCR=123085")
-        .arg("PLOT_BY_ISOTYPE=gui" )
+        .arg("PLOT_BY_ISOTYPE=gui")
         .arg("HONEY_OUT=~/enclone_temp_test_file")
         .arg("NOPRINT")
         .output()

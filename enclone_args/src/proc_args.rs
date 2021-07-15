@@ -684,7 +684,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let var = &set_string_writeable[j].0;
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
-                *(set_string_writeable[j].1) = stringme(&tilde_expand(set_string_writeable[j].1.as_bytes()));
+                *(set_string_writeable[j].1) =
+                    stringme(&tilde_expand(set_string_writeable[j].1.as_bytes()));
                 let val = &(set_string_writeable[j].1);
                 if ctl.gen_opt.evil_eye {
                     println!("creating file {} to test writability", val);
@@ -725,7 +726,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
-                *(set_string_writeable[j].1) = stringme(&tilde_expand(&set_string_writeable_or_stdout[j].1.as_bytes()));
+                *(set_string_writeable[j].1) = stringme(&tilde_expand(
+                    &set_string_writeable_or_stdout[j].1.as_bytes(),
+                ));
                 let val = &(set_string_writeable[j].1);
                 if *val != "stdout" {
                     if ctl.gen_opt.evil_eye {
