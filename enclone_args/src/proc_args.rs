@@ -730,10 +730,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
-                *(set_string_writeable[j].1) = stringme(&tilde_expand(
+                *(set_string_writeable_or_stdout[j].1) = stringme(&tilde_expand(
                     &set_string_writeable_or_stdout[j].1.as_bytes(),
                 ));
-                let val = &(set_string_writeable[j].1);
+                let val = &(set_string_writeable_or_stdout[j].1);
                 if *val != "stdout" && *val != "stdouth" {
                     if ctl.gen_opt.evil_eye {
                         println!("creating file {} to test writability, not stdout", val);
