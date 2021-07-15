@@ -157,7 +157,7 @@ pub fn plot_clonotypes(
         radii.push(radius);
     }
 
-    // Set group specification.
+    // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
 
     let mut group_id = vec![0; radii.len()];
     let mut group_color = vec!["".to_string()];
@@ -274,7 +274,7 @@ pub fn plot_clonotypes(
     let ngroups = group_color.len();
     ctl.perf_stats(&t, "in preamble to plotting clonotypes");
 
-    // Traverse the groups.
+    // Traverse the groups, if CLONOTYPE_GROUP_NAMES was specified.
 
     let t = Instant::now();
     let using_shading = ngroups > 1 || group_color[0].len() > 0;
