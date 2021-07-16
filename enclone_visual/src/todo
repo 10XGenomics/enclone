@@ -30,19 +30,14 @@ WAITING ON ICED
 5.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
-6.  The wraparound problem.
-    Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
-    vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
-    issue 307 (scrolling programmatically).
-
-7.  Button text does not change from "Submit" to "thinking" (but worked around).
+6.  Button text does not change from "Submit" to "thinking" (but worked around).
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
     on the issue so the ball is in their court.
 
-8.  Canvas in scrollable crashes.  
+7.  Canvas in scrollable crashes.  
     Reported as issue #924, flagged as bug.
 
-9.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+8.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
 ---------------------------------------------------------------------------------------------------
