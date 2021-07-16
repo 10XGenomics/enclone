@@ -201,13 +201,18 @@ impl Application for EncloneVisual {
 
         // Build the scrollable for clonotypes.
 
+        const CLONOTYPE_FONT_SIZE: u16 = 13;
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
             .scrollbar_width(12)
             .scroller_width(12)
             .style(style::ScrollableStyle)
-            .push(Text::new(&self.output_value).font(DEJAVU_BOLD).size(13));
+            .push(
+                Text::new(&self.output_value)
+                    .font(DEJAVU_BOLD)
+                    .size(CLONOTYPE_FONT_SIZE),
+            );
 
         // Fix the height of the SVG.  This needs to be set so that there is enough room for
         // the clonotype tables.  We do not set the width because it's the height that we need

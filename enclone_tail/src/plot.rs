@@ -69,7 +69,7 @@ pub fn plot_clonotypes(
             region names.  If this is a problem, please let us know and we will generalize it.\n"
         ));
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<String>)>::new();
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<(usize, String)>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
     let mut origins = Vec::<String>::new();
@@ -79,7 +79,7 @@ pub fn plot_clonotypes(
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
-        let mut barcodes = Vec::<String>::new();
+        let mut barcodes = Vec::<(usize, String)>::new();
         let mut n = 0;
 
         // For PLOT_BY_MARK, find the dataset having the largest number of cells.
@@ -107,7 +107,10 @@ pub fn plot_clonotypes(
             // Traverse the cells in the exact subclonotype.
 
             for k in 0..ex.clones.len() {
-                barcodes.push(ex.clones[k][0].barcode.clone());
+                barcodes.push((
+                    ex.clones[k][0].dataset_index,
+                    ex.clones[k][0].barcode.clone(),
+                ));
                 if plot_opt.plot_by_isotype {
                 } else if plot_opt.plot_by_mark {
                 } else {
@@ -330,81 +333,37 @@ pub fn plot_clonotypes(
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
 
-        let mut honey_map_in = Vec::<(usize, usize)>::new();
-        if ctl.plot_opt.honey_in.is_some() {
-            let f = open_for_read![&ctl.plot_opt.honey_in.as_ref().unwrap()];
-            for line in f.lines() {
-                let s = line.unwrap();
-                if !s.contains(",")
-                    || !s.before(",").parse::<usize>().is_ok()
-                    || !s.after(",").parse::<usize>().is_ok()
-                {
-                    return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
-                }
-                honey_map_in.push((s.before(",").force_usize(), s.after(",").force_usize()));
+        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+        let mut clusters2 = clusters.clone();
+        for i in 0..ids.len() {
+            let id = ids[i];
+            let mut c = clusters[id].0.clone();
+            unique_sort(&mut c);
+            if c.solo() {
+                // Note confusion here between the last argument, i, and clusters[i].2:
+                ccc.push((clusters[i].0.len(), c[0].clone(), i));
             }
         }
-        let mut honey_map_out = Vec::<(usize, usize)>::new();
-        if ctl.plot_opt.honey_in.is_none() {
-            let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-            let mut clusters2 = clusters.clone();
-            for i in 0..ids.len() {
-                let id = ids[i];
-                let mut c = clusters[id].0.clone();
-                unique_sort(&mut c);
-                if c.solo() {
-                    // Note confusion here between the last argument, i, and clusters[i].2:
-                    ccc.push((clusters[i].0.len(), c[0].clone(), i));
-                } else {
-                    honey_map_out.push((i, i));
-                }
+        ccc.sort();
+        let mut i = 0;
+        while i < ccc.len() {
+            let j = next_diff1_3(&ccc, i as i32) as usize;
+            let mut angle = vec![(0.0, 0); j - i];
+            for k in i..j {
+                let id = ccc[k].2;
+                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
             }
-            ccc.sort();
-            let mut i = 0;
-            while i < ccc.len() {
-                let j = next_diff1_3(&ccc, i as i32) as usize;
-                let mut angle = vec![(0.0, 0); j - i];
-                for k in i..j {
-                    let id = ccc[k].2;
-                    angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
-                }
-                angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                for k in i..j {
-                    let new_id = angle[k - i].1;
-                    let id = ccc[k].2;
-                    honey_map_out.push((ids[new_id], id));
-                    clusters2[ids[new_id]].0 = clusters[id].0.clone();
-                    clusters2[ids[new_id]].2 = clusters[id].2;
-                    clusters2[ids[new_id]].3 = clusters[id].3.clone();
-                }
-                i = j;
+            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            for k in i..j {
+                let new_id = angle[k - i].1;
+                let id = ccc[k].2;
+                clusters2[ids[new_id]].0 = clusters[id].0.clone();
+                clusters2[ids[new_id]].2 = clusters[id].2;
+                clusters2[ids[new_id]].3 = clusters[id].3.clone();
             }
-            clusters = clusters2;
-            if ctl.plot_opt.honey_out.len() > 0 {
-                let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
-                for i in 0..honey_map_out.len() {
-                    fwriteln!(f, "{},{}", honey_map_out[i].0, honey_map_out[i].1);
-                }
-            }
-        } else {
-            if honey_map_in.len() != clusters.len() {
-                return Err(format!(
-                    "\nHONEY_IN file appears to come from data having {} clusters, \
-                    whereas the current data have {} clusters.\n",
-                    honey_map_in.len(),
-                    clusters.len(),
-                ));
-            }
-            let mut clusters2 = clusters.clone();
-            for i in 0..clusters.len() {
-                let new = honey_map_in[i].0;
-                let old = honey_map_in[i].1;
-                clusters2[new].0 = clusters[old].0.clone();
-                clusters2[new].2 = clusters[old].2;
-                clusters2[new].3 = clusters[old].3.clone();
-            }
-            clusters = clusters2;
+            i = j;
         }
+        clusters = clusters2;
     }
     ctl.perf_stats(&t, "plotting clonotypes");
 
@@ -420,7 +379,7 @@ pub fn plot_clonotypes(
     let mut center = Vec::<(f64, f64)>::new();
     let mut radius = Vec::<f64>::new();
     let mut color = Vec::<String>::new();
-    let mut barcodes = Vec::<String>::new();
+    let mut barcodes = Vec::<(usize, String)>::new();
     let mut group_index = HashMap::<usize, usize>::new();
     let mut clonotype_index = Vec::<usize>::new();
     for i in 0..groups.len() {
@@ -459,6 +418,60 @@ pub fn plot_clonotypes(
     for i in 0..shade_enclosures.len() {
         for j in 0..shade_enclosures[i].v.len() {
             shade_enclosures[i].v[j].y = -shade_enclosures[i].v[j].y;
+        }
+    }
+
+    // Implement HONEY_IN.
+
+    if ctl.plot_opt.honey_in.is_some() {
+        let mut honey_map = HashMap::<(usize, String), (f64, f64)>::new();
+        let f = open_for_read![&ctl.plot_opt.honey_in.as_ref().unwrap()];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let fields = s.split(',').collect::<Vec<&str>>();
+            if fields.len() != 4 {
+                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+            }
+            if !fields[0].parse::<usize>().is_ok() {
+                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+            }
+            if !fields[2].parse::<f64>().is_ok() || !fields[3].parse::<f64>().is_ok() {
+                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+            }
+            honey_map.insert(
+                (fields[0].force_usize(), fields[1].to_string()),
+                (fields[2].force_f64(), fields[3].force_f64()),
+            );
+        }
+        if honey_map.len() != barcodes.len() {
+            return Err(format!(
+                "\nHONEY_IN file appears to have come from data having {} \
+                cells, whereas the current data have {} cells.\n",
+                honey_map.len(),
+                barcodes.len(),
+            ));
+        }
+        for i in 0..barcodes.len() {
+            if !honey_map.contains_key(&barcodes[i]) {
+                return Err(format!(
+                    "\nHONEY_IN file appears to have come from different data.\n"
+                ));
+            }
+            center[i] = honey_map[&barcodes[i]];
+        }
+    }
+
+    // Implement HONEY_OUT.
+
+    if ctl.plot_opt.honey_out.len() > 0 {
+        let mut honey_map = Vec::<((usize, String), f64, f64)>::new();
+        for i in 0..barcodes.len() {
+            honey_map.push((barcodes[i].clone(), center[i].0, center[i].1));
+        }
+        honey_map.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
+        for x in honey_map.iter() {
+            fwriteln!(f, "{},{},{},{}", x.0 .0, x.0 .1, x.1, x.2);
         }
     }
 

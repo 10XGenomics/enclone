@@ -258,6 +258,19 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                was not found.\n",
             config_name,
         );
+        if CONFIG_FILE.lock().unwrap().len() > 0 {
+            eprintln!(
+                "The value of ENCLONE_CONFIG is {}.\n",
+                CONFIG_FILE.lock().unwrap()[0]
+            );
+        } else {
+            eprintln!("The environment variable ENCLONE_CONFIG is not defined.\n");
+        }
+        eprintln!("Here is what's in your configuration file:\n");
+        for line in config_file_contents.lines() {
+            eprintln!("{}", line);
+        }
+        eprintln!("");
         std::process::exit(1);
     }
 
