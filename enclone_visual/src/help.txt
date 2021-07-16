@@ -30,4 +30,3 @@ Some limitations of this version:
 1. There is no color in the clonotype tables.
 2. Cutting and pasting from clonotype tables doesn't work.
 3. Long commands are hard to work with in the input box.
-4. Very wide clonotype tables wrap, making them unintelligible, and only solvable by window resizing, and sometimes not that.
