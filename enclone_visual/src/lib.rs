@@ -55,10 +55,7 @@ async fn compute() -> Result<(), String> {
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
-    print!(
-        "time used processing command = {:.1} seconds, ",
-        elapsed(&t)
-    );
+    println!("time used processing command = {:.1} seconds", elapsed(&t));
     Ok(())
 }
 

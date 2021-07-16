@@ -607,6 +607,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
+                    if verbose {
+                        println!("processing command {}", line);
+                    }
                     let output;
                     let mut svg_output = String::new();
                     let mut summary = String::new();
