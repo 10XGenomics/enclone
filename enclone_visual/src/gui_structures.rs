@@ -93,6 +93,11 @@ pub struct EncloneVisual {
     // index of "current" position in those vectors, plus one:
     //
     pub history_index: usize,
+    //
+    // current window dimensions
+    //
+    pub width: u32,
+    pub height: u32,
 }
 
 #[derive(Default)]

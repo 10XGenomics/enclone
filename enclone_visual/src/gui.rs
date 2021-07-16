@@ -7,15 +7,21 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     Align, Application, Button, Clipboard, Color, Column, Command, Element, HorizontalAlignment,
-    Image, Length, Row, Rule, Scrollable, Space, Svg, Text, TextInput, VerticalAlignment,
+    Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
+    VerticalAlignment,
 };
 // use iced::Subscription;
 use iced_aw::{Card, Modal};
 // use iced_native::{window, Event};
+use iced_native::{event, subscription, window, Event};
 use messages::Message;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
+
+fn handle_resize(width: u32, height: u32) -> Option<Message> {
+    Some(Message::Resize(width, height))
+}
 
 impl Application for EncloneVisual {
     type Executor = iced::executor::Default;
@@ -29,6 +35,8 @@ impl Application for EncloneVisual {
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
+        x.width = INITIAL_WIDTH;
+        x.height = INITIAL_HEIGHT;
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {
@@ -54,6 +62,23 @@ impl Application for EncloneVisual {
         iced_native::subscription::events().map(Message::EventOccurred)
     }
     */
+
+    // The subscription detects window resize events and uses those to reset
+    // self.width and self.height.
+
+    fn subscription(&self) -> Subscription<Message> {
+        subscription::events_with(|event, status| {
+            if let event::Status::Captured = status {
+                return None;
+            }
+            match event {
+                Event::Window(window::Event::Resized { width, height }) => {
+                    handle_resize(width, height)
+                }
+                _ => None,
+            }
+        })
+    }
 
     fn view(&mut self) -> Element<Message> {
         let text_input = TextInput::new(
@@ -199,17 +224,32 @@ impl Application for EncloneVisual {
             command_complex = command_complex.push(button_column2);
         }
 
-        // Build the scrollable for clonotypes.
+        // Build the scrollable for clonotypes.  We truncate lines to prevent wrapping.
 
+        const SCROLLBAR_WIDTH: u16 = 12;
+        const SPACING: u16 = 20;
         const CLONOTYPE_FONT_SIZE: u16 = 13;
+        let font_width = CLONOTYPE_FONT_SIZE as f32 * 0.5175;
+        let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
+        let nchars = (available as f32 / font_width).round() as usize;
+        let mut trunc = String::new();
+        for line in self.output_value.lines() {
+            for (i, c) in line.chars().enumerate() {
+                if i == nchars {
+                    break;
+                }
+                trunc.push(c);
+            }
+            trunc.push('\n');
+        }
         let scrollable = Scrollable::new(&mut self.scroll)
             .width(Length::Fill)
             .height(Length::Units(100))
-            .scrollbar_width(12)
+            .scrollbar_width(SCROLLBAR_WIDTH)
             .scroller_width(12)
             .style(style::ScrollableStyle)
             .push(
-                Text::new(&self.output_value)
+                Text::new(&trunc)
                     .font(DEJAVU_BOLD)
                     .size(CLONOTYPE_FONT_SIZE),
             );
@@ -277,7 +317,7 @@ impl Application for EncloneVisual {
             );
 
         let mut content = Column::new()
-            .spacing(20)
+            .spacing(SPACING)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(

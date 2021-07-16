@@ -16,6 +16,11 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::Resize(width, height) => {
+                self.width = width;
+                self.height = height;
+                Command::none()
+            }
             Message::GroupClicked(_message) => {
                 let group_id = GROUP_ID.load(SeqCst);
                 self.input_value = format!("{}", group_id);
