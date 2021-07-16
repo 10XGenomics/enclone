@@ -174,6 +174,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut auto_update = false;
     let mut internal = false;
     let mut config_file_contents = String::new();
+    let mut ssh_cat_time = 0.0;
     for (key, value) in env::vars() {
         if key == "ENCLONE_INTERNAL" {
             internal = true;
@@ -206,7 +207,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     .arg(&filename)
                     .output()
                     .expect("failed to execute ssh cat");
-                println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
+                ssh_cat_time = elapsed(&t);
+                println!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
                 if o.status.code() != Some(0) {
                     let m = String::from_utf8(o.stderr).unwrap();
                     println!("\ntest ssh failed with error message =\n{}", m);
@@ -431,7 +433,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         pub static READ_DONE: AtomicBool = AtomicBool::new(false);
         thread::spawn(move || {
-            thread::sleep(Duration::from_millis(5000));
+            let sleep_time = 5.0_f64.max(2.0 * ssh_cat_time);
+            thread::sleep(Duration::from_millis((sleep_time * 1000.0).round() as u64));
             if !READ_DONE.load(SeqCst) {
                 println!("darn, we seem to have hit a bad port, so restarting");
                 restart_enclone();
