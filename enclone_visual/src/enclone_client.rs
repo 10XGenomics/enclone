@@ -433,6 +433,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         pub static READ_DONE: AtomicBool = AtomicBool::new(false);
         thread::spawn(move || {
+            // At one time we used a sleep time of 5 seconds, but some people have slower
+            // connections and this resulted in failures.  The heuristic in the next
+            // line is the solution, but perhaps there is a better way to handle this.
             let sleep_time = 5.0_f64.max(2.0 * ssh_cat_time);
             thread::sleep(Duration::from_millis((sleep_time * 1000.0).round() as u64));
             if !READ_DONE.load(SeqCst) {
