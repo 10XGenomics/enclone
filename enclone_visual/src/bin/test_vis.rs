@@ -10,6 +10,13 @@
 // having larger files in git.  A better solution would be to use lowest resolution
 // JPEG2000 files, which would be even smaller.
 //
+// You need the following datasets to run this:
+// dataset   notes
+// 123085    public
+// 123217    public, but we use our internal copy, which includes feature_barcode_matrix.bin
+// 1145040   not public
+// 1142282   not public
+//
 // See also show_diffs.
 
 use enclone_visual::compare_images::*;
