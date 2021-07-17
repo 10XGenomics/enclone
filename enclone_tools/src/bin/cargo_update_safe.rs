@@ -30,6 +30,35 @@ fn print_dot(dots: &mut usize) {
 fn main() {
     let t = Instant::now();
     PrettyTrace::new().on();
+
+    // Get crate versions from master.toml.
+
+    let mut master = Vec::<(String, String)>::new();
+    let f = open_for_read!["master.toml"];
+    for line in f.lines() {
+        let s = line.unwrap();
+        if !s.starts_with('#') && s.contains("=") {
+            let cratex = s.before(" = ").to_string();
+            let version = s.after(" = ").to_string();
+            if version.starts_with('"') && version.ends_with('"') {
+                let version = version.after("\"").rev_before("\"").to_string();
+                let fields = version.split('.').collect::<Vec<&str>>();
+                let mut ok = true;
+                for i in 0..fields.len() {
+                    if !fields[i].parse::<usize>().is_ok() {
+                        ok = false;
+                    }
+                }
+                if ok {
+                    master.push((cratex, version));
+                }
+            }
+        }
+    }
+    println!("\nexamining {} directly dependent crates", master.len());
+
+    // Get complete list of crates from Cargo.lock.
+
     let f = open_for_read!["Cargo.lock"];
     let mut crates = Vec::<String>::new();
     for line in f.lines() {
@@ -40,6 +69,7 @@ fn main() {
         }
     }
     unique_sort(&mut crates);
+    println!("\nupdating all {}crates", crates.len());
 
     // Loop until nothing changes.
 
