@@ -20,7 +20,7 @@ fn print_dot(dots: &mut usize) {
     print!(".");
     std::io::stdout().flush().unwrap();
     *dots += 1;
-    if *dots == 100 {
+    if *dots == 80 {
         println!("");
         std::io::stdout().flush().unwrap();
         *dots = 0;
