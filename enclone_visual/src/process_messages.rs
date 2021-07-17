@@ -175,6 +175,58 @@ impl EncloneVisual {
                 }
             }
 
+            Message::DelButtonPressed(_) => {
+                let h = self.history_index - 1;
+                self.svg_history.remove(h);
+                self.summary_history.remove(h);
+                self.input_history.remove(h);
+                self.translated_input_history.remove(h);
+                self.displayed_tables_history.remove(h);
+                self.table_comp_history.remove(h);
+                self.last_widths_history.remove(h);
+                self.is_blank.remove(h);
+                self.history_index -= 1;
+                if h == 0 {
+                    self.input_value.clear();
+                    self.svg_value.clear();
+                    self.png_value.clear();
+                    self.submit_button_text.clear();
+                    self.summary_value.clear();
+                    self.output_value.clear();
+                    self.table_comp_value.clear();
+                    self.last_widths_value.clear();
+                    self.translated_input_value.clear();
+                    self.current_tables.clear();
+                } else {
+                    let x = self.svg_current();
+                    self.post_svg(&x);
+                    self.summary_value = self.summary_current();
+                    self.output_value = self.displayed_tables_current();
+                    self.table_comp_value = self.table_comp_current();
+                    self.last_widths_value = self.last_widths_current();
+                    self.input_value = self.input_current();
+                    self.translated_input_value = self.translated_input_current();
+                    SUMMARY_CONTENTS.lock().unwrap().clear();
+                    SUMMARY_CONTENTS
+                        .lock()
+                        .unwrap()
+                        .push(self.summary_value.clone());
+                    if self.table_comp_value.len() > 0 {
+                        let mut gunzipped = Vec::<u8>::new();
+                        let mut d = GzDecoder::new(&*self.table_comp_value);
+                        d.read_to_end(&mut gunzipped).unwrap();
+                        self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                    } else {
+                        self.current_tables.clear();
+                    }
+                }
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop(), Message::Capture)
+                }
+            }
+
             Message::ForwardButtonPressed(_) => {
                 self.history_index += 1;
                 let x = self.svg_current();
