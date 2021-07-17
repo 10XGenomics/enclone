@@ -28,7 +28,7 @@ io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 ndarray = ">= 0.14"
 pager = "0.16"
-permutation = "0.2.5"
+permutation = "0.2"
 petgraph = "0.5"
 pretty_trace = "0.5"
 prost = { version = "0.8", features = [] }
