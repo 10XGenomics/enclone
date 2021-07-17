@@ -61,7 +61,7 @@ pub const TESTS: [(&str, MsgFn, &str); 18] = [
 //    (h) Test cookbook commands #5 and #6.
 //    (i) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui 
 //        check tooltip functionality
-//    (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 123085",blue,"f 123089"
+//    (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 085",blue,"f 089"
 //        check tooltip functionality
 //    (k) enclone BCR=123085 NOPRINT
 // 
