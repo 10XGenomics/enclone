@@ -91,7 +91,6 @@ fn main() {
             .output()
             .expect(&format!("failed to execute cargo b"));
         if new.status.code() != Some(0) {
-            println!("compilation failed, resetting");
             let new = Command::new("git")
                 .arg("checkout")
                 .arg("Cargo.lock")
