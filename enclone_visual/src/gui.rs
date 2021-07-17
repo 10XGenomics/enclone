@@ -125,8 +125,7 @@ impl Application for EncloneVisual {
             const COPY_BUTTON_FONT_SIZE: u16 = 15;
             let del_button = Button::new(
                 &mut self.del_button,
-                Text::new("Del")
-                    .font(DEJAVU_BOLD)
+                Text::new("Del ")
                     .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DelButtonPressed(Ok(())));
