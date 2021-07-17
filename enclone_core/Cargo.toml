@@ -27,8 +27,8 @@ attohttpc = { version = "0.12", default-features = false, features = ["compress"
 bio = ">=0.35"
 bio_edit = { path = "../bio_edit" }
 bytes = ">=0.5.5, <2"
-chrono = "0.4.19"
-debruijn = "0.3.2"
+chrono = "0.4"
+debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "5.0.5"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
@@ -50,5 +50,5 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc999
 vector_utils = "0.1.3"
 
 [build-dependencies]
-chrono = "0.4.19"
+chrono = "0.4"
 string_utils = "0.1"

@@ -24,7 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
-chrono = "0.4.19"
+chrono = "0.4"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1.6"

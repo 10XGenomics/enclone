@@ -9,20 +9,20 @@ align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
 arboard = "1"
-assert_cmd = "1.0.3"
+assert_cmd = "1"
 async-trait = "0.1"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = ">=0.35"
 bio-types = ">=0.11.0"
 bit-set = "0.5"
-byteorder = "1.4.2"
+byteorder = "1"
 bytes = ">=0.5.5, <2"
-chrono = "0.4.19"
+chrono = "0.4"
 cocoa = "0.24"
-debruijn = "0.3.2"
-dirs = "3.0.1"
-edit-distance = "2.1.0"
+debruijn = "0.3"
+dirs = "3"
+edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
@@ -30,7 +30,7 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
 enclone_tail = { path = "../enclone_tail" }
-equiv = "0.1.2"
+equiv = "0.1"
 evalexpr = "5.0.5"
 failure = "0.1.6"
 file-lock = "1.1.20"

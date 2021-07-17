@@ -22,9 +22,9 @@ publish = false
 [dependencies]
 amino = "0.1"
 bytes = ">=0.5.5, <2"
-chrono = "0.4.19"
-debruijn = "0.3.2"
-dirs = "3.0.1"
+chrono = "0.4"
+debruijn = "0.3"
+dirs = "3"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }
@@ -32,7 +32,7 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
-equiv = "0.1.2"
+equiv = "0.1"
 evalexpr = "5.0.5"
 failure = "0.1.6"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
