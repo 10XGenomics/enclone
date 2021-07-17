@@ -106,8 +106,10 @@ fn main() {
         let new_jpg_file = format!("{}.jpg", new_png_file.rev_before(".png"));
         {
             let quality = 1 as u8; // lowest quality
-                                   // This file removal is to circumvent a bug in Carbon Black.
-            std::fs::remove_file(&new_jpg_file).unwrap();
+            if path_exists(&new_jpg_file) {
+                // This file removal is to circumvent a bug in Carbon Black.
+                std::fs::remove_file(&new_jpg_file).unwrap();
+            }
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
@@ -165,7 +167,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 23.2; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 24.3; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
@@ -273,8 +275,8 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     println!(
-        "\nenclone visual tests completely {} in {:.1} seconds using {:.1} MB\n",
-        state, used, peak_mem_mb,
+        "\nenclone visual tests completed {} in {:.1} seconds",
+        state, used,
     );
     println!("actual total time = {:.1} seconds\n", elapsed(&tall));
     if fail {

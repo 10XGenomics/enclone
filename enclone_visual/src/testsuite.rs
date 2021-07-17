@@ -14,9 +14,10 @@ const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
 
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
+const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 17] = [
+pub const TESTS: [(&str, MsgFn, &str); 18] = [
     (X0,    SUBMIT,  ""),        // enclone woof
     ("#1",  SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("",    BACK,    ""),        // enclone woof
@@ -25,6 +26,7 @@ pub const TESTS: [(&str, MsgFn, &str); 17] = [
     ("",    BACK,    ""),        // #1
     ("",    FORWARD, "test1x"),  // 10
     (X1,    SUBMIT,  "test1c"),  // enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12
+    (X2,    SUBMIT,  "test1d"),  // enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui
     ("#2",  SUBMIT,  "test2"),   // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
     ("#3",  SUBMIT,  "test3"),   // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
     ("",    BACK,    "test4"),   // #2
