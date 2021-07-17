@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "ab_glyph"
-version = "0.2.10"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a933731feda8b460bdad9a9e43bb386baba6ec593d2bc19716ef3c75c09085c"
+checksum = "af0ac006645f86f20f6c6fa4dcaef920bf803df819123626f9440e35835e7d80"
 dependencies = [
  "ab_glyph_rasterizer",
  "owned_ttf_parser 0.12.0",
