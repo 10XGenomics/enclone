@@ -125,8 +125,7 @@ impl Application for EncloneVisual {
             const COPY_BUTTON_FONT_SIZE: u16 = 15;
             let del_button = Button::new(
                 &mut self.del_button,
-                Text::new("Del ")
-                    .size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Del ").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DelButtonPressed(Ok(())));
 
@@ -139,12 +138,6 @@ impl Application for EncloneVisual {
             let null_button2 = Button::new(
                 &mut self.null_button2,
                 Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
-            )
-            .on_press(Message::DoNothing);
-
-            let null_button4 = Button::new(
-                &mut self.null_button4,
-                Text::new("   ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DoNothing);
 
@@ -173,11 +166,7 @@ impl Application for EncloneVisual {
             } else {
                 button_column2 = button_column2.push(null_button2);
             }
-            if self.history_index > 0 {
-                button_column2 = button_column2.push(del_button);
-            } else {
-                button_column2 = button_column2.push(null_button4);
-            }
+            button_column2 = button_column2.push(del_button);
 
             // Add command box.
 

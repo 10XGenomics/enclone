@@ -66,7 +66,6 @@ pub struct EncloneVisual {
     pub null_button1: button::State,
     pub null_button2: button::State,
     pub null_button3: button::State,
-    pub null_button4: button::State,
     pub null_button: button::State,
     pub clear_button: button::State,
     pub open_state: button::State,
