@@ -94,7 +94,10 @@ fn main() {
 
         // Finally, commit the change.
 
-        println!("committing change to {}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", cratex);
+        println!(
+            "committing change to {}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+            cratex
+        );
         let new = Command::new("git")
             .arg("commit")
             .arg("-a")
