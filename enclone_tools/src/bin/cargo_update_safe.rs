@@ -75,7 +75,7 @@ fn main() {
             .arg("commit")
             .arg("-a")
             .arg("-m")
-            .arg(&format!("update cratex {}", cratex))
+            .arg(&format!("update crate {}", cratex))
             .output()
             .expect(&format!("failed to execute git commit"));
         if new.status.code() != Some(0) {
