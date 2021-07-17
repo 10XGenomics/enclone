@@ -30,6 +30,9 @@ fn main() {
     for cratex in crates.iter() {
         let cratex = &*cratex;
         println!("updating {}", cratex);
+
+        // Update crate.
+
         let new = Command::new("cargo")
             .arg("update")
             .arg("-p")
@@ -41,18 +44,35 @@ fn main() {
             continue;
         }
 
+        // See what changed in Cargo.lock.  In order to declare a change, we require that the
+        // crate in question changed.  Other things can change, and that's flaky, and if it
+        // happens, we don't do anything.
+
         let new = Command::new("git")
-            .arg("status")
+            .arg("diff")
             .output()
-            .expect(&format!("failed to execute git status"));
+            .expect(&format!("failed to execute git diff"));
         if new.status.code() != Some(0) {
-            println!("git status failed, something is wrong");
+            println!("git diff failed, something is wrong");
             std::process::exit(1);
         }
-        if !strme(&new.stdout).contains("Cargo.lock") {
-            println!("nothing changed");
+        let updated = strme(&new.stdout).contains(&format!("+ \"{} ", cratex));
+        if !updated {
+            println!("the crate was not updated");
+            let new = Command::new("git")
+                .arg("checkout")
+                .arg("Cargo.lock")
+                .output()
+                .expect(&format!("failed to execute git checkout"));
+            if new.status.code() != Some(0) {
+                println!("git checkout failed, something is wrong");
+                std::process::exit(1);
+            }
             continue;
         }
+
+        // Now try to compile.
+
         println!("compiling");
         let new = Command::new("cargo")
             .arg("b")
@@ -71,6 +91,10 @@ fn main() {
             }
             continue;
         }
+
+        // Finally, commit the change.
+
+        println!("committing change to {}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", cratex);
         let new = Command::new("git")
             .arg("commit")
             .arg("-a")
