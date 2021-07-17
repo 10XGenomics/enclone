@@ -98,6 +98,7 @@ fn main() {
                 .expect(&format!("failed to execute git checkout"));
             if new.status.code() != Some(0) {
                 println!("git checkout failed, something is wrong");
+                println!("err =\n{}", strme(&new.stderr));
                 std::process::exit(1);
             }
             print_dot(&mut dots);
