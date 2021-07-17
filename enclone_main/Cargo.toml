@@ -33,8 +33,8 @@ enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1"
-evalexpr = "5.0.5"
-failure = "0.1.6"
+evalexpr = "5"
+failure = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
@@ -54,6 +54,6 @@ stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
 tables = "0.1"
-tilde-expand = "0.1.1"
+tilde-expand = "0.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
-vector_utils = "0.1.3"
+vector_utils = "0.1"
