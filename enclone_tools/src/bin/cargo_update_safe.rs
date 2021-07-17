@@ -4,8 +4,6 @@
 // commit the change.  Otherwise, undo.
 //
 // Note that this could in principle be updated.
-//
-// Takes a long time.
 
 use io_utils::*;
 use pretty_trace::*;
@@ -14,6 +12,18 @@ use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
+
+fn print_dot(dots: &mut usize) {
+    if *dots % 10 == 0 {
+        print!(" ");
+    }
+    print!(".");
+    *dots += 1;
+    if *dots == 100 {
+        println!("");
+        *dots = 0;
+    }
+}
 
 fn main() {
     PrettyTrace::new().on();
@@ -27,9 +37,10 @@ fn main() {
         }
     }
     unique_sort(&mut crates);
+    let mut dots = 0;
+    println!("");
     for cratex in crates.iter() {
         let cratex = &*cratex;
-        println!("updating {}", cratex);
 
         // Update crate.
 
@@ -40,7 +51,7 @@ fn main() {
             .output()
             .expect(&format!("failed to execute cargo update"));
         if new.status.code() != Some(0) {
-            println!("update failed");
+            print_dot(&mut dots);
             continue;
         }
 
@@ -67,6 +78,7 @@ fn main() {
                 println!("git checkout failed, something is wrong");
                 std::process::exit(1);
             }
+            print_dot(&mut dots);
             continue;
         }
 
@@ -87,15 +99,14 @@ fn main() {
                 println!("git checkout failed, something is wrong");
                 std::process::exit(1);
             }
+            print_dot(&mut dots);
             continue;
         }
 
         // Finally, commit the change.
 
-        println!(
-            "committing change to {}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-            cratex
-        );
+        dots = 0;
+        println!("\ncommitting change to {}", cratex);
         let new = Command::new("git")
             .arg("commit")
             .arg("-a")
@@ -108,4 +119,8 @@ fn main() {
             std::process::exit(1);
         }
     }
+    if dots > 0 {
+        println!("");
+    }
+    println!("");
 }
