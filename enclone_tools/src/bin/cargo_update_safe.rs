@@ -4,10 +4,12 @@
 // commit the change.  Otherwise, undo.
 
 use io_utils::*;
+use perf_stats::*;
 use pretty_trace::*;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 use std::process::Command;
+use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -18,7 +20,7 @@ fn print_dot(dots: &mut usize) {
     print!(".");
     std::io::stdout().flush().unwrap();
     *dots += 1;
-    if *dots == 80 {
+    if *dots == 90 {
         println!("");
         std::io::stdout().flush().unwrap();
         *dots = 0;
@@ -26,6 +28,7 @@ fn print_dot(dots: &mut usize) {
 }
 
 fn main() {
+    let t = Instant::now();
     PrettyTrace::new().on();
     let f = open_for_read!["Cargo.lock"];
     let mut crates = Vec::<String>::new();
@@ -37,11 +40,11 @@ fn main() {
         }
     }
     unique_sort(&mut crates);
-    let mut dots = 0;
 
     // Loop until nothing changes.
 
     loop {
+        let mut dots = 0;
         println!("");
         let mut changed = false;
         for cratex in crates.iter() {
@@ -110,8 +113,11 @@ fn main() {
 
             // Finally, commit the change.
 
-            dots = 0;
-            println!("\ncommitting change to {}", cratex);
+            if dots > 0 {
+                println!("");
+                dots = 0;
+            }
+            println!("committing change to {}", cratex);
             changed = true;
             let new = Command::new("git")
                 .arg("commit")
@@ -133,4 +139,5 @@ fn main() {
             break;
         }
     }
+    println!("done, used {:.1} minutes\n", elapsed(&t) / 60.0);
 }
