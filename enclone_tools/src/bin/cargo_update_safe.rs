@@ -54,7 +54,7 @@ fn main() {
                 .arg("-p")
                 .arg(&cratex)
                 .output()
-                .expect(&format!("failed to execute cargo update"));
+                .expect(&format!("\n\nfailed to execute cargo update"));
             if new.status.code() != Some(0) {
                 print_dot(&mut dots);
                 continue;
@@ -67,9 +67,9 @@ fn main() {
             let new = Command::new("git")
                 .arg("diff")
                 .output()
-                .expect(&format!("failed to execute git diff"));
+                .expect(&format!("\n\nfailed to execute git diff"));
             if new.status.code() != Some(0) {
-                println!("git diff failed, something is wrong");
+                println!("\n\ngit diff failed, something is wrong");
                 std::process::exit(1);
             }
             let updated = strme(&new.stdout).contains(&format!("+ \"{} ", cratex));
@@ -78,9 +78,9 @@ fn main() {
                     .arg("checkout")
                     .arg("Cargo.lock")
                     .output()
-                    .expect(&format!("failed to execute git checkout"));
+                    .expect(&format!("\n\nfailed to execute git checkout"));
                 if new.status.code() != Some(0) {
-                    println!("git checkout failed, something is wrong");
+                    println!("\n\ngit checkout failed, something is wrong");
                     std::process::exit(1);
                 }
                 print_dot(&mut dots);
@@ -92,15 +92,15 @@ fn main() {
             let new = Command::new("cargo")
                 .arg("b")
                 .output()
-                .expect(&format!("failed to execute cargo b"));
+                .expect(&format!("\n\nfailed to execute cargo b"));
             if new.status.code() != Some(0) {
                 let new = Command::new("git")
                     .arg("checkout")
                     .arg("Cargo.lock")
                     .output()
-                    .expect(&format!("failed to execute git checkout"));
+                    .expect(&format!("\n\nfailed to execute git checkout"));
                 if new.status.code() != Some(0) {
-                    println!("git checkout failed, something is wrong");
+                    println!("\n\ngit checkout failed, something is wrong");
                     println!("err =\n{}", strme(&new.stderr));
                     std::process::exit(1);
                 }
@@ -119,9 +119,9 @@ fn main() {
                 .arg("-m")
                 .arg(&format!("update crate {}", cratex))
                 .output()
-                .expect(&format!("failed to execute git commit"));
+                .expect(&format!("\n\nfailed to execute git commit"));
             if new.status.code() != Some(0) {
-                println!("git commit failed, something is wrong");
+                println!("\n\ngit commit failed, something is wrong");
                 std::process::exit(1);
             }
         }
