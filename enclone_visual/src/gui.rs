@@ -394,7 +394,7 @@ impl Application for EncloneVisual {
                     .font(DEJAVU_BOLD)
                     .size(14)
                 }
-                .height(Units(800))
+                .height(Units(850))
                 .vertical_alignment(VerticalAlignment::Center),
             )
             .style(style::Help)
