@@ -8,7 +8,7 @@
 use io_utils::*;
 use pretty_trace::*;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
@@ -18,9 +18,11 @@ fn print_dot(dots: &mut usize) {
         print!(" ");
     }
     print!(".");
+    std::io::stdout().flush().unwrap();
     *dots += 1;
     if *dots == 100 {
         println!("");
+        std::io::stdout().flush().unwrap();
         *dots = 0;
     }
 }
