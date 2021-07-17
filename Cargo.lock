@@ -5697,15 +5697,15 @@ dependencies = [
 
 [[package]]
 name = "vdj_types"
-version = "0.1.2"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ddefb8d3834b9cd64250c2ec9206f8afdb4bdd2569a53737335fd316b6c9a4b7"
+checksum = "54fa4a57a7a66a720a65c73c267e59fac2b4daa4ffdd187c588f34320e161694"
 dependencies = [
  "enum-iterator",
  "serde",
  "serde_json",
- "strum 0.20.0",
- "strum_macros 0.20.1",
+ "strum 0.21.0",
+ "strum_macros 0.21.1",
 ]
 
 [[package]]
