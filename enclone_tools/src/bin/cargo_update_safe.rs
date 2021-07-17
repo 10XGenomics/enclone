@@ -58,7 +58,6 @@ fn main() {
         }
         let updated = strme(&new.stdout).contains(&format!("+ \"{} ", cratex));
         if !updated {
-            println!("the crate was not updated");
             let new = Command::new("git")
                 .arg("checkout")
                 .arg("Cargo.lock")
@@ -73,7 +72,6 @@ fn main() {
 
         // Now try to compile.
 
-        println!("compiling");
         let new = Command::new("cargo")
             .arg("b")
             .output()
