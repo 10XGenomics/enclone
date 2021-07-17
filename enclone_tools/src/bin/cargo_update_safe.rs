@@ -14,7 +14,7 @@ use string_utils::*;
 use vector_utils::*;
 
 fn print_dot(dots: &mut usize) {
-    if *dots % 10 == 0 {
+    if *dots > 0 && *dots % 10 == 0 {
         print!(" ");
     }
     print!(".");
