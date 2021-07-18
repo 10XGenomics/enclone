@@ -48,40 +48,41 @@ fn reset() {
 fn main() {
     let t = Instant::now();
     PrettyTrace::new().on();
-
-    // Get crate versions from master.toml.
-
-    let mut master = Vec::<(String, String)>::new();
-    let f = open_for_read!["master.toml"];
-    for line in f.lines() {
-        let s = line.unwrap();
-        if !s.starts_with('#') && s.contains("=") {
-            let cratex = s.before(" = ").to_string();
-            let version = s.after(" = ").to_string();
-            if version.starts_with('"') && version.ends_with('"') {
-                let version = version.after("\"").rev_before("\"").to_string();
-                let fields = version.split('.').collect::<Vec<&str>>();
-                let mut ok = true;
-                for i in 0..fields.len() {
-                    if !fields[i].parse::<usize>().is_ok() {
-                        ok = false;
-                    }
-                }
-                if ok {
-                    master.push((cratex, version));
-                }
-            }
-        }
-    }
+    println!("");
 
     // Loop until nothing changes.
 
     loop {
         let mut changed = false;
 
+        // Get crate versions from master.toml.
+
+        let mut master = Vec::<(String, String)>::new();
+        let f = open_for_read!["master.toml"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            if !s.starts_with('#') && s.contains("=") {
+                let cratex = s.before(" = ").to_string();
+                let version = s.after(" = ").to_string();
+                if version.starts_with('"') && version.ends_with('"') {
+                    let version = version.after("\"").rev_before("\"").to_string();
+                    let fields = version.split('.').collect::<Vec<&str>>();
+                    let mut ok = true;
+                    for i in 0..fields.len() {
+                        if !fields[i].parse::<usize>().is_ok() {
+                            ok = false;
+                        }
+                    }
+                    if ok {
+                        master.push((cratex, version));
+                    }
+                }
+            }
+        }
+
         // Look for possible raises to crate versions in master.toml.
 
-        println!("\nexamining {} directly dependent crates", master.len());
+        println!("examining {} directly dependent crates", master.len());
         for x in master.iter() {
             let (cratex, old) = (&x.0, &x.1);
             let o = Command::new("cargo")
@@ -137,6 +138,12 @@ fn main() {
                         new_lines.push(s);
                     }
                 }
+                {
+                    let mut f = open_for_write_new!["master.toml"];
+                    for line in new_lines.iter() {
+                        fwriteln!(f, "{}", line);
+                    }
+                }
                 let o = Command::new("sync_to_master")
                     .output()
                     .expect(&format!("\n\nfailed to execute sync_to_master"));
@@ -145,28 +152,12 @@ fn main() {
                     std::process::exit(1);
                 }
                 let o = Command::new("cargo")
-                    .arg("update")
-                    .arg("-p")
-                    .arg(&cratex)
-                    .output()
-                    .expect(&format!("\n\nfailed to execute cargo update 0"));
-                if o.status.code() != Some(0) {
-                    reset();
-                    continue;
-                }
-                let o = Command::new("cargo")
                     .arg("b")
                     .output()
                     .expect(&format!("\n\nfailed to execute cargo b 0"));
                 if o.status.code() != Some(0) {
                     reset();
                     continue;
-                }
-                {
-                    let mut f = open_for_write_new!["master.toml"];
-                    for line in new_lines.iter() {
-                        fwriteln!(f, "{}", line);
-                    }
                 }
                 println!("succeeded, committing change to {}", cratex);
                 changed = true;

@@ -62,7 +62,7 @@ checksum = "589d0aecbc73935716eeb183041fb89f7022dbca91ba0db217acf6d52fbd45af"
 dependencies = [
  "bio",
  "debruijn",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
  "vector_utils",
 ]
@@ -448,7 +448,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2043be7a5f85f84516e41fd0d08004015166ce7c31c0a18ab8eccb77dd958ed"
 dependencies = [
  "failure",
- "itertools 0.9.0",
+ "itertools 0.10.1",
 ]
 
 [[package]]
@@ -1123,7 +1123,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "log",
  "num",
  "serde",
@@ -1320,7 +1320,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1348,7 +1348,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "rayon",
  "regex",
@@ -1390,7 +1390,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
@@ -1421,8 +1421,8 @@ dependencies = [
  "failure",
  "flate2",
  "io_utils",
- "itertools 0.9.0",
- "nix 0.20.0",
+ "itertools 0.10.1",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1441,7 +1441,7 @@ dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
  "tables",
 ]
@@ -1467,11 +1467,11 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "log",
- "nix 0.20.0",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "prost 0.8.0",
@@ -1507,7 +1507,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -1553,10 +1553,10 @@ dependencies = [
  "enclone_core",
  "enclone_proto",
  "equiv",
- "float-ord",
+ "float-ord 0.3.1",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -1589,7 +1589,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1619,13 +1619,13 @@ dependencies = [
  "iced_native",
  "image",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "jpeg-decoder",
  "lazy_static",
  "libc",
  "log",
  "mach",
- "nix 0.20.0",
+ "nix 0.22.0",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -1737,9 +1737,9 @@ dependencies = [
 
 [[package]]
 name = "evalexpr"
-version = "5.1.0"
+version = "6.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f92f4c234e4531351f039d03935a5a9b1edc6a7505ffab23e3697bd319d17aa8"
+checksum = "6a38d3a2020f4a2aa90ba6d53a23acb3fa5256c016d36ef1336aa5926e62f2d1"
 
 [[package]]
 name = "event-listener"
@@ -1860,6 +1860,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7bad48618fdb549078c333a7a8528acb57af271d0433bdecd523eb620628364e"
 
 [[package]]
+name = "float-ord"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64860170d0b2dd3f1c5af6d96aafa47b5928ac0163116c1ab27313480d82b547"
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1878,7 +1884,7 @@ dependencies = [
  "core-text",
  "dirs-next",
  "dwrote",
- "float-ord",
+ "float-ord 0.2.0",
  "freetype",
  "lazy_static",
  "libc",
@@ -3489,6 +3495,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c3728fec49d363a50a8828a190b379a446cc5cf085c06259bbbeb34447e4ec7"
+dependencies = [
+ "bitflags",
+ "cc",
+ "cfg-if 1.0.0",
+ "libc",
+ "memoffset",
+]
+
+[[package]]
+name = "nix"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cf1e25ee6b412c2a1e3fcb6a4499a5c1bfe7f43e014bdce9a6b6666e5aa2d187"
+dependencies = [
+ "bitflags",
+ "cc",
+ "cfg-if 1.0.0",
+ "libc",
+ "memoffset",
+]
+
+[[package]]
 name = "nom"
 version = "6.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4081,10 +4113,10 @@ dependencies = [
  "backtrace",
  "failure",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.21.0",
  "pprof",
  "rayon",
  "stats_utils",
@@ -4649,11 +4681,11 @@ version = "0.5.78"
 dependencies = [
  "failure",
  "iced",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "log",
- "nix 0.20.0",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "prost 0.8.0",
@@ -5125,7 +5157,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41bd0f99c5783b9e2e395dcfb32966979d2a3b755f3e872c16d6384c8d38b5c4"
 dependencies = [
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
 ]
 
@@ -5681,7 +5713,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "kmer_lookup",
  "pretty_trace",
  "serde",
