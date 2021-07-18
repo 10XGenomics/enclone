@@ -2,6 +2,11 @@
 
 // For each dependent crate, cargo update it and run cargo b.  If that succeeds,
 // commit the change.  Otherwise, undo.
+//
+// Limitations:
+// * Only looks at crates in master.toml having simple specification crate = "version".
+// * Assumes that master.toml is complete.
+// * Updates crates even if they have changed very recently.
 
 use io_utils::*;
 use perf_stats::*;
@@ -67,127 +72,129 @@ fn main() {
             }
         }
     }
-    println!("\nexamining {} directly dependent crates", master.len());
-
-    // Look for possible updates.
-
-    for x in master.iter() {
-        let (cratex, old) = (&x.0, &x.1);
-        let o = Command::new("cargo")
-            .arg("search")
-            .arg("--limit")
-            .arg("1")
-            .arg(&cratex)
-            .output()
-            .expect(&format!("\n\nfailed to execute cargo search"));
-        if o.status.code() != Some(0) {
-            eprintln!("\ncargo search failed\n");
-            std::process::exit(1);
-        }
-        let out = strme(&o.stdout);
-        let mut new = String::new();
-        for line in out.lines() {
-            let c = line.before(" =");
-            assert_eq!(c, cratex);
-            new = line.between("\"", "\"").to_string();
-            break;
-        }
-        let old_dots = old.matches('.').count();
-        let mut new_dots = new.matches('.').count();
-        if new_dots == old_dots + 1 {
-            new = new.rev_before(".").to_string();
-            new_dots -= 1;
-        } else if new_dots == old_dots + 2 {
-            new = new.rev_before(".").rev_before(".").to_string();
-            new_dots -= 2;
-        }
-        if old_dots == new_dots {
-            if old_dots >= 1 && old.before(".") != new.before(".") {
-                new = new.before(".").to_string();
-            } else if old_dots == 2 && old.between(".", ".") != new.between(".", ".") {
-                new = new.rev_before(".").to_string();
-            }
-        }
-        if *old != new {
-            println!("trying to update {} from {} to {}", cratex, old, new);
-            let mut new_lines = Vec::<String>::new();
-            let f = open_for_read!["master.toml"];
-            for line in f.lines() {
-                let s = line.unwrap();
-                let mut saved = false;
-                if !s.starts_with('#') && s.contains("=") {
-                    let cratey = s.before(" = ").to_string();
-                    if cratey == *cratex {
-                        new_lines.push(format!("{} = \"{}\"", cratex, new));
-                        saved = true;
-                    }
-                }
-                if !saved {
-                    new_lines.push(s);
-                }
-            }
-            let o = Command::new("sync_to_master")
-                .output()
-                .expect(&format!("\n\nfailed to execute sync_to_master"));
-            if o.status.code() != Some(0) {
-                eprintln!("\nsync_to_master failed");
-                std::process::exit(1);
-            }
-            let o = Command::new("cargo")
-                .arg("update")
-                .arg("-p")
-                .arg(&cratex)
-                .output()
-                .expect(&format!("\n\nfailed to execute cargo update 0"));
-            if o.status.code() != Some(0) {
-                reset();
-                continue;
-            }
-            let o = Command::new("cargo")
-                .arg("b")
-                .output()
-                .expect(&format!("\n\nfailed to execute cargo b 0"));
-            if o.status.code() != Some(0) {
-                reset();
-                continue;
-            }
-            println!("succeeded, committing change to {}", cratex);
-            let new = Command::new("git")
-                .arg("commit")
-                .arg("-a")
-                .arg("-m")
-                .arg(&format!("raise version of crate {}", cratex))
-                .output()
-                .expect(&format!("\n\nfailed to execute git commit"));
-            if new.status.code() != Some(0) {
-                println!("\n\ngit commit failed, something is wrong");
-                std::process::exit(1);
-            }
-            break; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        }
-    }
-    if true { std::process::exit(0); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-    // Get complete list of crates from Cargo.lock.
-
-    let f = open_for_read!["Cargo.lock"];
-    let mut crates = Vec::<String>::new();
-    for line in f.lines() {
-        let s = line.unwrap();
-        if s.starts_with("name = \"") {
-            let cratex = s.between("name = \"", "\"");
-            crates.push(cratex.to_string());
-        }
-    }
-    unique_sort(&mut crates);
-    println!("\nupdating all {}crates", crates.len());
 
     // Loop until nothing changes.
 
     loop {
+        let mut changed = false;
+
+        // Look for possible raises to crate versions in master.toml.
+
+        println!("\nexamining {} directly dependent crates", master.len());
+        for x in master.iter() {
+            let (cratex, old) = (&x.0, &x.1);
+            let o = Command::new("cargo")
+                .arg("search")
+                .arg("--limit")
+                .arg("1")
+                .arg(&cratex)
+                .output()
+                .expect(&format!("\n\nfailed to execute cargo search"));
+            if o.status.code() != Some(0) {
+                eprintln!("\ncargo search failed\n");
+                std::process::exit(1);
+            }
+            let out = strme(&o.stdout);
+            let mut new = String::new();
+            for line in out.lines() {
+                let c = line.before(" =");
+                assert_eq!(c, cratex);
+                new = line.between("\"", "\"").to_string();
+                break;
+            }
+            let old_dots = old.matches('.').count();
+            let mut new_dots = new.matches('.').count();
+            if new_dots == old_dots + 1 {
+                new = new.rev_before(".").to_string();
+                new_dots -= 1;
+            } else if new_dots == old_dots + 2 {
+                new = new.rev_before(".").rev_before(".").to_string();
+                new_dots -= 2;
+            }
+            if old_dots == new_dots {
+                if old_dots >= 1 && old.before(".") != new.before(".") {
+                    new = new.before(".").to_string();
+                } else if old_dots == 2 && old.between(".", ".") != new.between(".", ".") {
+                    new = new.rev_before(".").to_string();
+                }
+            }
+            if *old != new {
+                println!("trying to update {} from {} to {}", cratex, old, new);
+                let mut new_lines = Vec::<String>::new();
+                let f = open_for_read!["master.toml"];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let mut saved = false;
+                    if !s.starts_with('#') && s.contains("=") {
+                        let cratey = s.before(" = ").to_string();
+                        if cratey == *cratex {
+                            new_lines.push(format!("{} = \"{}\"", cratex, new));
+                            saved = true;
+                        }
+                    }
+                    if !saved {
+                        new_lines.push(s);
+                    }
+                }
+                let o = Command::new("sync_to_master")
+                    .output()
+                    .expect(&format!("\n\nfailed to execute sync_to_master"));
+                if o.status.code() != Some(0) {
+                    eprintln!("\nsync_to_master failed");
+                    std::process::exit(1);
+                }
+                let o = Command::new("cargo")
+                    .arg("update")
+                    .arg("-p")
+                    .arg(&cratex)
+                    .output()
+                    .expect(&format!("\n\nfailed to execute cargo update 0"));
+                if o.status.code() != Some(0) {
+                    reset();
+                    continue;
+                }
+                let o = Command::new("cargo")
+                    .arg("b")
+                    .output()
+                    .expect(&format!("\n\nfailed to execute cargo b 0"));
+                if o.status.code() != Some(0) {
+                    reset();
+                    continue;
+                }
+                println!("succeeded, committing change to {}", cratex);
+                changed = true;
+                let new = Command::new("git")
+                    .arg("commit")
+                    .arg("-a")
+                    .arg("-m")
+                    .arg(&format!("raise version of crate {}", cratex))
+                    .output()
+                    .expect(&format!("\n\nfailed to execute git commit"));
+                if new.status.code() != Some(0) {
+                    println!("\n\ngit commit failed, something is wrong");
+                    std::process::exit(1);
+                }
+            }
+        }
+
+        // Get complete list of crates from Cargo.lock.
+
+        let f = open_for_read!["Cargo.lock"];
+        let mut crates = Vec::<String>::new();
+        for line in f.lines() {
+            let s = line.unwrap();
+            if s.starts_with("name = \"") {
+                let cratex = s.between("name = \"", "\"");
+                crates.push(cratex.to_string());
+            }
+        }
+        unique_sort(&mut crates);
+        println!("\nupdating all {}crates", crates.len());
+
+        // Attempt to update each crate.
+
         let mut dots = 0;
         println!("");
-        let mut changed = false;
         for cratex in crates.iter() {
             let cratex = &*cratex;
 
