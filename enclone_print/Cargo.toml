@@ -24,7 +24,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
-bio = "0.35"
+bio = "0.37"
 bytes = "1"
 byteorder = "1"
 debruijn = "0.3"

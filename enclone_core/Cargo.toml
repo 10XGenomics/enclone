@@ -24,7 +24,7 @@ publish = false
 amino = "0.1"
 ansi_escape = "0.1"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-bio = "0.35"
+bio = "0.37"
 bio_edit = { path = "../bio_edit" }
 bytes = "1"
 chrono = "0.4"

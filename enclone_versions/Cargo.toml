@@ -18,7 +18,7 @@ publish = false
 
 [dependencies]
 assert_cmd = "1"
-bio = "0.35"
+bio = "0.37"
 byteorder = "1"
 bytes = "1"
 dirs = "3"

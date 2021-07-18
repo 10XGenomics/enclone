@@ -23,7 +23,7 @@ publish = false
 amino = "0.1"
 ansi_escape = "0.1"
 assert_cmd = "1"
-bio = "0.35"
+bio = "0.37"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1"

@@ -60,7 +60,7 @@ version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "589d0aecbc73935716eeb183041fb89f7022dbca91ba0db217acf6d52fbd45af"
 dependencies = [
- "bio 0.37.0",
+ "bio",
  "debruijn",
  "itertools 0.10.1",
  "string_utils",
@@ -458,45 +458,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "bio"
-version = "0.35.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b811b646ca205f0cad844400fc342bff139ad9825330301c0f54cea700237a4"
-dependencies = [
- "anyhow",
- "approx 0.3.2",
- "bio-types",
- "bit-set",
- "bv",
- "bytecount",
- "csv",
- "custom_derive",
- "enum-map",
- "fnv",
- "fxhash",
- "getset",
- "itertools 0.9.0",
- "itertools-num",
- "lazy_static",
- "multimap",
- "ndarray",
- "newtype_derive",
- "num-integer",
- "num-traits",
- "ordered-float 1.1.1",
- "petgraph",
- "regex",
- "serde",
- "serde_derive",
- "statrs",
- "strum 0.20.0",
- "strum_macros 0.20.1",
- "thiserror",
- "triple_accel",
- "vec_map",
 ]
 
 [[package]]
@@ -1351,7 +1312,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "assert_cmd",
- "bio 0.35.0",
+ "bio",
  "debruijn",
  "enclone_core",
  "equiv",
@@ -1420,7 +1381,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "attohttpc",
- "bio 0.35.0",
+ "bio",
  "bio_edit",
  "bytes",
  "chrono",
@@ -1534,7 +1495,7 @@ version = "0.5.78"
 dependencies = [
  "amino",
  "ansi_escape",
- "bio 0.35.0",
+ "bio",
  "byteorder",
  "bytes",
  "debruijn",
@@ -1567,7 +1528,7 @@ dependencies = [
 name = "enclone_proto"
 version = "0.5.78"
 dependencies = [
- "bio 0.35.0",
+ "bio",
  "byteorder",
  "bytes",
  "failure",
@@ -1585,7 +1546,7 @@ dependencies = [
  "align_tools",
  "amino",
  "ansi_escape",
- "bio 0.35.0",
+ "bio",
  "bio_edit",
  "debruijn",
  "edit-distance",
@@ -5732,7 +5693,7 @@ source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=9cc9991f102cf8
 dependencies = [
  "align_tools",
  "amino",
- "bio 0.37.0",
+ "bio",
  "debruijn",
  "exons",
  "fasta_tools",
