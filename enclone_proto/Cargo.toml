@@ -19,7 +19,7 @@ publish = false
 
 [dependencies]
 bio = "0.35"
-bytes = ">=0.5.5, <2"
+bytes = "1"
 byteorder = "1"
 failure = "0.1"
 prost = { version = "0.8", features = [] }

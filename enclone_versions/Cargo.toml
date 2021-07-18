@@ -20,7 +20,7 @@ publish = false
 assert_cmd = "1"
 bio = "0.35"
 byteorder = "1"
-bytes = ">=0.5.5, <2"
+bytes = "1"
 dirs = "3"
 failure = "0.1"
 flate2 = "1"
