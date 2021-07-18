@@ -185,7 +185,7 @@ fn main() {
             lines.push(s);
         }
         let mut i = 0;
-        while i < lines.len()  - 1 {
+        while i < lines.len() - 1 {
             if lines[i].starts_with("name = \"") {
                 let cratex = lines[i].between("name = \"", "\"");
                 if !lines[i + 1].starts_with("version = \"") {
