@@ -448,6 +448,19 @@ impl EncloneVisual {
             }
 
             Message::Capture(_) => {
+                let verbose = false;
+                if verbose {
+                    println!("\ncapturing, input history:");
+                    for i in 0..self.input_history.len() {
+                        let mark = if i + 1 == self.history_index { "*" } else { "" };
+                        println!(
+                            "[{}] {} {}",
+                            i + 1,
+                            self.input_hist_uniq[self.input_history[i]],
+                            mark
+                        );
+                    }
+                }
                 let count = COUNT.load(SeqCst);
                 if count >= 1 {
                     capture(count, self.window_id);
