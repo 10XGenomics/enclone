@@ -48,6 +48,7 @@ fn reset() {
 fn main() {
     let t = Instant::now();
     PrettyTrace::new().on();
+    println!("");
 
     // Loop until nothing changes.
 
@@ -81,7 +82,7 @@ fn main() {
 
         // Look for possible raises to crate versions in master.toml.
 
-        println!("\nexamining {} directly dependent crates", master.len());
+        println!("examining {} directly dependent crates", master.len());
         for x in master.iter() {
             let (cratex, old) = (&x.0, &x.1);
             let o = Command::new("cargo")
