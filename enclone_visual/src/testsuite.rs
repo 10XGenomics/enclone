@@ -20,12 +20,17 @@ const BACK: fn(Result<(), std::string::String>) -> messages::Message =
 const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
     Message::ForwardButtonPressed as MsgFn;
 
+/*
+const DEL: fn(Result<(), std::string::String>) -> messages::Message =
+    Message::DelButtonPressed as MsgFn;
+*/
+
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 18] = [
+pub const TESTS: [(&str, MsgFn, &str); 19] = [
     (X0,    SUBMIT,  ""),        // enclone woof
     ("#1",  SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("",    BACK,    ""),        // enclone woof
@@ -44,6 +49,7 @@ pub const TESTS: [(&str, MsgFn, &str); 18] = [
     ("",    BACK,    "test8"),   // #4
     ("",    BACK,    "test9"),   // #3
     ("10",  SUBMIT,  "test10"),  // 10
+    ("",    BACK,    "test11"),  // #3
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
