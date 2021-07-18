@@ -1461,7 +1461,7 @@ dependencies = [
  "flate2",
  "io_utils",
  "itertools 0.10.1",
- "nix 0.20.0",
+ "nix 0.21.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1510,7 +1510,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "log",
- "nix 0.20.0",
+ "nix 0.21.0",
  "perf_stats",
  "pretty_trace",
  "prost 0.8.0",
@@ -1664,7 +1664,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.20.0",
+ "nix 0.21.0",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -3534,6 +3534,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c3728fec49d363a50a8828a190b379a446cc5cf085c06259bbbeb34447e4ec7"
+dependencies = [
+ "bitflags",
+ "cc",
+ "cfg-if 1.0.0",
+ "libc",
+ "memoffset",
+]
+
+[[package]]
 name = "nom"
 version = "6.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4698,7 +4711,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "log",
- "nix 0.20.0",
+ "nix 0.21.0",
  "perf_stats",
  "pretty_trace",
  "prost 0.8.0",
