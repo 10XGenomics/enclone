@@ -13,7 +13,7 @@ use io_utils::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
@@ -162,6 +162,12 @@ fn main() {
                     reset();
                     continue;
                 }
+                {
+                    let mut f = open_for_write_new!["master.toml"];
+                    for line in new_lines.iter() {
+                        fwriteln!(f, "{}", line);
+                    }
+                }
                 println!("succeeded, committing change to {}", cratex);
                 changed = true;
                 let new = Command::new("git")
@@ -175,6 +181,9 @@ fn main() {
                     println!("\n\ngit commit failed, something is wrong");
                     std::process::exit(1);
                 }
+                if true {
+                    std::process::exit(0);
+                } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             }
         }
 
