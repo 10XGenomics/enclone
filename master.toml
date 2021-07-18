@@ -31,7 +31,7 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
 enclone_tail = { path = "../enclone_tail" }
 equiv = "0.1"
-evalexpr = "5"
+evalexpr = "6"
 failure = "0.1"
 file-lock = "1"
 flate2 = "1"
