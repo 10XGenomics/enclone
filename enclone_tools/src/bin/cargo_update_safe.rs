@@ -17,7 +17,6 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
-use vector_utils::*;
 
 fn print_dot(dots: &mut usize) {
     if *dots > 0 && *dots % 10 == 0 {
@@ -175,33 +174,47 @@ fn main() {
             }
         }
 
-        // Get complete list of crates from Cargo.lock.
+        // Get complete list of crate:version instances from Cargo.lock.
 
         let f = open_for_read!["Cargo.lock"];
         let mut crates = Vec::<String>::new();
+        let mut versions = Vec::<String>::new();
+        let mut lines = Vec::<String>::new();
         for line in f.lines() {
             let s = line.unwrap();
-            if s.starts_with("name = \"") {
-                let cratex = s.between("name = \"", "\"");
-                crates.push(cratex.to_string());
-            }
+            lines.push(s);
         }
-        unique_sort(&mut crates);
+        let mut i = 0;
+        while i < lines.len()  - 1 {
+            if lines[i].starts_with("name = \"") {
+                let cratex = lines[i].between("name = \"", "\"");
+                if !lines[i + 1].starts_with("version = \"") {
+                    eprintln!("\nProblem with Cargo.lock entry for crate {}.\n", cratex);
+                    std::process::exit(1);
+                }
+                let version = lines[i + 1].between("\"", "\"");
+                crates.push(cratex.to_string());
+                versions.push(version.to_string());
+                i += 1;
+            }
+            i += 1;
+        }
         println!("\nupdating all {} crates", crates.len());
 
         // Attempt to update each crate.
 
         let mut dots = 0;
         println!("");
-        for cratex in crates.iter() {
-            let cratex = &*cratex;
+        for i in 0..crates.len() {
+            let cratex = &crates[i];
+            let version = &versions[i];
 
             // Update crate.
 
             let new = Command::new("cargo")
                 .arg("update")
                 .arg("-p")
-                .arg(&cratex)
+                .arg(&format!("{}:{}", cratex, version))
                 .output()
                 .expect(&format!("\n\nfailed to execute cargo update"));
             if new.status.code() != Some(0) {
