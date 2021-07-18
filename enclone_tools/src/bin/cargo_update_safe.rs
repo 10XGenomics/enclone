@@ -7,6 +7,7 @@
 // * Only looks at crates in master.toml having simple specification crate = "version".
 // * Assumes that master.toml is complete.
 // * Updates crates even if they have changed very recently.
+// * Should check that results are unchanged.
 
 use io_utils::*;
 use perf_stats::*;
