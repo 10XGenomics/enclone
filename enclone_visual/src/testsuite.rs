@@ -20,10 +20,8 @@ const BACK: fn(Result<(), std::string::String>) -> messages::Message =
 const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
     Message::ForwardButtonPressed as MsgFn;
 
-/*
 const DEL: fn(Result<(), std::string::String>) -> messages::Message =
     Message::DelButtonPressed as MsgFn;
-*/
 
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
