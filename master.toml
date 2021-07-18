@@ -13,8 +13,8 @@ assert_cmd = "1"
 async-trait = "0.1"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-bio = ">=0.35"
-bio-types = ">=0.11.0"
+bio = "0.35"
+bio-types = "0.12"
 bit-set = "0.5"
 byteorder = "1"
 bytes = ">=0.5.5, <2"
