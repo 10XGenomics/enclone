@@ -151,16 +151,6 @@ fn main() {
                     std::process::exit(1);
                 }
                 let o = Command::new("cargo")
-                    .arg("update")
-                    .arg("-p")
-                    .arg(&cratex)
-                    .output()
-                    .expect(&format!("\n\nfailed to execute cargo update 0"));
-                if o.status.code() != Some(0) {
-                    reset();
-                    continue;
-                }
-                let o = Command::new("cargo")
                     .arg("b")
                     .output()
                     .expect(&format!("\n\nfailed to execute cargo b 0"));
