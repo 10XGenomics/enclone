@@ -137,6 +137,12 @@ fn main() {
                         new_lines.push(s);
                     }
                 }
+                {
+                    let mut f = open_for_write_new!["master.toml"];
+                    for line in new_lines.iter() {
+                        fwriteln!(f, "{}", line);
+                    }
+                }
                 let o = Command::new("sync_to_master")
                     .output()
                     .expect(&format!("\n\nfailed to execute sync_to_master"));
@@ -161,12 +167,6 @@ fn main() {
                 if o.status.code() != Some(0) {
                     reset();
                     continue;
-                }
-                {
-                    let mut f = open_for_write_new!["master.toml"];
-                    for line in new_lines.iter() {
-                        fwriteln!(f, "{}", line);
-                    }
                 }
                 println!("succeeded, committing change to {}", cratex);
                 changed = true;
