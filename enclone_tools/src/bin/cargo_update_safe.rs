@@ -181,9 +181,6 @@ fn main() {
                     println!("\n\ngit commit failed, something is wrong");
                     std::process::exit(1);
                 }
-                if true {
-                    std::process::exit(0);
-                } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             }
         }
 
@@ -199,7 +196,7 @@ fn main() {
             }
         }
         unique_sort(&mut crates);
-        println!("\nupdating all {}crates", crates.len());
+        println!("\nupdating all {} crates", crates.len());
 
         // Attempt to update each crate.
 
