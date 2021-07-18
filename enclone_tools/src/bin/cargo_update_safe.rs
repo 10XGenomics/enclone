@@ -243,6 +243,7 @@ fn main() {
                     .expect(&format!("\n\nfailed to execute git checkout"));
                 if new.status.code() != Some(0) {
                     println!("\n\ngit checkout failed, something is wrong");
+                    println!("\ntry checking for disk quota exceeded\n");
                     std::process::exit(1);
                 }
                 print_dot(&mut dots);
