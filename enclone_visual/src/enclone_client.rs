@@ -563,8 +563,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let setup_process_id = setup_process.id();
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
-            // Reducing sleep time below to 500 ms causes frequent failures.
-            thread::sleep(Duration::from_millis(1000));
             if verbose {
                 println!("used {:.1} seconds connecting to remote", elapsed(&tremote));
             }
@@ -576,22 +574,22 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             println!("connecting to {}", url);
         }
         let tconnect = Instant::now();
-        let mut client = AnalyzerClient::connect(url.clone()).await;
-        if client.is_err() {
-            // If connection failed, sleep and try again.  This happens maybe 10% of the time.
-
-            println!("connection attempt failed, waiting one second and will try again");
-            thread::sleep(Duration::from_millis(1000));
-            client = AnalyzerClient::connect(url).await;
-
-            // Test for second failure.
-
-            if client.is_err() {
+        const MAX_CONNECT_MS: u64 = 10_000;
+        const CONNECT_WAIT_MS: u64 = 250;
+        use tonic::transport::Channel;
+        let mut client: Result<AnalyzerClient<Channel>, tonic::transport::Error>;
+        let mut wait_time = 0;
+        loop {
+            thread::sleep(Duration::from_millis(CONNECT_WAIT_MS));
+            wait_time += CONNECT_WAIT_MS;
+            client = AnalyzerClient::connect(url.clone()).await;
+            if client.is_ok() {
+                break;
+            }
+            if wait_time >= MAX_CONNECT_MS {
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
                 cleanup();
                 std::process::exit(1);
-            } else {
-                println!("excellent, it's OK now");
             }
         }
         if verbose {
