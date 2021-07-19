@@ -6,6 +6,7 @@ pub enum Message {
     SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
     ForwardButtonPressed(Result<(), String>),
+    DelButtonPressed(Result<(), String>),
     OpenModalSummary,
     OpenModalHelp,
     CloseModalHelp,
@@ -22,4 +23,5 @@ pub enum Message {
     RunTests(Result<(), String>),
     Capture(Result<(), String>),
     GroupClicked(crate::canvas_view::Message),
+    Resize(u32, u32),
 }

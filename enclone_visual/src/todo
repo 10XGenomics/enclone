@@ -30,19 +30,14 @@ WAITING ON ICED
 5.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
-6.  The wraparound problem.
-    Asked on zulip chat and have not yet gotten a meaningful answer, although there were some
-    vague suggestions.  However this problem is related to issue 331 (horizontal scrolling) and 
-    issue 307 (scrolling programmatically).
-
-7.  Button text does not change from "Submit" to "thinking" (but worked around).
+6.  Button text does not change from "Submit" to "thinking" (but worked around).
     Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
     on the issue so the ball is in their court.
 
-8.  Canvas in scrollable crashes.  
+7.  Canvas in scrollable crashes.  So we can't put plots in a scrollable window.
     Reported as issue #924, flagged as bug.
 
-9.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+8.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
 ---------------------------------------------------------------------------------------------------
@@ -58,19 +53,17 @@ NICE TO HAVE
 
 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
 
-5.  Put plots in a scrollable window.
+5.  Add scale slider for plots.
 
-6.  Add scale slider for plots.
+6.  Make "enclone help ..." work.
 
-7.  Make "enclone help ..." work.
+7.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
 
-8.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
+8.  Add button to capture the entire enclone visual window.
 
-9.  Add button to capture the entire enclone visual window.
-
-10. Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+9.  Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
-11. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+10. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.

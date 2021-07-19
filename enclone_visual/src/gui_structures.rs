@@ -56,6 +56,7 @@ pub struct EncloneVisual {
     pub button: button::State,
     pub back_button: button::State,
     pub forward_button: button::State,
+    pub del_button: button::State,
     pub exec_button: button::State,
     pub summary_button: button::State,
     pub open_state_cookbook: button::State,
@@ -93,6 +94,11 @@ pub struct EncloneVisual {
     // index of "current" position in those vectors, plus one:
     //
     pub history_index: usize,
+    //
+    // current window dimensions
+    //
+    pub width: u32,
+    pub height: u32,
 }
 
 #[derive(Default)]
@@ -125,6 +131,9 @@ impl EncloneVisual {
     }
     pub fn last_widths_current(&self) -> Vec<usize> {
         return self.last_widths_hist_uniq[self.last_widths_history[self.hi()]].clone();
+    }
+    pub fn is_blank_current(&self) -> bool {
+        return self.is_blank[self.hi()];
     }
     pub fn sanity_check(&self) {
         let n = self.svg_history.len();

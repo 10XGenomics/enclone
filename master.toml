@@ -9,20 +9,20 @@ align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
 arboard = "1"
-assert_cmd = "1.0.3"
+assert_cmd = "1"
 async-trait = "0.1"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-bio = ">=0.35"
-bio-types = ">=0.11.0"
+bio = "0.37"
+bio-types = "0.12"
 bit-set = "0.5"
-byteorder = "1.4.2"
-bytes = ">=0.5.5, <2"
-chrono = "0.4.19"
+byteorder = "1"
+bytes = "1"
+chrono = "0.4"
 cocoa = "0.24"
-debruijn = "0.3.2"
-dirs = "3.0.1"
-edit-distance = "2.1.0"
+debruijn = "0.3"
+dirs = "3"
+edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
@@ -30,15 +30,15 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
 enclone_tail = { path = "../enclone_tail" }
-equiv = "0.1.2"
-evalexpr = "5.0.5"
-failure = "0.1.6"
-file-lock = "1.1.20"
-flate2 = "1.0.20"
-float-ord = "0.2.0"
-fs_extra = "1.1"
+equiv = "0.1"
+evalexpr = "6"
+failure = "0.1"
+file-lock = "1"
+flate2 = "1"
+float-ord = "0.3"
+fs_extra = "1.2"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = "0.1.2"
+graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 
 # flaky way of getting to more recent iced/iced_aw
@@ -55,48 +55,48 @@ iced_native = { git = "https://github.com/genusistimelord/iced.git" }
 
 image = "0.23"
 io_utils = "0.2"
-itertools = ">= 0.8, <= 0.11"
+itertools = "0.10"
 jpeg-decoder = "0.1"
-lazy_static = "1.4"
-libc = "0.2.98"
+lazy_static = "1"
+libc = "0.2"
 log = "0.4"
 mach = "0.3"
 mirror_sparse_matrix = "0.1"
-ndarray = ">= 0.14"
-nix = ">=0.19.1, <0.22"
+ndarray = "0.14"
+nix = "0.22"
 objc = "0.2"
-pager = "0.16.0"
+pager = "0.16"
 perf_stats = "0.1"
-permutation = "0.2.5"
+permutation = "0.2"
 petgraph = "0.5"
-plotters = { version = "^0.3.0", default_features = false, features = ["svg_backend", "point_series"] }
+plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
 pretty_trace = "0.5"
 procfs = "0.9"
 prost = { version = "0.8", features = [] }
 prost-build = "0.8"
-rand = ">=0.7.3, <0.9"
+rand = "0.8"
 rayon = "1.5"
-# resvg = "0.15.0"
+# resvg = "0.15"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
-regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
-serde = "1.0.90"
-serde_derive = "1.0"
-serde_json = "*"
-sha2 = "0.9.5"
+regex = { version = "1.3", default-features = false, features = ["std", "perf"] }
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
+sha2 = "0.9"
 stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
-superslice = "1.0.0"
+superslice = "1"
 tables = "0.1"
-tar = "0.4.33"
-tilde-expand = "0.1.1"
-tiny-skia = "0.5.0"
+tar = "0.4"
+tilde-expand = "0.1"
+tiny-skia = "0.5"
 tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.5"
 tonic-build = { version = "0.5", features = [] }
-# usvg = { version = "0.14.1", default-features = false }
+# usvg = { version = "0.14", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
-vector_utils = "0.1.3"
+vector_utils = "0.1"

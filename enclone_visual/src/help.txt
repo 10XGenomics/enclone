@@ -17,7 +17,12 @@ The enclone visual app view is vertically divided roughly as follows, going down
 4. separately, a summary table, which pops up if you push the Summary button.
 
 The app remembers all of this.  There are buttons in the graphics subwindow that allow navigation 
-through previous commands/graphics.  Some buttons are blank initially.  Those do nothing until 
+through previous commands/graphics:  
+* up button   -- go to previous state
+* down button -- go to next state
+* del button  -- delete current state and go back to previous one.
+
+Some buttons are blank initially.  Those do nothing until 
 populated with something (like a down arrow, to go forward to the next state).
 
 If you run a command, and then run a similar command after it, enclone visual may elide some
@@ -30,4 +35,3 @@ Some limitations of this version:
 1. There is no color in the clonotype tables.
 2. Cutting and pasting from clonotype tables doesn't work.
 3. Long commands are hard to work with in the input box.
-4. Very wide clonotype tables wrap, making them unintelligible, and only solvable by window resizing, and sometimes not that.

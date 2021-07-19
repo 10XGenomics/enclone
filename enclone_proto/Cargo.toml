@@ -18,13 +18,13 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-bio = ">=0.35"
-bytes = ">=0.5.5, <2"
-byteorder = "1.4.2"
-failure = "0.1.6"
+bio = "0.37"
+bytes = "1"
+byteorder = "1"
+failure = "0.1"
 prost = { version = "0.8", features = [] }
-serde = "1.0.90"
-serde_derive = "1.0"
+serde = "1"
+serde_derive = "1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
 
 [build-dependencies]

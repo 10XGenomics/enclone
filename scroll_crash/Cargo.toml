@@ -24,13 +24,13 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
-failure = "0.1.6"
+failure = "0.1"
 iced = { git = "https://github.com/genusistimelord/iced.git", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
-itertools = ">= 0.8, <= 0.11"
-lazy_static = "1.4"
-libc = "0.2.98"
+itertools = "0.10"
+lazy_static = "1"
+libc = "0.2"
 log = "0.4"
-nix = ">=0.19.1, <0.22"
+nix = "0.22"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = "0.8", features = [] }

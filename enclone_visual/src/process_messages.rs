@@ -16,6 +16,11 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::Resize(width, height) => {
+                self.width = width;
+                self.height = height;
+                Command::none()
+            }
             Message::GroupClicked(_message) => {
                 let group_id = GROUP_ID.load(SeqCst);
                 self.input_value = format!("{}", group_id);
@@ -86,8 +91,6 @@ impl EncloneVisual {
                             );
                             reply_text += "\n \n \n"; // papering over truncation bug in display
                         }
-                        self.input_history.push(self.input_hist_uniq.len());
-                        self.input_hist_uniq.push(self.input_value.clone());
                         let mut args2 = Vec::<String>::new();
                         for x in args.iter() {
                             if x.len() > 0 && !x.starts_with("G=") {
@@ -95,23 +98,26 @@ impl EncloneVisual {
                             }
                         }
                         args2.push(format!("G={}", self.input_value));
+                        self.output_value = reply_text.to_string();
+                        let hi = self.history_index;
+                        self.input_history.insert(hi, self.input_hist_uniq.len());
+                        self.input_hist_uniq.push(self.input_value.clone());
                         self.translated_input_history
-                            .push(self.translated_input_hist_uniq.len());
+                            .insert(hi, self.translated_input_hist_uniq.len());
                         self.translated_input_hist_uniq
                             .push(args2.iter().format(" ").to_string());
-                        self.svg_history.push(*self.svg_history.last().unwrap());
+                        self.svg_history.insert(hi, self.svg_history[hi - 1]);
                         self.summary_history
-                            .push(*self.summary_history.last().unwrap());
+                            .insert(hi, self.summary_history[hi - 1]);
                         self.displayed_tables_history
-                            .push(self.displayed_tables_hist_uniq.len());
+                            .insert(hi, self.displayed_tables_hist_uniq.len());
                         self.displayed_tables_hist_uniq.push(reply_text.to_string());
                         self.table_comp_history
-                            .push(*self.table_comp_history.last().unwrap());
+                            .insert(hi, self.table_comp_history[hi - 1]);
                         self.last_widths_history
-                            .push(*self.last_widths_history.last().unwrap());
-                        self.is_blank.push(self.is_blank[self.is_blank.len() - 1]);
-                        self.history_index = self.input_history.len();
-                        self.output_value = reply_text.to_string();
+                            .insert(hi, self.last_widths_history[hi - 1]);
+                        self.is_blank.insert(hi, self.is_blank_current());
+                        self.history_index += 1;
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
                         } else {
@@ -162,6 +168,58 @@ impl EncloneVisual {
                     self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
                 } else {
                     self.current_tables.clear();
+                }
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop(), Message::Capture)
+                }
+            }
+
+            Message::DelButtonPressed(_) => {
+                let h = self.history_index - 1;
+                self.svg_history.remove(h);
+                self.summary_history.remove(h);
+                self.input_history.remove(h);
+                self.translated_input_history.remove(h);
+                self.displayed_tables_history.remove(h);
+                self.table_comp_history.remove(h);
+                self.last_widths_history.remove(h);
+                self.is_blank.remove(h);
+                self.history_index -= 1;
+                if h == 0 {
+                    self.input_value.clear();
+                    self.svg_value.clear();
+                    self.png_value.clear();
+                    self.submit_button_text.clear();
+                    self.summary_value.clear();
+                    self.output_value.clear();
+                    self.table_comp_value.clear();
+                    self.last_widths_value.clear();
+                    self.translated_input_value.clear();
+                    self.current_tables.clear();
+                } else {
+                    let x = self.svg_current();
+                    self.post_svg(&x);
+                    self.summary_value = self.summary_current();
+                    self.output_value = self.displayed_tables_current();
+                    self.table_comp_value = self.table_comp_current();
+                    self.last_widths_value = self.last_widths_current();
+                    self.input_value = self.input_current();
+                    self.translated_input_value = self.translated_input_current();
+                    SUMMARY_CONTENTS.lock().unwrap().clear();
+                    SUMMARY_CONTENTS
+                        .lock()
+                        .unwrap()
+                        .push(self.summary_value.clone());
+                    if self.table_comp_value.len() > 0 {
+                        let mut gunzipped = Vec::<u8>::new();
+                        let mut d = GzDecoder::new(&*self.table_comp_value);
+                        d.read_to_end(&mut gunzipped).unwrap();
+                        self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                    } else {
+                        self.current_tables.clear();
+                    }
                 }
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
@@ -279,11 +337,12 @@ impl EncloneVisual {
 
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 self.table_comp_value = reply_table_comp.clone();
+                let hi = self.history_index;
                 let len = self.table_comp_hist_uniq.len();
                 if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.table_comp_history.push(len - 1);
+                    self.table_comp_history.insert(hi, len - 1);
                 } else {
-                    self.table_comp_history.push(len);
+                    self.table_comp_history.insert(hi, len);
                     self.table_comp_hist_uniq.push(reply_table_comp.clone());
                     if self.table_comp_value.len() > 0 {
                         let mut gunzipped = Vec::<u8>::new();
@@ -320,51 +379,51 @@ impl EncloneVisual {
 
                 let len = self.last_widths_hist_uniq.len();
                 if len > 0 && self.last_widths_hist_uniq[len - 1] == reply_last_widths {
-                    self.last_widths_history.push(len - 1);
+                    self.last_widths_history.insert(hi, len - 1);
                 } else {
-                    self.last_widths_history.push(len);
+                    self.last_widths_history.insert(hi, len);
                     self.last_widths_hist_uniq.push(reply_last_widths.clone());
                 }
                 let len = self.svg_hist_uniq.len();
                 if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
-                    self.svg_history.push(len - 1);
+                    self.svg_history.insert(hi, len - 1);
                 } else {
-                    self.svg_history.push(len);
+                    self.svg_history.insert(hi, len);
                     self.svg_hist_uniq.push(reply_svg.clone());
                 }
                 let len = self.summary_hist_uniq.len();
                 if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
-                    self.summary_history.push(len - 1);
+                    self.summary_history.insert(hi, len - 1);
                 } else {
-                    self.summary_history.push(len);
+                    self.summary_history.insert(hi, len);
                     self.summary_hist_uniq.push(reply_summary.clone());
                 }
                 let len = self.displayed_tables_hist_uniq.len();
                 if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
-                    self.displayed_tables_history.push(len - 1);
+                    self.displayed_tables_history.insert(hi, len - 1);
                 } else {
-                    self.displayed_tables_history.push(len);
+                    self.displayed_tables_history.insert(hi, len);
                     self.displayed_tables_hist_uniq.push(reply_text.clone());
                 }
                 let len = self.input_hist_uniq.len();
                 if len > 0 && self.input_hist_uniq[len - 1] == self.input_value {
-                    self.input_history.push(len - 1);
+                    self.input_history.insert(hi, len - 1);
                 } else {
-                    self.input_history.push(len);
+                    self.input_history.insert(hi, len);
                     self.input_hist_uniq.push(self.input_value.clone());
                 }
                 let len = self.translated_input_hist_uniq.len();
                 if len > 0
                     && self.translated_input_hist_uniq[len - 1] == self.translated_input_value
                 {
-                    self.translated_input_history.push(len - 1);
+                    self.translated_input_history.insert(hi, len - 1);
                 } else {
-                    self.translated_input_history.push(len);
+                    self.translated_input_history.insert(hi, len);
                     self.translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
                 }
-                self.is_blank.push(blank);
-                self.history_index = self.input_history.len();
+                self.is_blank.insert(hi, blank);
+                self.history_index += 1;
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
@@ -391,6 +450,19 @@ impl EncloneVisual {
             }
 
             Message::Capture(_) => {
+                let verbose = false;
+                if verbose {
+                    println!("\ncapturing, input history:");
+                    for i in 0..self.input_history.len() {
+                        let mark = if i + 1 == self.history_index { "*" } else { "" };
+                        println!(
+                            "[{}] {} {}",
+                            i + 1,
+                            self.input_hist_uniq[self.input_history[i]],
+                            mark
+                        );
+                    }
+                }
                 let count = COUNT.load(SeqCst);
                 if count >= 1 {
                     capture(count, self.window_id);

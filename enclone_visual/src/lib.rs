@@ -55,10 +55,7 @@ async fn compute() -> Result<(), String> {
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
-    print!(
-        "time used processing command = {:.1} seconds, ",
-        elapsed(&t)
-    );
+    println!("time used processing command = {:.1} seconds", elapsed(&t));
     Ok(())
 }
 
@@ -115,10 +112,13 @@ pub mod proto {
     tonic::include_proto!("enclone");
 }
 
+const INITIAL_WIDTH: u32 = 1100;
+const INITIAL_HEIGHT: u32 = 1060;
+
 pub async fn launch_gui() -> iced::Result {
     let mut settings = Settings::default();
     let mut window_settings = iced::window::Settings::default();
-    window_settings.size = (1100 as u32, 1060 as u32); // reasonable minimum size
+    window_settings.size = (INITIAL_WIDTH, INITIAL_HEIGHT); // reasonable minimum size
     settings.window = window_settings;
     settings.exit_on_close_request = false;
     EncloneVisual::run(settings)

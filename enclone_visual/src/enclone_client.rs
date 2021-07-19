@@ -174,6 +174,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut auto_update = false;
     let mut internal = false;
     let mut config_file_contents = String::new();
+    let mut ssh_cat_time = 0.0;
     for (key, value) in env::vars() {
         if key == "ENCLONE_INTERNAL" {
             internal = true;
@@ -206,7 +207,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     .arg(&filename)
                     .output()
                     .expect("failed to execute ssh cat");
-                println!("\nssh cat to {} took {:.1} seconds", filehost, elapsed(&t));
+                ssh_cat_time = elapsed(&t);
+                println!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
                 if o.status.code() != Some(0) {
                     let m = String::from_utf8(o.stderr).unwrap();
                     println!("\ntest ssh failed with error message =\n{}", m);
@@ -431,7 +433,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         pub static READ_DONE: AtomicBool = AtomicBool::new(false);
         thread::spawn(move || {
-            thread::sleep(Duration::from_millis(5000));
+            // At one time we used a sleep time of 5 seconds, but some people have slower
+            // connections and this resulted in failures.  The heuristic in the next
+            // line is the solution, but perhaps there is a better way to handle this.
+            let sleep_time = 5.0_f64.max(2.0 * ssh_cat_time);
+            thread::sleep(Duration::from_millis((sleep_time * 1000.0).round() as u64));
             if !READ_DONE.load(SeqCst) {
                 println!("darn, we seem to have hit a bad port, so restarting");
                 restart_enclone();
@@ -557,8 +563,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let setup_process_id = setup_process.id();
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
-            // Reducing sleep time below to 500 ms causes frequent failures.
-            thread::sleep(Duration::from_millis(1000));
             if verbose {
                 println!("used {:.1} seconds connecting to remote", elapsed(&tremote));
             }
@@ -570,22 +574,27 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             println!("connecting to {}", url);
         }
         let tconnect = Instant::now();
-        let mut client = AnalyzerClient::connect(url.clone()).await;
-        if client.is_err() {
-            // If connection failed, sleep and try again.  This happens maybe 10% of the time.
-
-            println!("connection attempt failed, waiting one second and will try again");
-            thread::sleep(Duration::from_millis(1000));
-            client = AnalyzerClient::connect(url).await;
-
-            // Test for second failure.
-
-            if client.is_err() {
+        const MAX_CONNECT_MS: u64 = 10_000;
+        const CONNECT_WAIT_MS: u64 = 250;
+        use tonic::transport::Channel;
+        let mut client: Result<AnalyzerClient<Channel>, tonic::transport::Error>;
+        let mut wait_time = 0;
+        loop {
+            thread::sleep(Duration::from_millis(CONNECT_WAIT_MS));
+            wait_time += CONNECT_WAIT_MS;
+            client = AnalyzerClient::connect(url.clone()).await;
+            if client.is_ok() {
+                break;
+            }
+            if wait_time >= MAX_CONNECT_MS {
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
+                if !verbose {
+                    eprintln!("Please retry after adding the VERBOSE argument to your command.\n");
+                }
+                eprintln!("Please report this problem.  It is possible that the maximum");
+                eprintln!("connection time used by enclone visual needs to be increased.\n");
                 cleanup();
                 std::process::exit(1);
-            } else {
-                println!("excellent, it's OK now");
             }
         }
         if verbose {
@@ -607,6 +616,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
+                    if verbose {
+                        println!("processing command {}", line);
+                    }
                     let output;
                     let mut svg_output = String::new();
                     let mut summary = String::new();
