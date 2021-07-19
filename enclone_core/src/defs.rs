@@ -19,25 +19,6 @@ use vector_utils::*;
 
 pub static FAILED: AtomicBool = AtomicBool::new(false);
 
-// The rest.
-
-pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
-    "amino",
-    "ansi_escape",
-    "binary_vec_io",
-    "enclone",
-    "equiv",
-    "graph_simple",
-    "io_utils",
-    "mirror_sparse_matrix",
-    "perf_stats",
-    "stats_utils",
-    "stirling_numbers",
-    "string_utils",
-    "tables",
-    "vector_utils",
-];
-
 pub const HELP_PAGES: [&str; 21] = [
     "all",
     "amino",
