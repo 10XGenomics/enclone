@@ -588,6 +588,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
             if wait_time >= MAX_CONNECT_MS {
                 eprintln!("\nconnection failed with error\n{:?}\n", client);
+                if !verbose {
+                    eprintln!("Please retry after adding the VERBOSE argument to your command.\n");
+                }
+                eprintln!("Please report this problem.  It is possible that the maximum");
+                eprintln!("connection time used by enclone visual needs to be increased.\n");
                 cleanup();
                 std::process::exit(1);
             }
