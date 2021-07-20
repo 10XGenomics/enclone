@@ -629,8 +629,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         std::process::exit(0);
                     }
                     if line != "enclone" && !line.starts_with("enclone ") {
-                        output =
-                            "an actual enclone command needs to start with \"enclone\"".to_string();
+                        if line.starts_with("#") {
+                            output = "unknown tag".to_string();
+                        } else {
+                            output = "an actual enclone command needs to start with \"enclone\""
+                                .to_string();
+                        }
                     } else {
                         if CONFIG_FILE.lock().unwrap().len() > 0 {
                             line += &mut format!(" CONFIG={}", CONFIG_FILE.lock().unwrap()[0]);
@@ -677,15 +681,15 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             }
                             summary = r.summary.clone();
                         }
-                        SERVER_REPLY_SVG.lock().unwrap().clear();
-                        SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
-                        SERVER_REPLY_SUMMARY.lock().unwrap().clear();
-                        SERVER_REPLY_SUMMARY.lock().unwrap().push(summary);
-                        SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
-                        SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
-                        SERVER_REPLY_LAST_WIDTHS.lock().unwrap().clear();
-                        SERVER_REPLY_LAST_WIDTHS.lock().unwrap().push(last_widths);
                     }
+                    SERVER_REPLY_SVG.lock().unwrap().clear();
+                    SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
+                    SERVER_REPLY_SUMMARY.lock().unwrap().clear();
+                    SERVER_REPLY_SUMMARY.lock().unwrap().push(summary);
+                    SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
+                    SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
+                    SERVER_REPLY_LAST_WIDTHS.lock().unwrap().clear();
+                    SERVER_REPLY_LAST_WIDTHS.lock().unwrap().push(last_widths);
                     SERVER_REPLY_TEXT.lock().unwrap().clear();
                     SERVER_REPLY_TEXT.lock().unwrap().push(output.clone());
                     PROCESSING_REQUEST.store(false, SeqCst);
