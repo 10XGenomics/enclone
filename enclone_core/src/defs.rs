@@ -204,6 +204,7 @@ pub struct GeneralOpt {
     pub info: Option<String>,
     pub info_fields: Vec<String>,
     pub info_data: HashMap<String, Vec<String>>,
+    pub info_resolve: bool,
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config_file: String,
