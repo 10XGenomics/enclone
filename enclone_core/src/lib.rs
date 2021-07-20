@@ -98,7 +98,8 @@ pub fn fetch_url(url: &str) -> Result<String, String> {
 pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
     let x = std::fs::File::open(&f);
     if !x.is_ok() {
-        return Err(format!("\nThe file {} could not be opened because {}.  This came from \
+        return Err(format!(
+            "\nThe file {} could not be opened because {}.  This came from \
             the command line argument {}.\n",
             f,
             x.err().unwrap(),
@@ -112,11 +113,10 @@ pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
             if err.starts_with("Is a directory") {
                 err = "it is a directory".to_string();
             }
-            return Err(format!("\nThe file {} could not be read because {}.\nThis came from \
+            return Err(format!(
+                "\nThe file {} could not be read because {}.\nThis came from \
                 the command line argument {}.\n",
-                f,
-                err,
-                arg,
+                f, err, arg,
             ));
         }
         break;
