@@ -3,8 +3,8 @@
 use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use crate::process_special_arg::*;
-use enclone_core::*;
 use enclone_core::defs::*;
+use enclone_core::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
