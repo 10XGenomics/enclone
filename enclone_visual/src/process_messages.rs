@@ -25,7 +25,7 @@ impl EncloneVisual {
                 let group_id = GROUP_ID.load(SeqCst);
                 self.input_value = format!("{}", group_id);
                 GROUP_ID_CLICKED_ON.store(false, SeqCst);
-                Command::perform(noop(), Message::SubmitButtonPressed)
+                Command::perform(noop0(), Message::SubmitButtonPressed)
             }
             Message::SubmitButtonPressed(_) => {
                 let mut group_spec = true;
@@ -172,7 +172,7 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    Command::perform(noop(), Message::Capture)
+                    Command::perform(noop0(), Message::Capture)
                 }
             }
 
@@ -227,7 +227,7 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    Command::perform(noop(), Message::Capture)
+                    Command::perform(noop0(), Message::Capture)
                 }
             }
 
@@ -257,7 +257,7 @@ impl EncloneVisual {
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
-                    Command::perform(noop(), Message::Capture)
+                    Command::perform(noop0(), Message::Capture)
                 }
             }
 
