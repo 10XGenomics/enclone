@@ -448,7 +448,7 @@ impl EncloneVisual {
                     Command::none()
                 } else {
                     self.sanity_check();
-                    Command::perform(noop(), Message::Capture)
+                    Command::perform(noop0(), Message::Capture)
                 }
             }
 
