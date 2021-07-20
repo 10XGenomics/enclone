@@ -186,8 +186,8 @@ impl EncloneVisual {
                 self.table_comp_history.remove(h);
                 self.last_widths_history.remove(h);
                 self.is_blank.remove(h);
-                self.history_index -= 1;
-                if h == 0 {
+                if self.state_count() == 0 {
+                    self.history_index -= 1;
                     self.input_value.clear();
                     self.svg_value.clear();
                     self.png_value.clear();
@@ -199,6 +199,9 @@ impl EncloneVisual {
                     self.translated_input_value.clear();
                     self.current_tables.clear();
                 } else {
+                    if h > 0 {
+                        self.history_index -= 1;
+                    }
                     let x = self.svg_current();
                     self.post_svg(&x);
                     self.summary_value = self.summary_current();

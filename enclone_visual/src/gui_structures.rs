@@ -111,6 +111,9 @@ impl EncloneVisual {
     pub fn hi(&self) -> usize {
         self.history_index - 1
     }
+    pub fn state_count(&self) -> usize {
+        self.svg_history.len()
+    }
     pub fn svg_current(&self) -> String {
         return self.svg_hist_uniq[self.svg_history[self.hi()]].clone();
     }
