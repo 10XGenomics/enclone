@@ -470,7 +470,7 @@ impl EncloneVisual {
                 if count >= 1 {
                     capture(count, self.window_id);
                 }
-                Command::perform(noop(), Message::RunTests)
+                Command::perform(noop0(), Message::RunTests)
             }
 
             // Catch exit (when the upper left red button is pushed) and store DONE to make

@@ -50,6 +50,10 @@ async fn noop() -> Result<(), String> {
     Ok(())
 }
 
+async fn noop0() -> Result<(), String> {
+    Ok(())
+}
+
 async fn compute() -> Result<(), String> {
     let t = Instant::now();
     while PROCESSING_REQUEST.load(SeqCst) {
