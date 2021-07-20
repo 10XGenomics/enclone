@@ -198,7 +198,7 @@ fn main() {
     let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 
     eprintln!(
-        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} seconds by {:.1}%, \
+        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
             versus max allowed = {}%.",
         peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
     );
