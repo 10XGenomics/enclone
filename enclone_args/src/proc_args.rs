@@ -3,6 +3,7 @@
 use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use crate::process_special_arg::*;
+use enclone_core::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use itertools::Itertools;
@@ -781,12 +782,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
                 }
-                if let Err(e) = File::open(&val) {
-                    return Err(format!(
-                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
-                        val, e
-                    ));
-                }
+                require_readable_file(&val, &arg)?;
                 if ctl.gen_opt.evil_eye {
                     println!("file open complete");
                 }
@@ -811,12 +807,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     ));
                 }
                 *(set_string_readable_csv[j].1) = Some(val.clone());
-                if let Err(e) = File::open(&val) {
-                    return Err(format!(
-                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
-                        val, e
-                    ));
-                }
+                require_readable_file(&val, &arg)?;
                 continue 'args_loop;
             }
         }
