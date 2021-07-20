@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-// Set up response on panic.
+// Set up response on panic.  If the email argument is sent, then an email is sent to the
+// argument bug_reports.  The caller only sets these for internal users.
 
 use crate::version_string;
 use crate::{BUG_REPORT_ADDRESS, REMOTE_HOST};
