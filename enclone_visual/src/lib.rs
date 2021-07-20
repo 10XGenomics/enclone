@@ -130,7 +130,7 @@ pub async fn launch_gui() -> iced::Result {
 
 pub fn capture(count: usize, window_id: usize) {
     if TESTS[count - 1].2.len() > 0 {
-        thread::sleep(Duration::from_millis(20));
+        thread::sleep(Duration::from_millis(50));
         let o = std::process::Command::new("screencapture")
             .arg("-x")
             .arg(&format!("-l{}", window_id))
