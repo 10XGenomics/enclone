@@ -18,12 +18,10 @@ The enclone visual app view is vertically divided roughly as follows, going down
 
 The app remembers all of this.  There are buttons in the graphics subwindow that allow navigation 
 through previous commands/graphics:  
-* up button   -- go to previous state
-* down button -- go to next state
-* del button  -- delete current state and go back to previous one
-                 special cases (handled in the only reasonable way):
-                 nothing left -- leave the screen empty like at the start
-                 only remain states are forward -- go to the first one
+* state position -- index of current state in all the states (not actually a button)
+* up button      -- go to previous state
+* down button    -- go to next state
+* del button     -- delete current state (and go back if that makes sense).
 
 Some buttons are blank initially.  Those do nothing until 
 populated with something (like a down arrow, to go forward to the next state).
