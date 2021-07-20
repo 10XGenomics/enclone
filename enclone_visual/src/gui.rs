@@ -23,6 +23,8 @@ fn handle_resize(width: u32, height: u32) -> Option<Message> {
     Some(Message::Resize(width, height))
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 impl Application for EncloneVisual {
     type Executor = iced::executor::Default;
     type Message = Message;
@@ -44,6 +46,8 @@ impl Application for EncloneVisual {
             (x, Command::perform(noop(), Message::RunTests))
         }
     }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     fn title(&self) -> String {
         String::from("EncloneVisual")
@@ -80,6 +84,8 @@ impl Application for EncloneVisual {
         })
     }
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     fn view(&mut self) -> Element<Message> {
         let text_input = TextInput::new(
             &mut self.input,
@@ -104,6 +110,8 @@ impl Application for EncloneVisual {
         let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
             .padding(10)
             .on_press(Message::ClearButtonPressed);
+
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
         // Define the button complex that is the "control panel".
 
@@ -231,6 +239,8 @@ impl Application for EncloneVisual {
             command_complex = command_complex.push(button_column2);
         }
 
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
         // Build the scrollable for clonotypes.  We truncate lines to prevent wrapping.
 
         const SCROLLBAR_WIDTH: u16 = 12;
@@ -260,6 +270,8 @@ impl Application for EncloneVisual {
                     .font(DEJAVU_BOLD)
                     .size(CLONOTYPE_FONT_SIZE),
             );
+
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
         // Fix the height of the SVG.  This needs to be set so that there is enough room for
         // the clonotype tables.  We do not set the width because it's the height that we need
@@ -309,6 +321,8 @@ impl Application for EncloneVisual {
             graphic_row = graphic_row.push(command_complex);
         }
 
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
         // Put it all together.
 
         let left_buttons = Column::new()
@@ -322,7 +336,6 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::OpenModalCookbook),
             );
-
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
