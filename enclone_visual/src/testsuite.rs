@@ -28,7 +28,7 @@ const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 21] = [
+pub const TESTS: [(&str, MsgFn, &str); 28] = [
     (X0,     SUBMIT,  ""),        // enclone woof
     ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
@@ -50,6 +50,13 @@ pub const TESTS: [(&str, MsgFn, &str); 21] = [
     ("",     BACK,    "test9"),   // #3
     ("10",   SUBMIT,  "test10"),  // 10
     ("",     DEL,     "test11"),  // #3
+    ("",     BACK,    ""),        // #2
+    ("",     DEL,     ""),        // X2 = ...
+    ("",     DEL,     ""),        // X1 = ...
+    ("",     DEL,     ""),        // 10
+    ("",     DEL,     ""),        // #1
+    ("",     DEL,     ""),        // X0 = ...
+    ("",     DEL,     "test12"),  // #3
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
