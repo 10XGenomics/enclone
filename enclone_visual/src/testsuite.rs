@@ -96,3 +96,5 @@ pub const TESTS: [(&str, MsgFn, &str); 28] = [
 // 6. test that group clicks work
 //
 // 7. test that horizontal resizing works on enclone BCR=123085 CHAINS=4
+//
+// 8. test that enclone VIS does not begin with a spinning rainbow wheel
