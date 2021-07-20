@@ -14,6 +14,9 @@ use std::process::{Command, Stdio};
 use string_utils::*;
 
 pub fn prepare_for_apocalypse(args: &Vec<String>, email: bool, bug_reports: &str) {
+    if email {
+        assert!(bug_reports.len() > 0);
+    }
     let now = Utc::now().naive_utc().timestamp();
     let build_date = version_string().after(":").between(": ", " :").to_string();
     let build_datetime = format!("{} 00:00:00", build_date);
