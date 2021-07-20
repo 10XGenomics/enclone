@@ -121,7 +121,7 @@ impl EncloneVisual {
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
                         } else {
-                            Command::perform(noop(), Message::Capture)
+                            Command::perform(noop0(), Message::Capture)
                         }
                     } else {
                         self.compute_state = Thinking;
