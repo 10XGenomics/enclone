@@ -20,7 +20,10 @@ The app remembers all of this.  There are buttons in the graphics subwindow that
 through previous commands/graphics:  
 * up button   -- go to previous state
 * down button -- go to next state
-* del button  -- delete current state and go back to previous one.
+* del button  -- delete current state and go back to previous one
+                 special cases:
+                 nothing left -- leave the screen empty like at the start
+                 only remain states are forward -- go to the first one
 
 Some buttons are blank initially.  Those do nothing until 
 populated with something (like a down arrow, to go forward to the next state).
