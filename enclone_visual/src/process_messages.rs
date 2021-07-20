@@ -277,10 +277,13 @@ impl EncloneVisual {
                 Command::perform(noop(), TESTS[count].1)
             }
 
-            Message::OpenModalHelp => {
-                COOKBOOK.store(false, SeqCst);
-                SUMMARY.store(false, SeqCst);
-                self.modal_state_help.show(true);
+            Message::HelpOpen => {
+                self.help_mode = true;
+                Command::none()
+            }
+
+            Message::HelpClose => {
+                self.help_mode = false;
                 Command::none()
             }
 
@@ -295,11 +298,6 @@ impl EncloneVisual {
                 COOKBOOK.store(false, SeqCst);
                 SUMMARY.store(true, SeqCst);
                 self.modal_state_help.show(true);
-                Command::none()
-            }
-
-            Message::CloseModalHelp => {
-                self.modal_state_help.show(false);
                 Command::none()
             }
 
@@ -518,6 +516,18 @@ impl EncloneVisual {
             }
 
             Message::DoNothing => Command::none(),
+
+            Message::OpenModalHelp => {
+                COOKBOOK.store(false, SeqCst);
+                SUMMARY.store(false, SeqCst);
+                self.modal_state_help.show(true);
+                Command::none()
+            }
+
+            Message::CloseModalHelp => {
+                self.modal_state_help.show(false);
+                Command::none()
+            }
         }
     }
 }

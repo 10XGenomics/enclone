@@ -24,4 +24,6 @@ pub enum Message {
     Capture(Result<(), String>),
     GroupClicked(crate::canvas_view::Message),
     Resize(u32, u32),
+    HelpOpen,
+    HelpClose,
 }

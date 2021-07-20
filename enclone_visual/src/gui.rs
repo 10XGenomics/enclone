@@ -6,9 +6,9 @@ use gui_structures::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Clipboard, Color, Column, Command, Element, HorizontalAlignment,
-    Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
-    VerticalAlignment,
+    Align, Application, Button, Clipboard, Color, Column, Command, Container, Element,
+    HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text,
+    TextInput, VerticalAlignment,
 };
 // use iced::Subscription;
 use iced_aw::{Card, Modal};
@@ -87,6 +87,51 @@ impl Application for EncloneVisual {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     fn view(&mut self) -> Element<Message> {
+        const SCROLLBAR_WIDTH: u16 = 12;
+        const SPACING: u16 = 20;
+        let version = VERSION.lock().unwrap()[0].clone();
+        let version_float = format!("1e-{}", -version.force_f64().log10());
+
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+        // First handle the help case.
+
+        if self.help_mode {
+            let help_title = Text::new(&format!("Help")).size(30);
+            let help_scrollable = Scrollable::new(&mut self.scroll)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .scrollbar_width(SCROLLBAR_WIDTH)
+                .scroller_width(12)
+                .style(style::ScrollableStyle)
+                .push(
+                    Text::new(&format!(
+                        "Welcome to enclone visual {} = {}!\n\n{}",
+                        version,
+                        version_float,
+                        include_str!["help.txt"],
+                    ))
+                    .font(DEJAVU_BOLD)
+                    .size(14),
+                );
+            let help_close_button = Button::new(&mut self.open_state, Text::new("Vanish!"))
+                .on_press(Message::HelpClose);
+            let content = Column::new()
+                .spacing(SPACING)
+                .padding(20)
+                .push(help_title)
+                .push(help_scrollable)
+                .push(help_close_button);
+            return Container::new(content)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .into();
+        }
+
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+        // Now do everything else.
+
         let text_input = TextInput::new(
             &mut self.input,
             "",
@@ -256,8 +301,6 @@ impl Application for EncloneVisual {
 
         // Build the scrollable for clonotypes.  We truncate lines to prevent wrapping.
 
-        const SCROLLBAR_WIDTH: u16 = 12;
-        const SPACING: u16 = 20;
         const CLONOTYPE_FONT_SIZE: u16 = 13;
         let font_width = CLONOTYPE_FONT_SIZE as f32 * 0.5175;
         let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
@@ -341,10 +384,7 @@ impl Application for EncloneVisual {
         let left_buttons = Column::new()
             .spacing(8)
             .push(Button::new(&mut self.exit_state, Text::new("Exit")).on_press(Message::Exit))
-            .push(
-                Button::new(&mut self.open_state, Text::new("Help"))
-                    .on_press(Message::OpenModalHelp),
-            )
+            .push(Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::HelpOpen))
             .push(
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::OpenModalCookbook),
@@ -379,8 +419,6 @@ impl Application for EncloneVisual {
                 .push(scrollable),
         );
 
-        let version = VERSION.lock().unwrap()[0].clone();
-        let version_float = format!("1e-{}", -version.force_f64().log10());
         Modal::new(&mut self.modal_state_help, content, move |state| {
             Card::new(
                 Text::new(""),
