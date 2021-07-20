@@ -21,7 +21,7 @@ through previous commands/graphics:
 * up button   -- go to previous state
 * down button -- go to next state
 * del button  -- delete current state and go back to previous one
-                 special cases:
+                 special cases (handled in the only reasonable way):
                  nothing left -- leave the screen empty like at the start
                  only remain states are forward -- go to the first one
 
