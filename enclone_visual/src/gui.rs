@@ -94,7 +94,7 @@ impl Application for EncloneVisual {
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-        // First handle the help case.
+        // Handle the help case.
 
         if self.help_mode {
             let help_title = Text::new(&format!("Help")).size(30);
@@ -122,6 +122,42 @@ impl Application for EncloneVisual {
                 .push(help_title)
                 .push(help_scrollable)
                 .push(help_close_button);
+            return Container::new(content)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .into();
+        }
+
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+        // Handle the cookbook case.
+
+        if self.cookbook_mode {
+            let cookbook_title = Text::new(&format!("Cookbook")).size(30);
+            let preamble = "Type the tag into the input box to run the given command.\n\n";
+            let cookbook_scrollable = Scrollable::new(&mut self.scroll)
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .scrollbar_width(SCROLLBAR_WIDTH)
+                .scroller_width(12)
+                .style(style::ScrollableStyle)
+                .push(
+                    Text::new(&format!(
+                        "{}{}",
+                        preamble,
+                        COOKBOOK_CONTENTS.lock().unwrap()[0]
+                    ))
+                    .font(DEJAVU_BOLD)
+                    .size(14),
+                );
+            let cookbook_close_button = Button::new(&mut self.open_state, Text::new("Vanish!"))
+                .on_press(Message::CookbookClose);
+            let content = Column::new()
+                .spacing(SPACING)
+                .padding(20)
+                .push(cookbook_title)
+                .push(cookbook_scrollable)
+                .push(cookbook_close_button);
             return Container::new(content)
                 .width(Length::Fill)
                 .height(Length::Fill)
@@ -387,7 +423,7 @@ impl Application for EncloneVisual {
             .push(Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::HelpOpen))
             .push(
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
-                    .on_press(Message::OpenModalCookbook),
+                    .on_press(Message::CookbookOpen),
             );
         let mut content = Column::new()
             .spacing(SPACING)

@@ -45,6 +45,7 @@ pub struct EncloneVisual {
     pub window_id: usize,
     pub start_command: Option<Instant>,
     pub help_mode: bool,
+    pub cookbook_mode: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -72,6 +73,7 @@ pub struct EncloneVisual {
     pub clear_button: button::State,
     pub open_state: button::State,
     pub help_button: button::State,
+    pub cookbook_button: button::State,
     //
     // more or less uniqued history:
     //

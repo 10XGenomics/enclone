@@ -287,6 +287,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::CookbookOpen => {
+                self.cookbook_mode = true;
+                Command::none()
+            }
+
+            Message::CookbookClose => {
+                self.cookbook_mode = false;
+                Command::none()
+            }
+
             Message::OpenModalCookbook => {
                 COOKBOOK.store(true, SeqCst);
                 SUMMARY.store(false, SeqCst);

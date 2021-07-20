@@ -26,4 +26,6 @@ pub enum Message {
     Resize(u32, u32),
     HelpOpen,
     HelpClose,
+    CookbookOpen,
+    CookbookClose,
 }
