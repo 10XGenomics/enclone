@@ -163,7 +163,20 @@ impl Application for EncloneVisual {
             )
             .on_press(Message::GraphicsCopyButtonPressed);
 
+            let mut state_pos = format!("{}", self.history_index);
+            if state_pos.len() == 1 {
+                state_pos += "    ";
+            } else if state_pos.len() == 2 {
+                state_pos += "  ";
+            }
+            let state_pos_button = Button::new(
+                &mut self.state_pos_button_null,
+                Text::new(&state_pos).size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::DoNothing);
+
             let mut button_column2 = Column::new().spacing(8);
+            button_column2 = button_column2.push(state_pos_button);
             if self.history_index > 1 {
                 button_column2 = button_column2.push(back_button);
             } else {
