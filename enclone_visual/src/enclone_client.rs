@@ -619,7 +619,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     if verbose {
                         println!("processing command {}", line);
                     }
-                    // Remove double quotes from the command.  If we were using 
+                    // Remove double quotes from the command.  If we were using
                     // enclone "non-visual", the quotes would normally be stripped out by the
                     // shell.  In this setting, if we don't remove them, we'll get an error.
                     line = line.replace("\"", "");

@@ -240,6 +240,7 @@ pub struct PlotOpt {
     pub plot_xy_yvar: String,
     pub plot_xy_x_log10: bool,
     pub plot_xy_y_log10: bool,
+    pub plot_xy_sym: bool,
     pub plot_conditions: Vec<String>,
     pub plot_colors: Vec<String>,
     pub plot_file: String,
