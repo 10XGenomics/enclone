@@ -4,7 +4,6 @@ use crate::*;
 use canvas_view::CanvasView;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
-use iced_aw::modal;
 // use iced_native::{window, Event};
 use std::collections::HashMap;
 use std::time::Instant;
@@ -36,7 +35,6 @@ pub struct EncloneVisual {
     pub table_comp_value: Vec<u8>,
     pub last_widths_value: Vec<usize>,
     pub submit_button_text: String,
-    pub modal_state_help: modal::State<ModalState>,
     // pub should_exit: bool,
     pub compute_state: ComputeState,
     pub copy_image_button_color: Color,

@@ -307,29 +307,10 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::OpenModalCookbook => {
-                COOKBOOK.store(true, SeqCst);
-                SUMMARY.store(false, SeqCst);
-                self.modal_state_help.show(true);
-                Command::none()
-            }
-
-            Message::OpenModalSummary => {
-                COOKBOOK.store(false, SeqCst);
-                SUMMARY.store(true, SeqCst);
-                self.modal_state_help.show(true);
-                Command::none()
-            }
-
             Message::Exit => {
                 if true {
                     std::process::exit(0);
                 }
-                Command::none()
-            }
-
-            Message::CancelButtonPressed => {
-                self.modal_state_help.show(false);
                 Command::none()
             }
 
@@ -536,18 +517,6 @@ impl EncloneVisual {
             }
 
             Message::DoNothing => Command::none(),
-
-            Message::OpenModalHelp => {
-                COOKBOOK.store(false, SeqCst);
-                SUMMARY.store(false, SeqCst);
-                self.modal_state_help.show(true);
-                Command::none()
-            }
-
-            Message::CloseModalHelp => {
-                self.modal_state_help.show(false);
-                Command::none()
-            }
         }
     }
 }
