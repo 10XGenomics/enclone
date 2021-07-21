@@ -481,6 +481,7 @@ impl Application for EncloneVisual {
             .push(
                 Row::new()
                     .spacing(10)
+                    .align_items(Align::Center)
                     .push(text_input_column)
                     .push(button)
                     .push(clear_button),
