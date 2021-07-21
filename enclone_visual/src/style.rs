@@ -66,27 +66,3 @@ impl scrollable::StyleSheet for ScrollableStyle {
         }
     }
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-use iced_aw::style::{
-    card::{Style, StyleSheet},
-    colors,
-};
-
-#[derive(Clone, Copy)]
-pub struct Help;
-
-impl StyleSheet for Help {
-    fn active(&self) -> Style {
-        Style {
-            background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-            border_width: 0.0,
-            border_color: iced::Color::from_rgb(1.0, 1.0, 1.0),
-            head_background: iced::Background::Color(Color::from_rgb(0.9, 1.0, 0.9)),
-            head_text_color: colors::WHITE,
-            close_color: colors::WHITE,
-            ..Style::default()
-        }
-    }
-}

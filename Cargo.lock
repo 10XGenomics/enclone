@@ -1615,7 +1615,6 @@ dependencies = [
  "failure",
  "flate2",
  "iced",
- "iced_aw",
  "iced_native",
  "image",
  "io_utils",
@@ -2666,20 +2665,6 @@ dependencies = [
  "iced_wgpu",
  "iced_winit",
  "thiserror",
-]
-
-[[package]]
-name = "iced_aw"
-version = "0.1.0"
-source = "git+https://github.com/genusistimelord/iced_aw.git?branch=iced-main#933b85266c8257de053ca8158e295eeb03a8b613"
-dependencies = [
- "dodrio",
- "iced_graphics",
- "iced_native",
- "iced_style",
- "iced_web",
- "wasm-bindgen",
- "web-sys",
 ]
 
 [[package]]
