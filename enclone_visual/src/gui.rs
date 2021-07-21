@@ -6,8 +6,8 @@ use gui_structures::*;
 use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Clipboard, Color, Column, Command, Container, Element,
-    Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
+    Align, Application, Button, Clipboard, Color, Column, Command, Container, Element, Image,
+    Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
 };
 // use iced::Subscription;
 // use iced_native::{window, Event};
