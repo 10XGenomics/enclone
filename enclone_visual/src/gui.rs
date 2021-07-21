@@ -3,11 +3,10 @@
 use crate::*;
 use gui_structures::ComputeState::*;
 use gui_structures::*;
-use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     Align, Application, Button, Clipboard, Color, Column, Command, Container, Element, Image,
-    Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
+    Length, Row, Rule, Scrollable, Space, Subscription, Text, TextInput,
 };
 // use iced::Subscription;
 // use iced_native::{window, Event};
@@ -401,17 +400,14 @@ impl Application for EncloneVisual {
         // the clonotype tables.  We do not set the width because it's the height that we need
         // to control.
 
-        const SVG_HEIGHT: u16 = 400;
+        // let svg_height = if !self.is_blank_current() {
+        let mut blank = false;
+        if self.history_index > 0 {
+            blank = self.is_blank[self.history_index - 1];
+        }
+        let svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
 
         // Display the SVG.
-        //
-        // WARNING!  When we changed the width and height to 400, the performance of scrolling
-        // in the clonotype table window gradually degraded, becoming less and less responsive.
-        // After a couple minutes, the app crashed, with thirty threads running.
-
-        let svg = Svg::new(Handle::from_memory(self.svg_value.as_bytes().to_vec()))
-            .height(Units(SVG_HEIGHT));
-        let _svg = &svg; // to temporarily prevent warning
 
         let png_banner = include_bytes!("../../img/enclone_banner.png").to_vec();
         let banner = Image::new(iced::image::Handle::from_memory(png_banner)).width(Units(500));
@@ -428,11 +424,11 @@ impl Application for EncloneVisual {
                             .view()
                             .map(move |message| Message::GroupClicked(message)),
                     )
-                    .height(Units(SVG_HEIGHT));
+                    .height(Units(svg_height));
             } else {
                 let svg_as_png =
                     Image::new(iced::image::Handle::from_memory(self.png_value.clone()))
-                        .height(Units(SVG_HEIGHT));
+                        .height(Units(svg_height));
                 graphic_row = graphic_row.push(svg_as_png);
             }
 
