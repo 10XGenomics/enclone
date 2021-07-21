@@ -217,7 +217,8 @@ impl Application for EncloneVisual {
         .padding(7)
         .font(DEJAVU_BOLD)
         .size(16);
-        let text_input_column = Column::new().spacing(5)
+        let text_input_column = Column::new()
+            .spacing(5)
             .width(iced::Length::Fill)
             .push(text_input1)
             .push(text_input2);
