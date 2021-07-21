@@ -628,10 +628,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut summary = String::new();
                     let mut table_comp = Vec::<u8>::new();
                     let mut last_widths = Vec::<usize>::new();
-                    if line == "q" {
-                        cleanup();
-                        std::process::exit(0);
-                    }
                     if line != "enclone" && !line.starts_with("enclone ") {
                         if line.starts_with("#") {
                             output = "unknown tag".to_string();
