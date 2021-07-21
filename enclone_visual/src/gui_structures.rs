@@ -46,6 +46,7 @@ pub struct EncloneVisual {
     pub start_command: Option<Instant>,
     pub help_mode: bool,
     pub cookbook_mode: bool,
+    pub summary_mode: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also

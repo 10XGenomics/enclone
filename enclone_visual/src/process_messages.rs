@@ -297,6 +297,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::SummaryOpen => {
+                self.summary_mode = true;
+                Command::none()
+            }
+
+            Message::SummaryClose => {
+                self.summary_mode = false;
+                Command::none()
+            }
+
             Message::OpenModalCookbook => {
                 COOKBOOK.store(true, SeqCst);
                 SUMMARY.store(false, SeqCst);

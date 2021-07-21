@@ -28,4 +28,6 @@ pub enum Message {
     HelpClose,
     CookbookOpen,
     CookbookClose,
+    SummaryOpen,
+    SummaryClose,
 }
