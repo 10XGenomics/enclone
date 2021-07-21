@@ -199,15 +199,28 @@ impl Application for EncloneVisual {
 
         // Now do everything else.
 
-        let text_input = TextInput::new(
-            &mut self.input,
+        let text_input1 = TextInput::new(
+            &mut self.input1,
             "",
-            &self.input_value,
-            Message::InputChanged,
+            &self.input_value1,
+            Message::InputChanged1,
         )
-        .padding(10)
+        .padding(7)
         .font(DEJAVU_BOLD)
         .size(16);
+        let text_input2 = TextInput::new(
+            &mut self.input2,
+            "",
+            &self.input_value2,
+            Message::InputChanged2,
+        )
+        .padding(7)
+        .font(DEJAVU_BOLD)
+        .size(16);
+        let text_input_column = Column::new().spacing(5)
+            .width(iced::Length::Fill)
+            .push(text_input1)
+            .push(text_input2);
 
         let button = Button::new(
             &mut self.button,
@@ -467,7 +480,7 @@ impl Application for EncloneVisual {
             .push(
                 Row::new()
                     .spacing(10)
-                    .push(text_input)
+                    .push(text_input_column)
                     .push(button)
                     .push(clear_button),
             )

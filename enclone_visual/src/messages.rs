@@ -2,7 +2,8 @@
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    InputChanged(String),
+    InputChanged1(String),
+    InputChanged2(String),
     SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
     ForwardButtonPressed(Result<(), String>),

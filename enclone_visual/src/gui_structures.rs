@@ -25,7 +25,10 @@ use ComputeState::*;
 #[derive(Default)]
 pub struct EncloneVisual {
     pub scroll: scrollable::State,
-    pub input: text_input::State,
+    pub input1: text_input::State,
+    pub input2: text_input::State,
+    pub input_value1: String,
+    pub input_value2: String,
     pub input_value: String,
     pub translated_input_value: String,
     pub output_value: String,

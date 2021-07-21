@@ -314,13 +314,29 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::InputChanged(ref value) => {
-                self.input_value = value.to_string();
+            Message::InputChanged1(ref value) => {
+                self.input_value1 = value.to_string();
+                self.input_value = self.input_value1.clone();
+                if self.input_value1.len() > 0 && self.input_value2.len() > 0 {
+                    self.input_value += " ";
+                }
+                self.input_value += &mut self.input_value2.clone();
+                Command::none()
+            }
+
+            Message::InputChanged2(ref value) => {
+                self.input_value2 = value.to_string();
+                self.input_value = self.input_value1.clone();
+                if self.input_value1.len() > 0 && self.input_value2.len() > 0 {
+                    self.input_value += " ";
+                }
+                self.input_value += &mut self.input_value2.clone();
                 Command::none()
             }
 
             Message::ClearButtonPressed => {
-                self.input_value.clear();
+                self.input_value1.clear();
+                self.input_value2.clear();
                 Command::none()
             }
 
