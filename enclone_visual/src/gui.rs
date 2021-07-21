@@ -7,11 +7,9 @@ use iced::svg::Handle;
 use iced::Length::Units;
 use iced::{
     Align, Application, Button, Clipboard, Color, Column, Command, Container, Element,
-    HorizontalAlignment, Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text,
-    TextInput, VerticalAlignment,
+    Image, Length, Row, Rule, Scrollable, Space, Subscription, Svg, Text, TextInput,
 };
 // use iced::Subscription;
-use iced_aw::{Card, Modal};
 // use iced_native::{window, Event};
 use iced_native::{event, subscription, window, Event};
 use messages::Message;
@@ -488,54 +486,9 @@ impl Application for EncloneVisual {
                 .align_items(Align::Center)
                 .push(scrollable),
         );
-
-        Modal::new(&mut self.modal_state_help, content, move |state| {
-            Card::new(
-                Text::new(""),
-                if !COOKBOOK.load(SeqCst) && !SUMMARY.load(SeqCst) {
-                    Text::new(&format!(
-                        "Welcome to enclone visual {} = {}!\n\n{}",
-                        version,
-                        version_float,
-                        include_str!["help.txt"],
-                    ))
-                } else if SUMMARY.load(SeqCst) {
-                    let summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
-                    let nlines = summary.chars().filter(|&n| n == '\n').count();
-                    let font_size = (15 * nlines) / 38;
-                    Text::new(&format!("{}", summary))
-                        .font(DEJAVU_BOLD)
-                        .size(font_size as u16)
-                } else {
-                    let preamble = "Type the tag into the input box to run the given command.\n\n";
-                    Text::new(&format!(
-                        "{}{}",
-                        preamble,
-                        COOKBOOK_CONTENTS.lock().unwrap()[0]
-                    ))
-                    .font(DEJAVU_BOLD)
-                    .size(14)
-                }
-                .height(Units(900))
-                .vertical_alignment(VerticalAlignment::Center),
-            )
-            .style(style::Help)
-            .foot(
-                Row::new().spacing(10).push(
-                    Button::new(
-                        &mut state.cancel_state,
-                        Text::new("Vanish!").horizontal_alignment(HorizontalAlignment::Left),
-                    )
-                    .on_press(Message::CancelButtonPressed),
-                ),
-            )
-            .width(Units(1100))
-            .height(Units(1060))
-            .on_close(Message::CloseModalHelp)
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
             .into()
-        })
-        .backdrop(Message::CloseModalHelp)
-        .on_esc(Message::CloseModalHelp)
-        .into()
     }
 }
