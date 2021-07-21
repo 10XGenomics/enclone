@@ -1665,18 +1665,18 @@ dependencies = [
  "procfs",
  "prost 0.8.0",
  "rayon",
- "resvg 0.14.1",
+ "resvg",
  "serde",
  "serde_json",
  "string_utils",
  "tables",
  "tilde-expand",
- "tiny-skia 0.5.1",
+ "tiny-skia",
  "tokio",
  "tokio-stream",
  "tonic",
  "tonic-build",
- "usvg 0.14.1",
+ "usvg",
  "vector_utils",
 ]
 
@@ -1936,18 +1936,6 @@ dependencies = [
  "servo-fontconfig",
  "walkdir",
  "winapi",
-]
-
-[[package]]
-name = "fontdb"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccfec742e7db963305c1d8fde9edef949b47b01e1664dae127489928633fbea8"
-dependencies = [
- "log",
- "memmap2 0.1.0",
- "ttf-parser 0.9.0",
- "uuid",
 ]
 
 [[package]]
@@ -2797,8 +2785,6 @@ dependencies = [
  "image",
  "log",
  "raw-window-handle",
- "resvg 0.12.0",
- "usvg 0.12.0",
  "wgpu",
  "wgpu_glyph",
 ]
@@ -2981,15 +2967,6 @@ dependencies = [
  "debruijn",
  "rayon",
  "vector_utils",
-]
-
-[[package]]
-name = "kurbo"
-version = "0.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "16cb54cd28cb3d2e964d9444ca185676a94fd9b7cce5f02b22c717947ed8e9a2"
-dependencies = [
- "arrayvec",
 ]
 
 [[package]]
@@ -3883,12 +3860,6 @@ dependencies = [
 
 [[package]]
 name = "pico-args"
-version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28b9b4df73455c861d7cbf8be42f01d3b373ed7f02e378d55fa84eafc6f638b1"
-
-[[package]]
-name = "pico-args"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db8bcd96cb740d03149cbad5518db9fd87126a10ab519c011893b1754134c468"
@@ -4443,33 +4414,17 @@ checksum = "f1382d1f0a252c4bf97dc20d979a2fdd05b024acd7c2ed0f7595d7817666a157"
 
 [[package]]
 name = "resvg"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6989baba2fe2d85b0daaea5e897ba842c42bd7bff59cb0c5fb099bdcead70421"
-dependencies = [
- "jpeg-decoder",
- "log",
- "pico-args 0.3.4",
- "png",
- "rgb",
- "svgfilters 0.2.0",
- "tiny-skia 0.2.0",
- "usvg 0.12.0",
-]
-
-[[package]]
-name = "resvg"
 version = "0.14.1"
 source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
 dependencies = [
  "jpeg-decoder",
  "log",
- "pico-args 0.4.2",
+ "pico-args",
  "png",
  "rgb",
- "svgfilters 0.3.0",
- "tiny-skia 0.5.1",
- "usvg 0.14.1",
+ "svgfilters",
+ "tiny-skia",
+ "usvg",
 ]
 
 [[package]]
@@ -4503,15 +4458,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "284de9dae38774e2813aaabd7e947b4a6fe9b8c58c2309f754a487cdd50de1c2"
 dependencies = [
  "petgraph",
-]
-
-[[package]]
-name = "roxmltree"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbf7d7b1ea646d380d0e8153158063a6da7efe30ddbf3184042848e3f8a6f671"
-dependencies = [
- "xmlparser",
 ]
 
 [[package]]
@@ -4633,26 +4579,6 @@ name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
-
-[[package]]
-name = "scroll_crash"
-version = "0.5.79"
-dependencies = [
- "failure",
- "iced",
- "itertools 0.10.1",
- "lazy_static",
- "libc",
- "log",
- "nix 0.22.0",
- "perf_stats",
- "pretty_trace",
- "prost 0.8.0",
- "string_utils",
- "tokio",
- "tokio-stream",
- "tonic",
-]
 
 [[package]]
 name = "sct"
@@ -5036,16 +4962,6 @@ checksum = "8fb1df15f412ee2e9dfc1c504260fa695c1c3f10fe9f4a6ee2d2184d7d6450e2"
 
 [[package]]
 name = "svgfilters"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3016b3217b82ea3bb7cd3b773030222c6acca46c52ef4e64b4e716bd4b25090e"
-dependencies = [
- "float-cmp",
- "rgb",
-]
-
-[[package]]
-name = "svgfilters"
 version = "0.3.0"
 source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
 dependencies = [
@@ -5209,19 +5125,6 @@ dependencies = [
  "libc",
  "wasi 0.10.0+wasi-snapshot-preview1",
  "winapi",
-]
-
-[[package]]
-name = "tiny-skia"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a428f0f1f63fa531b4a820f68b97270a4e90469c97162f0b01e3d6872c68e5ba"
-dependencies = [
- "arrayref",
- "arrayvec",
- "bytemuck",
- "png",
- "wide",
 ]
 
 [[package]]
@@ -5588,46 +5491,19 @@ dependencies = [
 
 [[package]]
 name = "usvg"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05a7ff57fca79848360bd2c00072a8029543cf554fe49c4d0af247271434702e"
-dependencies = [
- "base64 0.13.0",
- "data-url",
- "flate2",
- "fontdb 0.3.0",
- "kurbo 0.7.1",
- "log",
- "memmap2 0.1.0",
- "pico-args 0.3.4",
- "rctree",
- "roxmltree 0.13.1",
- "rustybuzz",
- "simplecss",
- "siphasher 0.2.3",
- "svgtypes",
- "ttf-parser 0.9.0",
- "unicode-bidi",
- "unicode-script",
- "unicode-vo",
- "xmlwriter",
-]
-
-[[package]]
-name = "usvg"
 version = "0.14.1"
 source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
 dependencies = [
  "base64 0.13.0",
  "data-url",
  "flate2",
- "fontdb 0.5.4",
- "kurbo 0.8.0",
+ "fontdb",
+ "kurbo",
  "log",
  "memmap2 0.2.3",
- "pico-args 0.4.2",
+ "pico-args",
  "rctree",
- "roxmltree 0.14.1",
+ "roxmltree",
  "rustybuzz",
  "simplecss",
  "siphasher 0.2.3",
@@ -5644,9 +5520,6 @@ name = "uuid"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
-dependencies = [
- "getrandom 0.2.3",
-]
 
 [[package]]
 name = "value-bag"
@@ -6034,16 +5907,6 @@ checksum = "b55551e42cbdf2ce2bedd2203d0cc08dba002c27510f86dab6d0ce304cba3dfe"
 dependencies = [
  "either",
  "libc",
-]
-
-[[package]]
-name = "wide"
-version = "0.6.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "46bbe7c604a27ca0b05c5503221e76da628225b568e6f1280b42dbad3b72d89b"
-dependencies = [
- "bytemuck",
- "safe_arch",
 ]
 
 [[package]]
