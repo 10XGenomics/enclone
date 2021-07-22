@@ -354,7 +354,7 @@ impl Application for EncloneVisual {
                                         "enclone visual remembers your previous commands and \
                             their outputs.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(Space::with_height(Units(20)))
                                 .push(
@@ -362,7 +362,7 @@ impl Application for EncloneVisual {
                                         "On the right, you can see boxes, that will appear on \
                             the right of your screen once you've entered your first command.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(Space::with_height(Units(20)))
                                 .push(
@@ -370,7 +370,7 @@ impl Application for EncloneVisual {
                                         "Initially, some of the boxes will be blank, meaning \
                             that they don't make sense yet and won't do anything.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(Space::with_height(Units(20)))
                                 .push(Text::new("There are four boxes:"))
@@ -380,26 +380,26 @@ impl Application for EncloneVisual {
                                         "• The number at the top is the index of the current \
                             state.  This is not for pushing.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(
                                     Text::new(
                                         "• Push the up arrow to go back to the previous state, \
                             meaning the last command that you typed.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(
                                     Text::new(
                                         "• Push the down arrow to go forward to the next state.",
                                     )
-                                    .width(max_width),
+                                    .width(Units((self.width - 120) as u16)),
                                 )
                                 .push(Text::new(
                                     "• Push the Del button to delete the current state, and go \
                             backward, if that makes sense.",
                                 ))
-                                .width(max_width),
+                                .width(Units((self.width - 120) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
                         .push(history_region),
