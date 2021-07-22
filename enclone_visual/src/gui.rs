@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::summary::*;
 use crate::*;
 use gui_structures::ComputeState::*;
 use gui_structures::*;
