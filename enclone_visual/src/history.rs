@@ -1,16 +1,16 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use iced::Length::Units;
+use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
 pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let version = VERSION.lock().unwrap()[0].clone();
     let version_float = format!("1e-{}", -version.force_f64().log10());
     let help_title = Text::new(&format!("Help")).size(30);
-    let help_close_button = Button::new(&mut slf.open_state, Text::new("Dismiss"))
-        .on_press(Message::HelpClose(Ok(())));
+    let help_close_button =
+        Button::new(&mut slf.open_state, Text::new("Dismiss")).on_press(Message::HelpClose(Ok(())));
     let top_bar = Row::new()
         .push(help_title)
         .push(Space::with_width(Length::Fill))
@@ -109,10 +109,7 @@ pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Text::new("Overall layout").size(24))
         .push(Space::with_height(Units(20)))
-        .push(
-            Text::new("There are input boxes near the top (described next).")
-                .width(max_width),
-        )
+        .push(Text::new("There are input boxes near the top (described next).").width(max_width))
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
@@ -160,8 +157,7 @@ pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         )
         .push(Space::with_height(Units(20)))
         .push(
-            Text::new("Once you've entered your command, push the Submit button.")
-                .width(max_width),
+            Text::new("Once you've entered your command, push the Submit button.").width(max_width),
         )
         //
         // Special commands.
@@ -208,10 +204,7 @@ pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
-        .push(
-            Text::new("Group ids are converted into a special enclone argument")
-                .width(max_width),
-        )
+        .push(Text::new("Group ids are converted into a special enclone argument").width(max_width))
         .push(Space::with_height(Units(10)))
         .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
         .push(Space::with_height(Units(10)))
@@ -270,10 +263,8 @@ pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(
-                            Text::new(
-                                "• Push the down arrow to go forward to the next state.",
-                            )
-                            .width(Units((slf.width - 120) as u16)),
+                            Text::new("• Push the down arrow to go forward to the next state.")
+                                .width(Units((slf.width - 120) as u16)),
                         )
                         .push(Text::new(
                             "• Push the Del button to delete the current state, and go \

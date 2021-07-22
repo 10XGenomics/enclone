@@ -20,8 +20,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .font(DEJAVU_BOLD)
                 .size(font_size as u16),
         );
-    let summary_close_button = Button::new(&mut slf.open_state, Text::new("Vanish!"))
-        .on_press(Message::SummaryClose);
+    let summary_close_button =
+        Button::new(&mut slf.open_state, Text::new("Vanish!")).on_press(Message::SummaryClose);
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)
