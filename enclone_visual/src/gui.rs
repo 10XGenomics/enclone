@@ -201,7 +201,7 @@ impl Application for EncloneVisual {
 
         let text_input1 = TextInput::new(
             &mut self.input1,
-            "text input boxes: these two lines",
+            "",
             &self.input_value1,
             Message::InputChanged1,
         )
@@ -210,7 +210,7 @@ impl Application for EncloneVisual {
         .size(16);
         let text_input2 = TextInput::new(
             &mut self.input2,
-            "are concatenated",
+            "",
             &self.input_value2,
             Message::InputChanged2,
         )
