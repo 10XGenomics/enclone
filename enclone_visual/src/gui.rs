@@ -137,87 +137,100 @@ impl Application for EncloneVisual {
                 .push(help_close_button);
             let max_width = Units((self.width - 60) as u16);
             let png_input_region = include_bytes!("../images/input_region.png").to_vec();
-            let input_region = Image::new(iced::image::Handle::from_memory(png_input_region))
-                .width(max_width);
+            let input_region =
+                Image::new(iced::image::Handle::from_memory(png_input_region)).width(max_width);
             let png_history_region = include_bytes!("../images/history_region.png").to_vec();
-            let history_region = Image::new(iced::image::Handle::from_memory(png_history_region))
-                .height(Units(240));
+            let history_region =
+                Image::new(iced::image::Handle::from_memory(png_history_region)).height(Units(240));
             let png_middle_region = include_bytes!("../images/middle_region.png").to_vec();
             let middle_region = Image::new(iced::image::Handle::from_memory(png_middle_region))
-                .height(Units(300)).width(Units(290));
+                .height(Units(300))
+                .width(Units(290));
             let png_top_region = include_bytes!("../images/top_region.png").to_vec();
-            let top_region = Image::new(iced::image::Handle::from_memory(png_top_region))
-                .height(Units(120));
+            let top_region =
+                Image::new(iced::image::Handle::from_memory(png_top_region)).height(Units(120));
             let help_scrollable = Scrollable::new(&mut self.scroll)
                 .width(Length::Fill)
                 .height(Length::Fill)
                 .scrollbar_width(SCROLLBAR_WIDTH)
                 .scroller_width(12)
                 .style(style::ScrollableStyle)
-
                 // Intro.
-
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Introduction").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(
-                    Text::new(&format!(
-                        "Welcome to enclone visual version {} = {}!",
-                        version,
-                        version_float,
-                    ))
-                )
+                .push(Text::new(&format!(
+                    "Welcome to enclone visual version {} = {}!",
+                    version, version_float,
+                )))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("enclone visual is a semi-graphical \
-                    version of enclone.  You can find out more about enclone at the site"))
+                .push(Text::new(
+                    "enclone visual is a semi-graphical \
+                    version of enclone.  You can find out more about enclone at the site",
+                ))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("bit.ly/enclone.").font(DEJAVU_BOLD))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("enclone visual simultaneously displays the text and graphical \
-                    output that enclone can produce."))
+                .push(Text::new(
+                    "enclone visual simultaneously displays the text and graphical \
+                    output that enclone can produce.",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("This is alpha software: there are many more bugs than there \
-                    are in enclone."))
-
+                .push(Text::new(
+                    "This is alpha software: there are many more bugs than there \
+                    are in enclone.",
+                ))
                 // Top.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Top of the page").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Row::new()
-                    .push(top_region)
+                .push(
+                    Row::new()
+                        .push(top_region)
                         .push(Space::with_width(Units(15)))
-                    .push(Column::new()
-                        .push(Space::with_height(Units(10)))
-                        .push(Text::new("Here are three buttons that appear in the upper left \
-                            corner of the screen."))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("1.  Exit, to leave enclone visual.  Note that the \
-                            circular red button in the extreme upper left corner is busted.").width(max_width))
-                        .push(Text::new("2.  Help, to get to this page."))
-                        .push(Text::new("3.  Cookbook, to show some sample commands."))
-                    )
+                        .push(
+                            Column::new()
+                                .push(Space::with_height(Units(10)))
+                                .push(Text::new(
+                                    "Here are three buttons that appear in the upper left \
+                            corner of the screen.",
+                                ))
+                                .push(Space::with_height(Units(20)))
+                                .push(
+                                    Text::new(
+                                        "1.  Exit, to leave enclone visual.  Note that the \
+                            circular red button in the extreme upper left corner is busted.",
+                                    )
+                                    .width(max_width),
+                                )
+                                .push(Text::new("2.  Help, to get to this page."))
+                                .push(Text::new("3.  Cookbook, to show some sample commands.")),
+                        ),
                 )
-
                 // Layout.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Overall layout").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("There are input boxes near the top (described below)."))
+                .push(Text::new(
+                    "There are input boxes near the top (described below).",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Once you've typed your first command, the screen will \
-                    split into two main parts:"))
+                .push(Text::new(
+                    "Once you've typed your first command, the screen will \
+                    split into two main parts:",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("1.  A graphics subwindow, which may or may not be populated."))
-                .push(Text::new("2.  A text subwindow, which typically has clonotypes in it."))
-
+                .push(Text::new(
+                    "1.  A graphics subwindow, which may or may not be populated.",
+                ))
+                .push(Text::new(
+                    "2.  A text subwindow, which typically has clonotypes in it.",
+                ))
                 // Input.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -225,137 +238,196 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(input_region)
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Above, you can see two boxes.  You can type a command into \
+                .push(
+                    Text::new(
+                        "Above, you can see two boxes.  You can type a command into \
                     these.  The reason for having two boxes is that it allows for longer \
-                    commands: you can split a command between the two boxes").width(max_width))
+                    commands: you can split a command between the two boxes",
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Except for special cases (see below), every command begins with \
+                .push(
+                    Text::new(
+                        "Except for special cases (see below), every command begins with \
                     the word enclone.  You can see examples by pushing the Cookbook button on the \
                     main screen.  You can learn about enclone commands in general by going to \
-                    the site bit.ly/enclone.").width(max_width))
+                    the site bit.ly/enclone.",
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Once you've entered your command, push the Submit button."))
-
+                .push(Text::new(
+                    "Once you've entered your command, push the Submit button.",
+                ))
                 // Special commands.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Special commands").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("In the cookbook, you'll find abbreviations for commands, \
-                    called tags, for example #1.  You can type these into the input box."))
+                .push(Text::new(
+                    "In the cookbook, you'll find abbreviations for commands, \
+                    called tags, for example #1.  You can type these into the input box.",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("You can also type a number into the text box, where the number \
-                    is the number of a clonotype group.  Things like this"))
+                .push(Text::new(
+                    "You can also type a number into the text box, where the number \
+                    is the number of a clonotype group.  Things like this",
+                ))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("1,7,10-15").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("also work"))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("If you've displayed a honeycomb plot (see cookbook for examples), \
+                .push(Text::new(
+                    "If you've displayed a honeycomb plot (see cookbook for examples), \
                     then positioning your mouse over a cell will cause a box to appear that \
-                    provides some information about that cell."))
+                    provides some information about that cell.",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("And clicking on a cell is the same as typing its number into \
-                    the input box!"))
+                .push(Text::new(
+                    "And clicking on a cell is the same as typing its number into \
+                    the input box!",
+                ))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Group ids are converted into a special enclone argument"))
+                .push(Text::new(
+                    "Group ids are converted into a special enclone argument",
+                ))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("that can also be supplied to enclone."))
-
                 // History.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("History, AKA the time machine").size(24))
                 .push(Space::with_height(Units(15)))
-                .push(Row::new()
-                    .push(Column::new()
-                        .push(Space::with_height(Units(5)))
-                        .push(Text::new("enclone visual remembers your previous commands and \
-                            their outputs."))
+                .push(
+                    Row::new()
+                        .push(
+                            Column::new()
+                                .push(Space::with_height(Units(5)))
+                                .push(Text::new(
+                                    "enclone visual remembers your previous commands and \
+                            their outputs.",
+                                ))
+                                .push(Space::with_height(Units(20)))
+                                .push(Text::new(
+                                    "On the right, you can see boxes, that will appear on \
+                            the right of your screen once you've entered your first command.",
+                                ))
+                                .push(Space::with_height(Units(20)))
+                                .push(Text::new(
+                                    "Initially, some of the boxes will be blank, meaning \
+                            that they don't make sense yet and won't do anything.",
+                                ))
+                                .push(Space::with_height(Units(20)))
+                                .push(Text::new("There are four boxes:"))
+                                .push(Space::with_height(Units(20)))
+                                .push(Text::new(
+                                    "• The number at the top is the index of the current \
+                            state.  This is not for pushing.",
+                                ))
+                                .push(Text::new(
+                                    "• Push the up arrow to go back to the previous state, \
+                            meaning the last command that you typed.",
+                                ))
+                                .push(Text::new(
+                                    "• Push the down arrow to go forward to the next state.",
+                                ))
+                                .push(Text::new(
+                                    "• Push the Del button to delete the current state, and go \
+                            backward, if that makes sense.",
+                                )),
+                        )
                         .push(Space::with_height(Units(20)))
-                        .push(Text::new("On the right, you can see boxes, that will appear on \
-                            the right of your screen once you've entered your first command."))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("Initially, some of the boxes will be blank, meaning \
-                            that they don't make sense yet and won't do anything."))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("There are four boxes:"))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("• The number at the top is the index of the current \
-                            state.  This is not for pushing."))
-                        .push(Text::new("• Push the up arrow to go back to the previous state, \
-                            meaning the last command that you typed."))
-                        .push(Text::new("• Push the down arrow to go forward to the next state."))
-                        .push(Text::new("• Push the Del button to delete the current state, and go \
-                            backward, if that makes sense."))
-                    )
-                    .push(Space::with_height(Units(20)))
-                    .push(history_region)
+                        .push(history_region),
                 )
-
                 // The middle boxes.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("The middle boxes").size(24))
                 .push(Space::with_height(Units(15)))
-                .push(Row::new()
-                    .push(Column::new()
-                        .push(Space::with_height(Units(5)))
-                        .push(Text::new("Just to the left of the history boxes are some more, \
-                            samples of which you can see on the right.").width(Units((self.width - 350) as u16)))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("The top box is the translated command.  It is the same \
-                            as the command you typed, unless you used a special command.").width(Units((self.width - 350) as u16)))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("Below it is a button to copy the command to your \
+                .push(
+                    Row::new()
+                        .push(
+                            Column::new()
+                                .push(Space::with_height(Units(5)))
+                                .push(
+                                    Text::new(
+                                        "Just to the left of the history boxes are some more, \
+                            samples of which you can see on the right.",
+                                    )
+                                    .width(Units((self.width - 350) as u16)),
+                                )
+                                .push(Space::with_height(Units(20)))
+                                .push(
+                                    Text::new(
+                                        "The top box is the translated command.  It is the same \
+                            as the command you typed, unless you used a special command.",
+                                    )
+                                    .width(Units((self.width - 350) as u16)),
+                                )
+                                .push(Space::with_height(Units(20)))
+                                .push(
+                                    Text::new(
+                                        "Below it is a button to copy the command to your \
                             clipboard.  This copied command can be reentered in enclone visual, \
-                            or supplied to \"regular\" enclone").width(Units((self.width - 350) as u16)))
+                            or supplied to \"regular\" enclone",
+                                    )
+                                    .width(Units((self.width - 350) as u16)),
+                                )
+                                .push(Space::with_height(Units(20)))
+                                .push(
+                                    Text::new(
+                                        "Next there is a button to copy the graphics image to \
+                            your clipboard, assuming that you have a graphics image.",
+                                    )
+                                    .width(Units((self.width - 350) as u16)),
+                                )
+                                .push(Space::with_height(Units(20)))
+                                .push(
+                                    Text::new(
+                                        "And at the bottom is a button to display the summary \
+                            stats for your enclone command.",
+                                    )
+                                    .width(Units((self.width - 350) as u16)),
+                                ),
+                        )
                         .push(Space::with_height(Units(20)))
-                        .push(Text::new("Next there is a button to copy the graphics image to \
-                            your clipboard, assuming that you have a graphics image.").width(Units((self.width - 350) as u16)))
-                        .push(Space::with_height(Units(20)))
-                        .push(Text::new("And at the bottom is a button to display the summary \
-                            stats for your enclone command.").width(Units((self.width - 350) as u16)))
-                    )
-                    .push(Space::with_height(Units(20)))
-                    .push(middle_region)
+                        .push(middle_region),
                 )
-
                 // Smarts.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Smarts").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("If you run a command, and then run a similar command after it, \
+                .push(Text::new(
+                    "If you run a command, and then run a similar command after it, \
                     enclone visual may elide some calculations from the previous command, so as \
-                    to respond faster.  This capability is not pushed as far as it could be."))
-
+                    to respond faster.  This capability is not pushed as far as it could be.",
+                ))
                 // Limitations.
-
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Limitations, AKA bugs").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("There are two main limitations of the current version of enclone \
-                    visual:"))
+                .push(Text::new(
+                    "There are two main limitations of the current version of enclone \
+                    visual:",
+                ))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("1.  The clonotype tables are black and white."))
-                .push(Text::new("2.  You can't use the mouse to copy text from the graphics \
-                    window or the text window."))
-
+                .push(Text::new(
+                    "2.  You can't use the mouse to copy text from the graphics \
+                    window or the text window.",
+                ))
                 // Bottom.
-
                 .push(Space::with_height(Units(20)));
 
             let content = Column::new()
