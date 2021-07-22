@@ -166,22 +166,31 @@ impl Application for EncloneVisual {
                     version, version_float,
                 )))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "enclone visual is a semi-graphical \
+                .push(
+                    Text::new(
+                        "enclone visual is a semi-graphical \
                     version of enclone.  You can find out more about enclone at the site",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("bit.ly/enclone.").font(DEJAVU_BOLD))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "enclone visual simultaneously displays the text and graphical \
+                .push(
+                    Text::new(
+                        "enclone visual simultaneously displays the text and graphical \
                     output that enclone can produce.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "This is alpha software: there are many more bugs than there \
+                .push(
+                    Text::new(
+                        "This is alpha software: there are many more bugs than there \
                     are in enclone.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 //
                 // Top.
                 //
@@ -221,21 +230,27 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Overall layout").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "There are input boxes near the top (described next).",
-                ).width(max_width))
+                .push(
+                    Text::new("There are input boxes near the top (described next).")
+                        .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "Once you've typed your first command, the screen will \
+                .push(
+                    Text::new(
+                        "Once you've typed your first command, the screen will \
                     split into two main parts:",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "1.  A graphics subwindow, which may or may not be populated.",
-                ).width(max_width))
-                .push(Text::new(
-                    "2.  A text subwindow, which typically has clonotypes in it.",
-                ).width(max_width))
+                .push(
+                    Text::new("1.  A graphics subwindow, which may or may not be populated.")
+                        .width(max_width),
+                )
+                .push(
+                    Text::new("2.  A text subwindow, which typically has clonotypes in it.")
+                        .width(max_width),
+                )
                 //
                 // Input.
                 //
@@ -265,9 +280,10 @@ impl Application for EncloneVisual {
                     .width(max_width),
                 )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "Once you've entered your command, push the Submit button.",
-                ).width(max_width))
+                .push(
+                    Text::new("Once you've entered your command, push the Submit button.")
+                        .width(max_width),
+                )
                 //
                 // Special commands.
                 //
@@ -276,34 +292,47 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Special commands").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "In the cookbook, you'll find abbreviations for commands, \
+                .push(
+                    Text::new(
+                        "In the cookbook, you'll find abbreviations for commands, \
                     called tags, for example #1.  You can type these into the input box.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "You can also type a number into the text box, where the number \
+                .push(
+                    Text::new(
+                        "You can also type a number into the text box, where the number \
                     is the number of a clonotype group.  Things like this",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("1,7,10-15").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("also work"))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "If you've displayed a honeycomb plot (see cookbook for examples), \
+                .push(
+                    Text::new(
+                        "If you've displayed a honeycomb plot (see cookbook for examples), \
                     then positioning your mouse over a cell will cause a box to appear that \
                     provides some information about that cell.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "And clicking on a cell is the same as typing its number into \
+                .push(
+                    Text::new(
+                        "And clicking on a cell is the same as typing its number into \
                     the input box!",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "Group ids are converted into a special enclone argument",
-                ).width(max_width))
+                .push(
+                    Text::new("Group ids are converted into a special enclone argument")
+                        .width(max_width),
+                )
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
@@ -321,38 +350,57 @@ impl Application for EncloneVisual {
                         .push(
                             Column::new()
                                 .push(Space::with_height(Units(5)))
-                                .push(Text::new(
-                                    "enclone visual remembers your previous commands and \
+                                .push(
+                                    Text::new(
+                                        "enclone visual remembers your previous commands and \
                             their outputs.",
-                                ).width(max_width))
+                                    )
+                                    .width(max_width),
+                                )
                                 .push(Space::with_height(Units(20)))
-                                .push(Text::new(
-                                    "On the right, you can see boxes, that will appear on \
+                                .push(
+                                    Text::new(
+                                        "On the right, you can see boxes, that will appear on \
                             the right of your screen once you've entered your first command.",
-                                ).width(max_width))
+                                    )
+                                    .width(max_width),
+                                )
                                 .push(Space::with_height(Units(20)))
-                                .push(Text::new(
-                                    "Initially, some of the boxes will be blank, meaning \
+                                .push(
+                                    Text::new(
+                                        "Initially, some of the boxes will be blank, meaning \
                             that they don't make sense yet and won't do anything.",
-                                ).width(max_width))
+                                    )
+                                    .width(max_width),
+                                )
                                 .push(Space::with_height(Units(20)))
                                 .push(Text::new("There are four boxes:"))
                                 .push(Space::with_height(Units(20)))
-                                .push(Text::new(
-                                    "• The number at the top is the index of the current \
+                                .push(
+                                    Text::new(
+                                        "• The number at the top is the index of the current \
                             state.  This is not for pushing.",
-                                ).width(max_width))
-                                .push(Text::new(
-                                    "• Push the up arrow to go back to the previous state, \
+                                    )
+                                    .width(max_width),
+                                )
+                                .push(
+                                    Text::new(
+                                        "• Push the up arrow to go back to the previous state, \
                             meaning the last command that you typed.",
-                                ).width(max_width))
-                                .push(Text::new(
-                                    "• Push the down arrow to go forward to the next state.",
-                                ).width(max_width))
+                                    )
+                                    .width(max_width),
+                                )
+                                .push(
+                                    Text::new(
+                                        "• Push the down arrow to go forward to the next state.",
+                                    )
+                                    .width(max_width),
+                                )
                                 .push(Text::new(
                                     "• Push the Del button to delete the current state, and go \
                             backward, if that makes sense.",
-                                )).width(max_width),
+                                ))
+                                .width(max_width),
                         )
                         .push(Space::with_height(Units(20)))
                         .push(history_region),
@@ -422,11 +470,14 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Smarts").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "If you run a command, and then run a similar command after it, \
+                .push(
+                    Text::new(
+                        "If you run a command, and then run a similar command after it, \
                     enclone visual may elide some calculations from the previous command, so as \
                     to respond faster.  This capability is not pushed as far as it could be.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 //
                 // Limitations.
                 //
@@ -435,16 +486,22 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Limitations, AKA big bugs").size(24))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new(
-                    "There are two main limitations of the current version of enclone \
+                .push(
+                    Text::new(
+                        "There are two main limitations of the current version of enclone \
                     visual:",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("1.  The clonotype tables are black and white.").width(max_width))
-                .push(Text::new(
-                    "2.  You can't use the mouse to copy text from the graphics \
+                .push(
+                    Text::new(
+                        "2.  You can't use the mouse to copy text from the graphics \
                     window or the text window.",
-                ).width(max_width))
+                    )
+                    .width(max_width),
+                )
                 //
                 // Bottom.
                 //
