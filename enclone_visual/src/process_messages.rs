@@ -276,6 +276,7 @@ impl EncloneVisual {
                 }
                 if count < TESTS.len() {
                     if TESTS[count].0.len() > 0 {
+                        self.input_value = TESTS[count].0.to_string();
                         self.input1_value = TESTS[count].0.to_string();
                         self.input2_value.clear();
                     }

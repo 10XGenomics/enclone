@@ -151,7 +151,7 @@ fn main() {
             eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
 
             // Create and save concatenated low res image.  The quality is likely particularly
-            // low because we save a second time at low resolution.
+            // low because we save a second time.
 
             let mut joint = Vec::<u8>::new();
             for i in 0..height {
@@ -168,7 +168,7 @@ fn main() {
                 }
             }
             let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
-            let quality = 1 as u8; // lowest quality
+            let quality = 80 as u8;
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
