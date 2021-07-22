@@ -23,6 +23,7 @@ impl EncloneVisual {
             }
             Message::GroupClicked(_message) => {
                 let group_id = GROUP_ID.load(SeqCst);
+                self.input_value = format!("{}", group_id);
                 self.input1_value = format!("{}", group_id);
                 self.input2_value.clear();
                 GROUP_ID_CLICKED_ON.store(false, SeqCst);
