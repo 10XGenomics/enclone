@@ -23,6 +23,15 @@ const FORWARD: fn(Result<(), std::string::String>) -> messages::Message =
 const DEL: fn(Result<(), std::string::String>) -> messages::Message =
     Message::DelButtonPressed as MsgFn;
 
+#[allow(dead_code)]
+const HELP1: fn(Result<(), std::string::String>) -> messages::Message = Message::HelpOpen as MsgFn;
+
+#[allow(dead_code)]
+const HELP2: fn(Result<(), std::string::String>) -> messages::Message = Message::HelpClose as MsgFn;
+
+// For unknown reasons, capturing the Help page yields nonreproducible results.  They are visually
+// indistinguishable but perhaps differ in intensity in places, or are shifted very slightly.
+
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";

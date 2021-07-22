@@ -130,7 +130,7 @@ impl Application for EncloneVisual {
         if self.help_mode {
             let help_title = Text::new(&format!("Help")).size(30);
             let help_close_button = Button::new(&mut self.open_state, Text::new("Dismiss"))
-                .on_press(Message::HelpClose);
+                .on_press(Message::HelpClose(Ok(())));
             let top_bar = Row::new()
                 .push(help_title)
                 .push(Space::with_width(Length::Fill))
@@ -821,7 +821,10 @@ impl Application for EncloneVisual {
         let left_buttons = Column::new()
             .spacing(8)
             .push(Button::new(&mut self.exit_state, Text::new("Exit")).on_press(Message::Exit))
-            .push(Button::new(&mut self.open_state, Text::new("Help")).on_press(Message::HelpOpen))
+            .push(
+                Button::new(&mut self.open_state, Text::new("Help"))
+                    .on_press(Message::HelpOpen(Ok(()))),
+            )
             .push(
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),

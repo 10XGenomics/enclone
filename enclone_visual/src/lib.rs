@@ -57,6 +57,11 @@ async fn noop0() -> Result<(), String> {
     Ok(())
 }
 
+async fn noop1() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
+    Ok(())
+}
+
 async fn compute() -> Result<(), String> {
     let t = Instant::now();
     while PROCESSING_REQUEST.load(SeqCst) {

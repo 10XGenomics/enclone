@@ -294,14 +294,22 @@ impl EncloneVisual {
                 Command::perform(noop(), TESTS[count].1)
             }
 
-            Message::HelpOpen => {
+            Message::HelpOpen(_) => {
                 self.help_mode = true;
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
-            Message::HelpClose => {
+            Message::HelpClose(_) => {
                 self.help_mode = false;
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
             Message::CookbookOpen => {
