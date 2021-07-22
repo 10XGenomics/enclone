@@ -324,7 +324,7 @@ impl EncloneVisual {
             }
 
             Message::InputChanged1(ref value) => {
-                self.input_value = value.to_string();
+                self.input1_value = value.to_string();
                 self.input_value = self.input1_value.clone();
                 if self.input1_value.len() > 0 && self.input2_value.len() > 0 {
                     self.input_value += " ";
