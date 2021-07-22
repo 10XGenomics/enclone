@@ -150,22 +150,22 @@ fn main() {
         if diffs > MAX_DIFFS {
             eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
 
-            // Create and save concatenated low res image.  The quality is likely particularly
-            // low because we save a second time.
+            // Create and save concatenated image.  Note that we're depending on the png
+            // in regression_images as being current.  We could do the same thing with the jpg
+            // versions, which would be guaranteed to be correct, but of lower quality.  We did
+            // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go back
+            // to that.
 
+            let mut f = File::open(&old_png_file).unwrap();
+            let mut image_old = Vec::<u8>::new();
+            f.read_to_end(&mut image_old).unwrap();
+            let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
             let mut joint = Vec::<u8>::new();
             for i in 0..height {
-                let start = i * width * 3;
-                let stop = (i + 1) * width * 3;
-                joint.append(&mut image_data_old[start..stop].to_vec());
-                joint.append(&mut image_data_new[start..stop].to_vec());
-            }
-            let mut jointp = Vec::<u8>::new();
-            for i in 0..joint.len() {
-                jointp.push(joint[i]);
-                if (i + 1) % 3 == 0 {
-                    jointp.push(255);
-                }
+                let start = i * width * 4;
+                let stop = (i + 1) * width * 4;
+                joint.append(&mut image_data_old0[start..stop].to_vec());
+                joint.append(&mut image_data_new0[start..stop].to_vec());
             }
             let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
             let quality = 80 as u8;
@@ -173,7 +173,7 @@ fn main() {
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
             encoder
-                .encode(&jointp, (width * 2) as u32, height as u32, Rgba8)
+                .encode(&joint, (width * 2) as u32, height as u32, Rgba8)
                 .unwrap();
 
             // Keep going.
