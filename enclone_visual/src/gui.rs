@@ -433,7 +433,7 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
-                .push(Text::new("Limitations, AKA bugs").size(24))
+                .push(Text::new("Limitations, AKA big bugs").size(24))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(
                     "There are two main limitations of the current version of enclone \
