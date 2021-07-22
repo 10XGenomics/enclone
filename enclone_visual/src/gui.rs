@@ -202,7 +202,7 @@ impl Application for EncloneVisual {
         let text_input1 = TextInput::new(
             &mut self.input1,
             "",
-            &self.input_value1,
+            &self.input1_value,
             Message::InputChanged1,
         )
         .padding(7)
@@ -211,7 +211,7 @@ impl Application for EncloneVisual {
         let text_input2 = TextInput::new(
             &mut self.input2,
             "",
-            &self.input_value2,
+            &self.input2_value,
             Message::InputChanged2,
         )
         .padding(7)
@@ -488,7 +488,7 @@ impl Application for EncloneVisual {
             )
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
-        if !self.input_history.is_empty() {
+        if self.svg_history.len() > 0 {
             content = content.push(Rule::horizontal(10).style(style::RuleStyle));
         }
         content = content.push(

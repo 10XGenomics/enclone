@@ -27,8 +27,8 @@ pub struct EncloneVisual {
     pub scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
-    pub input_value1: String,
-    pub input_value2: String,
+    pub input1_value: String,
+    pub input2_value: String,
     pub input_value: String,
     pub translated_input_value: String,
     pub output_value: String,
@@ -81,7 +81,8 @@ pub struct EncloneVisual {
     //
     pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
     pub summary_hist_uniq: Vec<String>, // each entry is a summary
-    pub input_hist_uniq: Vec<String>,   // each entry is the originating command
+    pub input1_hist_uniq: Vec<String>,  // each entry is the originating command 1
+    pub input2_hist_uniq: Vec<String>,  // each entry is the originating command 2
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
@@ -91,7 +92,8 @@ pub struct EncloneVisual {
     //
     pub svg_history: Vec<usize>,              // each entry is an SVG
     pub summary_history: Vec<usize>,          // each entry is a summary
-    pub input_history: Vec<usize>,            // each entry is the originating command
+    pub input1_history: Vec<usize>,           // each entry is the originating command 1
+    pub input2_history: Vec<usize>,           // each entry is the originating command 2
     pub translated_input_history: Vec<usize>, // each entry is the translated originating command
     pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
     pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
@@ -127,8 +129,11 @@ impl EncloneVisual {
     pub fn summary_current(&self) -> String {
         return self.summary_hist_uniq[self.summary_history[self.hi()]].clone();
     }
-    pub fn input_current(&self) -> String {
-        return self.input_hist_uniq[self.input_history[self.hi()]].clone();
+    pub fn input1_current(&self) -> String {
+        return self.input1_hist_uniq[self.input1_history[self.hi()]].clone();
+    }
+    pub fn input2_current(&self) -> String {
+        return self.input2_hist_uniq[self.input2_history[self.hi()]].clone();
     }
     pub fn translated_input_current(&self) -> String {
         return self.translated_input_hist_uniq[self.translated_input_history[self.hi()]].clone();
@@ -148,7 +153,8 @@ impl EncloneVisual {
     pub fn sanity_check(&self) {
         let n = self.svg_history.len();
         assert_eq!(n, self.summary_history.len());
-        assert_eq!(n, self.input_history.len());
+        assert_eq!(n, self.input1_history.len());
+        assert_eq!(n, self.input2_history.len());
         assert_eq!(n, self.translated_input_history.len());
         assert_eq!(n, self.displayed_tables_history.len());
         assert_eq!(n, self.table_comp_history.len());

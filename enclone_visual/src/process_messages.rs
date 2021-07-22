@@ -23,14 +23,15 @@ impl EncloneVisual {
             }
             Message::GroupClicked(_message) => {
                 let group_id = GROUP_ID.load(SeqCst);
-                self.input_value = format!("{}", group_id);
+                self.input1_value = format!("{}", group_id);
+                self.input2_value.clear();
                 GROUP_ID_CLICKED_ON.store(false, SeqCst);
                 Command::perform(noop0(), Message::SubmitButtonPressed)
             }
             Message::SubmitButtonPressed(_) => {
                 let mut group_spec = true;
                 let mut group_ids = Vec::<usize>::new();
-                let s = &self.input_value.split(',').collect::<Vec<&str>>();
+                let s = self.input_value.split(',').collect::<Vec<&str>>();
                 for i in 0..s.len() {
                     let mut ok = false;
                     if s[i].parse::<usize>().is_ok() {
@@ -67,7 +68,7 @@ impl EncloneVisual {
                         let mut reply_text;
                         let new = self.translated_input_current();
                         let args = new.split(' ').collect::<Vec<&str>>();
-                        if self.input_history.is_empty() {
+                        if self.input1_history.is_empty() && self.input2_history.is_empty() {
                             reply_text = "Group identifier can only be supplied if another \
                                 command has already been run."
                                 .to_string();
@@ -97,11 +98,13 @@ impl EncloneVisual {
                                 args2.push(x.to_string());
                             }
                         }
-                        args2.push(format!("G={}", self.input_value));
+                        args2.push(format!("G={}", self.translated_input_value));
                         self.output_value = reply_text.to_string();
                         let hi = self.history_index;
-                        self.input_history.insert(hi, self.input_hist_uniq.len());
-                        self.input_hist_uniq.push(self.input_value.clone());
+                        self.input1_history.insert(hi, self.input1_hist_uniq.len());
+                        self.input1_hist_uniq.push(self.input1_value.clone());
+                        self.input2_history.insert(hi, self.input2_hist_uniq.len());
+                        self.input2_hist_uniq.push(self.input2_value.clone());
                         self.translated_input_history
                             .insert(hi, self.translated_input_hist_uniq.len());
                         self.translated_input_hist_uniq
@@ -154,7 +157,8 @@ impl EncloneVisual {
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
                 self.last_widths_value = self.last_widths_current();
-                self.input_value = self.input_current();
+                self.input1_value = self.input1_current();
+                self.input2_value = self.input2_current();
                 self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
@@ -180,7 +184,8 @@ impl EncloneVisual {
                 let h = self.history_index - 1;
                 self.svg_history.remove(h);
                 self.summary_history.remove(h);
-                self.input_history.remove(h);
+                self.input1_history.remove(h);
+                self.input2_history.remove(h);
                 self.translated_input_history.remove(h);
                 self.displayed_tables_history.remove(h);
                 self.table_comp_history.remove(h);
@@ -188,7 +193,8 @@ impl EncloneVisual {
                 self.is_blank.remove(h);
                 if self.state_count() == 0 {
                     self.history_index -= 1;
-                    self.input_value.clear();
+                    self.input1_value.clear();
+                    self.input2_value.clear();
                     self.svg_value.clear();
                     self.png_value.clear();
                     self.submit_button_text.clear();
@@ -208,7 +214,8 @@ impl EncloneVisual {
                     self.output_value = self.displayed_tables_current();
                     self.table_comp_value = self.table_comp_current();
                     self.last_widths_value = self.last_widths_current();
-                    self.input_value = self.input_current();
+                    self.input1_value = self.input1_current();
+                    self.input2_value = self.input2_current();
                     self.translated_input_value = self.translated_input_current();
                     SUMMARY_CONTENTS.lock().unwrap().clear();
                     SUMMARY_CONTENTS
@@ -239,7 +246,8 @@ impl EncloneVisual {
                 self.output_value = self.displayed_tables_current();
                 self.table_comp_value = self.table_comp_current();
                 self.last_widths_value = self.last_widths_current();
-                self.input_value = self.input_current();
+                self.input1_value = self.input1_current();
+                self.input2_value = self.input2_current();
                 self.translated_input_value = self.translated_input_current();
                 SUMMARY_CONTENTS.lock().unwrap().clear();
                 SUMMARY_CONTENTS
@@ -268,7 +276,8 @@ impl EncloneVisual {
                 }
                 if count < TESTS.len() {
                     if TESTS[count].0.len() > 0 {
-                        self.input_value = TESTS[count].0.to_string();
+                        self.input1_value = TESTS[count].0.to_string();
+                        self.input2_value.clear();
                     }
                 } else {
                     std::process::exit(0);
@@ -315,28 +324,28 @@ impl EncloneVisual {
             }
 
             Message::InputChanged1(ref value) => {
-                self.input_value1 = value.to_string();
-                self.input_value = self.input_value1.clone();
-                if self.input_value1.len() > 0 && self.input_value2.len() > 0 {
+                self.input_value = value.to_string();
+                self.input_value = self.input1_value.clone();
+                if self.input1_value.len() > 0 && self.input2_value.len() > 0 {
                     self.input_value += " ";
                 }
-                self.input_value += &mut self.input_value2.clone();
+                self.input_value += &mut self.input2_value.clone();
                 Command::none()
             }
 
             Message::InputChanged2(ref value) => {
-                self.input_value2 = value.to_string();
-                self.input_value = self.input_value1.clone();
-                if self.input_value1.len() > 0 && self.input_value2.len() > 0 {
+                self.input2_value = value.to_string();
+                self.input_value = self.input1_value.clone();
+                if self.input1_value.len() > 0 && self.input2_value.len() > 0 {
                     self.input_value += " ";
                 }
-                self.input_value += &mut self.input_value2.clone();
+                self.input_value += &mut self.input2_value.clone();
                 Command::none()
             }
 
             Message::ClearButtonPressed => {
-                self.input_value1.clear();
-                self.input_value2.clear();
+                self.input1_value.clear();
+                self.input2_value.clear();
                 Command::none()
             }
 
@@ -423,12 +432,19 @@ impl EncloneVisual {
                     self.displayed_tables_history.insert(hi, len);
                     self.displayed_tables_hist_uniq.push(reply_text.clone());
                 }
-                let len = self.input_hist_uniq.len();
-                if len > 0 && self.input_hist_uniq[len - 1] == self.input_value {
-                    self.input_history.insert(hi, len - 1);
+                let len = self.input1_hist_uniq.len();
+                if len > 0 && self.input1_hist_uniq[len - 1] == self.input1_value {
+                    self.input1_history.insert(hi, len - 1);
                 } else {
-                    self.input_history.insert(hi, len);
-                    self.input_hist_uniq.push(self.input_value.clone());
+                    self.input1_history.insert(hi, len);
+                    self.input1_hist_uniq.push(self.input1_value.clone());
+                }
+                let len = self.input2_hist_uniq.len();
+                if len > 0 && self.input2_hist_uniq[len - 1] == self.input2_value {
+                    self.input2_history.insert(hi, len - 1);
+                } else {
+                    self.input2_history.insert(hi, len);
+                    self.input2_hist_uniq.push(self.input2_value.clone());
                 }
                 let len = self.translated_input_hist_uniq.len();
                 if len > 0
@@ -471,12 +487,13 @@ impl EncloneVisual {
                 let verbose = false;
                 if verbose {
                     println!("\ncapturing, input history:");
-                    for i in 0..self.input_history.len() {
+                    for i in 0..self.input1_history.len() {
                         let mark = if i + 1 == self.history_index { "*" } else { "" };
                         println!(
-                            "[{}] {} {}",
+                            "[{}] {} {} {}",
                             i + 1,
-                            self.input_hist_uniq[self.input_history[i]],
+                            self.input1_hist_uniq[self.input1_history[i]],
+                            self.input2_hist_uniq[self.input2_history[i]],
                             mark
                         );
                     }
