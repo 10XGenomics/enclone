@@ -363,9 +363,14 @@ impl EncloneVisual {
                     reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
                 }
                 if reply_text.len() == 0 {
-                    reply_text = "Looks like you used the NOPRINT option, and there are no \
-                        clonotypes to see."
-                        .to_string();
+                    if self.translated_input_value.contains(" NOPRINT") {
+                        reply_text = "You used the NOPRINT option, so there are no \
+                            clonotypes to see."
+                            .to_string();
+                    } else {
+                        reply_text = "There are no clonotypes.  Please have a look at the summary."
+                            .to_string();
+                    }
                 }
 
                 // Start storing values.
