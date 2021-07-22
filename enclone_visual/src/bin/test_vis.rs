@@ -98,7 +98,7 @@ fn main() {
         let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
-        let (header, image_data_new) = png_decoder::decode(&image_new).unwrap();
+        let (header, image_data_new0) = png_decoder::decode(&image_new).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
 
         // Convert the new png file to a jpg, and read that back in as a bit image.
@@ -114,7 +114,7 @@ fn main() {
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
             encoder
-                .encode(&image_data_new, width as u32, height as u32, Rgba8)
+                .encode(&image_data_new0, width as u32, height as u32, Rgba8)
                 .unwrap();
         }
         let file = open_for_read![&new_jpg_file];
@@ -149,6 +149,35 @@ fn main() {
         let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
         if diffs > MAX_DIFFS {
             eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
+
+            // Create and save concatenated low res image.  The quality is likely particularly
+            // low because we save a second time at low resolution.
+
+            let mut joint = Vec::<u8>::new();
+            for i in 0..height {
+                let start = i * width * 3;
+                let stop = (i + 1) * width * 3;
+                joint.append(&mut image_data_old[start..stop].to_vec());
+                joint.append(&mut image_data_new[start..stop].to_vec());
+            }
+            let mut jointp = Vec::<u8>::new();
+            for i in 0..joint.len() {
+                jointp.push(joint[i]);
+                if (i + 1) % 3 == 0 {
+                    jointp.push(255);
+                }
+            }
+            let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
+            let quality = 1 as u8; // lowest quality
+            let mut f = open_for_write_new![&new_jpg_file];
+            let mut buff = BufWriter::new(&mut f);
+            let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+            encoder
+                .encode(&jointp, (width * 2) as u32, height as u32, Rgba8)
+                .unwrap();
+
+            // Keep going.
+
             fail = true;
             if update {
                 copy(&new_png_file, &old_png_file).unwrap();
