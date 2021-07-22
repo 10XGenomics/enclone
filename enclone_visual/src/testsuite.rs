@@ -28,9 +28,10 @@ const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 const X3: &str = "enclone + BCR=123085 NOPRINT";
 const X4: &str = "enclone BCR=123085 CHAINS=10";
+const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 32] = [
+pub const TESTS: [(&str, MsgFn, &str); 33] = [
     (X0,     SUBMIT,  ""),        // enclone woof
     ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
@@ -63,6 +64,7 @@ pub const TESTS: [(&str, MsgFn, &str); 32] = [
     ("5",    SUBMIT,  ""),        // 5
     ("",     BACK,    "test13"),  // enclone + BCR=123085 NOPRINT
     (X4,     SUBMIT,  "test14"),  // enclone BCR=123085 CHAINS=10
+    (X5,     SUBMIT,  "test15"),  // enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX="u1 >= 6000" SEG=IGHM
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
