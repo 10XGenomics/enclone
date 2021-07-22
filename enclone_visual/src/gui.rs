@@ -310,7 +310,7 @@ impl Application for EncloneVisual {
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("1,7,10-15").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
-                .push(Text::new("also work"))
+                .push(Text::new("also work."))
                 .push(Space::with_height(Units(20)))
                 .push(
                     Text::new(
