@@ -158,7 +158,6 @@ impl Application for EncloneVisual {
                 //
                 // Intro.
                 //
-                .push(Space::with_height(Units(5)))
                 .push(Text::new("Introduction").size(24))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(&format!(
