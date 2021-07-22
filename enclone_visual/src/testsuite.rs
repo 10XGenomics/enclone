@@ -26,9 +26,10 @@ const DEL: fn(Result<(), std::string::String>) -> messages::Message =
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
+const X3: &str = "enclone + BCR=123085 NOPRINT";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 28] = [
+pub const TESTS: [(&str, MsgFn, &str); 31] = [
     (X0,     SUBMIT,  ""),        // enclone woof
     ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
@@ -57,6 +58,9 @@ pub const TESTS: [(&str, MsgFn, &str); 28] = [
     ("",     DEL,     ""),        // #1
     ("",     DEL,     ""),        // X0 = ...
     ("",     DEL,     "test12"),  // #3
+    (X3,     SUBMIT,  ""),        // enclone + BCR=123085 NOPRINT
+    ("5",    SUBMIT,  ""),        // 5
+    ("",     BACK,    "test13"),  // enclone + BCR=123085 NOPRINT
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -76,7 +80,6 @@ pub const TESTS: [(&str, MsgFn, &str); 28] = [
 //        check tooltip functionality
 //    (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 085",blue,"f 089"
 //        check tooltip functionality
-//    (k) enclone BCR=123085 NOPRINT
 //
 // 2. Repeat ten times:
 //    (a) type enclone VIS

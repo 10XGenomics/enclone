@@ -276,9 +276,16 @@ impl EncloneVisual {
                 }
                 if count < TESTS.len() {
                     if TESTS[count].0.len() > 0 {
-                        self.input_value = TESTS[count].0.to_string();
-                        self.input1_value = TESTS[count].0.to_string();
-                        self.input2_value.clear();
+                        if TESTS[count].0.contains(" + ") {
+                            self.input1_value = TESTS[count].0.before(" + ").to_string();
+                            self.input2_value = TESTS[count].0.after(" + ").to_string();
+                            self.input_value =
+                                format!("{} {}", self.input1_value, self.input2_value);
+                        } else {
+                            self.input_value = TESTS[count].0.to_string();
+                            self.input1_value = TESTS[count].0.to_string();
+                            self.input2_value.clear();
+                        }
                     }
                 } else {
                     std::process::exit(0);
