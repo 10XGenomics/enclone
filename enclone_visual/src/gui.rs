@@ -155,8 +155,10 @@ impl Application for EncloneVisual {
                 .scrollbar_width(SCROLLBAR_WIDTH)
                 .scroller_width(12)
                 .style(style::ScrollableStyle)
+                //
                 // Intro.
-                .push(Space::with_height(Units(20)))
+                //
+                .push(Space::with_height(Units(10)))
                 .push(Text::new("Introduction").size(24))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(&format!(
@@ -180,7 +182,9 @@ impl Application for EncloneVisual {
                     "This is alpha software: there are many more bugs than there \
                     are in enclone.",
                 ))
+                //
                 // Top.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -209,14 +213,16 @@ impl Application for EncloneVisual {
                                 .push(Text::new("3.  Cookbook, to show some sample commands.")),
                         ),
                 )
+                //
                 // Layout.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Overall layout").size(24))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(
-                    "There are input boxes near the top (described below).",
+                    "There are input boxes near the top (described next).",
                 ))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(
@@ -230,7 +236,9 @@ impl Application for EncloneVisual {
                 .push(Text::new(
                     "2.  A text subwindow, which typically has clonotypes in it.",
                 ))
+                //
                 // Input.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -260,7 +268,9 @@ impl Application for EncloneVisual {
                 .push(Text::new(
                     "Once you've entered your command, push the Submit button.",
                 ))
+                //
                 // Special commands.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -298,7 +308,9 @@ impl Application for EncloneVisual {
                 .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
                 .push(Space::with_height(Units(10)))
                 .push(Text::new("that can also be supplied to enclone."))
+                //
                 // History.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -345,7 +357,9 @@ impl Application for EncloneVisual {
                         .push(Space::with_height(Units(20)))
                         .push(history_region),
                 )
+                //
                 // The middle boxes.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -400,7 +414,9 @@ impl Application for EncloneVisual {
                         .push(Space::with_height(Units(20)))
                         .push(middle_region),
                 )
+                //
                 // Smarts.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -411,7 +427,9 @@ impl Application for EncloneVisual {
                     enclone visual may elide some calculations from the previous command, so as \
                     to respond faster.  This capability is not pushed as far as it could be.",
                 ))
+                //
                 // Limitations.
+                //
                 .push(Space::with_height(Units(20)))
                 .push(Rule::horizontal(10).style(style::RuleStyle))
                 .push(Space::with_height(Units(20)))
@@ -427,7 +445,9 @@ impl Application for EncloneVisual {
                     "2.  You can't use the mouse to copy text from the graphics \
                     window or the text window.",
                 ))
+                //
                 // Bottom.
+                //
                 .push(Space::with_height(Units(20)));
 
             let content = Column::new()
