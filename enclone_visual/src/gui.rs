@@ -158,7 +158,7 @@ impl Application for EncloneVisual {
                 //
                 // Intro.
                 //
-                .push(Space::with_height(Units(10)))
+                .push(Space::with_height(Units(5)))
                 .push(Text::new("Introduction").size(24))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new(&format!(
@@ -195,7 +195,7 @@ impl Application for EncloneVisual {
                 // Top.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Top of the page").size(24))
                 .push(Space::with_height(Units(20)))
@@ -226,7 +226,7 @@ impl Application for EncloneVisual {
                 // Layout.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Overall layout").size(24))
                 .push(Space::with_height(Units(20)))
@@ -255,7 +255,7 @@ impl Application for EncloneVisual {
                 // Input.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Entering input").size(24))
                 .push(Space::with_height(Units(20)))
@@ -288,7 +288,7 @@ impl Application for EncloneVisual {
                 // Special commands.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Special commands").size(24))
                 .push(Space::with_height(Units(20)))
@@ -341,7 +341,7 @@ impl Application for EncloneVisual {
                 // History.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("History, AKA the time machine").size(24))
                 .push(Space::with_height(Units(15)))
@@ -409,7 +409,7 @@ impl Application for EncloneVisual {
                 // The middle boxes.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("The middle boxes").size(24))
                 .push(Space::with_height(Units(15)))
@@ -466,7 +466,7 @@ impl Application for EncloneVisual {
                 // Smarts.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Smarts").size(24))
                 .push(Space::with_height(Units(20)))
@@ -482,7 +482,7 @@ impl Application for EncloneVisual {
                 // Limitations.
                 //
                 .push(Space::with_height(Units(20)))
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(Space::with_height(Units(20)))
                 .push(Text::new("Limitations, AKA big bugs").size(24))
                 .push(Space::with_height(Units(20)))
@@ -511,7 +511,7 @@ impl Application for EncloneVisual {
                 .spacing(SPACING)
                 .padding(20)
                 .push(top_bar)
-                .push(Rule::horizontal(10).style(style::RuleStyle))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
                 .push(help_scrollable);
             return Container::new(content)
                 .width(Length::Fill)

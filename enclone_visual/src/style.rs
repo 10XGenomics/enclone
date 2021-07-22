@@ -17,6 +17,19 @@ impl iced::rule::StyleSheet for RuleStyle {
     }
 }
 
+pub struct RuleStyle2;
+
+impl iced::rule::StyleSheet for RuleStyle2 {
+    fn style(&self) -> iced::rule::Style {
+        iced::rule::Style {
+            color: Color::from_rgb(0.8, 0.7, 0.7),
+            width: 4,
+            radius: 1.0,
+            fill_mode: iced::rule::FillMode::Percent(100.0),
+        }
+    }
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub struct ScrollableStyle;
