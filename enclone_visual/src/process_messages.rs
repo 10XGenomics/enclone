@@ -509,6 +509,21 @@ impl EncloneVisual {
                     "all time peak mem of this process is {:.1} MB\n",
                     peak_mem_mb
                 );
+                if VERBOSE.load(SeqCst) {
+                    let mb = (1024 * 1024) as f64;
+                    let mut total_svg = 0;
+                    for x in self.svg_hist_uniq.iter() {
+                        total_svg += x.len();
+                    }
+                    eprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
+                    let mut total_tables = 0;
+                    for x in self.table_comp_hist_uniq.iter() {
+                        total_tables += x.len();
+                    }
+                    eprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
+                    eprintln!("");
+                }
+
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
