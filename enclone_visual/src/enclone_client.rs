@@ -55,7 +55,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     #[cfg(not(any(target_os = "macos", target_os = "ios")))]
     {
-        eprintln!(
+        xprintln!(
             "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
             are interested in running it under Linux or Windows.\n"
         );
@@ -86,7 +86,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
         } else if arg != "VIS" {
-            eprintln!(
+            xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
                 configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
                 and TEST, but only for testing.\n"
@@ -114,7 +114,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         tokio::spawn(async move {
             loop {
                 thread::sleep(Duration::from_millis(5000));
-                println!("[using {} threads", thread_count());
+                xprintln!("[using {} threads", thread_count());
             }
         });
     }
@@ -123,7 +123,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let version_float = format!("1e-{}", -version.force_f64().log10());
     if !verbose {
-        println!(
+        xprintln!(
             "\nHi! You are using enclone visual {} = {}.\n\n\
             If you get an error \
             message or a window does not pop up, and it's not clear what to do,\nplease \
@@ -148,12 +148,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let configuration = configuration.unwrap();
             found = true;
             if verbose {
-                println!("\nusing configuration\n▓{}▓", configuration);
+                xprintln!("\nusing configuration\n▓{}▓", configuration);
             }
             let x = parse_bsv(&configuration);
             for arg in x.iter() {
                 if !arg.contains("=") {
-                    eprintln!(
+                    xprintln!(
                         "\nYour configuration has an argument {} that does not contain =.\n",
                         arg
                     );
@@ -208,10 +208,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     .output()
                     .expect("failed to execute ssh cat");
                 ssh_cat_time = elapsed(&t);
-                println!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
+                xprintln!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
                 if o.status.code() != Some(0) {
                     let m = String::from_utf8(o.stderr).unwrap();
-                    println!("\ntest ssh failed with error message =\n{}", m);
+                    xprintln!("\ntest ssh failed with error message =\n{}", m);
                     println!(
                         "Attempt to ssh to {} as specified by environment variable \
                         ENCLONE_CONFIG failed.",
