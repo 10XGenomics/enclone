@@ -2,7 +2,7 @@
 
 use crate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Align, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
 pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
@@ -22,6 +22,9 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let png_history_region = include_bytes!("../images/history_region.png").to_vec();
     let history_region =
         Image::new(iced::image::Handle::from_memory(png_history_region)).height(Units(240));
+    let png_console_region = include_bytes!("../images/console_region.png").to_vec();
+    let console_region =
+        Image::new(iced::image::Handle::from_memory(png_console_region)).width(Units(90));
     let png_middle_region = include_bytes!("../images/middle_region.png").to_vec();
     let middle_region = Image::new(iced::image::Handle::from_memory(png_middle_region))
         .height(Units(300))
@@ -100,6 +103,18 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Text::new("2.  Help, to get to this page."))
                         .push(Text::new("3.  Cookbook, to show some sample commands.")),
                 ),
+        )
+        .push(Space::with_height(Units(20)))
+        .push(
+            Row::new()
+                .align_items(Align::Center)
+                .push(Text::new(
+                    "On the right is a button to show what's in the terminal window.  \
+                        At the moment this is mostly of interest to developers."
+                ))
+                .push(Space::with_width(Length::Fill))
+                .push(console_region)
+                .push(Space::with_width(Units(20)))
         )
         //
         // Layout.
