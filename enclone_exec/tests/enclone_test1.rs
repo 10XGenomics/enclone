@@ -305,6 +305,7 @@ fn test_curl_command() {
                 "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
                 "enclone/datasets_small_checksum",
                 "enclone/version",
+                "enclone/size",
             ];
             for (jf, f) in req.iter().enumerate() {
                 if !path_exists(&format!("testx/outputs/{}", f)) {
