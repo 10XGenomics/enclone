@@ -212,15 +212,15 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if o.status.code() != Some(0) {
                     let m = String::from_utf8(o.stderr).unwrap();
                     xprintln!("\ntest ssh failed with error message =\n{}", m);
-                    println!(
+                    xprintln!(
                         "Attempt to ssh to {} as specified by environment variable \
                         ENCLONE_CONFIG failed.",
                         filehost,
                     );
-                    println!("Here are two possible explanations:");
-                    println!("1. The host is wrong.");
-                    println!("2. You are not connected to the internet.");
-                    println!(
+                    xprintln!("Here are two possible explanations:");
+                    xprintln!("1. The host is wrong.");
+                    xprintln!("2. You are not connected to the internet.");
+                    xprintln!(
                         "3. You first need to do something to enable crossing \
                               a firewall.  If so, ask a colleague.\n"
                     );
@@ -329,22 +329,22 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .arg("echo")
                 .output()
                 .expect("failed to execute initial ssh");
-            println!(
+            xprintln!(
                 "\ninitial test ssh to {} took {:.1} seconds",
                 host,
                 elapsed(&t)
             );
             if o.status.code() != Some(0) {
                 let m = String::from_utf8(o.stderr).unwrap();
-                println!("\ntest ssh to {} failed with error message =\n{}", host, m);
-                println!(
+                xprintln!("\ntest ssh to {} failed with error message =\n{}", host, m);
+                xprintln!(
                     "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
                     host
                 );
-                println!("Here are two possible explanations:");
-                println!("1. You have the wrong REMOTE_HOST.");
-                println!("2. You first need to do something to enable crossing a firewall.");
-                println!("   If so, ask one of your colleagues how to do this.\n");
+                xprintln!("Here are two possible explanations:");
+                xprintln!("1. You have the wrong REMOTE_HOST.");
+                xprintln!("2. You first need to do something to enable crossing a firewall.");
+                xprintln!("   If so, ask one of your colleagues how to do this.\n");
                 std::process::exit(1);
             }
         }
@@ -376,14 +376,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         let server_process;
         let mut local_host = "127.0.0.1".to_string();
-        println!("\ntrying random port {}", port);
+        xprintln!("\ntrying random port {}", port);
         if remote {
             let host = config["REMOTE_HOST"].clone();
             HOST.lock().unwrap().push(host.clone());
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
             if verbose {
-                println!(
+                xprintln!(
                     "\nstarting remote server using\nssh {} {}/enclone {}:{} SERVER",
                     host, bin, ip, port
                 );
@@ -518,7 +518,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     println!("Done, restarting!\n");
                     restart_enclone();
                 } else {
-                    eprintln!(
+                    xprintln!(
                         "Please update, following \
                         the instructions at bit.ly/enclone, then restart.  Thank you!\n"
                     );
@@ -551,9 +551,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stderr(Stdio::piped())
                 .spawn();
             if !setup_process.is_ok() {
-                eprintln!(
+                xprintln!(
                     "\nfailed to launch setup, err =\n{}.\n",
-                    setup_process.unwrap_err()
+                    setup_process.as_ref().unwrap_err()
                 );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT_nix).unwrap();
                 cleanup();
@@ -587,12 +587,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 break;
             }
             if wait_time >= MAX_CONNECT_MS {
-                eprintln!("\nconnection failed with error\n{:?}\n", client);
+                xprintln!("\nconnection failed with error\n{:?}\n", client);
                 if !verbose {
-                    eprintln!("Please retry after adding the VERBOSE argument to your command.\n");
+                    xprintln!("Please retry after adding the VERBOSE argument to your command.\n");
                 }
-                eprintln!("Please report this problem.  It is possible that the maximum");
-                eprintln!("connection time used by enclone visual needs to be increased.\n");
+                xprintln!("Please report this problem.  It is possible that the maximum");
+                xprintln!("connection time used by enclone visual needs to be increased.\n");
                 cleanup();
                 std::process::exit(1);
             }
@@ -659,7 +659,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                     err
                                 );
                                 output = msg.clone();
-                                eprintln!("{}", msg);
+                                xprintln!("{}", msg);
                             }
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
