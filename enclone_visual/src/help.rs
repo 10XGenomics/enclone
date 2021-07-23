@@ -2,7 +2,9 @@
 
 use crate::*;
 use iced::Length::Units;
-use iced::{Align, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{
+    Align, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text,
+};
 use messages::Message;
 
 pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
@@ -110,11 +112,11 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .align_items(Align::Center)
                 .push(Text::new(
                     "On the right is a button to show what's in the terminal window.  \
-                        At the moment this is mostly of interest to developers."
+                        At the moment this is mostly of interest to developers.",
                 ))
                 .push(Space::with_width(Length::Fill))
                 .push(console_region)
-                .push(Space::with_width(Units(20)))
+                .push(Space::with_width(Units(20))),
         )
         //
         // Layout.
