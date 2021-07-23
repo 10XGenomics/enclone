@@ -535,10 +535,10 @@ impl EncloneVisual {
             Message::Capture(_) => {
                 let verbose = false;
                 if verbose {
-                    println!("\ncapturing, input history:");
+                    xprintln!("\ncapturing, input history:");
                     for i in 0..self.input1_history.len() {
                         let mark = if i + 1 == self.history_index { "*" } else { "" };
-                        println!(
+                        xprintln!(
                             "[{}] {} {} {}",
                             i + 1,
                             self.input1_hist_uniq[self.input1_history[i]],

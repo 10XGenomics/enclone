@@ -5,9 +5,9 @@
 
 use crate::geometry::*;
 use crate::svg_to_geometry::HorizontalAlignment::*;
+use crate::*;
 use enclone_core::parse_bsv;
 use std::collections::HashMap;
-use string_utils::*;
 
 fn get_opacity(key: &str, value: &str, o: &mut u8) -> bool {
     if key == "opacity" && value.parse::<f32>().is_ok() {
@@ -128,7 +128,7 @@ fn parse_kv_term(line: &str) -> Option<Vec<(String, String)>> {
     } else {
         return None;
     }
-    // println!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // xprintln!("calling parse_kv"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     parse_kv(&line)
 }
 
@@ -159,7 +159,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                     line.clear();
                 } else if line.len() > 0 {
                     if verbose {
-                        println!("pushing line = {}", line);
+                        xprintln!("pushing line = {}", line);
                     }
                     lines.push(line.clone());
                     line.clear();
@@ -174,7 +174,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
             if lt == gt && line.contains('>') {
                 if line != "\n" {
                     if verbose {
-                        println!("pushing line = {}", line);
+                        xprintln!("pushing line = {}", line);
                     }
                     lines.push(line.clone());
                 }
@@ -189,7 +189,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
         }
         if line.len() > 0 && line != "\n" {
             if verbose {
-                println!("residual line = {} = ${}$", line.len(), line);
+                xprintln!("residual line = {} = ${}$", line.len(), line);
             }
             return None;
         }
@@ -202,7 +202,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
     while i < lines.len() {
         let mut line = lines[i].clone();
         if verbose {
-            println!("\nline = {} = ${}$", lines[i].len(), lines[i]);
+            xprintln!("\nline = {} = ${}$", lines[i].len(), lines[i]);
         }
         i += 1;
         if line == "</svg>" {
@@ -230,14 +230,14 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
         }
         line = line.after(" ").to_string();
         if verbose {
-            println!("tag = {}", tag);
+            xprintln!("tag = {}", tag);
         }
         /*
         if i < lines.len() {
-            println!("lines[i] = {}", lines[i]);
+            xprintln!("lines[i] = {}", lines[i]);
         } // XXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if i + 1 < lines.len() {
-            println!("lines[i+1] = {}", lines[i + 1]);
+            xprintln!("lines[i+1] = {}", lines[i + 1]);
         } // XXXXXXXXXXXXXXXXXXXXXX
         */
 
@@ -245,7 +245,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
 
         if tag == "circle" {
             if verbose {
-                println!("processing circle");
+                xprintln!("processing circle");
             }
             let kv = parse_kv_term(&line);
             if kv.is_none() {
@@ -259,7 +259,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 let key = &m.0;
                 let value = &m.1;
                 if verbose {
-                    println!("key = {}, value = {}", key, value);
+                    xprintln!("key = {}, value = {}", key, value);
                 }
                 if key == "stroke" || key == "stroke-width" {
                 } else if key == "tooltip" {
@@ -344,7 +344,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 let key = &m.0;
                 let mut value = m.1.clone();
                 if verbose {
-                    println!("key = {}, value = {}", key, value);
+                    xprintln!("key = {}, value = {}", key, value);
                 }
                 if key == "points" {
                     if value.ends_with(' ') {
@@ -379,7 +379,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 }
             }
             if verbose {
-                println!("testing prereqs");
+                xprintln!("testing prereqs");
             }
             if p.is_none() || c.is_none() || stroke_width.is_none() {
                 return None;
@@ -450,11 +450,11 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
         // Process text.
         } else if tag == "text" && i + 1 < lines.len() && lines[i + 1] == "</text>" {
             if verbose {
-                println!("processing text");
+                xprintln!("processing text");
             }
             let text = lines[i].to_string();
             if verbose {
-                println!("text content = {}", text);
+                xprintln!("text content = {}", text);
             }
             let mut font = "Arial".to_string();
             let mut font_size = None;
@@ -465,7 +465,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
             let mut rotate = [0.0; 3];
             i += 2;
             if verbose {
-                println!("calling parse_kv on line {}", line);
+                xprintln!("calling parse_kv on line {}", line);
             }
             let kv = parse_kv(&line.rev_before(">"));
             if kv.is_none() {
@@ -475,7 +475,7 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                 let key = &m.0;
                 let value = &m.1;
                 if verbose {
-                    println!("key = {}, value = {}", key, value);
+                    xprintln!("key = {}, value = {}", key, value);
                 }
                 if get_numeric(&key, &value, "x", &mut x) {
                 } else if get_numeric(&key, &value, "y", &mut y) {

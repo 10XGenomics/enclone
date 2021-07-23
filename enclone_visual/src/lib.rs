@@ -71,7 +71,7 @@ async fn compute() -> Result<(), String> {
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
-    println!("time used processing command = {:.1} seconds", elapsed(&t));
+    xprintln!("time used processing command = {:.1} seconds", elapsed(&t));
     Ok(())
 }
 
@@ -106,7 +106,7 @@ impl EncloneVisual {
                 self.canvas_view.state.geometry_value = geometry;
             }
         } else if VERBOSE.load(SeqCst) {
-            println!("translation from svg to geometries failed");
+            xprintln!("translation from svg to geometries failed");
         }
         if !using_geometry {
             self.canvas_view.state.geometry_value = None;
@@ -154,8 +154,8 @@ pub fn capture(count: usize, window_id: usize) {
             .output()
             .expect("failed to execute screencapture");
         if o.status.code() != Some(0) {
-            eprintln!("\nCall to screencapture failed.");
-            eprintln!("stderr =\n{}\n", strme(&o.stderr));
+            xprintln!("\nCall to screencapture failed.");
+            xprintln!("stderr =\n{}\n", strme(&o.stderr));
             std::process::exit(1);
         }
     }
@@ -168,13 +168,13 @@ pub fn get_window_id() -> usize {
         .output()
         .expect("failed to execute GetWindowID");
     if o.status.code() != Some(0) {
-        eprintln!("\nCall to GetWindowID failed.\n");
+        xprintln!("\nCall to GetWindowID failed.\n");
         std::process::exit(1);
     }
     let mut m = String::from_utf8(o.stdout).unwrap();
     m = m.replace("\n", "");
     if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
-        eprintln!("\nGetWindowId could not find id\n");
+        xprintln!("\nGetWindowId could not find id\n");
         std::process::exit(1);
     }
     m.after("id=").force_usize()
@@ -337,6 +337,18 @@ lazy_static! {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Write line to stdout and to CONSOLE.
+
+#[macro_export]
+macro_rules! xprint {
+    ($u:expr) => {
+        print!( $u );
+        CONSOLE.lock().unwrap().push( format!( $u ) );
+    };
+    ($u:expr, $($x:tt)*) => {
+        print!( $u, $($x)* );
+        CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
+    };
+}
 
 #[macro_export]
 macro_rules! xprintln {
