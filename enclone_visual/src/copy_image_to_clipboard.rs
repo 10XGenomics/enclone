@@ -25,6 +25,7 @@ use arboard::{Clipboard, ImageData};
 #[cfg(target_os = "linux")]
 use string_utils::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use crate::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
