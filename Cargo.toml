@@ -67,4 +67,6 @@ split-debuginfo = "unpacked"
 # For the particular version of macOS we have, the later versions of Xcode wouldn't work.
 # To complete the installation, we did
 # sudo xcode-select -s /path/to/Xcode.app
-# and then cargo b worked.  But sadly, loading was not speeded up.
+# and then cargo b worked.  This seemed to speed up loading by 5-10%, but that did not seem
+# like enough to justify using zld.  It might be worth trying again later, as it is being
+# improved.
