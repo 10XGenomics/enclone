@@ -102,23 +102,35 @@ impl EncloneVisual {
                         args2.push(format!("G={}", self.translated_input_value));
                         self.output_value = reply_text.to_string();
                         let hi = self.h.history_index;
-                        self.h.input1_history.insert(hi, self.h.input1_hist_uniq.len());
+                        self.h
+                            .input1_history
+                            .insert(hi, self.h.input1_hist_uniq.len());
                         self.h.input1_hist_uniq.push(self.input1_value.clone());
-                        self.h.input2_history.insert(hi, self.h.input2_hist_uniq.len());
+                        self.h
+                            .input2_history
+                            .insert(hi, self.h.input2_hist_uniq.len());
                         self.h.input2_hist_uniq.push(self.input2_value.clone());
-                        self.h.translated_input_history
+                        self.h
+                            .translated_input_history
                             .insert(hi, self.h.translated_input_hist_uniq.len());
-                        self.h.translated_input_hist_uniq
+                        self.h
+                            .translated_input_hist_uniq
                             .push(args2.iter().format(" ").to_string());
                         self.h.svg_history.insert(hi, self.h.svg_history[hi - 1]);
-                        self.h.summary_history
+                        self.h
+                            .summary_history
                             .insert(hi, self.h.summary_history[hi - 1]);
-                        self.h.displayed_tables_history
+                        self.h
+                            .displayed_tables_history
                             .insert(hi, self.h.displayed_tables_hist_uniq.len());
-                        self.h.displayed_tables_hist_uniq.push(reply_text.to_string());
-                        self.h.table_comp_history
+                        self.h
+                            .displayed_tables_hist_uniq
+                            .push(reply_text.to_string());
+                        self.h
+                            .table_comp_history
                             .insert(hi, self.h.table_comp_history[hi - 1]);
-                        self.h.last_widths_history
+                        self.h
+                            .last_widths_history
                             .insert(hi, self.h.last_widths_history[hi - 1]);
                         self.h.is_blank.insert(hi, self.is_blank_current());
                         self.h.history_index += 1;
@@ -485,7 +497,8 @@ impl EncloneVisual {
                     self.h.translated_input_history.insert(hi, len - 1);
                 } else {
                     self.h.translated_input_history.insert(hi, len);
-                    self.h.translated_input_hist_uniq
+                    self.h
+                        .translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
                 }
                 self.h.is_blank.insert(hi, blank);
@@ -547,7 +560,11 @@ impl EncloneVisual {
                 if verbose {
                     xprintln!("\ncapturing, input history:");
                     for i in 0..self.h.input1_history.len() {
-                        let mark = if i + 1 == self.h.history_index { "*" } else { "" };
+                        let mark = if i + 1 == self.h.history_index {
+                            "*"
+                        } else {
+                            ""
+                        };
                         xprintln!(
                             "[{}] {} {} {}",
                             i + 1,

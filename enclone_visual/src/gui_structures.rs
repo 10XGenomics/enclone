@@ -54,16 +54,12 @@ pub struct EncloneVisualHistory {
 
 impl EncloneVisualHistory {
     pub fn save_as_bytes(&self) -> Vec<u8> {
-        serde_json::to_string(&self)
-            .unwrap()
-            .as_bytes()
-            .to_vec()
+        serde_json::to_string(&self).unwrap().as_bytes().to_vec()
     }
 
     pub fn restore_from_bytes(bytes: &[u8]) -> Self {
         serde_json::from_str(&strme(&bytes)).unwrap()
     }
-
 }
 
 use ComputeState::*;
@@ -161,7 +157,6 @@ pub struct EncloneVisual {
     pub history_index: usize,
 
     */
-
     //
     // current window dimensions
     //
@@ -195,10 +190,12 @@ impl EncloneVisual {
         return self.h.input2_hist_uniq[self.h.input2_history[self.hi()]].clone();
     }
     pub fn translated_input_current(&self) -> String {
-        return self.h.translated_input_hist_uniq[self.h.translated_input_history[self.hi()]].clone();
+        return self.h.translated_input_hist_uniq[self.h.translated_input_history[self.hi()]]
+            .clone();
     }
     pub fn displayed_tables_current(&self) -> String {
-        return self.h.displayed_tables_hist_uniq[self.h.displayed_tables_history[self.hi()]].clone();
+        return self.h.displayed_tables_hist_uniq[self.h.displayed_tables_history[self.hi()]]
+            .clone();
     }
     pub fn table_comp_current(&self) -> Vec<u8> {
         return self.h.table_comp_hist_uniq[self.h.table_comp_history[self.hi()]].clone();
