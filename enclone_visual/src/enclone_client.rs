@@ -128,7 +128,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             If you get an error \
             message or a window does not pop up, and it's not clear what to do,\nplease \
             rerun the command with the added argument VERBOSE, and then ask for help.",
-            version, version_float,
+            version,
+            version_float,
         );
     }
 
@@ -385,7 +386,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             if verbose {
                 xprintln!(
                     "\nstarting remote server using\nssh {} {}/enclone {}:{} SERVER",
-                    host, bin, ip, port
+                    host,
+                    bin,
+                    ip,
+                    port
                 );
             }
             server_process = Command::new("ssh")

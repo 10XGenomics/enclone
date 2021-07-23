@@ -12,9 +12,8 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         console += &mut format!("{}\n", CONSOLE.lock().unwrap()[i]);
     }
     console += " \n\n\n";
-    let console_close_button =
-        Button::new(&mut slf.console_close_button, Text::new("Dismiss"))
-            .on_press(Message::ConsoleClose);
+    let console_close_button = Button::new(&mut slf.console_close_button, Text::new("Dismiss"))
+        .on_press(Message::ConsoleClose);
     let top_bar = Row::new()
         .push(console_title)
         .push(Space::with_width(Length::Fill))

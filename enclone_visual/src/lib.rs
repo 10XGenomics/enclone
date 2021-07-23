@@ -27,8 +27,8 @@ use tables::*;
 
 pub mod canvas_view;
 pub mod compare_images;
-pub mod convert_svg_to_png;
 pub mod console;
+pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
 pub mod enclone_client;
 pub mod enclone_server;
