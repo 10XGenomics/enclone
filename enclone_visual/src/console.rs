@@ -11,6 +11,7 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     for i in 0..n {
         console += &mut format!("{}\n", CONSOLE.lock().unwrap()[i]);
     }
+    console += " \n\n\n";
     let console_close_button =
         Button::new(&mut slf.console_close_button, Text::new("Dismiss"))
             .on_press(Message::ConsoleClose);
