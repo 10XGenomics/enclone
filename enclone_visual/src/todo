@@ -15,6 +15,9 @@ TO DO
 
 7.  Diagnose memory leak.
 
+8.  Use of help and cookbook and perhaps other buttons is flaky, as they reuse button stats.
+    Probably should fix.
+
 ---------------------------------------------------------------------------------------------------
 
 WAITING ON ICED
