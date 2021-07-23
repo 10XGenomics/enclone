@@ -428,9 +428,9 @@ impl Application for EncloneVisual {
                 Row::new()
                     .align_items(Align::Center)
                     .push(left_buttons)
-                    .push(Space::with_width(Units(200)))
+                    .push(Space::with_width(Length::Fill))
                     .push(banner)
-                    .push(Space::with_width(Units(200)))
+                    .push(Space::with_width(Length::Fill))
                     .push(console_button),
             )
             .push(
