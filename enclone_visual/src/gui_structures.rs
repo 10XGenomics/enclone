@@ -5,7 +5,7 @@ use canvas_view::CanvasView;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
 // use iced_native::{window, Event};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Instant;
 
@@ -21,7 +21,7 @@ impl Default for ComputeState {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Default, Deserialize, Serialize)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
@@ -53,12 +53,17 @@ pub struct EncloneVisualHistory {
 }
 
 impl EncloneVisualHistory {
-    pub fn serial(&self) -> Vec<u8> {
+    pub fn save_as_bytes(&self) -> Vec<u8> {
         serde_json::to_string(&self)
             .unwrap()
             .as_bytes()
             .to_vec()
     }
+
+    pub fn restore_from_bytes(bytes: &[u8]) -> Self {
+        serde_json::from_str(&strme(&bytes)).unwrap()
+    }
+
 }
 
 use ComputeState::*;
