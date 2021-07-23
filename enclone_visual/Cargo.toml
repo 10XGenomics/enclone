@@ -29,9 +29,8 @@ enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1"
 flate2 = "1"
-iced = { git = "https://github.com/genusistimelord/iced.git", features = ["canvas", "tokio", "svg", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
-iced_aw = { git = "https://github.com/genusistimelord/iced_aw.git", branch = "iced-main", default-features = false, features = ["card", "colors", "modal"] }
-iced_native = { git = "https://github.com/genusistimelord/iced.git" }
+iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "tokio", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
 image = "0.23"
 io_utils = "0.2"
 itertools = "0.10"

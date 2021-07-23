@@ -19,25 +19,6 @@ use vector_utils::*;
 
 pub static FAILED: AtomicBool = AtomicBool::new(false);
 
-// The rest.
-
-pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
-    "amino",
-    "ansi_escape",
-    "binary_vec_io",
-    "enclone",
-    "equiv",
-    "graph_simple",
-    "io_utils",
-    "mirror_sparse_matrix",
-    "perf_stats",
-    "stats_utils",
-    "stirling_numbers",
-    "string_utils",
-    "tables",
-    "vector_utils",
-];
-
 pub const HELP_PAGES: [&str; 21] = [
     "all",
     "amino",
@@ -223,6 +204,7 @@ pub struct GeneralOpt {
     pub info: Option<String>,
     pub info_fields: Vec<String>,
     pub info_data: HashMap<String, Vec<String>>,
+    pub info_resolve: bool,
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config_file: String,
@@ -258,6 +240,7 @@ pub struct PlotOpt {
     pub plot_xy_yvar: String,
     pub plot_xy_x_log10: bool,
     pub plot_xy_y_log10: bool,
+    pub plot_xy_sym: bool,
     pub plot_conditions: Vec<String>,
     pub plot_colors: Vec<String>,
     pub plot_file: String,

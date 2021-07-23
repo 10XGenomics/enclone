@@ -4,6 +4,7 @@ use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use crate::process_special_arg::*;
 use enclone_core::defs::*;
+use enclone_core::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
@@ -370,6 +371,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("IMGT", &mut ctl.gen_opt.imgt),
         ("IMGT_FIX", &mut ctl.gen_opt.imgt_fix),
         ("INDELS", &mut ctl.gen_opt.indels),
+        ("INFO_RESOLVE", &mut ctl.gen_opt.info_resolve),
         ("INKT", &mut ctl.clono_filt_opt.inkt),
         ("INSERTIONS", &mut ctl.gen_opt.insertions),
         ("INTERNAL", &mut ctl.gen_opt.internal_run),
@@ -780,12 +782,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
                 }
-                if let Err(e) = File::open(&val) {
-                    return Err(format!(
-                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
-                        val, e
-                    ));
-                }
+                require_readable_file(&val, &arg)?;
                 if ctl.gen_opt.evil_eye {
                     println!("file open complete");
                 }
@@ -810,12 +807,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     ));
                 }
                 *(set_string_readable_csv[j].1) = Some(val.clone());
-                if let Err(e) = File::open(&val) {
-                    return Err(format!(
-                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
-                        val, e
-                    ));
-                }
+                require_readable_file(&val, &arg)?;
                 continue 'args_loop;
             }
         }

@@ -2,6 +2,7 @@
 
 use crate::GROUP_ID;
 use crate::GROUP_ID_CLICKED_ON;
+use crate::*;
 use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
@@ -12,8 +13,6 @@ use lazy_static::lazy_static;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::Mutex;
-use string_utils::*;
-use tables::*;
 
 const DEJAVU: Font = Font::External {
     name: "DEJAVU",
@@ -117,8 +116,6 @@ impl CanvasView {
     }
 }
 
-const MAX_HEIGHT: f32 = 395.0;
-
 impl<'a> canvas::Program<Message> for CanvasView {
     fn update(
         &mut self,
@@ -139,8 +136,13 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let g = self.state.geometry_value.as_ref().unwrap();
                             let (_width, height) = self.dimensions();
                             let mut scale = 1.0;
-                            if height > MAX_HEIGHT {
-                                scale = MAX_HEIGHT / height;
+                            let mut max_height = SVG_HEIGHT as f32;
+                            if g.len() == 1 {
+                                max_height = SVG_NULL_HEIGHT as f32;
+                            }
+                            max_height -= 5.0;
+                            if height > max_height {
+                                scale = max_height / height;
                             }
                             let mut group_id = None;
                             let pos = cursor.position_in(&bounds);
@@ -257,8 +259,13 @@ impl<'a> canvas::Program<Message> for CanvasView {
         let g = self.state.geometry_value.as_ref().unwrap();
         let (width, height) = self.dimensions();
         let mut scale = 1.0;
-        if height > MAX_HEIGHT {
-            scale = MAX_HEIGHT / height;
+        let mut max_height = SVG_HEIGHT as f32;
+        if g.len() == 1 {
+            max_height = SVG_NULL_HEIGHT as f32;
+        }
+        max_height -= 5.0;
+        if height > max_height {
+            scale = max_height / height;
         }
 
         // Rebuild geometries if needed.

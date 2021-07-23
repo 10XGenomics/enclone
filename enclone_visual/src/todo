@@ -10,6 +10,9 @@ TO DO
 
 5.  Fix the close button on the upper left.
 
+6.  Eliminate the 9.2 second delay on the Mac.  This is sometimes observed, even when connected
+    to the internet.
+
 ---------------------------------------------------------------------------------------------------
 
 WAITING ON ICED

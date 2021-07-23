@@ -98,7 +98,7 @@ fn main() {
         let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
-        let (header, image_data_new) = png_decoder::decode(&image_new).unwrap();
+        let (header, image_data_new0) = png_decoder::decode(&image_new).unwrap();
         let (width, height) = (header.width as usize, header.height as usize);
 
         // Convert the new png file to a jpg, and read that back in as a bit image.
@@ -114,7 +114,7 @@ fn main() {
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
             encoder
-                .encode(&image_data_new, width as u32, height as u32, Rgba8)
+                .encode(&image_data_new0, width as u32, height as u32, Rgba8)
                 .unwrap();
         }
         let file = open_for_read![&new_jpg_file];
@@ -149,6 +149,35 @@ fn main() {
         let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
         if diffs > MAX_DIFFS {
             eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
+
+            // Create and save concatenated image.  Note that we're depending on the png
+            // in regression_images as being current.  We could do the same thing with the jpg
+            // versions, which would be guaranteed to be correct, but of lower quality.  We did
+            // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go back
+            // to that.
+
+            let mut f = File::open(&old_png_file).unwrap();
+            let mut image_old = Vec::<u8>::new();
+            f.read_to_end(&mut image_old).unwrap();
+            let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
+            let mut joint = Vec::<u8>::new();
+            for i in 0..height {
+                let start = i * width * 4;
+                let stop = (i + 1) * width * 4;
+                joint.append(&mut image_data_old0[start..stop].to_vec());
+                joint.append(&mut image_data_new0[start..stop].to_vec());
+            }
+            let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
+            let quality = 80 as u8;
+            let mut f = open_for_write_new![&new_jpg_file];
+            let mut buff = BufWriter::new(&mut f);
+            let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+            encoder
+                .encode(&joint, (width * 2) as u32, height as u32, Rgba8)
+                .unwrap();
+
+            // Keep going.
+
             fail = true;
             if update {
                 copy(&new_png_file, &old_png_file).unwrap();
@@ -167,7 +196,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 25.1; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 31.1; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.0;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
@@ -193,12 +222,12 @@ fn main() {
         maxrss_children = rusage.ru_maxrss;
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 131.6; // this is supposed to be the lowest observed value
+    const MAX_PEAK_MEM: f64 = 152.2; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER_MEM: f64 = 16.2;
     let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 
     eprintln!(
-        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} seconds by {:.1}%, \
+        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
             versus max allowed = {}%.",
         peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
     );

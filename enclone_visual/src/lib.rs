@@ -34,12 +34,19 @@ pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
 pub mod gui_structures;
+pub mod history;
 pub mod messages;
 pub mod process_messages;
 pub mod style;
+pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
+
+const SPACING: u16 = 20;
+const SCROLLBAR_WIDTH: u16 = 12;
+const SVG_NULL_HEIGHT: u16 = 190;
+const SVG_HEIGHT: u16 = 400;
 
 type MsgFn = fn(Result<(), String>) -> messages::Message;
 
@@ -47,6 +54,15 @@ async fn noop() -> Result<(), String> {
     // Increasing this time to 2000ms will prevent the screen from going dark on initialization
     // in test mode.
     thread::sleep(Duration::from_millis(100));
+    Ok(())
+}
+
+async fn noop0() -> Result<(), String> {
+    Ok(())
+}
+
+async fn noop1() -> Result<(), String> {
+    thread::sleep(Duration::from_millis(400));
     Ok(())
 }
 
@@ -100,12 +116,13 @@ impl EncloneVisual {
 }
 
 pub fn blank_svg() -> String {
-    r###"<svg version="1.1" baseProfile="full" width="400" height="400"
+    let s = r###"<svg version="1.1" baseProfile="full" width="400" height="400"
 xmlns="http://www.w3.org/2000/svg">
 <rect x="0" y="0" width="400" height="400" style="fill:white" />
 </svg>
 "###
-    .to_string()
+    .to_string();
+    s.replace("400", &format!("{}", SVG_NULL_HEIGHT))
 }
 
 pub mod proto {
@@ -126,7 +143,7 @@ pub async fn launch_gui() -> iced::Result {
 
 pub fn capture(count: usize, window_id: usize) {
     if TESTS[count - 1].2.len() > 0 {
-        thread::sleep(Duration::from_millis(20));
+        thread::sleep(Duration::from_millis(50));
         let o = std::process::Command::new("screencapture")
             .arg("-x")
             .arg(&format!("-l{}", window_id))

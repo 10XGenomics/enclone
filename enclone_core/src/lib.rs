@@ -18,6 +18,7 @@ pub mod vdj_features;
 
 use lazy_static::*;
 use std::env;
+use std::io::BufRead;
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -88,4 +89,37 @@ pub fn fetch_url(url: &str) -> Result<String, String> {
         return Err(format!("Failed to access URL {}: {}.", url, msg));
     }
     Ok(response.text().unwrap())
+}
+
+// Test to see if a line can be read from the given file f.  If not, return an error message
+// the references arg, which is supposed to be the name of a command line argument from which
+// f originated.
+
+pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
+    let x = std::fs::File::open(&f);
+    if !x.is_ok() {
+        return Err(format!(
+            "\nThe file {} could not be opened because {}.  This came from \
+            the command line argument {}.\n",
+            f,
+            x.err().unwrap(),
+            arg,
+        ));
+    }
+    let y = std::io::BufReader::new(x.unwrap());
+    for line in y.lines() {
+        if line.is_err() {
+            let mut err = line.err().unwrap().to_string();
+            if err.starts_with("Is a directory") {
+                err = "it is a directory".to_string();
+            }
+            return Err(format!(
+                "\nThe file {} could not be read because {}.\nThis came from \
+                the command line argument {}.\n",
+                f, err, arg,
+            ));
+        }
+        break;
+    }
+    Ok(())
 }

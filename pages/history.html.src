@@ -33,6 +33,17 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>7/22/21</b>:
+<ul>
+<li>Add option for xy plots to make them symmetric, which is appropriate e.g. for plotting
+data from replicates.  See <a href="../../pages/auto/plot.html">enclone plots</a>.</li>
+<li>Add option <code>INFO_RESOLVE</code> that modifies <code>INFO</code> to handle cases where
+identical immune receptor sequences have been provided.  See
+<a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>.
+</li>
+</ul>
+
+<p>
 <b>7/14/21</b>: Add new arguments <code>HONEY_OUT</code> and <code>HONEY_IN</code> to allow
 preservation of cell positions between two honeycomb plots of the same data.  Please see
 <a href="../../pages/auto/plot.html">enclone plots</a>.

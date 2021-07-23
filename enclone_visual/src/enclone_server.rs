@@ -43,7 +43,11 @@ impl Analyzer for EncloneAnalyzer {
         let req: EncloneRequest = request.into_inner();
 
         // Override the output file
-        let fields = parse_bsv(&req.args);
+
+        let mut fields = parse_bsv(&req.args);
+        for j in 0..fields.len() {
+            fields[j] = fields[j].replace("\"", "");
+        }
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
         for j in 0..fields.len() {

@@ -76,6 +76,9 @@ pub fn proc_args_post(
                 }
             }
             let tag = format!("{}_{}", vj1, vj2);
+            if ctl.gen_opt.info_resolve && ctl.gen_opt.info_data.contains_key(&tag) {
+                continue;
+            }
             tags.push(tag.clone());
             ctl.gen_opt.info_data.insert(tag, other);
         }

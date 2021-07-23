@@ -190,6 +190,10 @@ have "funny" characters in them.
 <img src="../../img/two_genes.svg" alt="sample xy plot" title="sample xy plot">
 </p>
 
+<p>An optional fourth argument <code>sym</code> may be added to force a square plot having
+identical tic marks on the axes.  This makes sense, for example, when comparing data from
+replicates.</p>
+
 <hr>
 
 <h2>plots of cosine similarity between multiple variables</h2>

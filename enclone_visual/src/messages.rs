@@ -2,16 +2,12 @@
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    InputChanged(String),
+    InputChanged1(String),
+    InputChanged2(String),
     SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
     ForwardButtonPressed(Result<(), String>),
     DelButtonPressed(Result<(), String>),
-    OpenModalSummary,
-    OpenModalHelp,
-    CloseModalHelp,
-    OpenModalCookbook,
-    CancelButtonPressed,
     ComputationDone(Result<(), String>),
     // EventOccurred(iced_native::Event),
     GraphicsCopyButtonPressed,
@@ -24,4 +20,10 @@ pub enum Message {
     Capture(Result<(), String>),
     GroupClicked(crate::canvas_view::Message),
     Resize(u32, u32),
+    HelpOpen(Result<(), String>),
+    HelpClose(Result<(), String>),
+    CookbookOpen,
+    CookbookClose,
+    SummaryOpen,
+    SummaryClose,
 }

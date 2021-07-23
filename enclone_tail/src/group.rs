@@ -804,7 +804,13 @@ pub fn group_and_print_clonotypes(
         }
         let filename = ctl.plot_opt.plot_xy_filename.clone();
         let mut svg = String::new();
-        plot_points(&plot_xy_vals, &xvar, &yvar, &mut svg)?;
+        plot_points(
+            &plot_xy_vals,
+            &xvar,
+            &yvar,
+            &mut svg,
+            ctl.plot_opt.plot_xy_sym,
+        )?;
         if filename == "stdout" || filename == "gui_stdout" {
             for line in svg.lines() {
                 println!("{}", line);

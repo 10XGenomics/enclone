@@ -14,12 +14,14 @@ members = [
     "enclone_tail",
     "enclone_tools",
     "enclone_visual",
-    "scroll_crash",
 ]
 
 exclude = [
     "bugs/button_text_update_issue",
     "bugs/canvas_in_scrollable",
+    # excluding because it's a nuisance to support this
+    # to restore, add back svg to features for iced
+    "scroll_crash",
 ]
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

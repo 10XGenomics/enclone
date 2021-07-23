@@ -134,11 +134,18 @@ pub fn process_special_arg(
         ctl.gen_opt.group_post_filter = Some(x);
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
-        if fields.len() != 3 {
+        if fields.len() != 3 && fields.len() != 4 {
             return Err(format!(
-                "\nPLOTXY_EXACT requires three comma-separated arguments.\n"
+                "\nPLOTXY_EXACT requires three or four comma-separated arguments.\n"
             ));
         }
+        if fields.len() == 4 && fields[3] != "sym" {
+            return Err(format!(
+                "\nIf four arguments are supplied to PLOTXY_EXACT, then the fourth argument \
+                    must be sym.\n"
+            ));
+        }
+        ctl.plot_opt.plot_xy_sym = fields.len() == 4;
         if fields[0].len() == 0 || fields[1].len() == 0 || fields[2].len() == 0 {
             return Err(format!("\nArguments to PLOTXY_EXACT must be non-null.\n"));
         }

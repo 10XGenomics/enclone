@@ -8,6 +8,8 @@
 //
 // At some point we may wish to switch to using a different plotting crate or build our own.
 // The string_width and ticks crates we have now might be part of this.
+//
+// If symmetric = true, produce a square plot having the same range and tic marks on both axes.
 
 use crate::string_width::*;
 use crate::ticks::*;
@@ -19,6 +21,7 @@ pub fn plot_points(
     xvar: &str,
     yvar: &str,
     svg: &mut String,
+    symmetric: bool,
 ) -> Result<(), String> {
     // Requirements.
 
@@ -42,8 +45,11 @@ pub fn plot_points(
     let axis_ticks = 5;
     let point_size = 4;
     let margin = 25;
-    let xsize = 800;
+    let mut xsize = 800;
     let ysize = 600;
+    if symmetric {
+        xsize = ysize;
+    }
     let point_color = RED;
     let range_ext = 0.02;
 
@@ -80,6 +86,12 @@ pub fn plot_points(
         yhigh *= 1.0 + range_ext;
     } else {
         yhigh *= 1.0 - range_ext;
+    }
+    if symmetric {
+        xlow = xlow.min(ylow);
+        ylow = xlow;
+        xhigh = xhigh.max(yhigh);
+        yhigh = xhigh;
     }
 
     // Get the tick mark labels.  Note that these are not the actual labels used by plotters.

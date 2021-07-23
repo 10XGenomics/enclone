@@ -292,7 +292,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
             end of the J segment, and \\bold{vj_seq2}, for the light or TRA chain.  The other \
             fields are then made accessible as lvars (see \"enclone help lvars\"), which are \
             populated for any exact subclonotype having exactly two chains (heavy/light or \
-            TRB/TRA) that match the data in the CSV file.",
+            TRB/TRA) that match the data in the CSV file.  By default, one cannot have two \
+            lines for the same antibody, however a separate argument\n\\bold{INFO_RESOLVE} may \
+            be used to \"pick the first one\".",
         )?;
 
         h.end_doc();

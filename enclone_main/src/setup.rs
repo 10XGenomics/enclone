@@ -37,10 +37,8 @@ pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
         if args[i].starts_with("SOURCE=") {
             let f = args[i].after("SOURCE=");
             let f2 = stringme(&tilde_expand(&f.as_bytes()));
-            if !path_exists(&f2) {
-                return Err(format!("\nCan't find {}.\n", f));
-            }
-            let f = open_for_read![&f];
+            require_readable_file(&f2, "SOURCE")?;
+            let f = open_for_read![&f2];
             for line in f.lines() {
                 let s = line.unwrap();
                 if !s.starts_with('#') {
@@ -293,7 +291,7 @@ pub fn setup(
             prepare_for_apocalypse(
                 &args_orig,
                 (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
-                    && bug_reports.len() == 0,
+                    && bug_reports.len() > 0,
                 &bug_reports,
             );
             let mut nopager = false;
