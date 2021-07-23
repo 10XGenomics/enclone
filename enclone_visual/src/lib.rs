@@ -331,6 +331,23 @@ lazy_static! {
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Write line to stdout and to CONSOLE.
+
+#[macro_export]
+macro_rules! xprintln {
+    ($u:expr) => {
+        println!( $u );
+        CONSOLE.lock().unwrap().push( format!( $u ) );
+    };
+    ($u:expr, $($x:tt)*) => {
+        println!( $u, $($x)* );
+        CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
+    };
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -493,7 +493,7 @@ impl EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
-                eprintln!(
+                xprintln!(
                     "total time to run command = {:.1} seconds",
                     elapsed(&self.start_command.unwrap())
                 );
@@ -505,7 +505,7 @@ impl EncloneVisual {
                     maxrss_self = rusage.ru_maxrss;
                 }
                 let peak_mem_mb = maxrss_self as f64 / ((1024 * 1024) as f64);
-                eprintln!(
+                xprintln!(
                     "all time peak mem of this process is {:.1} MB\n",
                     peak_mem_mb
                 );
@@ -515,13 +515,13 @@ impl EncloneVisual {
                     for x in self.svg_hist_uniq.iter() {
                         total_svg += x.len();
                     }
-                    eprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
+                    xprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
                     let mut total_tables = 0;
                     for x in self.table_comp_hist_uniq.iter() {
                         total_tables += x.len();
                     }
-                    eprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
-                    eprintln!("");
+                    xprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
+                    xprintln!("");
                 }
 
                 if !TEST_MODE.load(SeqCst) {
