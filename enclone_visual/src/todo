@@ -13,6 +13,8 @@ TO DO
 6.  Eliminate the 9.2 second delay on the Mac.  This is sometimes observed, even when connected
     to the internet.
 
+7.  Diagnose memory leak.
+
 ---------------------------------------------------------------------------------------------------
 
 WAITING ON ICED
