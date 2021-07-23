@@ -5,7 +5,6 @@ use crate::proto::{
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
-use crate::*;
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
@@ -64,7 +63,7 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
-        xprintln!("Running enclone:\n  {}", args.join(" "));
+        eprintln!("Running enclone:\n  {}", args.join(" "));
         let setup = main_enclone_setup(&args);
         if setup.is_err() {
             let err_msg = format!("{}", setup.err().unwrap());
@@ -225,7 +224,7 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
         let output = result.unwrap();
-        xprintln!("Enclone done, updating in-memory cache");
+        eprintln!("Enclone done, updating in-memory cache");
         // Update stored command
         {
             let mut enclone_command = self.enclone_command.lock().unwrap();
@@ -275,15 +274,15 @@ impl Analyzer for EncloneAnalyzer {
                 last_widths: last_widths,
             };
             if server_debug {
-                xprintln!("sending response as follows:");
-                xprintln!("args = {}", response.args);
-                xprintln!("plot = {}", response.plot);
-                xprintln!("table = {}", response.table);
-                xprintln!("summary = {}", response.summary);
+                println!("sending response as follows:");
+                println!("args = {}", response.args);
+                println!("plot = {}", response.plot);
+                println!("table = {}", response.table);
+                println!("summary = {}", response.summary);
             }
         }
         if server_debug {
-            xprintln!("returning response");
+            println!("returning response");
         }
         Ok(Response::new(response))
     }
@@ -350,7 +349,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
             match AnalyzerClient::connect(dest.clone()).await {
                 Ok(mut client) => match client.ping(Unit {}).await {
                     Ok(_) => {
-                        xprintln!("server using port {}", local_addr.port());
+                        println!("using port {}", local_addr.port());
                         return;
                     }
                     Err(e) => warn!("failed to ping, ({:?}), reattempting in 1s", e),
@@ -364,12 +363,12 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    xprintln!("I am process {}.", std::process::id());
-    xprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
-    xprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    xprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    xprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    xprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("I am process {}.", std::process::id());
+    eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
         .serve_with_incoming(TcpListenerStream::new(listener))
