@@ -27,7 +27,6 @@ use tables::*;
 
 pub mod canvas_view;
 pub mod compare_images;
-pub mod console;
 pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
 pub mod enclone_client;
@@ -37,9 +36,9 @@ pub mod gui;
 pub mod gui_structures;
 pub mod help;
 pub mod messages;
+pub mod popover;
 pub mod process_messages;
 pub mod style;
-pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;

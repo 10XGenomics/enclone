@@ -1,8 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::console::*;
 use crate::help::*;
-use crate::summary::*;
+use crate::popover::*;
 use crate::*;
 use gui_structures::ComputeState::*;
 use gui_structures::*;
@@ -89,20 +88,14 @@ impl Application for EncloneVisual {
     fn view(&mut self) -> Element<Message> {
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-        // Handle the summary case.
+        // Handle popovers.
 
         if self.summary_mode {
             return summary(self);
         }
-
-        // Handle the console case.
-
         if self.console_mode {
             return console(self);
         }
-
-        // Handle the help case.
-
         if self.help_mode {
             return help(self);
         }
