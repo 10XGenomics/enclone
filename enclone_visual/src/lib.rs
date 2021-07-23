@@ -341,11 +341,11 @@ lazy_static! {
 #[macro_export]
 macro_rules! xprint {
     ($u:expr) => {
-        print!( $u );
+        eprint!( $u );
         CONSOLE.lock().unwrap().push( format!( $u ) );
     };
     ($u:expr, $($x:tt)*) => {
-        print!( $u, $($x)* );
+        eprint!( $u, $($x)* );
         CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
     };
 }
@@ -353,11 +353,11 @@ macro_rules! xprint {
 #[macro_export]
 macro_rules! xprintln {
     ($u:expr) => {
-        println!( $u );
+        eprintln!( $u );
         CONSOLE.lock().unwrap().push( format!( $u ) );
     };
     ($u:expr, $($x:tt)*) => {
-        println!( $u, $($x)* );
+        eprintln!( $u, $($x)* );
         CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
     };
 }
