@@ -35,7 +35,7 @@ pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
 pub mod gui_structures;
-pub mod history;
+pub mod help;
 pub mod messages;
 pub mod process_messages;
 pub mod style;

@@ -5,7 +5,7 @@ use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
-pub fn history(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let version = VERSION.lock().unwrap()[0].clone();
     let version_float = format!("1e-{}", -version.force_f64().log10());
     let help_title = Text::new(&format!("Help")).size(30);

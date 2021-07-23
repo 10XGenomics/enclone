@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::console::*;
-use crate::history::*;
+use crate::help::*;
 use crate::summary::*;
 use crate::*;
 use gui_structures::ComputeState::*;
@@ -104,7 +104,7 @@ impl Application for EncloneVisual {
         // Handle the help case.
 
         if self.help_mode {
-            return history(self);
+            return help(self);
         }
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
