@@ -40,7 +40,7 @@ fs_extra = "1.2"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "tokio", "wgpu", "image", "default", "async-std", "smol", "palette"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "tokio", "image", "default", "async-std", "smol", "palette"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
 image = "0.23"
 io_utils = "0.2"
