@@ -333,6 +333,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ConsoleOpen => {
+                self.console_mode = true;
+                Command::none()
+            }
+
+            Message::ConsoleClose => {
+                self.console_mode = false;
+                Command::none()
+            }
+
             Message::Exit => {
                 if true {
                     std::process::exit(0);

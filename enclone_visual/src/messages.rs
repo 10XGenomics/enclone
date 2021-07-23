@@ -26,4 +26,6 @@ pub enum Message {
     CookbookClose,
     SummaryOpen,
     SummaryClose,
+    ConsoleOpen,
+    ConsoleClose,
 }

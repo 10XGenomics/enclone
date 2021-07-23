@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::console::*;
 use crate::history::*;
 use crate::summary::*;
 use crate::*;
@@ -94,7 +95,11 @@ impl Application for EncloneVisual {
             return summary(self);
         }
 
-        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+        // Handle the console case.
+
+        if self.console_mode {
+            return console(self);
+        }
 
         // Handle the help case.
 
@@ -413,6 +418,8 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),
             );
+        let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
+            .on_press(Message::ConsoleOpen);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
@@ -422,7 +429,8 @@ impl Application for EncloneVisual {
                     .spacing(100)
                     .align_items(Align::Center)
                     .push(left_buttons)
-                    .push(banner),
+                    .push(banner)
+                    .push(console_button),
             )
             .push(
                 Row::new()
