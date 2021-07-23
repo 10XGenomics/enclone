@@ -167,7 +167,7 @@ fn main() {
                 joint.append(&mut image_data_old0[start..stop].to_vec());
                 joint.append(&mut image_data_new0[start..stop].to_vec());
             }
-            let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
+            let new_jpg_file = format!("joint.{}.jpg", new_png_file.rev_before(".png"));
             let quality = 80 as u8;
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
