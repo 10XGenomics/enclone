@@ -255,24 +255,24 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     if config_name.len() > 0 && !found {
-        eprintln!(
+        xprintln!(
             "\nYou specified the configuration name {}, but the content of that configuration \
                was not found.\n",
             config_name,
         );
         if CONFIG_FILE.lock().unwrap().len() > 0 {
-            eprintln!(
+            xprintln!(
                 "The value of ENCLONE_CONFIG is {}.\n",
                 CONFIG_FILE.lock().unwrap()[0]
             );
         } else {
-            eprintln!("The environment variable ENCLONE_CONFIG is not defined.\n");
+            xprintln!("The environment variable ENCLONE_CONFIG is not defined.\n");
         }
-        eprintln!("Here is what's in your configuration file:\n");
+        xprintln!("Here is what's in your configuration file:\n");
         for line in config_file_contents.lines() {
-            eprintln!("{}", line);
+            xprintln!("{}", line);
         }
-        eprintln!("");
+        xprintln!("");
         std::process::exit(1);
     }
 
@@ -303,11 +303,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             || !config.contains_key("REMOTE_IP")
             || !config.contains_key("REMOTE_BIN")
         {
-            eprintln!(
+            xprintln!(
                 "\nTo use a remote host, please specify all of REMOTE_HOST, \
                 REMOTE_IP, and REMOTE_BIN.\n"
             );
-            eprintln!("Here is what is specified:");
+            xprintln!("Here is what is specified:");
             for (key, value) in config.iter() {
                 eprintln!("{}={}", key, value);
             }
