@@ -426,10 +426,11 @@ impl Application for EncloneVisual {
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
-                    .spacing(100)
                     .align_items(Align::Center)
                     .push(left_buttons)
+                    .push(Space::with_width(Units(200)))
                     .push(banner)
+                    .push(Space::with_width(Units(200)))
                     .push(console_button),
             )
             .push(
