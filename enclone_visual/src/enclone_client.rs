@@ -309,7 +309,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
             xprintln!("Here is what is specified:");
             for (key, value) in config.iter() {
-                eprintln!("{}={}", key, value);
+                xprintln!("{}={}", key, value);
             }
             std::process::exit(1);
         } else {
@@ -413,9 +413,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             println!("server forked");
         }
         if !server_process.is_ok() {
-            eprintln!(
+            xprintln!(
                 "\nfailed to launch server, err =\n{}.\n",
-                server_process.unwrap_err()
+                server_process.as_ref().unwrap_err()
             );
             std::process::exit(1);
         }
@@ -495,8 +495,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
             if remote_id.is_none() {
-                eprintln!("\nUnable to determine remote process id.\n");
-                eprintln!("message = {}", emsg);
+                xprintln!("\nUnable to determine remote process id.\n");
+                xprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
             let remote_version;
@@ -505,14 +505,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             {
                 remote_version = emsg.between("enclone version = ", "\n").to_string();
             } else {
-                eprint!("\nUnable to determine remote enclone version.\n");
+                xprint!("\nUnable to determine remote enclone version.\n");
                 std::process::exit(1);
             }
             let local_version = env!("CARGO_PKG_VERSION");
             if local_version != remote_version {
-                eprintln!("\nremote enclone version = {}", remote_version);
-                eprintln!("local enclone version = {}", local_version);
-                eprintln!("\nYour enclone version is not up to date.");
+                xprintln!("\nremote enclone version = {}", remote_version);
+                xprintln!("local enclone version = {}", local_version);
+                xprintln!("\nYour enclone version is not up to date.");
                 if auto_update {
                     update_enclone();
                     println!("Done, restarting!\n");
