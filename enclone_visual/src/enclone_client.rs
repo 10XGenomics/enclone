@@ -407,10 +407,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
-            println!("used {:.1} seconds launching local server", elapsed(&t));
+            xprintln!("used {:.1} seconds launching local server", elapsed(&t));
         }
         if verbose {
-            println!("server forked");
+            xprintln!("server forked");
         }
         if !server_process.is_ok() {
             xprintln!(
@@ -429,7 +429,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
         if verbose {
-            println!("waiting for server response");
+            xprintln!("waiting for server response");
         }
         pub static READ_DONE: AtomicBool = AtomicBool::new(false);
         thread::spawn(move || {
@@ -439,14 +439,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let sleep_time = 5.0_f64.max(2.0 * ssh_cat_time);
             thread::sleep(Duration::from_millis((sleep_time * 1000.0).round() as u64));
             if !READ_DONE.load(SeqCst) {
-                println!("darn, we seem to have hit a bad port, so restarting");
+                xprintln!("darn, we seem to have hit a bad port, so restarting");
                 restart_enclone();
             }
         });
         server_stdout.read(&mut buffer).unwrap();
         READ_DONE.store(true, SeqCst);
         if verbose {
-            println!(
+            xprintln!(
                 "time spent waiting to read bytes from server = {:.1} seconds",
                 elapsed(&tread)
             );
@@ -459,7 +459,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let tread = Instant::now();
         server_stderr.read(&mut ebuffer).unwrap();
         if verbose {
-            println!(
+            xprintln!(
                 "used {:.1} seconds reading from server stderr",
                 elapsed(&tread)
             );
@@ -467,14 +467,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
             if emsg.contains("already in use") {
-                println!("oops, that port is in use, trying a different one");
+                xprintln!("oops, that port is in use, trying a different one");
                 continue;
             }
             if verbose {
-                println!("\nserver says this:\n{}", emsg);
+                xprintln!("\nserver says this:\n{}", emsg);
             }
             if emsg.contains("tput: No value") {
-                println!(
+                xprintln!(
                     "\nThat's an odd message that we've observed once and don't \
                     understand.  When it happened,\nit was associated with setting the \
                     environment variable PS1 on the remote server.  If it happens\nto you, \
@@ -515,7 +515,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 xprintln!("\nYour enclone version is not up to date.");
                 if auto_update {
                     update_enclone();
-                    println!("Done, restarting!\n");
+                    xprintln!("Done, restarting!\n");
                     restart_enclone();
                 } else {
                     xprintln!(
@@ -543,7 +543,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let argsp = setup.split(' ').collect::<Vec<&str>>();
             let args = argsp[1..].to_vec();
             if verbose {
-                println!("\nrunning setup command = {}", argsp.iter().format(" "));
+                xprintln!("\nrunning setup command = {}", argsp.iter().format(" "));
             }
             let setup_process = Command::new(argsp[0])
                 .args(args)
@@ -564,14 +564,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
             if verbose {
-                println!("used {:.1} seconds connecting to remote", elapsed(&tremote));
+                xprintln!("used {:.1} seconds connecting to remote", elapsed(&tremote));
             }
         }
 
         // Connect to client.
 
         if verbose {
-            println!("connecting to {}", url);
+            xprintln!("connecting to {}", url);
         }
         let tconnect = Instant::now();
         const MAX_CONNECT_MS: u64 = 10_000;
@@ -598,10 +598,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         }
         if verbose {
-            println!("used {:.1} seconds connecting", elapsed(&tconnect));
+            xprintln!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
-        println!("connected");
-        println!("time since startup = {:.1} seconds\n", elapsed(&t));
+        xprintln!("connected");
+        xprintln!("time since startup = {:.1} seconds\n", elapsed(&t));
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
@@ -617,7 +617,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
                     if verbose {
-                        println!("processing command {}", line);
+                        xprintln!("processing command {}", line);
                     }
                     let output;
                     let mut svg_output = String::new();
@@ -665,7 +665,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
-                            print!("server error =\n{}", emsg);
+                            xprint!("server error =\n{}", emsg);
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
