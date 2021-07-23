@@ -5,6 +5,7 @@ use crate::proto::{
     analyzer_server::{Analyzer, AnalyzerServer},
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
 };
+use crate::*;
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
@@ -63,7 +64,7 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
-        eprintln!("Running enclone:\n  {}", args.join(" "));
+        xprintln!("Running enclone:\n  {}", args.join(" "));
         let setup = main_enclone_setup(&args);
         if setup.is_err() {
             let err_msg = format!("{}", setup.err().unwrap());
@@ -224,7 +225,7 @@ impl Analyzer for EncloneAnalyzer {
             return Ok(Response::new(response));
         }
         let output = result.unwrap();
-        eprintln!("Enclone done, updating in-memory cache");
+        xprintln!("Enclone done, updating in-memory cache");
         // Update stored command
         {
             let mut enclone_command = self.enclone_command.lock().unwrap();
@@ -274,15 +275,15 @@ impl Analyzer for EncloneAnalyzer {
                 last_widths: last_widths,
             };
             if server_debug {
-                println!("sending response as follows:");
-                println!("args = {}", response.args);
-                println!("plot = {}", response.plot);
-                println!("table = {}", response.table);
-                println!("summary = {}", response.summary);
+                xprintln!("sending response as follows:");
+                xprintln!("args = {}", response.args);
+                xprintln!("plot = {}", response.plot);
+                xprintln!("table = {}", response.table);
+                xprintln!("summary = {}", response.summary);
             }
         }
         if server_debug {
-            println!("returning response");
+            xprintln!("returning response");
         }
         Ok(Response::new(response))
     }
