@@ -1560,7 +1560,7 @@ dependencies = [
 name = "enclone_proto"
 version = "0.5.80"
 dependencies = [
- "bio",
+ "bio_edit",
  "byteorder",
  "bytes",
  "failure",

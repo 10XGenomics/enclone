@@ -8,8 +8,8 @@ use vdj_ann::annotate::Region as AnnRegion;
 
 include!(concat!(env!("OUT_DIR"), "/enclone.types.rs"));
 
-impl From<&bio::alignment::Alignment> for Alignment {
-    fn from(al: &bio::alignment::Alignment) -> Self {
+impl From<&bio_edit::alignment::Alignment> for Alignment {
+    fn from(al: &bio_edit::alignment::Alignment) -> Self {
         Alignment {
             ref_start: al.ystart as u32,
             cigar: al.cigar(false),
