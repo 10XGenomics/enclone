@@ -43,7 +43,7 @@ perf_stats = "0.1"
 png-decoder = "0.1"
 pretty_trace = "0.5"
 prost = { version = "0.8", features = [] }
-rayon = "1.5"
+rayon = "1"
 # resvg = "0.15.0"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
 serde = "1"
@@ -52,7 +52,7 @@ string_utils = "0.1"
 tables = "0.1"
 tilde-expand = "0.1"
 tiny-skia = "0.5"
-tokio = { version = "1.9", features = ["io-util", "macros", "rt-multi-thread"] }
+tokio = { version = "1", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.5"
 # usvg = { version = "0.14.1", default-features = false }
