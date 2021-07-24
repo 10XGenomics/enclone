@@ -216,7 +216,7 @@ impl Application for EncloneVisual {
             } else {
                 button_column2 = button_column2.push(null_button1);
             }
-            if self.h.history_index < self.h.svg_history.len() {
+            if (self.h.history_index as usize) < self.h.svg_history.len() {
                 button_column2 = button_column2.push(forward_button);
             } else {
                 button_column2 = button_column2.push(null_button2);
@@ -229,7 +229,7 @@ impl Application for EncloneVisual {
             let mut log = String::new();
             if self.h.history_index >= 1 {
                 let cmd = self.h.translated_input_hist_uniq
-                    [self.h.translated_input_history[self.h.history_index - 1] as usize]
+                    [self.h.translated_input_history[self.h.history_index as usize - 1] as usize]
                     .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
@@ -270,7 +270,7 @@ impl Application for EncloneVisual {
                     )
                     .on_press(Message::CommandCopyButtonPressed),
                 );
-            if self.h.history_index >= 1 && !self.h.is_blank[self.h.history_index - 1] {
+            if self.h.history_index >= 1 && !self.h.is_blank[self.h.history_index as usize - 1] {
                 col = col.push(copy_image_button);
             } else {
                 col = col.push(null_copy_image_button);
@@ -325,7 +325,7 @@ impl Application for EncloneVisual {
         // let svg_height = if !self.h.is_blank_current() {
         let mut blank = false;
         if self.h.history_index > 0 {
-            blank = self.h.is_blank[self.h.history_index - 1];
+            blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
         let svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
 

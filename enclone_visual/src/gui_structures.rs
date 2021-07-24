@@ -99,7 +99,7 @@ pub struct ModalState {
 
 impl EncloneVisual {
     pub fn hi(&self) -> usize {
-        self.h.history_index - 1
+        self.h.history_index as usize - 1
     }
     pub fn state_count(&self) -> usize {
         self.h.svg_history.len()

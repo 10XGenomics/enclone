@@ -31,7 +31,7 @@ pub struct EncloneVisualHistory {
     //
     // index of "current" position in those vectors, plus one:
     //
-    pub history_index: usize,
+    pub history_index: u32,
 }
 
 impl EncloneVisualHistory {
@@ -67,8 +67,6 @@ impl EncloneVisualHistory {
     // - Vec<String>
     // - Vec<Vec<u8>>
     // - Vec<Vec<u32>>
-    //
-    // TO DO: fix the usize member.
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
         serde_json::to_string(&self).unwrap().as_bytes().to_vec()
