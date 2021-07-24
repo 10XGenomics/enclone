@@ -25,7 +25,6 @@ publish = false
 align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
-bio = "0.37"
 bio_edit = { path = "../bio_edit" }
 debruijn = "0.3"
 edit-distance = "2"

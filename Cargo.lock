@@ -1578,7 +1578,6 @@ dependencies = [
  "align_tools",
  "amino",
  "ansi_escape",
- "bio",
  "bio_edit",
  "debruijn",
  "edit-distance",
