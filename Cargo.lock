@@ -1345,7 +1345,6 @@ dependencies = [
  "amino",
  "ansi_escape",
  "assert_cmd",
- "bio",
  "debruijn",
  "enclone_core",
  "equiv",
