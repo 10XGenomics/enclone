@@ -44,7 +44,7 @@ log = "0.4"
 nix = "0.22"
 perf_stats = "0.1"
 pretty_trace = "0.5"
-prost = { version = "0.8", default_features = false, features = [] }
+prost = { version = "0.8", default_features = false }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"

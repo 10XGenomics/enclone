@@ -59,7 +59,7 @@ png-decoder = "0.1"
 pprof = "0.5"
 pretty_trace = "0.5"
 procfs = "0.9"
-prost = { version = "0.8", default_features = false, features = [] }
+prost = { version = "0.8", default_features = false }
 prost-build = "0.8"
 rand = "0.8"
 rayon = "1"
@@ -78,10 +78,10 @@ tables = "0.1"
 tar = "0.4"
 tilde-expand = "0.1"
 tiny-skia = "0.5"
-tokio = { version = "1", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1", features = ["net"] }
+tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
+tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = "0.5"
-tonic-build = { version = "0.5", features = [] }
+tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
 # usvg = { version = "0.14", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
