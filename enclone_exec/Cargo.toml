@@ -31,11 +31,11 @@ io_utils = "0.2"
 nix = "0.22"
 pretty_trace = "0.5"
 string_utils = "0.1"
-tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+tokio = { version = "1.9", features = ["io-util", "macros", "rt-multi-thread"] }
 
 [dev-dependencies]
 ansi_escape = "0.1"
-attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
+attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tools = { path = "../enclone_tools" }
 failure = "0.1"

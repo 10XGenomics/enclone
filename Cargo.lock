@@ -62,7 +62,7 @@ checksum = "589d0aecbc73935716eeb183041fb89f7022dbca91ba0db217acf6d52fbd45af"
 dependencies = [
  "bio",
  "debruijn",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
  "vector_utils",
 ]
@@ -377,10 +377,26 @@ dependencies = [
  "flate2",
  "http",
  "log",
- "rustls",
+ "rustls 0.16.0",
  "url",
  "webpki",
- "webpki-roots",
+ "webpki-roots 0.18.0",
+]
+
+[[package]]
+name = "attohttpc"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a8bda305457262b339322106c776e3fd21df860018e566eb6a5b1aa4b6ae02d"
+dependencies = [
+ "flate2",
+ "http",
+ "log",
+ "rustls 0.18.1",
+ "url",
+ "webpki",
+ "webpki-roots 0.19.0",
+ "wildmatch",
 ]
 
 [[package]]
@@ -415,6 +431,12 @@ dependencies = [
 
 [[package]]
 name = "base64"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3441f0f7b02788e948e47f457ca01f1d7e6d92c693bc132c22b087d3141c03ff"
+
+[[package]]
+name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
@@ -426,7 +448,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2043be7a5f85f84516e41fd0d08004015166ce7c31c0a18ab8eccb77dd958ed"
 dependencies = [
  "failure",
- "itertools 0.9.0",
+ "itertools 0.10.1",
 ]
 
 [[package]]
@@ -1125,7 +1147,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "log",
  "num",
  "serde",
@@ -1353,7 +1375,7 @@ dependencies = [
 name = "enclone_args"
 version = "0.5.80"
 dependencies = [
- "attohttpc",
+ "attohttpc 0.17.0",
  "debruijn",
  "enclone_core",
  "evalexpr",
@@ -1391,7 +1413,7 @@ version = "0.5.80"
 dependencies = [
  "amino",
  "ansi_escape",
- "attohttpc",
+ "attohttpc 0.17.0",
  "bio",
  "bio_edit",
  "bytes",
@@ -1423,7 +1445,7 @@ name = "enclone_exec"
 version = "0.5.80"
 dependencies = [
  "ansi_escape",
- "attohttpc",
+ "attohttpc 0.17.0",
  "enclone_core",
  "enclone_main",
  "enclone_proto",
@@ -1591,7 +1613,7 @@ name = "enclone_tools"
 version = "0.5.80"
 dependencies = [
  "ansi_escape",
- "attohttpc",
+ "attohttpc 0.17.0",
  "debruijn",
  "enclone",
  "enclone_core",
@@ -2533,7 +2555,7 @@ name = "hdf5-sys"
 version = "0.7.1"
 source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
- "attohttpc",
+ "attohttpc 0.12.0",
  "bzip2",
  "libc",
  "libloading 0.6.7",
@@ -3926,7 +3948,7 @@ dependencies = [
  "backtrace",
  "failure",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "nix 0.20.0",
@@ -4394,6 +4416,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b25a18b1bf7387f0145e7f8324e700805aade3842dd3db2e74e4cdeb4677c09e"
 dependencies = [
  "base64 0.10.1",
+ "log",
+ "ring",
+ "sct",
+ "webpki",
+]
+
+[[package]]
+name = "rustls"
+version = "0.18.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d1126dcf58e93cee7d098dbda643b5f92ed724f1f6a63007c1116eed6700c81"
+dependencies = [
+ "base64 0.12.3",
  "log",
  "ring",
  "sct",
@@ -4890,7 +4925,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41bd0f99c5783b9e2e395dcfb32966979d2a3b755f3e872c16d6384c8d38b5c4"
 dependencies = [
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
 ]
 
@@ -5016,9 +5051,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.8.1"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98c8b05dc14c75ea83d63dd391100353789f5f24b8b3866542a5e85c8be8e985"
+checksum = "4b7b349f11a7047e6d1276853e612d152f5e8a352c61917887cc2169e2366b4c"
 dependencies = [
  "autocfg",
  "bytes",
@@ -5403,7 +5438,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -5672,6 +5707,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "webpki-roots"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8eff4b7516a57307f9349c64bf34caa34b940b66fed4b2fb3136cb7386e5739"
+dependencies = [
+ "webpki",
+]
+
+[[package]]
 name = "weezl"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5766,6 +5810,12 @@ dependencies = [
  "either",
  "libc",
 ]
+
+[[package]]
+name = "wildmatch"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f44b95f62d34113cf558c93511ac93027e03e9c29a60dd0fd70e6e025c7270a"
 
 [[package]]
 name = "winapi"

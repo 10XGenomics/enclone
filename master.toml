@@ -11,8 +11,7 @@ ansi_escape = "0.1"
 arboard = "1"
 assert_cmd = "1"
 async-trait = "0.1"
-# bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
-attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
+attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 bio = "0.37"
 bio-types = "0.12"
 bit-set = "0.5"
@@ -81,7 +80,7 @@ tables = "0.1"
 tar = "0.4"
 tilde-expand = "0.1"
 tiny-skia = "0.5"
-tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
+tokio = { version = "1.9", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = ["net"] }
 tonic = "0.5"
 tonic-build = { version = "0.5", features = [] }
