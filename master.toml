@@ -4,7 +4,6 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-# to restore
 align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
