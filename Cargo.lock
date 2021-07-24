@@ -62,7 +62,7 @@ checksum = "8e584788b1ba69eeed08e8cc2e68851880e78fab79c24b54f097fe8435c8ec12"
 dependencies = [
  "bio_edit",
  "debruijn",
- "itertools 0.10.1",
+ "itertools",
  "string_utils",
  "vector_utils",
 ]
@@ -424,7 +424,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2043be7a5f85f84516e41fd0d08004015166ce7c31c0a18ab8eccb77dd958ed"
 dependencies = [
  "failure",
- "itertools 0.10.1",
+ "itertools",
 ]
 
 [[package]]
@@ -1040,7 +1040,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.10.1",
+ "itertools",
  "log",
  "num",
  "serde",
@@ -1245,12 +1245,12 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
  "petgraph",
- "pprof 0.5.0",
+ "pprof",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1273,7 +1273,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "mirror_sparse_matrix",
  "rayon",
  "regex",
@@ -1314,7 +1314,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
@@ -1345,7 +1345,7 @@ dependencies = [
  "failure",
  "flate2",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
@@ -1365,7 +1365,7 @@ dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "string_utils",
  "tables",
 ]
@@ -1391,14 +1391,14 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "lazy_static",
  "libc",
  "log",
  "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
- "prost 0.8.0",
+ "prost",
  "rayon",
  "regex",
  "serde",
@@ -1431,7 +1431,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -1456,8 +1456,8 @@ dependencies = [
  "byteorder",
  "bytes",
  "failure",
- "prost 0.8.0",
- "prost-build 0.8.0",
+ "prost",
+ "prost-build",
  "serde",
  "serde_derive",
  "vdj_ann",
@@ -1479,7 +1479,7 @@ dependencies = [
  "float-ord 0.3.1",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -1512,7 +1512,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1541,7 +1541,7 @@ dependencies = [
  "iced_native",
  "image",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "jpeg-decoder",
  "lazy_static",
  "libc",
@@ -1553,7 +1553,7 @@ dependencies = [
  "png-decoder",
  "pretty_trace",
  "procfs",
- "prost 0.8.0",
+ "prost",
  "rayon",
  "resvg",
  "serde",
@@ -2732,15 +2732,6 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "69ddb889f9d0d08a67338271fa9b62996bc788c7796a5c18cf057420aaed5eaf"
@@ -3671,26 +3662,6 @@ dependencies = [
 
 [[package]]
 name = "pprof"
-version = "0.4.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c7600124d694d855283caf9f333befe2abce090833bb638009aeddd9e156dee"
-dependencies = [
- "backtrace",
- "lazy_static",
- "libc",
- "log",
- "nix 0.20.0",
- "parking_lot",
- "prost 0.7.0",
- "prost-build 0.7.0",
- "prost-derive 0.7.0",
- "symbolic-demangle",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "pprof"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c9fb4eee2f2c4f7d48fe5a33008dececbc405d0e58d2a94afe742d4f175bc401"
@@ -3701,6 +3672,9 @@ dependencies = [
  "log",
  "nix 0.20.0",
  "parking_lot",
+ "prost",
+ "prost-build",
+ "prost-derive",
  "symbolic-demangle",
  "tempfile",
  "thiserror",
@@ -3719,7 +3693,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c6e46ca79eb4e21e2ec14430340c71250ab69332abf85521c95d3a8bc336aa76"
 dependencies = [
  "difflib",
- "itertools 0.10.1",
+ "itertools",
  "predicates-core",
 ]
 
@@ -3741,18 +3715,18 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.16"
+version = "0.5.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb408584943ec135b7e2aefbe97fa0c4abe7fb7ca82ccd05019207096287bf5a"
+checksum = "3517f2c3ff4b2eb09a6ea5d860d5f8b09adb0d8b1f9c3cec64ba32e1ecd5675e"
 dependencies = [
  "backtrace",
  "failure",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "lazy_static",
  "libc",
  "nix 0.20.0",
- "pprof 0.4.4",
+ "pprof",
  "rayon",
  "stats_utils",
  "string_utils",
@@ -3813,40 +3787,12 @@ checksum = "87dfd5592a8eed7e74f56ad7b125f8234763b805c30f0c7c95c486920026a6ec"
 
 [[package]]
 name = "prost"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e6984d2f1a23009bd270b8bb56d0926810a3d483f59c987d77969e9d8e840b2"
-dependencies = [
- "bytes",
- "prost-derive 0.7.0",
-]
-
-[[package]]
-name = "prost"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de5e2533f59d08fcf364fd374ebda0692a70bd6d7e66ef97f306f45c6c5d8020"
 dependencies = [
  "bytes",
- "prost-derive 0.8.0",
-]
-
-[[package]]
-name = "prost-build"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32d3ebd75ac2679c2af3a92246639f9fcc8a442ee420719cc4fe195b98dd5fa3"
-dependencies = [
- "bytes",
- "heck",
- "itertools 0.9.0",
- "log",
- "multimap",
- "petgraph",
- "prost 0.7.0",
- "prost-types 0.7.0",
- "tempfile",
- "which",
+ "prost-derive",
 ]
 
 [[package]]
@@ -3857,27 +3803,14 @@ checksum = "355f634b43cdd80724ee7848f95770e7e70eefa6dcf14fea676216573b8fd603"
 dependencies = [
  "bytes",
  "heck",
- "itertools 0.10.1",
+ "itertools",
  "log",
  "multimap",
  "petgraph",
- "prost 0.8.0",
- "prost-types 0.8.0",
+ "prost",
+ "prost-types",
  "tempfile",
  "which",
-]
-
-[[package]]
-name = "prost-derive"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "169a15f3008ecb5160cba7d37bcd690a7601b6d30cfb87a117d45e59d52af5d4"
-dependencies = [
- "anyhow",
- "itertools 0.9.0",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -3887,20 +3820,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "600d2f334aa05acb02a755e217ef1ab6dea4d51b58b7846588b747edec04efba"
 dependencies = [
  "anyhow",
- "itertools 0.10.1",
+ "itertools",
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "prost-types"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b518d7cdd93dab1d1122cf07fa9a60771836c668dde9d9e2a139f957f0d9f1bb"
-dependencies = [
- "bytes",
- "prost 0.7.0",
 ]
 
 [[package]]
@@ -3910,7 +3833,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "603bbd6394701d13f3f25aada59c7de9d35a6a5887cfc156181234a44002771b"
 dependencies = [
  "bytes",
- "prost 0.8.0",
+ "prost",
 ]
 
 [[package]]
@@ -4669,7 +4592,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41bd0f99c5783b9e2e395dcfb32966979d2a3b755f3e872c16d6384c8d38b5c4"
 dependencies = [
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "string_utils",
 ]
 
@@ -4884,8 +4807,8 @@ dependencies = [
  "hyper-timeout",
  "percent-encoding",
  "pin-project",
- "prost 0.8.0",
- "prost-derive 0.8.0",
+ "prost",
+ "prost-derive",
  "tokio",
  "tokio-stream",
  "tokio-util",
@@ -4903,7 +4826,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d12faebbe071b06f486be82cc9318350814fdd07fcb28f3690840cd770599283"
 dependencies = [
  "proc-macro2",
- "prost-build 0.8.0",
+ "prost-build",
  "quote",
  "syn",
 ]
@@ -5176,7 +5099,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.10.1",
+ "itertools",
  "kmer_lookup",
  "pretty_trace",
  "serde",
