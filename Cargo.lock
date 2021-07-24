@@ -1414,7 +1414,6 @@ dependencies = [
  "amino",
  "ansi_escape",
  "attohttpc 0.17.0",
- "bio",
  "bio_edit",
  "bytes",
  "chrono",

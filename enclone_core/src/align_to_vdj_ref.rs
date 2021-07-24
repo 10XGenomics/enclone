@@ -125,12 +125,12 @@ pub fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
 // of alignment operations, and assumes hard_clip is false.  Code copied from bio source.
 
 pub fn cigar(
-    ops: &Vec<bio::alignment::AlignmentOperation>,
+    ops: &Vec<bio_edit::alignment::AlignmentOperation>,
     xstart: usize,
     xend: usize,
     xlen: usize,
 ) -> String {
-    use bio::alignment::AlignmentOperation;
+    use bio_edit::alignment::AlignmentOperation;
     let clip_str = "S";
     let add_op = |op: AlignmentOperation, k, cigar: &mut String| match op {
         AlignmentOperation::Match => cigar.push_str(&format!("{}{}", k, "=")),
@@ -177,7 +177,7 @@ pub fn align_to_vdj_ref(
     drefname: &str, // useful for debugging
     left: bool,
     ctl: &EncloneControl,
-) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
+) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
     let matchp = ctl.gen_opt.jscore_match;
