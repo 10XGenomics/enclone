@@ -137,30 +137,33 @@ impl EncloneVisual {
         self.h.svg_history.len()
     }
     pub fn svg_current(&self) -> String {
-        return self.h.svg_hist_uniq[self.h.svg_history[self.hi()]].clone();
+        return self.h.svg_hist_uniq[self.h.svg_history[self.hi()] as usize].clone();
     }
     pub fn summary_current(&self) -> String {
-        return self.h.summary_hist_uniq[self.h.summary_history[self.hi()]].clone();
+        return self.h.summary_hist_uniq[self.h.summary_history[self.hi()] as usize].clone();
     }
     pub fn input1_current(&self) -> String {
-        return self.h.input1_hist_uniq[self.h.input1_history[self.hi()]].clone();
+        return self.h.input1_hist_uniq[self.h.input1_history[self.hi()] as usize].clone();
     }
     pub fn input2_current(&self) -> String {
-        return self.h.input2_hist_uniq[self.h.input2_history[self.hi()]].clone();
+        return self.h.input2_hist_uniq[self.h.input2_history[self.hi()] as usize].clone();
     }
     pub fn translated_input_current(&self) -> String {
-        return self.h.translated_input_hist_uniq[self.h.translated_input_history[self.hi()]]
+        return self.h.translated_input_hist_uniq
+            [self.h.translated_input_history[self.hi()] as usize]
             .clone();
     }
     pub fn displayed_tables_current(&self) -> String {
-        return self.h.displayed_tables_hist_uniq[self.h.displayed_tables_history[self.hi()]]
+        return self.h.displayed_tables_hist_uniq
+            [self.h.displayed_tables_history[self.hi()] as usize]
             .clone();
     }
     pub fn table_comp_current(&self) -> Vec<u8> {
-        return self.h.table_comp_hist_uniq[self.h.table_comp_history[self.hi()]].clone();
+        return self.h.table_comp_hist_uniq[self.h.table_comp_history[self.hi()] as usize].clone();
     }
     pub fn last_widths_current(&self) -> Vec<usize> {
-        return self.h.last_widths_hist_uniq[self.h.last_widths_history[self.hi()]].clone();
+        return self.h.last_widths_hist_uniq[self.h.last_widths_history[self.hi()] as usize]
+            .clone();
     }
     pub fn is_blank_current(&self) -> bool {
         return self.h.is_blank[self.hi()];

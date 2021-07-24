@@ -104,15 +104,15 @@ impl EncloneVisual {
                         let hi = self.h.history_index;
                         self.h
                             .input1_history
-                            .insert(hi, self.h.input1_hist_uniq.len());
+                            .insert(hi, self.h.input1_hist_uniq.len() as u32);
                         self.h.input1_hist_uniq.push(self.input1_value.clone());
                         self.h
                             .input2_history
-                            .insert(hi, self.h.input2_hist_uniq.len());
+                            .insert(hi, self.h.input2_hist_uniq.len() as u32);
                         self.h.input2_hist_uniq.push(self.input2_value.clone());
                         self.h
                             .translated_input_history
-                            .insert(hi, self.h.translated_input_hist_uniq.len());
+                            .insert(hi, self.h.translated_input_hist_uniq.len() as u32);
                         self.h
                             .translated_input_hist_uniq
                             .push(args2.iter().format(" ").to_string());
@@ -122,7 +122,7 @@ impl EncloneVisual {
                             .insert(hi, self.h.summary_history[hi - 1]);
                         self.h
                             .displayed_tables_history
-                            .insert(hi, self.h.displayed_tables_hist_uniq.len());
+                            .insert(hi, self.h.displayed_tables_hist_uniq.len() as u32);
                         self.h
                             .displayed_tables_hist_uniq
                             .push(reply_text.to_string());
@@ -411,9 +411,9 @@ impl EncloneVisual {
                 let hi = self.h.history_index;
                 let len = self.h.table_comp_hist_uniq.len();
                 if len > 0 && self.h.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.h.table_comp_history.insert(hi, len - 1);
+                    self.h.table_comp_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.table_comp_history.insert(hi, len);
+                    self.h.table_comp_history.insert(hi, len as u32);
                     self.h.table_comp_hist_uniq.push(reply_table_comp.clone());
                     if self.table_comp_value.len() > 0 {
                         let mut gunzipped = Vec::<u8>::new();
@@ -450,53 +450,53 @@ impl EncloneVisual {
 
                 let len = self.h.last_widths_hist_uniq.len();
                 if len > 0 && self.h.last_widths_hist_uniq[len - 1] == reply_last_widths {
-                    self.h.last_widths_history.insert(hi, len - 1);
+                    self.h.last_widths_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.last_widths_history.insert(hi, len);
+                    self.h.last_widths_history.insert(hi, len as u32);
                     self.h.last_widths_hist_uniq.push(reply_last_widths.clone());
                 }
                 let len = self.h.svg_hist_uniq.len();
                 if len > 0 && self.h.svg_hist_uniq[len - 1] == reply_svg {
-                    self.h.svg_history.insert(hi, len - 1);
+                    self.h.svg_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.svg_history.insert(hi, len);
+                    self.h.svg_history.insert(hi, len as u32);
                     self.h.svg_hist_uniq.push(reply_svg.clone());
                 }
                 let len = self.h.summary_hist_uniq.len();
                 if len > 0 && self.h.summary_hist_uniq[len - 1] == reply_summary {
-                    self.h.summary_history.insert(hi, len - 1);
+                    self.h.summary_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.summary_history.insert(hi, len);
+                    self.h.summary_history.insert(hi, len as u32);
                     self.h.summary_hist_uniq.push(reply_summary.clone());
                 }
                 let len = self.h.displayed_tables_hist_uniq.len();
                 if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {
-                    self.h.displayed_tables_history.insert(hi, len - 1);
+                    self.h.displayed_tables_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.displayed_tables_history.insert(hi, len);
+                    self.h.displayed_tables_history.insert(hi, len as u32);
                     self.h.displayed_tables_hist_uniq.push(reply_text.clone());
                 }
                 let len = self.h.input1_hist_uniq.len();
                 if len > 0 && self.h.input1_hist_uniq[len - 1] == self.input1_value {
-                    self.h.input1_history.insert(hi, len - 1);
+                    self.h.input1_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.input1_history.insert(hi, len);
+                    self.h.input1_history.insert(hi, len as u32);
                     self.h.input1_hist_uniq.push(self.input1_value.clone());
                 }
                 let len = self.h.input2_hist_uniq.len();
                 if len > 0 && self.h.input2_hist_uniq[len - 1] == self.input2_value {
-                    self.h.input2_history.insert(hi, len - 1);
+                    self.h.input2_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.input2_history.insert(hi, len);
+                    self.h.input2_history.insert(hi, len as u32);
                     self.h.input2_hist_uniq.push(self.input2_value.clone());
                 }
                 let len = self.h.translated_input_hist_uniq.len();
                 if len > 0
                     && self.h.translated_input_hist_uniq[len - 1] == self.translated_input_value
                 {
-                    self.h.translated_input_history.insert(hi, len - 1);
+                    self.h.translated_input_history.insert(hi, (len - 1) as u32);
                 } else {
-                    self.h.translated_input_history.insert(hi, len);
+                    self.h.translated_input_history.insert(hi, len as u32);
                     self.h
                         .translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
@@ -568,8 +568,8 @@ impl EncloneVisual {
                         xprintln!(
                             "[{}] {} {} {}",
                             i + 1,
-                            self.h.input1_hist_uniq[self.h.input1_history[i]],
-                            self.h.input2_hist_uniq[self.h.input2_history[i]],
+                            self.h.input1_hist_uniq[self.h.input1_history[i] as usize],
+                            self.h.input2_hist_uniq[self.h.input2_history[i] as usize],
                             mark
                         );
                     }

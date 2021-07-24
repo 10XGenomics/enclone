@@ -19,15 +19,15 @@ pub struct EncloneVisualHistory {
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //
-    pub svg_history: Vec<usize>,              // each entry is an SVG
-    pub summary_history: Vec<usize>,          // each entry is a summary
-    pub input1_history: Vec<usize>,           // each entry is the originating command 1
-    pub input2_history: Vec<usize>,           // each entry is the originating command 2
-    pub translated_input_history: Vec<usize>, // each entry is the translated originating command
-    pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
-    pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
-    pub last_widths_history: Vec<usize>,
-    pub is_blank: Vec<bool>, // set if the SVG is empty
+    pub svg_history: Vec<u32>,              // each entry is an SVG
+    pub summary_history: Vec<u32>,          // each entry is a summary
+    pub input1_history: Vec<u32>,           // each entry is the originating command 1
+    pub input2_history: Vec<u32>,           // each entry is the originating command 2
+    pub translated_input_history: Vec<u32>, // each entry is the translated originating command
+    pub displayed_tables_history: Vec<u32>, // each entry is the tables that are displayed
+    pub table_comp_history: Vec<u32>,       // each entry is the compressed list of all tables
+    pub last_widths_history: Vec<u32>,      // last widths for clonotype pictures
+    pub is_blank: Vec<bool>,                // set if the SVG is empty
     //
     // index of "current" position in those vectors, plus one:
     //
@@ -61,11 +61,14 @@ impl EncloneVisualHistory {
     // And the first two fields are translated_input_history, translated_input_hist_uniq.
     //
     // supported subtypes
-    // - Vec<usize>
+    // - usize
+    // - Vec<u32>
     // - Vec<bool>
     // - Vec<String>
     // - Vec<Vec<u8>>
-    // - Vec<Vec<usize>>
+    // - Vec<Vec<u32>>
+    //
+    // TO DO: fix the usize and Vec<Vec<usize> members.
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
         serde_json::to_string(&self).unwrap().as_bytes().to_vec()

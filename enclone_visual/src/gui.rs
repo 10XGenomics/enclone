@@ -229,7 +229,7 @@ impl Application for EncloneVisual {
             let mut log = String::new();
             if self.h.history_index >= 1 {
                 let cmd = self.h.translated_input_hist_uniq
-                    [self.h.translated_input_history[self.h.history_index - 1]]
+                    [self.h.translated_input_history[self.h.history_index - 1] as usize]
                     .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
