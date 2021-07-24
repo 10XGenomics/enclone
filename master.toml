@@ -56,6 +56,7 @@ permutation = "0.2"
 petgraph = "0.5"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
+pprof = "0.5"
 pretty_trace = "0.5"
 procfs = "0.9"
 prost = { version = "0.8", features = [] }
