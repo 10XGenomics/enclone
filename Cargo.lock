@@ -2378,7 +2378,7 @@ dependencies = [
  "glyph_brush_draw_cache",
  "glyph_brush_layout",
  "log",
- "ordered-float 2.5.0",
+ "ordered-float 2.7.0",
  "rustc-hash",
  "twox-hash",
 ]
@@ -3623,12 +3623,11 @@ dependencies = [
 
 [[package]]
 name = "ordered-float"
-version = "2.5.0"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "809348965973b261c3e504c8d0434e465274f78c880e10039914f2c5dcf49461"
+checksum = "039f02eb0f69271f26abe3202189275d7aa2258b903cb0281b5de710a2570ff3"
 dependencies = [
  "num-traits",
- "rand 0.8.3",
 ]
 
 [[package]]
