@@ -627,7 +627,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut svg_output = String::new();
                     let mut summary = String::new();
                     let mut table_comp = Vec::<u8>::new();
-                    let mut last_widths = Vec::<usize>::new();
+                    let mut last_widths = Vec::<u32>::new();
                     if line != "enclone" && !line.starts_with("enclone ") {
                         if line.starts_with("#") {
                             output = "unknown tag".to_string();
@@ -677,7 +677,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             output = format!("{}", r.table);
                             table_comp = r.table_comp.clone();
                             for x in r.last_widths.iter() {
-                                last_widths.push(*x as usize);
+                                last_widths.push(*x as u32);
                             }
                             summary = r.summary.clone();
                         }

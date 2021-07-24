@@ -37,7 +37,7 @@ pub struct EncloneVisual {
     pub png_value: Vec<u8>,
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
-    pub last_widths_value: Vec<usize>,
+    pub last_widths_value: Vec<u32>,
     pub submit_button_text: String,
     // pub should_exit: bool,
     pub compute_state: ComputeState,
@@ -84,38 +84,6 @@ pub struct EncloneVisual {
     // history
     //
     pub h: EncloneVisualHistory,
-
-    /*
-
-    //
-    // more or less uniqued history:
-    //
-    pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
-    pub summary_hist_uniq: Vec<String>, // each entry is a summary
-    pub input1_hist_uniq: Vec<String>,  // each entry is the originating command 1
-    pub input2_hist_uniq: Vec<String>,  // each entry is the originating command 2
-    pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
-    pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
-    pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
-    pub last_widths_hist_uniq: Vec<Vec<usize>>,
-    //
-    // parallel vectors, with one entry for each command entered in the text box:
-    //
-    pub svg_history: Vec<usize>,              // each entry is an SVG
-    pub summary_history: Vec<usize>,          // each entry is a summary
-    pub input1_history: Vec<usize>,           // each entry is the originating command 1
-    pub input2_history: Vec<usize>,           // each entry is the originating command 2
-    pub translated_input_history: Vec<usize>, // each entry is the translated originating command
-    pub displayed_tables_history: Vec<usize>, // each entry is the tables that are displayed
-    pub table_comp_history: Vec<usize>,       // each entry is the compressed list of all tables
-    pub last_widths_history: Vec<usize>,
-    pub is_blank: Vec<bool>, // set if the SVG is empty
-    //
-    // index of "current" position in those vectors, plus one:
-    //
-    pub history_index: usize,
-
-    */
     //
     // current window dimensions
     //
@@ -161,7 +129,7 @@ impl EncloneVisual {
     pub fn table_comp_current(&self) -> Vec<u8> {
         return self.h.table_comp_hist_uniq[self.h.table_comp_history[self.hi()] as usize].clone();
     }
-    pub fn last_widths_current(&self) -> Vec<usize> {
+    pub fn last_widths_current(&self) -> Vec<u32> {
         return self.h.last_widths_hist_uniq[self.h.last_widths_history[self.hi()] as usize]
             .clone();
     }

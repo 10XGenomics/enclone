@@ -15,7 +15,7 @@ pub struct EncloneVisualHistory {
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
-    pub last_widths_hist_uniq: Vec<Vec<usize>>,
+    pub last_widths_hist_uniq: Vec<Vec<u32>>,
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //
@@ -61,14 +61,14 @@ impl EncloneVisualHistory {
     // And the first two fields are translated_input_history, translated_input_hist_uniq.
     //
     // supported subtypes
-    // - usize
+    // - u32
     // - Vec<u32>
     // - Vec<bool>
     // - Vec<String>
     // - Vec<Vec<u8>>
     // - Vec<Vec<u32>>
     //
-    // TO DO: fix the usize and Vec<Vec<usize> members.
+    // TO DO: fix the usize member.
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
         serde_json::to_string(&self).unwrap().as_bytes().to_vec()

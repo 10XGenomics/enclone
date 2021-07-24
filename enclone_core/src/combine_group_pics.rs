@@ -7,7 +7,7 @@ use string_utils::*;
 
 pub fn combine_group_pics(
     group_pics: &Vec<String>,
-    last_widths: &Vec<usize>,
+    last_widths: &Vec<u32>,
     noprint: bool,
     noprintx: bool,
     html: bool,
@@ -34,7 +34,7 @@ pub fn combine_group_pics(
                     emit_eight_bit_color_escape(&mut log, 44);
                     fwrite!(glog, "{}", strme(&log));
                 }
-                fwrite!(glog, "╺{}╸", "━".repeat(last_widths[i - 1] - 2));
+                fwrite!(glog, "╺{}╸", "━".repeat((last_widths[i - 1] - 2) as usize));
                 if !ngroup {
                     fwriteln!(glog, ""); // NEWLINE 3
                 }

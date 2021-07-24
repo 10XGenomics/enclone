@@ -54,7 +54,7 @@ use vector_utils::*;
 #[derive(Clone, Debug, Default)]
 pub struct MainEncloneOutput {
     pub pics: Vec<String>, // clonotype tables
-    pub last_widths: Vec<usize>,
+    pub last_widths: Vec<u32>,
     pub svgs: Vec<String>, // SVG objects
     pub summary: String,   // summary
     pub noprint: bool,

@@ -77,7 +77,7 @@ impl EncloneVisual {
                             reply_text = "Group identifier is too large.".to_string();
                         } else {
                             let mut group_pics = Vec::<String>::new();
-                            let mut last_widths = Vec::<usize>::new();
+                            let mut last_widths = Vec::<u32>::new();
                             for x in group_ids.iter() {
                                 group_pics.push(self.current_tables[*x - 1].clone());
                                 last_widths.push(self.last_widths_value[*x - 1]);

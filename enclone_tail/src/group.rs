@@ -44,7 +44,7 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     group_pics: &mut Vec<String>,
-    last_widths: &mut Vec<usize>,
+    last_widths: &mut Vec<u32>,
     exacts: &Vec<Vec<usize>>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -753,7 +753,7 @@ pub fn group_and_print_clonotypes(
             }
         }
         group_pics.push(stringme(&glog));
-        last_widths.push(last_width);
+        last_widths.push(last_width as u32);
     }
     if ctl.gen_opt.group_post_filter.as_ref().is_some() {
         let x = &ctl.gen_opt.group_post_filter.as_ref().unwrap();
@@ -763,7 +763,7 @@ pub fn group_and_print_clonotypes(
             ));
         }
         let mut group_pics2 = Vec::<String>::new();
-        let mut last_widths2 = Vec::<usize>::new();
+        let mut last_widths2 = Vec::<u32>::new();
         for i in 0..x.len() {
             group_pics2.push(group_pics[x[i] - 1].clone());
             last_widths2.push(last_widths[x[i] - 1]);
