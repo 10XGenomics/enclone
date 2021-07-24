@@ -35,6 +35,38 @@ pub struct EncloneVisualHistory {
 }
 
 impl EncloneVisualHistory {
+    //
+    // requirements for saving and restoring history
+    //
+    // 1. File structure must not change, except when we explicitly change it.
+    // 2. Must be able to read old files.
+    // 3. Must be versioned.
+    // 4. Must have text header.
+    // 5. Must store reasonably efficiently.
+    // 6. Must be able to extract command list without reading entire file.
+    // 7. File structure must be guaranteed the same across environments (so, e.g., no usize).
+    //
+    // structure description
+    //
+    // 1. text header = 40 bytes = "enclone visual history file version ***\n",
+    //    where *** is a positive integer, padded on the right with blanks
+    // 2. nbytes for truncated file including just the first two fields (u32)
+    // 3. nbytes for total file (u32)
+    // 2. number of fields
+    // 3. sequence of fields of the form
+    //    (a) nbytes for member name (u8)
+    //    (b) member name bytes
+    //    (c) nbytes for data (u32)
+    //    (d) data.
+    // And the first two fields are translated_input_history, translated_input_hist_uniq.
+    //
+    // supported subtypes
+    // - Vec<usize>
+    // - Vec<bool>
+    // - Vec<String>
+    // - Vec<Vec<u8>>
+    // - Vec<Vec<usize>>
+
     pub fn save_as_bytes(&self) -> Vec<u8> {
         serde_json::to_string(&self).unwrap().as_bytes().to_vec()
     }
