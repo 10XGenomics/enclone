@@ -240,23 +240,16 @@ fn main() {
 
         let mut dots = 0;
         println!("");
-        for ii in 0..2 * crates.len() {
-            let i = ii % crates.len();
-            let aggressive = if i < crates.len() { false } else { true };
+        for i in 0..crates.len() {
             let cratex = &crates[i];
             let version = &versions[i];
 
             // Update crate.
 
-            let mut args = Vec::<String>::new();
-            args.push("update".to_string());
-            args.push("-p".to_string());
-            args.push(format!("{}:{}", cratex, version));
-            if aggressive {
-                args.push("--aggressive".to_string());
-            }
             let new = Command::new("cargo")
-                .args(&args)
+                .arg("update")
+                .arg("-p")
+                .arg(&format!("{}:{}", cratex, version))
                 .output()
                 .expect(&format!("\n\nfailed to execute cargo update"));
             if new.status.code() != Some(0) {
