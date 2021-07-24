@@ -62,7 +62,7 @@ checksum = "589d0aecbc73935716eeb183041fb89f7022dbca91ba0db217acf6d52fbd45af"
 dependencies = [
  "bio",
  "debruijn",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
  "vector_utils",
 ]
@@ -426,7 +426,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2043be7a5f85f84516e41fd0d08004015166ce7c31c0a18ab8eccb77dd958ed"
 dependencies = [
  "failure",
- "itertools 0.9.0",
+ "itertools 0.10.1",
 ]
 
 [[package]]
@@ -1125,7 +1125,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "log",
  "num",
  "serde",
@@ -3939,7 +3939,7 @@ dependencies = [
  "backtrace",
  "failure",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "lazy_static",
  "libc",
  "nix 0.21.0",
@@ -4903,7 +4903,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41bd0f99c5783b9e2e395dcfb32966979d2a3b755f3e872c16d6384c8d38b5c4"
 dependencies = [
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "string_utils",
 ]
 
@@ -5416,7 +5416,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.1",
  "kmer_lookup",
  "pretty_trace",
  "serde",
