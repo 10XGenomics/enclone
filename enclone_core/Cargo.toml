@@ -24,7 +24,7 @@ publish = false
 amino = "0.1"
 ansi_escape = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
-bio_edit = { path = "../bio_edit" }
+bio_edit = "0.1"
 bytes = "1"
 chrono = "0.4"
 debruijn = "0.3"
@@ -45,7 +45,7 @@ stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
 superslice = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
 
 [build-dependencies]

@@ -12,7 +12,7 @@ arboard = "1"
 assert_cmd = "1"
 async-trait = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
-bio_edit = { path = "../bio_edit" }
+bio_edit = "0.1"
 bio-types = "0.12"
 bit-set = "0.5"
 byteorder = "1"
@@ -86,5 +86,5 @@ tonic = "0.5"
 tonic-build = { version = "0.5", features = [] }
 # usvg = { version = "0.14", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
