@@ -116,7 +116,9 @@ impl EncloneVisual {
                         self.h
                             .translated_input_hist_uniq
                             .push(args2.iter().format(" ").to_string());
-                        self.h.svg_history.insert(hi as usize, self.h.svg_history[(hi - 1) as usize]);
+                        self.h
+                            .svg_history
+                            .insert(hi as usize, self.h.svg_history[(hi - 1) as usize]);
                         self.h
                             .summary_history
                             .insert(hi as usize, self.h.summary_history[(hi - 1) as usize]);
@@ -411,7 +413,9 @@ impl EncloneVisual {
                 let hi = self.h.history_index;
                 let len = self.h.table_comp_hist_uniq.len();
                 if len > 0 && self.h.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.h.table_comp_history.insert(hi as usize, (len - 1) as u32);
+                    self.h
+                        .table_comp_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
                     self.h.table_comp_history.insert(hi as usize, len as u32);
                     self.h.table_comp_hist_uniq.push(reply_table_comp.clone());
@@ -450,7 +454,9 @@ impl EncloneVisual {
 
                 let len = self.h.last_widths_hist_uniq.len();
                 if len > 0 && self.h.last_widths_hist_uniq[len - 1] == reply_last_widths {
-                    self.h.last_widths_history.insert(hi as usize, (len - 1) as u32);
+                    self.h
+                        .last_widths_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
                     self.h.last_widths_history.insert(hi as usize, len as u32);
                     self.h.last_widths_hist_uniq.push(reply_last_widths.clone());
@@ -471,9 +477,13 @@ impl EncloneVisual {
                 }
                 let len = self.h.displayed_tables_hist_uniq.len();
                 if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {
-                    self.h.displayed_tables_history.insert(hi as usize, (len - 1) as u32);
+                    self.h
+                        .displayed_tables_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.h.displayed_tables_history.insert(hi as usize, len as u32);
+                    self.h
+                        .displayed_tables_history
+                        .insert(hi as usize, len as u32);
                     self.h.displayed_tables_hist_uniq.push(reply_text.clone());
                 }
                 let len = self.h.input1_hist_uniq.len();
@@ -494,9 +504,13 @@ impl EncloneVisual {
                 if len > 0
                     && self.h.translated_input_hist_uniq[len - 1] == self.translated_input_value
                 {
-                    self.h.translated_input_history.insert(hi as usize, (len - 1) as u32);
+                    self.h
+                        .translated_input_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.h.translated_input_history.insert(hi as usize, len as u32);
+                    self.h
+                        .translated_input_history
+                        .insert(hi as usize, len as u32);
                     self.h
                         .translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
