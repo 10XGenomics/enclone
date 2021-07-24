@@ -1285,21 +1285,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "enclone_com"
-version = "0.5.80"
-dependencies = [
- "bytes",
- "enclone_core",
- "enclone_tail",
- "io_utils",
- "lazy_static",
- "pretty_trace",
- "string_utils",
- "tokio",
- "vdj_ann",
-]
-
-[[package]]
 name = "enclone_core"
 version = "0.5.80"
 dependencies = [
