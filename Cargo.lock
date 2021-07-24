@@ -1527,7 +1527,7 @@ version = "0.5.80"
 dependencies = [
  "amino",
  "ansi_escape",
- "bio",
+ "bio_edit",
  "byteorder",
  "bytes",
  "debruijn",
