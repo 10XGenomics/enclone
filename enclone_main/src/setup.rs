@@ -300,12 +300,12 @@ pub fn setup(
             help_all = true;
         }
         let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
-        help1(&args, &mut h)?;
-        help2(&args, &ctl, &mut h)?;
-        help3(&args, &mut h)?;
-        help4(&args, &mut h)?;
-        help5(&args, &ctl, &mut h)?;
-        if args.len() == 1 || (args.len() > 1 && args[1] == "help") {
+        help1(&args_orig, &mut h)?;
+        help2(&args_orig, &ctl, &mut h)?;
+        help3(&args_orig, &mut h)?;
+        help4(&args_orig, &mut h)?;
+        help5(&args_orig, &ctl, &mut h)?;
+        if args_orig.len() == 1 || (args_orig.len() > 1 && args_orig[1] == "help") {
             return Ok(());
         }
     }
