@@ -177,8 +177,6 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
                     ctl.gen_opt.pre.iter().format(","),
                 ));
             }
-        } else {
-            args2.push(args[i].clone());
         }
     }
     args = args2;

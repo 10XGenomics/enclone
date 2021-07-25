@@ -167,7 +167,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.split {
         return Ok(EncloneSetup::default());
     }
-    if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
+    let mut argsy = Vec::<String>::new();
+    for i in 0..args_orig.len() {
+        if args_orig[i] != "HTML" && args_orig[i] != "STABLE_DOC" {
+            argsy.push(args_orig[i].clone());
+        }
+    }
+    if argsy.len() == 1 || (argsy.len() > 1 && (argsy[1] == "help" || argsy[1] == "--help")) {
         return Ok(EncloneSetup::default());
     }
 
