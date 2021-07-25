@@ -299,13 +299,19 @@ pub fn setup(
             }
             help_all = true;
         }
+        let mut argsx = Vec::<String>::new();
+        for i in 0..args_orig.len() {
+            if args_orig[i] != "HTML" && args_orig[i] != "STABLE_DOC" {
+                argsx.push(args_orig[i].clone());
+            }
+        }
         let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
-        help1(&args_orig, &mut h)?;
-        help2(&args_orig, &ctl, &mut h)?;
-        help3(&args_orig, &mut h)?;
-        help4(&args_orig, &mut h)?;
-        help5(&args_orig, &ctl, &mut h)?;
-        if args_orig.len() == 1 || (args_orig.len() > 1 && args_orig[1] == "help") {
+        help1(&argsx, &mut h)?;
+        help2(&argsx, &ctl, &mut h)?;
+        help3(&argsx, &mut h)?;
+        help4(&argsx, &mut h)?;
+        help5(&argsx, &ctl, &mut h)?;
+        if argsx.len() == 1 || (argsx.len() > 1 && argsx[1] == "help") {
             return Ok(());
         }
     }
