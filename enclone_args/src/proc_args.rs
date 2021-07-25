@@ -559,6 +559,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         "INTERNAL",
         "BUG_REPORTS",
         "PRE",
+        "SOURCE",
         "VERBOSE",
     ];
 
