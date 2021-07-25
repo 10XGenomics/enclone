@@ -172,7 +172,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             if !found {
                 return Err(format!(
                     "\nUnable to find SOURCE file {}.\n\
-                    This was using PRE={}",
+                    This was using PRE={}.\n",
                     f,
                     ctl.gen_opt.pre.iter().format(","),
                 ));
