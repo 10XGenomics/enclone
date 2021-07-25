@@ -295,9 +295,10 @@ impl Application for EncloneVisual {
         let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
         let nchars = (available as f32 / font_width).round() as usize;
         let mut trunc = String::new();
+        let failed = self.output_value.contains("enclone failed");
         for line in self.output_value.lines() {
             for (i, c) in line.chars().enumerate() {
-                if i == nchars {
+                if i == nchars && !failed {
                     break;
                 }
                 trunc.push(c);
