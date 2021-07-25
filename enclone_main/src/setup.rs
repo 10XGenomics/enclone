@@ -29,32 +29,154 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Process SOURCE args.
+// Process some arguments.  The order is delicate.
 
-pub fn process_source(args: &Vec<String>) -> Result<Vec<String>, String> {
-    let mut args2 = vec![args[0].clone()];
+pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec<String>, String> {
+    // Form the combined set of command-line arguments and "command-line" arguments
+    // implied by environment variables.
+
+    let mut args = args.clone();
+    for (key, value) in env::vars() {
+        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_VIS_") {
+            args.push(format!("{}={}", key.after("ENCLONE_"), value));
+        }
+    }
+
+    // Check for CONFIG and EVIL_EYE and CELLRANGER.
+
+    for i in 1..args.len() {
+        if args[i].starts_with("CONFIG=") {
+            ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
+        } else if args[i] == "EVIL_EYE" {
+            ctl.gen_opt.evil_eye = true;
+            if ctl.gen_opt.evil_eye {
+                println!("the evil eye is on");
+            }
+        } else if is_simple_arg(&args[i], "CELLRANGER")? {
+            ctl.gen_opt.cellranger = true;
+        }
+    }
+
+    // Test for internal run and get configuration.
+
+    if ctl.gen_opt.evil_eye {
+        println!("testing for internal run");
+    }
+    for (key, value) in env::vars() {
+        if key.contains("USER") && value.ends_with("10xgenomics.com") {
+            if ctl.gen_opt.evil_eye {
+                println!("getting config");
+            }
+            if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
+                ctl.gen_opt.internal_run = true;
+            }
+            if ctl.gen_opt.evil_eye {
+                println!("got config");
+            }
+            break;
+        }
+    }
+    for i in 1..args.len() {
+        if args[i] == "FORCE_EXTERNAL".to_string() {
+            ctl.gen_opt.internal_run = false;
+        }
+    }
+
+    // Get configuration info.
+
+    if ctl.gen_opt.internal_run {
+        if ctl.gen_opt.evil_eye {
+            println!("detected internal run");
+        }
+        let earth_path = format!(
+            "{}/current{}",
+            ctl.gen_opt.config["earth"], TEST_FILES_VERSION
+        );
+        ctl.gen_opt.internal_data_dir = earth_path;
+        let cloud_path = format!(
+            "{}/current{}",
+            ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
+        );
+        if path_exists(&cloud_path) {
+            ctl.gen_opt.internal_data_dir = cloud_path;
+        }
+    }
+    if ctl.gen_opt.config_file.contains(":") {
+        let remote_host = ctl.gen_opt.config_file.before(":").to_string();
+        REMOTE_HOST.lock().unwrap().clear();
+        REMOTE_HOST.lock().unwrap().push(remote_host);
+    }
+
+    // Determine PRE.
+
+    if ctl.gen_opt.internal_run {
+        ctl.gen_opt.pre = vec![
+            ctl.gen_opt.internal_data_dir.clone(),
+            format!("enclone/test/inputs"),
+            format!("enclone_exec"),
+        ];
+    } else if !ctl.gen_opt.cellranger {
+        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+        ctl.gen_opt.pre = vec![
+            format!("{}/enclone/datasets", home),
+            format!("{}/enclone/datasets2", home),
+        ];
+    }
+    if ctl.gen_opt.config.contains_key("prep") {
+        let prep = ctl.gen_opt.config["prep"].split(',').collect::<Vec<&str>>();
+        for pre in prep.clone() {
+            ctl.gen_opt.pre.push(pre.to_string());
+        }
+    }
+    for i in 1..args.len() {
+        if args[i].starts_with("PRE=") {
+            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
+            ctl.gen_opt.pre.clear();
+            for x in pre.iter() {
+                ctl.gen_opt.pre.push(x.to_string());
+            }
+        }
+    }
+
+    // Process SOURCE.
+
+    let mut args2 = args.clone();
     for i in 1..args.len() {
         if args[i].starts_with("SOURCE=") {
             let f = args[i].after("SOURCE=");
             let f2 = stringme(&tilde_expand(&f.as_bytes()));
-            require_readable_file(&f2, "SOURCE")?;
-            let f = open_for_read![&f2];
-            for line in f.lines() {
-                let s = line.unwrap();
-                if !s.starts_with('#') {
-                    let fields = s.split(' ').collect::<Vec<&str>>();
-                    for j in 0..fields.len() {
-                        if fields[j].len() > 0 {
-                            args2.push(fields[j].to_string());
+            let mut f2s = vec![f2.clone()];
+            for pre in ctl.gen_opt.pre.iter() {
+                f2s.push(format!("{}/{}", pre, f2));
+            }
+            let mut found = false;
+            for f2 in f2s.iter() {
+                if path_exists(&f2) {
+                    found = true;
+                    require_readable_file(&f2, "SOURCE")?;
+                    let f = open_for_read![&f2];
+                    for line in f.lines() {
+                        let s = line.unwrap();
+                        if !s.starts_with('#') {
+                            let fields = s.split(' ').collect::<Vec<&str>>();
+                            for j in 0..fields.len() {
+                                if fields[j].len() > 0 {
+                                    args2.push(fields[j].to_string());
+                                }
+                            }
                         }
                     }
                 }
+            }
+            if !found {
+                return Err(format!("\nUnable to find SOURCE file.\n"));
             }
         } else {
             args2.push(args[i].clone());
         }
     }
-    Ok(args2)
+    args = args2;
+    Ok(args)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -93,8 +215,6 @@ pub fn setup(
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
-            } else if args[i] == "EVIL_EYE" {
-                ctl.gen_opt.evil_eye = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 ctl.gen_opt.html_title = "enclone output".to_string();
@@ -134,80 +254,19 @@ pub fn setup(
                 bug_reports = "".to_string();
             } else if args[i].starts_with("BUG_REPORTS=") {
                 bug_reports = args[i].after("BUG_REPORTS=").to_string();
-            } else if args[i].starts_with("CONFIG=") {
-                ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
             } else if args[i] == "NO_KILL" {
                 to_delete[i] = true;
             }
         }
         for (key, value) in env::vars() {
-            if key == "ENCLONE_CONFIG" {
-                ctl.gen_opt.config_file = value.to_string();
-            }
             if key == "ENCLONE_BUG_REPORTS" {
                 bug_reports = value.to_string();
             }
         }
-
-        // Test for internal run.
-
-        if ctl.gen_opt.evil_eye {
-            println!("testing for internal run");
-        }
-        for (key, value) in env::vars() {
-            if key.contains("USER") && value.ends_with("10xgenomics.com") {
-                if ctl.gen_opt.evil_eye {
-                    println!("getting config");
-                }
-                if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
-                    ctl.gen_opt.internal_run = true;
-                }
-                if ctl.gen_opt.evil_eye {
-                    println!("got config");
-                }
-                break;
-            }
-        }
-        for i in 1..args.len() {
-            if args[i] == "FORCE_EXTERNAL".to_string() {
-                ctl.gen_opt.internal_run = false;
-            }
-        }
         if ctl.gen_opt.internal_run {
-            if ctl.gen_opt.evil_eye {
-                println!("detected internal run");
-            }
             if ctl.gen_opt.config.contains_key("bug_reports") {
                 bug_reports = ctl.gen_opt.config["bug_reports"].clone();
             }
-            let earth_path = format!(
-                "{}/current{}",
-                ctl.gen_opt.config["earth"], TEST_FILES_VERSION
-            );
-            ctl.gen_opt.internal_data_dir = earth_path;
-            let cloud_path = format!(
-                "{}/current{}",
-                ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
-            );
-            if path_exists(&cloud_path) {
-                ctl.gen_opt.internal_data_dir = cloud_path;
-            }
-            ctl.gen_opt.pre = vec![
-                ctl.gen_opt.internal_data_dir.clone(),
-                format!("enclone/test/inputs"),
-                format!("enclone_exec"),
-            ];
-        } else if !ctl.gen_opt.cellranger {
-            let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
-            ctl.gen_opt.pre = vec![
-                format!("{}/enclone/datasets", home),
-                format!("{}/enclone/datasets2", home),
-            ];
-        }
-        if ctl.gen_opt.config_file.contains(":") {
-            let remote_host = ctl.gen_opt.config_file.before(":").to_string();
-            REMOTE_HOST.lock().unwrap().clear();
-            REMOTE_HOST.lock().unwrap().push(remote_host);
         }
 
         // Proceed.
@@ -263,9 +322,6 @@ pub fn setup(
         if is_simple_arg(&args[i], "COMP2")? {
             ctl.perf_opt.comp = true;
             ctl.perf_opt.comp2 = true;
-        }
-        if is_simple_arg(&args[i], "CELLRANGER")? {
-            ctl.gen_opt.cellranger = true;
         }
         if is_simple_arg(&args[i], "NH5")? {
             ctl.gen_opt.h5 = false;

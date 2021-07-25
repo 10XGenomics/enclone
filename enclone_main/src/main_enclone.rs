@@ -98,23 +98,17 @@ pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
-    let args = process_source(&args)?;
+    let mut ctl = EncloneControl::default();
+    let args = critical_args(&args, &mut ctl)?;
 
     // Set up stuff, read args, etc.
 
-    let mut ctl = EncloneControl::default();
     ctl.start_time = Some(tall.clone());
     for i in 0..args.len() {
         let arg = &args[i];
         if arg == "PROFILE" {
             ctl.gen_opt.profile = true;
         }
-        if arg == "EVIL_EYE" {
-            ctl.gen_opt.evil_eye = true;
-        }
-    }
-    if ctl.gen_opt.evil_eye {
-        println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
         start_profiling(&profiling_blacklist());
@@ -160,7 +154,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ctl.gen_opt.cpu_this_start = fields[13].force_usize();
         }
     }
-    if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
+    if args_orig.len() == 2 && (args_orig[1] == "version" || args_orig[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
         return Ok(EncloneSetup::default());
     }
