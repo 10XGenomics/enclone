@@ -298,7 +298,11 @@ pub fn setup(
         }
         let mut argsx = Vec::<String>::new();
         for i in 0..args_orig.len() {
-            if args_orig[i] != "HTML" && args_orig[i] != "STABLE_DOC" {
+            if args_orig[i] != "HTML"
+                && args_orig[i] != "STABLE_DOC"
+                && args_orig[i] != "NOPAGER"
+                && !args_orig[i].starts_with("PRE=")
+            {
                 argsx.push(args_orig[i].clone());
             }
         }

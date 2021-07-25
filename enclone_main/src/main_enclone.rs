@@ -169,7 +169,11 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     }
     let mut argsy = Vec::<String>::new();
     for i in 0..args_orig.len() {
-        if args_orig[i] != "HTML" && args_orig[i] != "STABLE_DOC" {
+        if args_orig[i] != "HTML"
+            && args_orig[i] != "STABLE_DOC"
+            && args_orig[i] != "NOPAGER"
+            && !args_orig[i].starts_with("PRE=")
+        {
             argsy.push(args_orig[i].clone());
         }
     }
