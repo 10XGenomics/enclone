@@ -30,7 +30,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.heur = heur;
     let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
-    for i in 1..args.len() {
+    for i in 0..args.len() {
         if args[i].starts_with("BCR_GEX=") {
             args2.push(format!("BCR={}", args[i].after("BCR_GEX=")));
             args2.push(format!("GEX={}", args[i].after("BCR_GEX=")));
