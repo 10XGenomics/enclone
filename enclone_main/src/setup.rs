@@ -17,6 +17,7 @@ use enclone_help::help4::*;
 use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use io_utils::*;
+use itertools::Itertools;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
@@ -169,7 +170,12 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
                 }
             }
             if !found {
-                return Err(format!("\nUnable to find SOURCE file.\n"));
+                return Err(format!(
+                    "\nUnable to find SOURCE file {}.\n\
+                    This was using PRE={}",
+                    f,
+                    ctl.gen_opt.pre.iter().format(","),
+                ));
             }
         } else {
             args2.push(args[i].clone());
