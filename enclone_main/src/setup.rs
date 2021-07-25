@@ -301,7 +301,10 @@ pub fn setup(
             if args_orig[i] != "HTML"
                 && args_orig[i] != "STABLE_DOC"
                 && args_orig[i] != "NOPAGER"
+                && args_orig[i] != "FORCE_EXTERNAL"
+                && args_orig[i] != "NO_KILL"
                 && !args_orig[i].starts_with("PRE=")
+                && !args_orig[i].starts_with("MAX_CORES=")
             {
                 argsx.push(args_orig[i].clone());
             }
