@@ -286,7 +286,6 @@ pub fn setup(
             PrettyTrace::new().on();
             if !nopager && !ctl.gen_opt.profile && !ctl.gen_opt.toy_com {
                 using_pager = true;
-                eprintln!("calling pager");
                 setup_pager(true);
             }
         }
