@@ -37,4 +37,4 @@ prost = { version = "0.8", default_features = false }
 string_utils = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
-tonic = "0.5"
+tonic = { version = "0.5", default-features = false, features = ["transport", "prost"] }

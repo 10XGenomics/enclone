@@ -80,7 +80,7 @@ tilde-expand = "0.1"
 tiny-skia = "0.5"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
-tonic = "0.5"
+tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
 # usvg = { version = "0.14", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
