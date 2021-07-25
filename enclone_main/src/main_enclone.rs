@@ -172,7 +172,10 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         if args_orig[i] != "HTML"
             && args_orig[i] != "STABLE_DOC"
             && args_orig[i] != "NOPAGER"
+            && args_orig[i] != "FORCE_EXTERNAL"
+            && args_orig[i] != "NO_KILL"
             && !args_orig[i].starts_with("PRE=")
+            && !args_orig[i].starts_with("MAX_CORES=")
         {
             argsy.push(args_orig[i].clone());
         }
