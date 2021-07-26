@@ -167,7 +167,8 @@ fn main() {
             // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go back
             // to that.
 
-            let mut f = File::open(&old_png_file).unwrap();
+            let mut f =
+                File::open(&old_png_file).expect(&format!("\nCan't find {}.\n", old_png_file));
             let mut image_old = Vec::<u8>::new();
             f.read_to_end(&mut image_old).unwrap();
             let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
