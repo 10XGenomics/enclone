@@ -237,8 +237,9 @@ impl Analyzer for EncloneAnalyzer {
             *enclone_state = output;
             let mut table = enclone_state.outs.pics.clone();
             let widths = enclone_state.outs.last_widths.clone();
-            if table.len() > 100 {
-                table.truncate(100);
+            const MAX_TABLE: usize = 50;
+            if table.len() > MAX_TABLE {
+                table.truncate(MAX_TABLE);
             }
             let mut last_widths = Vec::<u32>::new();
             for i in 0..widths.len() {
