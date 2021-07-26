@@ -93,7 +93,7 @@ fn main() {
         print!("{}", strme(&o.stdout));
     }
     let mut fail = false;
-    const MAX_DIFFS: usize = 110;
+    const MAX_DIFFS: usize = 150;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
@@ -212,7 +212,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 33.1; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 34.4; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.2;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {

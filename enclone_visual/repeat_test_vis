@@ -18,4 +18,5 @@ foreach i (1 2 3 4 5 6 7 8 9 10)
             break
         endif
     endif
+    echo "attempt $i done"
 end
