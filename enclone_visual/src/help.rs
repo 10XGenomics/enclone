@@ -140,9 +140,15 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new("1.  A graphics subwindow, which may or may not be populated.")
                 .width(max_width),
         )
+        .push(Space::with_height(Units(20)))
         .push(
-            Text::new("2.  A text subwindow, which typically has clonotypes in it.")
-                .width(max_width),
+            Text::new(
+                "2.  A text subwindow, which typically has clonotypes in it.  \
+                To make scrolling manageable, only the first fifty clonotypes are displayed.  \
+                Please see the special commands section for how to see a different set of \
+                clonotypes.",
+            )
+            .width(max_width),
         )
         //
         // Input.
@@ -325,7 +331,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             Text::new(
                                 "Below it is a button to copy the command to your \
                     clipboard.  This copied command can be reentered in enclone visual, \
-                    or supplied to \"regular\" enclone",
+                    or supplied to \"regular\" enclone, so long as you change instances of gui \
+                    to actual file names.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )
