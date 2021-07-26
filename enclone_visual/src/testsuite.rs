@@ -97,9 +97,9 @@ pub const TESTS: [(&str, MsgFn, &str); 39] = [
 //    (e) Try to cut and paste from clonotype tables [BROKEN].
 //    (f) Test that copy image button flashes and that it actually copies.
 //    (g) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui
-//        check tooltip functionality
+//        check tooltip functionality and group clicks
 //    (h) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 085",blue,"f 089"
-//        check tooltip functionality
+//        check tooltip functionality and group clicks
 //
 // 2. Repeat ten times:
 //    (a) type enclone VIS
@@ -114,8 +114,4 @@ pub const TESTS: [(&str, MsgFn, &str); 39] = [
 //    - this is a large dataset, so the canvas is huge
 //    - make sure scrolling is smooth and that tooltip responds essentially instantly
 //
-// 5. test summary
-//
-// 6. test that group clicks work
-//
-// 7. test that horizontal resizing works on enclone BCR=123085 CHAINS=4
+// 5. test that horizontal resizing works on enclone BCR=123085 CHAINS=4
