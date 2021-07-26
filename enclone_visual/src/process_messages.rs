@@ -337,14 +337,22 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::SummaryOpen => {
+            Message::SummaryOpen(_) => {
                 self.summary_mode = true;
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
-            Message::SummaryClose => {
+            Message::SummaryClose(_) => {
                 self.summary_mode = false;
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
             Message::ConsoleOpen => {

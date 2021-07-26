@@ -250,7 +250,7 @@ impl Application for EncloneVisual {
                 &mut self.summary_button,
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
-            .on_press(Message::SummaryOpen);
+            .on_press(Message::SummaryOpen(Ok(())));
 
             // Build the command column.
 
