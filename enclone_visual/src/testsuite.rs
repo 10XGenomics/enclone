@@ -40,7 +40,7 @@ const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 33] = [
+pub const TESTS: [(&str, MsgFn, &str); 35] = [
     (X0,     SUBMIT,  ""),        // enclone woof
     ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
@@ -74,6 +74,10 @@ pub const TESTS: [(&str, MsgFn, &str); 33] = [
     ("",     BACK,    "test13"),  // enclone + BCR=123085 NOPRINT
     (X4,     SUBMIT,  "test14"),  // enclone BCR=123085 CHAINS=10
     (X5,     SUBMIT,  "test15"),  // enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX="u1 >= 6000" SEG=IGHM
+    ("#5",   SUBMIT,  "test16"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT 
+                                  //         NGEX LVARSP=fb1,fb1_n,fb2,fb2_n
+    ("#6",   SUBMIT,  "test17"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX 
+                                  //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -88,10 +92,9 @@ pub const TESTS: [(&str, MsgFn, &str); 33] = [
 //    (e) Try to cut and paste from clonotype tables [BROKEN].
 //    (f) Test help button.
 //    (g) Test that copy image button flashes and that it actually copies.
-//    (h) Test cookbook commands #5 and #6.
-//    (i) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui
+//    (h) enclone BCR=1096354 MIN_CELLS=5 PLOT_BY_ISOTYPE=gui
 //        check tooltip functionality
-//    (j) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 085",blue,"f 089"
+//    (i) enclone BCR=123085:123089 PLOT="gui,s1->red,s2->blue" LEGEND=red,"f 085",blue,"f 089"
 //        check tooltip functionality
 //
 // 2. Repeat ten times:
