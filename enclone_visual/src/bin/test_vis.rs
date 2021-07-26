@@ -5,6 +5,7 @@
 // If you run with the single argument UPDATE, failing results will be replaced.
 //
 // Argument: QUIET.
+// Argument: VERBOSE.
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -68,11 +69,15 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut update = false;
     let mut quiet = false;
+    let mut verbose = false;
     if args.len() >= 2 && args[1] == "UPDATE" {
         update = true;
     }
     if args.len() >= 2 && args[1] == "QUIET" {
         quiet = true;
+    }
+    if args.len() >= 2 && args[1] == "VERBOSE" {
+        verbose = true;
     }
     let o = Command::new("enclone")
         .arg(&"VIS")
@@ -146,7 +151,7 @@ fn main() {
             eprintln!("\nimage size for test {} changed", i);
             std::process::exit(1);
         }
-        let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
+        let diffs = compare_images(&image_data_old, &image_data_new, width, height, verbose);
         if diffs > MAX_DIFFS {
             eprintln!(
                 "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
