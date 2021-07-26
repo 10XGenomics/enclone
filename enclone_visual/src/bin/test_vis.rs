@@ -148,7 +148,13 @@ fn main() {
         }
         let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
         if diffs > MAX_DIFFS {
-            eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
+            eprintln!(
+                "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
+                joint.{}.jpg.",
+                diffs,
+                TESTS[i - 1].2,
+                TESTS[i - 1].2
+            );
 
             // Create and save concatenated image.  Note that we're depending on the png
             // in regression_images as being current.  We could do the same thing with the jpg
@@ -166,6 +172,10 @@ fn main() {
                 let stop = (i + 1) * width * 4;
                 joint.append(&mut image_data_old0[start..stop].to_vec());
                 joint.append(&mut image_data_new0[start..stop].to_vec());
+                for j in start..stop {
+                    let diff = image_data_new0[j].wrapping_sub(image_data_old0[j]);
+                    joint.push(255 - diff);
+                }
             }
             let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", TESTS[i - 1].2);
             let quality = 80 as u8;
@@ -173,7 +183,7 @@ fn main() {
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
             encoder
-                .encode(&joint, (width * 2) as u32, height as u32, Rgba8)
+                .encode(&joint, (width * 3) as u32, height as u32, Rgba8)
                 .unwrap();
 
             // Keep going.
