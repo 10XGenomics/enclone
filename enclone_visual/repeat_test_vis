@@ -1,8 +1,22 @@
 #/bin/csh
 
+# repeat_test_vis
+# or
+# repeat_test_vis VERBOSE
+
 foreach i (1 2 3 4 5 6 7 8 9 10)
-    test_vis QUIET
-    if ( $status != 0 ) then
-        break
+    if ( $1 == "VERBOSE" ) then
+        test_vis VERBOSE
+        if ( $status != 0 ) then
+            echo "attempt $i failed"
+            break
+        endif
+    else
+        test_vis QUIET
+        if ( $status != 0 ) then
+            echo "attempt $i failed"
+            break
+        endif
     endif
+    echo "attempt $i done"
 end

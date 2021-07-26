@@ -25,15 +25,14 @@ publish = false
 align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
-bio = "0.37"
-bio_edit = { path = "../bio_edit" }
+bio_edit = "0.1"
 debruijn = "0.3"
 edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1"
 float-ord = "0.3"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", default-features=false, features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
@@ -41,7 +40,7 @@ ndarray = "0.14"
 perf_stats = "0.1"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 pretty_trace = "0.5"
-rayon = "1.5"
+rayon = "1"
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
@@ -50,7 +49,7 @@ string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
 tar = "0.4"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9cc9991f102cf87a0ed546c5bf64c1beae909603" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"

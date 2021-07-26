@@ -23,7 +23,7 @@ pub fn tail_code(
     refdata: &RefData,
     pics: &Vec<String>,
     group_pics: &mut Vec<String>,
-    last_widths: &mut Vec<usize>,
+    last_widths: &mut Vec<u32>,
     exacts: &Vec<Vec<usize>>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,

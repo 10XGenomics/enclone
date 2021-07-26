@@ -34,11 +34,12 @@ pub mod enclone_server;
 pub mod geometry;
 pub mod gui;
 pub mod gui_structures;
+pub mod help;
 pub mod history;
 pub mod messages;
+pub mod popover;
 pub mod process_messages;
 pub mod style;
-pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
@@ -71,7 +72,7 @@ async fn compute() -> Result<(), String> {
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
-    println!("time used processing command = {:.1} seconds", elapsed(&t));
+    xprintln!("time used processing command = {:.1} seconds", elapsed(&t));
     Ok(())
 }
 
@@ -106,7 +107,7 @@ impl EncloneVisual {
                 self.canvas_view.state.geometry_value = geometry;
             }
         } else if VERBOSE.load(SeqCst) {
-            println!("translation from svg to geometries failed");
+            xprintln!("translation from svg to geometries failed");
         }
         if !using_geometry {
             self.canvas_view.state.geometry_value = None;
@@ -154,8 +155,8 @@ pub fn capture(count: usize, window_id: usize) {
             .output()
             .expect("failed to execute screencapture");
         if o.status.code() != Some(0) {
-            eprintln!("\nCall to screencapture failed.");
-            eprintln!("stderr =\n{}\n", strme(&o.stderr));
+            xprintln!("\nCall to screencapture failed.");
+            xprintln!("stderr =\n{}\n", strme(&o.stderr));
             std::process::exit(1);
         }
     }
@@ -168,13 +169,13 @@ pub fn get_window_id() -> usize {
         .output()
         .expect("failed to execute GetWindowID");
     if o.status.code() != Some(0) {
-        eprintln!("\nCall to GetWindowID failed.\n");
+        xprintln!("\nCall to GetWindowID failed.\n");
         std::process::exit(1);
     }
     let mut m = String::from_utf8(o.stdout).unwrap();
     m = m.replace("\n", "");
     if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
-        eprintln!("\nGetWindowId could not find id\n");
+        xprintln!("\nGetWindowId could not find id\n");
         std::process::exit(1);
     }
     m.after("id=").force_usize()
@@ -326,11 +327,40 @@ lazy_static! {
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
-    pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<usize>>> =
-        Mutex::new(Vec::<Vec<usize>>::new());
+    pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<u32>>> =
+        Mutex::new(Vec::<Vec<u32>>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Write line to stdout and to CONSOLE.
+
+#[macro_export]
+macro_rules! xprint {
+    ($u:expr) => {
+        eprint!( $u );
+        CONSOLE.lock().unwrap().push( format!( $u ) );
+    };
+    ($u:expr, $($x:tt)*) => {
+        eprint!( $u, $($x)* );
+        CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
+    };
+}
+
+#[macro_export]
+macro_rules! xprintln {
+    ($u:expr) => {
+        eprintln!( $u );
+        CONSOLE.lock().unwrap().push( format!( $u ) );
+    };
+    ($u:expr, $($x:tt)*) => {
+        eprintln!( $u, $($x)* );
+        CONSOLE.lock().unwrap().push( format!( $u, $($x)* ) );
+    };
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -4,8 +4,8 @@
 
 use crate::print_utils1::*;
 use amino::*;
-use bio::alignment::pairwise::*;
-use bio::alignment::AlignmentOperation::*;
+use bio_edit::alignment::pairwise::*;
+use bio_edit::alignment::AlignmentOperation::*;
 use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;

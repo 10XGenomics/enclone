@@ -11,14 +11,20 @@ TO DO
 5.  Fix the close button on the upper left.
 
 6.  Eliminate the 9.2 second delay on the Mac.  This is sometimes observed, even when connected
-    to the internet.
+    to the internet.  Also should we codesign enclone for the Mac?
+
+7.  Diagnose memory leak.
+
+8.  Use of help and cookbook and perhaps other buttons is flaky, as they reuse button stats.
+    Probably should fix.
 
 ---------------------------------------------------------------------------------------------------
 
 WAITING ON ICED
 
 1.  Can't cut and paste text from the GUI window, except for the text input box.
-    Looks like this is https:github.com/hecrj/iced/issues/36.
+    Looks like this is https:github.com/hecrj/iced/issues/36 and 
+    https:github.com/hecrj/iced/issues/645.
 
 2.  Pretty, not plain.
     Enabling e.g. multicolor text is on the iced roadmap.

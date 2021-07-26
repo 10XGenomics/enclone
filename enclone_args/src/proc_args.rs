@@ -8,7 +8,7 @@ use enclone_core::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
-use std::{env, process::Command, time::Instant};
+use std::{process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
 
@@ -28,19 +28,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ref_j_trim: 15,
     };
     ctl.heur = heur;
-
-    // Form the combined set of command-line arguments and "command-line" arguments
-    // implied by environment variables.
-
     let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
-    args2.push(args[0].clone());
-    for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_") && !key.starts_with("ENCLONE_VIS_") {
-            args2.push(format!("{}={}", key.after("ENCLONE_"), value));
-        }
-    }
-    for i in 1..args.len() {
+    for i in 0..args.len() {
         if args[i].starts_with("BCR_GEX=") {
             args2.push(format!("BCR={}", args[i].after("BCR_GEX=")));
             args2.push(format!("GEX={}", args[i].after("BCR_GEX=")));
@@ -102,15 +92,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
     ctl.gen_opt.exact = None;
-    for i in 1..args.len() {
-        if args[i].starts_with("PRE=") {
-            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
-            ctl.gen_opt.pre.clear();
-            for x in pre.iter() {
-                ctl.gen_opt.pre.push(x.to_string());
-            }
-        }
-    }
     ctl.gen_opt.full_counts = true;
     ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
@@ -578,6 +559,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         "INTERNAL",
         "BUG_REPORTS",
         "PRE",
+        "SOURCE",
         "VERBOSE",
     ];
 

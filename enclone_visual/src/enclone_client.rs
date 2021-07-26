@@ -55,7 +55,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     #[cfg(not(any(target_os = "macos", target_os = "ios")))]
     {
-        eprintln!(
+        xprintln!(
             "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
             are interested in running it under Linux or Windows.\n"
         );
@@ -86,7 +86,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
         } else if arg != "VIS" {
-            eprintln!(
+            xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
                 configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
                 and TEST, but only for testing.\n"
@@ -105,7 +105,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.000000000000000000001";
+    let version = "0.00000000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -114,7 +114,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         tokio::spawn(async move {
             loop {
                 thread::sleep(Duration::from_millis(5000));
-                println!("[using {} threads", thread_count());
+                xprintln!("[using {} threads", thread_count());
             }
         });
     }
@@ -123,12 +123,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     let version_float = format!("1e-{}", -version.force_f64().log10());
     if !verbose {
-        println!(
+        xprintln!(
             "\nHi! You are using enclone visual {} = {}.\n\n\
             If you get an error \
             message or a window does not pop up, and it's not clear what to do,\nplease \
             rerun the command with the added argument VERBOSE, and then ask for help.",
-            version, version_float,
+            version,
+            version_float,
         );
     }
 
@@ -148,12 +149,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let configuration = configuration.unwrap();
             found = true;
             if verbose {
-                println!("\nusing configuration\n▓{}▓", configuration);
+                xprintln!("\nusing configuration\n▓{}▓", configuration);
             }
             let x = parse_bsv(&configuration);
             for arg in x.iter() {
                 if !arg.contains("=") {
-                    eprintln!(
+                    xprintln!(
                         "\nYour configuration has an argument {} that does not contain =.\n",
                         arg
                     );
@@ -208,19 +209,19 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     .output()
                     .expect("failed to execute ssh cat");
                 ssh_cat_time = elapsed(&t);
-                println!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
+                xprintln!("\nssh cat to {} took {:.1} seconds", filehost, ssh_cat_time);
                 if o.status.code() != Some(0) {
                     let m = String::from_utf8(o.stderr).unwrap();
-                    println!("\ntest ssh failed with error message =\n{}", m);
-                    println!(
+                    xprintln!("\ntest ssh failed with error message =\n{}", m);
+                    xprintln!(
                         "Attempt to ssh to {} as specified by environment variable \
                         ENCLONE_CONFIG failed.",
                         filehost,
                     );
-                    println!("Here are two possible explanations:");
-                    println!("1. The host is wrong.");
-                    println!("2. You are not connected to the internet.");
-                    println!(
+                    xprintln!("Here are two possible explanations:");
+                    xprintln!("1. The host is wrong.");
+                    xprintln!("2. You are not connected to the internet.");
+                    xprintln!(
                         "3. You first need to do something to enable crossing \
                               a firewall.  If so, ask a colleague.\n"
                     );
@@ -255,24 +256,24 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     if config_name.len() > 0 && !found {
-        eprintln!(
+        xprintln!(
             "\nYou specified the configuration name {}, but the content of that configuration \
                was not found.\n",
             config_name,
         );
         if CONFIG_FILE.lock().unwrap().len() > 0 {
-            eprintln!(
+            xprintln!(
                 "The value of ENCLONE_CONFIG is {}.\n",
                 CONFIG_FILE.lock().unwrap()[0]
             );
         } else {
-            eprintln!("The environment variable ENCLONE_CONFIG is not defined.\n");
+            xprintln!("The environment variable ENCLONE_CONFIG is not defined.\n");
         }
-        eprintln!("Here is what's in your configuration file:\n");
+        xprintln!("Here is what's in your configuration file:\n");
         for line in config_file_contents.lines() {
-            eprintln!("{}", line);
+            xprintln!("{}", line);
         }
-        eprintln!("");
+        xprintln!("");
         std::process::exit(1);
     }
 
@@ -303,13 +304,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             || !config.contains_key("REMOTE_IP")
             || !config.contains_key("REMOTE_BIN")
         {
-            eprintln!(
+            xprintln!(
                 "\nTo use a remote host, please specify all of REMOTE_HOST, \
                 REMOTE_IP, and REMOTE_BIN.\n"
             );
-            eprintln!("Here is what is specified:");
+            xprintln!("Here is what is specified:");
             for (key, value) in config.iter() {
-                eprintln!("{}={}", key, value);
+                xprintln!("{}={}", key, value);
             }
             std::process::exit(1);
         } else {
@@ -329,22 +330,22 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .arg("echo")
                 .output()
                 .expect("failed to execute initial ssh");
-            println!(
+            xprintln!(
                 "\ninitial test ssh to {} took {:.1} seconds",
                 host,
                 elapsed(&t)
             );
             if o.status.code() != Some(0) {
                 let m = String::from_utf8(o.stderr).unwrap();
-                println!("\ntest ssh to {} failed with error message =\n{}", host, m);
-                println!(
+                xprintln!("\ntest ssh to {} failed with error message =\n{}", host, m);
+                xprintln!(
                     "Attempt to ssh to {} as specified by REMOTE_HOST failed.",
                     host
                 );
-                println!("Here are two possible explanations:");
-                println!("1. You have the wrong REMOTE_HOST.");
-                println!("2. You first need to do something to enable crossing a firewall.");
-                println!("   If so, ask one of your colleagues how to do this.\n");
+                xprintln!("Here are two possible explanations:");
+                xprintln!("1. You have the wrong REMOTE_HOST.");
+                xprintln!("2. You first need to do something to enable crossing a firewall.");
+                xprintln!("   If so, ask one of your colleagues how to do this.\n");
                 std::process::exit(1);
             }
         }
@@ -376,16 +377,19 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         let server_process;
         let mut local_host = "127.0.0.1".to_string();
-        println!("\ntrying random port {}", port);
+        xprintln!("\ntrying random port {}", port);
         if remote {
             let host = config["REMOTE_HOST"].clone();
             HOST.lock().unwrap().push(host.clone());
             let ip = &config["REMOTE_IP"];
             let bin = &config["REMOTE_BIN"];
             if verbose {
-                println!(
+                xprintln!(
                     "\nstarting remote server using\nssh {} {}/enclone {}:{} SERVER",
-                    host, bin, ip, port
+                    host,
+                    bin,
+                    ip,
+                    port
                 );
             }
             server_process = Command::new("ssh")
@@ -407,15 +411,15 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn();
-            println!("used {:.1} seconds launching local server", elapsed(&t));
+            xprintln!("used {:.1} seconds launching local server", elapsed(&t));
         }
         if verbose {
-            println!("server forked");
+            xprintln!("server forked");
         }
         if !server_process.is_ok() {
-            eprintln!(
+            xprintln!(
                 "\nfailed to launch server, err =\n{}.\n",
-                server_process.unwrap_err()
+                server_process.as_ref().unwrap_err()
             );
             std::process::exit(1);
         }
@@ -429,7 +433,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let server_stdout = server_process.stdout.as_mut().unwrap();
         let tread = Instant::now();
         if verbose {
-            println!("waiting for server response");
+            xprintln!("waiting for server response");
         }
         pub static READ_DONE: AtomicBool = AtomicBool::new(false);
         thread::spawn(move || {
@@ -439,14 +443,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let sleep_time = 5.0_f64.max(2.0 * ssh_cat_time);
             thread::sleep(Duration::from_millis((sleep_time * 1000.0).round() as u64));
             if !READ_DONE.load(SeqCst) {
-                println!("darn, we seem to have hit a bad port, so restarting");
+                xprintln!("darn, we seem to have hit a bad port, so restarting");
                 restart_enclone();
             }
         });
         server_stdout.read(&mut buffer).unwrap();
         READ_DONE.store(true, SeqCst);
         if verbose {
-            println!(
+            xprintln!(
                 "time spent waiting to read bytes from server = {:.1} seconds",
                 elapsed(&tread)
             );
@@ -459,7 +463,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let tread = Instant::now();
         server_stderr.read(&mut ebuffer).unwrap();
         if verbose {
-            println!(
+            xprintln!(
                 "used {:.1} seconds reading from server stderr",
                 elapsed(&tread)
             );
@@ -467,14 +471,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
             if emsg.contains("already in use") {
-                println!("oops, that port is in use, trying a different one");
+                xprintln!("oops, that port is in use, trying a different one");
                 continue;
             }
             if verbose {
-                println!("\nserver says this:\n{}", emsg);
+                xprintln!("\nserver says this:\n{}", emsg);
             }
             if emsg.contains("tput: No value") {
-                println!(
+                xprintln!(
                     "\nThat's an odd message that we've observed once and don't \
                     understand.  When it happened,\nit was associated with setting the \
                     environment variable PS1 on the remote server.  If it happens\nto you, \
@@ -495,8 +499,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
             if remote_id.is_none() {
-                eprintln!("\nUnable to determine remote process id.\n");
-                eprintln!("message = {}", emsg);
+                xprintln!("\nUnable to determine remote process id.\n");
+                xprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
             let remote_version;
@@ -505,20 +509,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             {
                 remote_version = emsg.between("enclone version = ", "\n").to_string();
             } else {
-                eprint!("\nUnable to determine remote enclone version.\n");
+                xprint!("\nUnable to determine remote enclone version.\n");
                 std::process::exit(1);
             }
             let local_version = env!("CARGO_PKG_VERSION");
             if local_version != remote_version {
-                eprintln!("\nremote enclone version = {}", remote_version);
-                eprintln!("local enclone version = {}", local_version);
-                eprintln!("\nYour enclone version is not up to date.");
+                xprintln!("\nremote enclone version = {}", remote_version);
+                xprintln!("local enclone version = {}", local_version);
+                xprintln!("\nYour enclone version is not up to date.");
                 if auto_update {
                     update_enclone();
-                    println!("Done, restarting!\n");
+                    xprintln!("Done, restarting!\n");
                     restart_enclone();
                 } else {
-                    eprintln!(
+                    xprintln!(
                         "Please update, following \
                         the instructions at bit.ly/enclone, then restart.  Thank you!\n"
                     );
@@ -543,7 +547,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let argsp = setup.split(' ').collect::<Vec<&str>>();
             let args = argsp[1..].to_vec();
             if verbose {
-                println!("\nrunning setup command = {}", argsp.iter().format(" "));
+                xprintln!("\nrunning setup command = {}", argsp.iter().format(" "));
             }
             let setup_process = Command::new(argsp[0])
                 .args(args)
@@ -551,9 +555,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 .stderr(Stdio::piped())
                 .spawn();
             if !setup_process.is_ok() {
-                eprintln!(
+                xprintln!(
                     "\nfailed to launch setup, err =\n{}.\n",
-                    setup_process.unwrap_err()
+                    setup_process.as_ref().unwrap_err()
                 );
                 kill(Pid::from_raw(server_process_id as i32), SIGINT_nix).unwrap();
                 cleanup();
@@ -564,14 +568,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             SETUP_PID.store(setup_process_id as usize, SeqCst);
             USING_SETUP.store(true, SeqCst);
             if verbose {
-                println!("used {:.1} seconds connecting to remote", elapsed(&tremote));
+                xprintln!("used {:.1} seconds connecting to remote", elapsed(&tremote));
             }
         }
 
         // Connect to client.
 
         if verbose {
-            println!("connecting to {}", url);
+            xprintln!("connecting to {}", url);
         }
         let tconnect = Instant::now();
         const MAX_CONNECT_MS: u64 = 10_000;
@@ -587,21 +591,21 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 break;
             }
             if wait_time >= MAX_CONNECT_MS {
-                eprintln!("\nconnection failed with error\n{:?}\n", client);
+                xprintln!("\nconnection failed with error\n{:?}\n", client);
                 if !verbose {
-                    eprintln!("Please retry after adding the VERBOSE argument to your command.\n");
+                    xprintln!("Please retry after adding the VERBOSE argument to your command.\n");
                 }
-                eprintln!("Please report this problem.  It is possible that the maximum");
-                eprintln!("connection time used by enclone visual needs to be increased.\n");
+                xprintln!("Please report this problem.  It is possible that the maximum");
+                xprintln!("connection time used by enclone visual needs to be increased.\n");
                 cleanup();
                 std::process::exit(1);
             }
         }
         if verbose {
-            println!("used {:.1} seconds connecting", elapsed(&tconnect));
+            xprintln!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
-        println!("connected");
-        println!("time since startup = {:.1} seconds\n", elapsed(&t));
+        xprintln!("connected");
+        xprintln!("time since startup = {:.1} seconds\n", elapsed(&t));
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
@@ -617,13 +621,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
                     if verbose {
-                        println!("processing command {}", line);
+                        xprintln!("processing command {}", line);
                     }
                     let output;
                     let mut svg_output = String::new();
                     let mut summary = String::new();
                     let mut table_comp = Vec::<u8>::new();
-                    let mut last_widths = Vec::<usize>::new();
+                    let mut last_widths = Vec::<u32>::new();
                     if line != "enclone" && !line.starts_with("enclone ") {
                         if line.starts_with("#") {
                             output = "unknown tag".to_string();
@@ -659,13 +663,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                                     err
                                 );
                                 output = msg.clone();
-                                eprintln!("{}", msg);
+                                xprintln!("{}", msg);
                             }
                             let mut ebuffer = [0; 10000];
                             let server_stderr = server_process.stderr.as_mut().unwrap();
                             server_stderr.read(&mut ebuffer).unwrap();
                             let emsg = strme(&ebuffer);
-                            print!("server error =\n{}", emsg);
+                            xprint!("server error =\n{}", emsg);
                         } else {
                             let response = response.unwrap();
                             let r = response.into_inner();
@@ -673,7 +677,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             output = format!("{}", r.table);
                             table_comp = r.table_comp.clone();
                             for x in r.last_widths.iter() {
-                                last_widths.push(*x as usize);
+                                last_widths.push(*x as u32);
                             }
                             summary = r.summary.clone();
                         }

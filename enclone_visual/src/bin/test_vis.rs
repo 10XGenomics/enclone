@@ -5,6 +5,7 @@
 // If you run with the single argument UPDATE, failing results will be replaced.
 //
 // Argument: QUIET.
+// Argument: VERBOSE.
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -68,11 +69,15 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut update = false;
     let mut quiet = false;
+    let mut verbose = false;
     if args.len() >= 2 && args[1] == "UPDATE" {
         update = true;
     }
     if args.len() >= 2 && args[1] == "QUIET" {
         quiet = true;
+    }
+    if args.len() >= 2 && args[1] == "VERBOSE" {
+        verbose = true;
     }
     let o = Command::new("enclone")
         .arg(&"VIS")
@@ -88,7 +93,7 @@ fn main() {
         print!("{}", strme(&o.stdout));
     }
     let mut fail = false;
-    const MAX_DIFFS: usize = 0;
+    const MAX_DIFFS: usize = 150;
     for i in 1..=TESTS.len() {
         if TESTS[i - 1].2.len() == 0 {
             continue;
@@ -146,9 +151,15 @@ fn main() {
             eprintln!("\nimage size for test {} changed", i);
             std::process::exit(1);
         }
-        let diffs = compare_images(&image_data_old, &image_data_new, width, height, false);
+        let diffs = compare_images(&image_data_old, &image_data_new, width, height, verbose);
         if diffs > MAX_DIFFS {
-            eprintln!("\nThere are {} diffs for {}.", diffs, TESTS[i - 1].2);
+            eprintln!(
+                "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
+                joint.{}.jpg.",
+                diffs,
+                TESTS[i - 1].2,
+                TESTS[i - 1].2
+            );
 
             // Create and save concatenated image.  Note that we're depending on the png
             // in regression_images as being current.  We could do the same thing with the jpg
@@ -156,7 +167,8 @@ fn main() {
             // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go back
             // to that.
 
-            let mut f = File::open(&old_png_file).unwrap();
+            let mut f =
+                File::open(&old_png_file).expect(&format!("\nCan't find {}.\n", old_png_file));
             let mut image_old = Vec::<u8>::new();
             f.read_to_end(&mut image_old).unwrap();
             let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
@@ -166,14 +178,18 @@ fn main() {
                 let stop = (i + 1) * width * 4;
                 joint.append(&mut image_data_old0[start..stop].to_vec());
                 joint.append(&mut image_data_new0[start..stop].to_vec());
+                for j in start..stop {
+                    let diff = image_data_new0[j].wrapping_sub(image_data_old0[j]);
+                    joint.push(255 - diff);
+                }
             }
-            let new_jpg_file = format!("{}.joint.jpg", new_png_file.rev_before(".png"));
+            let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", TESTS[i - 1].2);
             let quality = 80 as u8;
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
             let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
             encoder
-                .encode(&joint, (width * 2) as u32, height as u32, Rgba8)
+                .encode(&joint, (width * 3) as u32, height as u32, Rgba8)
                 .unwrap();
 
             // Keep going.
@@ -196,8 +212,8 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 31.1; // this is supposed to be the lowest observed value
-    const MAX_PERCENT_OVER: f64 = 4.0;
+    const EXPECTED_TIME: f64 = 36.1; // this is supposed to be the lowest observed value
+    const MAX_PERCENT_OVER: f64 = 4.2;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
         eprintln!(
@@ -223,7 +239,7 @@ fn main() {
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
     const MAX_PEAK_MEM: f64 = 152.2; // this is supposed to be the lowest observed value
-    const MAX_PERCENT_OVER_MEM: f64 = 16.2;
+    const MAX_PERCENT_OVER_MEM: f64 = 17.6;
     let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 
     eprintln!(

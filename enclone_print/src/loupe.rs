@@ -9,7 +9,7 @@ use vdj_ann::*;
 
 use self::refx::*;
 use amino::*;
-use bio::alignment::pairwise::*;
+use bio_edit::alignment::pairwise::*;
 
 use debruijn::dna_string::*;
 use enclone_core::defs::*;

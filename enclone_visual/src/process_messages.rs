@@ -69,7 +69,7 @@ impl EncloneVisual {
                         let mut reply_text;
                         let new = self.translated_input_current();
                         let args = new.split(' ').collect::<Vec<&str>>();
-                        if self.input1_history.is_empty() && self.input2_history.is_empty() {
+                        if self.h.input1_history.is_empty() && self.h.input2_history.is_empty() {
                             reply_text = "Group identifier can only be supplied if another \
                                 command has already been run."
                                 .to_string();
@@ -77,7 +77,7 @@ impl EncloneVisual {
                             reply_text = "Group identifier is too large.".to_string();
                         } else {
                             let mut group_pics = Vec::<String>::new();
-                            let mut last_widths = Vec::<usize>::new();
+                            let mut last_widths = Vec::<u32>::new();
                             for x in group_ids.iter() {
                                 group_pics.push(self.current_tables[*x - 1].clone());
                                 last_widths.push(self.last_widths_value[*x - 1]);
@@ -101,27 +101,41 @@ impl EncloneVisual {
                         }
                         args2.push(format!("G={}", self.translated_input_value));
                         self.output_value = reply_text.to_string();
-                        let hi = self.history_index;
-                        self.input1_history.insert(hi, self.input1_hist_uniq.len());
-                        self.input1_hist_uniq.push(self.input1_value.clone());
-                        self.input2_history.insert(hi, self.input2_hist_uniq.len());
-                        self.input2_hist_uniq.push(self.input2_value.clone());
-                        self.translated_input_history
-                            .insert(hi, self.translated_input_hist_uniq.len());
-                        self.translated_input_hist_uniq
+                        let hi = self.h.history_index;
+                        self.h
+                            .input1_history
+                            .insert(hi as usize, self.h.input1_hist_uniq.len() as u32);
+                        self.h.input1_hist_uniq.push(self.input1_value.clone());
+                        self.h
+                            .input2_history
+                            .insert(hi as usize, self.h.input2_hist_uniq.len() as u32);
+                        self.h.input2_hist_uniq.push(self.input2_value.clone());
+                        self.h
+                            .translated_input_history
+                            .insert(hi as usize, self.h.translated_input_hist_uniq.len() as u32);
+                        self.h
+                            .translated_input_hist_uniq
                             .push(args2.iter().format(" ").to_string());
-                        self.svg_history.insert(hi, self.svg_history[hi - 1]);
-                        self.summary_history
-                            .insert(hi, self.summary_history[hi - 1]);
-                        self.displayed_tables_history
-                            .insert(hi, self.displayed_tables_hist_uniq.len());
-                        self.displayed_tables_hist_uniq.push(reply_text.to_string());
-                        self.table_comp_history
-                            .insert(hi, self.table_comp_history[hi - 1]);
-                        self.last_widths_history
-                            .insert(hi, self.last_widths_history[hi - 1]);
-                        self.is_blank.insert(hi, self.is_blank_current());
-                        self.history_index += 1;
+                        self.h
+                            .svg_history
+                            .insert(hi as usize, self.h.svg_history[(hi - 1) as usize]);
+                        self.h
+                            .summary_history
+                            .insert(hi as usize, self.h.summary_history[(hi - 1) as usize]);
+                        self.h
+                            .displayed_tables_history
+                            .insert(hi as usize, self.h.displayed_tables_hist_uniq.len() as u32);
+                        self.h
+                            .displayed_tables_hist_uniq
+                            .push(reply_text.to_string());
+                        self.h
+                            .table_comp_history
+                            .insert(hi as usize, self.h.table_comp_history[(hi - 1) as usize]);
+                        self.h
+                            .last_widths_history
+                            .insert(hi as usize, self.h.last_widths_history[(hi - 1) as usize]);
+                        self.h.is_blank.insert(hi as usize, self.is_blank_current());
+                        self.h.history_index += 1;
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
                         } else {
@@ -151,7 +165,7 @@ impl EncloneVisual {
             }
 
             Message::BackButtonPressed(_) => {
-                self.history_index -= 1;
+                self.h.history_index -= 1;
                 let x = self.svg_current();
                 self.post_svg(&x);
                 self.summary_value = self.summary_current();
@@ -182,18 +196,18 @@ impl EncloneVisual {
             }
 
             Message::DelButtonPressed(_) => {
-                let h = self.history_index - 1;
-                self.svg_history.remove(h);
-                self.summary_history.remove(h);
-                self.input1_history.remove(h);
-                self.input2_history.remove(h);
-                self.translated_input_history.remove(h);
-                self.displayed_tables_history.remove(h);
-                self.table_comp_history.remove(h);
-                self.last_widths_history.remove(h);
-                self.is_blank.remove(h);
+                let h = self.h.history_index - 1;
+                self.h.svg_history.remove(h as usize);
+                self.h.summary_history.remove(h as usize);
+                self.h.input1_history.remove(h as usize);
+                self.h.input2_history.remove(h as usize);
+                self.h.translated_input_history.remove(h as usize);
+                self.h.displayed_tables_history.remove(h as usize);
+                self.h.table_comp_history.remove(h as usize);
+                self.h.last_widths_history.remove(h as usize);
+                self.h.is_blank.remove(h as usize);
                 if self.state_count() == 0 {
-                    self.history_index -= 1;
+                    self.h.history_index -= 1;
                     self.input1_value.clear();
                     self.input2_value.clear();
                     self.svg_value.clear();
@@ -207,7 +221,7 @@ impl EncloneVisual {
                     self.current_tables.clear();
                 } else {
                     if h > 0 {
-                        self.history_index -= 1;
+                        self.h.history_index -= 1;
                     }
                     let x = self.svg_current();
                     self.post_svg(&x);
@@ -240,7 +254,7 @@ impl EncloneVisual {
             }
 
             Message::ForwardButtonPressed(_) => {
-                self.history_index += 1;
+                self.h.history_index += 1;
                 let x = self.svg_current();
                 self.post_svg(&x);
                 self.summary_value = self.summary_current();
@@ -323,13 +337,31 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::SummaryOpen => {
+            Message::SummaryOpen(_) => {
                 self.summary_mode = true;
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
+            }
+
+            Message::SummaryClose(_) => {
+                self.summary_mode = false;
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
+            }
+
+            Message::ConsoleOpen => {
+                self.console_mode = true;
                 Command::none()
             }
 
-            Message::SummaryClose => {
-                self.summary_mode = false;
+            Message::ConsoleClose => {
+                self.console_mode = false;
                 Command::none()
             }
 
@@ -386,13 +418,15 @@ impl EncloneVisual {
 
                 let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
                 self.table_comp_value = reply_table_comp.clone();
-                let hi = self.history_index;
-                let len = self.table_comp_hist_uniq.len();
-                if len > 0 && self.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.table_comp_history.insert(hi, len - 1);
+                let hi = self.h.history_index;
+                let len = self.h.table_comp_hist_uniq.len();
+                if len > 0 && self.h.table_comp_hist_uniq[len - 1] == reply_table_comp {
+                    self.h
+                        .table_comp_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.table_comp_history.insert(hi, len);
-                    self.table_comp_hist_uniq.push(reply_table_comp.clone());
+                    self.h.table_comp_history.insert(hi as usize, len as u32);
+                    self.h.table_comp_hist_uniq.push(reply_table_comp.clone());
                     if self.table_comp_value.len() > 0 {
                         let mut gunzipped = Vec::<u8>::new();
                         let mut d = GzDecoder::new(&*reply_table_comp);
@@ -426,60 +460,71 @@ impl EncloneVisual {
                 // 1. We only compare to the last entry.
                 // 2. We make comparisons in cases where we should already know the answer.
 
-                let len = self.last_widths_hist_uniq.len();
-                if len > 0 && self.last_widths_hist_uniq[len - 1] == reply_last_widths {
-                    self.last_widths_history.insert(hi, len - 1);
+                let len = self.h.last_widths_hist_uniq.len();
+                if len > 0 && self.h.last_widths_hist_uniq[len - 1] == reply_last_widths {
+                    self.h
+                        .last_widths_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.last_widths_history.insert(hi, len);
-                    self.last_widths_hist_uniq.push(reply_last_widths.clone());
+                    self.h.last_widths_history.insert(hi as usize, len as u32);
+                    self.h.last_widths_hist_uniq.push(reply_last_widths.clone());
                 }
-                let len = self.svg_hist_uniq.len();
-                if len > 0 && self.svg_hist_uniq[len - 1] == reply_svg {
-                    self.svg_history.insert(hi, len - 1);
+                let len = self.h.svg_hist_uniq.len();
+                if len > 0 && self.h.svg_hist_uniq[len - 1] == reply_svg {
+                    self.h.svg_history.insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.svg_history.insert(hi, len);
-                    self.svg_hist_uniq.push(reply_svg.clone());
+                    self.h.svg_history.insert(hi as usize, len as u32);
+                    self.h.svg_hist_uniq.push(reply_svg.clone());
                 }
-                let len = self.summary_hist_uniq.len();
-                if len > 0 && self.summary_hist_uniq[len - 1] == reply_summary {
-                    self.summary_history.insert(hi, len - 1);
+                let len = self.h.summary_hist_uniq.len();
+                if len > 0 && self.h.summary_hist_uniq[len - 1] == reply_summary {
+                    self.h.summary_history.insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.summary_history.insert(hi, len);
-                    self.summary_hist_uniq.push(reply_summary.clone());
+                    self.h.summary_history.insert(hi as usize, len as u32);
+                    self.h.summary_hist_uniq.push(reply_summary.clone());
                 }
-                let len = self.displayed_tables_hist_uniq.len();
-                if len > 0 && self.displayed_tables_hist_uniq[len - 1] == reply_text {
-                    self.displayed_tables_history.insert(hi, len - 1);
+                let len = self.h.displayed_tables_hist_uniq.len();
+                if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {
+                    self.h
+                        .displayed_tables_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.displayed_tables_history.insert(hi, len);
-                    self.displayed_tables_hist_uniq.push(reply_text.clone());
+                    self.h
+                        .displayed_tables_history
+                        .insert(hi as usize, len as u32);
+                    self.h.displayed_tables_hist_uniq.push(reply_text.clone());
                 }
-                let len = self.input1_hist_uniq.len();
-                if len > 0 && self.input1_hist_uniq[len - 1] == self.input1_value {
-                    self.input1_history.insert(hi, len - 1);
+                let len = self.h.input1_hist_uniq.len();
+                if len > 0 && self.h.input1_hist_uniq[len - 1] == self.input1_value {
+                    self.h.input1_history.insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.input1_history.insert(hi, len);
-                    self.input1_hist_uniq.push(self.input1_value.clone());
+                    self.h.input1_history.insert(hi as usize, len as u32);
+                    self.h.input1_hist_uniq.push(self.input1_value.clone());
                 }
-                let len = self.input2_hist_uniq.len();
-                if len > 0 && self.input2_hist_uniq[len - 1] == self.input2_value {
-                    self.input2_history.insert(hi, len - 1);
+                let len = self.h.input2_hist_uniq.len();
+                if len > 0 && self.h.input2_hist_uniq[len - 1] == self.input2_value {
+                    self.h.input2_history.insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.input2_history.insert(hi, len);
-                    self.input2_hist_uniq.push(self.input2_value.clone());
+                    self.h.input2_history.insert(hi as usize, len as u32);
+                    self.h.input2_hist_uniq.push(self.input2_value.clone());
                 }
-                let len = self.translated_input_hist_uniq.len();
+                let len = self.h.translated_input_hist_uniq.len();
                 if len > 0
-                    && self.translated_input_hist_uniq[len - 1] == self.translated_input_value
+                    && self.h.translated_input_hist_uniq[len - 1] == self.translated_input_value
                 {
-                    self.translated_input_history.insert(hi, len - 1);
+                    self.h
+                        .translated_input_history
+                        .insert(hi as usize, (len - 1) as u32);
                 } else {
-                    self.translated_input_history.insert(hi, len);
-                    self.translated_input_hist_uniq
+                    self.h
+                        .translated_input_history
+                        .insert(hi as usize, len as u32);
+                    self.h
+                        .translated_input_hist_uniq
                         .push(self.translated_input_value.clone());
                 }
-                self.is_blank.insert(hi, blank);
-                self.history_index += 1;
+                self.h.is_blank.insert(hi as usize, blank);
+                self.h.history_index += 1;
                 self.output_value = reply_text.to_string();
                 self.svg_value = reply_svg.to_string();
                 self.summary_value = reply_summary.to_string();
@@ -493,10 +538,37 @@ impl EncloneVisual {
                     self.post_svg(&reply_svg);
                 }
                 self.compute_state = WaitingForRequest;
-                eprintln!(
-                    "total time to run command = {:.1} seconds\n",
+                xprintln!(
+                    "total time to run command = {:.1} seconds",
                     elapsed(&self.start_command.unwrap())
                 );
+                let maxrss_self;
+                unsafe {
+                    let mut rusage: libc::rusage = std::mem::zeroed();
+                    let retval = libc::getrusage(libc::RUSAGE_SELF, &mut rusage as *mut _);
+                    assert_eq!(retval, 0);
+                    maxrss_self = rusage.ru_maxrss;
+                }
+                let peak_mem_mb = maxrss_self as f64 / ((1024 * 1024) as f64);
+                xprintln!(
+                    "all time peak mem of this process is {:.1} MB\n",
+                    peak_mem_mb
+                );
+                if VERBOSE.load(SeqCst) {
+                    let mb = (1024 * 1024) as f64;
+                    let mut total_svg = 0;
+                    for x in self.h.svg_hist_uniq.iter() {
+                        total_svg += x.len();
+                    }
+                    xprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
+                    let mut total_tables = 0;
+                    for x in self.h.table_comp_hist_uniq.iter() {
+                        total_tables += x.len();
+                    }
+                    xprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
+                    xprintln!("");
+                }
+
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -508,14 +580,18 @@ impl EncloneVisual {
             Message::Capture(_) => {
                 let verbose = false;
                 if verbose {
-                    println!("\ncapturing, input history:");
-                    for i in 0..self.input1_history.len() {
-                        let mark = if i + 1 == self.history_index { "*" } else { "" };
-                        println!(
+                    xprintln!("\ncapturing, input history:");
+                    for i in 0..self.h.input1_history.len() {
+                        let mark = if i + 1 == self.h.history_index as usize {
+                            "*"
+                        } else {
+                            ""
+                        };
+                        xprintln!(
                             "[{}] {} {} {}",
                             i + 1,
-                            self.input1_hist_uniq[self.input1_history[i]],
-                            self.input2_hist_uniq[self.input2_history[i]],
+                            self.h.input1_hist_uniq[self.h.input1_history[i] as usize],
+                            self.h.input2_hist_uniq[self.h.input2_history[i] as usize],
                             mark
                         );
                     }

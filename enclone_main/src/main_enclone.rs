@@ -54,7 +54,7 @@ use vector_utils::*;
 #[derive(Clone, Debug, Default)]
 pub struct MainEncloneOutput {
     pub pics: Vec<String>, // clonotype tables
-    pub last_widths: Vec<usize>,
+    pub last_widths: Vec<u32>,
     pub svgs: Vec<String>, // SVG objects
     pub summary: String,   // summary
     pub noprint: bool,
@@ -98,23 +98,17 @@ pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
     let args_orig = args.clone();
-    let args = process_source(&args)?;
+    let mut ctl = EncloneControl::default();
+    let args = critical_args(&args, &mut ctl)?;
 
     // Set up stuff, read args, etc.
 
-    let mut ctl = EncloneControl::default();
     ctl.start_time = Some(tall.clone());
     for i in 0..args.len() {
         let arg = &args[i];
         if arg == "PROFILE" {
             ctl.gen_opt.profile = true;
         }
-        if arg == "EVIL_EYE" {
-            ctl.gen_opt.evil_eye = true;
-        }
-    }
-    if ctl.gen_opt.evil_eye {
-        println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
         start_profiling(&profiling_blacklist());
@@ -160,7 +154,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ctl.gen_opt.cpu_this_start = fields[13].force_usize();
         }
     }
-    if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
+    if args_orig.len() == 2 && (args_orig[1] == "version" || args_orig[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
         return Ok(EncloneSetup::default());
     }
@@ -173,7 +167,20 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.split {
         return Ok(EncloneSetup::default());
     }
-    if argsx.len() == 1 || (argsx.len() > 1 && (argsx[1] == "help" || argsx[1] == "--help")) {
+    let mut argsy = Vec::<String>::new();
+    for i in 0..args_orig.len() {
+        if args_orig[i] != "HTML"
+            && args_orig[i] != "STABLE_DOC"
+            && args_orig[i] != "NOPAGER"
+            && args_orig[i] != "FORCE_EXTERNAL"
+            && args_orig[i] != "NO_KILL"
+            && !args_orig[i].starts_with("PRE=")
+            && !args_orig[i].starts_with("MAX_CORES=")
+        {
+            argsy.push(args_orig[i].clone());
+        }
+    }
+    if argsy.len() == 1 || (argsy.len() > 1 && (argsy[1] == "help" || argsy[1] == "--help")) {
         return Ok(EncloneSetup::default());
     }
 

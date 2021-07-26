@@ -18,7 +18,6 @@ publish = false
 
 [dependencies]
 assert_cmd = "1"
-bio = "0.37"
 byteorder = "1"
 bytes = "1"
 dirs = "3"
@@ -31,10 +30,10 @@ pager = "0.16"
 permutation = "0.2"
 petgraph = "0.5"
 pretty_trace = "0.5"
-prost = { version = "0.8", features = [] }
+prost = { version = "0.8", default_features = false }
 prost-build = "0.8"
-rayon = "1.5"
-regex = { version = "1.3", default-features = false, features = ["std", "perf"] }
+rayon = "1"
+regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
 stats_utils = "0.1"

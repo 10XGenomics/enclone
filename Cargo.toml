@@ -1,10 +1,8 @@
 [workspace]
 
 members = [
-    "bio_edit",
     "enclone",
     "enclone_args",
-    "enclone_com",
     "enclone_core",
     "enclone_exec",
     "enclone_help",
@@ -50,9 +48,23 @@ debug = 1
 opt-level = 3
 split-debuginfo = "unpacked"
 
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 # Cautionary note.  We set package versions in enclone_versions, but it's not clear that
 # this is a sound practice, particularly in the case where a crate outside the enclone repo
 # depends on a crate in the enclone repo.  Such an external crate sees "*" and it's not clear
 # what is done with that.
+
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+# We attempted to speed up loading on the Mac using zld,
+# https://github.com/michaeleisel/zld.  First we downloaded the current release at
+# https://github.com/michaeleisel/zld/releases/tag/1.3.2, and then added these lines
+# (without the #) to .cargo/config:
+# [target.x86_64-apple-darwin]
+# rustflags = ["-C", "link-arg=-fuse-ld=/Users/david.jaffe/bin/zld"]
+# To get this to work, we had to install Xcode 12.4, by going to the apple developers site.
+# For the particular version of macOS we have, the later versions of Xcode wouldn't work.
+# To complete the installation, we did
+# sudo xcode-select -s /path/to/Xcode.app
+# and then cargo b worked.  This seemed to speed up loading by 5-10%, but that did not seem
+# like enough to justify using zld.  It might be worth trying again later, as it is being
+# improved.

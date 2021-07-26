@@ -29,9 +29,9 @@ enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1"
 flate2 = "1"
-iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "tokio", "wgpu", "image", "default_system_font", "default", "async-std", "smol", "palette"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
-image = "0.23"
+image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 io_utils = "0.2"
 itertools = "0.10"
 jpeg-decoder = "0.1"
@@ -42,8 +42,8 @@ nix = "0.22"
 perf_stats = "0.1"
 png-decoder = "0.1"
 pretty_trace = "0.5"
-prost = { version = "0.8", features = [] }
-rayon = "1.5"
+prost = { version = "0.8", default_features = false }
+rayon = "1"
 # resvg = "0.15.0"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
 serde = "1"
@@ -52,11 +52,11 @@ string_utils = "0.1"
 tables = "0.1"
 tilde-expand = "0.1"
 tiny-skia = "0.5"
-tokio = { version = "1.6", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1", features = ["net"] }
-tonic = "0.5"
+tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
+tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
+tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 # usvg = { version = "0.14.1", default-features = false }
-usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
+usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
 vector_utils = "0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
@@ -69,4 +69,4 @@ mach = "0.3"
 objc = "0.2"
 
 [build-dependencies]
-tonic-build = { version = "0.5", features = [] }
+tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }

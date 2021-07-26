@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::history::*;
-use crate::summary::*;
+use crate::help::*;
+use crate::popover::*;
 use crate::*;
 use gui_structures::ComputeState::*;
 use gui_structures::*;
@@ -88,54 +88,19 @@ impl Application for EncloneVisual {
     fn view(&mut self) -> Element<Message> {
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-        // Handle the summary case.
+        // Handle popovers.
 
         if self.summary_mode {
             return summary(self);
         }
-
-        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-        // Handle the help case.
-
-        if self.help_mode {
-            return history(self);
+        if self.console_mode {
+            return console(self);
         }
-
-        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-        // Handle the cookbook case.
-
         if self.cookbook_mode {
-            let cookbook_title = Text::new(&format!("Cookbook")).size(30);
-            let preamble = "Type the tag into the input box to run the given command.\n\n";
-            let cookbook_scrollable = Scrollable::new(&mut self.scroll)
-                .width(Length::Fill)
-                .height(Length::Fill)
-                .scrollbar_width(SCROLLBAR_WIDTH)
-                .scroller_width(12)
-                .style(style::ScrollableStyle)
-                .push(
-                    Text::new(&format!(
-                        "{}{}",
-                        preamble,
-                        COOKBOOK_CONTENTS.lock().unwrap()[0]
-                    ))
-                    .font(DEJAVU_BOLD)
-                    .size(14),
-                );
-            let cookbook_close_button = Button::new(&mut self.open_state, Text::new("Vanish!"))
-                .on_press(Message::CookbookClose);
-            let content = Column::new()
-                .spacing(SPACING)
-                .padding(20)
-                .push(cookbook_title)
-                .push(cookbook_scrollable)
-                .push(cookbook_close_button);
-            return Container::new(content)
-                .width(Length::Fill)
-                .height(Length::Fill)
-                .into();
+            return cookbook(self);
+        }
+        if self.help_mode {
+            return help(self);
         }
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -232,7 +197,7 @@ impl Application for EncloneVisual {
             )
             .on_press(Message::GraphicsCopyButtonPressed);
 
-            let mut state_pos = format!("{}", self.history_index);
+            let mut state_pos = format!("{}", self.h.history_index);
             if state_pos.len() == 1 {
                 state_pos += "    ";
             } else if state_pos.len() == 2 {
@@ -246,12 +211,12 @@ impl Application for EncloneVisual {
 
             let mut button_column2 = Column::new().spacing(8);
             button_column2 = button_column2.push(state_pos_button);
-            if self.history_index > 1 {
+            if self.h.history_index > 1 {
                 button_column2 = button_column2.push(back_button);
             } else {
                 button_column2 = button_column2.push(null_button1);
             }
-            if self.history_index < self.svg_history.len() {
+            if (self.h.history_index as usize) < self.h.svg_history.len() {
                 button_column2 = button_column2.push(forward_button);
             } else {
                 button_column2 = button_column2.push(null_button2);
@@ -262,9 +227,9 @@ impl Application for EncloneVisual {
 
             const MAX_LINE: usize = 35;
             let mut log = String::new();
-            if self.history_index >= 1 {
-                let cmd = self.translated_input_hist_uniq
-                    [self.translated_input_history[self.history_index - 1]]
+            if self.h.history_index >= 1 {
+                let cmd = self.h.translated_input_hist_uniq
+                    [self.h.translated_input_history[self.h.history_index as usize - 1] as usize]
                     .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
@@ -285,7 +250,7 @@ impl Application for EncloneVisual {
                 &mut self.summary_button,
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
-            .on_press(Message::SummaryOpen);
+            .on_press(Message::SummaryOpen(Ok(())));
 
             // Build the command column.
 
@@ -305,7 +270,7 @@ impl Application for EncloneVisual {
                     )
                     .on_press(Message::CommandCopyButtonPressed),
                 );
-            if self.history_index >= 1 && !self.is_blank[self.history_index - 1] {
+            if self.h.history_index >= 1 && !self.h.is_blank[self.h.history_index as usize - 1] {
                 col = col.push(copy_image_button);
             } else {
                 col = col.push(null_copy_image_button);
@@ -330,9 +295,10 @@ impl Application for EncloneVisual {
         let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
         let nchars = (available as f32 / font_width).round() as usize;
         let mut trunc = String::new();
+        let failed = self.output_value.contains("enclone failed");
         for line in self.output_value.lines() {
             for (i, c) in line.chars().enumerate() {
-                if i == nchars {
+                if i == nchars && !failed {
                     break;
                 }
                 trunc.push(c);
@@ -357,10 +323,10 @@ impl Application for EncloneVisual {
         // the clonotype tables.  We do not set the width because it's the height that we need
         // to control.
 
-        // let svg_height = if !self.is_blank_current() {
+        // let svg_height = if !self.h.is_blank_current() {
         let mut blank = false;
-        if self.history_index > 0 {
-            blank = self.is_blank[self.history_index - 1];
+        if self.h.history_index > 0 {
+            blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
         let svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
 
@@ -413,16 +379,20 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),
             );
+        let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
+            .on_press(Message::ConsoleOpen);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
             .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
-                    .spacing(100)
                     .align_items(Align::Center)
                     .push(left_buttons)
-                    .push(banner),
+                    .push(Space::with_width(Length::Fill))
+                    .push(banner)
+                    .push(Space::with_width(Length::Fill))
+                    .push(console_button),
             )
             .push(
                 Row::new()
@@ -434,7 +404,7 @@ impl Application for EncloneVisual {
             )
             // .push(Row::new().spacing(10).push(svg))
             .push(graphic_row);
-        if self.svg_history.len() > 0 {
+        if self.h.svg_history.len() > 0 {
             content = content.push(Rule::horizontal(10).style(style::RuleStyle));
         }
         content = content.push(

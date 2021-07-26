@@ -25,6 +25,9 @@ use arboard::{Clipboard, ImageData};
 #[cfg(target_os = "linux")]
 use string_utils::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use crate::*;
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
@@ -43,7 +46,7 @@ pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
                 pasteboard.clearContents();
                 pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
             } else {
-                eprintln!("\ncopy to pasteboard failed\n");
+                xprintln!("\ncopy to pasteboard failed\n");
                 std::process::exit(1);
             }
         }
@@ -87,7 +90,7 @@ pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
                 pasteboard.clearContents();
                 pasteboard.writeObjects(NSArray::arrayWithObject(pool, object));
             } else {
-                eprintln!("\ncopy to pasteboard failed\n");
+                xprintln!("\ncopy to pasteboard failed\n");
                 std::process::exit(1);
             }
         }

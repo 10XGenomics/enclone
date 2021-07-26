@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::*;
 use std::env;
 use std::process::Command;
-use string_utils::*;
 
 pub fn restart_enclone() {
     let args: Vec<String> = env::args().collect();
@@ -19,7 +19,7 @@ pub fn restart_enclone() {
 }
 
 pub fn update_enclone() {
-    println!("Automatically updating enclone, following the instructions at bit.ly/enclone.\n");
+    xprintln!("Automatically updating enclone, following the instructions at bit.ly/enclone.\n");
     let mut home = String::new();
     for (key, value) in env::vars() {
         if key == "HOME" {
@@ -27,7 +27,7 @@ pub fn update_enclone() {
         }
     }
     if home.len() == 0 {
-        eprintln!("Weird, unable to determine your home directory.\n");
+        xprintln!("Weird, unable to determine your home directory.\n");
         std::process::exit(1);
     }
     let o = Command::new("curl")
@@ -42,7 +42,7 @@ pub fn update_enclone() {
         .output()
         .expect("failed to execute curl");
     if o.status.code() != Some(0) {
-        eprintln!(
+        xprintln!(
             "Update failed with the following error message:\n{}",
             strme(&o.stderr)
         );

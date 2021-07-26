@@ -24,6 +24,8 @@ pub enum Message {
     HelpClose(Result<(), String>),
     CookbookOpen,
     CookbookClose,
-    SummaryOpen,
-    SummaryClose,
+    SummaryOpen(Result<(), String>),
+    SummaryClose(Result<(), String>),
+    ConsoleOpen,
+    ConsoleClose,
 }
