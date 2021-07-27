@@ -150,7 +150,10 @@ fn main() {
 
         if moved {
             for dest in dests.iter() {
-                remove_dir_all(&format!("{}/{}.aside", dest, id)).unwrap();
+                let movedir = format!("{}/{}.aside", dest, id);
+                if path_exists(&movedir) {
+                    remove_dir_all(&movedir).unwrap();
+                }
             }
         }
     }
