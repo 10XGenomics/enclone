@@ -382,7 +382,6 @@ impl Application for EncloneVisual {
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
-            .max_width(1500) // this governs the max window width upon manual resizing
             .push(
                 Row::new()
                     .align_items(Align::Center)
