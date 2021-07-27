@@ -257,14 +257,13 @@ impl Application for EncloneVisual {
             } else {
                 row = row.push(null_copy_image_button);
             }
-            row = row
-                .push(
-                    Button::new(
-                        &mut self.command_copy_button,
-                        Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
-                    )
-                    .on_press(Message::CommandCopyButtonPressed),
-                );
+            row = row.push(
+                Button::new(
+                    &mut self.command_copy_button,
+                    Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+                )
+                .on_press(Message::CommandCopyButtonPressed),
+            );
             let mut col = Column::new().spacing(8).align_items(Align::End);
             col = col.push(
                 Button::new(
