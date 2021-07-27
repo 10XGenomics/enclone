@@ -17,7 +17,7 @@ pub fn compare_images(
     verbose: bool,
 ) -> usize {
     const MAX_DIFF: u8 = 61;
-    const MAX_GRAY_DIFF: u8 = 128;
+    const MAX_GRAY_DIFF: u8 = 134;
     let mut results = Vec::<(usize, usize, Vec<u8>)>::new();
     for x in 0..width {
         results.push((x, 0, Vec::new()));
