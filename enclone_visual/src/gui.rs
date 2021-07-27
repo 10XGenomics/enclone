@@ -182,7 +182,6 @@ impl Application for EncloneVisual {
                 Text::new(" ").font(DEJAVU_BOLD).size(FB_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DoNothing);
-
             let copy_image_button = Button::new(
                 &mut self.copy_image_button,
                 Text::new("Copy image")
@@ -190,13 +189,11 @@ impl Application for EncloneVisual {
                     .color(self.copy_image_button_color),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
-
             let null_copy_image_button = Button::new(
                 &mut self.null_button3,
                 Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
-
             let mut state_pos = format!("{}", self.h.history_index);
             if state_pos.len() == 1 {
                 state_pos += "    ";
@@ -254,15 +251,13 @@ impl Application for EncloneVisual {
 
             // Build the command column.
 
-            let mut col = Column::new().spacing(8).align_items(Align::End);
-            col = col
-                .push(
-                    Button::new(
-                        &mut self.null_button,
-                        Text::new(&log).font(DEJAVU_BOLD).size(12),
-                    )
-                    .on_press(Message::DoNothing),
-                )
+            let mut row = Row::new().spacing(8);
+            if self.h.history_index >= 1 && !self.h.is_blank[self.h.history_index as usize - 1] {
+                row = row.push(copy_image_button);
+            } else {
+                row = row.push(null_copy_image_button);
+            }
+            row = row
                 .push(
                     Button::new(
                         &mut self.command_copy_button,
@@ -270,11 +265,15 @@ impl Application for EncloneVisual {
                     )
                     .on_press(Message::CommandCopyButtonPressed),
                 );
-            if self.h.history_index >= 1 && !self.h.is_blank[self.h.history_index as usize - 1] {
-                col = col.push(copy_image_button);
-            } else {
-                col = col.push(null_copy_image_button);
-            }
+            let mut col = Column::new().spacing(8).align_items(Align::End);
+            col = col.push(
+                Button::new(
+                    &mut self.null_button,
+                    Text::new(&log).font(DEJAVU_BOLD).size(12),
+                )
+                .on_press(Message::DoNothing),
+            );
+            col = col.push(row);
             col = col.push(summary_button);
 
             // Add the command column to the row.
