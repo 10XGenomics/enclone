@@ -329,18 +329,18 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "Below it is a button to copy the command to your \
-                    clipboard.  This copied command can be reentered in enclone visual, \
-                    or supplied to \"regular\" enclone, so long as you change instances of gui \
-                    to actual file names.",
+                                "Below it there is a button to copy the graphics image to \
+                    your clipboard, assuming that you have a graphics image.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "Next there is a button to copy the graphics image to \
-                    your clipboard, assuming that you have a graphics image.",
+                                "Next to it is a button to copy the command to your \
+                    clipboard.  This copied command can be reentered in enclone visual, \
+                    or supplied to \"regular\" enclone, so long as you change instances of gui \
+                    to actual file names.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )
