@@ -34,6 +34,22 @@ pub struct EncloneVisualHistory {
     pub history_index: u32,
 }
 
+// const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
+
+pub fn u32_bytes(x: usize) -> Vec<u8> {
+    (x as u32).to_le_bytes().to_vec()
+}
+
+pub fn stash_vec_string(x: &Vec<String>) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    bytes.append(&mut u32_bytes(x.len()));
+    for i in 0..x.len() {
+        bytes.append(&mut u32_bytes(x[i].len()));
+        bytes.append(&mut x[i].as_bytes().to_vec());
+    }
+    bytes
+}
+
 impl EncloneVisualHistory {
     //
     // requirements for saving and restoring history
@@ -69,6 +85,11 @@ impl EncloneVisualHistory {
     // - Vec<Vec<u32>>
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
+        /*
+        let mut bytes = forma!("enclone visual history file version{:>4}\n",
+            ENCLONE_VISUAL_HISTORY_VERSION
+        ).as_bytes().to_vec();
+        */
         serde_json::to_string(&self).unwrap().as_bytes().to_vec()
     }
 
