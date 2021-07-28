@@ -3,6 +3,9 @@
 // Storage of enclone visual history, and functions to save and restore.
 
 use crate::packing::*;
+use io_utils::*;
+use std::fs::File;
+use std::io::{BufReader, Read};
 
 #[derive(Default)]
 pub struct EncloneVisualHistory {
@@ -152,5 +155,36 @@ impl EncloneVisualHistory {
             is_blank: is_blank,
             history_index: history_index,
         })
+    }
+
+    pub fn get_command_list(filename: &str) -> Result<Vec<String>, ()> {
+        let n;
+        {
+            let mut f = open_for_read![&filename];
+            let mut buf = vec![0 as u8; HEADER_LENGTH + 8];
+            let res = f.read_exact(&mut buf);
+            if res.is_err() {
+                return Err(());
+            }
+            n = u32_from_bytes(&buf[HEADER_LENGTH + 4..HEADER_LENGTH + 8]);
+        }
+        let mut bytes = vec![0 as u8; n as usize];
+        let mut f = open_for_read![&filename];
+        let res = f.read_exact(&mut bytes);
+        if res.is_err() {
+            return Err(());
+        }
+        let mut pos = HEADER_LENGTH + 8;
+        let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
+        let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let mut commands = Vec::<String>::new();
+        for i in translated_input_history.iter() {
+            let i = *i as usize;
+            if i >= translated_input_history.len() {
+                return Err(());
+            }
+            commands.push(translated_input_hist_uniq[i].clone());
+        }
+        Ok(commands)
     }
 }
