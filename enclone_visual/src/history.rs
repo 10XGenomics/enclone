@@ -3,9 +3,7 @@
 // Storage of enclone visual history, and functions to save and restore.  These have not been
 // optimized.
 
-use serde::{Deserialize, Serialize};
-
-#[derive(Default, Deserialize, Serialize)]
+#[derive(Default)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:

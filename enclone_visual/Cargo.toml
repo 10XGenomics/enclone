@@ -46,7 +46,6 @@ prost = { version = "0.8", default_features = false }
 rayon = "1"
 # resvg = "0.15.0"
 resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
-serde = "1"
 serde_json = "1"
 string_utils = "0.1"
 tables = "0.1"
