@@ -5,7 +5,7 @@
 use crate::packing::*;
 use io_utils::*;
 use std::fs::File;
-use std::io::{BufReader, Read};
+use std::io::{BufReader, Read, Write};
 
 #[derive(Default)]
 pub struct EncloneVisualHistory {
@@ -158,7 +158,7 @@ impl EncloneVisualHistory {
     }
 }
 
-pub fn get_command_list(filename: &str) -> Result<Vec<String>, ()> {
+pub fn read_command_list(filename: &str) -> Result<Vec<String>, ()> {
     let n;
     {
         let mut f = open_for_read![&filename];
@@ -189,7 +189,7 @@ pub fn get_command_list(filename: &str) -> Result<Vec<String>, ()> {
     Ok(commands)
 }
 
-pub fn get_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory, ()> {
+pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory, ()> {
     let n;
     {
         let mut f = open_for_read![&filename];
@@ -207,4 +207,17 @@ pub fn get_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory
         return Err(());
     }
     EncloneVisualHistory::restore_from_bytes(&bytes)
+}
+
+pub fn write_enclone_visual_history(evh: &EncloneVisualHistory, filename: &str) -> Result<(), ()> {
+    let f = File::create(&filename);
+    if f.is_err() {
+        return Err(());
+    }
+    let bytes = evh.save_as_bytes();
+    let res = f.unwrap().write_all(&bytes);
+    if res.is_err() {
+        return Err(());
+    }
+    Ok(())
 }
