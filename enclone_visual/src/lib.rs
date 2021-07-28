@@ -37,6 +37,7 @@ pub mod gui_structures;
 pub mod help;
 pub mod history;
 pub mod messages;
+pub mod packing;
 pub mod popover;
 pub mod process_messages;
 pub mod style;
