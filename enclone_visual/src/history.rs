@@ -231,15 +231,8 @@ impl EncloneVisualHistory {
     //
     // 1. text header = 40 bytes = "enclone visual history file version ***\n",
     //    where *** is a positive integer, padded on the right with blanks
-    // 2. nbytes for truncated file including just the first two fields (u32)
-    // 3. nbytes for total file (u32)
-    // 2. number of fields
-    // 3. sequence of fields of the form
-    //    (a) nbytes for member name (u8)
-    //    (b) member name bytes
-    //    (c) nbytes for data (u32)
-    //    (d) data.
-    // And the first two fields are translated_input_history, translated_input_hist_uniq.
+    // 2. data for each of the fields in EncloneVisualHistory,
+    //    with translated_input_history and translated_input_hist_uniq stored first.
     //
     // supported subtypes
     // - u32
@@ -250,14 +243,33 @@ impl EncloneVisualHistory {
     // - Vec<Vec<u32>>
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
-        let bytes = format!(
+        let mut bytes = format!(
             "enclone visual history file version{:<4}\n",
             ENCLONE_VISUAL_HISTORY_VERSION
         )
         .as_bytes()
         .to_vec();
-        let _bytes = bytes; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        serde_json::to_string(&self).unwrap().as_bytes().to_vec()
+        if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
+            bytes.append(&mut save_vec_u32(&self.translated_input_history));
+            bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.svg_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.input2_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.displayed_tables_hist_uniq));
+            bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
+            bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
+            bytes.append(&mut save_vec_u32(&self.svg_history));
+            bytes.append(&mut save_vec_u32(&self.summary_history));
+            bytes.append(&mut save_vec_u32(&self.input1_history));
+            bytes.append(&mut save_vec_u32(&self.input2_history));
+            bytes.append(&mut save_vec_u32(&self.displayed_tables_history));
+            bytes.append(&mut save_vec_u32(&self.table_comp_history));
+            bytes.append(&mut save_vec_u32(&self.last_widths_history));
+            bytes.append(&mut save_vec_bool(&self.is_blank));
+            bytes.append(&mut save_u32(self.history_index));
+        }
+        bytes
     }
 
     pub fn restore_from_bytes(bytes: &[u8]) -> Self {
