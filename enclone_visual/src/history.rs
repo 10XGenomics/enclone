@@ -287,7 +287,8 @@ impl EncloneVisualHistory {
             "enclone visual history file version{:<4}\n",
             ENCLONE_VISUAL_HISTORY_VERSION
         )
-        .as_bytes().to_vec();
+        .as_bytes()
+        .to_vec();
         if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
             return Err(());
         }
