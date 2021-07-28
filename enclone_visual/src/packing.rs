@@ -144,7 +144,7 @@ pub fn restore_vec_bool(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<bool>, ()> {
     }
     let mut y = vec![false; n];
     for j in 0..n {
-        y[j] = if *pos == 1 { true } else { false };
+        y[j] = if x[*pos] == 1 { true } else { false };
         *pos += 1;
     }
     Ok(y)
