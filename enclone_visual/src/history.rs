@@ -7,7 +7,7 @@ use io_utils::*;
 use std::fs::File;
 use std::io::{BufReader, Read, Write};
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
@@ -155,6 +155,15 @@ impl EncloneVisualHistory {
             is_blank: is_blank,
             history_index: history_index,
         })
+    }
+
+    pub fn save_restore_works(&self) -> bool {
+        let bytes = self.save_as_bytes();
+        let new = EncloneVisualHistory::restore_from_bytes(&bytes);
+        if new.is_err() {
+            return false;
+        }
+        *self == new.unwrap()
     }
 }
 
