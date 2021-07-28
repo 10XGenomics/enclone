@@ -573,6 +573,7 @@ impl EncloneVisual {
                     Command::none()
                 } else {
                     self.sanity_check();
+                    assert!(self.h.save_restore_works());
                     Command::perform(noop0(), Message::Capture)
                 }
             }
