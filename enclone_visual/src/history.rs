@@ -104,7 +104,7 @@ pub fn restore_u32(x: &Vec<u8>, pos: &mut usize) -> Result<u32, ()> {
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let y = u32_from_bytes(&x[*pos..*pos+4]);
+    let y = u32_from_bytes(&x[*pos..*pos + 4]);
     *pos += 4;
     Ok(y)
 }
@@ -113,14 +113,14 @@ pub fn restore_vec_u32(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<u32>, ()> {
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let n = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
     *pos += 4;
     if *pos + 4 * n > x.len() {
         return Err(());
     }
     let mut y = vec![0; n];
     for j in 0..n {
-        y[j] = u32_from_bytes(&x[*pos..*pos+4]);
+        y[j] = u32_from_bytes(&x[*pos..*pos + 4]);
         *pos += 4;
     }
     Ok(y)
@@ -130,14 +130,14 @@ pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, (
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let n = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
     *pos += 4;
     let mut y = vec![String::new(); n];
     for j in 0..n {
         if *pos + 4 > x.len() {
             return Err(());
         }
-        let k = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
         *pos += 4;
         if *pos + k > x.len() {
             return Err(());
@@ -156,7 +156,7 @@ pub fn restore_vec_bool(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<bool>, ()> {
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let n = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
     *pos += 4;
     if *pos + n > x.len() {
         return Err(());
@@ -173,14 +173,14 @@ pub fn restore_vec_vec_u8(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<u8>>, 
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let n = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
     *pos += 4;
     let mut y = vec![Vec::<u8>::new(); n];
     for j in 0..n {
         if *pos + 4 > x.len() {
             return Err(());
         }
-        let k = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
         *pos += 4;
         if *pos + k > x.len() {
             return Err(());
@@ -195,20 +195,20 @@ pub fn restore_vec_vec_u32(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<u32>>
     if *pos + 4 > x.len() {
         return Err(());
     }
-    let n = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
     *pos += 4;
     let mut y = vec![Vec::<u32>::new(); n];
     for j in 0..n {
         if *pos + 4 > x.len() {
             return Err(());
         }
-        let k = u32_from_bytes(&x[*pos..*pos+4]) as usize;
+        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
         *pos += 4;
         if *pos + 4 * k > x.len() {
             return Err(());
         }
         for _ in 0..k {
-            y[j].push(u32_from_bytes(&x[*pos..*pos+4]));
+            y[j].push(u32_from_bytes(&x[*pos..*pos + 4]));
             *pos += 4;
         }
     }
