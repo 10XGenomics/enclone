@@ -231,9 +231,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         }
     }
-    if internal {
-        INTERNAL.store(true, SeqCst);
-    }
 
     // Get configuration.
 
@@ -275,6 +272,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         xprintln!("");
         std::process::exit(1);
+    }
+    if internal {
+        INTERNAL.store(true, SeqCst);
     }
 
     // Set up proper tracebacks.
