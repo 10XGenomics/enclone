@@ -3,7 +3,6 @@
 // Storage of enclone visual history, and functions to save and restore.  These have not been
 // optimized.
 
-use crate::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Deserialize, Serialize)]
@@ -231,6 +230,7 @@ pub fn restore_u32(x: &Vec<u8>, pos: &mut usize) -> Result<u32, ()> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
+const HEADER_LENGTH: usize = 40;
 
 impl EncloneVisualHistory {
     //
@@ -281,7 +281,56 @@ impl EncloneVisualHistory {
         bytes
     }
 
-    pub fn restore_from_bytes(bytes: &[u8]) -> Self {
-        serde_json::from_str(&strme(&bytes)).unwrap()
+    pub fn restore_from_bytes(bytes: &Vec<u8>) -> Result<Self, ()> {
+        if bytes.len() < HEADER_LENGTH {
+            return Err(());
+        }
+        let expected_header = format!(
+            "enclone visual history file version{:<4}\n",
+            ENCLONE_VISUAL_HISTORY_VERSION
+        )
+        .as_bytes().to_vec();
+        if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
+            return Err(());
+        }
+        let mut pos = HEADER_LENGTH;
+        let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
+        let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let svg_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let input2_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let displayed_tables_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
+        let last_widths_hist_uniq = restore_vec_vec_u32(&bytes, &mut pos)?;
+        let svg_history = restore_vec_u32(&bytes, &mut pos)?;
+        let summary_history = restore_vec_u32(&bytes, &mut pos)?;
+        let input1_history = restore_vec_u32(&bytes, &mut pos)?;
+        let input2_history = restore_vec_u32(&bytes, &mut pos)?;
+        let displayed_tables_history = restore_vec_u32(&bytes, &mut pos)?;
+        let table_comp_history = restore_vec_u32(&bytes, &mut pos)?;
+        let last_widths_history = restore_vec_u32(&bytes, &mut pos)?;
+        let is_blank = restore_vec_bool(&bytes, &mut pos)?;
+        let history_index = restore_u32(&bytes, &mut pos)?;
+        Ok(EncloneVisualHistory {
+            translated_input_history: translated_input_history,
+            translated_input_hist_uniq: translated_input_hist_uniq,
+            svg_hist_uniq: svg_hist_uniq,
+            summary_hist_uniq: summary_hist_uniq,
+            input1_hist_uniq: input1_hist_uniq,
+            input2_hist_uniq: input2_hist_uniq,
+            displayed_tables_hist_uniq: displayed_tables_hist_uniq,
+            table_comp_hist_uniq: table_comp_hist_uniq,
+            last_widths_hist_uniq: last_widths_hist_uniq,
+            svg_history: svg_history,
+            summary_history: summary_history,
+            input1_history: input1_history,
+            input2_history: input2_history,
+            displayed_tables_history: displayed_tables_history,
+            table_comp_history: table_comp_history,
+            last_widths_history: last_widths_history,
+            is_blank: is_blank,
+            history_index: history_index,
+        })
     }
 }
