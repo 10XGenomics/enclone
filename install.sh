@@ -44,17 +44,20 @@ main() {
     #    and so it is possible that someone would not have curl.
     #
     #    We do not use svn, because it is no longer available by default on MacOS.
+    #
+    #    Sadly, no longer is git.
 
     need_cmd date
     STARTTIME=$(date +%s)
     # force failure if error
     set -e
-    need_cmd uname
-    need_cmd mkdir
-    need_cmd chmod
     need_cmd awk
-    need_cmd zcat
+    need_cmd chmod
+    need_cmg git
     need_cmd grep
+    need_cmd mkdir
+    need_cmd uname
+    need_cmd zcat
     local _have_curl
     _have_curl=false
     if check_cmd curl; then
