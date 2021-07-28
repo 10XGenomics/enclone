@@ -246,7 +246,8 @@ impl EncloneVisualHistory {
     //
     // 1. text header = 40 bytes = "enclone visual history file version ***\n",
     //    where *** is a positive integer, padded on the right with blanks
-    // 2. data for each of the fields in EncloneVisualHistory,
+    // 2. total bytes in file (u32)
+    // 3. data for each of the fields in EncloneVisualHistory,
     //    with translated_input_history and translated_input_hist_uniq stored first.
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
@@ -257,6 +258,7 @@ impl EncloneVisualHistory {
         .as_bytes()
         .to_vec();
         if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
+            bytes.append(&mut vec![0 as u8; 4]);
             bytes.append(&mut save_vec_u32(&self.translated_input_history));
             bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
             bytes.append(&mut save_vec_string(&self.svg_hist_uniq));
@@ -275,6 +277,10 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.last_widths_history));
             bytes.append(&mut save_vec_bool(&self.is_blank));
             bytes.append(&mut save_u32(self.history_index));
+            let b = u32_bytes(bytes.len());
+            for i in 0..4 {
+                bytes[HEADER_LENGTH + i] = b[i];
+            }
         }
         bytes
     }
@@ -292,7 +298,7 @@ impl EncloneVisualHistory {
         if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
             return Err(());
         }
-        let mut pos = HEADER_LENGTH;
+        let mut pos = HEADER_LENGTH + 4;
         let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
         let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let svg_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
