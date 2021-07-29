@@ -1,7 +1,8 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::Length::Units;
 use io_utils::*;
 use messages::Message;
 use std::env;
@@ -29,15 +30,32 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
         }
     }
-    let _hist_dir = hist_dir; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    let _hist = hist; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+    let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .scrollbar_width(SCROLLBAR_WIDTH)
+        .scroller_width(12)
+        .style(style::ScrollableStyle);
+    for (i, x) in hist.iter().enumerate() {
+        let row = Row::new()
+            .push(Text::new(&format!("{}   {}   ", x.before("___"), x.after("___"))).font(DEJAVU))
+            .push(Checkbox::new(
+                slf.enabled,
+                "",
+                Message::Restore,
+            ));
+        if i > 0 {
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+        }
+        archive_scrollable = archive_scrollable.push(row);
+    }
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)
         .push(top_bar)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        ;
-        // .push(archive_scrollable);
+        .push(archive_scrollable);
     Container::new(content)
         .width(Length::Fill)
         .height(Length::Fill)

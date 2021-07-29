@@ -81,6 +81,11 @@ async fn flash_copy_image_button() -> Result<(), String> {
     Ok(())
 }
 
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+};
+
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",
     bytes: include_bytes!("../../fonts/DejaVuLGCSansMono-Bold.ttf"),

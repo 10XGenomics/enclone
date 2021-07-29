@@ -20,6 +20,9 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::Restore(_) => {
+                Command::none()
+            }
             Message::Resize(width, height) => {
                 self.width = width;
                 self.height = height;
