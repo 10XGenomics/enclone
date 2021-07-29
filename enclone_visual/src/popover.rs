@@ -16,7 +16,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(archive_title)
         .push(Space::with_width(Length::Fill))
         .push(archive_close_button);
-    let mut hist_dir = String::new();
+    let mut hist_dir;
     let mut hist = Vec::<String>::new();
     hist.reverse();
     for (key, value) in env::vars() {
