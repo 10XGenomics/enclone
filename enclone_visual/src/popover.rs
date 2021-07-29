@@ -18,6 +18,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(archive_close_button);
     let mut hist_dir = String::new();
     let mut hist = Vec::<String>::new();
+    hist.reverse();
     for (key, value) in env::vars() {
         if key == "HOME" {
             let home = value.clone();
