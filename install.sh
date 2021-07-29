@@ -45,15 +45,23 @@ main() {
     #
     #    We do not use svn, because it is no longer available by default on MacOS.
     #
-    #    Sadly, no longer is git.
+    #    Sadly, no longer is git.  We therefore include a special test for it.
 
     need_cmd date
     STARTTIME=$(date +%s)
+    # special test for git
+    git --version >& /dev/null
+    if ! [ "$?" -eq "0" ]; then
+        printf "\nIt would appear that you do not have the command line tool git installed.\n"
+        printf "This is a common problem.  To solve it, please type\n"
+        printf "xcode-select --install\n"
+        printf "and follow the instructions, and then rerun the enclone installation command.\n\n"
+        exit 1
+    fi
     # force failure if error
     set -e
     need_cmd awk
     need_cmd chmod
-    need_cmg git
     need_cmd grep
     need_cmd mkdir
     need_cmd uname
