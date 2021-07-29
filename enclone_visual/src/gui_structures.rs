@@ -91,12 +91,6 @@ pub struct EncloneVisual {
     pub height: u32,
 }
 
-#[derive(Default)]
-pub struct ModalState {
-    pub cancel_state: button::State,
-    pub cookbook: bool,
-}
-
 impl EncloneVisual {
     pub fn hi(&self) -> usize {
         self.h.history_index as usize - 1
