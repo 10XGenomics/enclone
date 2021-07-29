@@ -1,8 +1,10 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use iced::{Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use iced::Length::Units;
+use iced::{
+    Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
+};
 use io_utils::*;
 use messages::Message;
 use std::env;
@@ -41,11 +43,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     for (i, x) in hist.iter().enumerate() {
         let row = Row::new()
             .push(Text::new(&format!("{}   {}   ", x.before("___"), x.after("___"))).font(DEJAVU))
-            .push(Checkbox::new(
-                slf.enabled,
-                "",
-                Message::Restore,
-            ));
+            .push(Checkbox::new(slf.enabled, "", Message::Restore));
         if i > 0 {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
         }
