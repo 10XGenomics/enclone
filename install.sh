@@ -255,10 +255,10 @@ main() {
 
     if [ -f .zshrc ]; then
         if [[ `cat .zshrc` != *"export PATH=~/bin:"* ]]; then
-            echo 'export PATH=~/bin:$PATH' >> .zshrc
+            echo 'export PATH="~/bin:$PATH"' >> .zshrc
         fi
     elif [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo 'export PATH=~/bin:$PATH' > .zshrc
+        echo 'export PATH="~/bin:$PATH"' > .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
