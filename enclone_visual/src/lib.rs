@@ -37,6 +37,7 @@ pub mod gui_structures;
 pub mod help;
 pub mod history;
 pub mod messages;
+pub mod packing;
 pub mod popover;
 pub mod process_messages;
 pub mod style;
@@ -79,6 +80,11 @@ async fn compute() -> Result<(), String> {
 async fn flash_copy_image_button() -> Result<(), String> {
     Ok(())
 }
+
+const DEJAVU: Font = Font::External {
+    name: "DEJAVU",
+    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
+};
 
 const DEJAVU_BOLD: Font = Font::External {
     name: "DEJAVU_BOLD",

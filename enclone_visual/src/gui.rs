@@ -99,6 +99,9 @@ impl Application for EncloneVisual {
         if self.cookbook_mode {
             return cookbook(self);
         }
+        if self.archive_mode {
+            return archive(self);
+        }
         if self.help_mode {
             return help(self);
         }
@@ -377,20 +380,38 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),
             );
+        let show_archive = false; // **************************************************************
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
+        let mut save_on_exit_text = Text::new("Save on Exit");
+        if self.save_on_exit {
+            save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
+        }
+        let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
+            .on_press(Message::SaveOnExit);
+        let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
+            .on_press(Message::ArchiveOpen);
+        let mut top_row = Row::new()
+            .align_items(Align::Center)
+            .push(left_buttons)
+            .push(Space::with_width(Length::Fill))
+            .push(banner)
+            .push(Space::with_width(Length::Fill));
+        if show_archive {
+            let right_col = Column::new()
+                .align_items(Align::End)
+                .spacing(8)
+                .push(console_button)
+                .push(save_on_exit_button)
+                .push(archive_button);
+            top_row = top_row.push(right_col);
+        } else {
+            top_row = top_row.push(console_button);
+        }
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
-            .push(
-                Row::new()
-                    .align_items(Align::Center)
-                    .push(left_buttons)
-                    .push(Space::with_width(Length::Fill))
-                    .push(banner)
-                    .push(Space::with_width(Length::Fill))
-                    .push(console_button),
-            )
+            .push(top_row)
             .push(
                 Row::new()
                     .spacing(10)

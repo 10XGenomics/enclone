@@ -44,17 +44,28 @@ main() {
     #    and so it is possible that someone would not have curl.
     #
     #    We do not use svn, because it is no longer available by default on MacOS.
+    #
+    #    Sadly, no longer is git.  We therefore include a special test for it.
 
     need_cmd date
     STARTTIME=$(date +%s)
+    # special test for git
+    git --version >& /dev/null
+    if ! [ "$?" -eq "0" ]; then
+        printf "\nIt would appear that you do not have the command line tool git installed.\n"
+        printf "This is a common problem.  To solve it, please type\n"
+        printf "xcode-select --install\n"
+        printf "and follow the instructions, and then rerun the enclone installation command.\n\n"
+        exit 1
+    fi
     # force failure if error
     set -e
-    need_cmd uname
-    need_cmd mkdir
-    need_cmd chmod
     need_cmd awk
-    need_cmd zcat
+    need_cmd chmod
     need_cmd grep
+    need_cmd mkdir
+    need_cmd uname
+    need_cmd zcat
     local _have_curl
     _have_curl=false
     if check_cmd curl; then
@@ -244,10 +255,10 @@ main() {
 
     if [ -f .zshrc ]; then
         if [[ `cat .zshrc` != *"export PATH=~/bin:"* ]]; then
-            echo 'export PATH=~/bin:$PATH' >> .zshrc
+            echo 'export PATH="~/bin:$PATH"' >> .zshrc
         fi
     elif [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo 'export PATH=~/bin:$PATH' > .zshrc
+        echo 'export PATH="~/bin:$PATH"' > .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

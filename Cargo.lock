@@ -1540,7 +1540,6 @@ dependencies = [
  "prost",
  "rayon",
  "resvg",
- "serde",
  "serde_json",
  "string_utils",
  "tables",

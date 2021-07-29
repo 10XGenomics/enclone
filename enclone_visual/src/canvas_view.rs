@@ -14,11 +14,6 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::Mutex;
 
-const DEJAVU: Font = Font::External {
-    name: "DEJAVU",
-    bytes: include_bytes!("../../fonts/DejaVuLGCSansMono.ttf"),
-};
-
 const LIBERATION_SANS: Font = Font::External {
     name: "LIBERATION_SANS",
     bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),

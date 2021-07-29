@@ -1,14 +1,18 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
+use crate::history::*;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
+use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
+use io_utils::*;
 use itertools::Itertools;
+use std::env;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
@@ -16,6 +20,7 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::Restore(_) => Command::none(),
             Message::Resize(width, height) => {
                 self.width = width;
                 self.height = height;
@@ -365,8 +370,70 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ArchiveOpen => {
+                self.archive_mode = true;
+                Command::none()
+            }
+
+            Message::ArchiveClose => {
+                self.archive_mode = false;
+                Command::none()
+            }
+
+            Message::SaveOnExit => {
+                self.save_on_exit = !self.save_on_exit;
+                Command::none()
+            }
+
             Message::Exit => {
                 if true {
+                    if self.save_on_exit {
+                        let mut home = String::new();
+                        for (key, value) in env::vars() {
+                            if key == "HOME" {
+                                home = value.clone();
+                            }
+                        }
+                        if home.len() == 0 {
+                            xprintln!(
+                                "Weird, unable to determine your home directory, \
+                                so Save on Exit failed.\n"
+                            );
+                            std::process::exit(1);
+                        }
+                        let enclone = format!("{}/enclone", home);
+                        if !path_exists(&enclone) {
+                            xprintln!(
+                                "You do not have a directory ~/enclone, \
+                                so Save on Exit failed.\n"
+                            );
+                            std::process::exit(1);
+                        }
+                        let dir = format!("{}/visual_history", enclone);
+                        if !path_exists(&dir) {
+                            let res = std::fs::create_dir(&dir);
+                            if res.is_err() {
+                                xprintln!(
+                                    "Unable to create the directory \
+                                    ~/enclone/visual_history, so Save on Exit Failed.\n"
+                                );
+                                std::process::exit(1);
+                            }
+                        }
+                        let mut now = format!("{:?}", Local::now());
+                        now = now.replace("T", "___");
+                        now = now.before(".").to_string();
+                        let filename = format!("{}/{}", dir, now);
+                        let res = write_enclone_visual_history(&self.h, &filename);
+                        if res.is_err() {
+                            xprintln!(
+                                "Was Unable to write history to the file {}, \
+                                so Save on Exit Failed.\n",
+                                filename
+                            );
+                            std::process::exit(1);
+                        }
+                    }
                     std::process::exit(0);
                 }
                 Command::none()
@@ -573,6 +640,7 @@ impl EncloneVisual {
                     Command::none()
                 } else {
                     self.sanity_check();
+                    assert!(self.h.save_restore_works());
                     Command::perform(noop0(), Message::Capture)
                 }
             }

@@ -1,12 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// Storage of enclone visual history, and functions to save and restore.  These have not been
-// optimized.
+// Storage of enclone visual history, and functions to save and restore.
 
-use crate::*;
-use serde::{Deserialize, Serialize};
+use crate::packing::*;
+use io_utils::*;
+use std::fs::File;
+use std::io::{BufReader, Read, Write};
 
-#[derive(Default, Deserialize, Serialize)]
+#[derive(Default, PartialEq)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
@@ -39,198 +40,8 @@ pub struct EncloneVisualHistory {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn u32_bytes(x: usize) -> Vec<u8> {
-    (x as u32).to_le_bytes().to_vec()
-}
-
-pub fn u32_from_bytes(x: &[u8]) -> u32 {
-    u32::from_le_bytes([x[0], x[1], x[2], x[3]])
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_vec_string(x: &Vec<String>) -> Vec<u8> {
-    let mut bytes = Vec::<u8>::new();
-    bytes.append(&mut u32_bytes(x.len()));
-    for i in 0..x.len() {
-        bytes.append(&mut u32_bytes(x[i].len()));
-        bytes.append(&mut x[i].as_bytes().to_vec());
-    }
-    bytes
-}
-
-pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-    *pos += 4;
-    let mut y = vec![String::new(); n];
-    for j in 0..n {
-        if *pos + 4 > x.len() {
-            return Err(());
-        }
-        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-        *pos += 4;
-        if *pos + k > x.len() {
-            return Err(());
-        }
-        let s = String::from_utf8(x[*pos..*pos + k].to_vec());
-        if s.is_err() {
-            return Err(());
-        }
-        *pos += k;
-        y[j] = s.unwrap();
-    }
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_vec_vec_u8(x: &Vec<Vec<u8>>) -> Vec<u8> {
-    let mut bytes = Vec::<u8>::new();
-    bytes.append(&mut u32_bytes(x.len()));
-    for i in 0..x.len() {
-        bytes.append(&mut u32_bytes(x[i].len()));
-        bytes.append(&mut x[i].clone());
-    }
-    bytes
-}
-
-pub fn restore_vec_vec_u8(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<u8>>, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-    *pos += 4;
-    let mut y = vec![Vec::<u8>::new(); n];
-    for j in 0..n {
-        if *pos + 4 > x.len() {
-            return Err(());
-        }
-        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-        *pos += 4;
-        if *pos + k > x.len() {
-            return Err(());
-        }
-        y[j] = x[*pos..*pos + k].to_vec();
-        *pos += k;
-    }
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_vec_vec_u32(x: &Vec<Vec<u32>>) -> Vec<u8> {
-    let mut bytes = Vec::<u8>::new();
-    bytes.append(&mut u32_bytes(x.len()));
-    for i in 0..x.len() {
-        bytes.append(&mut u32_bytes(x[i].len()));
-        for j in 0..x[i].len() {
-            bytes.append(&mut x[i][j].to_le_bytes().to_vec());
-        }
-    }
-    bytes
-}
-
-pub fn restore_vec_vec_u32(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<u32>>, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-    *pos += 4;
-    let mut y = vec![Vec::<u32>::new(); n];
-    for j in 0..n {
-        if *pos + 4 > x.len() {
-            return Err(());
-        }
-        let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-        *pos += 4;
-        if *pos + 4 * k > x.len() {
-            return Err(());
-        }
-        for _ in 0..k {
-            y[j].push(u32_from_bytes(&x[*pos..*pos + 4]));
-            *pos += 4;
-        }
-    }
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_vec_bool(x: &Vec<bool>) -> Vec<u8> {
-    let mut bytes = Vec::<u8>::new();
-    bytes.append(&mut u32_bytes(x.len()));
-    for i in 0..x.len() {
-        bytes.push(if x[i] { 1 } else { 0 });
-    }
-    bytes
-}
-
-pub fn restore_vec_bool(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<bool>, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-    *pos += 4;
-    if *pos + n > x.len() {
-        return Err(());
-    }
-    let mut y = vec![false; n];
-    for j in 0..n {
-        y[j] = if *pos == 1 { true } else { false };
-        *pos += 1;
-    }
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_vec_u32(x: &Vec<u32>) -> Vec<u8> {
-    let mut bytes = Vec::<u8>::new();
-    bytes.append(&mut u32_bytes(x.len()));
-    for i in 0..x.len() {
-        bytes.append(&mut x[i].to_le_bytes().to_vec());
-    }
-    bytes
-}
-
-pub fn restore_vec_u32(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<u32>, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
-    *pos += 4;
-    if *pos + 4 * n > x.len() {
-        return Err(());
-    }
-    let mut y = vec![0; n];
-    for j in 0..n {
-        y[j] = u32_from_bytes(&x[*pos..*pos + 4]);
-        *pos += 4;
-    }
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn save_u32(x: u32) -> Vec<u8> {
-    x.to_le_bytes().to_vec()
-}
-
-pub fn restore_u32(x: &Vec<u8>, pos: &mut usize) -> Result<u32, ()> {
-    if *pos + 4 > x.len() {
-        return Err(());
-    }
-    let y = u32_from_bytes(&x[*pos..*pos + 4]);
-    *pos += 4;
-    Ok(y)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
+const HEADER_LENGTH: usize = 40;
 
 impl EncloneVisualHistory {
     //
@@ -248,7 +59,9 @@ impl EncloneVisualHistory {
     //
     // 1. text header = 40 bytes = "enclone visual history file version ***\n",
     //    where *** is a positive integer, padded on the right with blanks
-    // 2. data for each of the fields in EncloneVisualHistory,
+    // 2. total bytes in file (u32)
+    // 3. total bytes up through translated_hist_uniq (u32)
+    // 4. data for each of the fields in EncloneVisualHistory,
     //    with translated_input_history and translated_input_hist_uniq stored first.
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
@@ -259,8 +72,13 @@ impl EncloneVisualHistory {
         .as_bytes()
         .to_vec();
         if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
+            bytes.append(&mut vec![0 as u8; 8]);
             bytes.append(&mut save_vec_u32(&self.translated_input_history));
             bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
+            let b = u32_bytes(bytes.len());
+            for i in 0..4 {
+                bytes[HEADER_LENGTH + 4 + i] = b[i];
+            }
             bytes.append(&mut save_vec_string(&self.svg_hist_uniq));
             bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
             bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
@@ -277,11 +95,138 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.last_widths_history));
             bytes.append(&mut save_vec_bool(&self.is_blank));
             bytes.append(&mut save_u32(self.history_index));
+            let b = u32_bytes(bytes.len());
+            for i in 0..4 {
+                bytes[HEADER_LENGTH + i] = b[i];
+            }
         }
         bytes
     }
 
-    pub fn restore_from_bytes(bytes: &[u8]) -> Self {
-        serde_json::from_str(&strme(&bytes)).unwrap()
+    pub fn restore_from_bytes(bytes: &Vec<u8>) -> Result<Self, ()> {
+        if bytes.len() < HEADER_LENGTH {
+            return Err(());
+        }
+        let expected_header = format!(
+            "enclone visual history file version{:<4}\n",
+            ENCLONE_VISUAL_HISTORY_VERSION
+        )
+        .as_bytes()
+        .to_vec();
+        if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
+            return Err(());
+        }
+        let mut pos = HEADER_LENGTH + 8;
+        let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
+        let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let svg_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let input2_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let displayed_tables_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
+        let last_widths_hist_uniq = restore_vec_vec_u32(&bytes, &mut pos)?;
+        let svg_history = restore_vec_u32(&bytes, &mut pos)?;
+        let summary_history = restore_vec_u32(&bytes, &mut pos)?;
+        let input1_history = restore_vec_u32(&bytes, &mut pos)?;
+        let input2_history = restore_vec_u32(&bytes, &mut pos)?;
+        let displayed_tables_history = restore_vec_u32(&bytes, &mut pos)?;
+        let table_comp_history = restore_vec_u32(&bytes, &mut pos)?;
+        let last_widths_history = restore_vec_u32(&bytes, &mut pos)?;
+        let is_blank = restore_vec_bool(&bytes, &mut pos)?;
+        let history_index = restore_u32(&bytes, &mut pos)?;
+        Ok(EncloneVisualHistory {
+            translated_input_history: translated_input_history,
+            translated_input_hist_uniq: translated_input_hist_uniq,
+            svg_hist_uniq: svg_hist_uniq,
+            summary_hist_uniq: summary_hist_uniq,
+            input1_hist_uniq: input1_hist_uniq,
+            input2_hist_uniq: input2_hist_uniq,
+            displayed_tables_hist_uniq: displayed_tables_hist_uniq,
+            table_comp_hist_uniq: table_comp_hist_uniq,
+            last_widths_hist_uniq: last_widths_hist_uniq,
+            svg_history: svg_history,
+            summary_history: summary_history,
+            input1_history: input1_history,
+            input2_history: input2_history,
+            displayed_tables_history: displayed_tables_history,
+            table_comp_history: table_comp_history,
+            last_widths_history: last_widths_history,
+            is_blank: is_blank,
+            history_index: history_index,
+        })
     }
+
+    pub fn save_restore_works(&self) -> bool {
+        let bytes = self.save_as_bytes();
+        let new = EncloneVisualHistory::restore_from_bytes(&bytes);
+        if new.is_err() {
+            return false;
+        }
+        *self == new.unwrap()
+    }
+}
+
+pub fn read_command_list(filename: &str) -> Result<Vec<String>, ()> {
+    let n;
+    {
+        let mut f = open_for_read![&filename];
+        let mut buf = vec![0 as u8; HEADER_LENGTH + 8];
+        let res = f.read_exact(&mut buf);
+        if res.is_err() {
+            return Err(());
+        }
+        n = u32_from_bytes(&buf[HEADER_LENGTH + 4..HEADER_LENGTH + 8]);
+    }
+    let mut bytes = vec![0 as u8; n as usize];
+    let mut f = open_for_read![&filename];
+    let res = f.read_exact(&mut bytes);
+    if res.is_err() {
+        return Err(());
+    }
+    let mut pos = HEADER_LENGTH + 8;
+    let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
+    let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+    let mut commands = Vec::<String>::new();
+    for i in translated_input_history.iter() {
+        let i = *i as usize;
+        if i >= translated_input_history.len() {
+            return Err(());
+        }
+        commands.push(translated_input_hist_uniq[i].clone());
+    }
+    Ok(commands)
+}
+
+pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory, ()> {
+    let n;
+    {
+        let mut f = open_for_read![&filename];
+        let mut buf = vec![0 as u8; HEADER_LENGTH + 4];
+        let res = f.read_exact(&mut buf);
+        if res.is_err() {
+            return Err(());
+        }
+        n = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]);
+    }
+    let mut bytes = vec![0 as u8; n as usize];
+    let mut f = open_for_read![&filename];
+    let res = f.read_exact(&mut bytes);
+    if res.is_err() {
+        return Err(());
+    }
+    EncloneVisualHistory::restore_from_bytes(&bytes)
+}
+
+pub fn write_enclone_visual_history(evh: &EncloneVisualHistory, filename: &str) -> Result<(), ()> {
+    let f = File::create(&filename);
+    if f.is_err() {
+        return Err(());
+    }
+    let bytes = evh.save_as_bytes();
+    let res = f.unwrap().write_all(&bytes);
+    if res.is_err() {
+        return Err(());
+    }
+    Ok(())
 }

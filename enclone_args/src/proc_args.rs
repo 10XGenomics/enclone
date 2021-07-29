@@ -486,7 +486,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("EXT", &mut ctl.gen_opt.ext),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("POUT", &mut ctl.parseable_opt.pout),
-        ("REF", &mut ctl.gen_opt.refname),
         ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
     ];
 
@@ -508,7 +507,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
     ];
 
-    // Define arguments that set something to a string that is an input file name.
+    // Define arguments that set something to a string that is an input file name, represented
+    // as an option.
 
     let set_string_readable = [
         (
@@ -518,6 +518,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("HONEY_IN", &mut ctl.plot_opt.honey_in),
         ("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata),
     ];
+
+    // Define arguments that set something to a string that is an input file name, not represented
+    // as an option.
+
+    let set_string_readable_plain = [("REF", &mut ctl.gen_opt.refname)];
 
     // Define arguments that do nothing (because already parsed), and which have no "= value" part.
 
@@ -761,6 +766,28 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
+                if ctl.gen_opt.evil_eye {
+                    println!("testing ability to open file {}", val);
+                }
+                require_readable_file(&val, &arg)?;
+                if ctl.gen_opt.evil_eye {
+                    println!("file open complete");
+                }
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_string_readable_plain args.
+
+        for j in 0..set_string_readable_plain.len() {
+            let var = &set_string_readable_plain[j].0;
+            if is_string_arg(&arg, var)? {
+                let mut val = arg.after(&format!("{}=", var)).to_string();
+                if val.is_empty() {
+                    return Err(format!("\nFilename input in {} cannot be empty.\n", val));
+                }
+                val = stringme(&tilde_expand(&val.as_bytes()));
+                *(set_string_readable_plain[j].1) = val.clone();
                 if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
                 }
