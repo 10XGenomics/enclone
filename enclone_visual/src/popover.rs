@@ -2,7 +2,47 @@
 
 use crate::*;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use io_utils::*;
 use messages::Message;
+use std::env;
+use std::fs::metadata;
+
+pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let archive_title = Text::new(&format!("Archive")).size(30);
+    let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
+        .on_press(Message::ArchiveClose);
+    let top_bar = Row::new()
+        .push(archive_title)
+        .push(Space::with_width(Length::Fill))
+        .push(archive_close_button);
+    let mut hist_dir = String::new();
+    let mut hist = Vec::<String>::new();
+    for (key, value) in env::vars() {
+        if key == "HOME" {
+            let home = value.clone();
+            let enclone = format!("{}/enclone", home);
+            hist_dir = format!("{}/visual_history", enclone);
+            if path_exists(&hist_dir) {
+                if metadata(&hist_dir).unwrap().is_dir() {
+                    hist = dir_list(&hist_dir);
+                }
+            }
+        }
+    }
+    let _hist_dir = hist_dir; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    let _hist = hist; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    let content = Column::new()
+        .spacing(SPACING)
+        .padding(20)
+        .push(top_bar)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        ;
+        // .push(archive_scrollable);
+    Container::new(content)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
+}
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let console_title = Text::new(&format!("Console")).size(30);

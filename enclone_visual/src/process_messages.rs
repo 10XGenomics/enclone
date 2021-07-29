@@ -369,6 +369,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ArchiveOpen => {
+                self.archive_mode = true;
+                Command::none()
+            }
+
+            Message::ArchiveClose => {
+                self.archive_mode = false;
+                Command::none()
+            }
+
             Message::SaveOnExit => {
                 self.save_on_exit = !self.save_on_exit;
                 Command::none()

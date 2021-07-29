@@ -50,6 +50,7 @@ pub struct EncloneVisual {
     pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
+    pub archive_mode: bool,
     pub save_on_exit: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
@@ -82,6 +83,8 @@ pub struct EncloneVisual {
     pub console_open_button: button::State,
     pub console_close_button: button::State,
     pub save_on_exit_button: button::State,
+    pub archive_open_button: button::State,
+    pub archive_close_button: button::State,
     //
     // history
     //

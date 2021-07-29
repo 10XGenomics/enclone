@@ -99,6 +99,9 @@ impl Application for EncloneVisual {
         if self.cookbook_mode {
             return cookbook(self);
         }
+        if self.archive_mode {
+            return archive(self);
+        }
         if self.help_mode {
             return help(self);
         }
@@ -385,10 +388,14 @@ impl Application for EncloneVisual {
         }
         let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
             .on_press(Message::SaveOnExit);
+        let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
+            .on_press(Message::ArchiveOpen);
         let right_col = Column::new()
+            .align_items(Align::End)
             .spacing(8)
             .push(console_button)
-            .push(save_on_exit_button);
+            .push(save_on_exit_button)
+            .push(archive_button);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
