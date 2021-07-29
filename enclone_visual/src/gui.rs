@@ -379,6 +379,16 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
+        let mut save_on_exit_text = Text::new("Save on Exit");
+        if self.save_on_exit {
+            save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
+        }
+        let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
+            .on_press(Message::SaveOnExit);
+        let right_col = Column::new()
+            .spacing(8)
+            .push(console_button)
+            .push(save_on_exit_button);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
@@ -389,7 +399,7 @@ impl Application for EncloneVisual {
                     .push(Space::with_width(Length::Fill))
                     .push(banner)
                     .push(Space::with_width(Length::Fill))
-                    .push(console_button),
+                    .push(right_col),
             )
             .push(
                 Row::new()

@@ -50,6 +50,7 @@ pub struct EncloneVisual {
     pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
+    pub save_on_exit: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -80,6 +81,7 @@ pub struct EncloneVisual {
     pub cookbook_button: button::State,
     pub console_open_button: button::State,
     pub console_close_button: button::State,
+    pub save_on_exit_button: button::State,
     //
     // history
     //

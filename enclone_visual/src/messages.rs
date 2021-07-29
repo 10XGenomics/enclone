@@ -28,4 +28,5 @@ pub enum Message {
     SummaryClose(Result<(), String>),
     ConsoleOpen,
     ConsoleClose,
+    SaveOnExit,
 }
