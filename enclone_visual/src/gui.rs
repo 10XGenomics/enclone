@@ -391,13 +391,12 @@ impl Application for EncloneVisual {
             .on_press(Message::SaveOnExit);
         let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
             .on_press(Message::ArchiveOpen);
-        let mut top_row = 
-            Row::new()
-                .align_items(Align::Center)
-                .push(left_buttons)
-                .push(Space::with_width(Length::Fill))
-                .push(banner)
-                .push(Space::with_width(Length::Fill));
+        let mut top_row = Row::new()
+            .align_items(Align::Center)
+            .push(left_buttons)
+            .push(Space::with_width(Length::Fill))
+            .push(banner)
+            .push(Space::with_width(Length::Fill));
         if show_archive {
             let right_col = Column::new()
                 .align_items(Align::End)
