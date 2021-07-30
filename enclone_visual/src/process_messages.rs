@@ -390,6 +390,7 @@ impl EncloneVisual {
                 self.archive_mode = false;
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
+                    self.restore_requested[i] = false;
                 }
                 self.just_restored = false;
                 Command::none()
