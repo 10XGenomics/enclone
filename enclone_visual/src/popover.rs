@@ -25,6 +25,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         "You can restore a previously saved session by clicking on one of the \
         boxes below.",
     );
+    let labels = Text::new("#   date          time        restore").font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -65,6 +66,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(text1)
         .push(text2)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(labels)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(archive_scrollable);
     Container::new(content)
