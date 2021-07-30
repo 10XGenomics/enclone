@@ -22,8 +22,11 @@ impl EncloneVisual {
         match message {
 
             Message::Restore(check_val, index) => {
-                self.restore_requested[index] = check_val;
-                self.restore_msg[index] = "Restored!  Now click Dismiss at top.".to_string();
+                if !self.just_restored {
+                    self.restore_requested[index] = check_val;
+                    self.restore_msg[index] = "Restored!  Now click Dismiss at top.".to_string();
+                    self.just_restored = true;
+                }
                 Command::none()
             }
 
@@ -388,6 +391,7 @@ impl EncloneVisual {
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                 }
+                self.just_restored = false;
                 Command::none()
             }
 

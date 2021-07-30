@@ -90,12 +90,13 @@ pub struct EncloneVisual {
     //
     pub h: EncloneVisualHistory,
     //
-    // archive information
+    // archive information and logic
     //
     pub archive_dir: Option<String>,
     pub archive_list: Vec<String>,
     pub restore_requested: Vec<bool>,
     pub restore_msg: Vec<String>,
+    pub just_restored: bool,
     //
     // current window dimensions
     //
