@@ -18,15 +18,16 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_width(Length::Fill))
         .push(help_close_button);
     let max_width = Units((slf.width - 60) as u16);
+    let max_width2 = Units((slf.width - 200) as u16);
     let png_input_region = include_bytes!("../images/input_region.png").to_vec();
     let input_region =
         Image::new(iced::image::Handle::from_memory(png_input_region)).width(max_width);
     let png_history_region = include_bytes!("../images/history_region.png").to_vec();
     let history_region =
         Image::new(iced::image::Handle::from_memory(png_history_region)).height(Units(240));
-    let png_console_region = include_bytes!("../images/console_region.png").to_vec();
-    let console_region =
-        Image::new(iced::image::Handle::from_memory(png_console_region)).width(Units(90));
+    let png_right_region = include_bytes!("../images/right_region.png").to_vec();
+    let right_region =
+        Image::new(iced::image::Handle::from_memory(png_right_region)).height(Units(115));
     let png_middle_region = include_bytes!("../images/middle_region.png").to_vec();
     let middle_region = Image::new(iced::image::Handle::from_memory(png_middle_region))
         .height(Units(300))
@@ -92,7 +93,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(10)))
                         .push(Text::new(
                             "Here are three buttons that appear in the upper left \
-                    corner of the screen.",
+                    corner of the screen:",
                         ))
                         .push(Space::with_height(Units(20)))
                         .push(
@@ -110,12 +111,33 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(
             Row::new()
                 .align_items(Align::Center)
-                .push(Text::new(
-                    "On the right is a button to show what's in the terminal window.  \
-                        At the moment this is mostly of interest to developers.",
-                ))
+                .push(
+                    Column::new()
+                        .push(Space::with_height(Units(10)))
+                        .push(Text::new(
+                            "Here are three buttons that appear in the upper right \
+                             corner of the screen:",
+                        ))
+                        .push(Space::with_height(Units(20)))
+                        .push(Text::new(
+                            "1.  Console, to show what's in the terminal window.  \
+                                 At the moment this is mostly of interest to developers.",
+                        ).width(max_width2))
+                        .push(Text::new(
+                            "2.  Save on Exit, to cause the session to be saved \
+                                 when the Exit button is pushed.",
+                        ).width(max_width2))
+                        .push(Text::new(
+                            "3.  Archive.  Opens a page to allow restoration of a previous \
+                                 session.",
+                        ).width(max_width2))
+                        .push(Text::new(
+                            "More information for the last two buttons may be obtained by \
+                                pushing the Archive button on the main page.",
+                        ).width(max_width2))
+                )
                 .push(Space::with_width(Length::Fill))
-                .push(console_region)
+                .push(right_region)
                 .push(Space::with_width(Units(20))),
         )
         //
