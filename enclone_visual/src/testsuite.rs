@@ -116,3 +116,5 @@ pub const TESTS: [(&str, MsgFn, &str); 39] = [
 //
 // 5. test that horizontal resizing works on enclone BCR=123085 CHAINS=4
 //    and test that there is no limit on horizontal resizing
+//
+// 6. test save and restore
