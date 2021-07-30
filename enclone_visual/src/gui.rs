@@ -380,7 +380,6 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),
             );
-        let show_archive = false; // **************************************************************
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
         let mut save_on_exit_text = Text::new("Save on Exit");
@@ -397,17 +396,13 @@ impl Application for EncloneVisual {
             .push(Space::with_width(Length::Fill))
             .push(banner)
             .push(Space::with_width(Length::Fill));
-        if show_archive {
-            let right_col = Column::new()
-                .align_items(Align::End)
-                .spacing(8)
-                .push(console_button)
-                .push(save_on_exit_button)
-                .push(archive_button);
-            top_row = top_row.push(right_col);
-        } else {
-            top_row = top_row.push(console_button);
-        }
+        let right_col = Column::new()
+            .align_items(Align::End)
+            .spacing(8)
+            .push(console_button)
+            .push(save_on_exit_button)
+            .push(archive_button);
+        top_row = top_row.push(right_col);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)
