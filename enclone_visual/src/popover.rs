@@ -5,6 +5,7 @@ use iced::Length::Units;
 use iced::{
     Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
 };
+use io_utils::*;
 use messages::Message;
 
 pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
@@ -30,23 +31,25 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .scrollbar_width(SCROLLBAR_WIDTH)
         .scroller_width(12)
         .style(style::ScrollableStyle);
-    let hist = &slf.archive_list;
-    for (i, x) in hist.iter().enumerate() {
-        let row = Row::new()
-            .push(
-                Text::new(&format!(
-                    "{:<3} {}    {}    ",
-                    i + 1,
-                    x.before("___"),
-                    x.after("___")
-                ))
-                .font(DEJAVU),
-            )
-            .push(Checkbox::new(slf.enabled, "", move |x: bool| Message::Restore(x, i)));
-        if i > 0 {
-            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+    for (i, x) in slf.archive_list.iter().enumerate() {
+        let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
+        if path_exists(&path) {
+            let row = Row::new()
+                .push(
+                    Text::new(&format!(
+                        "{:<3} {}    {}    ",
+                        i + 1,
+                        x.before("___"),
+                        x.after("___")
+                    ))
+                    .font(DEJAVU),
+                )
+                .push(Checkbox::new(slf.enabled, "", move |x: bool| Message::Restore(x, i)));
+            if i > 0 {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            }
+            archive_scrollable = archive_scrollable.push(row);
         }
-        archive_scrollable = archive_scrollable.push(row);
     }
     let content = Column::new()
         .spacing(SPACING)
