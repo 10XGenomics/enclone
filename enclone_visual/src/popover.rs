@@ -33,7 +33,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .style(style::ScrollableStyle);
     for (i, x) in slf.archive_list.iter().enumerate() {
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
-        if path_exists(&path) {
+        if path_exists(&path) && x.contains("___") {
             let row = Row::new()
                 .push(
                     Text::new(&format!(
