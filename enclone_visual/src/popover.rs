@@ -17,19 +17,21 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(archive_title)
         .push(Space::with_width(Length::Fill))
         .push(archive_close_button);
+    let text0 =
+        Text::new("enclone visual can save sessions to the directory ~/enclone/visual_history.");
     let text1 = Text::new(
         "For a given enclone visual session, if you click the Save On Exit \
         box (which will make the text red), then when you later push the Exit button, your session \
         will be saved.  Pushing repeatedly toggles the state.",
     );
     let text2 =
-        Text::new("You can display the commands in a session by clicking on the expand box.");
+        Text::new("You can display the commands in a saved session by clicking on the expand box.");
     let text3 = Text::new(
         "You can restore a previously saved session by clicking on the restore box.  \
             Note that this will delete your current session!",
     );
     let text4 =
-        Text::new("You can delete a previously saved session by clicking on the delete box");
+        Text::new("You can delete a previously saved session by clicking on the delete box.");
     let labels = Text::new("#   date          time        expand     restore    delete    notes")
         .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
@@ -110,8 +112,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         );
                         archive_scrollable = archive_scrollable.push(row);
                         if j < clist.len() - 1 || k < lines.len() - 1 {
-                            archive_scrollable 
-                                = archive_scrollable.push(Space::with_height(Units(4)));
+                            archive_scrollable =
+                                archive_scrollable.push(Space::with_height(Units(4)));
                         }
                     }
                 }
@@ -127,6 +129,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .padding(20)
         .push(top_bar)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(text0)
         .push(text1)
         .push(text2)
         .push(text3)
