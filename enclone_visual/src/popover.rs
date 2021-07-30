@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use crate::history::*;
 use crate::*;
 use iced::Length::Units;
 use iced::{
@@ -22,10 +23,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         will be saved.  Pushing repeatedly toggles the state.",
     );
     let text2 = Text::new(
-        "You can restore a previously saved session by clicking on one of the \
-        boxes below.",
+        "You can display the commands in a session by clicking on the expand box.",
     );
-    let labels = Text::new("#   date          time        restore").font(DEJAVU);
+    let text3 = Text::new(
+        "You can restore a previously saved session by clicking on the restore box",
+    );
+    let labels = Text::new("#   date          time        expand     restore").font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -46,6 +49,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     .font(DEJAVU),
                 )
                 .push(Checkbox::new(
+                    slf.expand_archive_entry[i],
+                    "",
+                    move |x: bool| Message::ExpandArchiveEntry(x, i),
+                ))
+                .push(Space::with_width(Units(25)))
+                .push(Checkbox::new(
                     slf.restore_requested[i],
                     "",
                     move |x: bool| Message::Restore(x, i),
@@ -57,6 +66,16 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
             archive_scrollable = archive_scrollable.push(row);
+            if slf.expand_archive_entry[i] {
+                if slf.archived_command_list[i].is_none() {
+                    slf.archived_command_list[i] = Some(read_command_list(&path).unwrap());
+                }
+                let clist = &slf.archived_command_list[i].as_ref().unwrap();
+                for (j, y) in clist.iter().enumerate() {
+                    let row = Row::new().push(Text::new(&format!("{} = {}", j, y)).font(DEJAVU));
+                    archive_scrollable = archive_scrollable.push(row);
+                }
+            }
         }
     }
     let content = Column::new()
@@ -66,6 +85,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(text1)
         .push(text2)
+        .push(text3)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)
         .push(Rule::horizontal(10).style(style::RuleStyle2))

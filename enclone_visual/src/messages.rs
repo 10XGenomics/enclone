@@ -32,4 +32,5 @@ pub enum Message {
     ArchiveClose,
     SaveOnExit,
     Restore(bool, usize),
+    ExpandArchiveEntry(bool, usize),
 }

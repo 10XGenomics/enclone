@@ -96,9 +96,11 @@ pub struct EncloneVisual {
     //
     pub archive_dir: Option<String>,
     pub archive_list: Vec<String>,
+    pub expand_archive_entry: Vec<bool>,
     pub restore_requested: Vec<bool>,
     pub restore_msg: Vec<String>,
     pub just_restored: bool,
+    pub archived_command_list: Vec<Option<Vec<String>>>,
     //
     // current window dimensions
     //

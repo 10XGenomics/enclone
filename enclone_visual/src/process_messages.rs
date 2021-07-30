@@ -20,6 +20,12 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+
+            Message::ExpandArchiveEntry(check_val, index) => {
+                self.expand_archive_entry[index] = check_val;
+                Command::none()
+            }
+
             Message::Restore(check_val, index) => {
                 if !self.just_restored {
                     self.restore_requested[index] = check_val;
