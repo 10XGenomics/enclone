@@ -23,6 +23,7 @@ impl EncloneVisual {
 
             Message::Restore(check_val, index) => {
                 self.restore_requested[index] = check_val;
+                self.restore_msg[index] = "Restored!  Now click Dismiss at top.".to_string();
                 Command::none()
             }
 
@@ -384,6 +385,9 @@ impl EncloneVisual {
 
             Message::ArchiveClose => {
                 self.archive_mode = false;
+                for i in 0..self.restore_msg.len() {
+                    self.restore_msg[i].clear();
+                }
                 Command::none()
             }
 
