@@ -4,7 +4,7 @@ use crate::history::*;
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
+    Button, Checkbox, Column, Color, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
 };
 use io_utils::*;
 use messages::Message;
@@ -22,12 +22,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         box (which will make the text red), then when you later push the Exit button, your session \
         will be saved.  Pushing repeatedly toggles the state.",
     );
-    let text2 = Text::new(
-        "You can display the commands in a session by clicking on the expand box.",
-    );
-    let text3 = Text::new(
-        "You can restore a previously saved session by clicking on the restore box",
-    );
+    let text2 =
+        Text::new("You can display the commands in a session by clicking on the expand box.");
+    let text3 =
+        Text::new("You can restore a previously saved session by clicking on the restore box");
     let labels = Text::new("#   date          time        expand     restore").font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
@@ -35,6 +33,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .scrollbar_width(SCROLLBAR_WIDTH)
         .scroller_width(12)
         .style(style::ScrollableStyle);
+    let mut count = 0;
     for (i, x) in slf.archive_list.iter().enumerate() {
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
         if path_exists(&path) && x.contains("___") {
@@ -42,7 +41,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(
                     Text::new(&format!(
                         "{:<3} {}    {}    ",
-                        i + 1,
+                        count + 1,
                         x.before("___"),
                         x.after("___")
                     ))
@@ -53,7 +52,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "",
                     move |x: bool| Message::ExpandArchiveEntry(x, i),
                 ))
-                .push(Space::with_width(Units(25)))
+                .push(Space::with_width(Units(80)))
                 .push(Checkbox::new(
                     slf.restore_requested[i],
                     "",
@@ -71,11 +70,26 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     slf.archived_command_list[i] = Some(read_command_list(&path).unwrap());
                 }
                 let clist = &slf.archived_command_list[i].as_ref().unwrap();
+                if !clist.is_empty() {
+                    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+                }
                 for (j, y) in clist.iter().enumerate() {
-                    let row = Row::new().push(Text::new(&format!("{} = {}", j, y)).font(DEJAVU));
+                    let row = Row::new().push(
+                        Text::new(&format!("     {} = {}", j + 1, y))
+                            .font(DEJAVU)
+                            .color(Color::from_rgb(0.0, 0.0, 0.4))
+                            .size(16),
+                    );
                     archive_scrollable = archive_scrollable.push(row);
+                    if j < clist.len() - 1 {
+                        archive_scrollable = archive_scrollable.push(Space::with_height(Units(4)));
+                    }
+                }
+                if !clist.is_empty() {
+                    archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
                 }
             }
+            count += 1;
         }
     }
     let content = Column::new()
