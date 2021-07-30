@@ -31,6 +31,7 @@ impl EncloneVisual {
                     let res = read_enclone_visual_history(&filename);
                     if res.is_ok() {
                         self.h = res.unwrap();
+                        self.update_to_current();
                         self.restore_msg[index] =
                             "Restored!  Now click Dismiss at top.".to_string();
                         self.just_restored = true;
