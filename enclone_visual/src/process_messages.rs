@@ -33,6 +33,7 @@ impl EncloneVisual {
                     if path_exists(&filename) {
                         std::fs::remove_file(&filename).unwrap();
                     }
+                    self.restore_msg[index] = "Deleted.".to_string();
                 }
                 Command::none()
             }
@@ -44,7 +45,7 @@ impl EncloneVisual {
             }
 
             Message::Restore(check_val, index) => {
-                if !self.just_restored {
+                if !self.just_restored && !self.delete_requested[index] {
                     self.restore_requested[index] = check_val;
                     let filename = format!(
                         "{}/{}",

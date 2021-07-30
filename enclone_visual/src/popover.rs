@@ -28,7 +28,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("You can restore a previously saved session by clicking on the restore box");
     let text4 =
         Text::new("You can delete a previously saved session by clicking on the delete box");
-    let labels = Text::new("#   date          time        expand     restore    delete")
+    let labels = Text::new("#   date          time        expand     restore    delete    notes")
         .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
@@ -39,7 +39,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut count = 0;
     for (i, x) in slf.archive_list.iter().enumerate() {
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
-        if path_exists(&path) && x.contains("___") && !slf.deleted[i] {
+        let mut make_row = x.contains("___") && !slf.deleted[i];
+        if !path_exists(&path) && !slf.delete_requested[i] {
+            make_row = false;
+        }
+        if make_row {
             let mut row = Row::new()
                 .push(
                     Text::new(&format!(
@@ -68,7 +72,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     move |x: bool| Message::DeleteArchiveEntry(x, i),
                 ));
             if slf.restore_msg[i].len() > 0 {
-                row = row.push(Text::new(&format!("    {}", slf.restore_msg[i])).font(DEJAVU));
+                row = row.push(Space::with_width(Units(70)));
+                row = row.push(Text::new(&format!("{}", slf.restore_msg[i])).font(DEJAVU));
             }
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
