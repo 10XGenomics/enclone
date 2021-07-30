@@ -90,15 +90,29 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
                 }
                 for (j, y) in clist.iter().enumerate() {
-                    let row = Row::new().push(
-                        Text::new(&format!("     {} = {}", j + 1, y))
-                            .font(DEJAVU)
-                            .color(Color::from_rgb(0.0, 0.0, 0.4))
-                            .size(16),
-                    );
-                    archive_scrollable = archive_scrollable.push(row);
-                    if j < clist.len() - 1 {
-                        archive_scrollable = archive_scrollable.push(Space::with_height(Units(4)));
+                    // Note that use of this constant is not correct.  The number used should
+                    // depend on the actual screen width.
+                    const MAX_LINE: usize = 120;
+                    let lines = fold(&y, MAX_LINE);
+                    for k in 0..lines.len() {
+                        let s = if k == 0 {
+                            format!("     {} = {}", j + 1, lines[k])
+                        } else {
+                            let len = format!("     {} = ", j + 1).len();
+                            let b = stringme(&vec![b' '; len]);
+                            format!("{}{}", b, lines[k])
+                        };
+                        let row = Row::new().push(
+                            Text::new(&s)
+                                .font(DEJAVU)
+                                .color(Color::from_rgb(0.0, 0.0, 0.4))
+                                .size(16),
+                        );
+                        archive_scrollable = archive_scrollable.push(row);
+                        if j < clist.len() - 1 || k < lines.len() - 1 {
+                            archive_scrollable 
+                                = archive_scrollable.push(Space::with_height(Units(4)));
+                        }
                     }
                 }
                 if !clist.is_empty() {
