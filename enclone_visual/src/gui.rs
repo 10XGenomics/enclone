@@ -56,6 +56,7 @@ impl Application for EncloneVisual {
         }
         x.archive_list.reverse();
         x.restore_requested = vec![false; x.archive_list.len()];
+        x.restore_msg = vec![String::new(); x.archive_list.len()];
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {

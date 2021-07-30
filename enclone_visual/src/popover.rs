@@ -34,7 +34,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     for (i, x) in slf.archive_list.iter().enumerate() {
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
         if path_exists(&path) && x.contains("___") {
-            let row = Row::new()
+            let mut row = Row::new()
                 .push(
                     Text::new(&format!(
                         "{:<3} {}    {}    ",
@@ -46,6 +46,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 )
                 .push(Checkbox::new(slf.restore_requested[i], 
                     "", move |x: bool| Message::Restore(x, i)));
+            if slf.restore_msg[i].len() > 0 {
+                row = row.push(
+                    Text::new(&format!("    {}", slf.restore_msg[i])).font(DEJAVU)
+                );
+            }
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
