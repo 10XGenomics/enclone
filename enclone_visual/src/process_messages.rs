@@ -20,8 +20,26 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+
+            Message::DeleteArchiveEntry(check_val, index) => {
+                if !self.delete_requested[index] {
+                    self.delete_requested[index] = check_val;
+                    self.expand_archive_entry[index] = false;
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        self.archive_list[index]
+                    );
+                    if path_exists(&filename) {
+                        std::fs::remove_file(&filename).unwrap();
+                    }
+                }
+                Command::none()
+            }
             Message::ExpandArchiveEntry(check_val, index) => {
-                self.expand_archive_entry[index] = check_val;
+                if !self.delete_requested[index] {
+                    self.expand_archive_entry[index] = check_val;
+                }
                 Command::none()
             }
 
@@ -345,6 +363,9 @@ impl EncloneVisual {
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
+                    if self.delete_requested[i] {
+                        self.deleted[i] = true;
+                    }
                 }
                 self.just_restored = false;
                 Command::none()

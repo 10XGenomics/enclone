@@ -56,6 +56,8 @@ impl Application for EncloneVisual {
         }
         x.archive_list.reverse();
         x.restore_requested = vec![false; x.archive_list.len()];
+        x.delete_requested = vec![false; x.archive_list.len()];
+        x.deleted = vec![false; x.archive_list.len()];
         x.expand_archive_entry = vec![false; x.archive_list.len()];
         x.restore_msg = vec![String::new(); x.archive_list.len()];
         x.archived_command_list = vec![None; x.archive_list.len()];

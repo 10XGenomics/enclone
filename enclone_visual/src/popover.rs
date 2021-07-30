@@ -26,7 +26,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("You can display the commands in a session by clicking on the expand box.");
     let text3 =
         Text::new("You can restore a previously saved session by clicking on the restore box");
-    let labels = Text::new("#   date          time        expand     restore").font(DEJAVU);
+    let text4 =
+        Text::new("You can delete a previously saved session by clicking on the delete box");
+    let labels = Text::new("#   date          time        expand     restore    delete")
+        .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -36,7 +39,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut count = 0;
     for (i, x) in slf.archive_list.iter().enumerate() {
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
-        if path_exists(&path) && x.contains("___") {
+        if path_exists(&path) && x.contains("___") && !slf.deleted[i] {
             let mut row = Row::new()
                 .push(
                     Text::new(&format!(
@@ -57,6 +60,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     slf.restore_requested[i],
                     "",
                     move |x: bool| Message::Restore(x, i),
+                ))
+                .push(Space::with_width(Units(78)))
+                .push(Checkbox::new(
+                    slf.delete_requested[i],
+                    "",
+                    move |x: bool| Message::DeleteArchiveEntry(x, i),
                 ));
             if slf.restore_msg[i].len() > 0 {
                 row = row.push(Text::new(&format!("    {}", slf.restore_msg[i])).font(DEJAVU));
@@ -100,6 +109,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text1)
         .push(text2)
         .push(text3)
+        .push(text4)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
