@@ -20,7 +20,6 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
             Message::DeleteArchiveEntry(check_val, index) => {
                 if !self.delete_requested[index] {
                     self.delete_requested[index] = check_val;

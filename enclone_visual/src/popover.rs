@@ -4,7 +4,7 @@ use crate::history::*;
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Button, Checkbox, Column, Color, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
+    Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
 };
 use io_utils::*;
 use messages::Message;
