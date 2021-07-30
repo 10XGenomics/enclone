@@ -191,37 +191,6 @@ impl EncloneVisual {
                 }
             }
 
-            Message::BackButtonPressed(_) => {
-                self.h.history_index -= 1;
-                let x = self.svg_current();
-                self.post_svg(&x);
-                self.summary_value = self.summary_current();
-                self.output_value = self.displayed_tables_current();
-                self.table_comp_value = self.table_comp_current();
-                self.last_widths_value = self.last_widths_current();
-                self.input1_value = self.input1_current();
-                self.input2_value = self.input2_current();
-                self.translated_input_value = self.translated_input_current();
-                SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS
-                    .lock()
-                    .unwrap()
-                    .push(self.summary_value.clone());
-                if self.table_comp_value.len() > 0 {
-                    let mut gunzipped = Vec::<u8>::new();
-                    let mut d = GzDecoder::new(&*self.table_comp_value);
-                    d.read_to_end(&mut gunzipped).unwrap();
-                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
-                } else {
-                    self.current_tables.clear();
-                }
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop0(), Message::Capture)
-                }
-            }
-
             Message::DelButtonPressed(_) => {
                 let h = self.h.history_index - 1;
                 self.h.svg_history.remove(h as usize);
@@ -250,29 +219,18 @@ impl EncloneVisual {
                     if h > 0 {
                         self.h.history_index -= 1;
                     }
-                    let x = self.svg_current();
-                    self.post_svg(&x);
-                    self.summary_value = self.summary_current();
-                    self.output_value = self.displayed_tables_current();
-                    self.table_comp_value = self.table_comp_current();
-                    self.last_widths_value = self.last_widths_current();
-                    self.input1_value = self.input1_current();
-                    self.input2_value = self.input2_current();
-                    self.translated_input_value = self.translated_input_current();
-                    SUMMARY_CONTENTS.lock().unwrap().clear();
-                    SUMMARY_CONTENTS
-                        .lock()
-                        .unwrap()
-                        .push(self.summary_value.clone());
-                    if self.table_comp_value.len() > 0 {
-                        let mut gunzipped = Vec::<u8>::new();
-                        let mut d = GzDecoder::new(&*self.table_comp_value);
-                        d.read_to_end(&mut gunzipped).unwrap();
-                        self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
-                    } else {
-                        self.current_tables.clear();
-                    }
+                    self.update_to_current();
                 }
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop0(), Message::Capture)
+                }
+            }
+
+            Message::BackButtonPressed(_) => {
+                self.h.history_index -= 1;
+                self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -282,28 +240,7 @@ impl EncloneVisual {
 
             Message::ForwardButtonPressed(_) => {
                 self.h.history_index += 1;
-                let x = self.svg_current();
-                self.post_svg(&x);
-                self.summary_value = self.summary_current();
-                self.output_value = self.displayed_tables_current();
-                self.table_comp_value = self.table_comp_current();
-                self.last_widths_value = self.last_widths_current();
-                self.input1_value = self.input1_current();
-                self.input2_value = self.input2_current();
-                self.translated_input_value = self.translated_input_current();
-                SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS
-                    .lock()
-                    .unwrap()
-                    .push(self.summary_value.clone());
-                if self.table_comp_value.len() > 0 {
-                    let mut gunzipped = Vec::<u8>::new();
-                    let mut d = GzDecoder::new(&*self.table_comp_value);
-                    d.read_to_end(&mut gunzipped).unwrap();
-                    self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
-                } else {
-                    self.current_tables.clear();
-                }
+                self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {

@@ -3,10 +3,12 @@
 use crate::history::*;
 use crate::*;
 use canvas_view::CanvasView;
+use flate2::read::GzDecoder;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
 // use iced_native::{window, Event};
 use std::collections::HashMap;
+use std::io::Read;
 use std::time::Instant;
 
 #[derive(PartialEq)]
@@ -153,5 +155,29 @@ impl EncloneVisual {
         assert_eq!(n, self.h.table_comp_history.len());
         assert_eq!(n, self.h.last_widths_history.len());
         assert_eq!(n, self.h.is_blank.len());
+    }
+    pub fn update_to_current(&mut self) {
+        let x = self.svg_current();
+        self.post_svg(&x);
+        self.summary_value = self.summary_current();
+        self.output_value = self.displayed_tables_current();
+        self.table_comp_value = self.table_comp_current();
+        self.last_widths_value = self.last_widths_current();
+        self.input1_value = self.input1_current();
+        self.input2_value = self.input2_current();
+        self.translated_input_value = self.translated_input_current();
+        SUMMARY_CONTENTS.lock().unwrap().clear();
+        SUMMARY_CONTENTS
+            .lock()
+            .unwrap()
+            .push(self.summary_value.clone());
+        if self.table_comp_value.len() > 0 {
+            let mut gunzipped = Vec::<u8>::new();
+            let mut d = GzDecoder::new(&*self.table_comp_value);
+            d.read_to_end(&mut gunzipped).unwrap();
+            self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+        } else {
+            self.current_tables.clear();
+        }
     }
 }
