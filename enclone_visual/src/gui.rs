@@ -13,7 +13,10 @@ use iced::{
 // use iced::Subscription;
 // use iced_native::{window, Event};
 use iced_native::{event, subscription, window, Event};
+use io_utils::*;
 use messages::Message;
+use std::env;
+use std::fs::metadata;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
@@ -38,6 +41,20 @@ impl Application for EncloneVisual {
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
+        for (key, value) in env::vars() {
+            if key == "HOME" {
+                let home = value.clone();
+                let enclone = format!("{}/enclone", home);
+                x.archive_dir = Some(format!("{}/visual_history", enclone));
+                let arch_dir = &x.archive_dir.as_ref().unwrap();
+                if path_exists(&arch_dir) {
+                    if metadata(&arch_dir).unwrap().is_dir() {
+                        x.archive_list = dir_list(&arch_dir);
+                    }
+                }
+            }
+        }
+        x.archive_list.reverse();
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {

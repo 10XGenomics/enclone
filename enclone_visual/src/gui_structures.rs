@@ -91,6 +91,11 @@ pub struct EncloneVisual {
     //
     pub h: EncloneVisualHistory,
     //
+    // archive information
+    //
+    pub archive_dir: Option<String>,
+    pub archive_list: Vec<String>,
+    //
     // current window dimensions
     //
     pub width: u32,
