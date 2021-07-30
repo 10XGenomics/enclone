@@ -52,7 +52,6 @@ pub struct EncloneVisual {
     pub console_mode: bool,
     pub archive_mode: bool,
     pub save_on_exit: bool,
-    pub enabled: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -95,6 +94,7 @@ pub struct EncloneVisual {
     //
     pub archive_dir: Option<String>,
     pub archive_list: Vec<String>,
+    pub restore_requested: Vec<bool>,
     //
     // current window dimensions
     //

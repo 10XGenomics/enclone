@@ -20,12 +20,18 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-            Message::Restore(_, _) => Command::none(),
+
+            Message::Restore(check_val, index) => {
+                self.restore_requested[index] = check_val;
+                Command::none()
+            }
+
             Message::Resize(width, height) => {
                 self.width = width;
                 self.height = height;
                 Command::none()
             }
+
             Message::GroupClicked(_message) => {
                 let group_id = GROUP_ID.load(SeqCst);
                 self.input_value = format!("{}", group_id);
@@ -34,6 +40,7 @@ impl EncloneVisual {
                 GROUP_ID_CLICKED_ON.store(false, SeqCst);
                 Command::perform(noop0(), Message::SubmitButtonPressed)
             }
+
             Message::SubmitButtonPressed(_) => {
                 let mut group_spec = true;
                 let mut group_ids = Vec::<usize>::new();
