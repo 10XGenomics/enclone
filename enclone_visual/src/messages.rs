@@ -31,5 +31,5 @@ pub enum Message {
     ArchiveOpen,
     ArchiveClose,
     SaveOnExit,
-    Restore(bool),
+    Restore(bool, usize),
 }

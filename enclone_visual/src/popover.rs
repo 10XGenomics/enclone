@@ -59,7 +59,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 ))
                 .font(DEJAVU),
             )
-            .push(Checkbox::new(slf.enabled, "", Message::Restore));
+            .push(Checkbox::new(slf.enabled, "", move |x: bool| Message::Restore(x, i)));
         if i > 0 {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
         }
