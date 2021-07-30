@@ -5,10 +5,7 @@ use iced::Length::Units;
 use iced::{
     Button, Checkbox, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
 };
-use io_utils::*;
 use messages::Message;
-use std::env;
-use std::fs::metadata;
 
 pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let archive_title = Text::new(&format!("Archive")).size(30);
@@ -27,27 +24,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         "You can restore a previously saved session by clicking on one of the \
         boxes below.",
     );
-    let mut hist_dir;
-    let mut hist = Vec::<String>::new();
-    for (key, value) in env::vars() {
-        if key == "HOME" {
-            let home = value.clone();
-            let enclone = format!("{}/enclone", home);
-            hist_dir = format!("{}/visual_history", enclone);
-            if path_exists(&hist_dir) {
-                if metadata(&hist_dir).unwrap().is_dir() {
-                    hist = dir_list(&hist_dir);
-                }
-            }
-        }
-    }
-    hist.reverse();
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
         .scrollbar_width(SCROLLBAR_WIDTH)
         .scroller_width(12)
         .style(style::ScrollableStyle);
+    let hist = &slf.archive_list;
     for (i, x) in hist.iter().enumerate() {
         let row = Row::new()
             .push(
