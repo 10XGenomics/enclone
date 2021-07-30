@@ -24,8 +24,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     );
     let text2 =
         Text::new("You can display the commands in a session by clicking on the expand box.");
-    let text3 =
-        Text::new("You can restore a previously saved session by clicking on the restore box");
+    let text3 = Text::new(
+        "You can restore a previously saved session by clicking on the restore box.  \
+            Note that this will delete your current session!",
+    );
     let text4 =
         Text::new("You can delete a previously saved session by clicking on the delete box");
     let labels = Text::new("#   date          time        expand     restore    delete    notes")
