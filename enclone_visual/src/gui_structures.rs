@@ -185,10 +185,10 @@ impl EncloneVisual {
                 .unwrap()
                 .push(self.summary_value.clone());
             if self.table_comp_value.len() > 0 {
-            let mut gunzipped = Vec::<u8>::new();
-            let mut d = GzDecoder::new(&*self.table_comp_value);
-            d.read_to_end(&mut gunzipped).unwrap();
-            self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+                let mut gunzipped = Vec::<u8>::new();
+                let mut d = GzDecoder::new(&*self.table_comp_value);
+                d.read_to_end(&mut gunzipped).unwrap();
+                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
             } else {
                 self.current_tables.clear();
             }
