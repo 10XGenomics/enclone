@@ -20,15 +20,19 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
             Message::Restore(check_val, index) => {
                 if !self.just_restored {
                     self.restore_requested[index] = check_val;
-                    let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), self.archive_list[index]);
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        self.archive_list[index]
+                    );
                     let res = read_enclone_visual_history(&filename);
                     if res.is_ok() {
                         self.h = res.unwrap();
-                        self.restore_msg[index] = "Restored!  Now click Dismiss at top.".to_string();
+                        self.restore_msg[index] =
+                            "Restored!  Now click Dismiss at top.".to_string();
                         self.just_restored = true;
                     } else {
                         self.restore_msg[index] = "Oh dear, restoration failed.".to_string();

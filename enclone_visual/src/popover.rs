@@ -44,12 +44,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     ))
                     .font(DEJAVU),
                 )
-                .push(Checkbox::new(slf.restore_requested[i], 
-                    "", move |x: bool| Message::Restore(x, i)));
+                .push(Checkbox::new(
+                    slf.restore_requested[i],
+                    "",
+                    move |x: bool| Message::Restore(x, i),
+                ));
             if slf.restore_msg[i].len() > 0 {
-                row = row.push(
-                    Text::new(&format!("    {}", slf.restore_msg[i])).font(DEJAVU)
-                );
+                row = row.push(Text::new(&format!("    {}", slf.restore_msg[i])).font(DEJAVU));
             }
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
