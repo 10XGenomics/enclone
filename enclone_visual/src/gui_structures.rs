@@ -175,6 +175,7 @@ impl EncloneVisual {
             self.current_tables.clear();
         } else {
             let x = self.svg_current();
+            self.svg_value = self.svg_current();
             self.post_svg(&x);
             self.summary_value = self.summary_current();
             self.output_value = self.displayed_tables_current();
