@@ -92,10 +92,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
                 }
                 for (j, y) in clist.iter().enumerate() {
-                    // Note that use of this constant is not correct.  The number used should
-                    // depend on the actual screen width.
-                    const MAX_LINE: usize = 120;
-                    let lines = fold(&y, MAX_LINE);
+                    // Determine max_line.  Sloppy, as we don't actually do the correct math.
+                    const MAX_LINE: usize = 110;
+                    let max_line = MAX_LINE as f64 * slf.width as f64 / INITIAL_WIDTH as f64;
+                    let max_line = max_line.round() as usize;
+                    let lines = fold(&y, max_line);
                     for k in 0..lines.len() {
                         let s = if k == 0 {
                             format!("     {} = {}", j + 1, lines[k])
