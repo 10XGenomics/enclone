@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+// Be very careful about editing the archive function as it is delicate and under-tested.
+
 use crate::history::*;
 use crate::*;
 use iced::Length::Units;
