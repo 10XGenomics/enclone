@@ -22,6 +22,9 @@ impl EncloneVisual {
         match message {
             Message::NameChange(check_val) => {
                 self.name_change_requested = check_val;
+                if !check_val {
+                    self.h.name_value = self.h.orig_name_value.clone();
+                }
                 Command::none()
             }
             Message::Name(x) => {
@@ -30,6 +33,9 @@ impl EncloneVisual {
             }
             Message::ArchiveNameChange(check_val, index) => {
                 self.archive_name_change_requested[index] = check_val;
+                if !check_val {
+                    self.archive_name_value[index] = self.orig_archive_name[index].clone();
+                }
                 Command::none()
             }
             Message::ArchiveName(x, index) => {
@@ -384,6 +390,7 @@ impl EncloneVisual {
                     }
                 }
                 self.orig_archive_name = self.archive_name_value.clone();
+                self.h.orig_name_value = self.h.name_value.clone();
                 Command::none()
             }
 

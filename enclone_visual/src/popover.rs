@@ -33,9 +33,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     );
     let text4 = Text::new("Delete a previously saved session by clicking on the delete box.");
     let text5 = Text::new(
-        "Name of this or a previous session is displayed -- change it \
-            using the rectangular box and then check to its right.  Unchecking \
-            restores the previous name.  Long names are allowed but incompletely displayed.",
+        "Name of this or a previous session is displayed:\n\
+         • change it using the rectangular box and then check to its right\n\
+         • unchecking restores the previous name\n\
+         • long names are allowed but incompletely displayed.",
     );
     let labels = Text::new("#   date          time        expand     restore    delete    name")
         .font(DEJAVU);

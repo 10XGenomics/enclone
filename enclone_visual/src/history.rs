@@ -40,6 +40,7 @@ pub struct EncloneVisualHistory {
     // name of this session
     //
     pub name_value: String,
+    pub orig_name_value: String,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -173,7 +174,8 @@ impl EncloneVisualHistory {
             last_widths_history: last_widths_history,
             is_blank: is_blank,
             history_index: history_index,
-            name_value: name_value.unwrap(),
+            name_value: name_value.clone().unwrap(),
+            orig_name_value: name_value.unwrap(),
         })
     }
 
