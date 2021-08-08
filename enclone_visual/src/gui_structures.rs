@@ -103,6 +103,12 @@ pub struct EncloneVisual {
     pub restore_msg: Vec<String>,
     pub just_restored: bool,
     pub archived_command_list: Vec<Option<Vec<String>>>,
+    pub archive_name: Vec<text_input::State>,
+    pub archive_name_value: Vec<String>,
+    pub archive_name_change_requested: Vec<bool>,
+    pub name: text_input::State,
+    pub name_change_requested: bool,
+    pub orig_archive_name: Vec<String>,
     //
     // current window dimensions
     //

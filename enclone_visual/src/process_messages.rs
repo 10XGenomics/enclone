@@ -20,6 +20,22 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::NameChange(check_val) => {
+                    self.name_change_requested = check_val;
+                Command::none()
+            }
+            Message::Name(x) => {
+                self.h.name_value = x.to_string();
+                Command::none()
+            }
+            Message::ArchiveNameChange(check_val, index) => {
+                    self.archive_name_change_requested[index] = check_val;
+                Command::none()
+            }
+            Message::ArchiveName(x, index) => {
+                self.archive_name_value[index] = x.to_string();
+                Command::none()
+            }
             Message::DeleteArchiveEntry(check_val, index) => {
                 if !self.delete_requested[index] {
                     self.delete_requested[index] = check_val;
@@ -355,6 +371,7 @@ impl EncloneVisual {
 
             Message::ArchiveOpen => {
                 self.archive_mode = true;
+                self.orig_archive_name = self.archive_name_value.clone();
                 Command::none()
             }
 
@@ -368,6 +385,29 @@ impl EncloneVisual {
                     }
                 }
                 self.just_restored = false;
+                for i in 0..self.archive_name_value.len() {
+                    if self.archive_name_change_requested[i] {
+                        if self.archive_name_value[i] != self.orig_archive_name[i] {
+                            let filename = format!("{}/{}", 
+                                self.archive_dir.as_ref().unwrap(),
+                                &self.archive_list[i]
+                            );
+                            let res = rewrite_name(
+                                &filename,
+                                &self.archive_name_value[i]
+                            );
+                            if res.is_err() {
+                                xprintln!("Something went wrong changing the name of\n{}\n\
+                                    Possibly the file has been corrupted.\n",
+                                    filename,
+                                );
+                                std::process::exit(1);
+                            }
+                        }
+                    } else {
+                        self.archive_name_value[i] = self.orig_archive_name[i].clone();
+                    }
+                }
                 Command::none()
             }
 

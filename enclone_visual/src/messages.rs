@@ -34,4 +34,8 @@ pub enum Message {
     Restore(bool, usize),
     ExpandArchiveEntry(bool, usize),
     DeleteArchiveEntry(bool, usize),
+    ArchiveName(String, usize),
+    ArchiveNameChange(bool, usize),
+    Name(String),
+    NameChange(bool),
 }

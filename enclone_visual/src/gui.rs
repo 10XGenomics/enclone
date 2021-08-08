@@ -55,12 +55,16 @@ impl Application for EncloneVisual {
             }
         }
         x.archive_list.reverse();
-        x.restore_requested = vec![false; x.archive_list.len()];
-        x.delete_requested = vec![false; x.archive_list.len()];
-        x.deleted = vec![false; x.archive_list.len()];
-        x.expand_archive_entry = vec![false; x.archive_list.len()];
-        x.restore_msg = vec![String::new(); x.archive_list.len()];
-        x.archived_command_list = vec![None; x.archive_list.len()];
+        let n = x.archive_list.len();
+        x.restore_requested = vec![false; n];
+        x.delete_requested = vec![false; n];
+        x.deleted = vec![false; n];
+        x.expand_archive_entry = vec![false; n];
+        x.restore_msg = vec![String::new(); n];
+        x.archived_command_list = vec![None; n];
+        x.archive_name = vec![iced::text_input::State::default(); n];
+        x.archive_name_value = vec![String::new(); n];
+        x.archive_name_change_requested = vec![false; n];
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {

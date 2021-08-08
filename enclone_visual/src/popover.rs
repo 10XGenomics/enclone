@@ -6,7 +6,8 @@ use crate::history::*;
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
+    Align, Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable, 
+    Space, Text, TextInput,
 };
 use io_utils::*;
 use messages::Message;
@@ -27,14 +28,19 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         will be saved.  Pushing repeatedly toggles the state.",
     );
     let text2 =
-        Text::new("You can display the commands in a saved session by clicking on the expand box.");
+        Text::new("Display the commands in a saved session by clicking on the expand box.");
     let text3 = Text::new(
-        "You can restore a previously saved session by clicking on the restore box.  \
+        "Restore a previously saved session by clicking on the restore box.  \
             Note that this will delete your current session!",
     );
     let text4 =
-        Text::new("You can delete a previously saved session by clicking on the delete box.");
-    let labels = Text::new("#   date          time        expand     restore    delete    notes")
+        Text::new("Delete a previously saved session by clicking on the delete box.");
+    let text5 =
+        Text::new("Name of this or a previous session is displayed -- change it \
+            using the rectangular box and then check to its right.  Unchecking \
+            restores the previous name.  Long names are allowed but incompletely displayed.",
+    );
+    let labels = Text::new("#   date          time        expand     restore    delete    name")
         .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
@@ -42,8 +48,27 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .scrollbar_width(SCROLLBAR_WIDTH)
         .scroller_width(12)
         .style(style::ScrollableStyle);
+    let row = Row::new()
+        .align_items(Align::Center)
+        .push(Text::new("0   today         now").font(DEJAVU))
+        .push(Space::with_width(Units(424)))
+        .push(TextInput::new(
+            &mut slf.name,
+            "",
+            &slf.h.name_value,
+            Message::Name,
+        ).padding(2))
+        .push(Space::with_width(Units(8)))
+        .push(Checkbox::new(
+            slf.name_change_requested,
+            "",
+            Message::NameChange,
+        ));
+    archive_scrollable = archive_scrollable.push(row);
+    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     let mut count = 0;
-    for (i, x) in slf.archive_list.iter().enumerate() {
+    for (i, y) in slf.archive_name.iter_mut().enumerate() {
+        let x = &slf.archive_list[i];
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
         let mut make_row = x.contains("___") && !slf.deleted[i];
         if !path_exists(&path) && !slf.delete_requested[i] {
@@ -51,6 +76,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         if make_row {
             let mut row = Row::new()
+                .align_items(Align::Center)
                 .push(
                     Text::new(&format!(
                         "{:<3} {}    {}    ",
@@ -77,18 +103,35 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "",
                     move |x: bool| Message::DeleteArchiveEntry(x, i),
                 ));
+            row = row.push(Space::with_width(Units(68)));
+            row = row.push(TextInput::new(
+                    y,
+                    "",
+                    &slf.archive_name_value[i],
+                    move |x: String| Message::ArchiveName(x, i),
+                ).padding(2));
+            row = row.push(Space::with_width(Units(8)));
+            row = row.push(Checkbox::new(
+                slf.archive_name_change_requested[i],
+                "",
+                move |x: bool| Message::ArchiveNameChange(x, i),
+            ));
+            /*
             if slf.restore_msg[i].len() > 0 {
                 row = row.push(Space::with_width(Units(70)));
                 row = row.push(Text::new(&format!("{}", slf.restore_msg[i])).font(DEJAVU));
             }
+            */
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
             archive_scrollable = archive_scrollable.push(row);
+            if slf.archived_command_list[i].is_none() {
+                let (command_list, name) = read_command_list_and_name(&path).unwrap();
+                slf.archived_command_list[i] = Some(command_list);
+                slf.archive_name_value[i] = name;
+            }
             if slf.expand_archive_entry[i] {
-                if slf.archived_command_list[i].is_none() {
-                    slf.archived_command_list[i] = Some(read_command_list(&path).unwrap());
-                }
                 let clist = &slf.archived_command_list[i].as_ref().unwrap();
                 if !clist.is_empty() {
                     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
@@ -137,6 +180,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text2)
         .push(text3)
         .push(text4)
+        .push(text5)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)
         .push(Rule::horizontal(10).style(style::RuleStyle2))

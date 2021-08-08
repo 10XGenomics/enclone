@@ -4,8 +4,8 @@
 
 use crate::packing::*;
 use io_utils::*;
-use std::fs::File;
-use std::io::{BufReader, Read, Write};
+use std::fs::{File, OpenOptions};
+use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};
 
 #[derive(Default, PartialEq)]
 pub struct EncloneVisualHistory {
@@ -36,6 +36,10 @@ pub struct EncloneVisualHistory {
     // index of "current" position in those vectors, plus one:
     //
     pub history_index: u32,
+    //
+    // name of this session
+    //
+    pub name_value: String,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -52,17 +56,19 @@ impl EncloneVisualHistory {
     // 3. Must be versioned.
     // 4. Must have text header.
     // 5. Must store reasonably efficiently.
-    // 6. Must be able to extract command list without reading entire file.
-    // 7. File structure must be guaranteed the same across environments (so, e.g., no usize).
+    // 6. Must be able to extract command list and name without reading entire file.
+    // 7. Name can be changed without rewriting entire file.
+    // 8. File structure must be guaranteed the same across environments (so, e.g., no usize).
     //
     // structure description
     //
     // 1. text header = 40 bytes = "enclone visual history file version ***\n",
     //    where *** is a positive integer, padded on the right with blanks
     // 2. total bytes in file (u32)
-    // 3. total bytes up through translated_hist_uniq (u32)
-    // 4. data for each of the fields in EncloneVisualHistory,
-    //    with translated_input_history and translated_input_hist_uniq stored first.
+    // 3. total bytes in name (u32)
+    // 4. total bytes up through translated_hist_uniq (u32)
+    // 5. data for each of the fields in EncloneVisualHistory, with translated_input_history and 
+    //    translated_input_hist_uniq stored first, and name stored last (as raw bytes).
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
         let mut bytes = format!(
@@ -72,7 +78,7 @@ impl EncloneVisualHistory {
         .as_bytes()
         .to_vec();
         if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
-            bytes.append(&mut vec![0 as u8; 8]);
+            bytes.append(&mut vec![0 as u8; 12]);
             bytes.append(&mut save_vec_u32(&self.translated_input_history));
             bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
             let b = u32_bytes(bytes.len());
@@ -95,16 +101,21 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.last_widths_history));
             bytes.append(&mut save_vec_bool(&self.is_blank));
             bytes.append(&mut save_u32(self.history_index));
+            bytes.append(&mut self.name_value.as_bytes().to_vec());
             let b = u32_bytes(bytes.len());
             for i in 0..4 {
                 bytes[HEADER_LENGTH + i] = b[i];
+            }
+            let b = u32_bytes(self.name_value.len());
+            for i in 0..4 {
+                bytes[HEADER_LENGTH + 8 + i] = b[i];
             }
         }
         bytes
     }
 
     pub fn restore_from_bytes(bytes: &Vec<u8>) -> Result<Self, ()> {
-        if bytes.len() < HEADER_LENGTH {
+        if bytes.len() < HEADER_LENGTH + 12 {
             return Err(());
         }
         let expected_header = format!(
@@ -116,7 +127,8 @@ impl EncloneVisualHistory {
         if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
             return Err(());
         }
-        let mut pos = HEADER_LENGTH + 8;
+        let name_len = u32_from_bytes(&bytes[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+        let mut pos = HEADER_LENGTH + 12;
         let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
         let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let svg_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
@@ -135,6 +147,13 @@ impl EncloneVisualHistory {
         let last_widths_history = restore_vec_u32(&bytes, &mut pos)?;
         let is_blank = restore_vec_bool(&bytes, &mut pos)?;
         let history_index = restore_u32(&bytes, &mut pos)?;
+        if pos + name_len != bytes.len() {
+            return Err(());
+        }
+        let name_value = String::from_utf8(bytes[pos..].to_vec());
+        if name_value.is_err() {
+            return Err(());
+        }
         Ok(EncloneVisualHistory {
             translated_input_history: translated_input_history,
             translated_input_hist_uniq: translated_input_hist_uniq,
@@ -154,6 +173,7 @@ impl EncloneVisualHistory {
             last_widths_history: last_widths_history,
             is_blank: is_blank,
             history_index: history_index,
+            name_value: name_value.unwrap(),
         })
     }
 
@@ -167,24 +187,80 @@ impl EncloneVisualHistory {
     }
 }
 
-pub fn read_command_list(filename: &str) -> Result<Vec<String>, ()> {
+pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
+    let mut f = OpenOptions::new().write(true).read(true).open(&filename)?;
+    let mut buf = vec![0 as u8; HEADER_LENGTH + 12];
+    let res = f.read_exact(&mut buf);
+    if res.is_err() {
+        return Err(Error::new(ErrorKind::Other, "file appears truncated"));
+    }
+    let total = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]) as usize;
+    let name_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+    if name_length > total {
+        return Err(Error::new(ErrorKind::Other, "name length exceeds total length"));
+    }
+    let total_less_name = (total - name_length) as u64;
+    f.seek(SeekFrom::Start(total_less_name))?;
+    write!(f, "{}", name)?;
+    let new_total = total + name.len() - name_length;
+    if new_total < total {
+        f.set_len(new_total as u64)?;
+    }
+    let new_name_length = name_length;
+    f.seek(SeekFrom::Start(0))?;
+    let x = u32_bytes(new_total);
+    for i in 0..4 {
+        buf[HEADER_LENGTH + i] = x[i];
+    }
+    let x = u32_bytes(new_name_length);
+    for i in 0..4 {
+        buf[HEADER_LENGTH + 8 + i] = x[i];
+    }
+    f.write_all(&buf)?;
+    Ok(())
+}
+    
+pub fn read_command_list_and_name(filename: &str) -> Result<(Vec<String>, String), ()> {
+    let total;
     let n;
+    let name_length;
+    let name;
     {
         let mut f = open_for_read![&filename];
-        let mut buf = vec![0 as u8; HEADER_LENGTH + 8];
+        let mut buf = vec![0 as u8; HEADER_LENGTH + 12];
         let res = f.read_exact(&mut buf);
         if res.is_err() {
             return Err(());
         }
-        n = u32_from_bytes(&buf[HEADER_LENGTH + 4..HEADER_LENGTH + 8]);
+        total = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]) as usize;
+        n = u32_from_bytes(&buf[HEADER_LENGTH + 4..HEADER_LENGTH + 8]) as usize;
+        name_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+        if name_length > total {
+            return Err(());
+        }
+        let total_less_name = (total - name_length) as u64;
+        let res = f.seek(SeekFrom::Start(total_less_name));
+        if res.is_err() {
+            return Err(());
+        }
+        let mut buf = vec![0 as u8; name_length];
+        let res = f.read_exact(&mut buf);
+        if res.is_err() {
+            return Err(());
+        }
+        let s = String::from_utf8(buf);
+        if s.is_err() {
+            return Err(());
+        }
+        name = s.unwrap();
     }
-    let mut bytes = vec![0 as u8; n as usize];
+    let mut bytes = vec![0 as u8; n];
     let mut f = open_for_read![&filename];
     let res = f.read_exact(&mut bytes);
     if res.is_err() {
         return Err(());
     }
-    let mut pos = HEADER_LENGTH + 8;
+    let mut pos = HEADER_LENGTH + 12;
     let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
     let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
     let mut commands = Vec::<String>::new();
@@ -195,7 +271,7 @@ pub fn read_command_list(filename: &str) -> Result<Vec<String>, ()> {
         }
         commands.push(translated_input_hist_uniq[i].clone());
     }
-    Ok(commands)
+    Ok((commands, name))
 }
 
 pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory, ()> {
