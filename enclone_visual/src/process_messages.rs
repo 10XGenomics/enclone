@@ -208,6 +208,9 @@ impl EncloneVisual {
                             .last_widths_history
                             .insert(hi as usize, self.h.last_widths_history[(hi - 1) as usize]);
                         self.h.is_blank.insert(hi as usize, self.is_blank_current());
+                        self.h
+                            .descrip_history
+                            .insert(hi as usize, self.h.descrip_history[(hi - 1) as usize]);
                         self.h.history_index += 1;
                         if !TEST_MODE.load(SeqCst) {
                             Command::none()
@@ -248,6 +251,7 @@ impl EncloneVisual {
                 self.h.table_comp_history.remove(h as usize);
                 self.h.last_widths_history.remove(h as usize);
                 self.h.is_blank.remove(h as usize);
+                self.h.descrip_history.remove(h as usize);
                 if self.state_count() == 0 {
                     self.h.history_index -= 1;
                     self.input1_value.clear();
@@ -259,6 +263,7 @@ impl EncloneVisual {
                     self.output_value.clear();
                     self.table_comp_value.clear();
                     self.last_widths_value.clear();
+                    self.descrip_value.clear();
                     self.translated_input_value.clear();
                     self.current_tables.clear();
                 } else {
@@ -623,6 +628,13 @@ impl EncloneVisual {
                 } else {
                     self.h.input2_history.insert(hi as usize, len as u32);
                     self.h.input2_hist_uniq.push(self.input2_value.clone());
+                }
+                let len = self.h.descrip_hist_uniq.len();
+                if len > 0 && self.h.descrip_hist_uniq[len - 1] == self.descrip_value {
+                    self.h.descrip_history.insert(hi as usize, (len - 1) as u32);
+                } else {
+                    self.h.descrip_history.insert(hi as usize, len as u32);
+                    self.h.descrip_hist_uniq.push(self.descrip_value.clone());
                 }
                 let len = self.h.translated_input_hist_uniq.len();
                 if len > 0

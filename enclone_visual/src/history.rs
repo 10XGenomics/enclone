@@ -20,6 +20,7 @@ pub struct EncloneVisualHistory {
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
     pub last_widths_hist_uniq: Vec<Vec<u32>>,
+    pub descrip_hist_uniq: Vec<String>,      // descriptions (not used yet)
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //
@@ -32,6 +33,7 @@ pub struct EncloneVisualHistory {
     pub table_comp_history: Vec<u32>,       // each entry is the compressed list of all tables
     pub last_widths_history: Vec<u32>,      // last widths for clonotype pictures
     pub is_blank: Vec<bool>,                // set if the SVG is empty
+    pub descrip_history: Vec<u32>,          // each entry is the description (not used yet)
     //
     // index of "current" position in those vectors, plus one:
     //
@@ -93,6 +95,7 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_string(&self.displayed_tables_hist_uniq));
             bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
             bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.descrip_hist_uniq));
             bytes.append(&mut save_vec_u32(&self.svg_history));
             bytes.append(&mut save_vec_u32(&self.summary_history));
             bytes.append(&mut save_vec_u32(&self.input1_history));
@@ -101,6 +104,7 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.table_comp_history));
             bytes.append(&mut save_vec_u32(&self.last_widths_history));
             bytes.append(&mut save_vec_bool(&self.is_blank));
+            bytes.append(&mut save_vec_u32(&self.descrip_history));
             bytes.append(&mut save_u32(self.history_index));
             bytes.append(&mut self.name_value.as_bytes().to_vec());
             let b = u32_bytes(bytes.len());
@@ -139,6 +143,7 @@ impl EncloneVisualHistory {
         let displayed_tables_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
         let last_widths_hist_uniq = restore_vec_vec_u32(&bytes, &mut pos)?;
+        let descrip_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let svg_history = restore_vec_u32(&bytes, &mut pos)?;
         let summary_history = restore_vec_u32(&bytes, &mut pos)?;
         let input1_history = restore_vec_u32(&bytes, &mut pos)?;
@@ -147,6 +152,7 @@ impl EncloneVisualHistory {
         let table_comp_history = restore_vec_u32(&bytes, &mut pos)?;
         let last_widths_history = restore_vec_u32(&bytes, &mut pos)?;
         let is_blank = restore_vec_bool(&bytes, &mut pos)?;
+        let descrip_history = restore_vec_u32(&bytes, &mut pos)?;
         let history_index = restore_u32(&bytes, &mut pos)?;
         if pos + name_len != bytes.len() {
             return Err(());
@@ -165,6 +171,7 @@ impl EncloneVisualHistory {
             displayed_tables_hist_uniq: displayed_tables_hist_uniq,
             table_comp_hist_uniq: table_comp_hist_uniq,
             last_widths_hist_uniq: last_widths_hist_uniq,
+            descrip_hist_uniq: descrip_hist_uniq,
             svg_history: svg_history,
             summary_history: summary_history,
             input1_history: input1_history,
@@ -173,6 +180,7 @@ impl EncloneVisualHistory {
             table_comp_history: table_comp_history,
             last_widths_history: last_widths_history,
             is_blank: is_blank,
+            descrip_history: descrip_history,
             history_index: history_index,
             name_value: name_value.clone().unwrap(),
             orig_name_value: name_value.unwrap(),

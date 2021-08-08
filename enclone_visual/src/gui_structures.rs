@@ -40,6 +40,7 @@ pub struct EncloneVisual {
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
     pub last_widths_value: Vec<u32>,
+    pub descrip_value: String,
     pub submit_button_text: String,
     // pub should_exit: bool,
     pub compute_state: ComputeState,
@@ -152,6 +153,10 @@ impl EncloneVisual {
         return self.h.last_widths_hist_uniq[self.h.last_widths_history[self.hi()] as usize]
             .clone();
     }
+    pub fn descrip_current(&self) -> String {
+        return self.h.descrip_hist_uniq[self.h.descrip_history[self.hi()] as usize]
+            .clone();
+    }
     pub fn is_blank_current(&self) -> bool {
         return self.h.is_blank[self.hi()];
     }
@@ -164,6 +169,7 @@ impl EncloneVisual {
         assert_eq!(n, self.h.displayed_tables_history.len());
         assert_eq!(n, self.h.table_comp_history.len());
         assert_eq!(n, self.h.last_widths_history.len());
+        assert_eq!(n, self.h.descrip_history.len());
         assert_eq!(n, self.h.is_blank.len());
     }
     pub fn update_to_current(&mut self) {
@@ -179,6 +185,7 @@ impl EncloneVisual {
             self.last_widths_value.clear();
             self.translated_input_value.clear();
             self.current_tables.clear();
+            self.descrip_value.clear();
         } else {
             let x = self.svg_current();
             self.svg_value = self.svg_current();
@@ -187,6 +194,7 @@ impl EncloneVisual {
             self.output_value = self.displayed_tables_current();
             self.table_comp_value = self.table_comp_current();
             self.last_widths_value = self.last_widths_current();
+            self.descrip_value = self.descrip_current();
             self.input1_value = self.input1_current();
             self.input2_value = self.input2_current();
             self.translated_input_value = self.translated_input_current();
