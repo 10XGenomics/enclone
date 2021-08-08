@@ -20,7 +20,7 @@ pub struct EncloneVisualHistory {
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
     pub last_widths_hist_uniq: Vec<Vec<u32>>,
-    pub descrip_hist_uniq: Vec<String>,      // descriptions (not used yet)
+    pub descrip_hist_uniq: Vec<String>, // descriptions (not used yet)
     //
     // parallel vectors, with one entry for each command entered in the text box:
     //

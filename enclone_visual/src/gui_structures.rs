@@ -154,8 +154,7 @@ impl EncloneVisual {
             .clone();
     }
     pub fn descrip_current(&self) -> String {
-        return self.h.descrip_hist_uniq[self.h.descrip_history[self.hi()] as usize]
-            .clone();
+        return self.h.descrip_hist_uniq[self.h.descrip_history[self.hi()] as usize].clone();
     }
     pub fn is_blank_current(&self) -> bool {
         return self.h.is_blank[self.hi()];
