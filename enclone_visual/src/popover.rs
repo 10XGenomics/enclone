@@ -29,7 +29,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text2 = Text::new("Display the commands in a saved session by clicking on the expand box.");
     let text3 = Text::new(
         "Restore a previously saved session by clicking on the restore box.  \
-            Note that this will delete your current session!",
+            This will delete your current session!",
     );
     let text4 = Text::new("Delete a previously saved session by clicking on the delete box.");
     let text5 = Text::new(
