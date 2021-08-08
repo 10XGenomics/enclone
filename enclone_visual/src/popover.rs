@@ -23,9 +23,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual_history.");
     let text1 = Text::new(
         "For a given enclone visual session:\n\
-         • click the Save On Exit box on the main screen; it will turn red\n\
-         • when you later push the Exit button, your session will be saved\n\
-         • pushing repeatedly toggles the state.",
+         • click the Save On Exit box on the main screen; it will turn red \
+           (pushing again toggles state)\n\
+         • when you later push the Exit button, your session will be saved."
     );
     let text2 = Text::new("Display the commands in a saved session by clicking on the expand box.");
     let text3 = Text::new(
