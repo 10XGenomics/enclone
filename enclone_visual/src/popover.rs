@@ -110,16 +110,20 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 "",
                 move |x: bool| Message::ArchiveNameChange(x, i),
             ));
-            /*
-            if slf.restore_msg[i].len() > 0 {
-                row = row.push(Space::with_width(Units(70)));
-                row = row.push(Text::new(&format!("{}", slf.restore_msg[i])).font(DEJAVU));
-            }
-            */
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
             archive_scrollable = archive_scrollable.push(row);
+            if slf.restore_msg[i].len() > 0 {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+                let mut row = Row::new();
+                row = row.push(Space::with_width(Units(43)));
+                row = row.push(Text::new(&format!("{}", slf.restore_msg[i]))
+                    .font(DEJAVU)
+                    .color(Color::from_rgb(1.0, 0.0, 0.0))
+                    .size(16));
+                archive_scrollable = archive_scrollable.push(row);
+            }
             if slf.expand_archive_entry[i] {
                 let clist = &slf.archived_command_list[i].as_ref().unwrap();
                 if !clist.is_empty() {
