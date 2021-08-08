@@ -5,7 +5,7 @@
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Align, Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable, 
+    Align, Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable,
     Space, Text, TextInput,
 };
 use io_utils::*;
@@ -26,16 +26,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         box (which will make the text red), then when you later push the Exit button, your session \
         will be saved.  Pushing repeatedly toggles the state.",
     );
-    let text2 =
-        Text::new("Display the commands in a saved session by clicking on the expand box.");
+    let text2 = Text::new("Display the commands in a saved session by clicking on the expand box.");
     let text3 = Text::new(
         "Restore a previously saved session by clicking on the restore box.  \
             Note that this will delete your current session!",
     );
-    let text4 =
-        Text::new("Delete a previously saved session by clicking on the delete box.");
-    let text5 =
-        Text::new("Name of this or a previous session is displayed -- change it \
+    let text4 = Text::new("Delete a previously saved session by clicking on the delete box.");
+    let text5 = Text::new(
+        "Name of this or a previous session is displayed -- change it \
             using the rectangular box and then check to its right.  Unchecking \
             restores the previous name.  Long names are allowed but incompletely displayed.",
     );
@@ -51,12 +49,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .align_items(Align::Center)
         .push(Text::new("0   today         now").font(DEJAVU))
         .push(Space::with_width(Units(424)))
-        .push(TextInput::new(
-            &mut slf.name,
-            "",
-            &slf.h.name_value,
-            Message::Name,
-        ).padding(2))
+        .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
         .push(Space::with_width(Units(8)))
         .push(Checkbox::new(
             slf.name_change_requested,
@@ -103,12 +96,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     move |x: bool| Message::DeleteArchiveEntry(x, i),
                 ));
             row = row.push(Space::with_width(Units(68)));
-            row = row.push(TextInput::new(
-                    y,
-                    "",
-                    &slf.archive_name_value[i],
-                    move |x: String| Message::ArchiveName(x, i),
-                ).padding(2));
+            row = row.push(
+                TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
+                    Message::ArchiveName(x, i)
+                })
+                .padding(2),
+            );
             row = row.push(Space::with_width(Units(8)));
             row = row.push(Checkbox::new(
                 slf.archive_name_change_requested[i],

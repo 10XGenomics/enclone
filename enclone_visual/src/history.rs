@@ -67,7 +67,7 @@ impl EncloneVisualHistory {
     // 2. total bytes in file (u32)
     // 3. total bytes in name (u32)
     // 4. total bytes up through translated_hist_uniq (u32)
-    // 5. data for each of the fields in EncloneVisualHistory, with translated_input_history and 
+    // 5. data for each of the fields in EncloneVisualHistory, with translated_input_history and
     //    translated_input_hist_uniq stored first, and name stored last (as raw bytes).
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
@@ -197,7 +197,10 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     let total = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]) as usize;
     let name_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
     if name_length > total {
-        return Err(Error::new(ErrorKind::Other, "name length exceeds total length"));
+        return Err(Error::new(
+            ErrorKind::Other,
+            "name length exceeds total length",
+        ));
     }
     let total_less_name = (total - name_length) as u64;
     f.seek(SeekFrom::Start(total_less_name))?;
@@ -219,7 +222,7 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     f.write_all(&buf)?;
     Ok(())
 }
-    
+
 pub fn read_command_list_and_name(filename: &str) -> Result<(Vec<String>, String), ()> {
     let total;
     let n;

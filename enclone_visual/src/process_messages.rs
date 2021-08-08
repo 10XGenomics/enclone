@@ -21,7 +21,7 @@ impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::NameChange(check_val) => {
-                    self.name_change_requested = check_val;
+                self.name_change_requested = check_val;
                 Command::none()
             }
             Message::Name(x) => {
@@ -29,7 +29,7 @@ impl EncloneVisual {
                 Command::none()
             }
             Message::ArchiveNameChange(check_val, index) => {
-                    self.archive_name_change_requested[index] = check_val;
+                self.archive_name_change_requested[index] = check_val;
                 Command::none()
             }
             Message::ArchiveName(x, index) => {
@@ -381,7 +381,7 @@ impl EncloneVisual {
                         let (command_list, name) = read_command_list_and_name(&path).unwrap();
                         self.archived_command_list[i] = Some(command_list);
                         self.archive_name_value[i] = name;
-                    }           
+                    }
                 }
                 self.orig_archive_name = self.archive_name_value.clone();
                 Command::none()
@@ -400,16 +400,15 @@ impl EncloneVisual {
                 for i in 0..self.archive_name_value.len() {
                     if self.archive_name_change_requested[i] {
                         if self.archive_name_value[i] != self.orig_archive_name[i] {
-                            let filename = format!("{}/{}", 
+                            let filename = format!(
+                                "{}/{}",
                                 self.archive_dir.as_ref().unwrap(),
                                 &self.archive_list[i]
                             );
-                            let res = rewrite_name(
-                                &filename,
-                                &self.archive_name_value[i]
-                            );
+                            let res = rewrite_name(&filename, &self.archive_name_value[i]);
                             if res.is_err() {
-                                xprintln!("Something went wrong changing the name of\n{}\n\
+                                xprintln!(
+                                    "Something went wrong changing the name of\n{}\n\
                                     Possibly the file has been corrupted.\n",
                                     filename,
                                 );
