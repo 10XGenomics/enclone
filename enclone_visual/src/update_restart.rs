@@ -10,10 +10,19 @@ pub fn restart_enclone() {
     for i in 1..args.len() {
         args1.push(args[i].clone());
     }
-    let mut o = Command::new("enclone")
-        .args(&args1)
-        .spawn()
-        .expect("failed to execute enclone restart");
+    let o = Command::new("enclone").args(&args1).spawn();
+    if o.is_err() {
+        let msg = format!("{}", o.as_ref().err().unwrap());
+        if msg.contains("No such file or directory") {
+            xprintln!(
+                "Attempt to restart enclone failed because the executable could not be \
+                found.\nThis is unexpected, and perhaps attributable to a problem with your PATH.\n\
+                Please ask for help!\n"
+            );
+            std::process::exit(1);
+        }
+    }
+    let mut o = o.expect("failed to execute enclone restart");
     let _ = o.wait().expect("failed to wait on child");
     std::process::exit(0);
 }
