@@ -371,6 +371,18 @@ impl EncloneVisual {
 
             Message::ArchiveOpen => {
                 self.archive_mode = true;
+                let n = self.archive_name.len();
+                for i in 0..n {
+                    // This is a dorky way of causing loading to occur just once per session,
+                    // and only if the archive button is pushed.
+                    if self.archived_command_list[i].is_none() {
+                        let x = &self.archive_list[i];
+                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
+                        let (command_list, name) = read_command_list_and_name(&path).unwrap();
+                        self.archived_command_list[i] = Some(command_list);
+                        self.archive_name_value[i] = name;
+                    }           
+                }
                 self.orig_archive_name = self.archive_name_value.clone();
                 Command::none()
             }

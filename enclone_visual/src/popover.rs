@@ -2,7 +2,6 @@
 
 // Be very careful about editing the archive function as it is delicate and under-tested.
 
-use crate::history::*;
 use crate::*;
 use iced::Length::Units;
 use iced::{
@@ -126,11 +125,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
             archive_scrollable = archive_scrollable.push(row);
-            if slf.archived_command_list[i].is_none() {
-                let (command_list, name) = read_command_list_and_name(&path).unwrap();
-                slf.archived_command_list[i] = Some(command_list);
-                slf.archive_name_value[i] = name;
-            }
             if slf.expand_archive_entry[i] {
                 let clist = &slf.archived_command_list[i].as_ref().unwrap();
                 if !clist.is_empty() {

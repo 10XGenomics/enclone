@@ -206,7 +206,7 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     if new_total < total {
         f.set_len(new_total as u64)?;
     }
-    let new_name_length = name_length;
+    let new_name_length = name.len();
     f.seek(SeekFrom::Start(0))?;
     let x = u32_bytes(new_total);
     for i in 0..4 {
