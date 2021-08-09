@@ -702,6 +702,8 @@ impl EncloneVisual {
                 } else {
                     self.sanity_check();
                     assert!(self.h.save_restore_works());
+                    test_evh_read_write(&self.h, "/tmp/evh_test");
+                    std::fs::remove_file("/tmp/evh_test").unwrap();
                     Command::perform(noop0(), Message::Capture)
                 }
             }
