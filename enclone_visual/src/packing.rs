@@ -14,7 +14,9 @@ pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
 }
 
 pub fn uncompress_bytes(x: &[u8], uncompressed_size: usize) -> Vec<u8> {
-    Decompressor::new().decompress(&x, uncompressed_size).unwrap()
+    Decompressor::new()
+        .decompress(&x, uncompressed_size)
+        .unwrap()
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
