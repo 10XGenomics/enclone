@@ -2,6 +2,26 @@
 
 // Unoptimized functions for packing and unpacking some data structures.
 
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
+use flate2::Compression;
+use std::io::{Read, Write};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
+    let mut e = GzEncoder::new(Vec::new(), Compression::default());
+    let _ = e.write_all(&x);
+    e.finish().unwrap()
+}
+
+pub fn uncompress_bytes(x: &[u8]) -> Vec<u8> {
+    let mut uncomp = Vec::<u8>::new();
+    let mut d = GzDecoder::new(x);
+    d.read_to_end(&mut uncomp).unwrap();
+    uncomp
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn u32_bytes(x: usize) -> Vec<u8> {
@@ -48,6 +68,29 @@ pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, (
         y[j] = s.unwrap();
     }
     Ok(y)
+}
+
+pub fn save_vec_string_comp(x: &Vec<String>) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    let mut y = compress_bytes(&save_vec_string(&x));
+    bytes.append(&mut u32_bytes(y.len()));
+    bytes.append(&mut y);
+    y
+}
+
+pub fn restore_vec_string_comp(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, ()> {
+    if *pos + 4 > x.len() {
+        return Err(());
+    }
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    if *pos + n > x.len() {
+        return Err(());
+    }
+    let uncomp = uncompress_bytes(&x[*pos..*pos + n]);
+    *pos += n;
+    let mut posx = 0;
+    restore_vec_string(&uncomp, &mut posx)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
