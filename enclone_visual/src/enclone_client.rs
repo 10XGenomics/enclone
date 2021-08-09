@@ -85,7 +85,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             assert!(fixed_port.unwrap() >= 1024);
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
-        } else if arg != "VIS" {
+        } else if arg == "VIS" {
+        } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
                 configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
