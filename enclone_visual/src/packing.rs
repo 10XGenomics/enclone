@@ -6,6 +6,9 @@ use zstd::block::{Compressor, Decompressor};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Compression and decompression.  We use zstd rather than gzip because when tested it yielded
+// slightly smaller compression size and much lower compression time.
+
 pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
     let mut c = Compressor::new();
     let y = c.compress(&x, 0).unwrap();
