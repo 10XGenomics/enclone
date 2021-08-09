@@ -2,27 +2,19 @@
 
 // Unoptimized functions for packing and unpacking some data structures.
 
-use perf_stats::*;
-use std::time::Instant;
-
-use zstd::block::Compressor;
-use zstd::block::Decompressor;
+use zstd::block::{Compressor, Decompressor};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
-    let t = Instant::now();
     let mut c = Compressor::new();
     let y = c.compress(&x, 0).unwrap();
-    println!("used {:.3} seconds compressing", elapsed(&t));
     y
 }
 
 pub fn uncompress_bytes(x: &[u8], uncompressed_size: usize) -> Vec<u8> {
-    let t = Instant::now();
     let mut d = Decompressor::new();
     let y = d.decompress(&x, uncompressed_size).unwrap();
-    println!("used {:.3} seconds uncompressing", elapsed(&t));
     y
 }
 

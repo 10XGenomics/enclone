@@ -69,23 +69,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             make_row = false;
         }
         if make_row {
-            let mut row = Row::new()
-                .align_items(Align::Center);
+            let mut row = Row::new().align_items(Align::Center);
             let (mut date, mut time) = (x.before("___").to_string(), x.after("___").to_string());
             if TEST_MODE.load(SeqCst) {
                 date = stringme(&vec![b' '; 10]);
                 time = stringme(&vec![b' '; 8]);
             }
             row = row.push(
-                Text::new(&format!(
-                    "{:<3} {}    {}    ",
-                    count + 1,
-                    date,
-                    time,
-                ))
-                .font(DEJAVU),
+                Text::new(&format!("{:<3} {}    {}    ", count + 1, date, time,)).font(DEJAVU),
             );
-            row = row.push(Checkbox::new(
+            row = row
+                .push(Checkbox::new(
                     slf.expand_archive_entry[i],
                     "",
                     move |x: bool| Message::ExpandArchiveEntry(x, i),
