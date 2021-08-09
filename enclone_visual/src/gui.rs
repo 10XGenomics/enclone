@@ -422,7 +422,7 @@ impl Application for EncloneVisual {
         let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
             .on_press(Message::SaveOnExit);
         let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
-            .on_press(Message::ArchiveOpen);
+            .on_press(Message::ArchiveOpen(Ok(())));
         let mut top_row = Row::new()
             .align_items(Align::Center)
             .push(left_buttons)

@@ -28,7 +28,7 @@ pub enum Message {
     SummaryClose(Result<(), String>),
     ConsoleOpen,
     ConsoleClose,
-    ArchiveOpen,
+    ArchiveOpen(Result<(), String>),
     ArchiveClose,
     SaveOnExit,
     Restore(bool, usize),

@@ -380,7 +380,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::ArchiveOpen => {
+            Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
                 let n = self.archive_name.len();
                 for i in 0..n {
@@ -396,7 +396,11 @@ impl EncloneVisual {
                 }
                 self.orig_archive_name = self.archive_name_value.clone();
                 self.h.orig_name_value = self.h.name_value.clone();
-                Command::none()
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
             Message::ArchiveClose => {
