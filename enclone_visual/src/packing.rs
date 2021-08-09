@@ -7,7 +7,9 @@ use zstd::block::{Compressor, Decompressor};
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Compression and decompression.  We use zstd rather than gzip because when tested it yielded
-// slightly smaller compression size and much lower compression time.
+// slightly smaller compression size and much lower compression time.  Note that using zstd
+// appears to add about 4 MB to the executable size.  If this is really true, it's not obvious
+// that it's a good tradeoff.
 
 pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
     Compressor::new().compress(&x, 0).unwrap()
