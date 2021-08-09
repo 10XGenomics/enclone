@@ -41,16 +41,22 @@ impl Application for EncloneVisual {
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
-        for (key, value) in env::vars() {
-            if key == "HOME" {
-                let home = value.clone();
-                let enclone = format!("{}/enclone", home);
-                x.archive_dir = Some(format!("{}/visual_history", enclone));
-                let arch_dir = &x.archive_dir.as_ref().unwrap();
-                if path_exists(&arch_dir) {
-                    if metadata(&arch_dir).unwrap().is_dir() {
-                        x.archive_list = dir_list(&arch_dir);
-                    }
+        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+            x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
+        } else {
+            for (key, value) in env::vars() {
+                if key == "HOME" {
+                    let home = value.clone();
+                    let enclone = format!("{}/enclone", home);
+                    x.archive_dir = Some(format!("{}/visual_history", enclone));
+                }
+            }
+        }
+        if x.archive_dir.is_some() {
+            let arch_dir = &x.archive_dir.as_ref().unwrap();
+            if path_exists(&arch_dir) {
+                if metadata(&arch_dir).unwrap().is_dir() {
+                    x.archive_list = dir_list(&arch_dir);
                 }
             }
         }

@@ -327,6 +327,7 @@ pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref VISUAL_HISTORY_DIR: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());

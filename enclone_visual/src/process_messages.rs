@@ -455,15 +455,20 @@ impl EncloneVisual {
                             );
                             std::process::exit(1);
                         }
-                        let enclone = format!("{}/enclone", home);
-                        if !path_exists(&enclone) {
-                            xprintln!(
-                                "You do not have a directory ~/enclone, \
-                                so Save on Exit failed.\n"
-                            );
-                            std::process::exit(1);
+                        let dir;
+                        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+                            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+                        } else {
+                            let enclone = format!("{}/enclone", home);
+                            if !path_exists(&enclone) {
+                                xprintln!(
+                                    "You do not have a directory ~/enclone, \
+                                    so Save on Exit failed.\n"
+                                );
+                                std::process::exit(1);
+                            }
+                            dir = format!("{}/visual_history", enclone);
                         }
-                        let dir = format!("{}/visual_history", enclone);
                         if !path_exists(&dir) {
                             let res = std::fs::create_dir(&dir);
                             if res.is_err() {
