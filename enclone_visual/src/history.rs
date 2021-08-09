@@ -88,11 +88,11 @@ impl EncloneVisualHistory {
             for i in 0..4 {
                 bytes[HEADER_LENGTH + 4 + i] = b[i];
             }
-            bytes.append(&mut save_vec_string(&self.svg_hist_uniq));
+            bytes.append(&mut save_vec_string_comp(&self.svg_hist_uniq));
             bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
             bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
             bytes.append(&mut save_vec_string(&self.input2_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.displayed_tables_hist_uniq));
+            bytes.append(&mut save_vec_string_comp(&self.displayed_tables_hist_uniq));
             bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
             bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
             bytes.append(&mut save_vec_string(&self.descrip_hist_uniq));
@@ -136,11 +136,11 @@ impl EncloneVisualHistory {
         let mut pos = HEADER_LENGTH + 12;
         let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
         let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
-        let svg_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let svg_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input2_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
-        let displayed_tables_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let displayed_tables_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
         let last_widths_hist_uniq = restore_vec_vec_u32(&bytes, &mut pos)?;
         let descrip_hist_uniq = restore_vec_string(&bytes, &mut pos)?;

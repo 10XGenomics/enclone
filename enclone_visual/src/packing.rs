@@ -75,7 +75,7 @@ pub fn save_vec_string_comp(x: &Vec<String>) -> Vec<u8> {
     let mut y = compress_bytes(&save_vec_string(&x));
     bytes.append(&mut u32_bytes(y.len()));
     bytes.append(&mut y);
-    y
+    bytes
 }
 
 pub fn restore_vec_string_comp(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, ()> {
