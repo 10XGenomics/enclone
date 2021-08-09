@@ -186,15 +186,6 @@ impl EncloneVisualHistory {
             orig_name_value: name_value.unwrap(),
         })
     }
-
-    pub fn save_restore_works(&self) -> bool {
-        let bytes = self.save_as_bytes();
-        let new = EncloneVisualHistory::restore_from_bytes(&bytes);
-        if new.is_err() {
-            return false;
-        }
-        *self == new.unwrap()
-    }
 }
 
 pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
@@ -318,4 +309,19 @@ pub fn write_enclone_visual_history(evh: &EncloneVisualHistory, filename: &str) 
         return Err(());
     }
     Ok(())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Testing functions.
+
+impl EncloneVisualHistory {
+    pub fn save_restore_works(&self) -> bool {
+        let bytes = self.save_as_bytes();
+        let new = EncloneVisualHistory::restore_from_bytes(&bytes);
+        if new.is_err() {
+            return false;
+        }
+        *self == new.unwrap()
+    }
 }
