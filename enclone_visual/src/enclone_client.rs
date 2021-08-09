@@ -74,23 +74,27 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut fixed_port = None;
     for i in 1..args.len() {
         let arg = &args[i];
-        if arg == "VERBOSE" {
+
+        // General options.
+
+        if arg.starts_with("VIS=") {
+            config_name = arg.after("VIS=").to_string();
+        } else if arg == "VIS" {
+        } else if arg == "VERBOSE" {
             verbose = true;
+
+        // Special testing options.
         } else if arg == "MONITOR_THREADS" {
             monitor_threads = true;
-        } else if arg.starts_with("VIS=") {
-            config_name = arg.after("VIS=").to_string();
         } else if arg.starts_with("PORT=") {
             fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
             assert!(fixed_port.unwrap() >= 1024);
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
-        } else if arg == "VIS" {
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
-                and TEST, but only for testing.\n"
+                configuration name and VERBOSE, and some special testing options.\n"
             );
             std::process::exit(1);
         }
