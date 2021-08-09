@@ -57,6 +57,7 @@ tonic = { version = "0.5", default-features = false, features = ["transport", "c
 # usvg = { version = "0.14.1", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
 vector_utils = "0.1"
+zstd = "0.9"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "1"
