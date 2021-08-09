@@ -11,14 +11,12 @@ use zstd::block::{Compressor, Decompressor};
 
 pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
     let mut c = Compressor::new();
-    let y = c.compress(&x, 0).unwrap();
-    y
+    c.compress(&x, 0).unwrap()
 }
 
 pub fn uncompress_bytes(x: &[u8], uncompressed_size: usize) -> Vec<u8> {
     let mut d = Decompressor::new();
-    let y = d.decompress(&x, uncompressed_size).unwrap();
-    y
+    d.decompress(&x, uncompressed_size).unwrap()
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
