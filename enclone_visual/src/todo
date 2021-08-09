@@ -66,13 +66,13 @@ NICE TO HAVE
 
 6.  Make "enclone help ..." work.
 
-7.  Can a row have one item left aligned and the second center aligned?  Apply to banner.
+7.  Add button to capture the entire enclone visual window.
 
-8.  Add button to capture the entire enclone visual window.
-
-9.  Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+8.  Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
-10. Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+9.  Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
+
+10. Implement sharing of archives in enclone visual.
