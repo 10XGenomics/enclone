@@ -12,6 +12,7 @@ enclone_print         prints clonotypes in the sense of creating the "pictures" 
 enclone_proto         stuff for communicating with Loupe, and reused for other purposes
 enclone_tail          last part of the code
 enclone_tools         miscellaneous binaries
+enclone_version       determine current version string
 enclone_visual        experimental GUI client
 
 credits               credits

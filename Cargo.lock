@@ -1510,6 +1510,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_version"
+version = "0.5.84"
+dependencies = [
+ "chrono",
+ "string_utils",
+]
+
+[[package]]
 name = "enclone_visual"
 version = "0.5.84"
 dependencies = [
@@ -1518,6 +1526,7 @@ dependencies = [
  "cocoa",
  "enclone_core",
  "enclone_main",
+ "enclone_version",
  "failure",
  "flate2",
  "iced",

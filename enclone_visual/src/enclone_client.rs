@@ -32,9 +32,10 @@ use crate::launch_gui;
 use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest, UserNameRequest};
 use crate::update_restart::*;
 use crate::*;
-use enclone_core::{parse_bsv, version_string};
+use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
 use enclone_core::REMOTE_HOST;
+use enclone_version::*;
 use io_utils::*;
 use itertools::Itertools;
 use libc::atexit;
@@ -530,9 +531,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 std::process::exit(1);
             }
             let local_version = env!("CARGO_PKG_VERSION");
-            let local_version_string = version_string();
-            let local = format!("{} : {}", local_version, local_version_string);
-            let remote = format!("{} : {}", remote_version, remote_version_string);
             if local_version != remote_version {
                 xprintln!("\nremote enclone version = {}", remote_version);
                 xprintln!("local enclone version = {}", local_version);
@@ -549,27 +547,42 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     std::process::exit(1);
                 }
             }
-            let mut xlocal = local.clone();
-            xlocal = xlocal.replace(": macos :", "");
-            xlocal = xlocal.replace(": linux :", "");
-            let mut xremote = remote.clone();
-            xremote = xremote.replace(": macos :", "");
-            xremote = xremote.replace(": linux :", "");
-            if xlocal != xremote && verbose {
-                xprintln!("\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
-                xprintln!("----------------------------------------------------------------------------------");
-                xprintln!("😱 WARNING: INCOMPATIBLE SERVER/CLIENT VERSIONS DETECTED!!! 😱");
-                xprintln!("local version = {}", local);
-                xprintln!("remote version = {}", remote);
-                xprintln!("THIS CAN CAUSE VERY BAD AND INSCRUTABLE THINGS TO HAPPEN!");
-                xprintln!("😱 PROCEED AT RISK.................😱");
-                xprintln!("However, it may just be that you need to touch enclone_core/build.rs");
-                xprintln!("on both client and server, and recompile on both, to update the version string.");
-                xprintln!("----------------------------------------------------------------------------------");
-                xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
-            } else if verbose {
-                xprintln!("local version = {}", local);
-                xprintln!("remote version = {}", remote);
+
+            // Check for identity of local and remote enclone versions.  This is complicated 
+            // because in general, the version_string() function does not return the current
+            // value.  So we only test for version identity if we're in the directory where
+            // enclone as compiled.  And that same condition is partially tested on the remote.
+
+            let current_dir = std::env::current_dir()?;
+            let current_dir = current_dir.display();
+            let current_executable = std::env::current_exe()?;
+            let current_executable = current_executable.display();
+            println!("current dir = {}", current_dir);
+            println!("current executable = {}", current_executable);
+            if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
+                let local_version_string = current_version_string();
+                let local = format!("{} : {}", local_version, local_version_string);
+                let remote = format!("{} : {}", remote_version, remote_version_string);
+                let mut xlocal = local.clone();
+                xlocal = xlocal.replace(": macos :", "");
+                xlocal = xlocal.replace(": linux :", "");
+                let mut xremote = remote.clone();
+                xremote = xremote.replace(": macos :", "");
+                xremote = xremote.replace(": linux :", "");
+                if xlocal != xremote && verbose {
+                    xprintln!("\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                    xprintln!("----------------------------------------------------------------------------------");
+                    xprintln!("😱 WARNING: INCOMPATIBLE SERVER/CLIENT VERSIONS DETECTED!!! 😱");
+                    xprintln!("local version = {}", local);
+                    xprintln!("remote version = {}", remote);
+                    xprintln!("THIS CAN CAUSE VERY BAD AND INSCRUTABLE THINGS TO HAPPEN!");
+                    xprintln!("😱 PROCEED AT RISK.................😱");
+                    xprintln!("----------------------------------------------------------------------------------");
+                    xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                } else if verbose {
+                    xprintln!("local version = {}", local);
+                    xprintln!("remote version = {}", remote);
+                }
             }
         }
 

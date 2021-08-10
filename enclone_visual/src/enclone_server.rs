@@ -10,6 +10,7 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::{parse_bsv, version_string};
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
+use enclone_version::*;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use itertools::Itertools;
@@ -379,7 +380,17 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("I am process {}.", std::process::id());
     eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
-    eprintln!("version string = {}", version_string());
+    let mut version = version_string();
+    let current_dir = std::env::current_dir()?;
+    let current_dir = current_dir.display();
+    let current_executable = std::env::current_exe()?;
+    let current_executable = current_executable.display();
+    println!("current dir = {}", current_dir);
+    println!("current executable = {}", current_executable);
+    if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
+        version = current_version_string();
+    }
+    eprintln!("version string = {}", version);
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

@@ -11,6 +11,7 @@ members = [
     "enclone_proto",
     "enclone_tail",
     "enclone_tools",
+    "enclone_version",
     "enclone_visual",
 ]
 
