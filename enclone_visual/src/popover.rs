@@ -50,27 +50,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let labels =
         Text::new("#   date        time     expand     restore    delete    share    name")
             .font(DEJAVU);
-    let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .scrollbar_width(SCROLLBAR_WIDTH)
-        .scroller_width(12)
-        .style(style::ScrollableStyle);
-    let row = Row::new()
-        .align_items(Align::Center)
-        .push(Text::new("0   today       now         ").font(DEJAVU))
-        .push(Space::with_width(Units(301)))
-        .push(Checkbox::new(slf.share_requested, "", Message::Share))
-        .push(Space::with_width(Units(58)))
-        .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
-        .push(Space::with_width(Units(8)))
-        .push(Checkbox::new(
-            slf.name_change_requested,
-            "",
-            Message::NameChange,
-        ));
-    archive_scrollable = archive_scrollable.push(row);
-    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
 
     fn share_col() -> Column<'static, Message> {
         Column::new()
@@ -106,6 +85,30 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         )
     }
 
+    let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .scrollbar_width(SCROLLBAR_WIDTH)
+        .scroller_width(12)
+        .style(style::ScrollableStyle);
+    let row = Row::new()
+        .align_items(Align::Center)
+        .push(Text::new("0   today       now         ").font(DEJAVU))
+        .push(Space::with_width(Units(301)))
+        .push(Checkbox::new(slf.share_requested, "", Message::Share))
+        .push(Space::with_width(Units(58)))
+        .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
+        .push(Space::with_width(Units(8)))
+        .push(Checkbox::new(
+            slf.name_change_requested,
+            "",
+            Message::NameChange,
+        ));
+    archive_scrollable = archive_scrollable.push(row);
+    if slf.share_requested {
+        archive_scrollable = archive_scrollable.push(share_col());
+    }
+    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     let mut count = 0;
     for (i, y) in slf.archive_name.iter_mut().enumerate() {
         let x = &slf.archive_list[i];
