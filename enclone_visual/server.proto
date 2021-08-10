@@ -1,17 +1,29 @@
+// Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
+
 // version of protocol buffer used
+
 syntax = "proto3";
 
 package enclone;
 
 // Analyzer service that runs enclone. A rust trait will be generated
 // from this service for the server code to implement.
+
 service Analyzer {
+
   rpc Ping(Unit) returns (Unit);
 
   // Runs enclone.
+
   rpc Enclone(EncloneRequest) returns (EncloneResponse);
+
   // Returns the table for one clonotype.
+
   rpc GetClonotype(ClonotypeRequest) returns (ClonotypeResponse);
+
+  // Test a user name to see if it is valid.
+
+  rpc TestUserName(UserName) returns (Bool);
 }
 
 message Unit {}
@@ -37,3 +49,10 @@ message ClonotypeResponse {
   string table = 1; // Colored terminal text.
 }
 
+message UserName {
+    string user_name = 1;
+}
+
+message Bool {
+    bool value = 1;
+}
