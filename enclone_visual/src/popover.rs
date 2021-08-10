@@ -71,6 +71,41 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         ));
     archive_scrollable = archive_scrollable.push(row);
     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+
+    fn share_col() -> Column<'static, Message> {
+        Column::new()
+        .push(Space::with_height(Units(8)))
+        .push(
+            Text::new(
+                "           Enter user names (usually first.last), one per line, \
+            and check the box to the right.",
+            )
+            .size(16)
+            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+        )
+        .push(Space::with_height(Units(4)))
+        .push(
+            Text::new("           A new line will appear once you do so.")
+                .size(16)
+                .color(Color::from_rgb(1.0, 0.0, 0.0)),
+        )
+        .push(Space::with_height(Units(4)))
+        .push(
+            Text::new(
+                "           Lines may be prepopulated based on your recent shares; \
+            you can check them.",
+            )
+            .size(16)
+            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+        )
+        .push(Space::with_height(Units(4)))
+        .push(
+            Text::new("           Push Dismiss at the top when you're done, or uncheck share to cancel.")
+                .size(16)
+                .color(Color::from_rgb(1.0, 0.0, 0.0)),
+        )
+    }
+
     let mut count = 0;
     for (i, y) in slf.archive_name.iter_mut().enumerate() {
         let x = &slf.archive_list[i];
@@ -148,37 +183,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
 
             if slf.archive_share_requested[i] {
-                archive_scrollable = archive_scrollable
-                    .push(Space::with_height(Units(8)))
-                    .push(
-                        Text::new(
-                            "           Enter user names (usually first.last), one per line, \
-                        and check the box to the right.",
-                        )
-                        .size(16)
-                        .color(Color::from_rgb(1.0, 0.0, 0.0)),
-                    )
-                    .push(Space::with_height(Units(4)))
-                    .push(
-                        Text::new("           A new line will appear once you do so.")
-                            .size(16)
-                            .color(Color::from_rgb(1.0, 0.0, 0.0)),
-                    )
-                    .push(Space::with_height(Units(4)))
-                    .push(
-                        Text::new(
-                            "           Lines may be prepopulated based on your recent shares; \
-                        you can check them.",
-                        )
-                        .size(16)
-                        .color(Color::from_rgb(1.0, 0.0, 0.0)),
-                    )
-                    .push(Space::with_height(Units(4)))
-                    .push(
-                        Text::new("           Push Dismiss at the top when you're done, or uncheck share to cancel.")
-                            .size(16)
-                            .color(Color::from_rgb(1.0, 0.0, 0.0)),
-                    );
+                archive_scrollable = archive_scrollable.push(share_col());
             }
 
             if slf.expand_archive_entry[i] {
