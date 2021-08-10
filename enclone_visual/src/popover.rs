@@ -1,9 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use iced::{
-    Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text,
-};
+use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {

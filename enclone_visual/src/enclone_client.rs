@@ -522,8 +522,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 std::process::exit(1);
             }
             let remote_version_string;
-            if emsg.contains("version string = ")
-                && emsg.after("version string = ").contains("\n")
+            if emsg.contains("version string = ") && emsg.after("version string = ").contains("\n")
             {
                 remote_version_string = emsg.between("version string = ", "\n").to_string();
             } else {
@@ -548,7 +547,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
 
-            // Check for identity of local and remote enclone versions.  This is complicated 
+            // Check for identity of local and remote enclone versions.  This is complicated
             // because in general, the version_string() function does not return the current
             // value.  So we only test for version identity if we're in the directory where
             // enclone as compiled.  And that same condition is partially tested on the remote.
@@ -559,7 +558,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let current_executable = current_executable.display();
             println!("current dir = {}", current_dir);
             println!("current executable = {}", current_executable);
-            if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
+            if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir)
+            {
                 let local_version_string = current_version_string();
                 let local = format!("{} : {}", local_version, local_version_string);
                 let remote = format!("{} : {}", remote_version, remote_version_string);
@@ -674,7 +674,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
                 if TESTING_USER_NAME.load(SeqCst) {
                     let user_name = USER_NAME.lock().unwrap()[0].clone();
-                    let request = tonic::Request::new(UserNameRequest { user_name: user_name });
+                    let request = tonic::Request::new(UserNameRequest {
+                        user_name: user_name,
+                    });
                     let response = client.test_user_name(request).await;
                     if response.is_err() {
                         eprintln!("\nWeird, validity test for user name failed.");

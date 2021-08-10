@@ -1,11 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::*;
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
-    ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserNameRequest, UserNameResponse,
+    ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserNameRequest,
+    UserNameResponse,
 };
+use crate::*;
 use enclone_core::combine_group_pics::*;
 use enclone_core::{parse_bsv, version_string};
 use enclone_main::main_enclone::*;
@@ -314,11 +315,8 @@ impl Analyzer for EncloneAnalyzer {
     ) -> Result<Response<UserNameResponse>, Status> {
         let req: UserNameRequest = request.into_inner();
         let valid = is_user_name_valid(&req.user_name);
-        Ok(Response::new(UserNameResponse {
-            value: valid,
-        }))
+        Ok(Response::new(UserNameResponse { value: valid }))
     }
-
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
