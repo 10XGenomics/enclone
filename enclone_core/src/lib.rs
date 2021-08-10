@@ -29,6 +29,9 @@ lazy_static! {
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
+// WARNING: the version string will not be up to date unless enclone_core/build.rs is touched
+// before compiling.
+
 pub fn version_string() -> String {
     VERSION_STRING.to_string()
 }
