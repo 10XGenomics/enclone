@@ -24,7 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
-chrono = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 failure = "0.1"
@@ -60,7 +60,7 @@ vector_utils = "0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "1"
-procfs = "0.9"
+procfs = { version = "0.9", default_features = false }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 cocoa = "0.24"

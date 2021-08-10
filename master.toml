@@ -14,7 +14,7 @@ attohttpc = { version = "0.17", default-features = false, features = ["compress"
 bio_edit = "0.1"
 byteorder = "1"
 bytes = "1"
-chrono = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 cocoa = "0.24"
 debruijn = "0.3"
 dirs = "3"
@@ -58,7 +58,7 @@ plotters = { version = "0.3", default_features = false, features = ["svg_backend
 png-decoder = "0.1"
 pprof = "0.5"
 pretty_trace = "0.5"
-procfs = "0.9"
+procfs = { version = "0.9", default_features = false }
 prost = { version = "0.8", default_features = false }
 prost-build = "0.8"
 rand = "0.8"
