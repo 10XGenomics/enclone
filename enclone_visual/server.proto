@@ -23,7 +23,7 @@ service Analyzer {
 
   // Test a user name to see if it is valid.
 
-  rpc TestUserName(UserName) returns (Bool);
+  rpc TestUserName(UserNameRequest) returns (UserNameResponse);
 }
 
 message Unit {}
@@ -49,10 +49,10 @@ message ClonotypeResponse {
   string table = 1; // Colored terminal text.
 }
 
-message UserName {
+message UserNameRequest {
     string user_name = 1;
 }
 
-message Bool {
+message UserNameResponse {
     bool value = 1;
 }

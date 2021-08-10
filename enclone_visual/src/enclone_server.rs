@@ -4,7 +4,7 @@ use crate::*;
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
-    Bool, ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserName,
+    ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserNameRequest, UserNameResponse,
 };
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
@@ -309,11 +309,11 @@ impl Analyzer for EncloneAnalyzer {
 
     async fn test_user_name(
         &self,
-        request: Request<UserName>,
-    ) -> Result<Response<Bool>, Status> {
-        let req: UserName = request.into_inner();
+        request: Request<UserNameRequest>,
+    ) -> Result<Response<UserNameResponse>, Status> {
+        let req: UserNameRequest = request.into_inner();
         let valid = is_user_name_valid(&req.user_name);
-        Ok(Response::new(Bool {
+        Ok(Response::new(UserNameResponse {
             value: valid,
         }))
     }
