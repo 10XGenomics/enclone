@@ -110,6 +110,8 @@ pub struct EncloneVisual {
     pub name: text_input::State,
     pub name_change_requested: bool,
     pub orig_archive_name: Vec<String>,
+    pub archive_share_requested: Vec<bool>,
+    pub share_requested: bool,
     //
     // current window dimensions
     //

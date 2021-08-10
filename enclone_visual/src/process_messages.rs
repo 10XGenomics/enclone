@@ -20,6 +20,14 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::Share(check_val) => {
+                self.share_requested = check_val;
+                Command::none()
+            }
+            Message::ArchiveShare(check_val, index) => {
+                self.archive_share_requested[index] = check_val;
+                Command::none()
+            }
             Message::NameChange(check_val) => {
                 self.name_change_requested = check_val;
                 if !check_val {

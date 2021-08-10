@@ -71,6 +71,7 @@ impl Application for EncloneVisual {
         x.archive_name = vec![iced::text_input::State::default(); n];
         x.archive_name_value = vec![String::new(); n];
         x.archive_name_change_requested = vec![false; n];
+        x.archive_share_requested = vec![false; n];
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {

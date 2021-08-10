@@ -38,4 +38,6 @@ pub enum Message {
     ArchiveNameChange(bool, usize),
     Name(String),
     NameChange(bool),
+    ArchiveShare(bool, usize),
+    Share(bool),
 }

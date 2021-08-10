@@ -39,7 +39,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
     );
-    let labels = Text::new("#   date        time     expand     restore    delete    name")
+    let labels = Text::new("#   date        time     expand     restore    delete    share    name")
         .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
@@ -49,8 +49,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .style(style::ScrollableStyle);
     let row = Row::new()
         .align_items(Align::Center)
-        .push(Text::new("0   today       now").font(DEJAVU))
-        .push(Space::with_width(Units(393)))
+        .push(Text::new("0   today       now         ").font(DEJAVU))
+        .push(Space::with_width(Units(301)))
+        .push(Checkbox::new(
+            slf.share_requested,
+            "",
+            Message::Share,
+        ))
+        .push(Space::with_width(Units(58)))
         .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
         .push(Space::with_width(Units(8)))
         .push(Checkbox::new(
@@ -94,13 +100,19 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "",
                     move |x: bool| Message::Restore(x, i),
                 ))
-                .push(Space::with_width(Units(78)))
+                .push(Space::with_width(Units(79)))
                 .push(Checkbox::new(
                     slf.delete_requested[i],
                     "",
                     move |x: bool| Message::DeleteArchiveEntry(x, i),
+                ))
+                .push(Space::with_width(Units(68)))
+                .push(Checkbox::new(
+                    slf.archive_share_requested[i],
+                    "",
+                    move |x: bool| Message::ArchiveShare(x, i),
                 ));
-            row = row.push(Space::with_width(Units(68)));
+            row = row.push(Space::with_width(Units(58)));
             row = row.push(
                 TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
                     Message::ArchiveName(x, i)
