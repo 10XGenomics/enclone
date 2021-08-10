@@ -29,7 +29,7 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::launch_gui;
-use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest};
+use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest, UserName};
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
@@ -624,6 +624,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if DONE.load(SeqCst) {
                     cleanup();
                     std::process::exit(0);
+                }
+                if TESTING_USER_NAME.load(SeqCst) {
+                    let user_name = USER_NAME.lock().unwrap()[0].clone();
+                    let request = tonic::Request::new(UserName { user_name: user_name });
+                    let response = client.test_user_name(request).await;
+                    if response.is_err() {
+                        eprintln!("\nWeird, validity test for user name failed.\n");
+                        std::process::exit(1);
+                    }
+                    let valid = response.unwrap().into_inner().value;
+                    USER_NAME_VALID.store(valid, SeqCst);
+                    TESTING_USER_NAME.store(false, SeqCst);
                 }
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
