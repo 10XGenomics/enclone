@@ -7,7 +7,7 @@ use crate::proto::{
     ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserNameRequest, UserNameResponse,
 };
 use enclone_core::combine_group_pics::*;
-use enclone_core::parse_bsv;
+use enclone_core::{parse_bsv, version_string};
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
 use flate2::write::GzEncoder;
@@ -379,6 +379,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("I am process {}.", std::process::id());
     eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
+    eprintln!("version string = {}", version_string());
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
