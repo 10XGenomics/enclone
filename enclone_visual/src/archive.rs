@@ -52,7 +52,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .font(DEJAVU);
 
     fn share_col() -> Column<'static, Message> {
-        let c = Color::from_rgb(1.0, 0.0, 0.0);
+        let c = Color::from_rgb(0.4, 0.1, 0.2);
         Column::new()
         .push(Space::with_height(Units(8)))
         .push(
