@@ -717,6 +717,21 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         });
 
+        for user_name in ["david.jaffe", "david.jaff"].iter() {
+            USER_NAME.lock().unwrap().clear();
+            USER_NAME.lock().unwrap().push(user_name.to_string());
+            TESTING_USER_NAME.store(true, SeqCst);
+            loop {
+                thread::sleep(Duration::from_millis(10));
+                if !TESTING_USER_NAME.load(SeqCst) {
+                    let valid = USER_NAME_VALID.load(SeqCst);
+                    println!("{} is {}", user_name, valid);
+                    break;
+                }
+            }
+        }
+        if 0 == 0 { std::process::exit(0); }
+
         // Launch GUI.
 
         launch_gui().await?;
