@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
 use crate::*;

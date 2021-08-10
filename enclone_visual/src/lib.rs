@@ -25,6 +25,7 @@ use string_utils::*;
 use svg_to_geometry::*;
 use tables::*;
 
+pub mod archive;
 pub mod canvas_view;
 pub mod compare_images;
 pub mod convert_svg_to_png;
