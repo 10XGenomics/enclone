@@ -16,7 +16,7 @@ use iced_native::{event, subscription, window, Event};
 use io_utils::*;
 use messages::Message;
 use std::env;
-use std::fs::{File, metadata};
+use std::fs::{metadata, File};
 use std::io::Read;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
