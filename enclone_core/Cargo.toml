@@ -26,7 +26,7 @@ ansi_escape = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 bio_edit = "0.1"
 bytes = "1"
-chrono = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "6"
@@ -49,5 +49,5 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f
 vector_utils = "0.1"
 
 [build-dependencies]
-chrono = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 string_utils = "0.1"
