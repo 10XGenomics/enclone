@@ -531,6 +531,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
             let local_version = env!("CARGO_PKG_VERSION");
             let local_version_string = version_string();
+            let local = format!("{} : {}", local_version, local_version_string);
+            let remote = format!("{} : {}", remote_version, remote_version_string);
             if local_version != remote_version {
                 xprintln!("\nremote enclone version = {}", remote_version);
                 xprintln!("local enclone version = {}", local_version);
@@ -546,9 +548,26 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     );
                     std::process::exit(1);
                 }
+            }
+            let mut xlocal = local.clone();
+            xlocal = xlocal.replace(": macos :", "");
+            xlocal = xlocal.replace(": linux :", "");
+            let mut xremote = remote.clone();
+            xremote = xremote.replace(": macos :", "");
+            xremote = xremote.replace(": linux :", "");
+            if xlocal != xremote {
+                xprintln!("\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                xprintln!("----------------------------------------------------------------------------------");
+                xprintln!("😱 WARNING: INCOMPATIBLE SERVER/CLIENT VERSIONS DETECTED!!! 😱");
+                xprintln!("local version = {}", local);
+                xprintln!("remote version = {}", remote);
+                xprintln!("THIS CAN CAUSE VERY BAD AND INSCRUTABLE THINGS TO HAPPEN!");
+                xprintln!("😱 PROCEED AT RISK.................😱");
+                xprintln!("----------------------------------------------------------------------------------");
+                xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
             } else if verbose {
-                xprintln!("local version string = {}", local_version_string);
-                xprintln!("remote version string = {}", remote_version_string);
+                xprintln!("local version = {}", local);
+                xprintln!("remote version = {}", remote);
             }
         }
 
