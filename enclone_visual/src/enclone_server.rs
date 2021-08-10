@@ -307,7 +307,7 @@ impl Analyzer for EncloneAnalyzer {
         }))
     }
 
-    async fn test_user_name(
+    async fn testusername(
         &self,
         request: Request<UserNameRequest>,
     ) -> Result<Response<UserNameResponse>, Status> {
