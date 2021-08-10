@@ -479,14 +479,14 @@ impl EncloneVisual {
                                 );
                                 std::process::exit(1);
                             }
-                            dir = format!("{}/visual_history", enclone);
+                            dir = format!("{}/visual/history", enclone);
                         }
                         if !path_exists(&dir) {
                             let res = std::fs::create_dir(&dir);
                             if res.is_err() {
                                 xprintln!(
                                     "Unable to create the directory \
-                                    ~/enclone/visual_history, so Save on Exit Failed.\n"
+                                    ~/enclone/visual/history, so Save on Exit Failed.\n"
                                 );
                                 std::process::exit(1);
                             }

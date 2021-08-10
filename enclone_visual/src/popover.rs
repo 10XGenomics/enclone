@@ -20,7 +20,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_width(Length::Fill))
         .push(archive_close_button);
     let text0 =
-        Text::new("enclone visual can save sessions to the directory ~/enclone/visual_history.");
+        Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
     let text1 = Text::new(
         "For a given enclone visual session:\n\
          • click the Save On Exit box on the main screen; it will turn red \

@@ -50,6 +50,12 @@ const SCROLLBAR_WIDTH: u16 = 12;
 const SVG_NULL_HEIGHT: u16 = 190;
 const SVG_HEIGHT: u16 = 400;
 
+#[derive(Clone)]
+pub struct Share {
+    pub days_since_ce: i32,
+    pub user_id: [u8; 32],
+}
+
 type MsgFn = fn(Result<(), String>) -> messages::Message;
 
 async fn noop() -> Result<(), String> {

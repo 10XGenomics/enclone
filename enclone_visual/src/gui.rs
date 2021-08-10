@@ -16,7 +16,8 @@ use iced_native::{event, subscription, window, Event};
 use io_utils::*;
 use messages::Message;
 use std::env;
-use std::fs::metadata;
+use std::fs::{File, metadata};
+use std::io::Read;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
@@ -48,7 +49,24 @@ impl Application for EncloneVisual {
                 if key == "HOME" {
                     let home = value.clone();
                     let enclone = format!("{}/enclone", home);
-                    x.archive_dir = Some(format!("{}/visual_history", enclone));
+                    x.archive_dir = Some(format!("{}/visual/history", enclone));
+
+                    // Read shares.  If the file is corrupted, silently ignore it.
+
+                    let shares = format!("{}/enclone/visual/shares", home);
+                    if path_exists(&shares) {
+                        let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                        let n = std::mem::size_of::<Share>();
+                        if share_size % n == 0 {
+                            let mut bytes = Vec::<u8>::new();
+                            let mut f = File::open(&shares).unwrap();
+                            f.read(&mut bytes).unwrap();
+                            assert_eq!(bytes.len(), share_size);
+                            unsafe {
+                                x.shares = bytes.align_to::<Share>().1.to_vec();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -72,6 +90,9 @@ impl Application for EncloneVisual {
         x.archive_name_value = vec![String::new(); n];
         x.archive_name_change_requested = vec![false; n];
         x.archive_share_requested = vec![false; n];
+
+        // Handle test mode.
+
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {
