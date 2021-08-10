@@ -22,25 +22,25 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual_history.");
     let text1 = Text::new(
-        "▒ For a given enclone visual session:\n\
+        "For a given enclone visual session:\n\
          • click the Save On Exit box on the main screen; it will turn red \
            (pushing again toggles state)\n\
          • when you later push the Exit button, your session will be saved.",
     );
-    let text2 = Text::new("▒ Display the commands in a saved session by checking the expand box.");
+    let text2 = Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
-        "▒ Restore a previously saved session by checking the restore box.  \
+        "▒ restore - Restore a previously saved session by checking the restore box.  \
             This deletes your current session!",
     );
-    let text4 = Text::new("▒ Delete a previously saved session by checking the delete box.");
+    let text4 = Text::new("▒ delete - Delete a previously saved session by checking the delete box.");
     let text5 = Text::new(
-        "▒ Share with other users by checking the share box.  You will be prompted for \
+        "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
          Conversely another user may share with you, and if so you will be given the option \
             to accept the share, below here.",
     );
     let text6 = Text::new(
-        "▒ Name of this or a previous session is displayed:\n\
+        "▒ name - Name of this or a previous session is displayed:\n\
          • change it using the rectangular box and then check to its right\n\
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
