@@ -39,7 +39,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
     );
-    let labels = Text::new("#   date          time        expand     restore    delete    name")
+    let labels = Text::new("#   date        time     expand     restore    delete    name")
         .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
@@ -49,8 +49,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .style(style::ScrollableStyle);
     let row = Row::new()
         .align_items(Align::Center)
-        .push(Text::new("0   today         now").font(DEJAVU))
-        .push(Space::with_width(Units(424)))
+        .push(Text::new("0   today       now").font(DEJAVU))
+        .push(Space::with_width(Units(393)))
         .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
         .push(Space::with_width(Units(8)))
         .push(Checkbox::new(
@@ -70,10 +70,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         if make_row {
             let mut row = Row::new().align_items(Align::Center);
-            let (mut date, mut time) = (x.before("___").to_string(), x.after("___").to_string());
+            let date = x.before("___").to_string();
+            let date1 = stringme(&date.as_bytes()[2..4]);
+            let date2 = date.after("-").to_string();
+            let mut date = format!("{}-{}", date2, date1);
+            let mut time = x.after("___").rev_before(":").to_string();
             if TEST_MODE.load(SeqCst) {
-                date = stringme(&vec![b' '; 10]);
-                time = stringme(&vec![b' '; 8]);
+                date = stringme(&vec![b' '; 8]);
+                time = stringme(&vec![b' '; 5]);
             }
             row = row.push(
                 Text::new(&format!("{:<3} {}    {}    ", count + 1, date, time,)).font(DEJAVU),
