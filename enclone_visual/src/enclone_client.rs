@@ -32,7 +32,7 @@ use crate::launch_gui;
 use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest, UserNameRequest};
 use crate::update_restart::*;
 use crate::*;
-use enclone_core::parse_bsv;
+use enclone_core::{parse_bsv, version_string};
 use enclone_core::prepare_for_apocalypse::*;
 use enclone_core::REMOTE_HOST;
 use io_utils::*;
@@ -520,7 +520,17 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 xprint!("\nUnable to determine remote enclone version.\n");
                 std::process::exit(1);
             }
+            let remote_version_string;
+            if emsg.contains("version string = ")
+                && emsg.after("version string = ").contains("\n")
+            {
+                remote_version_string = emsg.between("version string = ", "\n").to_string();
+            } else {
+                xprint!("\nUnable to determine remote version string.\n");
+                std::process::exit(1);
+            }
             let local_version = env!("CARGO_PKG_VERSION");
+            let local_version_string = version_string();
             if local_version != remote_version {
                 xprintln!("\nremote enclone version = {}", remote_version);
                 xprintln!("local enclone version = {}", local_version);
@@ -536,6 +546,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     );
                     std::process::exit(1);
                 }
+            } else if verbose {
+                xprintln!("local version string = {}", local_version_string);
+                xprintln!("remote version string = {}", remote_version_string);
             }
         }
 
