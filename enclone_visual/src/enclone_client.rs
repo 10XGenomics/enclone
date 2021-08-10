@@ -628,7 +628,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if TESTING_USER_NAME.load(SeqCst) {
                     let user_name = USER_NAME.lock().unwrap()[0].clone();
                     let request = tonic::Request::new(UserNameRequest { user_name: user_name });
-                    let response = client.testusername(request).await;
+                    let response = client.test_user_name(request).await;
                     if response.is_err() {
                         eprintln!("\nWeird, validity test for user name failed.");
                         let err = format!("{:?}", response);

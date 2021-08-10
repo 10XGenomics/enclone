@@ -23,7 +23,7 @@ service Analyzer {
 
   // Test a user name to see if it is valid.
 
-  rpc Testusername(UserNameRequest) returns (UserNameResponse);
+  rpc TestUserName(UserNameRequest) returns (UserNameResponse);
 }
 
 message Unit {}
