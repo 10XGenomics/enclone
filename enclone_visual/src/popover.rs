@@ -27,12 +27,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
            (pushing again toggles state)\n\
          • when you later push the Exit button, your session will be saved.",
     );
-    let text2 = Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
+    let text2 =
+        Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
         "▒ restore - Restore a previously saved session by checking the restore box.  \
             This deletes your current session!",
     );
-    let text4 = Text::new("▒ delete - Delete a previously saved session by checking the delete box.");
+    let text4 =
+        Text::new("▒ delete - Delete a previously saved session by checking the delete box.");
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
@@ -45,8 +47,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
     );
-    let labels = Text::new("#   date        time     expand     restore    delete    share    name")
-        .font(DEJAVU);
+    let labels =
+        Text::new("#   date        time     expand     restore    delete    share    name")
+            .font(DEJAVU);
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -57,11 +60,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .align_items(Align::Center)
         .push(Text::new("0   today       now         ").font(DEJAVU))
         .push(Space::with_width(Units(301)))
-        .push(Checkbox::new(
-            slf.share_requested,
-            "",
-            Message::Share,
-        ))
+        .push(Checkbox::new(slf.share_requested, "", Message::Share))
         .push(Space::with_width(Units(58)))
         .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
         .push(Space::with_width(Units(8)))
@@ -151,15 +150,35 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             if slf.archive_share_requested[i] {
                 archive_scrollable = archive_scrollable
                     .push(Space::with_height(Units(8)))
-                    .push(Text::new("           Enter user names (usually first.last), one per line, \
-                        and check the box to the right.").size(16).color(Color::from_rgb(1.0, 0.0, 0.0)))
+                    .push(
+                        Text::new(
+                            "           Enter user names (usually first.last), one per line, \
+                        and check the box to the right.",
+                        )
+                        .size(16)
+                        .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                    )
                     .push(Space::with_height(Units(4)))
-                    .push(Text::new("           A new line will appear once you do so.").size(16).color(Color::from_rgb(1.0, 0.0, 0.0)))
+                    .push(
+                        Text::new("           A new line will appear once you do so.")
+                            .size(16)
+                            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                    )
                     .push(Space::with_height(Units(4)))
-                    .push(Text::new("           Lines may be prepopulated based on your recent shares; \
-                        you can check them.").size(16).color(Color::from_rgb(1.0, 0.0, 0.0)))
+                    .push(
+                        Text::new(
+                            "           Lines may be prepopulated based on your recent shares; \
+                        you can check them.",
+                        )
+                        .size(16)
+                        .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                    )
                     .push(Space::with_height(Units(4)))
-                    .push(Text::new("           Push Dismiss at the top when you're done.").size(16).color(Color::from_rgb(1.0, 0.0, 0.0)));
+                    .push(
+                        Text::new("           Push Dismiss at the top when you're done, or uncheck share to cancel.")
+                            .size(16)
+                            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                    );
             }
 
             if slf.expand_archive_entry[i] {
