@@ -751,7 +751,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
         });
 
-        for user_name in ["david.jaffe", "david.jaff"].iter() {
+        /*
+        for user_name in [...........................].iter() {
             USER_NAME.lock().unwrap().clear();
             USER_NAME.lock().unwrap().push(user_name.to_string());
             TESTING_USER_NAME.store(true, SeqCst);
@@ -764,7 +765,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
         }
-        if 0 == 0 { std::process::exit(0); }
+        */
 
         // Launch GUI.
 
