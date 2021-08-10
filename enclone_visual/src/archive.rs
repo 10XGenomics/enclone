@@ -52,6 +52,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .font(DEJAVU);
 
     fn share_col() -> Column<'static, Message> {
+        let c = Color::from_rgb(1.0, 0.0, 0.0);
         Column::new()
         .push(Space::with_height(Units(8)))
         .push(
@@ -60,13 +61,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             and check the box to the right.",
             )
             .size(16)
-            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+            .color(c),
         )
         .push(Space::with_height(Units(4)))
         .push(
             Text::new("           A new line will appear once you do so.")
                 .size(16)
-                .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                .color(c),
         )
         .push(Space::with_height(Units(4)))
         .push(
@@ -75,13 +76,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             you can check them.",
             )
             .size(16)
-            .color(Color::from_rgb(1.0, 0.0, 0.0)),
+            .color(c),
         )
         .push(Space::with_height(Units(4)))
         .push(
             Text::new("           Push Dismiss at the top when you're done, or uncheck share to cancel.")
                 .size(16)
-                .color(Color::from_rgb(1.0, 0.0, 0.0)),
+                .color(c),
         )
     }
 
