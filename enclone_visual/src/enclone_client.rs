@@ -555,7 +555,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             let mut xremote = remote.clone();
             xremote = xremote.replace(": macos :", "");
             xremote = xremote.replace(": linux :", "");
-            if xlocal != xremote {
+            if xlocal != xremote && verbose {
                 xprintln!("\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
                 xprintln!("----------------------------------------------------------------------------------");
                 xprintln!("😱 WARNING: INCOMPATIBLE SERVER/CLIENT VERSIONS DETECTED!!! 😱");
@@ -563,6 +563,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 xprintln!("remote version = {}", remote);
                 xprintln!("THIS CAN CAUSE VERY BAD AND INSCRUTABLE THINGS TO HAPPEN!");
                 xprintln!("😱 PROCEED AT RISK.................😱");
+                xprintln!("However, it may just be that you need to touch enclone_core/build.rs");
+                xprintln!("on both client and server, and recompile on both, to update the version string.");
                 xprintln!("----------------------------------------------------------------------------------");
                 xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
             } else if verbose {
