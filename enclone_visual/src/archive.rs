@@ -105,6 +105,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     TextInput::new(u, "", &slf.user_value[j], move |x: String| {
                         Message::UserName(x, j)
                     })
+                    .width(Units(345))
                     .font(DEJAVU)
                     .padding(2),
                 )
