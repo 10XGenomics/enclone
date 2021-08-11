@@ -35,10 +35,38 @@ impl EncloneVisual {
                 if res.is_err() {
                     xprintln!(
                         "Was Unable to write history to the file {}, \
-                        so Save on Exit Failed.\n",
+                        so Save failed.\n",
                         filename
                     );
                     std::process::exit(1);
+                }
+                Command::none()
+            }
+
+            Message::Exit => {
+                if true {
+                    if self.save_on_exit {
+                        let dir;
+                        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+                            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+                        } else {
+                            dir = format!("{}/history", self.visual);
+                        }
+                        let mut now = format!("{:?}", Local::now());
+                        now = now.replace("T", "___");
+                        now = now.before(".").to_string();
+                        let filename = format!("{}/{}", dir, now);
+                        let res = write_enclone_visual_history(&self.h, &filename);
+                        if res.is_err() {
+                            xprintln!(
+                                "Was Unable to write history to the file {}, \
+                                so Save on Exit failed.\n",
+                                filename
+                            );
+                            std::process::exit(1);
+                        }
+                    }
+                    std::process::exit(0);
                 }
                 Command::none()
             }
@@ -520,34 +548,6 @@ impl EncloneVisual {
 
             Message::SaveOnExit => {
                 self.save_on_exit = !self.save_on_exit;
-                Command::none()
-            }
-
-            Message::Exit => {
-                if true {
-                    if self.save_on_exit {
-                        let dir;
-                        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-                            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
-                        } else {
-                            dir = format!("{}/history", self.visual);
-                        }
-                        let mut now = format!("{:?}", Local::now());
-                        now = now.replace("T", "___");
-                        now = now.before(".").to_string();
-                        let filename = format!("{}/{}", dir, now);
-                        let res = write_enclone_visual_history(&self.h, &filename);
-                        if res.is_err() {
-                            xprintln!(
-                                "Was Unable to write history to the file {}, \
-                                so Save on Exit Failed.\n",
-                                filename
-                            );
-                            std::process::exit(1);
-                        }
-                    }
-                    std::process::exit(0);
-                }
                 Command::none()
             }
 
