@@ -216,7 +216,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             archive_scrollable = archive_scrollable.push(row);
 
             if slf.archive_share_requested[i] {
-                archive_scrollable = archive_scrollable.push(share_body);
+                // archive_scrollable = archive_scrollable.push(share_body);
             }
 
             if slf.restore_msg[i].len() > 0 {
