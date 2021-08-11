@@ -50,14 +50,16 @@ impl Application for EncloneVisual {
             }
         }
         if home.len() == 0 {
-            eprintln!("Unable to determine home directory.  This is unexpected and \
+            eprintln!(
+                "Unable to determine home directory.  This is unexpected and \
                 pathological.\nPlease report this problem!\n"
             );
             std::process::exit(1);
         }
         let enclone = format!("{}/enclone", home);
         if !path_exists(&enclone) {
-            eprintln!("Oddly, you do not have a directory ~/enclone.  Normally this would be\n\
+            eprintln!(
+                "Oddly, you do not have a directory ~/enclone.  Normally this would be\n\
                 created by following the installation instructions at bit.ly/enclone.  Please do \
                 that or at least create the directory.\n"
             );
@@ -68,7 +70,8 @@ impl Application for EncloneVisual {
         if !path_exists(&history) {
             let res = create_dir(&history);
             if res.is_err() {
-                eprintln!("Unable to create the directory ~/enclone/history.  This is odd an \
+                eprintln!(
+                    "Unable to create the directory ~/enclone/history.  This is odd an \
                     unexpected.\nPlease report this problem!\n"
                 );
                 std::process::exit(1);
@@ -468,8 +471,7 @@ impl Application for EncloneVisual {
         if self.save_in_progress {
             save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));
         }
-        let save_button = Button::new(&mut self.save_button, save_text)
-            .on_press(Message::Save);
+        let save_button = Button::new(&mut self.save_button, save_text).on_press(Message::Save);
         let mut save_on_exit_text = Text::new("On Exit").width(Units(66));
         if self.save_on_exit {
             save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
@@ -480,8 +482,11 @@ impl Application for EncloneVisual {
             .spacing(8)
             .push(save_button)
             .push(save_on_exit_button);
-        let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive").width(Units(66)))
-            .on_press(Message::ArchiveOpen(Ok(())));
+        let archive_button = Button::new(
+            &mut self.archive_open_button,
+            Text::new("Archive").width(Units(66)),
+        )
+        .on_press(Message::ArchiveOpen(Ok(())));
         let mut top_row = Row::new()
             .align_items(Align::Center)
             .push(left_buttons)

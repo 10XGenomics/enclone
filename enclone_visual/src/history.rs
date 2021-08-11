@@ -231,7 +231,9 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn read_command_list_and_name_and_origin(filename: &str) -> Result<(Vec<String>, String, String), ()> {
+pub fn read_command_list_and_name_and_origin(
+    filename: &str,
+) -> Result<(Vec<String>, String, String), ()> {
     let total;
     let n;
     let name_length;

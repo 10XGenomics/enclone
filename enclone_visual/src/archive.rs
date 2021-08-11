@@ -34,8 +34,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         "▒ restore - Restore a saved session by checking the restore box.  \
             This deletes your current session!",
     );
-    let text4 =
-        Text::new("▒ delete - Delete a saved session by checking the delete box.");
+    let text4 = Text::new("▒ delete - Delete a saved session by checking the delete box.");
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
@@ -55,30 +54,30 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     fn share_col() -> Column<'static, Message> {
         let c = Color::from_rgb(0.4, 0.1, 0.2);
         Column::new()
-        .push(Space::with_height(Units(8)))
-        .push(
-            Text::new(
-                "           Enter user names (usually first.last), one per line, \
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(
+                    "           Enter user names (usually first.last), one per line, \
             and check the box to the right.",
-            )
-            .size(16)
-            .color(c),
-        )
-        .push(Space::with_height(Units(4)))
-        .push(
-            Text::new("           A new line will appear once you do so.")
+                )
                 .size(16)
                 .color(c),
-        )
-        .push(Space::with_height(Units(4)))
-        .push(
-            Text::new(
-                "           Lines may be prepopulated based on your recent shares; \
-            you can check them.",
             )
-            .size(16)
-            .color(c),
-        )
+            .push(Space::with_height(Units(4)))
+            .push(
+                Text::new("           A new line will appear once you do so.")
+                    .size(16)
+                    .color(c),
+            )
+            .push(Space::with_height(Units(4)))
+            .push(
+                Text::new(
+                    "           Lines may be prepopulated based on your recent shares; \
+            you can check them.",
+                )
+                .size(16)
+                .color(c),
+            )
     }
 
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
@@ -102,18 +101,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             share_body = share_body.push(Space::with_height(Units(8)));
             let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
-                .push(TextInput::new(
-                    u,
-                    "", 
-                    &slf.user_value[j],
-                    move |x: String| { Message::UserName(x, j) })
-                    .font(DEJAVU).padding(2))
+                .push(
+                    TextInput::new(u, "", &slf.user_value[j], move |x: String| {
+                        Message::UserName(x, j)
+                    })
+                    .font(DEJAVU)
+                    .padding(2),
+                )
                 .push(Space::with_width(Units(8)))
-                .push(Checkbox::new(
-                    slf.user_selected[j],
-                    "",
-                    move |x: bool| Message::UserSelected(x, j),
-                ))
+                .push(Checkbox::new(slf.user_selected[j], "", move |x: bool| {
+                    Message::UserSelected(x, j)
+                }))
                 .push(Space::with_width(Units(4)));
             if !slf.user_selected[j] {
                 row = row.push(Text::new("       ").font(DEJAVU));
@@ -121,7 +119,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 if slf.user_valid[j] {
                     row = row.push(Text::new("valid  ").font(DEJAVU));
                 } else {
-            row = row.push(Text::new("invalid").font(DEJAVU));
+                    row = row.push(Text::new("invalid").font(DEJAVU));
                 }
             }
             share_body = share_body.push(row);
@@ -133,14 +131,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
         }
         if valids > 0 {
-            let row = Row::new().align_items(Align::Center)
+            let row = Row::new()
+                .align_items(Align::Center)
                 .push(Text::new("           check to complete share").size(16))
                 .push(Space::with_width(Units(14)))
-                .push(Checkbox::new(
-                    slf.do_share,
-                    "",
-                    Message::DoShare,
-                ))
+                .push(Checkbox::new(slf.do_share, "", Message::DoShare))
                 .push(Text::new("or uncheck share to cancel").size(16));
             share_body = share_body.push(Space::with_height(Units(8)));
             share_body = share_body.push(row);

@@ -20,7 +20,6 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
             Message::DoShare(check_val) => {
                 self.do_share = check_val;
                 if check_val {
@@ -36,7 +35,11 @@ impl EncloneVisual {
                             index = i;
                         }
                     }
-                    let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), self.archive_list[index]);
+                    let path = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        self.archive_list[index]
+                    );
                     if !path_exists(&path) {
                         xprintln!("could not find path for archive file\n");
                         std::process::exit(1);
@@ -55,7 +58,7 @@ impl EncloneVisual {
                     }
                     let sender = users::get_current_username();
                     let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
-    
+
                     let _share_dir = share_dir; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     let _content = content; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     let _sender = sender; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -551,8 +554,8 @@ impl EncloneVisual {
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let (command_list, name, origin) 
-                            = read_command_list_and_name_and_origin(&path).unwrap();
+                        let (command_list, name, origin) =
+                            read_command_list_and_name_and_origin(&path).unwrap();
                         self.archived_command_list[i] = Some(command_list);
                         self.archive_name_value[i] = name;
                         self.archive_origin[i] = origin;

@@ -306,7 +306,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     // Save remote share.
 
     if config.contains_key("REMOTE_SHARE") {
-        REMOTE_SHARE.lock().unwrap().push(config["REMOTE_SHARE"].clone());
+        REMOTE_SHARE
+            .lock()
+            .unwrap()
+            .push(config["REMOTE_SHARE"].clone());
     }
 
     // Determine if the server is remote.

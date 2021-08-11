@@ -1,12 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use chrono::prelude::*;
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
     *,
 };
 use crate::*;
+use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use enclone_core::{parse_bsv, version_string};
 use enclone_main::main_enclone::*;
@@ -335,7 +335,10 @@ impl Analyzer for EncloneAnalyzer {
             if !path_exists(&rdir) {
                 let res = std::fs::create_dir(&rdir);
                 if res.is_err() {
-                    return Err(Status::new(Code::Internal, "unable to create share directory"));
+                    return Err(Status::new(
+                        Code::Internal,
+                        "unable to create share directory",
+                    ));
                 }
             }
             let mut now = format!("{:?}", Local::now());
@@ -362,13 +365,19 @@ impl Analyzer for EncloneAnalyzer {
         }
         let me = format!("{:?}", me.unwrap());
         if !path_exists(&dir) {
-            return Err(Status::new(Code::Internal, "share directory does not exist"));
+            return Err(Status::new(
+                Code::Internal,
+                "share directory does not exist",
+            ));
         }
         let rdir = format!("{}/{}", dir, me);
         if !path_exists(&rdir) {
             let res = std::fs::create_dir(&rdir);
             if res.is_err() {
-                return Err(Status::new(Code::Internal, "unable to create my share directory"));
+                return Err(Status::new(
+                    Code::Internal,
+                    "unable to create my share directory",
+                ));
             }
         }
         let all = dir_list(&rdir);
@@ -427,11 +436,8 @@ impl Analyzer for EncloneAnalyzer {
                 }
             }
         }
-        Ok(Response::new(ReleaseMySharesResponse {
-            ok: true,
-        }))
+        Ok(Response::new(ReleaseMySharesResponse { ok: true }))
     }
-
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
