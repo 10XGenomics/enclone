@@ -687,8 +687,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let sender = users::get_current_username();
                     let sender = format!("{:?}", sender.unwrap());
                     let content = SHARE_CONTENT.lock().unwrap()[0].clone();
+                    let nrecip = SHARE_RECIPIENTS.lock().unwrap().len();
                     let mut recipients = Vec::<String>::new();
-                    for i in 0..SHARE_RECIPIENTS.lock().unwrap().len() {
+                    for i in 0..nrecip {
                         recipients.push(SHARE_RECIPIENTS.lock().unwrap()[i].clone());
                     }
                     let request = tonic::Request::new(SendShareRequest {

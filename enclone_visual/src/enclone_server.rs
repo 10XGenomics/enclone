@@ -363,7 +363,8 @@ impl Analyzer for EncloneAnalyzer {
         if me.is_none() {
             return Err(Status::new(Code::Internal, "unable to determine user name"));
         }
-        let me = format!("{:?}", me.unwrap());
+        let me = me.unwrap();
+        let me = me.to_string_lossy();
         if !path_exists(&dir) {
             return Err(Status::new(
                 Code::Internal,
