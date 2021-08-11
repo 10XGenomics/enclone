@@ -12,6 +12,7 @@ use gui_structures::ComputeState::*;
 use iced::{Color, Command};
 use io_utils::*;
 use itertools::Itertools;
+use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
@@ -23,7 +24,44 @@ impl EncloneVisual {
             Message::DoShare(check_val) => {
                 self.do_share = check_val;
                 if check_val {
+                    let mut recipients = Vec::<String>::new();
+                    for i in 0..self.user_value.len() {
+                        if self.user_valid[i] {
+                            recipients.push(self.user_value[i].clone());
+                        }
+                    }
+                    let mut index = 0;
+                    for i in 0..self.archive_share_requested.len() {
+                        if self.archive_share_requested[i] {
+                            index = i;
+                        }
+                    }
+                    let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), self.archive_list[index]);
+                    if !path_exists(&path) {
+                        xprintln!("could not find path for archive file\n");
+                        std::process::exit(1);
+                    }
+                    let mut content = Vec::<u8>::new();
+                    let f = File::open(&path);
+                    if f.is_err() {
+                        xprintln!("could not open archive file\n");
+                        std::process::exit(1);
+                    }
+                    let mut f = f.unwrap();
+                    let res = f.read_to_end(&mut content);
+                    if res.is_err() {
+                        xprintln!("could not read archive file\n");
+                        std::process::exit(1);
+                    }
+                    let sender = users::get_current_username();
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+    
+                    let _share_dir = share_dir; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    let _content = content; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    let _sender = sender; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    let _recipients = recipients; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 }
+
                 Command::none()
             }
 
