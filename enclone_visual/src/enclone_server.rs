@@ -8,7 +8,7 @@ use crate::proto::{
 use crate::*;
 use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
-use enclone_core::{parse_bsv, version_string};
+use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
 use enclone_version::*;
@@ -500,7 +500,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("I am process {}.", std::process::id());
     eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
-    let mut version = version_string();
+    let mut version = current_version_string();
     let current_dir = std::env::current_dir()?;
     let current_dir = current_dir.display();
     let current_executable = std::env::current_exe()?;
