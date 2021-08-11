@@ -29,7 +29,7 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::launch_gui;
-use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest, UserNameRequest};
+use crate::proto::{analyzer_client::AnalyzerClient, *};
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
@@ -681,6 +681,34 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     cleanup();
                     std::process::exit(0);
                 }
+
+                if SENDING_SHARE.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let sender = users::get_current_username();
+                    let sender = format!("{:?}", sender.unwrap());
+                    let content = SHARE_CONTENT.lock().unwrap()[0].clone();
+                    let mut recipients = Vec::<String>::new();
+                    for i in 0..SHARE_RECIPIENTS.lock().unwrap().len() {
+                        recipients.push(SHARE_RECIPIENTS.lock().unwrap()[i].clone());
+                    }
+                    let request = tonic::Request::new(SendShareRequest {
+                        share_dir: share_dir,
+                        content: content,
+                        sender: sender,
+                        recipients: recipients,
+                    });
+                    let response = client.share_session(request).await;
+                    if response.is_err() {
+                        eprintln!("\nAttempt to share session failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    SENDING_SHARE.store(false, SeqCst);
+                }
+
+
                 if TESTING_USER_NAME.load(SeqCst) {
                     let user_name = USER_NAME.lock().unwrap()[0].clone();
                     let request = tonic::Request::new(UserNameRequest {
@@ -697,6 +725,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     USER_NAME_VALID.store(valid, SeqCst);
                     TESTING_USER_NAME.store(false, SeqCst);
                 }
+
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();
@@ -776,22 +805,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
         });
-
-        /*
-        for user_name in [...........................].iter() {
-            USER_NAME.lock().unwrap().clear();
-            USER_NAME.lock().unwrap().push(user_name.to_string());
-            TESTING_USER_NAME.store(true, SeqCst);
-            loop {
-                thread::sleep(Duration::from_millis(10));
-                if !TESTING_USER_NAME.load(SeqCst) {
-                    let valid = USER_NAME_VALID.load(SeqCst);
-                    println!("{} is {}", user_name, valid);
-                    break;
-                }
-            }
-        }
-        */
 
         // Launch GUI.
 

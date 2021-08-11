@@ -56,15 +56,18 @@ impl EncloneVisual {
                         xprintln!("could not read archive file\n");
                         std::process::exit(1);
                     }
-                    let sender = users::get_current_username();
-                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
-
-                    let _share_dir = share_dir; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    let _content = content; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    let _sender = sender; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    let _recipients = recipients; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    SHARE_CONTENT.lock().unwrap().clear();
+                    SHARE_CONTENT.lock().unwrap().push(content);
+                    SHARE_RECIPIENTS.lock().unwrap().clear();
+                    for i in 0..recipients.len() {
+                        SHARE_RECIPIENTS.lock().unwrap().push(recipients[i].clone());
+                    }
+                    SENDING_SHARE.store(true, SeqCst);
                 }
+                Command::perform(compute_share(), Message::CompleteDoShare)
+            }
 
+            Message::CompleteDoShare(_) => {
                 Command::none()
             }
 

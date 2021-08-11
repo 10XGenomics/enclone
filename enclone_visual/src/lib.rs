@@ -90,6 +90,13 @@ async fn compute() -> Result<(), String> {
     Ok(())
 }
 
+async fn compute_share() -> Result<(), String> {
+    while SENDING_SHARE.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
+    Ok(())
+}
+
 async fn flash_copy_image_button() -> Result<(), String> {
     Ok(())
 }
@@ -330,6 +337,7 @@ pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
 pub static TESTING_USER_NAME: AtomicBool = AtomicBool::new(false);
+pub static SENDING_SHARE: AtomicBool = AtomicBool::new(false);
 pub static USER_NAME_VALID: AtomicBool = AtomicBool::new(false);
 pub static DONE: AtomicBool = AtomicBool::new(false);
 pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
@@ -342,6 +350,7 @@ pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref REMOTE_SHARE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SHARE_RECIPIENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref VISUAL_HISTORY_DIR: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -350,6 +359,7 @@ lazy_static! {
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref SHARE_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
     pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<u32>>> =
         Mutex::new(Vec::<Vec<u32>>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
