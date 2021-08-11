@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use chrono::prelude::*;
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
-use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
@@ -59,8 +59,17 @@ impl EncloneVisual {
                     SHARE_CONTENT.lock().unwrap().clear();
                     SHARE_CONTENT.lock().unwrap().push(content);
                     SHARE_RECIPIENTS.lock().unwrap().clear();
+                    let days = Utc::now().num_days_from_ce();
                     for i in 0..recipients.len() {
                         SHARE_RECIPIENTS.lock().unwrap().push(recipients[i].clone());
+                        let mut user_name = [0 as u8; 32];
+                        for i in 0..recipients[i].len() {
+                            user_name[i] = recipients[i].as_bytes()[i];
+                        }
+                        self.shares.push( Share {
+                            days_since_ce: days,
+                            user_id: user_name,
+                        });
                     }
                     SENDING_SHARE.store(true, SeqCst);
                 }
