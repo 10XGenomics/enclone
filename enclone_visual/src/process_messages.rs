@@ -38,6 +38,14 @@ impl EncloneVisual {
                             break;
                         }
                     }
+                    if self.user_valid[index] {
+                        if self.user_value[self.user_value.len() - 1].len() > 0 {
+                            self.user.push(iced::text_input::State::new());
+                            self.user_value.push(String::new());
+                            self.user_selected.push(false);
+                            self.user_valid.push(false);
+                        }
+                    }
                 }
                 Command::none()
             }
