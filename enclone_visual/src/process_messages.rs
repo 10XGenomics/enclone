@@ -67,9 +67,7 @@ impl EncloneVisual {
                 Command::perform(compute_share(), Message::CompleteDoShare)
             }
 
-            Message::CompleteDoShare(_) => {
-                Command::none()
-            }
+            Message::CompleteDoShare(_) => Command::none(),
 
             Message::Save => {
                 self.save_in_progress = true;

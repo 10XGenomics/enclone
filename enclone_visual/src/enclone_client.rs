@@ -708,7 +708,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     SENDING_SHARE.store(false, SeqCst);
                 }
 
-
                 if TESTING_USER_NAME.load(SeqCst) {
                     let user_name = USER_NAME.lock().unwrap()[0].clone();
                     let request = tonic::Request::new(UserNameRequest {
