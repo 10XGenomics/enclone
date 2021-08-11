@@ -94,23 +94,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .scroller_width(12)
         .style(style::ScrollableStyle);
 
-    /*
-    let row = Row::new()
-        .align_items(Align::Center)
-        .push(Text::new("0   today       now         ").font(DEJAVU))
-        .push(Space::with_width(Units(301)))
-        .push(Checkbox::new(slf.share_requested, "", Message::Share))
-        .push(Space::with_width(Units(58)))
-        .push(TextInput::new(&mut slf.name, "", &slf.h.name_value, Message::Name).padding(2))
-        .push(Space::with_width(Units(8)))
-        .push(Checkbox::new(
-            slf.name_change_requested,
-            "",
-            Message::NameChange,
-        ));
-    archive_scrollable = archive_scrollable.push(row);
-    */
-
     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     let mut sharing = false;
     for i in 0..slf.archive_share_requested.len() {
@@ -150,6 +133,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             share_body = share_body.push(row);
         }
     }
+    let mut share_body = Some(share_body);
 
     let mut count = 0;
     for (i, y) in slf.archive_name.iter_mut().enumerate() {
@@ -225,7 +209,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
 
             if slf.archive_share_requested[i] {
-                // archive_scrollable = archive_scrollable.push(share_body);
+                archive_scrollable = archive_scrollable.push(share_body.take().unwrap());
             }
 
             if slf.restore_msg[i].len() > 0 {
@@ -239,10 +223,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .size(16),
                 );
                 archive_scrollable = archive_scrollable.push(row);
-            }
-
-            if slf.archive_share_requested[i] {
-                archive_scrollable = archive_scrollable.push(share_col());
             }
 
             if slf.expand_archive_entry[i] {
