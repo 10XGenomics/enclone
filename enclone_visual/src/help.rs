@@ -115,7 +115,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Column::new()
                         .push(Space::with_height(Units(10)))
                         .push(Text::new(
-                            "Here are three buttons that appear in the upper right \
+                            "Here are four buttons that appear in the upper right \
                              corner of the screen:",
                         ))
                         .push(Space::with_height(Units(20)))
@@ -128,14 +128,20 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         )
                         .push(
                             Text::new(
-                                "2.  Save on Exit, to cause the session to be saved \
+                                "2.  Save, to cause the session to be saved.",
+                            )
+                            .width(max_width2),
+                        )
+                        .push(
+                            Text::new(
+                                "3.  On Exit, to cause the session to be saved \
                                  when the Exit button is pushed.",
                             )
                             .width(max_width2),
                         )
                         .push(
                             Text::new(
-                                "3.  Archive.  Opens a page to allow restoration of a previous \
+                                "4.  Archive.  Opens a page to allow restoration or sharing of a previous \
                                  session.",
                             )
                             .width(max_width2),
