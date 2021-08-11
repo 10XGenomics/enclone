@@ -93,6 +93,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .scrollbar_width(SCROLLBAR_WIDTH)
         .scroller_width(12)
         .style(style::ScrollableStyle);
+
+    /*
     let row = Row::new()
         .align_items(Align::Center)
         .push(Text::new("0   today       now         ").font(DEJAVU))
@@ -107,38 +109,48 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Message::NameChange,
         ));
     archive_scrollable = archive_scrollable.push(row);
-    if slf.share_requested {
-        archive_scrollable = archive_scrollable.push(share_col());
-        for (i, u) in slf.user.iter_mut().enumerate() {
-            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+    */
+
+    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+    let mut sharing = false;
+    for i in 0..slf.archive_share_requested.len() {
+        if slf.archive_share_requested[i] {
+            sharing = true;
+        }
+    }
+    let mut share_body = Column::new();
+    if sharing {
+        share_body = share_body.push(share_col());
+        for (j, u) in slf.user.iter_mut().enumerate() {
+            share_body = share_body.push(Space::with_height(Units(8)));
             let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(TextInput::new(
                     u,
                     "", 
-                    &slf.user_value[i],
-                    move |x: String| { Message::UserName(x, i) })
+                    &slf.user_value[j],
+                    move |x: String| { Message::UserName(x, j) })
                     .font(DEJAVU).padding(2))
                 .push(Space::with_width(Units(8)))
                 .push(Checkbox::new(
-                    slf.user_selected[i],
+                    slf.user_selected[j],
                     "",
-                    move |x: bool| Message::UserSelected(x, i),
+                    move |x: bool| Message::UserSelected(x, j),
                 ))
                 .push(Space::with_width(Units(4)));
-            if !slf.user_selected[i] {
+            if !slf.user_selected[j] {
                 row = row.push(Text::new("       ").font(DEJAVU));
             } else {
-                if slf.user_valid[i] {
+                if slf.user_valid[j] {
                     row = row.push(Text::new("valid  ").font(DEJAVU));
                 } else {
-                    row = row.push(Text::new("invalid").font(DEJAVU));
+            row = row.push(Text::new("invalid").font(DEJAVU));
                 }
             }
-            archive_scrollable = archive_scrollable.push(row);
+            share_body = share_body.push(row);
         }
     }
-    archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+
     let mut count = 0;
     for (i, y) in slf.archive_name.iter_mut().enumerate() {
         let x = &slf.archive_list[i];
@@ -202,6 +214,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
             archive_scrollable = archive_scrollable.push(row);
+
+            if slf.archive_share_requested[i] {
+                archive_scrollable = archive_scrollable.push(share_body);
+            }
+
             if slf.restore_msg[i].len() > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
                 let mut row = Row::new();
