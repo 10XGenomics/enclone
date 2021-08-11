@@ -12,7 +12,6 @@ use gui_structures::ComputeState::*;
 use iced::{Color, Command};
 use io_utils::*;
 use itertools::Itertools;
-use std::env;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
@@ -22,42 +21,11 @@ impl EncloneVisual {
         match message {
 
             Message::Save => {
-                let mut home = String::new();
-                for (key, value) in env::vars() {
-                    if key == "HOME" {
-                        home = value.clone();
-                    }
-                }
-                if home.len() == 0 {
-                    xprintln!(
-                        "Weird, unable to determine your home directory, \
-                        so Save on Exit failed.\n"
-                    );
-                    std::process::exit(1);
-                }
                 let dir;
                 if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
                     dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
                 } else {
-                    let enclone = format!("{}/enclone", home);
-                    if !path_exists(&enclone) {
-                        xprintln!(
-                            "You do not have a directory ~/enclone, \
-                            so Save on Exit failed.\n"
-                        );
-                        std::process::exit(1);
-                    }
-                    dir = format!("{}/visual/history", enclone);
-                }
-                if !path_exists(&dir) {
-                    let res = std::fs::create_dir(&dir);
-                    if res.is_err() {
-                        xprintln!(
-                            "Unable to create the directory \
-                            ~/enclone/visual/history, so Save on Exit Failed.\n"
-                        );
-                        std::process::exit(1);
-                    }
+                    dir = format!("{}/history", self.visual);
                 }
                 let mut now = format!("{:?}", Local::now());
                 now = now.replace("T", "___");
@@ -558,42 +526,11 @@ impl EncloneVisual {
             Message::Exit => {
                 if true {
                     if self.save_on_exit {
-                        let mut home = String::new();
-                        for (key, value) in env::vars() {
-                            if key == "HOME" {
-                                home = value.clone();
-                            }
-                        }
-                        if home.len() == 0 {
-                            xprintln!(
-                                "Weird, unable to determine your home directory, \
-                                so Save on Exit failed.\n"
-                            );
-                            std::process::exit(1);
-                        }
                         let dir;
                         if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
                             dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
                         } else {
-                            let enclone = format!("{}/enclone", home);
-                            if !path_exists(&enclone) {
-                                xprintln!(
-                                    "You do not have a directory ~/enclone, \
-                                    so Save on Exit failed.\n"
-                                );
-                                std::process::exit(1);
-                            }
-                            dir = format!("{}/visual/history", enclone);
-                        }
-                        if !path_exists(&dir) {
-                            let res = std::fs::create_dir(&dir);
-                            if res.is_err() {
-                                xprintln!(
-                                    "Unable to create the directory \
-                                    ~/enclone/visual/history, so Save on Exit Failed.\n"
-                                );
-                                std::process::exit(1);
-                            }
+                            dir = format!("{}/history", self.visual);
                         }
                         let mut now = format!("{:?}", Local::now());
                         now = now.replace("T", "___");
