@@ -17,7 +17,7 @@ use iced_native::{event, subscription, window, Event};
 use io_utils::*;
 use messages::Message;
 use std::env;
-use std::fs::{metadata, File};
+use std::fs::{create_dir, metadata, File};
 use std::io::Read;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -43,30 +43,55 @@ impl Application for EncloneVisual {
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
+        let mut home = String::new();
+        for (key, value) in env::vars() {
+            if key == "HOME" {
+                home = value.clone();
+            }
+        }
+        if home.len() == 0 {
+            eprintln!("Unable to determine home directory.  This is unexpected and \
+                pathological.\nPlease report this problem!\n"
+            );
+            std::process::exit(1);
+        }
+        let enclone = format!("{}/enclone", home);
+        if !path_exists(&enclone) {
+            eprintln!("Oddly, you do not have a directory ~/enclone.  Normally this would be\n\
+                created by following the installation instructions at bit.ly/enclone.  Please do \
+                that or at least create the directory.\n"
+            );
+            std::process::exit(1);
+        }
+        x.visual = format!("{}/visual", enclone);
+        let history = format!("{}/history", x.visual);
+        if !path_exists(&history) {
+            let res = create_dir(&history);
+            if res.is_err() {
+                eprintln!("Unable to create the directory ~/enclone/history.  This is odd an \
+                    unexpected.\nPlease report this problem!\n"
+                );
+                std::process::exit(1);
+            }
+        }
         if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
             x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
         } else {
-            for (key, value) in env::vars() {
-                if key == "HOME" {
-                    let home = value.clone();
-                    let enclone = format!("{}/enclone", home);
-                    x.archive_dir = Some(format!("{}/visual/history", enclone));
+            x.archive_dir = Some(history.clone());
 
-                    // Read shares.  If the file is corrupted, silently ignore it.
+            // Read shares.  If the file is corrupted, silently ignore it.
 
-                    let shares = format!("{}/enclone/visual/shares", home);
-                    if path_exists(&shares) {
-                        let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
-                        let n = std::mem::size_of::<Share>();
-                        if share_size % n == 0 {
-                            let mut bytes = Vec::<u8>::new();
-                            let mut f = File::open(&shares).unwrap();
-                            f.read(&mut bytes).unwrap();
-                            assert_eq!(bytes.len(), share_size);
-                            unsafe {
-                                x.shares = bytes.align_to::<Share>().1.to_vec();
-                            }
-                        }
+            let shares = format!("{}/shares", x.visual);
+            if path_exists(&shares) {
+                let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                let n = std::mem::size_of::<Share>();
+                if share_size % n == 0 {
+                    let mut bytes = Vec::<u8>::new();
+                    let mut f = File::open(&shares).unwrap();
+                    f.read(&mut bytes).unwrap();
+                    assert_eq!(bytes.len(), share_size);
+                    unsafe {
+                        x.shares = bytes.align_to::<Share>().1.to_vec();
                     }
                 }
             }
