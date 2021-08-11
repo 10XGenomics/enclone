@@ -40,6 +40,15 @@ impl EncloneVisual {
             }
             Message::Share(check_val) => {
                 self.share_requested = check_val;
+                if !check_val {
+                    self.user.clear();
+                    self.user_value.clear();
+                    self.user_selected.clear();
+                } else {
+                    self.user.push(iced::text_input::State::new());
+                    self.user_value.push(String::new());
+                    self.user_selected.push(false);
+                }
                 Command::none()
             }
             Message::ArchiveShare(check_val, index) => {
