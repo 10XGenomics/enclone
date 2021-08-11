@@ -124,6 +124,7 @@ pub struct EncloneVisual {
     pub user_value: Vec<String>,
     pub user_selected: Vec<bool>,
     pub user_valid: Vec<bool>,
+    pub do_share: bool,
     //
     // current window dimensions
     //

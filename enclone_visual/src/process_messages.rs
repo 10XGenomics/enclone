@@ -20,6 +20,11 @@ impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
 
+            Message::DoShare(check_val) => {
+                self.do_share = check_val;
+                Command::none()
+            }
+
             Message::Save => {
                 self.save_in_progress = true;
                 let dir;

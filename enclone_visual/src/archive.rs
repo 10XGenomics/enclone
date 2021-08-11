@@ -79,12 +79,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .size(16)
             .color(c),
         )
-        .push(Space::with_height(Units(4)))
-        .push(
-            Text::new("           Push Dismiss at the top when you're done, or uncheck share to cancel.")
-                .size(16)
-                .color(c),
-        )
     }
 
     let mut archive_scrollable = Scrollable::new(&mut slf.scroll)
@@ -130,6 +124,25 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             row = row.push(Text::new("invalid").font(DEJAVU));
                 }
             }
+            share_body = share_body.push(row);
+        }
+        let mut valids = 0;
+        for x in slf.user_valid.iter() {
+            if *x {
+                valids += 1;
+            }
+        }
+        if valids > 0 {
+            let row = Row::new().align_items(Align::Center)
+                .push(Text::new("           check to complete share").size(16))
+                .push(Space::with_width(Units(13)))
+                .push(Checkbox::new(
+                    slf.do_share,
+                    "",
+                    Message::DoShare,
+                ))
+                .push(Text::new("or uncheck share to cancel").size(16));
+            share_body = share_body.push(Space::with_height(Units(8)));
             share_body = share_body.push(row);
         }
     }
