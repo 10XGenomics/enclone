@@ -685,7 +685,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if SENDING_SHARE.load(SeqCst) {
                     let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
                     let sender = users::get_current_username();
-                    let sender = format!("{:?}", sender.unwrap());
+                    let sender = sender.unwrap().to_string_lossy().to_string();
                     let content = SHARE_CONTENT.lock().unwrap()[0].clone();
                     let nrecip = SHARE_RECIPIENTS.lock().unwrap().len();
                     let mut recipients = Vec::<String>::new();
