@@ -20,6 +20,10 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::UserName(x, index) => {
+                self.user_value[index] = x.to_string();
+                Command::none()
+            }
             Message::UserSelected(check_val, index) => {
                 self.user_selected[index] = check_val;
                 if check_val {

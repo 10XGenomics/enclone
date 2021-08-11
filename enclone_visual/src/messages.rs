@@ -41,4 +41,5 @@ pub enum Message {
     ArchiveShare(bool, usize),
     Share(bool),
     UserSelected(bool, usize),
+    UserName(String, usize),
 }

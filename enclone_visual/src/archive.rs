@@ -108,6 +108,18 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     archive_scrollable = archive_scrollable.push(row);
     if slf.share_requested {
         archive_scrollable = archive_scrollable.push(share_col());
+        for (i, u) in slf.user.iter_mut().enumerate() {
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            let row = Row::new()
+                .push(TextInput::new(
+                    u,
+                    "", 
+                    &slf.user_value[i],
+                    move |x: String| { Message::UserName(x, i) })
+                    .font(DEJAVU))
+                .push(Space::with_width(Units(4)));
+            archive_scrollable = archive_scrollable.push(row);
+        }
     }
     archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     let mut count = 0;
