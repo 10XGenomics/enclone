@@ -33,6 +33,32 @@ pub fn u32_from_bytes(x: &[u8]) -> u32 {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn save_string(x: &String) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    bytes.append(&mut u32_bytes(x.len()));
+    bytes.append(&mut x.as_bytes().to_vec());
+    bytes
+}
+
+pub fn restore_string(x: &Vec<u8>, pos: &mut usize) -> Result<String, ()> {
+    if *pos + 4 > x.len() {
+        return Err(());
+    }
+    let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    if *pos + k > x.len() {
+        return Err(());
+    }
+    let s = String::from_utf8(x[*pos..*pos + k].to_vec());
+    if s.is_err() {
+        return Err(());
+    }
+    *pos += k;
+    Ok(s.unwrap())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn save_vec_string(x: &Vec<String>) -> Vec<u8> {
     let mut bytes = Vec::<u8>::new();
     bytes.append(&mut u32_bytes(x.len()));

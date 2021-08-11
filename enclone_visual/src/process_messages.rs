@@ -506,7 +506,8 @@ impl EncloneVisual {
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let (command_list, name) = read_command_list_and_name(&path).unwrap();
+                        let (command_list, name, _origin) 
+                            = read_command_list_and_name_and_origin(&path).unwrap();
                         self.archived_command_list[i] = Some(command_list);
                         self.archive_name_value[i] = name;
                     }
