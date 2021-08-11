@@ -30,6 +30,7 @@ pub enum Message {
     ConsoleClose,
     ArchiveOpen(Result<(), String>),
     ArchiveClose,
+    Save,
     SaveOnExit,
     Restore(bool, usize),
     ExpandArchiveEntry(bool, usize),

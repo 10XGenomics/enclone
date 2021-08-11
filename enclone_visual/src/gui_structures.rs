@@ -54,6 +54,7 @@ pub struct EncloneVisual {
     pub summary_mode: bool,
     pub console_mode: bool,
     pub archive_mode: bool,
+    pub save: bool,
     pub save_on_exit: bool,
     pub shares: Vec<Share>,
     //
@@ -86,6 +87,7 @@ pub struct EncloneVisual {
     pub cookbook_button: button::State,
     pub console_open_button: button::State,
     pub console_close_button: button::State,
+    pub save_button: button::State,
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,

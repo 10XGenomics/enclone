@@ -20,10 +20,66 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+
+            Message::Save => {
+                let mut home = String::new();
+                for (key, value) in env::vars() {
+                    if key == "HOME" {
+                        home = value.clone();
+                    }
+                }
+                if home.len() == 0 {
+                    xprintln!(
+                        "Weird, unable to determine your home directory, \
+                        so Save on Exit failed.\n"
+                    );
+                    std::process::exit(1);
+                }
+                let dir;
+                if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+                    dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+                } else {
+                    let enclone = format!("{}/enclone", home);
+                    if !path_exists(&enclone) {
+                        xprintln!(
+                            "You do not have a directory ~/enclone, \
+                            so Save on Exit failed.\n"
+                        );
+                        std::process::exit(1);
+                    }
+                    dir = format!("{}/visual/history", enclone);
+                }
+                if !path_exists(&dir) {
+                    let res = std::fs::create_dir(&dir);
+                    if res.is_err() {
+                        xprintln!(
+                            "Unable to create the directory \
+                            ~/enclone/visual/history, so Save on Exit Failed.\n"
+                        );
+                        std::process::exit(1);
+                    }
+                }
+                let mut now = format!("{:?}", Local::now());
+                now = now.replace("T", "___");
+                now = now.before(".").to_string();
+                let filename = format!("{}/{}", dir, now);
+                let res = write_enclone_visual_history(&self.h, &filename);
+                if res.is_err() {
+                    xprintln!(
+                        "Was Unable to write history to the file {}, \
+                        so Save on Exit Failed.\n",
+                        filename
+                    );
+                    std::process::exit(1);
+                }
+                Command::none()
+            }
+
             Message::UserName(x, index) => {
                 self.user_value[index] = x.to_string();
                 Command::none()
             }
+
             Message::UserSelected(check_val, index) => {
                 self.user_selected[index] = check_val;
                 if check_val {
@@ -49,6 +105,7 @@ impl EncloneVisual {
                 }
                 Command::none()
             }
+
             Message::Share(check_val) => {
                 self.share_requested = check_val;
                 if !check_val {
@@ -64,10 +121,12 @@ impl EncloneVisual {
                 }
                 Command::none()
             }
+
             Message::ArchiveShare(check_val, index) => {
                 self.archive_share_requested[index] = check_val;
                 Command::none()
             }
+
             Message::NameChange(check_val) => {
                 self.name_change_requested = check_val;
                 if !check_val {
@@ -75,10 +134,12 @@ impl EncloneVisual {
                 }
                 Command::none()
             }
+
             Message::Name(x) => {
                 self.h.name_value = x.to_string();
                 Command::none()
             }
+
             Message::ArchiveNameChange(check_val, index) => {
                 self.archive_name_change_requested[index] = check_val;
                 if !check_val {
@@ -86,10 +147,12 @@ impl EncloneVisual {
                 }
                 Command::none()
             }
+
             Message::ArchiveName(x, index) => {
                 self.archive_name_value[index] = x.to_string();
                 Command::none()
             }
+
             Message::DeleteArchiveEntry(check_val, index) => {
                 if !self.delete_requested[index] {
                     self.delete_requested[index] = check_val;
@@ -106,6 +169,7 @@ impl EncloneVisual {
                 }
                 Command::none()
             }
+
             Message::ExpandArchiveEntry(check_val, index) => {
                 if !self.delete_requested[index] {
                     self.expand_archive_entry[index] = check_val;

@@ -438,12 +438,18 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
-        let mut save_on_exit_text = Text::new("Save on Exit");
+        let save_button = Button::new(&mut self.save_button, Text::new("Save"))
+            .on_press(Message::Save);
+        let mut save_on_exit_text = Text::new("On Exit");
         if self.save_on_exit {
             save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
         }
         let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
             .on_press(Message::SaveOnExit);
+        let save_row = Row::new()
+            .spacing(8)
+            .push(save_button)
+            .push(save_on_exit_button);
         let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
             .on_press(Message::ArchiveOpen(Ok(())));
         let mut top_row = Row::new()
@@ -456,7 +462,7 @@ impl Application for EncloneVisual {
             .align_items(Align::End)
             .spacing(8)
             .push(console_button)
-            .push(save_on_exit_button)
+            .push(save_row)
             .push(archive_button);
         top_row = top_row.push(right_col);
         let mut content = Column::new()
