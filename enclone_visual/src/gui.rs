@@ -463,7 +463,11 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
-        let save_button = Button::new(&mut self.save_button, Text::new("Save"))
+        let mut save_text = Text::new("Save");
+        if self.save_in_progress {
+            save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));
+        }
+        let save_button = Button::new(&mut self.save_button, save_text)
             .on_press(Message::Save);
         let mut save_on_exit_text = Text::new("On Exit");
         if self.save_on_exit {

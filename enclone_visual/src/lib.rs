@@ -75,6 +75,8 @@ async fn noop0() -> Result<(), String> {
 }
 
 async fn noop1() -> Result<(), String> {
+    // Do not change this sleep amount.  It is the length of time that a button flashes red.
+    // If a different amount is needed, create a different function.
     thread::sleep(Duration::from_millis(400));
     Ok(())
 }

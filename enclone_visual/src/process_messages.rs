@@ -21,6 +21,7 @@ impl EncloneVisual {
         match message {
 
             Message::Save => {
+                self.save_in_progress = true;
                 let dir;
                 if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
                     dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
@@ -40,6 +41,11 @@ impl EncloneVisual {
                     );
                     std::process::exit(1);
                 }
+                Command::perform(noop1(), Message::CompleteSave)
+            }
+
+            Message::CompleteSave(_) => {
+                self.save_in_progress = false;
                 Command::none()
             }
 

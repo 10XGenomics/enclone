@@ -55,6 +55,7 @@ pub struct EncloneVisual {
     pub console_mode: bool,
     pub archive_mode: bool,
     pub save: bool,
+    pub save_in_progress: bool,
     pub save_on_exit: bool,
     pub shares: Vec<Share>,
     pub visual: String,

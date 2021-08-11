@@ -31,6 +31,7 @@ pub enum Message {
     ArchiveOpen(Result<(), String>),
     ArchiveClose,
     Save,
+    CompleteSave(Result<(), String>),
     SaveOnExit,
     Restore(bool, usize),
     ExpandArchiveEntry(bool, usize),
