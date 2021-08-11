@@ -110,20 +110,30 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         archive_scrollable = archive_scrollable.push(share_col());
         for (i, u) in slf.user.iter_mut().enumerate() {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
-            let row = Row::new()
+            let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(TextInput::new(
                     u,
                     "", 
                     &slf.user_value[i],
                     move |x: String| { Message::UserName(x, i) })
-                    .font(DEJAVU))
+                    .font(DEJAVU).padding(2))
                 .push(Space::with_width(Units(8)))
                 .push(Checkbox::new(
                     slf.user_selected[i],
                     "",
                     move |x: bool| Message::UserSelected(x, i),
-                ));
+                ))
+                .push(Space::with_width(Units(4)));
+            if !slf.user_selected[i] {
+                row = row.push(Text::new("       ").font(DEJAVU));
+            } else {
+                if slf.user_valid[i] {
+                    row = row.push(Text::new("valid  ").font(DEJAVU));
+                } else {
+                    row = row.push(Text::new("invalid").font(DEJAVU));
+                }
+            }
             archive_scrollable = archive_scrollable.push(row);
         }
     }

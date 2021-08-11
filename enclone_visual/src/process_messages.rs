@@ -27,7 +27,6 @@ impl EncloneVisual {
             Message::UserSelected(check_val, index) => {
                 self.user_selected[index] = check_val;
                 if check_val {
-                    // not sure it will work to do this "computation" inside the message processing
                     let user = &self.user_value[index];
                     USER_NAME.lock().unwrap().clear();
                     USER_NAME.lock().unwrap().push(user.to_string());
