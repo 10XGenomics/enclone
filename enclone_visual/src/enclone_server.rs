@@ -19,7 +19,8 @@ use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
-use std::io::Write;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -348,6 +349,89 @@ impl Analyzer for EncloneAnalyzer {
         }
         Ok(Response::new(SendShareResponse { ok: true }))
     }
+
+    async fn get_my_shares(
+        &self,
+        request: Request<GetMySharesRequest>,
+    ) -> Result<Response<GetMySharesResponse>, Status> {
+        let req: GetMySharesRequest = request.into_inner();
+        let dir = &req.share_dir;
+        let me = users::get_current_username();
+        if me.is_none() {
+            return Err(Status::new(Code::Internal, "unable to determine user name"));
+        }
+        let me = format!("{:?}", me.unwrap());
+        if !path_exists(&dir) {
+            return Err(Status::new(Code::Internal, "share directory does not exist"));
+        }
+        let rdir = format!("{}/{}", dir, me);
+        if !path_exists(&rdir) {
+            let res = std::fs::create_dir(&rdir);
+            if res.is_err() {
+                return Err(Status::new(Code::Internal, "unable to create my share directory"));
+            }
+        }
+        let all = dir_list(&rdir);
+        let n = all.len();
+        let mut content = vec![Vec::<u8>::new(); n];
+        let mut messages = vec![String::new(); n];
+        let mut filenames = vec![String::new(); n];
+        let rbytes = &me.as_bytes();
+        for i in 0..n {
+            let filename = format!("{}/{}", rdir, all[i]);
+            let f = File::open(&filename);
+            if f.is_err() {
+                return Err(Status::new(Code::Internal, "unable to open share file"));
+            }
+            let mut f = f.unwrap();
+            let mut bytes = Vec::<u8>::new();
+            let res = f.read_to_end(&mut bytes);
+            if res.is_err() {
+                return Err(Status::new(Code::Internal, "unable to read share file"));
+            }
+            for i in 0..bytes.len() {
+                bytes[i] = bytes[i].wrapping_sub(rbytes[i % rbytes.len()]);
+            }
+            content[i] = bytes;
+            filenames[i] = all[i].clone();
+            if !all[i].contains("_") {
+                return Err(Status::new(Code::Internal, "malformed file name"));
+            }
+            let sender = all[i].rev_after("_");
+            let when = all[i].before("_");
+            if !when.contains("___") {
+                return Err(Status::new(Code::Internal, "ill-formed file name"));
+            }
+            let (date, time) = (when.before("___"), when.after("___"));
+            let msg = format!("session shared by {} on {} at {}", sender, date, time);
+            messages.push(msg);
+        }
+        Ok(Response::new(GetMySharesResponse {
+            content: content,
+            messages: messages,
+            filenames: filenames,
+        }))
+    }
+
+    async fn release_my_shares(
+        &self,
+        request: Request<ReleaseMySharesRequest>,
+    ) -> Result<Response<ReleaseMySharesResponse>, Status> {
+        let req: ReleaseMySharesRequest = request.into_inner();
+        for i in 0..req.filenames.len() {
+            let path = format!("{}/{}", req.share_dir, req.filenames[i]);
+            if path_exists(&path) {
+                let res = std::fs::remove_file(&path);
+                if res.is_err() {
+                    return Err(Status::new(Code::Internal, "unable to remove file"));
+                }
+            }
+        }
+        Ok(Response::new(ReleaseMySharesResponse {
+            ok: true,
+        }))
+    }
+
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

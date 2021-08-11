@@ -29,6 +29,14 @@ service Analyzer {
 
   rpc ShareSession(SendShareRequest) returns (SendShareResponse);
 
+  // Fetch my shares.
+
+  rpc get_my_shares(GetMySharesRequest) returns (GetMySharesResponse);
+
+  // Release my shares.
+
+  rpc release_my_shares(ReleaseMySharesRequest) returns (ReleaseMySharesResponse);
+
 }
 
 message Unit {}
@@ -63,12 +71,31 @@ message UserNameResponse {
 }
 
 message SendShareRequest {
-  bytes content = 1;
-  string share_dir = 2;
+  string share_dir = 1;
+  bytes content = 2;
   string sender = 3;
   repeated string recipients = 4;
 }
 
 message SendShareResponse {
+  bool ok = 1;
+}
+
+message GetMySharesRequest {
+  string share_dir = 1;
+}
+
+message GetMySharesResponse {
+  repeated bytes content = 1;
+  repeated string messages = 2;
+  repeated string filenames = 3;
+}
+
+message ReleaseMySharesRequest {
+  string share_dir = 1;
+  repeated string filenames = 2;
+}
+
+message ReleaseMySharesResponse {
   bool ok = 1;
 }
