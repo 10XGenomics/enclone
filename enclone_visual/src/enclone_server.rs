@@ -1,10 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use chrono::prelude::*;
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
-    ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit, UserNameRequest,
-    UserNameResponse,
+    *,
 };
 use crate::*;
 use enclone_core::combine_group_pics::*;
@@ -14,6 +14,7 @@ use enclone_main::stop::*;
 use enclone_version::*;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use io_utils::*;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
@@ -316,6 +317,36 @@ impl Analyzer for EncloneAnalyzer {
         let req: UserNameRequest = request.into_inner();
         let valid = is_user_name_valid(&req.user_name);
         Ok(Response::new(UserNameResponse { value: valid }))
+    }
+
+    async fn share_session(
+        &self,
+        request: Request<SendShareRequest>,
+    ) -> Result<Response<SendShareResponse>, Status> {
+        let req: SendShareRequest = request.into_inner();
+        for recip in req.recipients.iter() {
+            let mut bytes = req.content.clone();
+            let rbytes = &recip.as_bytes();
+            for i in 0..bytes.len() {
+                bytes[i] = bytes[i].wrapping_add(rbytes[i % rbytes.len()]);
+            }
+            let rdir = format!("{}/{}", req.share_dir, recip);
+            if !path_exists(&rdir) {
+                let res = std::fs::create_dir(&rdir);
+                if res.is_err() {
+                    return Err(Status::new(Code::Internal, "unable to create share directory"));
+                }
+            }
+            let mut now = format!("{:?}", Local::now());
+            now = now.replace("T", "___");
+            now = now.before(".").to_string();
+            let filename = format!("{}/{}_{}", rdir, now, req.sender);
+            let res = std::fs::write(&filename, &bytes);
+            if res.is_err() {
+                return Err(Status::new(Code::Internal, "unable to write share file"));
+            }
+        }
+        Ok(Response::new(SendShareResponse { ok: true }))
     }
 }
 

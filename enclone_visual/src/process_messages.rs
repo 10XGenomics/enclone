@@ -22,6 +22,8 @@ impl EncloneVisual {
 
             Message::DoShare(check_val) => {
                 self.do_share = check_val;
+                if check_val {
+                }
                 Command::none()
             }
 

@@ -135,7 +135,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         if valids > 0 {
             let row = Row::new().align_items(Align::Center)
                 .push(Text::new("           check to complete share").size(16))
-                .push(Space::with_width(Units(13)))
+                .push(Space::with_width(Units(14)))
                 .push(Checkbox::new(
                     slf.do_share,
                     "",

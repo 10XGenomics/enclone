@@ -24,6 +24,11 @@ service Analyzer {
   // Test a user name to see if it is valid.
 
   rpc TestUserName(UserNameRequest) returns (UserNameResponse);
+
+  // Share a session.
+
+  rpc ShareSession(SendShareRequest) returns (SendShareResponse);
+
 }
 
 message Unit {}
@@ -50,9 +55,20 @@ message ClonotypeResponse {
 }
 
 message UserNameRequest {
-    string user_name = 1;
+  string user_name = 1;
 }
 
 message UserNameResponse {
-    bool value = 1;
+  bool value = 1;
+}
+
+message SendShareRequest {
+  bytes content = 1;
+  string share_dir = 2;
+  string sender = 3;
+  repeated string recipients = 4;
+}
+
+message SendShareResponse {
+  bool ok = 1;
 }
