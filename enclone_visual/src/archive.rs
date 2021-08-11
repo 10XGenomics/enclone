@@ -215,6 +215,15 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
             archive_scrollable = archive_scrollable.push(row);
 
+            if slf.h.origin.len() > 0 {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+                archive_scrollable = archive_scrollable.push(
+                    Text::new(&format!("    {}", &slf.h.origin))
+                        .font(DEJAVU)
+                        .size(16),
+                );
+            }
+
             if slf.archive_share_requested[i] {
                 // archive_scrollable = archive_scrollable.push(share_body);
             }
