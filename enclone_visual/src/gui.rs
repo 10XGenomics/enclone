@@ -116,6 +116,7 @@ impl Application for EncloneVisual {
         x.archive_name_value = vec![String::new(); n];
         x.archive_name_change_requested = vec![false; n];
         x.archive_share_requested = vec![false; n];
+        x.archive_origin = vec![String::new(); n];
 
         // Handle test mode.
 
