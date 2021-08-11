@@ -111,13 +111,19 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         for (i, u) in slf.user.iter_mut().enumerate() {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             let row = Row::new()
+                .push(Text::new("    ").font(DEJAVU))
                 .push(TextInput::new(
                     u,
                     "", 
                     &slf.user_value[i],
                     move |x: String| { Message::UserName(x, i) })
                     .font(DEJAVU))
-                .push(Space::with_width(Units(4)));
+                .push(Space::with_width(Units(8)))
+                .push(Checkbox::new(
+                    slf.user_selected[i],
+                    "",
+                    move |x: bool| Message::UserSelected(x, i),
+                ));
             archive_scrollable = archive_scrollable.push(row);
         }
     }

@@ -48,10 +48,12 @@ impl EncloneVisual {
                     self.user.clear();
                     self.user_value.clear();
                     self.user_selected.clear();
+                    self.user_valid.clear();
                 } else {
                     self.user.push(iced::text_input::State::new());
                     self.user_value.push(String::new());
                     self.user_selected.push(false);
+                    self.user_valid.push(false);
                 }
                 Command::none()
             }
