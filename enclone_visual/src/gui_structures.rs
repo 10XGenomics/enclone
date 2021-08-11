@@ -114,6 +114,13 @@ pub struct EncloneVisual {
     pub archive_share_requested: Vec<bool>,
     pub share_requested: bool,
     //
+    // users for sharing
+    //
+    pub user: Vec<text_input::State>,
+    pub user_value: Vec<String>,
+    pub user_selected: Vec<bool>,
+    pub user_valid: Vec<bool>,
+    //
     // current window dimensions
     //
     pub width: u32,

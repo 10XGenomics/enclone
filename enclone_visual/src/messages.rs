@@ -40,4 +40,5 @@ pub enum Message {
     NameChange(bool),
     ArchiveShare(bool, usize),
     Share(bool),
+    UserSelected(bool, usize),
 }

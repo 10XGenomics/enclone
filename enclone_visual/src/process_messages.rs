@@ -20,6 +20,24 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+            Message::UserSelected(check_val, index) => {
+                self.user_selected[index] = check_val;
+                if check_val {
+                    // not sure it will work to do this "computation" inside the message processing
+                    let user = &self.user_value[index];
+                    USER_NAME.lock().unwrap().clear();
+                    USER_NAME.lock().unwrap().push(user.to_string());
+                    TESTING_USER_NAME.store(true, SeqCst);
+                    loop {
+                        thread::sleep(Duration::from_millis(10));
+                        if !TESTING_USER_NAME.load(SeqCst) {
+                            self.user_valid[index] = USER_NAME_VALID.load(SeqCst);
+                            break;
+                        }
+                    }
+                }
+                Command::none()
+            }
             Message::Share(check_val) => {
                 self.share_requested = check_val;
                 Command::none()
