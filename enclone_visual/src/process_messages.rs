@@ -581,6 +581,7 @@ impl EncloneVisual {
                 if check_val {
                     self.update_shares = true;
                     update_shares(self);
+                    self.update_shares_complete = true;
                 }
                 Command::none()
             }
@@ -597,6 +598,8 @@ impl EncloneVisual {
 
             Message::ArchiveClose => {
                 self.archive_mode = false;
+                self.update_shares = false;
+                self.update_shares_complete = false;
                 for i in 0..self.archive_share_requested.len() {
                     self.archive_share_requested[i] = false;
                 }

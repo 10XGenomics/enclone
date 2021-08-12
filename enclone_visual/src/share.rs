@@ -5,6 +5,7 @@ use crate::*;
 use crate::history::*;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
+    slf.update_shares_complete = false;
 
     // Import shares.
 

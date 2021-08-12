@@ -273,7 +273,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             count += 1;
         }
     }
-    let share_row = Row::new()
+    let mut share_row = Row::new()
         .push(Text::new("check to receive shares (if any)"))
         .push(Space::with_width(Units(8)))
         .push(Checkbox::new(
@@ -281,6 +281,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 "",
                 Message::UpdateShares,
             ));
+    if slf.update_shares_complete {
+        share_row = share_row.push(Text::new("done, uncheck and recheck to repeat if desired"));
+    }
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)
