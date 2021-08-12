@@ -196,10 +196,14 @@ impl EncloneVisual {
                             }
                             names.push(stringme(&self.shares[i].user_id[0..j]));
                         }
-                        unique_sort(&mut names);
-                        for i in 0..names.len() {
+                        names.sort();
+                        let mut freq = Vec::<(u32, String)>::new();
+                        make_freq(&names, &mut freq);
+                        const MAX_USERS_TO_SHOW: usize = 6;
+                        let show = std::cmp::min(MAX_USERS_TO_SHOW, freq.len());
+                        for i in 0..show {
                             self.user.push(iced::text_input::State::new());
-                            self.user_value.push(names[i].clone());
+                            self.user_value.push(freq[i].1.clone());
                             self.user_selected.push(false);
                             self.user_valid.push(false);
                         }
