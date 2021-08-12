@@ -738,7 +738,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             .unwrap()
                             .push(res.filenames[i].clone());
                     }
-                    SENDING_SHARE.store(false, SeqCst);
+                    GET_MY_SHARES.store(false, SeqCst);
                 }
 
                 if RELEASE_MY_SHARES.load(SeqCst) {

@@ -601,13 +601,14 @@ impl EncloneVisual {
                     let mut now = format!("{:?}", Local::now());
                     now = now.replace("T", "___");
                     now = now.before(".").to_string();
-                    let filename = format!("{}/{}.{}", dir, now, i + 1);
-                    let res = write_enclone_visual_history(&evh, &filename);
+                    let filename = format!("{}.{}", now, i + 1);
+                    let path = format!("{}/{}", dir, filename);
+                    let res = write_enclone_visual_history(&evh, &path);
                     if res.is_err() {
                         xprintln!(
                             "Was Unable to write history to the file {}, \
                             so Save on Exit failed.\n",
-                            filename
+                            path
                         );
                         std::process::exit(1);
                     }
