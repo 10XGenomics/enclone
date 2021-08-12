@@ -208,10 +208,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
             archive_scrollable = archive_scrollable.push(row);
 
-            if slf.h.origin.len() > 0 {
+            if slf.archive_origin[i].len() > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
                 archive_scrollable = archive_scrollable.push(
-                    Text::new(&format!("    {}", &slf.h.origin))
+                    Text::new(&format!("     {}", &slf.archive_origin[i]))
                         .font(DEJAVU)
                         .size(16),
                 );
