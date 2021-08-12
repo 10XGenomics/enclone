@@ -408,7 +408,7 @@ impl Analyzer for EncloneAnalyzer {
                 return Err(Status::new(Code::Internal, "malformed file name"));
             }
             let sender = all[i].rev_after("_");
-            let when = all[i].before("_");
+            let when = all[i].rev_before("_");
             if !when.contains("___") {
                 return Err(Status::new(Code::Internal, 
                     format!("ill-formed file name {}", all[i])
