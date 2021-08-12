@@ -410,7 +410,9 @@ impl Analyzer for EncloneAnalyzer {
             let sender = all[i].rev_after("_");
             let when = all[i].before("_");
             if !when.contains("___") {
-                return Err(Status::new(Code::Internal, "ill-formed file name"));
+                return Err(Status::new(Code::Internal, 
+                    format!("ill-formed file name {}", all[i])
+                ));
             }
             let (date, time) = (when.before("___"), when.after("___"));
             let msg = format!("session shared by {} on {} at {}", sender, date, time);
