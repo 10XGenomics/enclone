@@ -430,8 +430,14 @@ impl Analyzer for EncloneAnalyzer {
         request: Request<ReleaseMySharesRequest>,
     ) -> Result<Response<ReleaseMySharesResponse>, Status> {
         let req: ReleaseMySharesRequest = request.into_inner();
+        let me = users::get_current_username();
+        if me.is_none() {
+            return Err(Status::new(Code::Internal, "unable to determine user name"));
+        }
+        let me = me.unwrap();
+        let me = me.to_string_lossy();
         for i in 0..req.filenames.len() {
-            let path = format!("{}/{}", req.share_dir, req.filenames[i]);
+            let path = format!("{}/{}/{}", req.share_dir, me, req.filenames[i]);
             if path_exists(&path) {
                 let res = std::fs::remove_file(&path);
                 if res.is_err() {
