@@ -664,6 +664,9 @@ impl EncloneVisual {
 
             Message::ArchiveClose => {
                 self.archive_mode = false;
+                for i in 0..self.archive_share_requested.len() {
+                    self.archive_share_requested[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
