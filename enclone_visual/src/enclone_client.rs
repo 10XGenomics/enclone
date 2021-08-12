@@ -700,7 +700,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     });
                     let response = client.share_session(request).await;
                     if response.is_err() {
-                        eprintln!("\nAttempt to share session failed.");
+                        eprintln!("Attempt to share session failed.");
                         let err = format!("{:?}", response);
                         eprintln!("err = {}\n", err);
                         eprintln!("Please ask for help!\n");
@@ -716,7 +716,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     });
                     let response = client.get_my_shares(request).await;
                     if response.is_err() {
-                        eprintln!("\nAttempt to retrieve shared sessions failed.");
+                        eprintln!("Attempt to retrieve shared sessions failed.");
                         let err = format!("{:?}", response);
                         eprintln!("err = {}\n", err);
                         eprintln!("Please ask for help!\n");
@@ -754,7 +754,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     });
                     let response = client.release_my_shares(request).await;
                     if response.is_err() {
-                        eprintln!("\nAttempt to release shared sessions failed.");
+                        eprintln!("Attempt to release shared sessions failed.");
                         let err = format!("{:?}", response);
                         eprintln!("err = {}\n", err);
                         eprintln!("Please ask for help!\n");
