@@ -69,6 +69,12 @@ pub fn setup(
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut using_pager = false;
+    for i in 1..args.len() {
+        if is_simple_arg(&args[i], "CELLRANGER")? {
+            ctl.gen_opt.cellranger = true;
+        }
+    }
+
     // Provide help if requested.
 
     let mut bug_reports = "enclone@10xgenomics.com".to_string();
