@@ -79,39 +79,33 @@ impl EncloneVisual {
 
             Message::CompleteDoShare(_) => Command::none(),
 
+            Message::Restore(check_val, index) => {
+                if !self.just_restored && !self.delete_requested[index] {
+                    self.restore_requested[index] = check_val;
+                    self.save();
+                    let index = index + 1;
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        self.archive_list[index]
+                    );
+                    let res = read_enclone_visual_history(&filename);
+                    if res.is_ok() {
+                        self.h = res.unwrap();
+                        self.update_to_current();
+                        self.restore_msg[index] =
+                            "Restored!  Now click Dismiss at top.".to_string();
+                        self.just_restored = true;
+                    } else {
+                        self.restore_msg[index] = "Oh dear, restoration failed.".to_string();
+                    }
+                }
+                Command::none()
+            }
+
             Message::Save => {
                 self.save_in_progress = true;
-                let dir;
-                if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-                    dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
-                } else {
-                    dir = format!("{}/history", self.visual);
-                }
-                let mut now = format!("{:?}", Local::now());
-                now = now.replace("T", "___");
-                now = now.before(".").to_string();
-                let filename = format!("{}/{}", dir, now);
-                let res = write_enclone_visual_history(&self.h, &filename);
-                if res.is_err() {
-                    xprintln!(
-                        "Was Unable to write history to the file {}, \
-                        so Save failed.\n",
-                        filename
-                    );
-                    std::process::exit(1);
-                }
-                self.archive_list.insert(0, now.clone());
-                self.restore_requested.insert(0, false);
-                self.delete_requested.insert(0, false);
-                self.deleted.insert(0, false);
-                self.expand_archive_entry.insert(0, false);
-                self.restore_msg.insert(0, String::new());
-                self.archived_command_list.insert(0, None);
-                self.archive_name.insert(0, iced::text_input::State::default());
-                self.archive_name_value.insert(0, String::new());
-                self.archive_name_change_requested.insert(0, false);
-                self.archive_share_requested.insert(0, false);
-                self.archive_origin.insert(0, String::new());
+                self.save();
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
@@ -274,28 +268,6 @@ impl EncloneVisual {
             Message::ExpandArchiveEntry(check_val, index) => {
                 if !self.delete_requested[index] {
                     self.expand_archive_entry[index] = check_val;
-                }
-                Command::none()
-            }
-
-            Message::Restore(check_val, index) => {
-                if !self.just_restored && !self.delete_requested[index] {
-                    self.restore_requested[index] = check_val;
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    let res = read_enclone_visual_history(&filename);
-                    if res.is_ok() {
-                        self.h = res.unwrap();
-                        self.update_to_current();
-                        self.restore_msg[index] =
-                            "Restored!  Now click Dismiss at top.".to_string();
-                        self.just_restored = true;
-                    } else {
-                        self.restore_msg[index] = "Oh dear, restoration failed.".to_string();
-                    }
                 }
                 Command::none()
             }

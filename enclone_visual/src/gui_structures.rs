@@ -3,6 +3,7 @@
 use crate::history::*;
 use crate::*;
 use canvas_view::CanvasView;
+use chrono::prelude::*;
 use flate2::read::GzDecoder;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
@@ -229,5 +230,39 @@ impl EncloneVisual {
                 self.current_tables.clear();
             }
         }
+    }
+    pub fn save(&mut self) {
+        let dir;
+        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+        } else {
+            dir = format!("{}/history", self.visual);
+        }
+        let mut now = format!("{:?}", Local::now());
+        now = now.replace("T", "___");
+        now = now.before(".").to_string();
+        let filename = format!("{}/{}", dir, now);
+        let res = write_enclone_visual_history(&self.h, &filename);
+        if res.is_err() {
+            xprintln!(
+                "Was Unable to write history to the file {}, \
+                so Save failed.\n",
+                filename
+            );
+            std::process::exit(1);
+        }
+        self.archive_list.insert(0, now.clone());
+        self.restore_requested.insert(0, false);
+        self.delete_requested.insert(0, false);
+        self.deleted.insert(0, false);
+        self.expand_archive_entry.insert(0, false);
+        self.restore_msg.insert(0, String::new());
+        self.archived_command_list.insert(0, None);
+        self.archive_name.insert(0, iced::text_input::State::default());
+        self.archive_name_value.insert(0, String::new());
+        self.archive_name_change_requested.insert(0, false);
+        self.archive_share_requested.insert(0, false);
+        self.archive_origin.insert(0, String::new());
+        self.orig_archive_name.insert(0, String::new());
     }
 }
