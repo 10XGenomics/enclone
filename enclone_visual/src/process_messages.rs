@@ -655,6 +655,9 @@ impl EncloneVisual {
                         self.archive_name_value[i] = self.orig_archive_name[i].clone();
                     }
                 }
+                for i in 0..self.archive_name_change_requested.len() {
+                    self.archive_name_change_requested[i] = false;
+                }
                 Command::none()
             }
 
