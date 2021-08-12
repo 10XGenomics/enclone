@@ -581,6 +581,8 @@ impl EncloneVisual {
                 if check_val {
                     self.update_shares = true;
                     update_shares(self);
+                    self.orig_archive_name = self.archive_name_value.clone();
+                    self.h.orig_name_value = self.h.name_value.clone();
                     self.update_shares_complete = true;
                 }
                 Command::none()
@@ -588,7 +590,11 @@ impl EncloneVisual {
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
-                update_shares(self);
+                if self.sharing_enabled {
+                    update_shares(self);
+                }
+                self.orig_archive_name = self.archive_name_value.clone();
+                self.h.orig_name_value = self.h.name_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {

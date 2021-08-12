@@ -81,6 +81,4 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
             slf.archive_origin[i] = origin;
         }
     }
-    slf.orig_archive_name = slf.archive_name_value.clone();
-    slf.h.orig_name_value = slf.h.name_value.clone();
 }

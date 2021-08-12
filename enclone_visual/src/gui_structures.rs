@@ -120,6 +120,7 @@ pub struct EncloneVisual {
     //
     // users for sharing
     //
+    pub sharing_enabled: bool,
     pub user: Vec<text_input::State>,
     pub user_value: Vec<String>,
     pub user_selected: Vec<bool>,

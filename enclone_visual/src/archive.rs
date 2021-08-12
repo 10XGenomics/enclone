@@ -47,9 +47,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
     );
-    let labels =
-        Text::new("#   date        time     expand     restore    delete    share    name")
-            .font(DEJAVU);
+    let mut labels = "#   date        time     expand     restore    delete".to_string();
+    if slf.sharing_enabled {
+        labels += "    share";
+    }
+    labels += "    name";
+    let labels = Text::new(&labels).font(DEJAVU);
 
     fn share_col() -> Column<'static, Message> {
         let c = Color::from_rgb(0.4, 0.1, 0.2);
@@ -184,13 +187,16 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "",
                     move |x: bool| Message::DeleteArchiveEntry(x, i),
                 ))
-                .push(Space::with_width(Units(68)))
-                .push(Checkbox::new(
-                    slf.archive_share_requested[i],
-                    "",
-                    move |x: bool| Message::ArchiveShare(x, i),
-                ));
-            row = row.push(Space::with_width(Units(58)));
+                .push(Space::with_width(Units(68)));
+            if slf.sharing_enabled {
+                row = row
+                    .push(Checkbox::new(
+                        slf.archive_share_requested[i],
+                        "",
+                        move |x: bool| Message::ArchiveShare(x, i),
+                    ));
+                row = row.push(Space::with_width(Units(58)));
+            }
             row = row.push(
                 TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
                     Message::ArchiveName(x, i)
@@ -280,7 +286,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     if slf.update_shares_complete {
         share_row = share_row.push(Text::new("done, uncheck and recheck to repeat if desired"));
     }
-    let content = Column::new()
+    let mut content = Column::new()
         .spacing(SPACING)
         .padding(20)
         .push(top_bar)
@@ -289,9 +295,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text1)
         .push(text2)
         .push(text3)
-        .push(text4)
-        .push(text5)
-        .push(share_row)
+        .push(text4);
+    if slf.sharing_enabled {
+        content = content
+            .push(text5)
+            .push(share_row);
+    }
+    content = content
         .push(text6)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)
