@@ -410,8 +410,9 @@ impl Analyzer for EncloneAnalyzer {
             let sender = all[i].rev_after("_");
             let when = all[i].rev_before("_");
             if !when.contains("___") {
-                return Err(Status::new(Code::Internal, 
-                    format!("ill-formed file name {}", all[i])
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("ill-formed file name {}", all[i]),
                 ));
             }
             let (date, time) = (when.before("___"), when.after("___"));
@@ -444,8 +445,9 @@ impl Analyzer for EncloneAnalyzer {
                     return Err(Status::new(Code::Internal, "unable to remove file"));
                 }
             } else {
-                return Err(Status::new(Code::Internal, 
-                    format!("file to be removed does not exist: {}", path)
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("file to be removed does not exist: {}", path),
                 ));
             }
         }

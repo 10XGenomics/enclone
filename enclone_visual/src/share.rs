@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use chrono::prelude::*;
-use crate::*;
 use crate::history::*;
+use crate::*;
+use chrono::prelude::*;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
     slf.update_shares_complete = false;
