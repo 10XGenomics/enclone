@@ -100,6 +100,18 @@ impl EncloneVisual {
                     );
                     std::process::exit(1);
                 }
+                self.archive_list.insert(0, now.clone());
+                self.restore_requested.insert(0, false);
+                self.delete_requested.insert(0, false);
+                self.deleted.insert(0, false);
+                self.expand_archive_entry.insert(0, false);
+                self.restore_msg.insert(0, String::new());
+                self.archived_command_list.insert(0, None);
+                self.archive_name.insert(0, iced::text_input::State::default());
+                self.archive_name_value.insert(0, String::new());
+                self.archive_name_change_requested.insert(0, false);
+                self.archive_share_requested.insert(0, false);
+                self.archive_origin.insert(0, String::new());
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
