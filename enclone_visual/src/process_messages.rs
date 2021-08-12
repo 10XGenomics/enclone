@@ -63,8 +63,8 @@ impl EncloneVisual {
                     for i in 0..recipients.len() {
                         SHARE_RECIPIENTS.lock().unwrap().push(recipients[i].clone());
                         let mut user_name = [0 as u8; 32];
-                        for i in 0..recipients[i].len() {
-                            user_name[i] = recipients[i].as_bytes()[i];
+                        for j in 0..recipients[i].len() {
+                            user_name[j] = recipients[i].as_bytes()[j];
                         }
                         self.shares.push( Share {
                             days_since_ce: days,
@@ -187,6 +187,24 @@ impl EncloneVisual {
                         self.user_selected.clear();
                         self.user_valid.clear();
                     } else {
+                        let mut names = Vec::<String>::new();
+                        for i in 0..self.shares.len() {
+                            let mut j = 0;
+                            while j < self.shares[i].user_id.len() {
+                                if self.shares[i].user_id[j] == 0 {
+                                    break;
+                                }
+                                j += 1;
+                            }
+                            names.push(stringme(&self.shares[i].user_id[0..j]));
+                        }
+                        unique_sort(&mut names);
+                        for i in 0..names.len() {
+                            self.user.push(iced::text_input::State::new());
+                            self.user_value.push(names[i].clone());
+                            self.user_selected.push(false);
+                            self.user_valid.push(false);
+                        }
                         self.user.push(iced::text_input::State::new());
                         self.user_value.push(String::new());
                         self.user_selected.push(false);

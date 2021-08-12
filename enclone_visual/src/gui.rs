@@ -91,7 +91,7 @@ impl Application for EncloneVisual {
                 if share_size % n == 0 {
                     let mut bytes = Vec::<u8>::new();
                     let mut f = File::open(&shares).unwrap();
-                    f.read(&mut bytes).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
                     assert_eq!(bytes.len(), share_size);
                     unsafe {
                         x.shares = bytes.align_to::<Share>().1.to_vec();
