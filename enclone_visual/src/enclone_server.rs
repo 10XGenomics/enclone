@@ -416,7 +416,7 @@ impl Analyzer for EncloneAnalyzer {
             }
             let (date, time) = (when.before("___"), when.after("___"));
             let msg = format!("session shared by {} on {} at {}", sender, date, time);
-            messages.push(msg);
+            messages[i] = msg;
         }
         Ok(Response::new(GetMySharesResponse {
             content: content,
