@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use chrono::prelude::*;
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
 use crate::testsuite::TESTS;
 use crate::*;
+use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
@@ -66,7 +66,7 @@ impl EncloneVisual {
                         for j in 0..recipients[i].len() {
                             user_name[j] = recipients[i].as_bytes()[j];
                         }
-                        self.shares.push( Share {
+                        self.shares.push(Share {
                             days_since_ce: days,
                             user_id: user_name,
                         });
@@ -109,10 +109,7 @@ impl EncloneVisual {
 
             Message::Exit => {
                 if true {
-                    let share_bytes = 
-                        unsafe {
-                            self.shares.align_to::<u8>().1.to_vec()
-                        };
+                    let share_bytes = unsafe { self.shares.align_to::<u8>().1.to_vec() };
                     let share_file = format!("{}/shares", self.visual);
                     std::fs::write(&share_file, &share_bytes).unwrap();
                     if self.save_on_exit {
