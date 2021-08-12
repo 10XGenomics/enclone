@@ -709,6 +709,55 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     SENDING_SHARE.store(false, SeqCst);
                 }
 
+                if GET_MY_SHARES.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let request = tonic::Request::new(GetMySharesRequest {
+                        share_dir: share_dir,
+                    });
+                    let response = client.get_my_shares(request).await;
+                    if response.is_err() {
+                        eprintln!("\nAttempt to retrieve shared sessions failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    let res = response.unwrap().into_inner();
+                    let n = res.content.len();
+                    for i in 0..n {
+                        RECEIVED_SHARES_CONTENT.lock().unwrap().push(res.content[i].clone());
+                        RECEIVED_SHARES_MESSAGES.lock().unwrap().push(res.messages[i].clone());
+                        RECEIVED_SHARES_FILENAMES.lock().unwrap().push(res.filenames[i].clone());
+                    }
+                    SENDING_SHARE.store(false, SeqCst);
+                }
+
+                if RELEASE_MY_SHARES.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let n = RECEIVED_SHARES_FILENAMES.lock().unwrap().len();
+                    let mut filenames = Vec::<String>::new();
+                    for i in 0..n {
+                        filenames.push(RECEIVED_SHARES_FILENAMES.lock().unwrap()[i].clone());
+                    }
+                    let request = tonic::Request::new(ReleaseMySharesRequest {
+                        share_dir: share_dir,
+                        filenames: filenames,
+    
+                    });
+                    let response = client.release_my_shares(request).await;
+                    if response.is_err() {
+                        eprintln!("\nAttempt to release shared sessions failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    RECEIVED_SHARES_CONTENT.lock().unwrap().clear();
+                    RECEIVED_SHARES_MESSAGES.lock().unwrap().clear();
+                    RECEIVED_SHARES_FILENAMES.lock().unwrap().clear();
+                    RELEASE_MY_SHARES.store(false, SeqCst);
+                }
+
                 if TESTING_USER_NAME.load(SeqCst) {
                     let user_name = USER_NAME.lock().unwrap()[0].clone();
                     let request = tonic::Request::new(UserNameRequest {

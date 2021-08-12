@@ -578,10 +578,68 @@ impl EncloneVisual {
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
+
+                // Import shares.
+
+                GET_MY_SHARES.store(true, SeqCst);
+                while GET_MY_SHARES.load(SeqCst) {
+                    thread::sleep(Duration::from_millis(10));
+                }
+                let k = RECEIVED_SHARES_CONTENT.lock().unwrap().len();
+                let mut new_filenames = Vec::<String>::new();
+                for i in 0..k {
+                    let bytes = &RECEIVED_SHARES_CONTENT.lock().unwrap()[i];
+                    let origin = RECEIVED_SHARES_MESSAGES.lock().unwrap()[i].clone();
+                    let mut evh = EncloneVisualHistory::restore_from_bytes(&bytes).unwrap();
+                    evh.origin = origin;
+                    let dir;
+                    if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+                        dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+                    } else {
+                        dir = format!("{}/history", self.visual);
+                    }
+                    let mut now = format!("{:?}", Local::now());
+                    now = now.replace("T", "___");
+                    now = now.before(".").to_string();
+                    let filename = format!("{}/{}.{}", dir, now, i + 1);
+                    let res = write_enclone_visual_history(&evh, &filename);
+                    if res.is_err() {
+                        xprintln!(
+                            "Was Unable to write history to the file {}, \
+                            so Save on Exit failed.\n",
+                            filename
+                        );
+                        std::process::exit(1);
+                    }
+                    new_filenames.push(filename);
+                }
+                prepend_to_vec(&mut self.archive_list, &new_filenames);
+                prepend_to_vec(&mut self.restore_requested, &vec![false; k]);
+                prepend_to_vec(&mut self.delete_requested, &vec![false; k]);
+                prepend_to_vec(&mut self.deleted, &vec![false; k]);
+                prepend_to_vec(&mut self.expand_archive_entry, &vec![false; k]);
+                prepend_to_vec(&mut self.restore_msg, &vec![String::new(); k]);
+                prepend_to_vec(&mut self.archived_command_list, &vec![None; k]);
+                prepend_to_vec(&mut self.archive_name, 
+                    &vec![iced::text_input::State::default(); k]);
+                prepend_to_vec(&mut self.archive_name_value, &vec![String::new(); k]);
+                prepend_to_vec(&mut self.archive_name_change_requested, &vec![false; k]);
+                prepend_to_vec(&mut self.archive_share_requested, &vec![false; k]);
+                prepend_to_vec(&mut self.archive_origin, &vec![String::new(); k]);
+
+                // Delete remote shares.
+
+                RELEASE_MY_SHARES.store(true, SeqCst);
+                while RELEASE_MY_SHARES.load(SeqCst) {
+                    thread::sleep(Duration::from_millis(10));
+                }
+
+                // Proceed.
+
                 let n = self.archive_name.len();
                 for i in 0..n {
-                    // This is a dorky way of causing loading to occur just once per session,
-                    // and only if the archive button is pushed.
+                    // This is a dorky way of causing loading of command lists, etc. from disk
+                    // occurs just once per session, and only if the archive button is pushed.
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);

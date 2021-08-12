@@ -46,6 +46,12 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
+    let mut x_copy = x.clone();
+    *x = y.to_vec();
+    x.append(&mut x_copy);
+}
+    
 const SPACING: u16 = 20;
 const SCROLLBAR_WIDTH: u16 = 12;
 const SVG_NULL_HEIGHT: u16 = 190;
@@ -341,6 +347,8 @@ pub static SENDING_SHARE: AtomicBool = AtomicBool::new(false);
 pub static USER_NAME_VALID: AtomicBool = AtomicBool::new(false);
 pub static DONE: AtomicBool = AtomicBool::new(false);
 pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
+pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
+pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
@@ -367,6 +375,9 @@ lazy_static! {
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref USER_NAME: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref RECEIVED_SHARES_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref RECEIVED_SHARES_MESSAGES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
