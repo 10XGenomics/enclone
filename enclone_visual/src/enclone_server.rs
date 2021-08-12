@@ -437,6 +437,10 @@ impl Analyzer for EncloneAnalyzer {
                 if res.is_err() {
                     return Err(Status::new(Code::Internal, "unable to remove file"));
                 }
+            } else {
+                return Err(Status::new(Code::Internal, 
+                    format!("file to be removed does not exist: {}", path)
+                ));
             }
         }
         Ok(Response::new(ReleaseMySharesResponse { ok: true }))
