@@ -189,12 +189,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 ))
                 .push(Space::with_width(Units(68)));
             if slf.sharing_enabled {
-                row = row
-                    .push(Checkbox::new(
-                        slf.archive_share_requested[i],
-                        "",
-                        move |x: bool| Message::ArchiveShare(x, i),
-                    ));
+                row = row.push(Checkbox::new(
+                    slf.archive_share_requested[i],
+                    "",
+                    move |x: bool| Message::ArchiveShare(x, i),
+                ));
                 row = row.push(Space::with_width(Units(58)));
             }
             row = row.push(
@@ -297,9 +296,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text3)
         .push(text4);
     if slf.sharing_enabled {
-        content = content
-            .push(text5)
-            .push(share_row);
+        content = content.push(text5).push(share_row);
     }
     content = content
         .push(text6)
