@@ -51,7 +51,7 @@ pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
     *x = y.to_vec();
     x.append(&mut x_copy);
 }
-    
+
 const SPACING: u16 = 20;
 const SCROLLBAR_WIDTH: u16 = 12;
 const SVG_NULL_HEIGHT: u16 = 190;

@@ -620,8 +620,10 @@ impl EncloneVisual {
                 prepend_to_vec(&mut self.expand_archive_entry, &vec![false; k]);
                 prepend_to_vec(&mut self.restore_msg, &vec![String::new(); k]);
                 prepend_to_vec(&mut self.archived_command_list, &vec![None; k]);
-                prepend_to_vec(&mut self.archive_name, 
-                    &vec![iced::text_input::State::default(); k]);
+                prepend_to_vec(
+                    &mut self.archive_name,
+                    &vec![iced::text_input::State::default(); k],
+                );
                 prepend_to_vec(&mut self.archive_name_value, &vec![String::new(); k]);
                 prepend_to_vec(&mut self.archive_name_change_requested, &vec![false; k]);
                 prepend_to_vec(&mut self.archive_share_requested, &vec![false; k]);

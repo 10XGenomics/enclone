@@ -725,9 +725,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let res = response.unwrap().into_inner();
                     let n = res.content.len();
                     for i in 0..n {
-                        RECEIVED_SHARES_CONTENT.lock().unwrap().push(res.content[i].clone());
-                        RECEIVED_SHARES_MESSAGES.lock().unwrap().push(res.messages[i].clone());
-                        RECEIVED_SHARES_FILENAMES.lock().unwrap().push(res.filenames[i].clone());
+                        RECEIVED_SHARES_CONTENT
+                            .lock()
+                            .unwrap()
+                            .push(res.content[i].clone());
+                        RECEIVED_SHARES_MESSAGES
+                            .lock()
+                            .unwrap()
+                            .push(res.messages[i].clone());
+                        RECEIVED_SHARES_FILENAMES
+                            .lock()
+                            .unwrap()
+                            .push(res.filenames[i].clone());
                     }
                     SENDING_SHARE.store(false, SeqCst);
                 }
@@ -742,7 +751,6 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let request = tonic::Request::new(ReleaseMySharesRequest {
                         share_dir: share_dir,
                         filenames: filenames,
-    
                     });
                     let response = client.release_my_shares(request).await;
                     if response.is_err() {
