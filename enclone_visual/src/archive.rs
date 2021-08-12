@@ -273,6 +273,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             count += 1;
         }
     }
+    let share_row = Row::new()
+        .push(Text::new("check to receive shares (if any)"))
+        .push(Space::with_width(Units(8)))
+        .push(Checkbox::new(
+                slf.update_shares,
+                "",
+                Message::UpdateShares,
+            ));
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)
@@ -284,6 +292,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text3)
         .push(text4)
         .push(text5)
+        .push(share_row)
         .push(text6)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)

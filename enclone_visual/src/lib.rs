@@ -41,6 +41,7 @@ pub mod messages;
 pub mod packing;
 pub mod popover;
 pub mod process_messages;
+pub mod share;
 pub mod style;
 pub mod svg_to_geometry;
 pub mod testsuite;

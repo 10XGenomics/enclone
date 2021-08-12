@@ -45,4 +45,5 @@ pub enum Message {
     UserName(String, usize),
     DoShare(bool),
     CompleteDoShare(Result<(), String>),
+    UpdateShares(bool),
 }

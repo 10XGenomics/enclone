@@ -576,6 +576,11 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::UpdateShares(_) => {
+                // ...
+                Command::none()
+            }
+
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
 
