@@ -63,4 +63,23 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
     while RELEASE_MY_SHARES.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
+
+    // Finish update.
+
+    let n = slf.archive_name.len();
+    for i in 0..n {
+        // This is a dorky way of causing loading of command lists, etc. from disk
+        // occurs just once per session, and only if the archive button is pushed.
+        if slf.archived_command_list[i].is_none() {
+            let x = &slf.archive_list[i];
+            let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
+            let (command_list, name, origin) =
+                read_command_list_and_name_and_origin(&path).unwrap();
+            slf.archived_command_list[i] = Some(command_list);
+            slf.archive_name_value[i] = name;
+            slf.archive_origin[i] = origin;
+        }
+    }
+    slf.orig_archive_name = slf.archive_name_value.clone();
+    slf.h.orig_name_value = slf.h.name_value.clone();
 }
