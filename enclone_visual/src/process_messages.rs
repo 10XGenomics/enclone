@@ -195,6 +195,7 @@ impl EncloneVisual {
             Message::ArchiveShare(check_val, index) => {
                 if !check_val {
                     self.do_share = false;
+                    self.do_share_complete = false;
                 }
                 let mut already_sharing = false;
                 for i in 0..self.archive_share_requested.len() {
@@ -654,6 +655,7 @@ impl EncloneVisual {
             Message::ArchiveClose => {
                 self.archive_mode = false;
                 self.do_share = false;
+                self.do_share_complete = false;
                 self.user.clear();
                 self.user_value.clear();
                 self.user_selected.clear();
