@@ -127,6 +127,7 @@ pub struct EncloneVisual {
     pub user_selected: Vec<bool>,
     pub user_valid: Vec<bool>,
     pub do_share: bool,
+    pub do_share_complete: bool,
     pub update_shares: bool,
     pub update_shares_complete: bool,
     //

@@ -23,7 +23,9 @@ impl EncloneVisual {
         match message {
             Message::DoShare(check_val) => {
                 self.do_share = check_val;
-                if check_val {
+                if !check_val {
+                    self.do_share_complete = false;
+                } else {
                     let mut recipients = Vec::<String>::new();
                     for i in 0..self.user_value.len() {
                         if self.user_valid[i] {
@@ -77,7 +79,10 @@ impl EncloneVisual {
                 Command::perform(compute_share(), Message::CompleteDoShare)
             }
 
-            Message::CompleteDoShare(_) => Command::none(),
+            Message::CompleteDoShare(_) => {
+                self.do_share_complete = true;
+                Command::none()
+            }
 
             Message::Restore(check_val, index) => {
                 if !self.just_restored && !self.delete_requested[index] {

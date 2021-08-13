@@ -143,6 +143,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Text::new("or uncheck share to cancel").size(16));
             share_body = share_body.push(Space::with_height(Units(8)));
             share_body = share_body.push(row);
+            if slf.do_share_complete {
+                share_body = share_body
+                    .push(Space::with_height(Units(8)))
+                    .push(Text::new("           Done, your session has been shared!  You can uncheck the share box to make the share information vanish.").size(16));
+            }
         }
     }
     let mut share_body = Some(share_body);
