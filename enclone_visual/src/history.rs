@@ -235,7 +235,7 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn read_command_list_and_name_and_origin_and_narrative(
+pub fn read_metadata(
     filename: &str,
 ) -> Result<(Vec<String>, String, String, String), ()> {
     let total;

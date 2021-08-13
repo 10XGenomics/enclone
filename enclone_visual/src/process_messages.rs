@@ -466,8 +466,7 @@ impl EncloneVisual {
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let (command_list, name, origin, narrative) =
-                            read_command_list_and_name_and_origin_and_narrative(&path).unwrap();
+                        let (command_list, name, origin, narrative) = read_metadata(&path).unwrap();
                         self.archived_command_list[i] = Some(command_list);
                         self.archive_name_value[i] = name;
                         self.archive_origin[i] = origin;
@@ -503,7 +502,7 @@ impl EncloneVisual {
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_command_list_and_name_and_origin_and_narrative(&path);
+                        let res = read_metadata(&path);
                         if res.is_err() {
                             panic!(
                                 "Unable to read the history file at\n{}\n\
