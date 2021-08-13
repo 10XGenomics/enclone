@@ -121,6 +121,7 @@ pub struct EncloneVisual {
     pub orig_archive_name: Vec<String>,
     pub archive_share_requested: Vec<bool>,
     pub archive_origin: Vec<String>,
+    pub archive_narrative: Vec<String>,
     pub archive_doc_open: bool,
     pub share_start: Option<Instant>,
     //
@@ -269,6 +270,7 @@ impl EncloneVisual {
         self.archive_name_change_requested.insert(0, false);
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
+        self.archive_narrative.insert(0, String::new());
         self.orig_archive_name.insert(0, String::new());
     }
 }

@@ -39,10 +39,11 @@ pub struct EncloneVisualHistory {
     //
     pub history_index: u32,
     //
-    // name of this session
+    // name of this session and narrative
     //
     pub name_value: String,
     pub orig_name_value: String,
+    pub narrative: String, // not used yet
     //
     // origin of this session (if shared)
     //
@@ -89,6 +90,7 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.translated_input_history));
             bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
             bytes.append(&mut save_string(&self.origin));
+            bytes.append(&mut save_string(&self.narrative));
             let b = u32_bytes(bytes.len());
             for i in 0..4 {
                 bytes[HEADER_LENGTH + 4 + i] = b[i];
@@ -142,6 +144,7 @@ impl EncloneVisualHistory {
         let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
         let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let origin = restore_string(&bytes, &mut pos)?;
+        let narrative = restore_string(&bytes, &mut pos)?;
         let svg_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
@@ -191,6 +194,7 @@ impl EncloneVisualHistory {
             name_value: name_value.clone().unwrap(),
             orig_name_value: name_value.unwrap(),
             origin: origin,
+            narrative: narrative,
         })
     }
 }
@@ -231,9 +235,9 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn read_command_list_and_name_and_origin(
+pub fn read_command_list_and_name_and_origin_and_narrative(
     filename: &str,
-) -> Result<(Vec<String>, String, String), ()> {
+) -> Result<(Vec<String>, String, String, String), ()> {
     let total;
     let n;
     let name_length;
@@ -285,7 +289,8 @@ pub fn read_command_list_and_name_and_origin(
         commands.push(translated_input_hist_uniq[i].clone());
     }
     let origin = restore_string(&bytes, &mut pos)?;
-    Ok((commands, name, origin))
+    let narrative = restore_string(&bytes, &mut pos)?;
+    Ok((commands, name, origin, narrative))
 }
 
 pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistory, ()> {

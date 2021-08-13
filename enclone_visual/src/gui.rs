@@ -121,6 +121,7 @@ impl Application for EncloneVisual {
         x.archive_name_change_requested = vec![false; n];
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
+        x.archive_narrative = vec![String::new(); n];
         x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
 
         // Handle test mode.

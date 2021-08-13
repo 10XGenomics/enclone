@@ -55,6 +55,7 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
     prepend_to_vec(&mut slf.archive_name_change_requested, &vec![false; k]);
     prepend_to_vec(&mut slf.archive_share_requested, &vec![false; k]);
     prepend_to_vec(&mut slf.archive_origin, &vec![String::new(); k]);
+    prepend_to_vec(&mut slf.archive_narrative, &vec![String::new(); k]);
 
     // Delete remote shares.
 
