@@ -122,6 +122,7 @@ pub struct EncloneVisual {
     pub archive_share_requested: Vec<bool>,
     pub archive_origin: Vec<String>,
     pub archive_doc_open: bool,
+    pub share_start: Option<Instant>,
     //
     // users for sharing
     //

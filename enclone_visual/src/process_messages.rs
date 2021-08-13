@@ -582,6 +582,7 @@ impl EncloneVisual {
             }
 
             Message::UpdateShares => {
+                self.share_start = Some(Instant::now());
                 self.receive_shares_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 Command::perform(noop(), Message::UpdateSharesComplete)
             }
@@ -605,6 +606,17 @@ impl EncloneVisual {
                 self.orig_archive_name = self.archive_name_value.clone();
                 self.h.orig_name_value = self.h.name_value.clone();
                 self.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+
+                // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
+                // keeps the "Receive shares" button red for at least that amount of time.
+
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.share_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+
                 Command::none()
             }
 
