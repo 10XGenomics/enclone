@@ -206,7 +206,7 @@ impl Application for EncloneVisual {
             let res = create_dir(&history);
             if res.is_err() {
                 eprintln!(
-                    "Unable to create the directory ~/enclone/history.  This is odd an \
+                    "Unable to create the directory ~/enclone/visual/history.  This is odd and \
                     unexpected.\nPlease report this problem!\n"
                 );
                 std::process::exit(1);
