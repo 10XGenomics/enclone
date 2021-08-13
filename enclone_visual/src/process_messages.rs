@@ -654,6 +654,10 @@ impl EncloneVisual {
             Message::ArchiveClose => {
                 self.archive_mode = false;
                 self.do_share = false;
+                self.user.clear();
+                self.user_value.clear();
+                self.user_selected.clear();
+                self.user_valid.clear();
                 for i in 0..self.archive_share_requested.len() {
                     self.archive_share_requested[i] = false;
                 }
