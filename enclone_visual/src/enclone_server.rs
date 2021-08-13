@@ -341,14 +341,14 @@ impl Analyzer for EncloneAnalyzer {
                         "unable to create share directory",
                     ));
                 }
-                let perms = std::fs::Permissions::from_mode(0o775);
-                let res = std::fs::set_permissions(&rdir, perms);
-                if res.is_err() {
-                    return Err(Status::new(
-                        Code::Internal,
-                        "unable to set permissions on share directory",
-                    ));
-                }
+            }
+            let perms = std::fs::Permissions::from_mode(0o775);
+            let res = std::fs::set_permissions(&rdir, perms);
+            if res.is_err() {
+                return Err(Status::new(
+                    Code::Internal,
+                    "unable to set permissions on share directory",
+                ));
             }
             let mut now = format!("{:?}", Local::now());
             now = now.replace("T", "___");
