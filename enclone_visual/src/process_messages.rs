@@ -21,7 +21,6 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
-
             Message::OpenArchiveDoc => {
                 self.archive_doc_open = true;
                 Command::none()

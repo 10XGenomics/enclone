@@ -5,7 +5,6 @@ use crate::*;
 use chrono::prelude::*;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
-
     // Import shares.
 
     GET_MY_SHARES.store(true, SeqCst);

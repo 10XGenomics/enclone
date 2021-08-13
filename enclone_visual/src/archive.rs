@@ -15,16 +15,21 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let archive_title = Text::new(&format!("Archive")).size(30);
     let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
         .on_press(Message::ArchiveClose);
-    let open_archive_doc_button = Button::new(&mut slf.open_archive_doc_button, 
-        Text::new("Expand documentation"))
-        .on_press(Message::OpenArchiveDoc);
-    let close_archive_doc_button = Button::new(&mut slf.close_archive_doc_button, 
-        Text::new("Hide documentation"))
-        .on_press(Message::CloseArchiveDoc);
-    let receive_shares_button = Button::new(&mut slf.receive_shares_button,
-        Text::new("Receive shares")
-        .color(slf.receive_shares_button_color))
-        .on_press(Message::UpdateShares);
+    let open_archive_doc_button = Button::new(
+        &mut slf.open_archive_doc_button,
+        Text::new("Expand documentation"),
+    )
+    .on_press(Message::OpenArchiveDoc);
+    let close_archive_doc_button = Button::new(
+        &mut slf.close_archive_doc_button,
+        Text::new("Hide documentation"),
+    )
+    .on_press(Message::CloseArchiveDoc);
+    let receive_shares_button = Button::new(
+        &mut slf.receive_shares_button,
+        Text::new("Receive shares").color(slf.receive_shares_button_color),
+    )
+    .on_press(Message::UpdateShares);
     let mut top_bar = Row::new()
         .push(archive_title)
         .push(Space::with_width(Length::Fill));
@@ -178,12 +183,21 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             if slf.do_share_complete {
                 share_body = share_body
                     .push(Space::with_height(Units(8)))
-                    .push(Text::new("           Done, your session has been shared!  \
-                        You can uncheck the share box to make the share information vanish."
-                    ).size(16))
+                    .push(
+                        Text::new(
+                            "           Done, your session has been shared!  \
+                        You can uncheck the share box to make the share information vanish.",
+                        )
+                        .size(16),
+                    )
                     .push(Space::with_height(Units(8)))
-                    .push(Text::new("           You have to uncheck the share box to do \
-                        another share.").size(16));
+                    .push(
+                        Text::new(
+                            "           You have to uncheck the share box to do \
+                        another share.",
+                        )
+                        .size(16),
+                    );
             }
         }
     }

@@ -474,7 +474,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
         }
 
-        // Look at stderr.  We read exactly 200 bytes.  By design, this is enough to know that the 
+        // Look at stderr.  We read exactly 200 bytes.  By design, this is enough to know that the
         // server succeeded and enough to contain the information that the server is passing to
         // the client.
 
