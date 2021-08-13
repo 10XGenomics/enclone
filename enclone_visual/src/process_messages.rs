@@ -638,7 +638,8 @@ impl EncloneVisual {
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
                         let res = read_command_list_and_name_and_origin_and_narrative(&path);
                         if res.is_err() {
-                            xprintln!("Unable to read the history file at\n{}\n\
+                            xprintln!(
+                                "Unable to read the history file at\n{}\n\
                                 This could either be a bug in enclone or it could be that \
                                 the file is corrupted.\n",
                                 path,
