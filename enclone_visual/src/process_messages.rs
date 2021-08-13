@@ -19,7 +19,10 @@ use vector_utils::*;
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
-        MESSAGE_HISTORY.lock().unwrap().push(format!("{:?}", message));
+        MESSAGE_HISTORY
+            .lock()
+            .unwrap()
+            .push(format!("{:?}", message));
         match message {
             Message::OpenArchiveDoc => {
                 self.archive_doc_open = true;
@@ -306,9 +309,7 @@ impl EncloneVisual {
                 Command::perform(noop0(), Message::SubmitButtonPressed)
             }
 
-            Message::SubmitButtonPressed(_) => {
-                submit_button_pressed(self)
-            }
+            Message::SubmitButtonPressed(_) => submit_button_pressed(self),
 
             Message::DelButtonPressed(_) => {
                 let h = self.h.history_index - 1;
@@ -504,7 +505,8 @@ impl EncloneVisual {
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
                         let res = read_command_list_and_name_and_origin_and_narrative(&path);
                         if res.is_err() {
-                            panic!("Unable to read the history file at\n{}\n\
+                            panic!(
+                                "Unable to read the history file at\n{}\n\
                                 This could either be a bug in enclone or it could be that \
                                 the file is corrupted.\n",
                                 path,

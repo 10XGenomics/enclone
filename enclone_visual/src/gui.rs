@@ -1,10 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use chrono::{TimeZone, Utc};
 use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
 use crate::*;
+use chrono::{TimeZone, Utc};
 use enclone_core::version_string;
 use enclone_core::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use gui_structures::ComputeState::*;
@@ -112,16 +112,20 @@ pub fn prepare_for_apocalypse_visual() {
             }
             let mut messages2 = Vec::<String>::new();
             for i in 0..messages.len() {
-                if i == messages.len() - 1 || !messages[i].starts_with("InputChanged1(")
-                    || !messages[i + 1].starts_with("InputChanged1(") {
+                if i == messages.len() - 1
+                    || !messages[i].starts_with("InputChanged1(")
+                    || !messages[i + 1].starts_with("InputChanged1(")
+                {
                     messages2.push(messages[i].clone());
                 }
             }
             messages = messages2;
             let mut messages2 = Vec::<String>::new();
             for i in 0..messages.len() {
-                if i == messages.len() - 1 || !messages[i].starts_with("ArchiveName(")
-                    || !messages[i + 1].starts_with("ArchiveName(") {
+                if i == messages.len() - 1
+                    || !messages[i].starts_with("ArchiveName(")
+                    || !messages[i + 1].starts_with("ArchiveName(")
+                {
                     messages2.push(messages[i].clone());
                 }
             }
@@ -129,8 +133,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut messages2 = Vec::<String>::new();
             let mut i = 0;
             while i < messages.len() {
-                if i < messages.len() - 1 && messages[i] == "SubmitButtonPressed(Ok(()))" 
-                    && messages[i+1] == "ComputationDone(Ok(()))" {
+                if i < messages.len() - 1
+                    && messages[i] == "SubmitButtonPressed(Ok(()))"
+                    && messages[i + 1] == "ComputationDone(Ok(()))"
+                {
                     messages2.push("Submit button pressed".to_string());
                     i += 1;
                 } else {
@@ -142,8 +148,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut messages2 = Vec::<String>::new();
             let mut i = 0;
             while i < messages.len() {
-                if i < messages.len() - 1 && messages[i] == "Save" 
-                    && messages[i+1] == "CompleteSave(Ok(()))" {
+                if i < messages.len() - 1
+                    && messages[i] == "Save"
+                    && messages[i + 1] == "CompleteSave(Ok(()))"
+                {
                     messages2.push("Save button pressed".to_string());
                     i += 1;
                 } else {
@@ -155,8 +163,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut messages2 = Vec::<String>::new();
             let mut i = 0;
             while i < messages.len() {
-                if i < messages.len() - 1 && messages[i] == "UpdateShares" 
-                    && messages[i+1] == "UpdateSharesComplete(Ok(()))" {
+                if i < messages.len() - 1
+                    && messages[i] == "UpdateShares"
+                    && messages[i + 1] == "UpdateSharesComplete(Ok(()))"
+                {
                     messages2.push("Receive shares button pressed".to_string());
                     i += 1;
                 } else {
@@ -168,8 +178,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut messages2 = Vec::<String>::new();
             let mut i = 0;
             while i < messages.len() {
-                if i < messages.len() - 1 && messages[i] == "DoShare(true)"
-                    && messages[i+1] == "CompleteDoShare(Ok(()))" {
+                if i < messages.len() - 1
+                    && messages[i] == "DoShare(true)"
+                    && messages[i + 1] == "CompleteDoShare(Ok(()))"
+                {
                     messages2.push("sharing".to_string());
                     i += 1;
                 } else {
