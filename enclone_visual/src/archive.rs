@@ -15,10 +15,18 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let archive_title = Text::new(&format!("Archive")).size(30);
     let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
         .on_press(Message::ArchiveClose);
-    let top_bar = Row::new()
+    let receive_shares_button = Button::new(&mut slf.receive_shares_button,
+        Text::new("Receive shares")
+        .color(slf.receive_shares_button_color))
+        .on_press(Message::UpdateShares);
+    let mut top_bar = Row::new()
         .push(archive_title)
-        .push(Space::with_width(Length::Fill))
-        .push(archive_close_button);
+        .push(Space::with_width(Length::Fill));
+    if slf.sharing_enabled {
+        top_bar = top_bar.push(receive_shares_button);
+        top_bar = top_bar.push(Space::with_width(Units(8)));
+    }
+    top_bar = top_bar.push(archive_close_button);
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
     let text1 = Text::new(
@@ -38,8 +46,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
-         Conversely another user may share with you, and if so you will be given the option \
-            to accept the share, below here.",
+         Conversely another user may share with you.  Use the top button to receive shares.",
     );
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
@@ -283,13 +290,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             count += 1;
         }
     }
-    let mut share_row = Row::new()
-        .push(Text::new("check to receive shares (if any)"))
-        .push(Space::with_width(Units(8)))
-        .push(Checkbox::new(slf.update_shares, "", Message::UpdateShares));
-    if slf.update_shares_complete {
-        share_row = share_row.push(Text::new("done, uncheck and recheck to repeat if desired"));
-    }
     let mut content = Column::new()
         .spacing(SPACING)
         .padding(20)
@@ -301,7 +301,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(text3)
         .push(text4);
     if slf.sharing_enabled {
-        content = content.push(text5).push(share_row);
+        content = content.push(text5);
     }
     content = content
         .push(text6)

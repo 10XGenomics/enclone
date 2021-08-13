@@ -3,9 +3,10 @@
 use crate::history::*;
 use crate::*;
 use chrono::prelude::*;
+use std::time::Instant;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
-    slf.update_shares_complete = false;
+    let t = Instant::now();
 
     // Import shares.
 
@@ -63,5 +64,15 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
     RELEASE_MY_SHARES.store(true, SeqCst);
     while RELEASE_MY_SHARES.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
+    }
+
+    // Sleep so that total time for the update_shares function is at least 0.4 seconds.  This 
+    // keeps the "Receive shares" button red for at least that amount of time.
+
+    const MIN_SLEEP: f64 = 0.4;
+    let used = elapsed(&t);
+    if used < MIN_SLEEP {
+        let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+        thread::sleep(Duration::from_millis(ms));
     }
 }

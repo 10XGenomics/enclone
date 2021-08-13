@@ -570,28 +570,30 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::UpdateShares(check_val) => {
-                if check_val {
-                    self.update_shares = true;
-                    update_shares(self);
-                    let n = self.archive_name.len();
-                    for i in 0..n {
-                        // This is a dorky way of causing loading of command lists, etc. from disk
-                        // occurs just once per session, and only if the archive button is pushed.
-                        if self.archived_command_list[i].is_none() {
-                            let x = &self.archive_list[i];
-                            let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                            let (command_list, name, origin) =
-                                read_command_list_and_name_and_origin(&path).unwrap();
-                            self.archived_command_list[i] = Some(command_list);
-                            self.archive_name_value[i] = name;
-                            self.archive_origin[i] = origin;
-                        }
+            Message::UpdateShares => {
+                self.receive_shares_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop(), Message::UpdateSharesComplete)
+            }
+
+            Message::UpdateSharesComplete(_) => {
+                update_shares(self);
+                let n = self.archive_name.len();
+                for i in 0..n {
+                    // This is a dorky way of causing loading of command lists, etc. from disk
+                    // occurs just once per session, and only if the archive button is pushed.
+                    if self.archived_command_list[i].is_none() {
+                        let x = &self.archive_list[i];
+                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
+                        let (command_list, name, origin) =
+                            read_command_list_and_name_and_origin(&path).unwrap();
+                        self.archived_command_list[i] = Some(command_list);
+                        self.archive_name_value[i] = name;
+                        self.archive_origin[i] = origin;
                     }
-                    self.orig_archive_name = self.archive_name_value.clone();
-                    self.h.orig_name_value = self.h.name_value.clone();
-                    self.update_shares_complete = true;
                 }
+                self.orig_archive_name = self.archive_name_value.clone();
+                self.h.orig_name_value = self.h.name_value.clone();
+                self.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
 
@@ -625,8 +627,6 @@ impl EncloneVisual {
 
             Message::ArchiveClose => {
                 self.archive_mode = false;
-                self.update_shares = false;
-                self.update_shares_complete = false;
                 for i in 0..self.archive_share_requested.len() {
                     self.archive_share_requested[i] = false;
                 }

@@ -40,6 +40,7 @@ impl Application for EncloneVisual {
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
