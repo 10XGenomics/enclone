@@ -474,12 +474,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
         }
 
-        // Look at stderr.
+        // Look at stderr.  We read exactly 200 bytes.  By design, this is enough to know that the 
+        // server succeeded and enough to contain the information that the server is passing to
+        // the client.
 
         let mut ebuffer = [0; 200];
         let server_stderr = server_process.stderr.as_mut().unwrap();
         let tread = Instant::now();
-        server_stderr.read(&mut ebuffer).unwrap();
+        server_stderr.read_exact(&mut ebuffer).unwrap();
         if verbose {
             xprintln!(
                 "used {:.1} seconds reading from server stderr",
