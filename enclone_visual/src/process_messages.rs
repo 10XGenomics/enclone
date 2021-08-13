@@ -20,7 +20,7 @@ use vector_utils::*;
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
-        self.message_history.push(message.clone());
+        MESSAGE_HISTORY.lock().unwrap().push(format!("{:?}", message));
         match message {
             Message::OpenArchiveDoc => {
                 self.archive_doc_open = true;

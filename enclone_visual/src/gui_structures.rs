@@ -1,7 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::history::*;
-use crate::messages::*;
 use crate::*;
 use canvas_view::CanvasView;
 use chrono::prelude::*;
@@ -61,7 +60,6 @@ pub struct EncloneVisual {
     pub save_on_exit: bool,
     pub shares: Vec<Share>,
     pub visual: String,
-    pub message_history: Vec<Message>,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
