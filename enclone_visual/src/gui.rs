@@ -22,7 +22,7 @@ use itertools::Itertools;
 use messages::Message;
 use pretty_trace::*;
 use std::env;
-use std::fs::{create_dir, metadata, File};
+use std::fs::{create_dir_all, metadata, File};
 use std::io::{Read, Write};
 use std::process::Stdio;
 use std::sync::atomic::Ordering::SeqCst;
@@ -203,7 +203,7 @@ impl Application for EncloneVisual {
         x.visual = format!("{}/visual", enclone);
         let history = format!("{}/history", x.visual);
         if !path_exists(&history) {
-            let res = create_dir(&history);
+            let res = create_dir_all(&history);
             if res.is_err() {
                 eprintln!(
                     "Unable to create the directory ~/enclone/visual/history.  This is odd and \
