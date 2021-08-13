@@ -672,6 +672,9 @@ impl EncloneVisual {
                 for i in 0..self.archive_share_requested.len() {
                     self.archive_share_requested[i] = false;
                 }
+                for i in 0..self.expand_archive_entry.len() {
+                    self.expand_archive_entry[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
