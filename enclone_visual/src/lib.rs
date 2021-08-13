@@ -40,6 +40,7 @@ pub mod history;
 pub mod messages;
 pub mod packing;
 pub mod popover;
+pub mod proc1;
 pub mod process_messages;
 pub mod share;
 pub mod style;
