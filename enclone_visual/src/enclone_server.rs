@@ -21,6 +21,7 @@ use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::{Read, Write};
+use std::os::unix::fs::PermissionsExt;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -338,6 +339,14 @@ impl Analyzer for EncloneAnalyzer {
                     return Err(Status::new(
                         Code::Internal,
                         "unable to create share directory",
+                    ));
+                }
+                let perms = std::fs::Permissions::from_mode(0o775);
+                let res = std::fs::set_permissions(&rdir, perms);
+                if res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        "unable to set permissions on share directory",
                     ));
                 }
             }
