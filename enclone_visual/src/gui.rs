@@ -1,9 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use chrono::{TimeZone, Utc};
 use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
 use crate::*;
+use enclone_core::version_string;
+use enclone_core::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
@@ -15,11 +18,13 @@ use iced::{
 // use iced_native::{window, Event};
 use iced_native::{event, subscription, window, Event};
 use io_utils::*;
+use itertools::Itertools;
 use messages::Message;
 use pretty_trace::*;
 use std::env;
 use std::fs::{create_dir, metadata, File};
-use std::io::Read;
+use std::io::{Read, Write};
+use std::process::Stdio;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
@@ -27,13 +32,6 @@ use std::time::Duration;
 fn handle_resize(width: u32, height: u32) -> Option<Message> {
     Some(Message::Resize(width, height))
 }
-
-use enclone_core::version_string;
-use enclone_core::{BUG_REPORT_ADDRESS, REMOTE_HOST};
-use chrono::{TimeZone, Utc};
-use itertools::Itertools;
-use std::io::Write;
-use std::process::Stdio;
 
 pub fn prepare_for_apocalypse_visual() {
     let email = INTERNAL.load(SeqCst);
@@ -159,7 +157,6 @@ impl Application for EncloneVisual {
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         prepare_for_apocalypse_visual();
-        // PrettyTrace::new().run_this(exit_function).on();
         COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
