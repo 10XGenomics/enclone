@@ -178,7 +178,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             if slf.do_share_complete {
                 share_body = share_body
                     .push(Space::with_height(Units(8)))
-                    .push(Text::new("           Done, your session has been shared!  You can uncheck the share box to make the share information vanish.").size(16));
+                    .push(Text::new("           Done, your session has been shared!  \
+                        You can uncheck the share box to make the share information vanish."
+                    ).size(16))
+                    .push(Space::with_height(Units(8)))
+                    .push(Text::new("           You have to uncheck the share box to do \
+                        another share.").size(16));
             }
         }
     }
