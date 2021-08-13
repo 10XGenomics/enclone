@@ -136,6 +136,7 @@ pub fn prepare_for_apocalypse_visual() {
                 } else {
                     messages2.push(messages[i].clone());
                 }
+                i += 1;
             }
             messages = messages2;
             let mut messages2 = Vec::<String>::new();
@@ -148,6 +149,7 @@ pub fn prepare_for_apocalypse_visual() {
                 } else {
                     messages2.push(messages[i].clone());
                 }
+                i += 1;
             }
             messages = messages2;
             let mut messages2 = Vec::<String>::new();
@@ -160,9 +162,9 @@ pub fn prepare_for_apocalypse_visual() {
                 } else {
                     messages2.push(messages[i].clone());
                 }
+                i += 1;
             }
             messages = messages2;
-
             let mut messages2 = Vec::<String>::new();
             let mut i = 0;
             while i < messages.len() {
@@ -173,10 +175,9 @@ pub fn prepare_for_apocalypse_visual() {
                 } else {
                     messages2.push(messages[i].clone());
                 }
+                i += 1;
             }
             messages = messages2;
-
-
             for i in 0..messages.len() {
                 if messages[i] == "ArchiveOpen(Ok(()))" {
                     messages[i] = "Archive button pressed".to_string();
@@ -186,7 +187,6 @@ pub fn prepare_for_apocalypse_visual() {
                     messages[i] = "Del button pressed".to_string();
                 }
             }
-
 
             // Proceed.
 
