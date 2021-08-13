@@ -150,6 +150,43 @@ pub fn prepare_for_apocalypse_visual() {
                 }
             }
             messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1 && messages[i] == "UpdateShares" 
+                    && messages[i+1] == "UpdateSharesComplete(Ok(()))" {
+                    messages2.push("Receive shares button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1 && messages[i] == "DoShare(true)"
+                    && messages[i+1] == "CompleteDoShare(Ok(()))" {
+                    messages2.push("sharing".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+
+
+            for i in 0..messages.len() {
+                if messages[i] == "ArchiveOpen(Ok(()))" {
+                    messages[i] = "Archive button pressed".to_string();
+                } else if messages[i] == "ArchiveClose" {
+                    messages[i] = "Dismiss button pressed".to_string();
+                } else if messages[i] == "DelButtonPressed(Ok(()))" {
+                    messages[i] = "Del button pressed".to_string();
+                }
+            }
+
 
             // Proceed.
 
