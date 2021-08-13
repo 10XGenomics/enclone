@@ -21,6 +21,17 @@ use vector_utils::*;
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
         match message {
+
+            Message::OpenArchiveDoc => {
+                self.archive_doc_open = true;
+                Command::none()
+            }
+
+            Message::CloseArchiveDoc => {
+                self.archive_doc_open = false;
+                Command::none()
+            }
+
             Message::DoShare(check_val) => {
                 self.do_share = check_val;
                 if !check_val {

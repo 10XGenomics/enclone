@@ -15,6 +15,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let archive_title = Text::new(&format!("Archive")).size(30);
     let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
         .on_press(Message::ArchiveClose);
+    let open_archive_doc_button = Button::new(&mut slf.open_archive_doc_button, 
+        Text::new("Expand documentation"))
+        .on_press(Message::OpenArchiveDoc);
+    let close_archive_doc_button = Button::new(&mut slf.close_archive_doc_button, 
+        Text::new("Hide documentation"))
+        .on_press(Message::CloseArchiveDoc);
     let receive_shares_button = Button::new(&mut slf.receive_shares_button,
         Text::new("Receive shares")
         .color(slf.receive_shares_button_color))
@@ -27,6 +33,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         top_bar = top_bar.push(Space::with_width(Units(8)));
     }
     top_bar = top_bar.push(archive_close_button);
+
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
     let text1 = Text::new(
@@ -54,6 +61,24 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • unchecking restores the previous name\n\
          • long names are allowed but incompletely displayed.",
     );
+
+    let mut help_col = Column::new();
+    if slf.archive_doc_open {
+        help_col = help_col
+            .spacing(SPACING)
+            .push(text1)
+            .push(text2)
+            .push(text3)
+            .push(text4);
+        if slf.sharing_enabled {
+            help_col = help_col.push(text5);
+        }
+        help_col = help_col.push(text6);
+        help_col = help_col.push(close_archive_doc_button);
+    } else {
+        help_col = help_col.push(open_archive_doc_button);
+    }
+
     let mut labels = "#   date        time     expand     restore    delete".to_string();
     if slf.sharing_enabled {
         labels += "    share";
@@ -290,21 +315,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             count += 1;
         }
     }
-    let mut content = Column::new()
+    let content = Column::new()
         .spacing(SPACING)
         .padding(20)
         .push(top_bar)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(text0)
-        .push(text1)
-        .push(text2)
-        .push(text3)
-        .push(text4);
-    if slf.sharing_enabled {
-        content = content.push(text5);
-    }
-    content = content
-        .push(text6)
+        .push(help_col)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(labels)
         .push(Rule::horizontal(10).style(style::RuleStyle2))

@@ -47,4 +47,6 @@ pub enum Message {
     CompleteDoShare(Result<(), String>),
     UpdateShares,
     UpdateSharesComplete(Result<(), String>),
+    OpenArchiveDoc,
+    CloseArchiveDoc,
 }

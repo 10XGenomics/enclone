@@ -95,6 +95,8 @@ pub struct EncloneVisual {
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
     pub receive_shares_button: button::State,
+    pub open_archive_doc_button: button::State,
+    pub close_archive_doc_button: button::State,
     //
     // history
     //
@@ -119,6 +121,7 @@ pub struct EncloneVisual {
     pub orig_archive_name: Vec<String>,
     pub archive_share_requested: Vec<bool>,
     pub archive_origin: Vec<String>,
+    pub archive_doc_open: bool,
     //
     // users for sharing
     //
