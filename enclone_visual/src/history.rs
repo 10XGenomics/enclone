@@ -283,7 +283,7 @@ pub fn read_command_list_and_name_and_origin_and_narrative(
     let mut commands = Vec::<String>::new();
     for i in translated_input_history.iter() {
         let i = *i as usize;
-        if i >= translated_input_history.len() {
+        if i >= translated_input_hist_uniq.len() {
             return Err(());
         }
         commands.push(translated_input_hist_uniq[i].clone());
