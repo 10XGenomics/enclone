@@ -102,12 +102,24 @@ pub fn prepare_for_apocalypse_visual() {
             .push(bug_reports.to_string());
         fn exit_function(msg: &str) {
             let mut msg = msg.to_string();
+            let mut messages = Vec::<String>::new();
             let n = MESSAGE_HISTORY.lock().unwrap().len();
+            for i in 0..n {
+                messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
+            }
+            let mut messages2 = Vec::<String>::new();
+            for i in 0..n {
+                if i == n - 1 || !messages[i].starts_with("InputChanged1(")
+                    || !messages[i + 1].starts_with("InputChanged1(") {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
             println!("enclone visual message history:\n");
             msg += "enclone visual message history:\n\n";
-            for i in 0..n {
-                println!("[{}] {}", i + 1, MESSAGE_HISTORY.lock().unwrap()[i]);
-                msg += &mut format!("[{}] {}\n", i + 1, MESSAGE_HISTORY.lock().unwrap()[i]);
+            for i in 0..messages.len() {
+                println!("[{}] {}", i + 1, messages[i]);
+                msg += &mut format!("[{}] {}\n", i + 1, messages[i]);
             }
             println!("");
             let msg = format!("{}\n.\n", msg);
