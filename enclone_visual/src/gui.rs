@@ -102,19 +102,57 @@ pub fn prepare_for_apocalypse_visual() {
             .push(bug_reports.to_string());
         fn exit_function(msg: &str) {
             let mut msg = msg.to_string();
+
+            // Get messages and shrink.
+
             let mut messages = Vec::<String>::new();
             let n = MESSAGE_HISTORY.lock().unwrap().len();
             for i in 0..n {
                 messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
             }
             let mut messages2 = Vec::<String>::new();
-            for i in 0..n {
-                if i == n - 1 || !messages[i].starts_with("InputChanged1(")
+            for i in 0..messages.len() {
+                if i == messages.len() - 1 || !messages[i].starts_with("InputChanged1(")
                     || !messages[i + 1].starts_with("InputChanged1(") {
                     messages2.push(messages[i].clone());
                 }
             }
             messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            for i in 0..messages.len() {
+                if i == messages.len() - 1 || !messages[i].starts_with("ArchiveName(")
+                    || !messages[i + 1].starts_with("ArchiveName(") {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1 && messages[i] == "SubmitButtonPressed(Ok(()))" 
+                    && messages[i+1] == "ComputationDone(Ok(()))" {
+                    messages2.push("Submit button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1 && messages[i] == "Save" 
+                    && messages[i+1] == "CompleteSave(Ok(()))" {
+                    messages2.push("Save button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+
+            // Proceed.
+
             println!("enclone visual message history:\n");
             msg += "enclone visual message history:\n\n";
             for i in 0..messages.len() {
