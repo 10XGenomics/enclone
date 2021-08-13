@@ -302,6 +302,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     prepare_for_apocalypse(&args, internal, &bug_reports);
+    BUG_REPORTS.lock().unwrap().push(bug_reports);
 
     // Save remote share.
 
