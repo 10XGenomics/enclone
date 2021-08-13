@@ -377,7 +377,7 @@ impl Analyzer for EncloneAnalyzer {
             if res.is_err() {
                 return Err(Status::new(
                     Code::Internal,
-                    "unable to create my share directory",
+                    format!("unable to create my share directory {}", rdir),
                 ));
             }
         }
