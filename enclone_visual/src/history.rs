@@ -16,6 +16,7 @@ pub struct EncloneVisualHistory {
     pub summary_hist_uniq: Vec<String>, // each entry is a summary
     pub input1_hist_uniq: Vec<String>,  // each entry is the originating command 1
     pub input2_hist_uniq: Vec<String>,  // each entry is the originating command 2
+    pub narrative_hist_uniq: Vec<String>,  // each entry is the narrative
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
@@ -28,6 +29,7 @@ pub struct EncloneVisualHistory {
     pub summary_history: Vec<u32>,          // each entry is a summary
     pub input1_history: Vec<u32>,           // each entry is the originating command 1
     pub input2_history: Vec<u32>,           // each entry is the originating command 2
+    pub narrative_history: Vec<u32>,        // each entry is the narrative
     pub translated_input_history: Vec<u32>, // each entry is the translated originating command
     pub displayed_tables_history: Vec<u32>, // each entry is the tables that are displayed
     pub table_comp_history: Vec<u32>,       // each entry is the compressed list of all tables
@@ -104,6 +106,7 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
             bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
             bytes.append(&mut save_vec_string(&self.input2_hist_uniq));
+            bytes.append(&mut save_vec_string(&self.narrative_hist_uniq));
             bytes.append(&mut save_vec_string_comp(&self.displayed_tables_hist_uniq));
             bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
             bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
@@ -112,6 +115,7 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_u32(&self.summary_history));
             bytes.append(&mut save_vec_u32(&self.input1_history));
             bytes.append(&mut save_vec_u32(&self.input2_history));
+            bytes.append(&mut save_vec_u32(&self.narrative_history));
             bytes.append(&mut save_vec_u32(&self.displayed_tables_history));
             bytes.append(&mut save_vec_u32(&self.table_comp_history));
             bytes.append(&mut save_vec_u32(&self.last_widths_history));
@@ -166,6 +170,7 @@ impl EncloneVisualHistory {
         let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input2_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let narrative_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let displayed_tables_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
         let last_widths_hist_uniq = restore_vec_vec_u32(&bytes, &mut pos)?;
@@ -174,6 +179,7 @@ impl EncloneVisualHistory {
         let summary_history = restore_vec_u32(&bytes, &mut pos)?;
         let input1_history = restore_vec_u32(&bytes, &mut pos)?;
         let input2_history = restore_vec_u32(&bytes, &mut pos)?;
+        let narrative_history = restore_vec_u32(&bytes, &mut pos)?;
         let displayed_tables_history = restore_vec_u32(&bytes, &mut pos)?;
         let table_comp_history = restore_vec_u32(&bytes, &mut pos)?;
         let last_widths_history = restore_vec_u32(&bytes, &mut pos)?;
@@ -194,6 +200,7 @@ impl EncloneVisualHistory {
             summary_hist_uniq: summary_hist_uniq,
             input1_hist_uniq: input1_hist_uniq,
             input2_hist_uniq: input2_hist_uniq,
+            narrative_hist_uniq: narrative_hist_uniq,
             displayed_tables_hist_uniq: displayed_tables_hist_uniq,
             table_comp_hist_uniq: table_comp_hist_uniq,
             last_widths_hist_uniq: last_widths_hist_uniq,
@@ -202,6 +209,7 @@ impl EncloneVisualHistory {
             summary_history: summary_history,
             input1_history: input1_history,
             input2_history: input2_history,
+            narrative_history: narrative_history,
             displayed_tables_history: displayed_tables_history,
             table_comp_history: table_comp_history,
             last_widths_history: last_widths_history,

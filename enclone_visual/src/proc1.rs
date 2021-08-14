@@ -92,6 +92,10 @@ pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
                 .insert(hi as usize, slf.h.input2_hist_uniq.len() as u32);
             slf.h.input2_hist_uniq.push(slf.input2_value.clone());
             slf.h
+                .narrative_history
+                .insert(hi as usize, slf.h.narrative_hist_uniq.len() as u32);
+            slf.h.narrative_hist_uniq.push(slf.narrative_value.clone());
+            slf.h
                 .translated_input_history
                 .insert(hi as usize, slf.h.translated_input_hist_uniq.len() as u32);
             slf.h

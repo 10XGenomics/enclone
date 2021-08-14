@@ -51,4 +51,5 @@ pub enum Message {
     OpenArchiveDoc,
     CloseArchiveDoc,
     ArchiveNarrative(usize),
+    Narrative,
 }

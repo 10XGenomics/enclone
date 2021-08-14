@@ -563,6 +563,34 @@ impl Application for EncloneVisual {
             )
             .on_press(Message::SummaryOpen(Ok(())));
 
+            // Create narrative button.
+
+            let mut logx = String::new();
+            if self.h.history_index >= 1 {
+                let mut cmd = self.h.narrative_hist_uniq
+                    [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
+                    .clone();
+                if cmd.len() == 0 {
+                    cmd = "Narrative: click to paste in clipboard".to_string();
+                }
+                let mut rows = Vec::<Vec<String>>::new();
+                let folds = fold(&cmd, MAX_LINE);
+                for i in 0..folds.len() {
+                    rows.push(vec![folds[i].clone()]);
+                }
+                for i in 0..rows.len() {
+                    if i > 0 {
+                        logx += "\n";
+                    }
+                    logx += &mut rows[i][0].clone();
+                }
+            }
+            let narrative_button = Button::new(
+                &mut self.narrative_button,
+                Text::new(&logx).font(DEJAVU_BOLD).size(12),
+            )
+            .on_press(Message::Narrative);
+
             // Build the command column.
 
             let mut row = Row::new().spacing(8);
@@ -588,6 +616,7 @@ impl Application for EncloneVisual {
             );
             col = col.push(row);
             col = col.push(summary_button);
+            col = col.push(narrative_button);
 
             // Add the command column to the row.
 

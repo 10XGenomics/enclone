@@ -25,6 +25,29 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Narrative => {
+                self.modified = true;
+                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
+                if ctx.is_err() {
+                    xprintln!("\nSomething went wrong accessing clipboard.");
+                    xprintln!("This is weird so please ask for help.");
+                    std::process::exit(1);
+                }
+                let mut ctx = ctx.unwrap();
+                let copy = ctx.get_contents();
+                if copy.is_err() {
+                    xprintln!("\nSomething went wrong copying from clipboard.");
+                    xprintln!("This is weird so please ask for help.");
+                    std::process::exit(1);
+                }
+                let copy = format!("{}", ctx.get_contents().unwrap());
+                self.narrative_value = copy.clone();
+                let len = self.h.narrative_hist_uniq.len();
+                self.h.narrative_hist_uniq.push(copy);
+                self.h.narrative_history.push(len as u32);
+                Command::none()
+            }
+
             Message::ArchiveNarrative(i) => {
                 self.modified = true;
                 let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
@@ -390,6 +413,7 @@ impl EncloneVisual {
                 self.h.summary_history.remove(h as usize);
                 self.h.input1_history.remove(h as usize);
                 self.h.input2_history.remove(h as usize);
+                self.h.narrative_history.remove(h as usize);
                 self.h.translated_input_history.remove(h as usize);
                 self.h.displayed_tables_history.remove(h as usize);
                 self.h.table_comp_history.remove(h as usize);
@@ -747,6 +771,17 @@ impl EncloneVisual {
                 } else {
                     self.h.summary_history.insert(hi as usize, len as u32);
                     self.h.summary_hist_uniq.push(reply_summary.clone());
+                }
+                let len = self.h.narrative_hist_uniq.len();
+                if len > 0 && self.h.narrative_hist_uniq[len - 1] == self.narrative_value {
+                    self.h
+                        .narrative_history
+                        .insert(hi as usize, (len - 1) as u32);
+                } else {
+                    self.h
+                        .narrative_history
+                        .insert(hi as usize, len as u32);
+                    self.h.narrative_hist_uniq.push(self.narrative_value.clone());
                 }
                 let len = self.h.displayed_tables_hist_uniq.len();
                 if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {

@@ -34,6 +34,7 @@ pub struct EncloneVisual {
     pub input2: text_input::State,
     pub input1_value: String,
     pub input2_value: String,
+    pub narrative_value: String,
     pub input_value: String,
     pub translated_input_value: String,
     pub output_value: String,
@@ -100,6 +101,7 @@ pub struct EncloneVisual {
     pub close_archive_doc_button: button::State,
     pub archive_name_change_button: Vec<button::State>,
     pub archive_narrative_button: Vec<button::State>,
+    pub narrative_button: button::State,
     //
     // history
     //
@@ -164,6 +166,9 @@ impl EncloneVisual {
     pub fn input2_current(&self) -> String {
         return self.h.input2_hist_uniq[self.h.input2_history[self.hi()] as usize].clone();
     }
+    pub fn narrative_current(&self) -> String {
+        return self.h.narrative_hist_uniq[self.h.narrative_history[self.hi()] as usize].clone();
+    }
     pub fn translated_input_current(&self) -> String {
         return self.h.translated_input_hist_uniq
             [self.h.translated_input_history[self.hi()] as usize]
@@ -192,6 +197,7 @@ impl EncloneVisual {
         assert_eq!(n, self.h.summary_history.len());
         assert_eq!(n, self.h.input1_history.len());
         assert_eq!(n, self.h.input2_history.len());
+        assert_eq!(n, self.h.narrative_history.len());
         assert_eq!(n, self.h.translated_input_history.len());
         assert_eq!(n, self.h.displayed_tables_history.len());
         assert_eq!(n, self.h.table_comp_history.len());
