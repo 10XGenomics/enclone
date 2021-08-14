@@ -12,11 +12,11 @@ pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
     //
-    pub svg_hist_uniq: Vec<String>,     // each entry is an SVG
-    pub summary_hist_uniq: Vec<String>, // each entry is a summary
-    pub input1_hist_uniq: Vec<String>,  // each entry is the originating command 1
-    pub input2_hist_uniq: Vec<String>,  // each entry is the originating command 2
-    pub narrative_hist_uniq: Vec<String>,  // each entry is the narrative
+    pub svg_hist_uniq: Vec<String>,       // each entry is an SVG
+    pub summary_hist_uniq: Vec<String>,   // each entry is a summary
+    pub input1_hist_uniq: Vec<String>,    // each entry is the originating command 1
+    pub input2_hist_uniq: Vec<String>,    // each entry is the originating command 2
+    pub narrative_hist_uniq: Vec<String>, // each entry is the narrative
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables

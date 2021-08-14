@@ -778,10 +778,10 @@ impl EncloneVisual {
                         .narrative_history
                         .insert(hi as usize, (len - 1) as u32);
                 } else {
+                    self.h.narrative_history.insert(hi as usize, len as u32);
                     self.h
-                        .narrative_history
-                        .insert(hi as usize, len as u32);
-                    self.h.narrative_hist_uniq.push(self.narrative_value.clone());
+                        .narrative_hist_uniq
+                        .push(self.narrative_value.clone());
                 }
                 let len = self.h.displayed_tables_hist_uniq.len();
                 if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {
