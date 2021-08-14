@@ -64,7 +64,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
          • change it using the rectangular box and then click Apply\n\
-         • up to 40 characters are allowed.",
+         • up to 30 characters are allowed.",
     );
     let text7 = Text::new(
         "▒ Narrative is displayed in a box:\n\
@@ -266,8 +266,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
                     Message::ArchiveName(x, i)
                 })
-                .width(Units(400))
-                .max_width(400)
+                .width(Units(300))
+                .max_width(300)
                 .padding(2),
             );
             row = row.push(Space::with_width(Units(8)));

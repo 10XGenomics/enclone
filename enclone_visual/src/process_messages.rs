@@ -323,7 +323,7 @@ impl EncloneVisual {
             Message::ArchiveName(x, index) => {
                 let mut y = String::new();
                 for (i, char) in x.chars().enumerate() {
-                    if i == 40 {
+                    if i == 30 {
                         break;
                     }
                     y.push(char);
