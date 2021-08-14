@@ -37,7 +37,7 @@ pub struct EncloneVisualHistory {
     //
     // index of "current" position in those vectors, plus one:
     //
-    pub history_index: u32,
+    pub history_index: u32, // this is saved but we ignore it, which seems better
     //
     // name of this session and narrative
     //

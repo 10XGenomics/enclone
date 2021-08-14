@@ -148,6 +148,10 @@ impl EncloneVisual {
                     let res = read_enclone_visual_history(&filename);
                     if res.is_ok() {
                         self.h = res.unwrap();
+                        // Ignore history index and instead rewind.
+                        if self.h.history_index > 1 {
+                            self.h.history_index = 1;
+                        }
                         self.update_to_current();
                         self.restore_msg[index] =
                             "Restored!  Now click Dismiss at top.".to_string();
@@ -420,7 +424,6 @@ impl EncloneVisual {
             }
 
             Message::BackButtonPressed(_) => {
-                self.modified = true;
                 self.h.history_index -= 1;
                 self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
@@ -431,7 +434,6 @@ impl EncloneVisual {
             }
 
             Message::ForwardButtonPressed(_) => {
-                self.modified = true;
                 self.h.history_index += 1;
                 self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
