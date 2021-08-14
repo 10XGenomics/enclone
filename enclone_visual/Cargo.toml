@@ -25,6 +25,7 @@ publish = false
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+clipboard = "0.5"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_version = { path = "../enclone_version" }

@@ -15,6 +15,7 @@ bio_edit = "0.1"
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+clipboard = "0.5"
 cocoa = "0.24"
 debruijn = "0.3"
 dirs = "3"
