@@ -26,6 +26,7 @@ impl EncloneVisual {
             .push(format!("{:?}", message));
         match message {
             Message::ArchiveNarrative(i) => {
+                self.modified = true;
                 let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
                 if ctx.is_err() {
                     xprintln!("\nSomething went wrong accessing clipboard.");
@@ -135,7 +136,7 @@ impl EncloneVisual {
                 if !self.just_restored && !self.delete_requested[index] {
                     let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.h.history_index > 0 {
+                    if self.modified {
                         self.save();
                         index += 1;
                     }
@@ -151,6 +152,7 @@ impl EncloneVisual {
                         self.restore_msg[index] =
                             "Restored!  Now click Dismiss at top.".to_string();
                         self.just_restored = true;
+                        self.modified = false;
                     } else {
                         self.restore_msg[index] = "Oh dear, restoration failed.".to_string();
                     }
@@ -366,6 +368,7 @@ impl EncloneVisual {
             }
 
             Message::GroupClicked(_message) => {
+                self.modified = true;
                 let group_id = GROUP_ID.load(SeqCst);
                 self.input_value = format!("{}", group_id);
                 self.input1_value = format!("{}", group_id);
@@ -377,6 +380,7 @@ impl EncloneVisual {
             Message::SubmitButtonPressed(_) => submit_button_pressed(self),
 
             Message::DelButtonPressed(_) => {
+                self.modified = true;
                 let h = self.h.history_index - 1;
                 self.h.svg_history.remove(h as usize);
                 self.h.summary_history.remove(h as usize);
@@ -416,6 +420,7 @@ impl EncloneVisual {
             }
 
             Message::BackButtonPressed(_) => {
+                self.modified = true;
                 self.h.history_index -= 1;
                 self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
@@ -426,6 +431,7 @@ impl EncloneVisual {
             }
 
             Message::ForwardButtonPressed(_) => {
+                self.modified = true;
                 self.h.history_index += 1;
                 self.update_to_current();
                 if !TEST_MODE.load(SeqCst) {
@@ -627,6 +633,7 @@ impl EncloneVisual {
             }
 
             Message::InputChanged1(ref value) => {
+                self.modified = true;
                 self.input1_value = value.to_string();
                 self.input_value = self.input1_value.clone();
                 if self.input1_value.len() > 0 && self.input2_value.len() > 0 {
@@ -637,6 +644,7 @@ impl EncloneVisual {
             }
 
             Message::InputChanged2(ref value) => {
+                self.modified = true;
                 self.input2_value = value.to_string();
                 self.input_value = self.input1_value.clone();
                 if self.input1_value.len() > 0 && self.input2_value.len() > 0 {
@@ -647,6 +655,7 @@ impl EncloneVisual {
             }
 
             Message::ClearButtonPressed => {
+                self.modified = true;
                 self.input1_value.clear();
                 self.input2_value.clear();
                 Command::none()

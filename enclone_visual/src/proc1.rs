@@ -10,6 +10,7 @@ use std::time::{Duration, Instant};
 use vector_utils::*;
 
 pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
+    slf.modified = true;
     let mut group_spec = true;
     let mut group_ids = Vec::<usize>::new();
     let s = slf.input_value.split(',').collect::<Vec<&str>>();

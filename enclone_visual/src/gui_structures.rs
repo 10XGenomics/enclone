@@ -28,6 +28,7 @@ use ComputeState::*;
 
 #[derive(Default)]
 pub struct EncloneVisual {
+    pub modified: bool,
     pub scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
