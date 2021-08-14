@@ -772,6 +772,7 @@ impl EncloneVisual {
                     self.h.summary_history.insert(hi as usize, len as u32);
                     self.h.summary_hist_uniq.push(reply_summary.clone());
                 }
+                self.narrative_value.clear();
                 let len = self.h.narrative_hist_uniq.len();
                 if len > 0 && self.h.narrative_hist_uniq[len - 1] == self.narrative_value {
                     self.h
