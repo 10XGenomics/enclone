@@ -53,7 +53,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
         "▒ restore - Restore a saved session by checking the restore box.  \
-            This automatically saves your current session.",
+            This automatically saves your current session, if started.",
     );
     let text4 = Text::new("▒ delete - Delete a saved session by checking the delete box.");
     let text5 = Text::new(

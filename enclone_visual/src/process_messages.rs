@@ -134,7 +134,9 @@ impl EncloneVisual {
             Message::Restore(check_val, index) => {
                 if !self.just_restored && !self.delete_requested[index] {
                     self.restore_requested[index] = check_val;
-                    self.save();
+                    if self.h.history_index > 0 {
+                        self.save();
+                    }
                     let index = index + 1;
                     let filename = format!(
                         "{}/{}",
