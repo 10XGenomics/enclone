@@ -257,10 +257,31 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::ArchiveNameChange(check_val, index) => {
-                self.archive_name_change_requested[index] = check_val;
-                if !check_val {
-                    self.archive_name_value[index] = self.orig_archive_name[index].clone();
+            Message::ArchiveNameChange(i) => {
+                self.archive_name_change_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
+                if self.archive_name_value[i] != self.orig_archive_name[i] {
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        &self.archive_list[i]
+                    );
+                    let res = rewrite_name(&filename, &self.archive_name_value[i]);
+                    if res.is_err() {
+                        xprintln!(
+                            "Something went wrong changing the name of\n{}\n\
+                            Possibly the file has been corrupted.\n",
+                            filename,
+                        );
+                        std::process::exit(1);
+                    }
+                    self.orig_archive_name[i] = self.archive_name_value[i].clone();
+                }
+                Command::perform(noop1(), Message::CompleteArchiveNameChange)
+            }
+
+            Message::CompleteArchiveNameChange(_) => {
+                for i in 0..self.archive_name_change_button_color.len() {
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
                 }
                 Command::none()
             }
@@ -497,6 +518,7 @@ impl EncloneVisual {
                 }
                 let n = self.archive_name.len();
                 for i in 0..n {
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
                     // This is a dorky way of causing loading of command lists, etc. from disk
                     // occurs just once per session, and only if the archive button is pushed.
                     if self.archived_command_list[i].is_none() {
@@ -528,6 +550,9 @@ impl EncloneVisual {
             }
 
             Message::ArchiveClose => {
+                for i in 0..self.archive_name_value.len() {
+                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
+                }
                 self.archive_mode = false;
                 self.do_share = false;
                 self.do_share_complete = false;
@@ -549,31 +574,6 @@ impl EncloneVisual {
                     }
                 }
                 self.just_restored = false;
-                for i in 0..self.archive_name_value.len() {
-                    if self.archive_name_change_requested[i] {
-                        if self.archive_name_value[i] != self.orig_archive_name[i] {
-                            let filename = format!(
-                                "{}/{}",
-                                self.archive_dir.as_ref().unwrap(),
-                                &self.archive_list[i]
-                            );
-                            let res = rewrite_name(&filename, &self.archive_name_value[i]);
-                            if res.is_err() {
-                                xprintln!(
-                                    "Something went wrong changing the name of\n{}\n\
-                                    Possibly the file has been corrupted.\n",
-                                    filename,
-                                );
-                                std::process::exit(1);
-                            }
-                        }
-                    } else {
-                        self.archive_name_value[i] = self.orig_archive_name[i].clone();
-                    }
-                }
-                for i in 0..self.archive_name_change_requested.len() {
-                    self.archive_name_change_requested[i] = false;
-                }
                 Command::none()
             }
 

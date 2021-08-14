@@ -97,6 +97,7 @@ pub struct EncloneVisual {
     pub receive_shares_button: button::State,
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
+    pub archive_name_change_button: Vec<button::State>,
     //
     // history
     //
@@ -115,7 +116,6 @@ pub struct EncloneVisual {
     pub archived_command_list: Vec<Option<Vec<String>>>,
     pub archive_name: Vec<text_input::State>,
     pub archive_name_value: Vec<String>,
-    pub archive_name_change_requested: Vec<bool>,
     pub name: text_input::State,
     pub name_change_requested: bool,
     pub orig_archive_name: Vec<String>,
@@ -124,6 +124,7 @@ pub struct EncloneVisual {
     pub archive_narrative: Vec<String>,
     pub archive_doc_open: bool,
     pub share_start: Option<Instant>,
+    pub archive_name_change_button_color: Vec<Color>,
     //
     // users for sharing
     //
@@ -267,7 +268,8 @@ impl EncloneVisual {
         self.archive_name
             .insert(0, iced::text_input::State::default());
         self.archive_name_value.insert(0, String::new());
-        self.archive_name_change_requested.insert(0, false);
+        self.archive_name_change_button_color.insert(0, Color::from_rgb(0.0, 0.0, 0.0));
+        self.archive_name_change_button.insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
         self.archive_narrative.insert(0, String::new());

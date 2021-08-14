@@ -3,6 +3,7 @@
 use crate::history::*;
 use crate::*;
 use chrono::prelude::*;
+use iced::Color;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
     // Import shares.
@@ -52,7 +53,8 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         &vec![iced::text_input::State::default(); k],
     );
     prepend_to_vec(&mut slf.archive_name_value, &vec![String::new(); k]);
-    prepend_to_vec(&mut slf.archive_name_change_requested, &vec![false; k]);
+    prepend_to_vec(&mut slf.archive_name_change_button_color, &vec![Color::from_rgb(0.0, 0.0, 0.0); k]);
+    prepend_to_vec(&mut slf.archive_name_change_button, &vec![iced::button::State::default(); k]);
     prepend_to_vec(&mut slf.archive_share_requested, &vec![false; k]);
     prepend_to_vec(&mut slf.archive_origin, &vec![String::new(); k]);
     prepend_to_vec(&mut slf.archive_narrative, &vec![String::new(); k]);

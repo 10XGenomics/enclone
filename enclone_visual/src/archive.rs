@@ -9,6 +9,7 @@ use iced::{
     Space, Text, TextInput,
 };
 use io_utils::*;
+use itertools::izip;
 use messages::Message;
 
 pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
@@ -204,7 +205,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut share_body = Some(share_body);
 
     let mut count = 0;
-    for (i, y) in slf.archive_name.iter_mut().enumerate() {
+    for (i, y, q) in izip!(0..slf.archive_name.len(), 
+                           slf.archive_name.iter_mut(),
+                           slf.archive_name_change_button.iter_mut()) {
         let x = &slf.archive_list[i];
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
         let mut make_row = x.contains("___") && !slf.deleted[i];
@@ -259,11 +262,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .padding(2),
             );
             row = row.push(Space::with_width(Units(8)));
-            row = row.push(Checkbox::new(
-                slf.archive_name_change_requested[i],
-                "",
-                move |x: bool| Message::ArchiveNameChange(x, i),
-            ));
+            row = row.push(Button::new(q,
+                Text::new("Rename").color(slf.archive_name_change_button_color[i]))
+                .on_press(Message::ArchiveNameChange(i)));
             if i > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             }
