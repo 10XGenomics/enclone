@@ -268,8 +268,10 @@ impl EncloneVisual {
         self.archive_name
             .insert(0, iced::text_input::State::default());
         self.archive_name_value.insert(0, String::new());
-        self.archive_name_change_button_color.insert(0, Color::from_rgb(0.0, 0.0, 0.0));
-        self.archive_name_change_button.insert(0, button::State::default());
+        self.archive_name_change_button_color
+            .insert(0, Color::from_rgb(0.0, 0.0, 0.0));
+        self.archive_name_change_button
+            .insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
         self.archive_narrative.insert(0, String::new());

@@ -235,9 +235,7 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn read_metadata(
-    filename: &str,
-) -> Result<(Vec<String>, String, String, String), ()> {
+pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, String), ()> {
     let total;
     let n;
     let name_length;
