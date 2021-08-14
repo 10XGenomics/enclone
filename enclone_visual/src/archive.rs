@@ -66,7 +66,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • change it using the rectangular box and then click Apply\n\
          • up to 40 characters are allowed.",
     );
-
+    let text7 = Text::new(
+        "▒ Narrative is displayed in a box:\n\
+         • if there is no narrative, a tiny box is seen\n\
+         • clicking on the box will change the narrative to whatever is on your clipboard.",
+    );
     let mut help_col = Column::new();
     if slf.archive_doc_open {
         help_col = help_col
@@ -79,6 +83,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             help_col = help_col.push(text5);
         }
         help_col = help_col.push(text6);
+        help_col = help_col.push(text7);
         help_col = help_col.push(close_archive_doc_button);
     } else {
         help_col = help_col.push(open_archive_doc_button);
@@ -287,7 +292,21 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 );
             }
 
-            let log = slf.archive_narrative[i].clone();
+            // Show narrative.
+
+            const MAX_LINE: usize = 120;
+            let mut log = String::new();
+            let mut rows = Vec::<Vec<String>>::new();
+            let folds = fold(&slf.archive_narrative[i], MAX_LINE);
+            for i in 0..folds.len() {
+                rows.push(vec![folds[i].clone()]);
+            }
+            for i in 0..rows.len() {
+                if i > 0 {
+                    log += "\n";
+                }
+                log += &mut rows[i][0].clone();
+            }
             let row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(Button::new(narbut, Text::new(&log))
@@ -295,9 +314,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             archive_scrollable = archive_scrollable.push(row);
 
+            // Show if share requested.
+
             if slf.archive_share_requested[i] {
                 archive_scrollable = archive_scrollable.push(share_body.take().unwrap());
             }
+
+            // Show restore message.
 
             if slf.restore_msg[i].len() > 0 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
@@ -311,6 +334,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 );
                 archive_scrollable = archive_scrollable.push(row);
             }
+
+            // Show the commands if expansion requested.
 
             if slf.expand_archive_entry[i] {
                 let clist = &slf.archived_command_list[i].as_ref().unwrap();
