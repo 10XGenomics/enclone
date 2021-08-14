@@ -287,7 +287,14 @@ impl EncloneVisual {
             }
 
             Message::ArchiveName(x, index) => {
-                self.archive_name_value[index] = x.to_string();
+                let mut y = String::new();
+                for (i, char) in x.chars().enumerate() {
+                    if i == 40 {
+                        break;
+                    }
+                    y.push(char);
+                }
+                self.archive_name_value[index] = y;
                 Command::none()
             }
 

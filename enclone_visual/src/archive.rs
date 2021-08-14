@@ -63,8 +63,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     );
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
-         • change it using the rectangular box and then click Rename\n\
-         • long names are allowed but incompletely displayed.",
+         • change it using the rectangular box and then click Apply\n\
+         • up to 40 characters are allowed.",
     );
 
     let mut help_col = Column::new();
@@ -260,13 +260,15 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
                     Message::ArchiveName(x, i)
                 })
+                .width(Units(400))
+                .max_width(400)
                 .padding(2),
             );
             row = row.push(Space::with_width(Units(8)));
             row = row.push(
                 Button::new(
                     q,
-                    Text::new("Rename").color(slf.archive_name_change_button_color[i]),
+                    Text::new("Apply").color(slf.archive_name_change_button_color[i]),
                 )
                 .on_press(Message::ArchiveNameChange(i)),
             );

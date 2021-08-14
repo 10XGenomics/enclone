@@ -54,6 +54,7 @@ pub struct EncloneVisualHistory {
 
 const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
 const HEADER_LENGTH: usize = 40;
+const NAME_BYTES: usize = 160;
 
 impl EncloneVisualHistory {
     //
@@ -73,10 +74,10 @@ impl EncloneVisualHistory {
     // 1. text header = 40 bytes = "enclone visual history file version ***\n",
     //    where *** is a positive integer, padded on the right with blanks
     // 2. total bytes in file (u32)
-    // 3. total bytes in name (u32)
+    // 3. total bytes in narrative (u32)
     // 4. total bytes up through translated_hist_uniq (u32)
     // 5. data for each of the fields in EncloneVisualHistory, with translated_input_history and
-    //    translated_input_hist_uniq stored first, and name stored last (as raw bytes).
+    //    translated_input_hist_uniq stored first, and narrative stored last (as raw bytes).
 
     pub fn save_as_bytes(&self) -> Vec<u8> {
         let mut bytes = format!(
@@ -87,10 +88,14 @@ impl EncloneVisualHistory {
         .to_vec();
         if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
             bytes.append(&mut vec![0 as u8; 12]);
+            let mut name_bytes = vec![0 as u8; NAME_BYTES];
+            for i in 0..std::cmp::min(NAME_BYTES, self.name_value.as_bytes().len()) {
+                name_bytes[i] = self.name_value.as_bytes()[i];
+            }
+            bytes.append(&mut name_bytes);
             bytes.append(&mut save_vec_u32(&self.translated_input_history));
             bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
             bytes.append(&mut save_string(&self.origin));
-            bytes.append(&mut save_string(&self.narrative));
             let b = u32_bytes(bytes.len());
             for i in 0..4 {
                 bytes[HEADER_LENGTH + 4 + i] = b[i];
@@ -113,12 +118,12 @@ impl EncloneVisualHistory {
             bytes.append(&mut save_vec_bool(&self.is_blank));
             bytes.append(&mut save_vec_u32(&self.descrip_history));
             bytes.append(&mut save_u32(self.history_index));
-            bytes.append(&mut self.name_value.as_bytes().to_vec());
+            bytes.append(&mut self.narrative.as_bytes().to_vec());
             let b = u32_bytes(bytes.len());
             for i in 0..4 {
                 bytes[HEADER_LENGTH + i] = b[i];
             }
-            let b = u32_bytes(self.name_value.len());
+            let b = u32_bytes(self.narrative.len());
             for i in 0..4 {
                 bytes[HEADER_LENGTH + 8 + i] = b[i];
             }
@@ -139,12 +144,24 @@ impl EncloneVisualHistory {
         if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
             return Err(());
         }
-        let name_len = u32_from_bytes(&bytes[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+        let narrative_len = u32_from_bytes(&bytes[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
         let mut pos = HEADER_LENGTH + 12;
+        let mut name_value_bytes = Vec::<u8>::new();
+        for i in 0..NAME_BYTES {
+            if bytes[pos + i] == 0 {
+                break;
+            }
+            name_value_bytes.push(bytes[pos + i]);
+        }
+        let res = String::from_utf8(name_value_bytes);
+        if res.is_err() {
+            return Err(());
+        }
+        let name_value = res.unwrap();
+        pos += NAME_BYTES;
         let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
         let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let origin = restore_string(&bytes, &mut pos)?;
-        let narrative = restore_string(&bytes, &mut pos)?;
         let svg_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
@@ -163,11 +180,11 @@ impl EncloneVisualHistory {
         let is_blank = restore_vec_bool(&bytes, &mut pos)?;
         let descrip_history = restore_vec_u32(&bytes, &mut pos)?;
         let history_index = restore_u32(&bytes, &mut pos)?;
-        if pos + name_len != bytes.len() {
+        if pos + narrative_len != bytes.len() {
             return Err(());
         }
-        let name_value = String::from_utf8(bytes[pos..].to_vec());
-        if name_value.is_err() {
+        let narrative = String::from_utf8(bytes[pos..].to_vec());
+        if narrative.is_err() {
             return Err(());
         }
         Ok(EncloneVisualHistory {
@@ -191,15 +208,26 @@ impl EncloneVisualHistory {
             is_blank: is_blank,
             descrip_history: descrip_history,
             history_index: history_index,
-            name_value: name_value.clone().unwrap(),
-            orig_name_value: name_value.unwrap(),
+            name_value: name_value.clone(),
+            orig_name_value: name_value,
             origin: origin,
-            narrative: narrative,
+            narrative: narrative.unwrap(),
         })
     }
 }
 
 pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
+    let mut f = OpenOptions::new().write(true).read(true).open(&filename)?;
+    f.seek(SeekFrom::Start((HEADER_LENGTH + 12) as u64))?;
+    let mut name_bytes = vec![0 as u8; NAME_BYTES];
+    for i in 0..std::cmp::min(NAME_BYTES, name.as_bytes().len()) {
+        name_bytes[i] = name.as_bytes()[i];
+    }
+    f.write_all(&name_bytes)?;
+    Ok(())
+}
+
+pub fn rewrite_narrative(filename: &str, narrative: &str) -> Result<(), std::io::Error> {
     let mut f = OpenOptions::new().write(true).read(true).open(&filename)?;
     let mut buf = vec![0 as u8; HEADER_LENGTH + 12];
     let res = f.read_exact(&mut buf);
@@ -207,27 +235,27 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
         return Err(Error::new(ErrorKind::Other, "file appears truncated"));
     }
     let total = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]) as usize;
-    let name_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
-    if name_length > total {
+    let narrative_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+    if narrative_length > total {
         return Err(Error::new(
             ErrorKind::Other,
-            "name length exceeds total length",
+            "narrative length exceeds total length",
         ));
     }
-    let total_less_name = (total - name_length) as u64;
-    f.seek(SeekFrom::Start(total_less_name))?;
-    write!(f, "{}", name)?;
-    let new_total = total + name.len() - name_length;
+    let total_less_narrative = (total - narrative_length) as u64;
+    f.seek(SeekFrom::Start(total_less_narrative))?;
+    write!(f, "{}", narrative)?;
+    let new_total = total + narrative.len() - narrative_length;
     if new_total < total {
         f.set_len(new_total as u64)?;
     }
-    let new_name_length = name.len();
+    let new_narrative_length = narrative.len();
     f.seek(SeekFrom::Start(0))?;
     let x = u32_bytes(new_total);
     for i in 0..4 {
         buf[HEADER_LENGTH + i] = x[i];
     }
-    let x = u32_bytes(new_name_length);
+    let x = u32_bytes(new_narrative_length);
     for i in 0..4 {
         buf[HEADER_LENGTH + 8 + i] = x[i];
     }
@@ -238,8 +266,8 @@ pub fn rewrite_name(filename: &str, name: &str) -> Result<(), std::io::Error> {
 pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, String), ()> {
     let total;
     let n;
-    let name_length;
-    let name;
+    let narrative_length;
+    let narrative;
     {
         let mut f = open_for_read![&filename];
         let mut buf = vec![0 as u8; HEADER_LENGTH + 12];
@@ -249,16 +277,16 @@ pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, Str
         }
         total = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]) as usize;
         n = u32_from_bytes(&buf[HEADER_LENGTH + 4..HEADER_LENGTH + 8]) as usize;
-        name_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
-        if name_length > total {
+        narrative_length = u32_from_bytes(&buf[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
+        if narrative_length > total {
             return Err(());
         }
-        let total_less_name = (total - name_length) as u64;
-        let res = f.seek(SeekFrom::Start(total_less_name));
+        let total_less_narrative = (total - narrative_length) as u64;
+        let res = f.seek(SeekFrom::Start(total_less_narrative));
         if res.is_err() {
             return Err(());
         }
-        let mut buf = vec![0 as u8; name_length];
+        let mut buf = vec![0 as u8; narrative_length];
         let res = f.read_exact(&mut buf);
         if res.is_err() {
             return Err(());
@@ -267,7 +295,7 @@ pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, Str
         if s.is_err() {
             return Err(());
         }
-        name = s.unwrap();
+        narrative = s.unwrap();
     }
     let mut bytes = vec![0 as u8; n];
     let mut f = open_for_read![&filename];
@@ -276,6 +304,19 @@ pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, Str
         return Err(());
     }
     let mut pos = HEADER_LENGTH + 12;
+    let mut name_value_bytes = Vec::<u8>::new();
+    for i in 0..NAME_BYTES {
+        if bytes[pos + i] == 0 {
+            break;
+        }
+        name_value_bytes.push(bytes[pos + i]);
+    }
+    let name = String::from_utf8(name_value_bytes);
+    if name.is_err() {
+        return Err(());
+    }
+    let name = name.unwrap();
+    pos += NAME_BYTES;
     let translated_input_history = restore_vec_u32(&bytes, &mut pos)?;
     let translated_input_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
     let mut commands = Vec::<String>::new();
@@ -287,7 +328,6 @@ pub fn read_metadata(filename: &str) -> Result<(Vec<String>, String, String, Str
         commands.push(translated_input_hist_uniq[i].clone());
     }
     let origin = restore_string(&bytes, &mut pos)?;
-    let narrative = restore_string(&bytes, &mut pos)?;
     Ok((commands, name, origin, narrative))
 }
 
