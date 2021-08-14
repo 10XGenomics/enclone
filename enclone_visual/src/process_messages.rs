@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use clipboard::{ClipboardContext, ClipboardProvider};
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
@@ -9,6 +8,7 @@ use crate::share::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
+use clipboard::{ClipboardContext, ClipboardProvider};
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};

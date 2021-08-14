@@ -309,8 +309,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
             let row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
-                .push(Button::new(narbut, Text::new(&log))
-                    .on_press(Message::ArchiveNarrative(i)));
+                .push(Button::new(narbut, Text::new(&log)).on_press(Message::ArchiveNarrative(i)));
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             archive_scrollable = archive_scrollable.push(row);
 
