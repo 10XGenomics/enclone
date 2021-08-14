@@ -44,7 +44,7 @@ impl EncloneVisual {
                 self.narrative_value = copy.clone();
                 let len = self.h.narrative_hist_uniq.len();
                 self.h.narrative_hist_uniq.push(copy);
-                self.h.narrative_history.push(len as u32);
+                self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
                 Command::none()
             }
 
