@@ -204,10 +204,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut share_body = Some(share_body);
 
     let mut count = 0;
-    for (i, y, q) in izip!(
+    for (i, y, q, narbut) in izip!(
         0..slf.archive_name.len(),
         slf.archive_name.iter_mut(),
-        slf.archive_name_change_button.iter_mut()
+        slf.archive_name_change_button.iter_mut(),
+        slf.archive_narrative_button.iter_mut()
     ) {
         let x = &slf.archive_list[i];
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
@@ -285,6 +286,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .size(16),
                 );
             }
+
+            let log = slf.archive_narrative[i].clone();
+            let row = Row::new()
+                .push(Text::new("    ").font(DEJAVU))
+                .push(Button::new(narbut, Text::new(&log))
+                    .on_press(Message::ArchiveNarrative(i)));
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            archive_scrollable = archive_scrollable.push(row);
 
             if slf.archive_share_requested[i] {
                 archive_scrollable = archive_scrollable.push(share_body.take().unwrap());

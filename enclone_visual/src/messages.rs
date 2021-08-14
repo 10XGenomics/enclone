@@ -50,4 +50,5 @@ pub enum Message {
     UpdateSharesComplete(Result<(), String>),
     OpenArchiveDoc,
     CloseArchiveDoc,
+    ArchiveNarrative(usize),
 }

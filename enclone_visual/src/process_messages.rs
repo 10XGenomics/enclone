@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use clipboard::{ClipboardContext, ClipboardProvider};
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
@@ -24,6 +25,39 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ArchiveNarrative(i) => {
+                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
+                if ctx.is_err() {
+                    xprintln!("\nSomething went wrong accessing clipboard.");
+                    xprintln!("This is weird so please ask for help.");
+                    std::process::exit(1);
+                }
+                let mut ctx = ctx.unwrap();
+                let copy = ctx.get_contents();
+                if copy.is_err() {
+                    xprintln!("\nSomething went wrong copying from clipboard.");
+                    xprintln!("This is weird so please ask for help.");
+                    std::process::exit(1);
+                }
+                let copy = format!("{}", ctx.get_contents().unwrap());
+                self.archive_narrative[i] = copy.clone();
+                let filename = format!(
+                    "{}/{}",
+                    self.archive_dir.as_ref().unwrap(),
+                    &self.archive_list[i]
+                );
+                let res = rewrite_narrative(&filename, &copy);
+                if res.is_err() {
+                    xprintln!(
+                        "\nSomething went wrong changing the narrative of\n{}\n\
+                        Possibly the file has been corrupted.\n",
+                        filename,
+                    );
+                    std::process::exit(1);
+                }
+                Command::none()
+            }
+
             Message::OpenArchiveDoc => {
                 self.archive_doc_open = true;
                 Command::none()

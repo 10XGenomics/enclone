@@ -98,6 +98,7 @@ pub struct EncloneVisual {
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
     pub archive_name_change_button: Vec<button::State>,
+    pub archive_narrative_button: Vec<button::State>,
     //
     // history
     //
@@ -271,6 +272,8 @@ impl EncloneVisual {
         self.archive_name_change_button_color
             .insert(0, Color::from_rgb(0.0, 0.0, 0.0));
         self.archive_name_change_button
+            .insert(0, button::State::default());
+        self.archive_narrative_button
             .insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
