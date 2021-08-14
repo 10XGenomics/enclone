@@ -63,8 +63,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     );
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
-         • change it using the rectangular box and then check to its right\n\
-         • unchecking restores the previous name\n\
+         • change it using the rectangular box and then click Rename\n\
          • long names are allowed but incompletely displayed.",
     );
 
