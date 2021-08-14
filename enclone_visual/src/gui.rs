@@ -565,6 +565,7 @@ impl Application for EncloneVisual {
 
             // Create narrative button.
 
+            const MAX_NARRATIVE_LINE: usize = 33;
             let mut logx = String::new();
             if self.h.history_index >= 1 {
                 let mut cmd = self.h.narrative_hist_uniq
@@ -574,7 +575,7 @@ impl Application for EncloneVisual {
                     cmd = "Narrative: click to paste in clipboard".to_string();
                 }
                 let mut rows = Vec::<Vec<String>>::new();
-                let folds = fold(&cmd, MAX_LINE);
+                let folds = fold(&cmd, MAX_NARRATIVE_LINE);
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
                 }
