@@ -341,14 +341,21 @@ impl Analyzer for EncloneAnalyzer {
                         "unable to create share directory",
                     ));
                 }
-            }
-            let perms = std::fs::Permissions::from_mode(0o775);
-            let res = std::fs::set_permissions(&rdir, perms);
-            if res.is_err() {
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("unable to set permissions on share directory {}", rdir),
-                ));
+
+                // Set permissions to allow group write on the directory.  Note that we don't do
+                // this if the directory already exists, because in that case we may not have
+                // permission to make the change.  In that case however, group write should
+                // already be enabled, because some other user will have executed this same code
+                // to create the directory.
+            
+                let perms = std::fs::Permissions::from_mode(0o775);
+                let res = std::fs::set_permissions(&rdir, perms);
+                if res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        format!("unable to set permissions on share directory {}", rdir),
+                    ));
+                }
             }
             let mut now = format!("{:?}", Local::now());
             now = now.replace("T", "___");
