@@ -299,6 +299,7 @@ impl Application for EncloneVisual {
                 std::process::exit(1);
             }
         }
+        x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
         if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
             x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
         } else {
@@ -306,17 +307,19 @@ impl Application for EncloneVisual {
 
             // Read shares.  If the file is corrupted, silently ignore it.
 
-            let shares = format!("{}/shares", x.visual);
-            if path_exists(&shares) {
-                let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
-                let n = std::mem::size_of::<Share>();
-                if share_size % n == 0 {
-                    let mut bytes = Vec::<u8>::new();
-                    let mut f = File::open(&shares).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                    assert_eq!(bytes.len(), share_size);
-                    unsafe {
-                        x.shares = bytes.align_to::<Share>().1.to_vec();
+            if x.sharing_enabled {
+                let shares = format!("{}/shares", x.visual);
+                if path_exists(&shares) {
+                    let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                    let n = std::mem::size_of::<Share>();
+                    if share_size % n == 0 {
+                        let mut bytes = Vec::<u8>::new();
+                        let mut f = File::open(&shares).unwrap();
+                        f.read_to_end(&mut bytes).unwrap();
+                        assert_eq!(bytes.len(), share_size);
+                        unsafe {
+                            x.shares = bytes.align_to::<Share>().1.to_vec();
+                        }
                     }
                 }
             }
@@ -345,7 +348,6 @@ impl Application for EncloneVisual {
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
-        x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
 
         // Handle test mode.
 

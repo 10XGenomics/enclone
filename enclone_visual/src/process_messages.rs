@@ -200,9 +200,11 @@ impl EncloneVisual {
 
             Message::Exit => {
                 if true {
-                    let share_bytes = unsafe { self.shares.align_to::<u8>().1.to_vec() };
-                    let share_file = format!("{}/shares", self.visual);
-                    std::fs::write(&share_file, &share_bytes).unwrap();
+                    if self.sharing_enabled {
+                        let share_bytes = unsafe { self.shares.align_to::<u8>().1.to_vec() };
+                        let share_file = format!("{}/shares", self.visual);
+                        std::fs::write(&share_file, &share_bytes).unwrap();
+                    }
                     if self.save_on_exit {
                         let dir;
                         if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
