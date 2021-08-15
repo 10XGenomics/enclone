@@ -347,7 +347,7 @@ impl Analyzer for EncloneAnalyzer {
             if res.is_err() {
                 return Err(Status::new(
                     Code::Internal,
-                    "unable to set permissions on share directory",
+                    format!("unable to set permissions on share directory {}", rdir),
                 ));
             }
             let mut now = format!("{:?}", Local::now());
