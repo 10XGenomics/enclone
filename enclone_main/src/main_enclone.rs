@@ -37,11 +37,14 @@ use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
+use rayon::prelude::*;
 use std::{
     collections::HashMap,
     env, fs,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
+    thread,
+    time,
     time::Instant,
 };
 use stirling_numbers::*;
@@ -740,6 +743,86 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
     }
     orbits = orbits2;
+
+    // Load the GEX and FB data.
+
+    let tdi = Instant::now();
+    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
+    for li in 0..ctl.origin_info.n() {
+        if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+            let x = gex_info.h5_data[li].as_ref();
+            if x.is_none() {
+                // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
+                // CAUSING PUSH TO D_READERS BELOW TO FAIL.
+                eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
+                eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
+                let current = env::current_dir().unwrap();
+                println!(
+                    "The current working directory is {}",
+                    current.canonicalize().unwrap().display()
+                );
+                if path_exists(&ctl.origin_info.gex_path[li]) {
+                    eprintln!(
+                        "The directory that is supposed to contain \
+                        raw_feature_bc_matrix.h5 exists."
+                    );
+                    let list = dir_list(&ctl.origin_info.gex_path[li]);
+                    eprintln!(
+                        "This directory is {} and its contents are:",
+                        ctl.origin_info.gex_path[li]
+                    );
+                    for i in 0..list.len() {
+                        eprintln!("{}.  {}", i + 1, list[i]);
+                    }
+                    let h5_path =
+                        format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
+                    eprintln!("H5 path = {}.", h5_path);
+                    if !path_exists(&h5_path) {
+                        let mut msg = format!("H5 path {} does not exist.\n", h5_path);
+                        msg += "Retrying a few times to see if it appears.\n";
+                        for _ in 0..5 {
+                            msg += "Sleeping for 0.1 seconds.";
+                            thread::sleep(time::Duration::from_millis(100));
+                            if !path_exists(&h5_path) {
+                                msg += "Now h5 path does not exist.\n";
+                            } else {
+                                msg += "Now h5 path exists.\n";
+                                break;
+                            }
+                        }
+                        msg += "Aborting.\n";
+                        return Err(msg);
+                    } else {
+                        println!("h5 path exists.");
+                    }
+                } else {
+                    println!("Path exists.");
+                }
+                println!("");
+            }
+            d_readers.push(Some(x.unwrap().as_reader()));
+            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+        } else {
+            d_readers.push(None);
+            ind_readers.push(None);
+        }
+    }
+    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
+    for li in 0..ctl.origin_info.n() {
+        h5_data.push((li, Vec::new(), Vec::new()));
+    }
+    h5_data.par_iter_mut().for_each(|res| {
+        let li = res.0;
+        if ctl.origin_info.gex_path[li].len() > 0
+            && !gex_info.gex_matrices[li].initialized()
+            && ctl.gen_opt.h5_pre
+        {
+            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
+        }
+    });
+    ctl.perf_stats(&tdi, "setting up readers");
 
     // Filter using constraints imposed by FCELL.
 
