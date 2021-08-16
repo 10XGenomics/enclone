@@ -266,7 +266,6 @@ pub fn proc_args_post(
         }
         proc_meta_core(&lines, &mut ctl)?;
     }
-
     ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
@@ -275,6 +274,7 @@ pub fn proc_args_post(
 
     // More argument sanity checking.
 
+    let t = Instant::now();
     let bcr_only = [
         "PEER_GROUP",
         "PG_READABLE",
@@ -296,68 +296,6 @@ pub fn proc_args_post(
 
     // Proceed.
 
-    let t = Instant::now();
-    let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.origin_info.alt_bc_fields.len() {
-        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
-        }
-    }
-    unique_sort(&mut alt_bcs);
-
-    /*
-
-    let ends = ["_g", "_ab", "_cr", "_cu"];
-
-    let mut pat = false;
-    for y in ends.iter() {
-        if x.ends_with(y) {
-            let p = x.rev_before(y);
-            if !p.is_empty() && Regex::new(&p).is_ok() {
-                let mut ok = true;
-                let mut special = false;
-                let p = p.as_bytes();
-                for i in 0..p.len() {
-                    if !((p[i] >= b'A' && p[i] <= b'Z')
-                        || (p[i] >= b'a' && p[i] <= b'z')
-                        || (p[i] >= b'0' && p[i] <= b'9')
-                        || b".-_[]()|*".contains(&p[i]))
-                    {
-                        ok = false;
-                        break;
-                    }
-                    if b"[]()|*".contains(&p[i]) {
-                        special = true;
-                    }
-                }
-                if ok && special {
-                    pat = true;
-                    break;
-                }
-            }
-        }
-    }
-    pat
-
-    */
-
-    for con in ctl.clono_filt_opt_def.fcell.iter() {
-
-        for var in con.iter_variable_identifiers() {
-            if !bin_member(&alt_bcs, &var.to_string()) {
-                return Err(format!(
-                    "\nYou've used a variable {} as part of an FCELL argument that has not\n\
-                    been specified using BC or bc (via META).\n",
-                    var
-                ));
-            }
-        }
-
-
-        for _ in con.iter_function_identifiers() {
-            return Err(format!("\nSomething is wrong with your FCELL value.\n"));
-        }
-    }
     for i in 0..ctl.origin_info.n() {
         let (mut cells_cr, mut rpc_cr) = (None, None);
         if ctl.gen_opt.internal_run {

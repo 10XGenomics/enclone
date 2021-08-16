@@ -28,6 +28,11 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), St
     }
     let mut vars = ctl.clono_print_opt.lvars.clone();
     vars.append(&mut ctl.parseable_opt.pcols.clone());
+    for con in ctl.clono_filt_opt_def.fcell.iter() {
+        for var in con.iter_variable_identifiers() {
+            vars.push(var.to_string());
+        }
+    }
     unique_sort(&mut vars);
     ctl.perf_stats(&tstar, "doing miscellaneous stuff");
     let tomega = Instant::now();
