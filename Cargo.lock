@@ -1254,7 +1254,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1286,7 +1286,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "attohttpc 0.17.0",
  "debruijn",
@@ -1307,7 +1307,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1339,7 +1339,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "ansi_escape",
  "attohttpc 0.17.0",
@@ -1366,7 +1366,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -1378,7 +1378,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "amino",
  "bytes",
@@ -1421,7 +1421,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1455,7 +1455,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -1470,7 +1470,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "align_tools",
  "amino",
@@ -1505,7 +1505,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "ansi_escape",
  "attohttpc 0.17.0",
@@ -1533,7 +1533,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_version"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "chrono",
  "string_utils",
@@ -1541,7 +1541,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.84"
+version = "0.5.85"
 dependencies = [
  "arboard",
  "chrono",
