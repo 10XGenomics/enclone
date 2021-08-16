@@ -2,6 +2,25 @@
 
 // Unoptimized functions for packing and unpacking some data structures.
 
+use zstd::block::{Compressor, Decompressor};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Compression and decompression.  We use zstd rather than gzip because when tested it yielded
+// slightly smaller compression size and much lower compression time.  Note that using zstd
+// appears to add about 4 MB to the executable size.  If this is really true, it's not obvious
+// that it's a good tradeoff.
+
+pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
+    Compressor::new().compress(&x, 0).unwrap()
+}
+
+pub fn uncompress_bytes(x: &[u8], uncompressed_size: usize) -> Vec<u8> {
+    Decompressor::new()
+        .decompress(&x, uncompressed_size)
+        .unwrap()
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn u32_bytes(x: usize) -> Vec<u8> {
@@ -10,6 +29,32 @@ pub fn u32_bytes(x: usize) -> Vec<u8> {
 
 pub fn u32_from_bytes(x: &[u8]) -> u32 {
     u32::from_le_bytes([x[0], x[1], x[2], x[3]])
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn save_string(x: &String) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    bytes.append(&mut u32_bytes(x.len()));
+    bytes.append(&mut x.as_bytes().to_vec());
+    bytes
+}
+
+pub fn restore_string(x: &Vec<u8>, pos: &mut usize) -> Result<String, ()> {
+    if *pos + 4 > x.len() {
+        return Err(());
+    }
+    let k = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    if *pos + k > x.len() {
+        return Err(());
+    }
+    let s = String::from_utf8(x[*pos..*pos + k].to_vec());
+    if s.is_err() {
+        return Err(());
+    }
+    *pos += k;
+    Ok(s.unwrap())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -48,6 +93,33 @@ pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, (
         y[j] = s.unwrap();
     }
     Ok(y)
+}
+
+pub fn save_vec_string_comp(x: &Vec<String>) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    let z = save_vec_string(&x);
+    let mut y = compress_bytes(&z);
+    bytes.append(&mut u32_bytes(y.len()));
+    bytes.append(&mut u32_bytes(z.len()));
+    bytes.append(&mut y);
+    bytes
+}
+
+pub fn restore_vec_string_comp(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, ()> {
+    if *pos + 8 > x.len() {
+        return Err(());
+    }
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    let uncompressed_size = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    if *pos + n > x.len() {
+        return Err(());
+    }
+    let uncomp = uncompress_bytes(&x[*pos..*pos + n], uncompressed_size);
+    *pos += n;
+    let mut posx = 0;
+    restore_vec_string(&uncomp, &mut posx)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

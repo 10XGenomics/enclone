@@ -3,10 +3,13 @@
 use crate::history::*;
 use crate::*;
 use canvas_view::CanvasView;
+use chrono::prelude::*;
+use flate2::read::GzDecoder;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
 // use iced_native::{window, Event};
 use std::collections::HashMap;
+use std::io::Read;
 use std::time::Instant;
 
 #[derive(PartialEq)]
@@ -25,11 +28,13 @@ use ComputeState::*;
 
 #[derive(Default)]
 pub struct EncloneVisual {
+    pub modified: bool,
     pub scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
     pub input1_value: String,
     pub input2_value: String,
+    pub narrative_value: String,
     pub input_value: String,
     pub translated_input_value: String,
     pub output_value: String,
@@ -38,6 +43,7 @@ pub struct EncloneVisual {
     pub summary_value: String,
     pub table_comp_value: Vec<u8>,
     pub last_widths_value: Vec<u32>,
+    pub descrip_value: String,
     pub submit_button_text: String,
     // pub should_exit: bool,
     pub compute_state: ComputeState,
@@ -51,8 +57,11 @@ pub struct EncloneVisual {
     pub summary_mode: bool,
     pub console_mode: bool,
     pub archive_mode: bool,
+    pub save: bool,
+    pub save_in_progress: bool,
     pub save_on_exit: bool,
-    pub enabled: bool,
+    pub shares: Vec<Share>,
+    pub visual: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -83,13 +92,54 @@ pub struct EncloneVisual {
     pub cookbook_button: button::State,
     pub console_open_button: button::State,
     pub console_close_button: button::State,
+    pub save_button: button::State,
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
+    pub receive_shares_button: button::State,
+    pub open_archive_doc_button: button::State,
+    pub close_archive_doc_button: button::State,
+    pub archive_name_change_button: Vec<button::State>,
+    pub archive_narrative_button: Vec<button::State>,
+    pub narrative_button: button::State,
     //
     // history
     //
     pub h: EncloneVisualHistory,
+    //
+    // archive information and logic
+    //
+    pub archive_dir: Option<String>,
+    pub archive_list: Vec<String>,
+    pub expand_archive_entry: Vec<bool>,
+    pub restore_requested: Vec<bool>,
+    pub delete_requested: Vec<bool>,
+    pub deleted: Vec<bool>,
+    pub restore_msg: Vec<String>,
+    pub just_restored: bool,
+    pub archived_command_list: Vec<Option<Vec<String>>>,
+    pub archive_name: Vec<text_input::State>,
+    pub archive_name_value: Vec<String>,
+    pub name: text_input::State,
+    pub name_change_requested: bool,
+    pub orig_archive_name: Vec<String>,
+    pub archive_share_requested: Vec<bool>,
+    pub archive_origin: Vec<String>,
+    pub archive_narrative: Vec<String>,
+    pub archive_doc_open: bool,
+    pub share_start: Option<Instant>,
+    pub archive_name_change_button_color: Vec<Color>,
+    //
+    // users for sharing
+    //
+    pub sharing_enabled: bool,
+    pub user: Vec<text_input::State>,
+    pub user_value: Vec<String>,
+    pub user_selected: Vec<bool>,
+    pub user_valid: Vec<bool>,
+    pub do_share: bool,
+    pub do_share_complete: bool,
+    pub receive_shares_button_color: Color,
     //
     // current window dimensions
     //
@@ -116,6 +166,9 @@ impl EncloneVisual {
     pub fn input2_current(&self) -> String {
         return self.h.input2_hist_uniq[self.h.input2_history[self.hi()] as usize].clone();
     }
+    pub fn narrative_current(&self) -> String {
+        return self.h.narrative_hist_uniq[self.h.narrative_history[self.hi()] as usize].clone();
+    }
     pub fn translated_input_current(&self) -> String {
         return self.h.translated_input_hist_uniq
             [self.h.translated_input_history[self.hi()] as usize]
@@ -133,6 +186,9 @@ impl EncloneVisual {
         return self.h.last_widths_hist_uniq[self.h.last_widths_history[self.hi()] as usize]
             .clone();
     }
+    pub fn descrip_current(&self) -> String {
+        return self.h.descrip_hist_uniq[self.h.descrip_history[self.hi()] as usize].clone();
+    }
     pub fn is_blank_current(&self) -> bool {
         return self.h.is_blank[self.hi()];
     }
@@ -141,10 +197,94 @@ impl EncloneVisual {
         assert_eq!(n, self.h.summary_history.len());
         assert_eq!(n, self.h.input1_history.len());
         assert_eq!(n, self.h.input2_history.len());
+        assert_eq!(n, self.h.narrative_history.len());
         assert_eq!(n, self.h.translated_input_history.len());
         assert_eq!(n, self.h.displayed_tables_history.len());
         assert_eq!(n, self.h.table_comp_history.len());
         assert_eq!(n, self.h.last_widths_history.len());
+        assert_eq!(n, self.h.descrip_history.len());
         assert_eq!(n, self.h.is_blank.len());
+    }
+    pub fn update_to_current(&mut self) {
+        if self.h.history_index == 0 {
+            self.input1_value.clear();
+            self.input2_value.clear();
+            self.svg_value.clear();
+            self.png_value.clear();
+            self.submit_button_text.clear();
+            self.summary_value.clear();
+            self.output_value.clear();
+            self.table_comp_value.clear();
+            self.last_widths_value.clear();
+            self.translated_input_value.clear();
+            self.current_tables.clear();
+            self.descrip_value.clear();
+        } else {
+            let x = self.svg_current();
+            self.svg_value = self.svg_current();
+            self.post_svg(&x);
+            self.summary_value = self.summary_current();
+            self.output_value = self.displayed_tables_current();
+            self.table_comp_value = self.table_comp_current();
+            self.last_widths_value = self.last_widths_current();
+            self.descrip_value = self.descrip_current();
+            self.input1_value = self.input1_current();
+            self.input2_value = self.input2_current();
+            self.translated_input_value = self.translated_input_current();
+            SUMMARY_CONTENTS.lock().unwrap().clear();
+            SUMMARY_CONTENTS
+                .lock()
+                .unwrap()
+                .push(self.summary_value.clone());
+            if self.table_comp_value.len() > 0 {
+                let mut gunzipped = Vec::<u8>::new();
+                let mut d = GzDecoder::new(&*self.table_comp_value);
+                d.read_to_end(&mut gunzipped).unwrap();
+                self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+            } else {
+                self.current_tables.clear();
+            }
+        }
+    }
+    pub fn save(&mut self) {
+        let dir;
+        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+        } else {
+            dir = format!("{}/history", self.visual);
+        }
+        let mut now = format!("{:?}", Local::now());
+        now = now.replace("T", "___");
+        now = now.before(".").to_string();
+        let filename = format!("{}/{}", dir, now);
+        let res = write_enclone_visual_history(&self.h, &filename);
+        if res.is_err() {
+            xprintln!(
+                "Was Unable to write history to the file {}, \
+                so Save failed.\n",
+                filename
+            );
+            std::process::exit(1);
+        }
+        self.archive_list.insert(0, now.clone());
+        self.restore_requested.insert(0, false);
+        self.delete_requested.insert(0, false);
+        self.deleted.insert(0, false);
+        self.expand_archive_entry.insert(0, false);
+        self.restore_msg.insert(0, String::new());
+        self.archived_command_list.insert(0, None);
+        self.archive_name
+            .insert(0, iced::text_input::State::default());
+        self.archive_name_value.insert(0, String::new());
+        self.archive_name_change_button_color
+            .insert(0, Color::from_rgb(0.0, 0.0, 0.0));
+        self.archive_name_change_button
+            .insert(0, button::State::default());
+        self.archive_narrative_button
+            .insert(0, button::State::default());
+        self.archive_share_requested.insert(0, false);
+        self.archive_origin.insert(0, String::new());
+        self.archive_narrative.insert(0, String::new());
+        self.orig_archive_name.insert(0, String::new());
     }
 }

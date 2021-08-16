@@ -3,19 +3,25 @@
 use crate::proto::{
     analyzer_client::AnalyzerClient,
     analyzer_server::{Analyzer, AnalyzerServer},
-    ClonotypeRequest, ClonotypeResponse, EncloneRequest, EncloneResponse, Unit,
+    *,
 };
+use crate::*;
+use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
+use enclone_version::*;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use io_utils::*;
 use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
-use std::io::Write;
+use std::fs::File;
+use std::io::{Read, Write};
+use std::os::unix::fs::PermissionsExt;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::net::TcpListener;
@@ -305,6 +311,164 @@ impl Analyzer for EncloneAnalyzer {
             table: table.to_string(),
         }))
     }
+
+    async fn test_user_name(
+        &self,
+        request: Request<UserNameRequest>,
+    ) -> Result<Response<UserNameResponse>, Status> {
+        let req: UserNameRequest = request.into_inner();
+        let valid = is_user_name_valid(&req.user_name);
+        Ok(Response::new(UserNameResponse { value: valid }))
+    }
+
+    async fn share_session(
+        &self,
+        request: Request<SendShareRequest>,
+    ) -> Result<Response<SendShareResponse>, Status> {
+        let req: SendShareRequest = request.into_inner();
+        for recip in req.recipients.iter() {
+            let mut bytes = req.content.clone();
+            let rbytes = &recip.as_bytes();
+            for i in 0..bytes.len() {
+                bytes[i] = bytes[i].wrapping_add(rbytes[i % rbytes.len()]);
+            }
+            let rdir = format!("{}/{}", req.share_dir, recip);
+            if !path_exists(&rdir) {
+                let res = std::fs::create_dir(&rdir);
+                if res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        "unable to create share directory",
+                    ));
+                }
+
+                // Set permissions to allow group write on the directory.  Note that we don't do
+                // this if the directory already exists, because in that case we may not have
+                // permission to make the change.  In that case however, group write should
+                // already be enabled, because some other user will have executed this same code
+                // to create the directory.
+
+                let perms = std::fs::Permissions::from_mode(0o775);
+                let res = std::fs::set_permissions(&rdir, perms);
+                if res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        format!("unable to set permissions on share directory {}", rdir),
+                    ));
+                }
+            }
+            let mut now = format!("{:?}", Local::now());
+            now = now.replace("T", "___");
+            now = now.before(".").to_string();
+            let filename = format!("{}/{}_{}", rdir, now, req.sender);
+            let res = std::fs::write(&filename, &bytes);
+            if res.is_err() {
+                return Err(Status::new(Code::Internal, "unable to write share file"));
+            }
+        }
+        Ok(Response::new(SendShareResponse { ok: true }))
+    }
+
+    async fn get_my_shares(
+        &self,
+        request: Request<GetMySharesRequest>,
+    ) -> Result<Response<GetMySharesResponse>, Status> {
+        let req: GetMySharesRequest = request.into_inner();
+        let dir = &req.share_dir;
+        let me = users::get_current_username();
+        if me.is_none() {
+            return Err(Status::new(Code::Internal, "unable to determine user name"));
+        }
+        let me = me.unwrap();
+        let me = me.to_string_lossy();
+        if !path_exists(&dir) {
+            return Err(Status::new(
+                Code::Internal,
+                "share directory does not exist",
+            ));
+        }
+        let rdir = format!("{}/{}", dir, me);
+        if !path_exists(&rdir) {
+            let res = std::fs::create_dir(&rdir);
+            if res.is_err() {
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("unable to create my share directory {}", rdir),
+                ));
+            }
+        }
+        let all = dir_list(&rdir);
+        let n = all.len();
+        let mut content = vec![Vec::<u8>::new(); n];
+        let mut messages = vec![String::new(); n];
+        let mut filenames = vec![String::new(); n];
+        let rbytes = &me.as_bytes();
+        for i in 0..n {
+            let filename = format!("{}/{}", rdir, all[i]);
+            let f = File::open(&filename);
+            if f.is_err() {
+                return Err(Status::new(Code::Internal, "unable to open share file"));
+            }
+            let mut f = f.unwrap();
+            let mut bytes = Vec::<u8>::new();
+            let res = f.read_to_end(&mut bytes);
+            if res.is_err() {
+                return Err(Status::new(Code::Internal, "unable to read share file"));
+            }
+            for i in 0..bytes.len() {
+                bytes[i] = bytes[i].wrapping_sub(rbytes[i % rbytes.len()]);
+            }
+            content[i] = bytes;
+            filenames[i] = all[i].clone();
+            if !all[i].contains("_") {
+                return Err(Status::new(Code::Internal, "malformed file name"));
+            }
+            let sender = all[i].rev_after("_");
+            let when = all[i].rev_before("_");
+            if !when.contains("___") {
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("ill-formed file name {}", all[i]),
+                ));
+            }
+            let (date, time) = (when.before("___"), when.after("___"));
+            let msg = format!("session shared by {} on {} at {}", sender, date, time);
+            messages[i] = msg;
+        }
+        Ok(Response::new(GetMySharesResponse {
+            content: content,
+            messages: messages,
+            filenames: filenames,
+        }))
+    }
+
+    async fn release_my_shares(
+        &self,
+        request: Request<ReleaseMySharesRequest>,
+    ) -> Result<Response<ReleaseMySharesResponse>, Status> {
+        let req: ReleaseMySharesRequest = request.into_inner();
+        let me = users::get_current_username();
+        if me.is_none() {
+            return Err(Status::new(Code::Internal, "unable to determine user name"));
+        }
+        let me = me.unwrap();
+        let me = me.to_string_lossy();
+        for i in 0..req.filenames.len() {
+            let path = format!("{}/{}/{}", req.share_dir, me, req.filenames[i]);
+            if path_exists(&path) {
+                let res = std::fs::remove_file(&path);
+                if res.is_err() {
+                    return Err(Status::new(Code::Internal, "unable to remove file"));
+                }
+            } else {
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("file to be removed does not exist: {}", path),
+                ));
+            }
+        }
+        Ok(Response::new(ReleaseMySharesResponse { ok: true }))
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -366,6 +530,17 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("I am process {}.", std::process::id());
     eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
+    let mut version = current_version_string();
+    let current_dir = std::env::current_dir()?;
+    let current_dir = current_dir.display();
+    let current_executable = std::env::current_exe()?;
+    let current_executable = current_executable.display();
+    println!("current dir = {}", current_dir);
+    println!("current executable = {}", current_executable);
+    if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
+        version = current_version_string();
+    }
+    eprintln!("version string = {}", version);
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

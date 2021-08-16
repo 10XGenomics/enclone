@@ -15,6 +15,7 @@ bio_edit = "0.1"
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+clipboard = "0.5"
 cocoa = "0.24"
 debruijn = "0.3"
 dirs = "3"
@@ -26,6 +27,7 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
 enclone_tail = { path = "../enclone_tail" }
+enclone_version = { path = "../enclone_version" }
 equiv = "0.1"
 evalexpr = "6"
 failure = "0.1"
@@ -82,6 +84,7 @@ tokio = { version = "1", default-features = false, features = ["io-util", "macro
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
+users = "0.11"
 # usvg = { version = "0.14", default-features = false }
 usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }

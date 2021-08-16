@@ -25,6 +25,7 @@ use string_utils::*;
 use svg_to_geometry::*;
 use tables::*;
 
+pub mod archive;
 pub mod canvas_view;
 pub mod compare_images;
 pub mod convert_svg_to_png;
@@ -39,16 +40,34 @@ pub mod history;
 pub mod messages;
 pub mod packing;
 pub mod popover;
+pub mod proc1;
 pub mod process_messages;
+pub mod share;
 pub mod style;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
+    let mut x_copy = x.clone();
+    *x = y.to_vec();
+    x.append(&mut x_copy);
+}
+
 const SPACING: u16 = 20;
 const SCROLLBAR_WIDTH: u16 = 12;
 const SVG_NULL_HEIGHT: u16 = 190;
 const SVG_HEIGHT: u16 = 400;
+
+pub fn is_user_name_valid(name: &str) -> bool {
+    users::get_user_by_name(&name).is_some()
+}
+
+#[derive(Clone)]
+pub struct Share {
+    pub days_since_ce: i32,
+    pub user_id: [u8; 32],
+}
 
 type MsgFn = fn(Result<(), String>) -> messages::Message;
 
@@ -64,6 +83,8 @@ async fn noop0() -> Result<(), String> {
 }
 
 async fn noop1() -> Result<(), String> {
+    // Do not change this sleep amount.  It is the length of time that a button flashes red.
+    // If a different amount is needed, create a different function.
     thread::sleep(Duration::from_millis(400));
     Ok(())
 }
@@ -74,6 +95,13 @@ async fn compute() -> Result<(), String> {
         thread::sleep(Duration::from_millis(10));
     }
     xprintln!("time used processing command = {:.1} seconds", elapsed(&t));
+    Ok(())
+}
+
+async fn compute_share() -> Result<(), String> {
+    while SENDING_SHARE.load(SeqCst) {
+        thread::sleep(Duration::from_millis(10));
+    }
     Ok(())
 }
 
@@ -316,8 +344,13 @@ pub static SUMMARY: AtomicBool = AtomicBool::new(false);
 pub static INTERNAL: AtomicBool = AtomicBool::new(false);
 pub static TEST_MODE: AtomicBool = AtomicBool::new(false);
 pub static PROCESSING_REQUEST: AtomicBool = AtomicBool::new(false);
+pub static TESTING_USER_NAME: AtomicBool = AtomicBool::new(false);
+pub static SENDING_SHARE: AtomicBool = AtomicBool::new(false);
+pub static USER_NAME_VALID: AtomicBool = AtomicBool::new(false);
 pub static DONE: AtomicBool = AtomicBool::new(false);
 pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
+pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
+pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
@@ -326,19 +359,29 @@ pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
+    pub static ref MESSAGE_HISTORY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref BUG_REPORTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref REMOTE_SHARE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SHARE_RECIPIENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref VERSION: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref VISUAL_HISTORY_DIR: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref USER_REQUEST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref SHARE_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
     pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<u32>>> =
         Mutex::new(Vec::<Vec<u32>>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref USER_NAME: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref RECEIVED_SHARES_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref RECEIVED_SHARES_MESSAGES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

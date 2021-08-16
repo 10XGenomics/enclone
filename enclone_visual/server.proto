@@ -1,17 +1,42 @@
+// Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
+
 // version of protocol buffer used
+
 syntax = "proto3";
 
 package enclone;
 
 // Analyzer service that runs enclone. A rust trait will be generated
 // from this service for the server code to implement.
+
 service Analyzer {
+
   rpc Ping(Unit) returns (Unit);
 
   // Runs enclone.
+
   rpc Enclone(EncloneRequest) returns (EncloneResponse);
+
   // Returns the table for one clonotype.
+
   rpc GetClonotype(ClonotypeRequest) returns (ClonotypeResponse);
+
+  // Test a user name to see if it is valid.
+
+  rpc TestUserName(UserNameRequest) returns (UserNameResponse);
+
+  // Share a session.
+
+  rpc ShareSession(SendShareRequest) returns (SendShareResponse);
+
+  // Fetch my shares.
+
+  rpc get_my_shares(GetMySharesRequest) returns (GetMySharesResponse);
+
+  // Release my shares.
+
+  rpc release_my_shares(ReleaseMySharesRequest) returns (ReleaseMySharesResponse);
+
 }
 
 message Unit {}
@@ -37,3 +62,40 @@ message ClonotypeResponse {
   string table = 1; // Colored terminal text.
 }
 
+message UserNameRequest {
+  string user_name = 1;
+}
+
+message UserNameResponse {
+  bool value = 1;
+}
+
+message SendShareRequest {
+  string share_dir = 1;
+  bytes content = 2;
+  string sender = 3;
+  repeated string recipients = 4;
+}
+
+message SendShareResponse {
+  bool ok = 1;
+}
+
+message GetMySharesRequest {
+  string share_dir = 1;
+}
+
+message GetMySharesResponse {
+  repeated bytes content = 1;
+  repeated string messages = 2;
+  repeated string filenames = 3;
+}
+
+message ReleaseMySharesRequest {
+  string share_dir = 1;
+  repeated string filenames = 2;
+}
+
+message ReleaseMySharesResponse {
+  bool ok = 1;
+}

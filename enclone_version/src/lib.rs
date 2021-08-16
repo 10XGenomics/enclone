@@ -1,13 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// The purpose of this file is to make some version information available so that it can be
-// printed out at appropriate points by enclone.  This files is a slightly modified version
-// of https://vallentin.dev/2019/06/06/versioning.
-
-// This code is nearly identical to the code in enclone_version/src/lib.rs.
-
-extern crate chrono;
-extern crate string_utils;
+// This is nearly identical to the code in enclone/enclone_core/build.rs.
 
 use chrono::prelude::*;
 use std::env::consts::{ARCH, OS};
@@ -19,8 +12,8 @@ const BUILD_TYPE: &'static str = "debug";
 #[cfg(not(debug_assertions))]
 const BUILD_TYPE: &'static str = "release";
 
-fn main() {
-    let version_string = format!(
+pub fn current_version_string() -> String {
+    format!(
         "{} : {}{} : {} : {} : {} : {}",
         get_branch_name(),
         get_commit_hash(),
@@ -29,8 +22,7 @@ fn main() {
         BUILD_TYPE,
         OS,
         ARCH
-    );
-    println!("cargo:rustc-env=VERSION_STRING={}", version_string);
+    )
 }
 
 fn get_commit_hash() -> String {

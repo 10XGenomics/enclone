@@ -82,6 +82,7 @@ fn main() {
     let o = Command::new("enclone")
         .arg(&"VIS")
         .arg(&"TEST")
+        .arg(&"VISUAL_HISTORY_DIR=enclone_visual/sample_visual_history")
         .output()
         .expect("failed to execute enclone visual test");
     if o.status.code() != Some(0) {
@@ -212,7 +213,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 36.1; // this is supposed to be the lowest observed value
+    const EXPECTED_TIME: f64 = 37.3; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER: f64 = 4.2;
     let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
     if percent_over > MAX_PERCENT_OVER {
@@ -238,7 +239,7 @@ fn main() {
         maxrss_children = rusage.ru_maxrss;
     }
     let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 152.2; // this is supposed to be the lowest observed value
+    const MAX_PEAK_MEM: f64 = 114.1; // this is supposed to be the lowest observed value
     const MAX_PERCENT_OVER_MEM: f64 = 17.6;
     let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 

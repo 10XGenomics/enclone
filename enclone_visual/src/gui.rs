@@ -1,8 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
 use crate::*;
+use chrono::{TimeZone, Utc};
+use enclone_core::version_string;
+use enclone_core::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
@@ -13,13 +17,234 @@ use iced::{
 // use iced::Subscription;
 // use iced_native::{window, Event};
 use iced_native::{event, subscription, window, Event};
+use io_utils::*;
+use itertools::Itertools;
 use messages::Message;
+use pretty_trace::*;
+use std::env;
+use std::fs::{create_dir_all, metadata, File};
+use std::io::{Read, Write};
+use std::process::Stdio;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
 
 fn handle_resize(width: u32, height: u32) -> Option<Message> {
     Some(Message::Resize(width, height))
+}
+
+pub fn prepare_for_apocalypse_visual() {
+    let email = INTERNAL.load(SeqCst);
+    let bug_reports = &BUG_REPORTS.lock().unwrap()[0];
+    let args: Vec<String> = std::env::args().collect();
+    if email {
+        assert!(bug_reports.len() > 0);
+    }
+    let now = Utc::now().naive_utc().timestamp();
+    let build_date = version_string().after(":").between(": ", " :").to_string();
+    let build_datetime = format!("{} 00:00:00", build_date);
+    let then = Utc
+        .datetime_from_str(&build_datetime, "%Y-%m-%d %H:%M:%S")
+        .unwrap()
+        .timestamp();
+    let days_since_build = (now - then) / (60 * 60 * 24);
+    let mut elapsed_message = String::new();
+    if days_since_build > 30 {
+        elapsed_message = format!(
+            "Your build is {} days old.  You might want to check \
+            to see if there is a newer build now.\n\n",
+            days_since_build
+        );
+    }
+    if !email {
+        let exit_message = format!(
+            "Something has gone badly wrong.  You have probably encountered an internal \
+            error in enclone.\n\n\
+            Please email us at enclone@10xgenomics.com, including the traceback shown\n\
+            above and also the following version information:\n\
+            {} : {}.\n\n\
+            Your command was:\n\n{}\n\n\
+            {}\
+            🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+            env!("CARGO_PKG_VERSION"),
+            version_string(),
+            args.iter().format(" "),
+            elapsed_message,
+        );
+        PrettyTrace::new().exit_message(&exit_message).on();
+    } else {
+        // Set up to email bug report on panic.  This is only for internal users!
+
+        let mut contemplate = "".to_string();
+        if bug_reports == "enclone@10xgenomics.com" {
+            contemplate = ", for the developers to contemplate".to_string();
+        }
+        let exit_message = format!(
+            "Something has gone badly wrong.  You have probably encountered an internal \
+            error in enclone.\n\n\
+            Here is the version information:\n\
+            {} : {}.\n\n\
+            Your command was:\n\n{}\n\n\
+            {}\
+            Thank you for being a happy internal enclone user.  All of this information \
+            is being\nemailed to {}{}.\n\n\
+            🌸 Thank you so much for finding a bug and have a nice day! 🌸",
+            env!("CARGO_PKG_VERSION"),
+            version_string(),
+            args.iter().format(" "),
+            elapsed_message,
+            bug_reports,
+            contemplate,
+        );
+        BUG_REPORT_ADDRESS
+            .lock()
+            .unwrap()
+            .push(bug_reports.to_string());
+        fn exit_function(msg: &str) {
+            let mut msg = msg.to_string();
+
+            // Get messages and shrink.
+
+            let mut messages = Vec::<String>::new();
+            let n = MESSAGE_HISTORY.lock().unwrap().len();
+            for i in 0..n {
+                messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
+            }
+            let mut messages2 = Vec::<String>::new();
+            for i in 0..messages.len() {
+                if i == messages.len() - 1
+                    || !messages[i].starts_with("InputChanged1(")
+                    || !messages[i + 1].starts_with("InputChanged1(")
+                {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            for i in 0..messages.len() {
+                if i == messages.len() - 1
+                    || !messages[i].starts_with("ArchiveName(")
+                    || !messages[i + 1].starts_with("ArchiveName(")
+                {
+                    messages2.push(messages[i].clone());
+                }
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1
+                    && messages[i] == "SubmitButtonPressed(Ok(()))"
+                    && messages[i + 1] == "ComputationDone(Ok(()))"
+                {
+                    messages2.push("Submit button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+                i += 1;
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1
+                    && messages[i] == "Save"
+                    && messages[i + 1] == "CompleteSave(Ok(()))"
+                {
+                    messages2.push("Save button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+                i += 1;
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1
+                    && messages[i] == "UpdateShares"
+                    && messages[i + 1] == "UpdateSharesComplete(Ok(()))"
+                {
+                    messages2.push("Receive shares button pressed".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+                i += 1;
+            }
+            messages = messages2;
+            let mut messages2 = Vec::<String>::new();
+            let mut i = 0;
+            while i < messages.len() {
+                if i < messages.len() - 1
+                    && messages[i] == "DoShare(true)"
+                    && messages[i + 1] == "CompleteDoShare(Ok(()))"
+                {
+                    messages2.push("sharing".to_string());
+                    i += 1;
+                } else {
+                    messages2.push(messages[i].clone());
+                }
+                i += 1;
+            }
+            messages = messages2;
+            for i in 0..messages.len() {
+                if messages[i] == "ArchiveOpen(Ok(()))" {
+                    messages[i] = "Archive button pressed".to_string();
+                } else if messages[i] == "ArchiveClose" {
+                    messages[i] = "Dismiss button pressed".to_string();
+                } else if messages[i] == "DelButtonPressed(Ok(()))" {
+                    messages[i] = "Del button pressed".to_string();
+                }
+            }
+
+            // Proceed.
+
+            println!("enclone visual message history:\n");
+            msg += "enclone visual message history:\n\n";
+            for i in 0..messages.len() {
+                println!("[{}] {}", i + 1, messages[i]);
+                msg += &mut format!("[{}] {}\n", i + 1, messages[i]);
+            }
+            println!("");
+            let msg = format!("{}\n.\n", msg);
+            let bug_report_address = &BUG_REPORT_ADDRESS.lock().unwrap()[0];
+            if !version_string().contains("macos") {
+                let process = std::process::Command::new("mail")
+                    .arg("-s")
+                    .arg("internal automated bug report")
+                    .arg(&bug_report_address)
+                    .stdin(Stdio::piped())
+                    .stdout(Stdio::piped())
+                    .spawn();
+                let process = process.unwrap();
+                process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                let mut _s = String::new();
+                process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+            } else if REMOTE_HOST.lock().unwrap().len() > 0 {
+                let remote_host = &REMOTE_HOST.lock().unwrap()[0];
+                let process = std::process::Command::new("ssh")
+                    .arg(&remote_host)
+                    .arg("mail")
+                    .arg("-s")
+                    .arg("\"internal automated bug report\"")
+                    .arg(&bug_report_address)
+                    .stdin(Stdio::piped())
+                    .stdout(Stdio::piped())
+                    .spawn();
+                let process = process.unwrap();
+                process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+                let mut _s = String::new();
+                process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+            }
+        }
+        PrettyTrace::new()
+            .exit_message(&exit_message)
+            .run_this(exit_function)
+            .on();
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -30,14 +255,102 @@ impl Application for EncloneVisual {
     type Flags = ();
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
+        prepare_for_apocalypse_visual();
         COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
+        let mut home = String::new();
+        for (key, value) in env::vars() {
+            if key == "HOME" {
+                home = value.clone();
+            }
+        }
+        if home.len() == 0 {
+            eprintln!(
+                "Unable to determine home directory.  This is unexpected and \
+                pathological.\nPlease report this problem!\n"
+            );
+            std::process::exit(1);
+        }
+        let enclone = format!("{}/enclone", home);
+        if !path_exists(&enclone) {
+            eprintln!(
+                "Oddly, you do not have a directory ~/enclone.  Normally this would be\n\
+                created by following the installation instructions at bit.ly/enclone.  Please do \
+                that or at least create the directory.\n"
+            );
+            std::process::exit(1);
+        }
+        x.visual = format!("{}/visual", enclone);
+        let history = format!("{}/history", x.visual);
+        if !path_exists(&history) {
+            let res = create_dir_all(&history);
+            if res.is_err() {
+                eprintln!(
+                    "Unable to create the directory ~/enclone/visual/history.  This is odd and \
+                    unexpected.\nPlease report this problem!\n"
+                );
+                std::process::exit(1);
+            }
+        }
+        x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
+        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
+            x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
+        } else {
+            x.archive_dir = Some(history.clone());
+
+            // Read shares.  If the file is corrupted, silently ignore it.
+
+            if x.sharing_enabled {
+                let shares = format!("{}/shares", x.visual);
+                if path_exists(&shares) {
+                    let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                    let n = std::mem::size_of::<Share>();
+                    if share_size % n == 0 {
+                        let mut bytes = Vec::<u8>::new();
+                        let mut f = File::open(&shares).unwrap();
+                        f.read_to_end(&mut bytes).unwrap();
+                        assert_eq!(bytes.len(), share_size);
+                        unsafe {
+                            x.shares = bytes.align_to::<Share>().1.to_vec();
+                        }
+                    }
+                }
+            }
+        }
+        if x.archive_dir.is_some() {
+            let arch_dir = &x.archive_dir.as_ref().unwrap();
+            if path_exists(&arch_dir) {
+                if metadata(&arch_dir).unwrap().is_dir() {
+                    x.archive_list = dir_list(&arch_dir);
+                }
+            }
+        }
+        x.archive_list.reverse();
+        let n = x.archive_list.len();
+        x.restore_requested = vec![false; n];
+        x.delete_requested = vec![false; n];
+        x.deleted = vec![false; n];
+        x.expand_archive_entry = vec![false; n];
+        x.restore_msg = vec![String::new(); n];
+        x.archived_command_list = vec![None; n];
+        x.archive_name = vec![iced::text_input::State::default(); n];
+        x.archive_name_value = vec![String::new(); n];
+        x.archive_name_change_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); n];
+        x.archive_name_change_button = vec![iced::button::State::default(); n];
+        x.archive_narrative_button = vec![iced::button::State::default(); n];
+        x.archive_share_requested = vec![false; n];
+        x.archive_origin = vec![String::new(); n];
+        x.archive_narrative = vec![String::new(); n];
+
+        // Handle test mode.
+
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
         } else {
@@ -252,6 +565,35 @@ impl Application for EncloneVisual {
             )
             .on_press(Message::SummaryOpen(Ok(())));
 
+            // Create narrative button.
+
+            const MAX_NARRATIVE_LINE: usize = 33;
+            let mut logx = String::new();
+            if self.h.history_index >= 1 {
+                let mut cmd = self.h.narrative_hist_uniq
+                    [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
+                    .clone();
+                if cmd.len() == 0 {
+                    cmd = "Narrative: click to paste in clipboard".to_string();
+                }
+                let mut rows = Vec::<Vec<String>>::new();
+                let folds = fold(&cmd, MAX_NARRATIVE_LINE);
+                for i in 0..folds.len() {
+                    rows.push(vec![folds[i].clone()]);
+                }
+                for i in 0..rows.len() {
+                    if i > 0 {
+                        logx += "\n";
+                    }
+                    logx += &mut rows[i][0].clone();
+                }
+            }
+            let narrative_button = Button::new(
+                &mut self.narrative_button,
+                Text::new(&logx).font(DEJAVU_BOLD).size(12),
+            )
+            .on_press(Message::Narrative);
+
             // Build the command column.
 
             let mut row = Row::new().spacing(8);
@@ -277,6 +619,7 @@ impl Application for EncloneVisual {
             );
             col = col.push(row);
             col = col.push(summary_button);
+            col = col.push(narrative_button);
 
             // Add the command column to the row.
 
@@ -380,34 +723,41 @@ impl Application for EncloneVisual {
                 Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
                     .on_press(Message::CookbookOpen),
             );
-        let show_archive = false; // **************************************************************
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
-        let mut save_on_exit_text = Text::new("Save on Exit");
+        let mut save_text = Text::new("Save");
+        if self.save_in_progress {
+            save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));
+        }
+        let save_button = Button::new(&mut self.save_button, save_text).on_press(Message::Save);
+        let mut save_on_exit_text = Text::new("On Exit").width(Units(66));
         if self.save_on_exit {
             save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
         }
         let save_on_exit_button = Button::new(&mut self.save_on_exit_button, save_on_exit_text)
             .on_press(Message::SaveOnExit);
-        let archive_button = Button::new(&mut self.archive_open_button, Text::new("Archive"))
-            .on_press(Message::ArchiveOpen);
+        let save_row = Row::new()
+            .spacing(8)
+            .push(save_button)
+            .push(save_on_exit_button);
+        let archive_button = Button::new(
+            &mut self.archive_open_button,
+            Text::new("Archive").width(Units(66)),
+        )
+        .on_press(Message::ArchiveOpen(Ok(())));
         let mut top_row = Row::new()
             .align_items(Align::Center)
             .push(left_buttons)
             .push(Space::with_width(Length::Fill))
             .push(banner)
             .push(Space::with_width(Length::Fill));
-        if show_archive {
-            let right_col = Column::new()
-                .align_items(Align::End)
-                .spacing(8)
-                .push(console_button)
-                .push(save_on_exit_button)
-                .push(archive_button);
-            top_row = top_row.push(right_col);
-        } else {
-            top_row = top_row.push(console_button);
-        }
+        let right_col = Column::new()
+            .align_items(Align::End)
+            .spacing(8)
+            .push(console_button)
+            .push(save_row)
+            .push(archive_button);
+        top_row = top_row.push(right_col);
         let mut content = Column::new()
             .spacing(SPACING)
             .padding(20)

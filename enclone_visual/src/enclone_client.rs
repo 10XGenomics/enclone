@@ -29,12 +29,13 @@
 // you will only see this if you run the server locally using enclone VIS.
 
 use crate::launch_gui;
-use crate::proto::{analyzer_client::AnalyzerClient, EncloneRequest};
+use crate::proto::{analyzer_client::AnalyzerClient, *};
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
 use enclone_core::prepare_for_apocalypse::*;
 use enclone_core::REMOTE_HOST;
+use enclone_version::*;
 use io_utils::*;
 use itertools::Itertools;
 use libc::atexit;
@@ -74,22 +75,30 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut fixed_port = None;
     for i in 1..args.len() {
         let arg = &args[i];
-        if arg == "VERBOSE" {
+
+        // General options.
+
+        if arg.starts_with("VIS=") {
+            config_name = arg.after("VIS=").to_string();
+        } else if arg == "VIS" {
+        } else if arg == "VERBOSE" {
             verbose = true;
+
+        // Special testing options.
         } else if arg == "MONITOR_THREADS" {
             monitor_threads = true;
-        } else if arg.starts_with("VIS=") {
-            config_name = arg.after("VIS=").to_string();
         } else if arg.starts_with("PORT=") {
             fixed_port = Some(arg.after("PORT=").parse::<u16>().unwrap());
             assert!(fixed_port.unwrap() >= 1024);
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
-        } else if arg != "VIS" {
+        } else if arg.starts_with("VISUAL_HISTORY_DIR=") {
+            let dir = arg.after("VISUAL_HISTORY_DIR=").to_string();
+            VISUAL_HISTORY_DIR.lock().unwrap().push(dir);
+        } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
-                configuration name and VERBOSE, as well as MONITOR_THREADS and PORT=... \
-                and TEST, but only for testing.\n"
+                configuration name and VERBOSE, and some special testing options.\n"
             );
             std::process::exit(1);
         }
@@ -105,7 +114,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.00000000000000000001";
+    let version = "0.00000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -293,6 +302,16 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
     }
     prepare_for_apocalypse(&args, internal, &bug_reports);
+    BUG_REPORTS.lock().unwrap().push(bug_reports);
+
+    // Save remote share.
+
+    if config.contains_key("REMOTE_SHARE") {
+        REMOTE_SHARE
+            .lock()
+            .unwrap()
+            .push(config["REMOTE_SHARE"].clone());
+    }
 
     // Determine if the server is remote.
 
@@ -456,12 +475,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
         }
 
-        // Look at stderr.
+        // Look at stderr.  We read exactly 200 bytes.  By design, this is enough to know that the
+        // server succeeded and enough to contain the information that the server is passing to
+        // the client.
 
         let mut ebuffer = [0; 200];
         let server_stderr = server_process.stderr.as_mut().unwrap();
         let tread = Instant::now();
-        server_stderr.read(&mut ebuffer).unwrap();
+        server_stderr.read_exact(&mut ebuffer).unwrap();
         if verbose {
             xprintln!(
                 "used {:.1} seconds reading from server stderr",
@@ -512,6 +533,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 xprint!("\nUnable to determine remote enclone version.\n");
                 std::process::exit(1);
             }
+            let remote_version_string;
+            if emsg.contains("version string = ") && emsg.after("version string = ").contains("\n")
+            {
+                remote_version_string = emsg.between("version string = ", "\n").to_string();
+            } else {
+                xprint!("\nUnable to determine remote version string.\n");
+                std::process::exit(1);
+            }
             let local_version = env!("CARGO_PKG_VERSION");
             if local_version != remote_version {
                 xprintln!("\nremote enclone version = {}", remote_version);
@@ -527,6 +556,44 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         the instructions at bit.ly/enclone, then restart.  Thank you!\n"
                     );
                     std::process::exit(1);
+                }
+            }
+
+            // Check for identity of local and remote enclone versions.  This is complicated
+            // because in general, the version_string() function does not return the current
+            // value.  So we only test for version identity if we're in the directory where
+            // enclone as compiled.  And that same condition is partially tested on the remote.
+
+            let current_dir = std::env::current_dir()?;
+            let current_dir = current_dir.display();
+            let current_executable = std::env::current_exe()?;
+            let current_executable = current_executable.display();
+            println!("current dir = {}", current_dir);
+            println!("current executable = {}", current_executable);
+            if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir)
+            {
+                let local_version_string = current_version_string();
+                let local = format!("{} : {}", local_version, local_version_string);
+                let remote = format!("{} : {}", remote_version, remote_version_string);
+                let mut xlocal = local.clone();
+                xlocal = xlocal.replace(": macos :", "");
+                xlocal = xlocal.replace(": linux :", "");
+                let mut xremote = remote.clone();
+                xremote = xremote.replace(": macos :", "");
+                xremote = xremote.replace(": linux :", "");
+                if xlocal != xremote && verbose {
+                    xprintln!("\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                    xprintln!("----------------------------------------------------------------------------------");
+                    xprintln!("😱 WARNING: INCOMPATIBLE SERVER/CLIENT VERSIONS DETECTED!!! 😱");
+                    xprintln!("local version = {}", local);
+                    xprintln!("remote version = {}", remote);
+                    xprintln!("THIS CAN CAUSE VERY BAD AND INSCRUTABLE THINGS TO HAPPEN!");
+                    xprintln!("😱 PROCEED AT RISK.................😱");
+                    xprintln!("----------------------------------------------------------------------------------");
+                    xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                } else if verbose {
+                    xprintln!("local version = {}", local);
+                    xprintln!("remote version = {}", remote);
                 }
             }
         }
@@ -617,6 +684,108 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     cleanup();
                     std::process::exit(0);
                 }
+
+                if SENDING_SHARE.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let sender = users::get_current_username();
+                    let sender = sender.unwrap().to_string_lossy().to_string();
+                    let content = SHARE_CONTENT.lock().unwrap()[0].clone();
+                    let nrecip = SHARE_RECIPIENTS.lock().unwrap().len();
+                    let mut recipients = Vec::<String>::new();
+                    for i in 0..nrecip {
+                        recipients.push(SHARE_RECIPIENTS.lock().unwrap()[i].clone());
+                    }
+                    let request = tonic::Request::new(SendShareRequest {
+                        share_dir: share_dir,
+                        content: content,
+                        sender: sender,
+                        recipients: recipients,
+                    });
+                    let response = client.share_session(request).await;
+                    if response.is_err() {
+                        eprintln!("Attempt to share session failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    SENDING_SHARE.store(false, SeqCst);
+                }
+
+                if GET_MY_SHARES.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let request = tonic::Request::new(GetMySharesRequest {
+                        share_dir: share_dir,
+                    });
+                    let response = client.get_my_shares(request).await;
+                    if response.is_err() {
+                        eprintln!("Attempt to retrieve shared sessions failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    let res = response.unwrap().into_inner();
+                    let n = res.content.len();
+                    for i in 0..n {
+                        RECEIVED_SHARES_CONTENT
+                            .lock()
+                            .unwrap()
+                            .push(res.content[i].clone());
+                        RECEIVED_SHARES_MESSAGES
+                            .lock()
+                            .unwrap()
+                            .push(res.messages[i].clone());
+                        RECEIVED_SHARES_FILENAMES
+                            .lock()
+                            .unwrap()
+                            .push(res.filenames[i].clone());
+                    }
+                    GET_MY_SHARES.store(false, SeqCst);
+                }
+
+                if RELEASE_MY_SHARES.load(SeqCst) {
+                    let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
+                    let n = RECEIVED_SHARES_FILENAMES.lock().unwrap().len();
+                    let mut filenames = Vec::<String>::new();
+                    for i in 0..n {
+                        filenames.push(RECEIVED_SHARES_FILENAMES.lock().unwrap()[i].clone());
+                    }
+                    let request = tonic::Request::new(ReleaseMySharesRequest {
+                        share_dir: share_dir,
+                        filenames: filenames,
+                    });
+                    let response = client.release_my_shares(request).await;
+                    if response.is_err() {
+                        eprintln!("Attempt to release shared sessions failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    RECEIVED_SHARES_CONTENT.lock().unwrap().clear();
+                    RECEIVED_SHARES_MESSAGES.lock().unwrap().clear();
+                    RECEIVED_SHARES_FILENAMES.lock().unwrap().clear();
+                    RELEASE_MY_SHARES.store(false, SeqCst);
+                }
+
+                if TESTING_USER_NAME.load(SeqCst) {
+                    let user_name = USER_NAME.lock().unwrap()[0].clone();
+                    let request = tonic::Request::new(UserNameRequest {
+                        user_name: user_name,
+                    });
+                    let response = client.test_user_name(request).await;
+                    if response.is_err() {
+                        eprintln!("\nWeird, validity test for user name failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        std::process::exit(1);
+                    }
+                    let valid = response.unwrap().into_inner().value;
+                    USER_NAME_VALID.store(valid, SeqCst);
+                    TESTING_USER_NAME.store(false, SeqCst);
+                }
+
                 if PROCESSING_REQUEST.load(SeqCst) {
                     let input = USER_REQUEST.lock().unwrap()[0].clone();
                     let mut line = input.to_string();

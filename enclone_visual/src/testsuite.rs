@@ -31,6 +31,9 @@ const SUMMARY1: fn(Result<(), std::string::String>) -> messages::Message =
 const SUMMARY2: fn(Result<(), std::string::String>) -> messages::Message =
     Message::SummaryClose as MsgFn;
 
+const ARCH1: fn(Result<(), std::string::String>) -> messages::Message =
+    Message::ArchiveOpen as MsgFn;
+
 const X0: &str = "enclone woof";
 const X1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12";
 const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
@@ -39,7 +42,7 @@ const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
 
 #[rustfmt::skip]
-pub const TESTS: [(&str, MsgFn, &str); 39] = [
+pub const TESTS: [(&str, MsgFn, &str); 40] = [
     (X0,     SUBMIT,  ""),        // enclone woof
     ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
@@ -83,6 +86,7 @@ pub const TESTS: [(&str, MsgFn, &str); 39] = [
     ("",     SUMMARY1, "test19"), // (summary)
     ("",     SUMMARY2, ""),       // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
+    ("",     ARCH1,    "test20"), // (archive)
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -116,3 +120,5 @@ pub const TESTS: [(&str, MsgFn, &str); 39] = [
 //
 // 5. test that horizontal resizing works on enclone BCR=123085 CHAINS=4
 //    and test that there is no limit on horizontal resizing
+//
+// 6. test archive functionality
