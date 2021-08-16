@@ -8,7 +8,6 @@ use crate::share::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
-use clipboard::{ClipboardContext, ClipboardProvider};
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
@@ -27,20 +26,7 @@ impl EncloneVisual {
         match message {
             Message::Narrative => {
                 self.modified = true;
-                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
-                if ctx.is_err() {
-                    xprintln!("\nSomething went wrong accessing clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let mut ctx = ctx.unwrap();
-                let copy = ctx.get_contents();
-                if copy.is_err() {
-                    xprintln!("\nSomething went wrong copying from clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let copy = format!("{}", ctx.get_contents().unwrap());
+                let copy = get_clipboard_content();
                 self.narrative_value = copy.clone();
                 let len = self.h.narrative_hist_uniq.len();
                 self.h.narrative_hist_uniq.push(copy);
@@ -50,20 +36,7 @@ impl EncloneVisual {
 
             Message::ArchiveNarrative(i) => {
                 self.modified = true;
-                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
-                if ctx.is_err() {
-                    xprintln!("\nSomething went wrong accessing clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let mut ctx = ctx.unwrap();
-                let copy = ctx.get_contents();
-                if copy.is_err() {
-                    xprintln!("\nSomething went wrong copying from clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let copy = format!("{}", ctx.get_contents().unwrap());
+                let copy = get_clipboard_content();
                 self.archive_narrative[i] = copy.clone();
                 let filename = format!(
                     "{}/{}",

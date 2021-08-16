@@ -25,7 +25,6 @@ publish = false
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-clipboard = "0.5"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_version = { path = "../enclone_version" }
@@ -67,6 +66,7 @@ arboard = "1"
 procfs = { version = "0.9", default_features = false }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+clipboard = "0.5"
 cocoa = "0.24"
 mach = "0.3"
 objc = "0.2"

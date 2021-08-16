@@ -1,12 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Print the contents of the clipboard.
+// Print the contents of the clipboard, Mac only for now.
 
-use clipboard::ClipboardContext;
-use clipboard::ClipboardProvider;
+use enclone_visual::*;
 
 fn main() {
-    let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
-    // println!("{:?}", ctx.get_contents());
-    println!("{}", ctx.get_contents().unwrap());
+    let copy = get_clipboard_content();
+    println!("{}", copy);
 }
