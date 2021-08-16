@@ -23,10 +23,9 @@ pub fn filter_by_fcell(
     gex_info: &GexInfo,
 ) -> Result<(), String> {
     if !ctl.clono_filt_opt_def.fcell.is_empty() {
-
-        // Load the GEX and FB data.  This is quite horrible: the code and computation are 
+        // Load the GEX and FB data.  This is quite horrible: the code and computation are
         // duplicated verbatim in stop.rs.
-    
+
         let tdi = Instant::now();
         let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
         let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
@@ -122,7 +121,7 @@ pub fn filter_by_fcell(
                     let bc = ex.clones[l][0].barcode.clone();
                     if !gex_info.gex_barcodes.is_empty() {
                         let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 { 
+                        if p >= 0 {
                             if !gex_info.gex_matrices[li].initialized() {
                                 let z1 = gex_info.h5_indptr[li][p as usize] as usize;
                                 let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // p+1 OK?
@@ -142,11 +141,11 @@ pub fn filter_by_fcell(
                                         .read_slice(s![z1..z2])
                                         .unwrap()
                                         .to_vec();
-                                }   
-                            }   
-                        }   
-                    }   
-                }   
+                                }
+                            }
+                        }
+                    }
+                }
                 for l in 0..ex.ncells() {
                     let li = ex.clones[l][0].dataset_index;
                     let bc = &ex.clones[l][0].barcode;
@@ -179,7 +178,7 @@ pub fn filter_by_fcell(
                                         let mut raw_count = 0.0;
                                         for fid in ux.iter() {
                                             let raw_counti = get_gex_matrix_entry(
-                                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, 
+                                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l,
                                                 p as usize, &var,
                                             );
                                             raw_count += raw_counti;
@@ -192,7 +191,7 @@ pub fn filter_by_fcell(
                                         if p >= 0 {
                                             let fid = gex_info.feature_id[li][&var];
                                             let raw_count = get_gex_matrix_entry(
-                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l, 
+                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l,
                                                 p as usize, &var,
                                             );
                                             val = format!("{:.2}", raw_count);
