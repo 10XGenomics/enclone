@@ -280,17 +280,12 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         let mut test3 = Vec::<String>::new();
         if !test2.is_empty() {
             let known_features = get_known_features(&gex_info)?; // note duplicated computation
-            let ends = ["_g", "_ab", "_cr", "_cu"];
             for var in test2.iter() {
-                for end in ends.iter() {
-                    if var.ends_with(&*end) {
-                        let root = var.rev_before(&end).to_string();
-                        if !bin_member(&known_features, &root) {
-                            test3.push(var.to_string());
-                        }
-                    }
+                if !bin_member(&known_features, &var) {
+                    test3.push(var.to_string());
                 }
             }
+            let ends = ["_g", "_ab", "_cr", "_cu"];
             for var in test3.iter() {
                 let mut pat = false;
                 for end in ends.iter() {
@@ -322,7 +317,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                 }
                 if !pat {
                     return Err(format!(
-                        "\nYou've used an illegal variable {} as part of an FCELL constraint.",
+                        "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
                         var
                     ));
                 }
