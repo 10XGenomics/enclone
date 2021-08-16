@@ -743,7 +743,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Filter using constraints imposed by FCELL.
 
-    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
+    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes, &gex_info, &d_all, &ind_all);
     ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Run some filters.

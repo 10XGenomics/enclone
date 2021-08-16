@@ -3,6 +3,7 @@
 // Filter using constraints imposed by FCELL.
 
 use enclone_core::defs::*;
+use enclone_print::proc_lvar1::*;
 use evalexpr::*;
 use string_utils::*;
 use vector_utils::*;
@@ -12,6 +13,9 @@ pub fn filter_by_fcell(
     orbits: &mut Vec<Vec<i32>>,
     info: &Vec<CloneInfo>,
     exact_clonotypes: &mut Vec<ExactClonotype>,
+    gex_info: &GexInfo,
+    d_all: &mut Vec<Vec<u32>>,
+    ind_all: &mut Vec<Vec<u32>>,
 ) {
     if !ctl.clono_filt_opt_def.fcell.is_empty() {
         let mut orbits2 = Vec::<Vec<i32>>::new();
@@ -31,12 +35,47 @@ pub fn filter_by_fcell(
                         let vars = x.iter_variable_identifiers().collect::<Vec<&str>>();
                         let mut vals = Vec::<String>::new();
                         for m in 0..vars.len() {
+                            let var = &vars[m];
                             let mut val = String::new();
+                            let mut found = false;
                             'uloop: for u in 0..alt.len() {
-                                if alt[u].0 == vars[m] {
+                                if alt[u].0 == var {
                                     if alt[u].1.contains_key(&bc.clone()) {
                                         val = alt[u].1[&bc.clone()].clone();
+                                        found = true;
                                         break 'uloop;
+                                    }
+                                }
+                            }
+                            if !found {
+                                let mut ux = Vec::<usize>::new();
+                                if ctl.clono_print_opt.regex_match[li].contains_key(&var) {
+                                    ux = ctl.clono_print_opt.regex_match[li][&var].clone();
+                                }
+                                if ux.len() > 0 {
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                    if p >= 0 {
+                                        let mut raw_count = 0.0;
+                                        for fid in ux.iter() {
+                                            let raw_counti = get_gex_matrix_entry(
+                                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, k, 
+                                                p as usize, &var,
+                                            );
+                                            raw_count += raw_counti;
+                                        }
+                                        val = format!("{:.2}", raw_count);
+                                    }
+                                } else {
+                                    if gex_info.feature_id[li].contains_key(&var) {
+                                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                        if p >= 0 {
+                                            let fid = gex_info.feature_id[li][&var];
+                                            let raw_count = get_gex_matrix_entry(
+                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, k, 
+                                                p as usize, &var,
+                                            );
+                                            val = format!("{:.2}", raw_count);
+                                        }
                                     }
                                 }
                             }
