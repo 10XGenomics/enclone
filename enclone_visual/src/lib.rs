@@ -25,6 +25,9 @@ use string_utils::*;
 use svg_to_geometry::*;
 use tables::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use clipboard::{ClipboardContext, ClipboardProvider};
+
 pub mod archive;
 pub mod canvas_view;
 pub mod compare_images;
@@ -47,6 +50,32 @@ pub mod style;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
+
+// get_clipboard_content: this should work under Linux, but we don't need it for that now, and
+// there are compilation issues when compiled for Linux via GitHub Actions.
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+pub fn get_clipboard_content() -> String {
+    let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
+    if ctx.is_err() {
+        xprintln!("\nSomething went wrong accessing clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    let mut ctx = ctx.unwrap();
+    let copy = ctx.get_contents();
+    if copy.is_err() {
+        xprintln!("\nSomething went wrong copying from clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    format!("{}", ctx.get_contents().unwrap())
+}
+
+#[cfg(target_os = "linux")]
+pub fn get_clipboard_content() -> String {
+    String::new()
+}
 
 pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
     let mut x_copy = x.clone();
