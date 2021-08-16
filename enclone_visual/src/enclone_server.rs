@@ -347,7 +347,7 @@ impl Analyzer for EncloneAnalyzer {
                 // permission to make the change.  In that case however, group write should
                 // already be enabled, because some other user will have executed this same code
                 // to create the directory.
-            
+
                 let perms = std::fs::Permissions::from_mode(0o775);
                 let res = std::fs::set_permissions(&rdir, perms);
                 if res.is_err() {
