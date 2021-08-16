@@ -68,7 +68,8 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
 
-    // Load the GEX and FB data.
+    // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
+    // verbatim in fcell.rs.
 
     let tdi = Instant::now();
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
