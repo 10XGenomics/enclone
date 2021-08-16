@@ -1401,6 +1401,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "log",
+ "ndarray",
  "nix 0.22.0",
  "perf_stats",
  "pretty_trace",

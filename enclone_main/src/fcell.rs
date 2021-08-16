@@ -5,6 +5,7 @@
 use enclone_core::defs::*;
 use enclone_print::proc_lvar1::*;
 use evalexpr::*;
+use ndarray::s;
 use string_utils::*;
 use vector_utils::*;
 
@@ -14,8 +15,9 @@ pub fn filter_by_fcell(
     info: &Vec<CloneInfo>,
     exact_clonotypes: &mut Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    d_all: &mut Vec<Vec<u32>>,
-    ind_all: &mut Vec<Vec<u32>>,
+    d_readers: &Vec<Option<hdf5::Reader>>,
+    ind_readers: &Vec<Option<hdf5::Reader>>,
+    h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
 ) {
     if !ctl.clono_filt_opt_def.fcell.is_empty() {
         let mut orbits2 = Vec::<Vec<i32>>::new();
@@ -26,16 +28,48 @@ pub fn filter_by_fcell(
                 let x: &CloneInfo = &info[o[j] as usize];
                 let ex = &mut exact_clonotypes[x.clonotype_index];
                 let mut to_delete = vec![false; ex.ncells()];
-                for k in 0..ex.ncells() {
-                    let li = ex.clones[k][0].dataset_index;
-                    let bc = &ex.clones[k][0].barcode;
+                let mut d_all = vec![Vec::<u32>::new(); ex.clones.len()];
+                let mut ind_all = vec![Vec::<u32>::new(); ex.clones.len()];
+                for l in 0..ex.clones.len() {
+                    let li = ex.clones[l][0].dataset_index;
+                    let bc = ex.clones[l][0].barcode.clone();
+                    if !gex_info.gex_barcodes.is_empty() {
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 { 
+                            if !gex_info.gex_matrices[li].initialized() {
+                                let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                                let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // p+1 OK?
+                                if ctl.gen_opt.h5_pre {
+                                    d_all[l] = h5_data[li].1[z1..z2].to_vec();
+                                    ind_all[l] = h5_data[li].2[z1..z2].to_vec();
+                                } else {
+                                    d_all[l] = d_readers[li]
+                                        .as_ref()
+                                        .unwrap()
+                                        .read_slice(s![z1..z2])
+                                        .unwrap()
+                                        .to_vec();
+                                    ind_all[l] = ind_readers[li]
+                                        .as_ref()
+                                        .unwrap()
+                                        .read_slice(s![z1..z2])
+                                        .unwrap()
+                                        .to_vec();
+                                }   
+                            }   
+                        }   
+                    }   
+                }   
+                for l in 0..ex.ncells() {
+                    let li = ex.clones[l][0].dataset_index;
+                    let bc = &ex.clones[l][0].barcode;
                     let mut keep = true;
                     for x in ctl.clono_filt_opt_def.fcell.iter() {
                         let alt = &ctl.origin_info.alt_bc_fields[li];
                         let vars = x.iter_variable_identifiers().collect::<Vec<&str>>();
                         let mut vals = Vec::<String>::new();
                         for m in 0..vars.len() {
-                            let var = &vars[m];
+                            let var = vars[m].to_string();
                             let mut val = String::new();
                             let mut found = false;
                             'uloop: for u in 0..alt.len() {
@@ -58,7 +92,7 @@ pub fn filter_by_fcell(
                                         let mut raw_count = 0.0;
                                         for fid in ux.iter() {
                                             let raw_counti = get_gex_matrix_entry(
-                                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, k, 
+                                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, 
                                                 p as usize, &var,
                                             );
                                             raw_count += raw_counti;
@@ -71,7 +105,7 @@ pub fn filter_by_fcell(
                                         if p >= 0 {
                                             let fid = gex_info.feature_id[li][&var];
                                             let raw_count = get_gex_matrix_entry(
-                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, k, 
+                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l, 
                                                 p as usize, &var,
                                             );
                                             val = format!("{:.2}", raw_count);
@@ -106,7 +140,7 @@ pub fn filter_by_fcell(
                         }
                     }
                     if !keep {
-                        to_delete[k] = true;
+                        to_delete[l] = true;
                     }
                 }
                 erase_if(&mut ex.clones, &to_delete);
