@@ -8,7 +8,10 @@ use crate::share::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
+
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::{Color, Command};
@@ -17,6 +20,32 @@ use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
+
+// get_clipboard_content: this should work under Linux, but we don't need it for that now, and
+// there are compilation issues when compiled for Linux via GitHub Actions.
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+fn get_clipboard_content() -> String {
+    let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
+    if ctx.is_err() {
+        xprintln!("\nSomething went wrong accessing clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    let mut ctx = ctx.unwrap();
+    let copy = ctx.get_contents();
+    if copy.is_err() {
+        xprintln!("\nSomething went wrong copying from clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    format!("{}", ctx.get_contents().unwrap())
+}
+
+#[cfg(target_os = "linux")]
+fn get_clipboard_content() -> String {
+    String::new()
+}
 
 impl EncloneVisual {
     pub fn process_message(&mut self, message: Message) -> Command<Message> {
@@ -27,20 +56,7 @@ impl EncloneVisual {
         match message {
             Message::Narrative => {
                 self.modified = true;
-                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
-                if ctx.is_err() {
-                    xprintln!("\nSomething went wrong accessing clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let mut ctx = ctx.unwrap();
-                let copy = ctx.get_contents();
-                if copy.is_err() {
-                    xprintln!("\nSomething went wrong copying from clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let copy = format!("{}", ctx.get_contents().unwrap());
+                let copy = get_clipboard_content();
                 self.narrative_value = copy.clone();
                 let len = self.h.narrative_hist_uniq.len();
                 self.h.narrative_hist_uniq.push(copy);
@@ -50,20 +66,7 @@ impl EncloneVisual {
 
             Message::ArchiveNarrative(i) => {
                 self.modified = true;
-                let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
-                if ctx.is_err() {
-                    xprintln!("\nSomething went wrong accessing clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let mut ctx = ctx.unwrap();
-                let copy = ctx.get_contents();
-                if copy.is_err() {
-                    xprintln!("\nSomething went wrong copying from clipboard.");
-                    xprintln!("This is weird so please ask for help.");
-                    std::process::exit(1);
-                }
-                let copy = format!("{}", ctx.get_contents().unwrap());
+                let copy = get_clipboard_content();
                 self.archive_narrative[i] = copy.clone();
                 let filename = format!(
                     "{}/{}",
