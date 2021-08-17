@@ -196,7 +196,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     // Traverse the reads.
 
-    println!("start parsing reads for {}", id);
+    eprintln!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut total_reads = 0;
     let mut junk = 0;
