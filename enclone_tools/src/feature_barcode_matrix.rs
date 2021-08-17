@@ -93,7 +93,11 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         }
         let mut sample_def = stringme(&sample_def);
         sample_def = sample_def.replace(",\n        }", "\n        }");
-        let sample_def = format!("{}{}", sample_def.rev_before(","), sample_def.rev_after(","));
+        let sample_def = format!(
+            "{}{}",
+            sample_def.rev_before(","),
+            sample_def.rev_after(",")
+        );
         let v: Value = serde_json::from_str(&sample_def).unwrap();
         let sample_def = &v.as_array().unwrap();
         for x in sample_def.iter() {
