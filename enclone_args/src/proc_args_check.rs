@@ -4,6 +4,7 @@
 
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
+use itertools::Itertools;
 use rayon::prelude::*;
 use regex::Regex;
 use std::time::Instant;
@@ -353,9 +354,27 @@ fn check_gene_fb(
                 }
             }
             if !n_var {
+                let mut alts = Vec::<String>::new();
+                let mut xl = x.clone();
+                xl.make_ascii_lowercase();
+                for y in known_features.iter() {
+                    let mut yl = y.to_string();
+                    yl.make_ascii_lowercase();
+                    if xl == yl {
+                        alts.push(y.to_string());
+                    }
+                }
                 if category == "lead" {
                     if x == "" {
                         continue;
+                    }
+                    if !alts.is_empty() {
+                        return Err(format!(
+                            "\nThe variable {} for LVARS is unrecognized.  Might you have \
+                            meant {}?\nPlease type \"enclone help lvars\".\n",
+                            x,
+                            alts.iter().format(" or "),
+                        ));
                     }
                     return Err(format!(
                         "\nThe variable {} for LVARS is unrecognized.  Please type \
@@ -363,6 +382,16 @@ fn check_gene_fb(
                         x
                     ));
                 } else {
+                    if !alts.is_empty() {
+                        return Err(format!(
+                            "\nUnrecognized parseable variable {}.  Might you have meant {}?\n\
+                            Please type \
+                             \"enclone help parseable\".\nIf the variable is a chain variable \
+                            (cvar), please make sure it is suffixed with the chain index.\n",
+                            x,
+                            alts.iter().format(" or "),
+                        ));
+                    }
                     return Err(format!(
                         "\nUnrecognized parseable variable {}.  Please type \
                          \"enclone help parseable\".\nIf the variable is a chain variable (cvar), \
