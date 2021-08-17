@@ -265,17 +265,26 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             }
         }
         unique_sort(&mut alt_bcs);
+        let mut test2 = Vec::<String>::new();
         for con in ctl.clono_filt_opt_def.fcell.iter() {
             for var in con.iter_variable_identifiers() {
                 if !bin_member(&alt_bcs, &var.to_string()) {
+                    test2.push(var.to_string());
+                }
+            }
+            for _ in con.iter_function_identifiers() {
+                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
+            }
+        }
+        if !test2.is_empty() {
+            let known_features = get_known_features(&gex_info)?; // note duplicated computation
+            for var in test2.iter() {
+                if !bin_member(&known_features, &var) {
                     return Err(format!(
                         "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
                         var
                     ));
                 }
-            }
-            for _ in con.iter_function_identifiers() {
-                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
             }
         }
     }
