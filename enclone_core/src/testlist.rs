@@ -705,7 +705,7 @@ pub const TESTS: [&str; 241] = [
     // 240. test sym option for PLOTXY_EXACT
     r###"BCR=123085 PLOTXY_EXACT=u1,u2,stdout,sym NOPRINT"###,
     // 241. test KEEP_CELL_IF on gex var
-    r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW"###,
+    r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW H5"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
