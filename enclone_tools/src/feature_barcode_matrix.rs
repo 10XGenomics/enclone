@@ -66,7 +66,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     let invocation = format!("{}/_invocation", pipestance);
     if !path_exists(&invocation) {
-        eprintln!("\n_invocation does not exist\n");
+        eprintln!("\n_invocation does not exist for {}\n", pipestance);
         std::process::exit(1);
     }
     let mut read_path = String::new(); // path to reads
