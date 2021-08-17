@@ -23,7 +23,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -73,49 +73,74 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     let mut si = Vec::<String>::new(); // sample indices
     let mut lanes = Vec::<usize>::new(); // lanes
     {
-        let f = open_for_read![&invocation];
+        // let f = open_for_read![&invocation];
+        let mut f = File::open(&invocation).unwrap();
+        let mut bytes = Vec::<u8>::new();
+        f.read_to_end(&mut bytes).unwrap();
+        let mut sample_def = Vec::<u8>::new();
+        let mut bracks: isize = 0;
+        for i in 0..bytes.len() {
+            if bytes[i] == b'[' {
+                bracks += 1;
+            } else if bytes[i] == b']' {
+                bracks -= 1;
+            }
+            if bracks > 0 {
+                sample_def.push(bytes[i]);
+            } else if bracks == 0 && !sample_def.is_empty() {
+                sample_def.append(&mut b"]\n".to_vec());
+                break;
+            }
+        }
+        let mut sample_def = stringme(&sample_def);
+        sample_def = sample_def.replace(",\n        }", "\n        }");
+        println!("sample_def = \"{}\"", sample_def); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        let sample_def = format!("{}{}", sample_def.rev_before(","), sample_def.rev_after(","));
+        println!("sample_def = \"{}\"", sample_def); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        let v: Value = serde_json::from_str(&sample_def).unwrap();
+        let sample_def = &v.as_array().unwrap();
+
+        /*
         let mut lines = Vec::<String>::new();
         for line in f.lines() {
             let s = line.unwrap();
             lines.push(s.to_string());
         }
-        let mut j = 0;
-        while j < lines.len() {
-            let s = &lines[j];
-            if s.contains("\"read_path\": ") {
-                let mut s = s.after("\"read_path\": ");
-                if s.contains("\"") {
-                    s = s.after("\"");
-                    if s.contains("\"") {
-                        read_path = s.before("\"").to_string();
-                    }
+        let mut start = 0;
+        while start < lines.len() {
+            if lines[start].starts_with("call ") {
+                start += 1;
+                break;
+            }
+            start += 1;
+        }
+        let stop = lines.len() - 1;
+        let mut inv = String::new();
+        for j in start..stop {
+            inv += &mut format!("{}\n", lines[j]);
+        }
+        inv = inv.rev_before(",\n").to_string();
+        inv = format!("{{\n{}\n}}\n", inv);
+        println!("inv = \"{}\"", inv); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        let v: Value = serde_json::from_str(&inv).unwrap();
+        let sample_def = &v["sample_def"].as_array().unwrap();
+        */
+
+        for x in sample_def.iter() {
+            if x["library_type"] == "Antibody Capture" {
+                read_path = x["read_path"].to_string().between("\"", "\"").to_string();
+                let y = x["sample_indices"].as_array().unwrap().to_vec();
+                for i in 0..y.len() {
+                    si.push(y[i].to_string());
                 }
-            } else if s.contains("\"lanes\": ") {
-                let mut t = String::new();
-                if lines[j].contains("]") {
-                    t = lines[j].between("[", "]").to_string();
-                } else {
-                    while !lines[j].contains("]") {
-                        t += &lines[j];
-                        j += 1;
-                    }
-                    t = t.replace(" ", "");
-                    t = t.after("[").to_string();
-                    if t.ends_with(",") {
-                        t.truncate(t.len() - 1);
-                    }
-                }
-                let l = t.split(',').collect::<Vec<&str>>();
-                for k in 0..l.len() {
-                    if l[k].parse::<usize>().is_ok() {
-                        lanes.push(l[k].force_usize());
-                    } else {
-                        eprintln!("\nCould not parse lanes.\n");
-                        std::process::exit(1);
-                    }
+                let y = x["lanes"].as_array().unwrap().to_vec();
+                for i in 0..y.len() {
+                    lanes.push(y[i].to_string().force_usize());
                 }
             }
-            j += 1;
+        }
+        for i in 0..si.len() {
+            si[i] = si[i].between("\"", "\"").to_string();
         }
         if read_path.len() == 0 {
             eprintln!("\nfailed to find read path\n");
@@ -125,6 +150,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
             eprintln!("\nread path does not exist");
             std::process::exit(1);
         }
+        /*
         let mut j = 0;
         let sample_indices_head = "\"sample_indices\": [";
         while j < lines.len() {
@@ -143,6 +169,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                 j += 1;
             }
         }
+        */
     }
     if lanes.len() == 0 {
         eprintln!("\nfailed to find lanes\n");
@@ -175,6 +202,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                         );
                         std::process::exit(1);
                     }
+                    eprintme!(sample_index, lane, f); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     read_files.push(f.clone());
                 }
             }
@@ -202,6 +230,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     let mut junk = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", read_path, rf);
+        eprintln!("reading {}", f); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
 
@@ -213,6 +242,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         let mut umi = Vec::<u8>::new();
         let mut fb;
         for line in b.lines() {
+            if count % 100_000_000 == 0 { eprintln!("count = {}", count); } // XXXXXXXXXXXXXXXXXXXX
             count += 1;
             if count % 8 == 2 || count % 8 == 6 {
                 let s = line.unwrap();
@@ -249,7 +279,9 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     // Reduce to UMI counts.
 
+    eprintln!("start sorting"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     buf.par_sort();
+    eprintln!("done sorting"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
     let mut singletons = 0;
     let mut i = 0;
@@ -292,7 +324,9 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         }
         i = j;
     }
+    eprintln!("done with buf loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     bfu.par_sort();
+    eprintln!("done sorting bfu"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if verbose {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
