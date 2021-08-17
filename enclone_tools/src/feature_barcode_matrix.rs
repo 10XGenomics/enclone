@@ -73,7 +73,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     let mut si = Vec::<String>::new(); // sample indices
     let mut lanes = Vec::<usize>::new(); // lanes
     {
-        // let f = open_for_read![&invocation];
         let mut f = File::open(&invocation).unwrap();
         let mut bytes = Vec::<u8>::new();
         f.read_to_end(&mut bytes).unwrap();
@@ -94,38 +93,9 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         }
         let mut sample_def = stringme(&sample_def);
         sample_def = sample_def.replace(",\n        }", "\n        }");
-        println!("sample_def = \"{}\"", sample_def); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let sample_def = format!("{}{}", sample_def.rev_before(","), sample_def.rev_after(","));
-        println!("sample_def = \"{}\"", sample_def); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let v: Value = serde_json::from_str(&sample_def).unwrap();
         let sample_def = &v.as_array().unwrap();
-
-        /*
-        let mut lines = Vec::<String>::new();
-        for line in f.lines() {
-            let s = line.unwrap();
-            lines.push(s.to_string());
-        }
-        let mut start = 0;
-        while start < lines.len() {
-            if lines[start].starts_with("call ") {
-                start += 1;
-                break;
-            }
-            start += 1;
-        }
-        let stop = lines.len() - 1;
-        let mut inv = String::new();
-        for j in start..stop {
-            inv += &mut format!("{}\n", lines[j]);
-        }
-        inv = inv.rev_before(",\n").to_string();
-        inv = format!("{{\n{}\n}}\n", inv);
-        println!("inv = \"{}\"", inv); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        let v: Value = serde_json::from_str(&inv).unwrap();
-        let sample_def = &v["sample_def"].as_array().unwrap();
-        */
-
         for x in sample_def.iter() {
             if x["library_type"] == "Antibody Capture" {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
@@ -150,26 +120,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
             eprintln!("\nread path does not exist");
             std::process::exit(1);
         }
-        /*
-        let mut j = 0;
-        let sample_indices_head = "\"sample_indices\": [";
-        while j < lines.len() {
-            if lines[j].contains(&sample_indices_head) {
-                if lines[j].contains("]") {
-                    si.push(lines[j].between("[\"", "\"]").to_string());
-                    j += 1;
-                } else {
-                    j += 1;
-                    while j < lines.len() && !lines[j].contains("]") {
-                        si.push(lines[j].between("\"", "\"").to_string());
-                        j += 1;
-                    }
-                }
-            } else {
-                j += 1;
-            }
-        }
-        */
     }
     if lanes.len() == 0 {
         eprintln!("\nfailed to find lanes\n");
@@ -202,7 +152,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                         );
                         std::process::exit(1);
                     }
-                    eprintme!(sample_index, lane, f); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     read_files.push(f.clone());
                 }
             }
@@ -230,7 +179,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     let mut junk = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", read_path, rf);
-        eprintln!("reading {}", f); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
 
@@ -242,7 +190,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         let mut umi = Vec::<u8>::new();
         let mut fb;
         for line in b.lines() {
-            if count % 100_000_000 == 0 { eprintln!("count = {}", count); } // XXXXXXXXXXXXXXXXXXXX
             count += 1;
             if count % 8 == 2 || count % 8 == 6 {
                 let s = line.unwrap();
@@ -279,9 +226,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     // Reduce to UMI counts.
 
-    eprintln!("start sorting"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     buf.par_sort();
-    eprintln!("done sorting"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
     let mut singletons = 0;
     let mut i = 0;
@@ -324,9 +269,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         }
         i = j;
     }
-    eprintln!("done with buf loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     bfu.par_sort();
-    eprintln!("done sorting bfu"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if verbose {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
