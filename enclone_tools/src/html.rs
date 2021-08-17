@@ -67,6 +67,11 @@ pub fn edit_html(html: &str) -> String {
                 r###"<a href="../../pages/auto/help.{}.html"><code>enclone help {}</code></a>"###,
                 x, x
             );
+            if m.contains(&in1) || m.contains(&in2) {
+                if m.ends_with("│") {
+                    m = format!("{}  │", m.rev_before("│"));
+                }
+            }
             m = m.replace(&in1, &out);
             m = m.replace(&in2, &out);
         }

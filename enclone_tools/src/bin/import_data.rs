@@ -21,7 +21,7 @@ use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::{File, remove_dir_all, rename};
+use std::fs::{remove_dir_all, rename, File};
 use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
