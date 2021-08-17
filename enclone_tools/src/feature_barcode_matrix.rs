@@ -168,6 +168,12 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                     if verbose {
                         println!("{}", f);
                     }
+                    if f.ends_with("__evap") {
+                        eprintln!("\nfound an evaporated read file =\n{}\n",
+                            format!("{}/{}", read_path, f),
+                        );
+                        std::process::exit(1);
+                    }
                     read_files.push(f.clone());
                 }
             }
