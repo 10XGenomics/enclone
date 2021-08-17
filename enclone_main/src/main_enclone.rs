@@ -37,7 +37,6 @@ use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
-use regex::Regex;
 use std::{
     collections::HashMap,
     env, fs,
@@ -266,61 +265,17 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             }
         }
         unique_sort(&mut alt_bcs);
-        let mut test2 = Vec::<String>::new();
         for con in ctl.clono_filt_opt_def.fcell.iter() {
             for var in con.iter_variable_identifiers() {
                 if !bin_member(&alt_bcs, &var.to_string()) {
-                    test2.push(var.to_string());
-                }
-            }
-            for _ in con.iter_function_identifiers() {
-                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
-            }
-        }
-        let mut test3 = Vec::<String>::new();
-        if !test2.is_empty() {
-            let known_features = get_known_features(&gex_info)?; // note duplicated computation
-            for var in test2.iter() {
-                if !bin_member(&known_features, &var) {
-                    test3.push(var.to_string());
-                }
-            }
-            let ends = ["_g", "_ab", "_cr", "_cu"];
-            for var in test3.iter() {
-                let mut pat = false;
-                for end in ends.iter() {
-                    if var.ends_with(&*end) {
-                        let p = var.rev_before(&end);
-                        if !p.is_empty() && Regex::new(&p).is_ok() {
-                            let mut ok = true;
-                            let mut special = false;
-                            let p = p.as_bytes();
-                            for i in 0..p.len() {
-                                if !((p[i] >= b'A' && p[i] <= b'Z')
-                                    || (p[i] >= b'a' && p[i] <= b'z')
-                                    || (p[i] >= b'0' && p[i] <= b'9')
-                                    || b".-_[]()|*".contains(&p[i]))
-                                {
-                                    ok = false;
-                                    break;
-                                }
-                                if b"[]()|*".contains(&p[i]) {
-                                    special = true;
-                                }
-                            }
-                            if ok && special {
-                                pat = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if !pat {
                     return Err(format!(
                         "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
                         var
                     ));
                 }
+            }
+            for _ in con.iter_function_identifiers() {
+                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
             }
         }
     }

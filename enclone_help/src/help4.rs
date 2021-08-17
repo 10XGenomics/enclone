@@ -262,7 +262,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             boolean operators, and variables that are specified as fields using the BC option \
             (or equivalently, using bc, via META), see \"enclone help input\", or feature \
             variables: <gene>_g or <antibody>_ab or <crispr>_cr or <custom>_cu, as described at \
-            \"enclone help lvars\".  This \
+            \"enclone help lvars\" (but without regular expressions, as these would conflict \
+            with arithmetic operators).  This \
             option filters out all barcodes that do not satisfy the given constraint.  \
             Note that for purposes of testing the constraint, if the value for a \
             particular barcode has not been specified, then its value is \

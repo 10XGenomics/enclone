@@ -188,16 +188,17 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  as fields using the BC option (or equivalently, using                │
 │                         │  bc, via META), see <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>, or feature                  │
 │                         │  variables: &lt;gene>_g or &lt;antibody>_ab or &lt;crispr>_cr or               │
-│                         │  &lt;custom>_cu, as described at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.                   │
-│                         │  This option filters out all barcodes that do not                     │
-│                         │  satisfy the given constraint.  Note that for purposes                │
-│                         │  of testing the constraint, if the value for a                        │
-│                         │  particular barcode has not been specified, then its                  │
-│                         │  value is taken to be null.  Also multiple instances of               │
-│                         │  KEEP_CELL_IF may be used to impose multiple filters.                 │
-│                         │  See the examples below, and be very careful about                    │
-│                         │  syntax, which should match the given examples exactly.               │
-│                         │  In particular,                                                       │
+│                         │  &lt;custom>_cu, as described at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> (but               │
+│                         │  without regular expressions, as these would conflict                 │
+│                         │  with arithmetic operators).  This option filters out                 │
+│                         │  all barcodes that do not satisfy the given constraint.               │
+│                         │  Note that for purposes of testing the constraint, if                 │
+│                         │  the value for a particular barcode has not been                      │
+│                         │  specified, then its value is taken to be null.  Also                 │
+│                         │  multiple instances of KEEP_CELL_IF may be used to                    │
+│                         │  impose multiple filters.  See the examples below, and                │
+│                         │  be very careful about syntax, which should match the                 │
+│                         │  given examples exactly.  In particular,                              │
 │                         │  • use == for equality, and not =                                     │
 │                         │  • put string values in single quotes                                 │
 │                         │  • put the entire expression in double quotes.                        │
