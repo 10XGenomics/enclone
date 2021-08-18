@@ -40,13 +40,15 @@ impl EncloneVisual {
 
             Message::Meta(_) => {
                 for i in 0..self.this_meta.len() {
+                    if i == 0 {
+                        self.window_id = get_window_id();
+                    }
                     self.update(self.this_meta[i].clone(), clipboard);
                 }
                 Command::perform(noop0(), Message::CompleteMeta)
             }
 
             Message::CompleteMeta(_) => {
-                self.window_id = get_window_id();
                 capture(&self.save_name, self.window_id);
                 if true {
                     std::process::exit(0);
