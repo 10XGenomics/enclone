@@ -53,4 +53,5 @@ pub enum Message {
     ArchiveNarrative(usize),
     Narrative,
     Meta(Vec<Message>),
+    Snap(String),
 }

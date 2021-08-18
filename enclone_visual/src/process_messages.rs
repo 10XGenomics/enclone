@@ -28,6 +28,11 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Snap(x) => {
+                capture(&x, self.window_id);
+                Command::none()
+            }
+
             Message::Meta(x) => {
                 for i in 0..x.len() {
                     self.update(x[i].clone(), clipboard);
