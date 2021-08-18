@@ -11,13 +11,23 @@
 use crate::messages::*;
 use crate::*;
 
+#[rustfmt::skip]
 pub fn metatests() -> Vec<Vec<Message>> {
     vec![vec![
         Message::ArchiveOpen(Ok(())),
         Message::ExpandArchiveEntry(true, 0),
-        Message::SetName("expand"), // test pushing expand button once
+        Message::SetName("expand"),   // test pushing expand button once
         Message::ExpandArchiveEntry(false, 0),
         Message::SetName("unexpand"), // test pushing expand button second time
+        Message::DeleteArchiveEntry(true, 0),
+        Message::SetName("delete1"),  // see if delete message shows up
+        Message::ArchiveClose,
+        Message::ArchiveOpen(Ok(())),
+        Message::SetName("delete2"),  // see if deletion occurred 
+        Message::Restore(true, 1),
+        Message::SetName("restore1"), // see if restore message shows up
+        Message::ArchiveClose,
+        Message::SetName("restore2"), // see if restore occurs
     ]]
 }
 
