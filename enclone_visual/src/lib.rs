@@ -238,10 +238,7 @@ pub fn capture(testname: &str, window_id: usize) {
         let o = std::process::Command::new("screencapture")
             .arg("-x")
             .arg(&format!("-l{}", window_id))
-            .arg(&format!(
-                "enclone_visual/outputs/{}.png",
-                testname
-            ))
+            .arg(&format!("enclone_visual/outputs/{}.png", testname))
             .output()
             .expect("failed to execute screencapture");
         if o.status.code() != Some(0) {

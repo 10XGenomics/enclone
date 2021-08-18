@@ -11,6 +11,14 @@
 use crate::messages::*;
 use crate::*;
 
+pub const SCRIPT1: [Message; 5] = [
+    Message::ArchiveOpen(Ok(())),
+    Message::ExpandArchiveEntry(true, 0),
+    Message::Snap("expanded"),
+    Message::ArchiveClose,
+    Message::Exit,
+];
+
 const SUBMIT: fn(Result<(), std::string::String>) -> messages::Message =
     Message::SubmitButtonPressed as MsgFn;
 
