@@ -33,9 +33,9 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::Meta(x) => {
-                for i in 0..x.len() {
-                    self.update(x[i].clone(), clipboard);
+            Message::Meta(_) => {
+                for i in 0..self.this_meta.len() {
+                    self.update(self.this_meta[i].clone(), clipboard);
                 }
                 Command::none()
             }

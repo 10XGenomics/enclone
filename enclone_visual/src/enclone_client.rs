@@ -97,6 +97,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             VISUAL_DIR.lock().unwrap().push(dir);
         } else if arg == "PLAYBACK" {
             PLAYBACK.store(true, SeqCst);
+        } else if arg.starts_with("META=") {
+            META_TESTING.store(true, SeqCst);
+            META.store(arg.after("META=").force_usize() - 1, SeqCst);
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\

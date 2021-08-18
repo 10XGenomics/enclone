@@ -52,6 +52,6 @@ pub enum Message {
     CloseArchiveDoc,
     ArchiveNarrative(usize),
     Narrative,
-    Meta(Vec<Message>),
+    Meta(Result<(), String>),
     Snap(&'static str),
 }

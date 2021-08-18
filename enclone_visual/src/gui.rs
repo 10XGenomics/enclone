@@ -3,6 +3,7 @@
 use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
+use crate::testsuite::*;
 use crate::*;
 use chrono::{TimeZone, Utc};
 use enclone_core::version_string;
@@ -337,13 +338,18 @@ impl Application for EncloneVisual {
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
 
-        // Handle test mode.
+        // Handle test and meta modes.
 
         if !TEST_MODE.load(SeqCst) {
             (x, Command::none())
-        } else {
+        } else if !META_TESTING.load(SeqCst) {
             thread::sleep(Duration::from_millis(1000));
             (x, Command::perform(noop(), Message::RunTests))
+        } else {
+            thread::sleep(Duration::from_millis(1000));
+            let id = META.load(SeqCst); // id of meta test
+            x.this_meta = metatests()[id].clone();
+            (x, Command::perform(noop(), Message::Meta))
         }
     }
 

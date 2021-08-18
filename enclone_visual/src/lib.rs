@@ -405,12 +405,14 @@ pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
+pub static META_TESTING: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
 pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
+pub static META: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref MESSAGE_HISTORY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());

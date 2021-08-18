@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::history::*;
+use crate::messages::*;
 use crate::*;
 use canvas_view::CanvasView;
 use chrono::prelude::*;
@@ -102,6 +103,7 @@ pub struct EncloneVisual {
     pub archive_name_change_button: Vec<button::State>,
     pub archive_narrative_button: Vec<button::State>,
     pub narrative_button: button::State,
+    pub this_meta: Vec<Message>,
     //
     // history
     //
