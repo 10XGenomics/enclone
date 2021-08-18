@@ -897,7 +897,7 @@ impl EncloneVisual {
                 }
                 let count = COUNT.load(SeqCst);
                 if count >= 1 {
-                    capture(count, self.window_id);
+                    capture(&TESTS[count - 1].2, self.window_id);
                 }
                 Command::perform(noop0(), Message::RunTests)
             }

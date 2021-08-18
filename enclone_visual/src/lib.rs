@@ -2,7 +2,6 @@
 
 use crate::copy_image_to_clipboard::*;
 use crate::gui_structures::EncloneVisual;
-use crate::testsuite::TESTS;
 use convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
@@ -233,15 +232,15 @@ pub async fn launch_gui() -> iced::Result {
     EncloneVisual::run(settings)
 }
 
-pub fn capture(count: usize, window_id: usize) {
-    if TESTS[count - 1].2.len() > 0 {
+pub fn capture(testname: &str, window_id: usize) {
+    if testname.len() > 0 {
         thread::sleep(Duration::from_millis(50));
         let o = std::process::Command::new("screencapture")
             .arg("-x")
             .arg(&format!("-l{}", window_id))
             .arg(&format!(
                 "enclone_visual/outputs/{}.png",
-                TESTS[count - 1].2
+                testname
             ))
             .output()
             .expect("failed to execute screencapture");
