@@ -10,7 +10,7 @@ use crate::*;
 use chrono::prelude::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
-use iced::{Color, Command};
+use iced::{Clipboard, Color, Command};
 use io_utils::*;
 use std::fs::File;
 use std::io::Read;
@@ -18,12 +18,19 @@ use std::time::{Duration, Instant};
 use vector_utils::*;
 
 impl EncloneVisual {
-    pub fn process_message(&mut self, message: Message) -> Command<Message> {
+    pub fn process_message(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Meta(x) => {
+                for i in 0..x.len() {
+                    self.update(x[i].clone(), clipboard);
+                }
+                Command::none()
+            }
+
             Message::Narrative => {
                 self.modified = true;
                 let copy = get_clipboard_content();

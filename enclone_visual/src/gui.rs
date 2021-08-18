@@ -365,8 +365,8 @@ impl Application for EncloneVisual {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
-        self.process_message(message)
+    fn update(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
+        self.process_message(message, clipboard)
     }
 
     /*

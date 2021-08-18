@@ -52,4 +52,5 @@ pub enum Message {
     CloseArchiveDoc,
     ArchiveNarrative(usize),
     Narrative,
+    Meta(Vec<Message>),
 }
