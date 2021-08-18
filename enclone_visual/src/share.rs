@@ -19,9 +19,10 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let origin = RECEIVED_SHARES_MESSAGES.lock().unwrap()[i].clone();
         let mut evh = EncloneVisualHistory::restore_from_bytes(&bytes).unwrap();
         evh.origin = origin;
-        let dir;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+        let mut dir;
+        if VISUAL_DIR.lock().unwrap().len() > 0 {
+            dir = VISUAL_DIR.lock().unwrap()[0].clone();
+            dir = format!("{}/history", dir);
         } else {
             dir = format!("{}/history", slf.visual);
         }

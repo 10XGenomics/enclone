@@ -247,9 +247,10 @@ impl EncloneVisual {
         }
     }
     pub fn save(&mut self) {
-        let dir;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
+        let mut dir;
+        if VISUAL_DIR.lock().unwrap().len() > 0 {
+            dir = VISUAL_DIR.lock().unwrap()[0].clone();
+            dir = format!("{}/history", dir);
         } else {
             dir = format!("{}/history", self.visual);
         }

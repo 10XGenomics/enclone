@@ -82,7 +82,7 @@ fn main() {
     let o = Command::new("enclone")
         .arg(&"VIS")
         .arg(&"TEST")
-        .arg(&"VISUAL_HISTORY_DIR=enclone_visual/sample_visual_history")
+        .arg(&"VISUAL_DIR=enclone_visual/sample_visual")
         .output()
         .expect("failed to execute enclone visual test");
     if o.status.code() != Some(0) {

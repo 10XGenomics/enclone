@@ -300,8 +300,8 @@ impl Application for EncloneVisual {
             }
         }
         x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
+        if VISUAL_DIR.lock().unwrap().len() > 0 {
+            x.archive_dir = Some(format!("{}/history", VISUAL_DIR.lock().unwrap()[0].clone()));
         } else {
             x.archive_dir = Some(history.clone());
 

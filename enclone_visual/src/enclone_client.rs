@@ -92,9 +92,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             assert!(fixed_port.unwrap() >= 1024);
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
-        } else if arg.starts_with("VISUAL_HISTORY_DIR=") {
-            let dir = arg.after("VISUAL_HISTORY_DIR=").to_string();
-            VISUAL_HISTORY_DIR.lock().unwrap().push(dir);
+        } else if arg.starts_with("VISUAL_DIR=") {
+            let dir = arg.after("VISUAL_DIR=").to_string();
+            VISUAL_DIR.lock().unwrap().push(dir);
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
