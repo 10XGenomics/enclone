@@ -288,6 +288,9 @@ impl Application for EncloneVisual {
             std::process::exit(1);
         }
         x.visual = format!("{}/visual", enclone);
+        if VISUAL_DIR.lock().unwrap().len() > 0 {
+            x.visual = VISUAL_DIR.lock().unwrap()[0].clone();
+        }
         let history = format!("{}/history", x.visual);
         if !path_exists(&history) {
             let res = create_dir_all(&history);
@@ -300,30 +303,29 @@ impl Application for EncloneVisual {
             }
         }
         x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
-        if VISUAL_DIR.lock().unwrap().len() > 0 {
-            x.archive_dir = Some(format!("{}/history", VISUAL_DIR.lock().unwrap()[0].clone()));
-        } else {
-            x.archive_dir = Some(history.clone());
+        x.archive_dir = Some(history.clone());
 
-            // Read shares.  If the file is corrupted, silently ignore it.
+        // Read shares.  If the file is corrupted, silently ignore it.
 
-            if x.sharing_enabled {
-                let shares = format!("{}/shares", x.visual);
-                if path_exists(&shares) {
-                    let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
-                    let n = std::mem::size_of::<Share>();
-                    if share_size % n == 0 {
-                        let mut bytes = Vec::<u8>::new();
-                        let mut f = File::open(&shares).unwrap();
-                        f.read_to_end(&mut bytes).unwrap();
-                        assert_eq!(bytes.len(), share_size);
-                        unsafe {
-                            x.shares = bytes.align_to::<Share>().1.to_vec();
-                        }
+        if x.sharing_enabled {
+            let shares = format!("{}/shares", x.visual);
+            if path_exists(&shares) {
+                let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                let n = std::mem::size_of::<Share>();
+                if share_size % n == 0 {
+                    let mut bytes = Vec::<u8>::new();
+                    let mut f = File::open(&shares).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                    assert_eq!(bytes.len(), share_size);
+                    unsafe {
+                        x.shares = bytes.align_to::<Share>().1.to_vec();
                     }
                 }
             }
         }
+
+        // Keep going.
+
         if x.archive_dir.is_some() {
             let arch_dir = &x.archive_dir.as_ref().unwrap();
             if path_exists(&arch_dir) {

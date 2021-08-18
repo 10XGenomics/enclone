@@ -186,17 +186,10 @@ impl EncloneVisual {
                         std::fs::write(&share_file, &share_bytes).unwrap();
                     }
                     if self.save_on_exit {
-                        let mut dir;
-                        if VISUAL_DIR.lock().unwrap().len() > 0 {
-                            dir = VISUAL_DIR.lock().unwrap()[0].clone();
-                            dir = format!("{}/history", dir);
-                        } else {
-                            dir = format!("{}/history", self.visual);
-                        }
                         let mut now = format!("{:?}", Local::now());
                         now = now.replace("T", "___");
                         now = now.before(".").to_string();
-                        let filename = format!("{}/{}", dir, now);
+                        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
                         let res = write_enclone_visual_history(&self.h, &filename);
                         if res.is_err() {
                             xprintln!(
