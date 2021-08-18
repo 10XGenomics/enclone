@@ -266,7 +266,6 @@ pub fn proc_args_post(
         }
         proc_meta_core(&lines, &mut ctl)?;
     }
-
     ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
@@ -275,6 +274,7 @@ pub fn proc_args_post(
 
     // More argument sanity checking.
 
+    let t = Instant::now();
     let bcr_only = [
         "PEER_GROUP",
         "PG_READABLE",
@@ -296,28 +296,6 @@ pub fn proc_args_post(
 
     // Proceed.
 
-    let t = Instant::now();
-    let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.origin_info.alt_bc_fields.len() {
-        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
-        }
-    }
-    unique_sort(&mut alt_bcs);
-    for con in ctl.clono_filt_opt_def.fcell.iter() {
-        for var in con.iter_variable_identifiers() {
-            if !bin_member(&alt_bcs, &var.to_string()) {
-                return Err(format!(
-                    "\nYou've used a variable {} as part of an FCELL argument that has not\n\
-                    been specified using BC or bc (via META).\n",
-                    var
-                ));
-            }
-        }
-        for _ in con.iter_function_identifiers() {
-            return Err(format!("\nSomething is wrong with your FCELL value.\n"));
-        }
-    }
     for i in 0..ctl.origin_info.n() {
         let (mut cells_cr, mut rpc_cr) = (None, None);
         if ctl.gen_opt.internal_run {

@@ -94,7 +94,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │count_&lt;reg>       │  Number of matches of the V..J amino acid sequences of all chains to the given│
 │                  │  regular expression, which is treated as a subset match, so for example,      │
 │                  │  count_CAR would count the total number of occurrences of the string CAR in   │
-│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion           │
+│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion             │
 │                  │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,       │
 │                  │  where abbr is an abbreviation that will appear as the field label.           │
 │count_&lt;f>_&lt;reg>   │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar  │
@@ -117,7 +117,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │gex               │  <span style="color:#c23621;">●</span> median gene expression UMI count                                           │
 │n_gex             │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                   │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g          │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type      │
+│&lt;gene>_g          │  <span style="color:#c23621;">●</span> all four feature types: look for a declared feature of the given type      │
 │&lt;antibody>_ab     │  with the given id or name; report the median UMI count for it; we allow      │
 │&lt;crispr>_cr       │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr   │
 │&lt;custom>_cu       │  or cu; this represents a sum of UMI counts across the matching features. ●   │
@@ -133,7 +133,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │                  │  problems for you.  And cred makes much better sense for datasets that        │
 │                  │  consist of mixed cell types, rather than consisting of pure B or T cells.    │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some        │
+│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some          │
 │                  │  default filters (or all default filters, e.g. with NALL_CELL), and this      │
 │                  │  cell would have been deleted by one of the default filters, then this will   │
 │                  │  show the name of the last filter that would have been applied to delete the  │

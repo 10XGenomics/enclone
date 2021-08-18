@@ -21,7 +21,8 @@ use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::{remove_dir_all, rename};
+use std::fs::{remove_dir_all, rename, File};
+use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
 
@@ -129,10 +130,33 @@ fn main() {
             copy_for_enclone(&format!("{}/..", p), &target);
         }
 
+        // Determine if the feature barcode matrix for the top feature barcodes should be
+        // generated, and if so, what id to use.
+
+        let mut fbm_id = None;
+        if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
+            fbm_id = Some(id.force_usize());
+        } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
+            let inv = format!("{}/../_invocation", p);
+            let f = open_for_read![inv];
+            let mut lines = Vec::<String>::new();
+            for line in f.lines() {
+                let s = line.unwrap();
+                lines.push(s);
+            }
+            for i in 0..lines.len() {
+                let fields = parse_csv(&lines[i]);
+                if fields.len() >= 5 && fields[4] == "Antibody Capture" {
+                    fbm_id = Some(fields[3].force_usize());
+                    break;
+                }
+            }
+        }
+
         // Build feature barcode matrix for top feature barcodes.
 
-        if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
-            let m = feature_barcode_matrix(id.force_usize(), false);
+        if fbm_id.is_some() {
+            let m = feature_barcode_matrix(fbm_id.unwrap(), false);
             if m.is_ok() {
                 let m = m.unwrap();
                 for i in (0..dests.len()).rev() {

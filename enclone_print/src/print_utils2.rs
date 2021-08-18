@@ -148,6 +148,7 @@ pub fn row_fill(
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
     let have_entropy = lvarsh.contains(&"entropy".to_string());
+    // Isn't this duplicating code with the next section?
     if have_entropy {
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;

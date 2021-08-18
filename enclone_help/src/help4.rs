@@ -258,12 +258,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "KEEP_CELL_IF=constraint",
-            "Supposing that \"constraint\" is any constraint involving arithmetic and \
+            "Let \"constraint\" be any constraint involving arithmetic and \
             boolean operators, and variables that are specified as fields using the BC option \
-            (or equivalently, using bc, via META), see \"enclone help input\", this \
+            (or equivalently, using bc, via META), see \"enclone help input\", or feature \
+            variables: <gene>_g or <antibody>_ab or <crispr>_cr or <custom>_cu, as described at \
+            \"enclone help lvars\" (but without regular expressions, as these would conflict \
+            with arithmetic operators).  This \
             option filters out all barcodes that do not satisfy the given constraint.  \
             Note that for purposes of testing the constraint, if the value for a \
-            particular barcode has not been specified via BC or bc, then its value is \
+            particular barcode has not been specified, then its value is \
             taken to be null.  Also multiple instances of KEEP_CELL_IF may be used to impose \
             multiple filters.  See the examples below, and be very careful about syntax, \
             which should match the given examples exactly.  In particular,",
@@ -554,7 +557,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         */
         h.ldocpr(
             "<gene>_g",
-            "\\red{●} all five feature types: look for a declared feature of the \
+            "\\red{●} all four feature types: look for a declared feature of the \
              given type",
         );
         h.doc(

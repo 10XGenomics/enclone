@@ -775,7 +775,7 @@ each of these has the same value for each exact clonotype</span>
 │&lt;dataset>_barcode      │  if PCELL is specified, barcode for one cell, or null, if the barcode is│
 │                       │  not from the given dataset                                             │
 ├───────────────────────┴─────────────────────────────────────────────────────────────────────────┤
-│In addition, every lead variable may be specified as a field.  See <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.         │
+│In addition, every lead variable may be specified as a field.  See <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.           │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">5. per chain, per exact subclonotype fields, where &lt;i> is 1,2,... (see above)</span>
@@ -794,7 +794,7 @@ each of these has the same value for each exact clonotype</span>
 ├──────────────┴────────────────────────────────────────────────────────────────────────────┤
 │In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.  However│
 │parametrizable chain variables e.g. <span style="font-weight:bold;">ndiff1vj1</span> must be explicitly listed using <span style="font-weight:bold;">PCOLS</span>;       │
-│they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                               │
+│they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                                 │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -849,7 +849,7 @@ scanning for feature enrichment.
 │BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes; note that such│
 │                     │  clonotypes will typically contain cells that are <span style="font-weight:bold;">not</span> in your           │
 │                     │  list; if you want to fully restrict to a list of barcodes you can use  │
-│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>             │
+│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>               │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │INKT                 │  only show clonotypes for which some exact subclonotype is annotated as │
 │                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
@@ -1151,25 +1151,28 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  for which you would like to see a simplified view.                   │
 │CONST_IGH="&lt;pattern>"    │  for BCR, keep only exact subclonotypes having a heavy                │
 │                         │  chain whose constant region gene name matches the given              │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)        │
 │CONST_IGKL="&lt;pattern>"   │  for BCR, keep only exact subclonotypes having a light                │
 │                         │  chain whose constant region gene name matches the given              │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)        │
 │MAX_HEAVIES=1            │  ignore any cell having more than one IGH or TRB chain                │
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│KEEP_CELL_IF=constraint  │  Supposing that "constraint" is any constraint involving              │
-│                         │  arithmetic and boolean operators, and variables that                 │
-│                         │  are specified as fields using the BC option (or                      │
-│                         │  equivalently, using bc, via META), see "enclone help                 │
-│                         │  input", this option filters out all barcodes that do                 │
-│                         │  not satisfy the given constraint.  Note that for                     │
-│                         │  purposes of testing the constraint, if the value for a               │
-│                         │  particular barcode has not been specified via BC or bc,              │
-│                         │  then its value is taken to be null.  Also multiple                   │
-│                         │  instances of KEEP_CELL_IF may be used to impose                      │
-│                         │  multiple filters.  See the examples below, and be very               │
-│                         │  careful about syntax, which should match the given                   │
-│                         │  examples exactly.  In particular,                                    │
+│KEEP_CELL_IF=constraint  │  Let "constraint" be any constraint involving arithmetic              │
+│                         │  and boolean operators, and variables that are specified              │
+│                         │  as fields using the BC option (or equivalently, using                │
+│                         │  bc, via META), see <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>, or feature                    │
+│                         │  variables: &lt;gene>_g or &lt;antibody>_ab or &lt;crispr>_cr or               │
+│                         │  &lt;custom>_cu, as described at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> (but                 │
+│                         │  without regular expressions, as these would conflict                 │
+│                         │  with arithmetic operators).  This option filters out                 │
+│                         │  all barcodes that do not satisfy the given constraint.               │
+│                         │  Note that for purposes of testing the constraint, if                 │
+│                         │  the value for a particular barcode has not been                      │
+│                         │  specified, then its value is taken to be null.  Also                 │
+│                         │  multiple instances of KEEP_CELL_IF may be used to                    │
+│                         │  impose multiple filters.  See the examples below, and                │
+│                         │  be very careful about syntax, which should match the                 │
+│                         │  given examples exactly.  In particular,                              │
 │                         │  • use == for equality, and not =                                     │
 │                         │  • put string values in single quotes                                 │
 │                         │  • put the entire expression in double quotes.                        │
@@ -1188,7 +1191,7 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  would cause only the first barcode to be used.                       │
 │                         │                                                                       │
 │                         │  See also KEEP_CLONO_IF_CELL_MEAN=... and                             │
-│                         │  KEEP_CLONO_IF_CELL_MAX=... at <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.                 │
+│                         │  KEEP_CLONO_IF_CELL_MAX=... at <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.                   │
 └─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -1243,7 +1246,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │count_&lt;reg>       │  Number of matches of the V..J amino acid sequences of all chains to the given│
 │                  │  regular expression, which is treated as a subset match, so for example,      │
 │                  │  count_CAR would count the total number of occurrences of the string CAR in   │
-│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion           │
+│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion             │
 │                  │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,       │
 │                  │  where abbr is an abbreviation that will appear as the field label.           │
 │count_&lt;f>_&lt;reg>   │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar  │
@@ -1266,7 +1269,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │gex               │  <span style="color:#c23621;">●</span> median gene expression UMI count                                           │
 │n_gex             │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                   │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g          │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type      │
+│&lt;gene>_g          │  <span style="color:#c23621;">●</span> all four feature types: look for a declared feature of the given type      │
 │&lt;antibody>_ab     │  with the given id or name; report the median UMI count for it; we allow      │
 │&lt;crispr>_cr       │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr   │
 │&lt;custom>_cu       │  or cu; this represents a sum of UMI counts across the matching features. ●   │
@@ -1282,7 +1285,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │                  │  problems for you.  And cred makes much better sense for datasets that        │
 │                  │  consist of mixed cell types, rather than consisting of pure B or T cells.    │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some        │
+│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some          │
 │                  │  default filters (or all default filters, e.g. with NALL_CELL), and this      │
 │                  │  cell would have been deleted by one of the default filters, then this will   │
 │                  │  show the name of the last filter that would have been applied to delete the  │
@@ -1412,7 +1415,7 @@ where each xi is one of:
 │fwr*_dna         │  the FWR*_DNA sequence, or "unknown" if not computed                         │
 │fwr*_dna_ref     │  same, for the universal reference sequences                                 │
 │                 │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
-│                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on          │
+│                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on            │
 │                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │v_start          │  start of V segment on full DNA sequence                                     │
@@ -1543,7 +1546,7 @@ enclone help display
 │               │  consensus across the clonotype, with X for each variant residue              │
 │CONP           │  add an additional row to each clonotype table, showing the amino acid        │
 │               │  consensus across the clonotype, with a property symbol whenever two different│
-│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                           │
+│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                             │
 ├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │ALIGN&lt;n>       │  exhibit a visual alignment for chain n (for each exact subclonotype) to the  │
 │               │  donor V(D)J reference, picking the best D for heavy chains / TRB             │

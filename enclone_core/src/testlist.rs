@@ -109,7 +109,7 @@ pub const GTESTS: [&str; 13] = [
          AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
 ];
 
-pub const TESTS: [&str; 240] = [
+pub const TESTS: [&str; 241] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -704,6 +704,8 @@ pub const TESTS: [&str; 240] = [
     r###"BCR=123085 G=2,100-101 NGROUP"###,
     // 240. test sym option for PLOTXY_EXACT
     r###"BCR=123085 PLOTXY_EXACT=u1,u2,stdout,sym NOPRINT"###,
+    // 241. test KEEP_CELL_IF on gex var
+    r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW H5"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

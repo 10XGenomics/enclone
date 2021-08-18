@@ -23,7 +23,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -66,56 +66,55 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     let invocation = format!("{}/_invocation", pipestance);
     if !path_exists(&invocation) {
-        eprintln!("\n_invocation does not exist\n");
+        eprintln!("\n_invocation does not exist for {}\n", pipestance);
         std::process::exit(1);
     }
     let mut read_path = String::new(); // path to reads
     let mut si = Vec::<String>::new(); // sample indices
     let mut lanes = Vec::<usize>::new(); // lanes
     {
-        let f = open_for_read![&invocation];
-        let mut lines = Vec::<String>::new();
-        for line in f.lines() {
-            let s = line.unwrap();
-            lines.push(s.to_string());
+        let mut f = File::open(&invocation).unwrap();
+        let mut bytes = Vec::<u8>::new();
+        f.read_to_end(&mut bytes).unwrap();
+        let mut sample_def = Vec::<u8>::new();
+        let mut bracks: isize = 0;
+        for i in 0..bytes.len() {
+            if bytes[i] == b'[' {
+                bracks += 1;
+            } else if bytes[i] == b']' {
+                bracks -= 1;
+            }
+            if bracks > 0 {
+                sample_def.push(bytes[i]);
+            } else if bracks == 0 && !sample_def.is_empty() {
+                sample_def.append(&mut b"]\n".to_vec());
+                break;
+            }
         }
-        let mut j = 0;
-        while j < lines.len() {
-            let s = &lines[j];
-            if s.contains("\"read_path\": ") {
-                let mut s = s.after("\"read_path\": ");
-                if s.contains("\"") {
-                    s = s.after("\"");
-                    if s.contains("\"") {
-                        read_path = s.before("\"").to_string();
-                    }
+        let mut sample_def = stringme(&sample_def);
+        sample_def = sample_def.replace(",\n        }", "\n        }");
+        let sample_def = format!(
+            "{}{}",
+            sample_def.rev_before(","),
+            sample_def.rev_after(",")
+        );
+        let v: Value = serde_json::from_str(&sample_def).unwrap();
+        let sample_def = &v.as_array().unwrap();
+        for x in sample_def.iter() {
+            if x["library_type"] == "Antibody Capture" {
+                read_path = x["read_path"].to_string().between("\"", "\"").to_string();
+                let y = x["sample_indices"].as_array().unwrap().to_vec();
+                for i in 0..y.len() {
+                    si.push(y[i].to_string());
                 }
-            } else if s.contains("\"lanes\": ") {
-                let mut t = String::new();
-                if lines[j].contains("]") {
-                    t = lines[j].between("[", "]").to_string();
-                } else {
-                    while !lines[j].contains("]") {
-                        t += &lines[j];
-                        j += 1;
-                    }
-                    t = t.replace(" ", "");
-                    t = t.after("[").to_string();
-                    if t.ends_with(",") {
-                        t.truncate(t.len() - 1);
-                    }
-                }
-                let l = t.split(',').collect::<Vec<&str>>();
-                for k in 0..l.len() {
-                    if l[k].parse::<usize>().is_ok() {
-                        lanes.push(l[k].force_usize());
-                    } else {
-                        eprintln!("\nCould not parse lanes.\n");
-                        std::process::exit(1);
-                    }
+                let y = x["lanes"].as_array().unwrap().to_vec();
+                for i in 0..y.len() {
+                    lanes.push(y[i].to_string().force_usize());
                 }
             }
-            j += 1;
+        }
+        for i in 0..si.len() {
+            si[i] = si[i].between("\"", "\"").to_string();
         }
         if read_path.len() == 0 {
             eprintln!("\nfailed to find read path\n");
@@ -124,24 +123,6 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         if !path_exists(&read_path) {
             eprintln!("\nread path does not exist");
             std::process::exit(1);
-        }
-        let mut j = 0;
-        let sample_indices_head = "\"sample_indices\": [";
-        while j < lines.len() {
-            if lines[j].contains(&sample_indices_head) {
-                if lines[j].contains("]") {
-                    si.push(lines[j].between("[\"", "\"]").to_string());
-                    j += 1;
-                } else {
-                    j += 1;
-                    while j < lines.len() && !lines[j].contains("]") {
-                        si.push(lines[j].between("\"", "\"").to_string());
-                        j += 1;
-                    }
-                }
-            } else {
-                j += 1;
-            }
         }
     }
     if lanes.len() == 0 {
@@ -168,6 +149,13 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                     if verbose {
                         println!("{}", f);
                     }
+                    if f.ends_with("__evap") {
+                        eprintln!(
+                            "\nfound an evaporated read file =\n{}\n",
+                            format!("{}/{}", read_path, f),
+                        );
+                        std::process::exit(1);
+                    }
                     read_files.push(f.clone());
                 }
             }
@@ -189,6 +177,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
 
     // Traverse the reads.
 
+    eprintln!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut total_reads = 0;
     let mut junk = 0;

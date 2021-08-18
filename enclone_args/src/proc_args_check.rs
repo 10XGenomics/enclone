@@ -4,11 +4,71 @@
 
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
+use itertools::Itertools;
 use rayon::prelude::*;
 use regex::Regex;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Get known features.  This code is inefficient.
+
+pub fn get_known_features(gex_info: &GexInfo) -> Result<Vec<String>, String> {
+    let mut known_features = Vec::<String>::new();
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let suffixes_g = ["", "_min", "_max", "_μ", "_Σ", "_%"];
+    let mut results = Vec::<(usize, Vec<String>, String)>::new();
+    for i in 0..gex_info.gex_features.len() {
+        results.push((i, Vec::<String>::new(), String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        for j in 0..gex_info.gex_features[i].len() {
+            let f = &gex_info.gex_features[i][j];
+            let ff = f.split('\t').collect::<Vec<&str>>();
+            if ff.len() != 3 {
+                res.2 = format!(
+                    "\nUnexpected structure of features file, at this line\n{}\n\
+                    Giving up.\n",
+                    f
+                );
+                return;
+            }
+            for z in 0..2 {
+                if ff[2].starts_with("Antibody") {
+                    for s in suffixes.iter() {
+                        res.1.push(format!("{}_ab{}", ff[z], s));
+                    }
+                } else if ff[2].starts_with("CRISPR") {
+                    for s in suffixes.iter() {
+                        res.1.push(format!("{}_cr{}", ff[z], s));
+                    }
+                } else if ff[2].starts_with("CUSTOM") {
+                    for s in suffixes.iter() {
+                        res.1.push(format!("{}_cu{}", ff[z], s));
+                    }
+                } else {
+                    for s in suffixes_g.iter() {
+                        res.1.push(format!("{}_g{}", ff[z], s));
+                    }
+                }
+            }
+        }
+    });
+    for i in 0..results.len() {
+        if results[i].2.len() > 0 {
+            return Err(results[i].2.clone());
+        }
+    }
+    for i in 0..results.len() {
+        known_features.append(&mut results[i].1.clone());
+    }
+    known_features.par_sort();
+    known_features.dedup();
+    Ok(known_features)
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -191,55 +251,7 @@ fn check_gene_fb(
 
     // Get known features.  This code is inefficient.
 
-    let mut known_features = Vec::<String>::new();
-    let mut results = Vec::<(usize, Vec<String>, String)>::new();
-    for i in 0..gex_info.gex_features.len() {
-        results.push((i, Vec::<String>::new(), String::new()));
-    }
-    results.par_iter_mut().for_each(|res| {
-        let i = res.0;
-        for j in 0..gex_info.gex_features[i].len() {
-            let f = &gex_info.gex_features[i][j];
-            let ff = f.split('\t').collect::<Vec<&str>>();
-            if ff.len() != 3 {
-                res.2 = format!(
-                    "\nUnexpected structure of features file, at this line\n{}\n\
-                    Giving up.\n",
-                    f
-                );
-                return;
-            }
-            for z in 0..2 {
-                if ff[2].starts_with("Antibody") {
-                    for s in suffixes.iter() {
-                        res.1.push(format!("{}_ab{}", ff[z], s));
-                    }
-                } else if ff[2].starts_with("CRISPR") {
-                    for s in suffixes.iter() {
-                        res.1.push(format!("{}_cr{}", ff[z], s));
-                    }
-                } else if ff[2].starts_with("CUSTOM") {
-                    for s in suffixes.iter() {
-                        res.1.push(format!("{}_cu{}", ff[z], s));
-                    }
-                } else {
-                    for s in suffixes_g.iter() {
-                        res.1.push(format!("{}_g{}", ff[z], s));
-                    }
-                }
-            }
-        }
-    });
-    for i in 0..results.len() {
-        if results[i].2.len() > 0 {
-            return Err(results[i].2.clone());
-        }
-    }
-    for i in 0..results.len() {
-        known_features.append(&mut results[i].1.clone());
-    }
-    known_features.par_sort();
-    known_features.dedup();
+    let known_features = get_known_features(&gex_info)?;
 
     // Do the check.
 
@@ -342,9 +354,27 @@ fn check_gene_fb(
                 }
             }
             if !n_var {
+                let mut alts = Vec::<String>::new();
+                let mut xl = x.clone();
+                xl.make_ascii_lowercase();
+                for y in known_features.iter() {
+                    let mut yl = y.to_string();
+                    yl.make_ascii_lowercase();
+                    if xl == yl {
+                        alts.push(y.to_string());
+                    }
+                }
                 if category == "lead" {
                     if x == "" {
                         continue;
+                    }
+                    if !alts.is_empty() {
+                        return Err(format!(
+                            "\nThe variable {} for LVARS is unrecognized.  Might you have \
+                            meant {}?\nPlease type \"enclone help lvars\".\n",
+                            x,
+                            alts.iter().format(" or "),
+                        ));
                     }
                     return Err(format!(
                         "\nThe variable {} for LVARS is unrecognized.  Please type \
@@ -352,6 +382,16 @@ fn check_gene_fb(
                         x
                     ));
                 } else {
+                    if !alts.is_empty() {
+                        return Err(format!(
+                            "\nUnrecognized parseable variable {}.  Might you have meant {}?\n\
+                            Please type \
+                             \"enclone help parseable\".\nIf the variable is a chain variable \
+                            (cvar), please make sure it is suffixed with the chain index.\n",
+                            x,
+                            alts.iter().format(" or "),
+                        ));
+                    }
                     return Err(format!(
                         "\nUnrecognized parseable variable {}.  Please type \
                          \"enclone help parseable\".\nIf the variable is a chain variable (cvar), \

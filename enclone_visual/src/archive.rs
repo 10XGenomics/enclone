@@ -89,7 +89,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         help_col = help_col.push(open_archive_doc_button);
     }
 
-    let mut labels = "#   date        time     expand     restore    delete".to_string();
+    let mut labels = "#   date        time     expand    restore   delete".to_string();
     if slf.sharing_enabled {
         labels += "    share";
     }
@@ -241,13 +241,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "",
                     move |x: bool| Message::ExpandArchiveEntry(x, i),
                 ))
-                .push(Space::with_width(Units(80)))
+                .push(Space::with_width(Units(70)))
                 .push(Checkbox::new(
                     slf.restore_requested[i],
                     "",
                     move |x: bool| Message::Restore(x, i),
                 ))
-                .push(Space::with_width(Units(79)))
+                .push(Space::with_width(Units(69)))
                 .push(Checkbox::new(
                     slf.delete_requested[i],
                     "",

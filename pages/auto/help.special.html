@@ -177,25 +177,28 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  for which you would like to see a simplified view.                   │
 │CONST_IGH="&lt;pattern>"    │  for BCR, keep only exact subclonotypes having a heavy                │
 │                         │  chain whose constant region gene name matches the given              │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)        │
 │CONST_IGKL="&lt;pattern>"   │  for BCR, keep only exact subclonotypes having a light                │
 │                         │  chain whose constant region gene name matches the given              │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)        │
 │MAX_HEAVIES=1            │  ignore any cell having more than one IGH or TRB chain                │
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│KEEP_CELL_IF=constraint  │  Supposing that "constraint" is any constraint involving              │
-│                         │  arithmetic and boolean operators, and variables that                 │
-│                         │  are specified as fields using the BC option (or                      │
-│                         │  equivalently, using bc, via META), see "enclone help                 │
-│                         │  input", this option filters out all barcodes that do                 │
-│                         │  not satisfy the given constraint.  Note that for                     │
-│                         │  purposes of testing the constraint, if the value for a               │
-│                         │  particular barcode has not been specified via BC or bc,              │
-│                         │  then its value is taken to be null.  Also multiple                   │
-│                         │  instances of KEEP_CELL_IF may be used to impose                      │
-│                         │  multiple filters.  See the examples below, and be very               │
-│                         │  careful about syntax, which should match the given                   │
-│                         │  examples exactly.  In particular,                                    │
+│KEEP_CELL_IF=constraint  │  Let "constraint" be any constraint involving arithmetic              │
+│                         │  and boolean operators, and variables that are specified              │
+│                         │  as fields using the BC option (or equivalently, using                │
+│                         │  bc, via META), see <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>, or feature                    │
+│                         │  variables: &lt;gene>_g or &lt;antibody>_ab or &lt;crispr>_cr or               │
+│                         │  &lt;custom>_cu, as described at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> (but                 │
+│                         │  without regular expressions, as these would conflict                 │
+│                         │  with arithmetic operators).  This option filters out                 │
+│                         │  all barcodes that do not satisfy the given constraint.               │
+│                         │  Note that for purposes of testing the constraint, if                 │
+│                         │  the value for a particular barcode has not been                      │
+│                         │  specified, then its value is taken to be null.  Also                 │
+│                         │  multiple instances of KEEP_CELL_IF may be used to                    │
+│                         │  impose multiple filters.  See the examples below, and                │
+│                         │  be very careful about syntax, which should match the                 │
+│                         │  given examples exactly.  In particular,                              │
 │                         │  • use == for equality, and not =                                     │
 │                         │  • put string values in single quotes                                 │
 │                         │  • put the entire expression in double quotes.                        │
@@ -214,7 +217,7 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  would cause only the first barcode to be used.                       │
 │                         │                                                                       │
 │                         │  See also KEEP_CLONO_IF_CELL_MEAN=... and                             │
-│                         │  KEEP_CLONO_IF_CELL_MAX=... at <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.                 │
+│                         │  KEEP_CLONO_IF_CELL_MAX=... at <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.                   │
 └─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
 
 </span></pre>

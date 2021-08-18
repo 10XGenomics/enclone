@@ -33,6 +33,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>8/17/21</b>: <code>KEEP_CELL_IF</code> now allows feature variables to appear in constraints, 
+see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+</p>
+
+<p>
 <b>7/22/21</b>:
 <ul>
 <li>Add option for xy plots to make them symmetric, which is appropriate e.g. for plotting

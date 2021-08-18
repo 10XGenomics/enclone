@@ -254,6 +254,42 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     check_pcols(&ctl, &gex_info, &ctl.plot_opt.sim_mat_plot_vars)?;
     ctl.perf_stats(&twoof, "checking pcols");
 
+    // Test fcell.
+
+    let tfcell = Instant::now();
+    if !ctl.clono_filt_opt_def.fcell.is_empty() {
+        let mut alt_bcs = Vec::<String>::new();
+        for li in 0..ctl.origin_info.alt_bc_fields.len() {
+            for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+                alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
+            }
+        }
+        unique_sort(&mut alt_bcs);
+        let mut test2 = Vec::<String>::new();
+        for con in ctl.clono_filt_opt_def.fcell.iter() {
+            for var in con.iter_variable_identifiers() {
+                if !bin_member(&alt_bcs, &var.to_string()) {
+                    test2.push(var.to_string());
+                }
+            }
+            for _ in con.iter_function_identifiers() {
+                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
+            }
+        }
+        if !test2.is_empty() {
+            let known_features = get_known_features(&gex_info)?; // note duplicated computation
+            for var in test2.iter() {
+                if !bin_member(&known_features, &var) {
+                    return Err(format!(
+                        "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
+                        var
+                    ));
+                }
+            }
+        }
+    }
+    ctl.perf_stats(&tfcell, "checking fcell");
+
     // Find matching features for <regular expression>_g etc.
 
     match_vars(&mut ctl, &gex_info)?;
@@ -743,7 +779,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Filter using constraints imposed by FCELL.
 
-    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
+    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes, &gex_info)?;
     ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Run some filters.
