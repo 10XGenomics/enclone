@@ -15,9 +15,9 @@ pub fn metatests() -> Vec<Vec<Message>> {
     vec![vec![
         Message::ArchiveOpen(Ok(())),
         Message::ExpandArchiveEntry(true, 0),
-        Message::SetName("expand"),
+        Message::SetName("expand"), // test pushing expand button once
         Message::ExpandArchiveEntry(false, 0),
-        Message::SetName("unexpand"),
+        Message::SetName("unexpand"), // test pushing expand button second time
     ]]
 }
 
