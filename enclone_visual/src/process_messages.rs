@@ -37,6 +37,11 @@ impl EncloneVisual {
                 for i in 0..self.this_meta.len() {
                     self.update(self.this_meta[i].clone(), clipboard);
                 }
+                Command::perform(noop1(), Message::CompleteMeta)
+            }
+
+            Message::CompleteMeta(_) => {
+                thread::sleep(Duration::from_millis(5000)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 Command::none()
             }
 

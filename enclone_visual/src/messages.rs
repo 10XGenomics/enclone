@@ -53,5 +53,6 @@ pub enum Message {
     ArchiveNarrative(usize),
     Narrative,
     Meta(Result<(), String>),
+    CompleteMeta(Result<(), String>),
     Snap(&'static str),
 }

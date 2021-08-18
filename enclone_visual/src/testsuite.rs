@@ -15,9 +15,6 @@ pub fn metatests() -> Vec<Vec<Message>> {
     vec![vec![
         Message::ArchiveOpen(Ok(())),
         Message::ExpandArchiveEntry(true, 0),
-        Message::Snap("expanded"),
-        Message::ArchiveClose,
-        Message::Exit,
     ]]
 }
 
