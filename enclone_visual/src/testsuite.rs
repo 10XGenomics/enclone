@@ -15,6 +15,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
     vec![vec![
         Message::ArchiveOpen(Ok(())),
         Message::ExpandArchiveEntry(true, 0),
+        Message::SetName("expand"),
     ]]
 }
 

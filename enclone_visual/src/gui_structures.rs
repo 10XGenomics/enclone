@@ -104,6 +104,7 @@ pub struct EncloneVisual {
     pub archive_narrative_button: Vec<button::State>,
     pub narrative_button: button::State,
     pub this_meta: Vec<Message>,
+    pub save_name: String,
     //
     // history
     //

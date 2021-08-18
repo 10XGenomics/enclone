@@ -33,15 +33,24 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::SetName(x) => {
+                self.save_name = x.to_string();
+                Command::none()
+            }
+
             Message::Meta(_) => {
                 for i in 0..self.this_meta.len() {
                     self.update(self.this_meta[i].clone(), clipboard);
                 }
-                Command::perform(noop1(), Message::CompleteMeta)
+                Command::perform(noop0(), Message::CompleteMeta)
             }
 
             Message::CompleteMeta(_) => {
-                thread::sleep(Duration::from_millis(5000)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                self.window_id = get_window_id();
+                capture(&self.save_name, self.window_id);
+                if true {
+                    std::process::exit(0);
+                }
                 Command::none()
             }
 

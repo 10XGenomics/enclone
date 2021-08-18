@@ -55,4 +55,5 @@ pub enum Message {
     Meta(Result<(), String>),
     CompleteMeta(Result<(), String>),
     Snap(&'static str),
+    SetName(&'static str),
 }

@@ -346,10 +346,9 @@ impl Application for EncloneVisual {
             thread::sleep(Duration::from_millis(1000));
             (x, Command::perform(noop(), Message::RunTests))
         } else {
-            thread::sleep(Duration::from_millis(1000));
             let id = META.load(SeqCst); // id of meta test
             x.this_meta = metatests()[id].clone();
-            (x, Command::perform(noop(), Message::Meta))
+            (x, Command::perform(noop0(), Message::Meta))
         }
     }
 
