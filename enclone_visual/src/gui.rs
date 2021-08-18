@@ -105,21 +105,7 @@ pub fn prepare_for_apocalypse_visual() {
 
             // Get messages and shrink.
 
-            let mut messages = Vec::<String>::new();
-            let n = MESSAGE_HISTORY.lock().unwrap().len();
-            for i in 0..n {
-                messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
-            }
-            let mut messages2 = Vec::<String>::new();
-            for i in 0..messages.len() {
-                if i == messages.len() - 1
-                    || !messages[i].starts_with("InputChanged1(")
-                    || !messages[i + 1].starts_with("InputChanged1(")
-                {
-                    messages2.push(messages[i].clone());
-                }
-            }
-            messages = messages2;
+            let mut messages = compressed_message_history();
             let mut messages2 = Vec::<String>::new();
             for i in 0..messages.len() {
                 if i == messages.len() - 1

@@ -95,6 +95,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg.starts_with("VISUAL_DIR=") {
             let dir = arg.after("VISUAL_DIR=").to_string();
             VISUAL_DIR.lock().unwrap().push(dir);
+        } else if arg == "PLAYBACK" {
+            PLAYBACK.store(true, SeqCst);
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\

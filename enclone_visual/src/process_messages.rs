@@ -18,7 +18,11 @@ use std::time::{Duration, Instant};
 use vector_utils::*;
 
 impl EncloneVisual {
-    pub fn process_message(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
+    pub fn process_message(
+        &mut self,
+        message: Message,
+        clipboard: &mut Clipboard,
+    ) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
             .unwrap()
@@ -200,6 +204,14 @@ impl EncloneVisual {
                             std::process::exit(1);
                         }
                     }
+                    if PLAYBACK.load(SeqCst) {
+                        println!("message history:\n");
+                        let messages = compressed_message_history();
+                        for i in 0..messages.len() {
+                            println!("[{}] {}", i + 1, messages[i]);
+                        }
+                    }
+                    println!("");
                     std::process::exit(0);
                 }
                 Command::none()

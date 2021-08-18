@@ -51,6 +51,34 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+pub fn compressed_message_history() -> Vec<String> {
+    let mut messages = Vec::<String>::new();
+    let n = MESSAGE_HISTORY.lock().unwrap().len();
+    for i in 0..n {
+        messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
+    }
+    let mut messages2 = Vec::<String>::new();
+    for i in 0..messages.len() {
+        if i == messages.len() - 1
+            || !messages[i].starts_with("InputChanged1(")
+            || !messages[i + 1].starts_with("InputChanged1(")
+        {
+            messages2.push(messages[i].clone());
+        }
+    }
+    messages = messages2;
+    let mut messages2 = Vec::<String>::new();
+    for i in 0..messages.len() {
+        if i == messages.len() - 1
+            || !messages[i].starts_with("ArchiveName(")
+            || !messages[i + 1].starts_with("ArchiveName(")
+        {
+            messages2.push(messages[i].clone());
+        }
+    }
+    messages2
+}
+
 // get_clipboard_content: this should work under Linux, but we don't need it for that now, and
 // there are compilation issues when compiled for Linux via GitHub Actions.
 
@@ -380,6 +408,7 @@ pub static DONE: AtomicBool = AtomicBool::new(false);
 pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
+pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
