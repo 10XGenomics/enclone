@@ -340,7 +340,7 @@ impl Application for EncloneVisual {
 
         // Handle test and meta modes.
 
-        if !TEST_MODE.load(SeqCst) {
+        if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
             (x, Command::none())
         } else if !META_TESTING.load(SeqCst) {
             thread::sleep(Duration::from_millis(1000));
