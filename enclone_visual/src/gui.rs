@@ -348,6 +348,7 @@ impl Application for EncloneVisual {
         } else {
             let id = META.load(SeqCst); // id of meta test
             x.this_meta = metatests()[id].clone();
+            x.meta_pos = 0;
             (x, Command::perform(noop0(), Message::Meta))
         }
     }

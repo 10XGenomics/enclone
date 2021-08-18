@@ -39,21 +39,34 @@ impl EncloneVisual {
             }
 
             Message::Meta(_) => {
-                for i in 0..self.this_meta.len() {
+                let mut done = false;
+                for i in self.meta_pos..self.this_meta.len() {
                     if i == 0 {
                         self.window_id = get_window_id();
                     }
                     self.update(self.this_meta[i].clone(), clipboard);
+                    match self.this_meta[i] {
+                        Message::SetName(_) => {
+                            self.meta_pos = i + 1;
+                            done = true;
+                            break;
+                        }
+                        _ => {}
+                    }
                 }
-                Command::perform(noop0(), Message::CompleteMeta)
+                if done {
+                    Command::perform(noop0(), Message::CompleteMeta)
+                } else {
+                    Command::none()
+                }
             }
 
             Message::CompleteMeta(_) => {
                 capture(&self.save_name, self.window_id);
-                if true {
+                if self.meta_pos == self.this_meta.len() {
                     std::process::exit(0);
                 }
-                Command::none()
+                Command::perform(noop0(), Message::Meta)
             }
 
             Message::Narrative => {

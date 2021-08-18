@@ -63,6 +63,7 @@ pub struct EncloneVisual {
     pub save_on_exit: bool,
     pub shares: Vec<Share>,
     pub visual: String,
+    pub meta_pos: usize,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
