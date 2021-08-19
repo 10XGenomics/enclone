@@ -85,7 +85,7 @@ fn main() {
         eprintln!("stderr =\n{}", strme(&o.stderr));
         std::process::exit(1);
     }
-    // all_testnames.append(&mut testnames);
+    all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
