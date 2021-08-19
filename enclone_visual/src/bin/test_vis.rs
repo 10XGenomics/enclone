@@ -64,8 +64,7 @@ fn main() {
             Message::SetName(x) => {
                 testnames.push(x.to_string());
             }
-            _ => {
-            }
+            _ => {}
         };
     }
     for t in testnames.iter() {
@@ -207,9 +206,7 @@ fn main() {
             eprintln!(
                 "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
                 joint.{}.jpg.",
-                diffs,
-                all_testnames[i],
-                all_testnames[i]
+                diffs, all_testnames[i], all_testnames[i]
             );
 
             // Create and save concatenated image.  Note that we're depending on the png
