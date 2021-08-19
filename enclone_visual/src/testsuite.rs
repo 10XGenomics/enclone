@@ -28,6 +28,13 @@ pub fn metatests() -> Vec<Vec<Message>> {
         Message::SetName("restore1"), // see if restore message shows up
         Message::ArchiveClose,
         Message::SetName("restore2"), // see if restore occurs
+        Message::ArchiveOpen(Ok(())),
+        Message::ArchiveName("honeycomb".to_string(), 1),
+        Message::ArchiveNameChange(1),
+        Message::CompleteArchiveNameChange(Ok(())),
+        Message::ArchiveClose,
+        Message::ArchiveOpen(Ok(())),
+        Message::SetName("rename"),   // see if rename occurs
     ]]
 }
 
