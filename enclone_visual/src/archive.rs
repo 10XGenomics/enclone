@@ -310,15 +310,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 }
                 log += &mut rows[i][0].clone();
             }
-            let copy_narrative_button =
-                Button::new(copynarbut, 
-                    Text::new("Copy").color(slf.copy_archive_narrative_button_color[i]))
-                    .on_press(Message::CopyArchiveNarrative(i));
+            let copy_narrative_button = Button::new(
+                copynarbut,
+                Text::new("Copy").color(slf.copy_archive_narrative_button_color[i]),
+            )
+            .on_press(Message::CopyArchiveNarrative(i));
             let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(Button::new(narbut, Text::new(&log)).on_press(Message::ArchiveNarrative(i)));
             if slf.archive_narrative[i].len() > 0 {
-                row = row.push(Space::with_width(Units(8)))
+                row = row
+                    .push(Space::with_width(Units(8)))
                     .push(copy_narrative_button);
             }
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
