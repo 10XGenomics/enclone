@@ -44,12 +44,10 @@ fn main() {
         eprintln!("\nYou need to run this from the top level directory of the enclone repo.\n");
         std::process::exit(1);
     }
-
-
-
+    let mut all_testnames = Vec::<String>::new();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-    // ARCHIVE TESTING IN LOCAL MODE
+    // RUN ARCHIVE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let options = fs_extra::dir::CopyOptions::new();
@@ -87,11 +85,7 @@ fn main() {
         eprintln!("stderr =\n{}", strme(&o.stderr));
         std::process::exit(1);
     }
-    // if true { std::process::exit(0); }
-
-
-
-
+    // all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
@@ -111,7 +105,7 @@ fn main() {
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-    // MAIN TESTS
+    // RUN MAIN TESTS
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let t = Instant::now();
@@ -142,15 +136,22 @@ fn main() {
     if !quiet {
         print!("{}", strme(&o.stdout));
     }
+    for i in 0..TESTS.len() {
+        if TESTS[i].2.len() > 0 {
+            all_testnames.push(TESTS[i].2.to_string());
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // CHECK TESTS VERSUS REGRESSION OUTPUTS
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     let mut fail = false;
     const MAX_DIFFS: usize = 150;
-    for i in 1..=TESTS.len() {
-        if TESTS[i - 1].2.len() == 0 {
-            continue;
-        }
+    for i in 0..all_testnames.len() {
         let mut image_new = Vec::<u8>::new();
-        let old_png_file = format!("enclone_visual/regression_images/{}.png", TESTS[i - 1].2);
-        let new_png_file = format!("enclone_visual/outputs/{}.png", TESTS[i - 1].2);
+        let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);
+        let new_png_file = format!("enclone_visual/outputs/{}.png", all_testnames[i]);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (header, image_data_new0) = png_decoder::decode(&image_new).unwrap();
@@ -184,7 +185,7 @@ fn main() {
                 "\nLooks like you've added a test.  Please look at \
                 enclone_visual/outputs/{}.png and\n\
                 if it's right, copy it and the jpg file to regression_tests and git add the jpg.\n",
-                TESTS[i - 1].2,
+                all_testnames[i],
             );
             std::process::exit(1);
         }
@@ -207,8 +208,8 @@ fn main() {
                 "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
                 joint.{}.jpg.",
                 diffs,
-                TESTS[i - 1].2,
-                TESTS[i - 1].2
+                all_testnames[i],
+                all_testnames[i]
             );
 
             // Create and save concatenated image.  Note that we're depending on the png
@@ -233,7 +234,7 @@ fn main() {
                     joint.push(255 - diff);
                 }
             }
-            let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", TESTS[i - 1].2);
+            let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", all_testnames[i]);
             let quality = 80 as u8;
             let mut f = open_for_write_new![&new_jpg_file];
             let mut buff = BufWriter::new(&mut f);
