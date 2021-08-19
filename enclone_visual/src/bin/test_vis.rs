@@ -18,6 +18,9 @@
 // 1145040   not public
 // 1142282   not public
 //
+// Part of these tests assume that you can connect to a server.  Also we test receiving shares,
+// and this could fail and mess things up if someone else happened to send a share.
+//
 // See also show_diffs.
 
 use enclone_visual::compare_images::*;
@@ -81,6 +84,46 @@ fn main() {
         .expect("failed to execute enclone visual metatest 1");
     if o.status.code() != Some(0) {
         eprintln!("\nnonzero exit code from enclone visual metatest 1\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
+        std::process::exit(1);
+    }
+    all_testnames.append(&mut testnames);
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // RUN ARCHIVE TESTS IN REMOTE MODE
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // This is dangerous, because it tests receiving shares, and someone else could send a share
+    // before or during the test.  Should change to restrict to receiving only shares from self.
+
+    if path_exists(&target) {
+        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
+    }
+    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
+    let metas = metatests()[1].clone();
+    let mut testnames = Vec::<String>::new();
+    for m in metas.iter() {
+        match m {
+            Message::SetName(x) => {
+                testnames.push(x.to_string());
+            }
+            _ => {}
+        };
+    }
+    for t in testnames.iter() {
+        let png = format!("enclone_visual/outputs/{}.png", t);
+        if path_exists(&png) {
+            std::fs::remove_file(&png).unwrap();
+        }
+    }
+    let o = Command::new("enclone")
+        .arg(&"VIS=b")
+        .arg(&"META=2")
+        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+        .output()
+        .expect("failed to execute enclone visual metatest 2");
+    if o.status.code() != Some(0) {
+        eprintln!("\nnonzero exit code from enclone visual metatest 2\n");
         eprintln!("stderr =\n{}", strme(&o.stderr));
         std::process::exit(1);
     }

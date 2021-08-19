@@ -10,32 +10,54 @@
 
 use crate::messages::*;
 use crate::*;
+use std::env;
 
 #[rustfmt::skip]
 pub fn metatests() -> Vec<Vec<Message>> {
-    vec![vec![
-        Message::ArchiveOpen(Ok(())),
-        Message::ExpandArchiveEntry(true, 0),
-        Message::SetName("expand"),   // test pushing expand button once
-        Message::ExpandArchiveEntry(false, 0),
-        Message::SetName("unexpand"), // test pushing expand button second time
-        Message::DeleteArchiveEntry(true, 0),
-        Message::SetName("delete1"),  // see if delete message shows up
-        Message::ArchiveClose,
-        Message::ArchiveOpen(Ok(())),
-        Message::SetName("delete2"),  // see if deletion occurred 
-        Message::Restore(true, 1),
-        Message::SetName("restore1"), // see if restore message shows up
-        Message::ArchiveClose,
-        Message::SetName("restore2"), // see if restore occurs
-        Message::ArchiveOpen(Ok(())),
-        Message::ArchiveName("honeycomb".to_string(), 1),
-        Message::ArchiveNameChange(1),
-        Message::CompleteArchiveNameChange(Ok(())),
-        Message::ArchiveClose,
-        Message::ArchiveOpen(Ok(())),
-        Message::SetName("rename"),   // see if rename occurs
-    ]]
+    let mut user = String::new();
+    for (key, value) in env::vars() {
+        if key == "USER" {
+            user = value.to_string();
+        }
+    }
+    vec![
+        vec![
+            Message::ArchiveOpen(Ok(())),
+            Message::ExpandArchiveEntry(true, 0),
+            Message::SetName("expand"),   // test pushing expand button once
+            Message::ExpandArchiveEntry(false, 0),
+            Message::SetName("unexpand"), // test pushing expand button second time
+            Message::DeleteArchiveEntry(true, 0),
+            Message::SetName("delete1"),  // see if delete message shows up
+            Message::ArchiveClose,
+            Message::ArchiveOpen(Ok(())),
+            Message::SetName("delete2"),  // see if deletion occurred 
+            Message::Restore(true, 1),
+            Message::SetName("restore1"), // see if restore message shows up
+            Message::ArchiveClose,
+            Message::SetName("restore2"), // see if restore occurs
+            Message::ArchiveOpen(Ok(())),
+            Message::ArchiveName("honeycomb".to_string(), 1),
+            Message::ArchiveNameChange(1),
+            Message::CompleteArchiveNameChange(Ok(())),
+            Message::ArchiveClose,
+            Message::ArchiveOpen(Ok(())),
+            Message::SetName("rename"),   // see if rename occurs
+        ],
+        vec![
+            Message::ArchiveOpen(Ok(())),
+            Message::ArchiveShare(true, 0),
+            Message::UserName(user, 0),
+            Message::UserSelected(true, 0),
+            Message::DoShare(true),
+            Message::CompleteDoShare(Ok(())),
+            Message::UpdateShares,
+            Message::UpdateSharesComplete(Ok(())),
+            Message::ExpandArchiveEntry(true, 0),
+            Message::UserName("*****".to_string(), 0),
+            Message::SetName("share"),    // test share
+        ],
+    ]
 }
 
 const SUBMIT: fn(Result<(), std::string::String>) -> messages::Message =

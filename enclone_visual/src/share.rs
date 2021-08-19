@@ -18,7 +18,10 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let bytes = &RECEIVED_SHARES_CONTENT.lock().unwrap()[i];
         let origin = RECEIVED_SHARES_MESSAGES.lock().unwrap()[i].clone();
         let mut evh = EncloneVisualHistory::restore_from_bytes(&bytes).unwrap();
-        evh.origin = origin;
+        evh.origin = origin.clone();
+        if META_TESTING.load(SeqCst) {
+            evh.origin = format!("{} by ***** on {}", origin.before(" by "), origin.after(" on "));
+        }
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
