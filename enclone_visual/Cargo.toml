@@ -30,6 +30,7 @@ enclone_main = { path = "../enclone_main" }
 enclone_version = { path = "../enclone_version" }
 failure = "0.1"
 flate2 = "1"
+fs_extra = "1"
 iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }

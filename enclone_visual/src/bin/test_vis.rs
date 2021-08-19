@@ -21,7 +21,8 @@
 // See also show_diffs.
 
 use enclone_visual::compare_images::*;
-use enclone_visual::testsuite::TESTS;
+use enclone_visual::messages::*;
+use enclone_visual::testsuite::{metatests, TESTS};
 use image::codecs::jpeg::JpegEncoder;
 use image::ColorType::Rgba8;
 use io_utils::*;
@@ -43,6 +44,54 @@ fn main() {
         eprintln!("\nYou need to run this from the top level directory of the enclone repo.\n");
         std::process::exit(1);
     }
+
+
+
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // ARCHIVE TESTING IN LOCAL MODE
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    let options = fs_extra::dir::CopyOptions::new();
+    let source = "enclone_visual/sample_visual";
+    let target = "enclone_visual/outputs/sample_visual";
+    if path_exists(&target) {
+        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
+    }
+    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
+    let metas = metatests()[0].clone();
+    let mut testnames = Vec::<String>::new();
+    for m in metas.iter() {
+        match m {
+            Message::SetName(x) => {
+                testnames.push(x.to_string());
+            }
+            _ => {
+            }
+        };
+    }
+    for t in testnames.iter() {
+        let png = format!("enclone_visual/outputs/{}.png", t);
+        if path_exists(&png) {
+            std::fs::remove_file(&png).unwrap();
+        }
+    }
+    let o = Command::new("enclone")
+        .arg(&"VIS")
+        .arg(&"META=1")
+        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+        .output()
+        .expect("failed to execute enclone visual metatest 1");
+    if o.status.code() != Some(0) {
+        eprintln!("\nnonzero exit code from enclone visual metatest 1\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
+        std::process::exit(1);
+    }
+    // if true { std::process::exit(0); }
+
+
+
+
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
