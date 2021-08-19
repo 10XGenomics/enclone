@@ -199,7 +199,11 @@ impl EncloneVisual {
                         self.just_restored = true;
                         self.modified = false;
                     } else {
-                        self.restore_msg[index] = "Oh dear, restoration failed.".to_string();
+                        self.restore_msg[index] = format!(
+                            "Oh dear, restoration of the file {} \
+                            failed.",
+                            filename
+                        );
                     }
                 }
                 Command::none()
