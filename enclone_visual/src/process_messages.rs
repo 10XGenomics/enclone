@@ -28,6 +28,19 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyArchiveNarrative(i) => {
+                self.copy_archive_narrative_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.archive_narrative[i].as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyArchiveNarrative)
+            }
+
+            Message::CompleteCopyArchiveNarrative(_) => {
+                for i in 0..self.copy_archive_narrative_button_color.len() {
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
+                Command::none()
+            }
+
             Message::Snap(x) => {
                 capture(&x, self.window_id);
                 Command::none()
@@ -621,6 +634,7 @@ impl EncloneVisual {
                 let n = self.archive_name.len();
                 for i in 0..n {
                     self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
                     // This is a dorky way of causing loading of command lists, etc. from disk
                     // occurs just once per session, and only if the archive button is pushed.
                     if self.archived_command_list[i].is_none() {

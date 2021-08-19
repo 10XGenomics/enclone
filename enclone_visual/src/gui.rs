@@ -332,8 +332,10 @@ impl Application for EncloneVisual {
         x.archive_name = vec![iced::text_input::State::default(); n];
         x.archive_name_value = vec![String::new(); n];
         x.archive_name_change_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); n];
+        x.copy_archive_narrative_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); n];
         x.archive_name_change_button = vec![iced::button::State::default(); n];
         x.archive_narrative_button = vec![iced::button::State::default(); n];
+        x.copy_archive_narrative_button = vec![iced::button::State::default(); n];
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];

@@ -69,7 +69,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text7 = Text::new(
         "▒ Narrative is displayed in a box:\n\
          • if there is no narrative, a tiny box is seen\n\
-         • clicking on the box will change the narrative to whatever is on your clipboard.",
+         • clicking on the box will change the narrative to whatever is on your clipboard\n\
+         • clicking on the Copy button to the right of it will copy the existing narrative \
+           to your clipboard.",
     );
     let mut help_col = Column::new();
     if slf.archive_doc_open {
@@ -209,11 +211,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut share_body = Some(share_body);
 
     let mut count = 0;
-    for (i, y, q, narbut) in izip!(
+    for (i, y, q, narbut, copynarbut) in izip!(
         0..slf.archive_name.len(),
         slf.archive_name.iter_mut(),
         slf.archive_name_change_button.iter_mut(),
-        slf.archive_narrative_button.iter_mut()
+        slf.archive_narrative_button.iter_mut(),
+        slf.copy_archive_narrative_button.iter_mut()
     ) {
         let x = &slf.archive_list[i];
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
@@ -307,9 +310,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 }
                 log += &mut rows[i][0].clone();
             }
-            let row = Row::new()
+            let copy_narrative_button =
+                Button::new(copynarbut, 
+                    Text::new("Copy").color(slf.copy_archive_narrative_button_color[i]))
+                    .on_press(Message::CopyArchiveNarrative(i));
+            let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(Button::new(narbut, Text::new(&log)).on_press(Message::ArchiveNarrative(i)));
+            if slf.archive_narrative[i].len() > 0 {
+                row = row.push(Space::with_width(Units(8)))
+                    .push(copy_narrative_button);
+            }
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             archive_scrollable = archive_scrollable.push(row);
 

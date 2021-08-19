@@ -51,6 +51,8 @@ pub enum Message {
     OpenArchiveDoc,
     CloseArchiveDoc,
     ArchiveNarrative(usize),
+    CopyArchiveNarrative(usize),
+    CompleteCopyArchiveNarrative(Result<(), String>),
     Narrative,
     Meta(Result<(), String>),
     CompleteMeta(Result<(), String>),
