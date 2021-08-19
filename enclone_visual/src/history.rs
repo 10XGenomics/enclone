@@ -136,7 +136,6 @@ impl EncloneVisualHistory {
     }
 
     pub fn restore_from_bytes(bytes: &Vec<u8>) -> Result<Self, ()> {
-        eprintln!("restoring from bytes"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if bytes.len() < HEADER_LENGTH + 12 {
             return Err(());
         }
@@ -190,7 +189,6 @@ impl EncloneVisualHistory {
         if pos + narrative_len != bytes.len() {
             return Err(());
         }
-        eprintln!("reading narrative"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let narrative = String::from_utf8(bytes[pos..].to_vec());
         if narrative.is_err() {
             return Err(());
@@ -353,13 +351,11 @@ pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistor
         n = u32_from_bytes(&buf[HEADER_LENGTH..HEADER_LENGTH + 4]);
     }
     let mut bytes = vec![0 as u8; n as usize];
-    eprintln!("\nThere are {} bytes\n", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut f = open_for_read![&filename];
     let res = f.read_exact(&mut bytes);
     if res.is_err() {
         return Err(());
     }
-    eprintln!("\nbytes read\n"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     EncloneVisualHistory::restore_from_bytes(&bytes)
 }
 
