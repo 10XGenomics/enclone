@@ -20,7 +20,7 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let mut evh = EncloneVisualHistory::restore_from_bytes(&bytes).unwrap();
         evh.origin = origin.clone();
         if META_TESTING.load(SeqCst) {
-            evh.origin = format!("{} by ***** on {}", origin.before(" by "), origin.after(" on "));
+            evh.origin = "session shared by ***** on ***** at *****".to_string();
         }
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");

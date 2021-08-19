@@ -228,7 +228,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let date2 = date.after("-").to_string();
             let mut date = format!("{}-{}", date2, date1);
             let mut time = x.after("___").rev_before(":").to_string();
-            if TEST_MODE.load(SeqCst) {
+            if TEST_MODE.load(SeqCst) || META_TESTING.load(SeqCst) {
                 date = stringme(&vec![b' '; 8]);
                 time = stringme(&vec![b' '; 5]);
             }
