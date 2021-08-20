@@ -26,19 +26,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("Hide documentation"),
     )
     .on_press(Message::CloseArchiveDoc);
-    let receive_shares_button = Button::new(
-        &mut slf.receive_shares_button,
-        Text::new("Receive shares").color(slf.receive_shares_button_color),
+    let refresh_button = Button::new(
+        &mut slf.archive_refresh_button,
+        Text::new("Refresh").color(slf.archive_refresh_button_color),
     )
-    .on_press(Message::UpdateShares);
-    let mut top_bar = Row::new()
+    .on_press(Message::ArchiveRefresh);
+    let top_bar = Row::new()
         .push(archive_title)
-        .push(Space::with_width(Length::Fill));
-    if slf.sharing_enabled {
-        top_bar = top_bar.push(receive_shares_button);
-        top_bar = top_bar.push(Space::with_width(Units(8)));
-    }
-    top_bar = top_bar.push(archive_close_button);
+        .push(Space::with_width(Length::Fill))
+        .push(refresh_button)
+        .push(Space::with_width(Units(8)))
+        .push(archive_close_button);
 
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");

@@ -98,7 +98,7 @@ pub struct EncloneVisual {
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
-    pub receive_shares_button: button::State,
+    pub archive_refresh_button: button::State,
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
     pub archive_name_change_button: Vec<button::State>,
@@ -145,7 +145,7 @@ pub struct EncloneVisual {
     pub user_valid: Vec<bool>,
     pub do_share: bool,
     pub do_share_complete: bool,
-    pub receive_shares_button_color: Color,
+    pub archive_refresh_button_color: Color,
     //
     // current window dimensions
     //

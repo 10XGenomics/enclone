@@ -151,10 +151,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut i = 0;
             while i < messages.len() {
                 if i < messages.len() - 1
-                    && messages[i] == "UpdateShares"
-                    && messages[i + 1] == "UpdateSharesComplete(Ok(()))"
+                    && messages[i] == "ArchiveRefresh"
+                    && messages[i + 1] == "ArchiveRefreshComplete(Ok(()))"
                 {
-                    messages2.push("Receive shares button pressed".to_string());
+                    messages2.push("Refresh button pressed".to_string());
                     i += 1;
                 } else {
                     messages2.push(messages[i].clone());
@@ -248,7 +248,7 @@ impl Application for EncloneVisual {
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-        x.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;

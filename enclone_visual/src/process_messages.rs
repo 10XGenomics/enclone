@@ -587,34 +587,21 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::UpdateShares => {
+            Message::ArchiveRefresh => {
                 self.share_start = Some(Instant::now());
-                self.receive_shares_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                Command::perform(noop(), Message::UpdateSharesComplete)
+                self.archive_refresh_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop(), Message::ArchiveRefreshComplete)
             }
 
-            Message::UpdateSharesComplete(_) => {
+            Message::ArchiveRefreshComplete(_) => {
                 update_shares(self);
                 let n = self.archive_name.len();
-                for i in 0..n {
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let (command_list, name, origin, narrative) = read_metadata(&path).unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
                 self.orig_archive_name = self.archive_name_value.clone();
                 self.h.orig_name_value = self.h.name_value.clone();
-                self.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                self.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
 
                 // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
-                // keeps the "Receive shares" button red for at least that amount of time.
+                // keeps the Refresh button red for at least that amount of time.
 
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.share_start.unwrap());
@@ -622,21 +609,7 @@ impl EncloneVisual {
                     let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
                     thread::sleep(Duration::from_millis(ms));
                 }
-
-                Command::none()
-            }
-
-            Message::ArchiveOpen(_) => {
-                self.archive_mode = true;
-                if self.sharing_enabled {
-                    update_shares(self);
-                }
-                let n = self.archive_name.len();
                 for i in 0..n {
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
@@ -656,8 +629,31 @@ impl EncloneVisual {
                         self.archive_narrative[i] = narrative;
                     }
                 }
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
+                self.do_share = false;
+                self.do_share_complete = false;
+                self.user.clear();
+                self.user_value.clear();
+                self.user_selected.clear();
+                self.user_valid.clear();
+                for i in 0..self.archive_share_requested.len() {
+                    self.archive_share_requested[i] = false;
+                }
+                for i in 0..self.expand_archive_entry.len() {
+                    self.expand_archive_entry[i] = false;
+                }
+                for i in 0..self.restore_msg.len() {
+                    self.restore_msg[i].clear();
+                    self.restore_requested[i] = false;
+                    if self.delete_requested[i] {
+                        self.deleted[i] = true;
+                    }
+                }
+                self.just_restored = false;
+                for i in 0..n {
+                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -691,6 +687,43 @@ impl EncloneVisual {
                 }
                 self.just_restored = false;
                 Command::none()
+            }
+
+            Message::ArchiveOpen(_) => {
+                self.archive_mode = true;
+                update_shares(self);
+                let n = self.archive_name.len();
+                for i in 0..n {
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    // This is a dorky way of causing loading of command lists, etc. from disk
+                    // occurs just once per session, and only if the archive button is pushed.
+                    if self.archived_command_list[i].is_none() {
+                        let x = &self.archive_list[i];
+                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
+                        let res = read_metadata(&path);
+                        if res.is_err() {
+                            panic!(
+                                "Unable to read the history file at\n{}\n\
+                                This could either be a bug in enclone or it could be that \
+                                the file is corrupted.\n",
+                                path,
+                            );
+                        }
+                        let (command_list, name, origin, narrative) = res.unwrap();
+                        self.archived_command_list[i] = Some(command_list);
+                        self.archive_name_value[i] = name;
+                        self.archive_origin[i] = origin;
+                        self.archive_narrative[i] = narrative;
+                    }
+                }
+                self.orig_archive_name = self.archive_name_value.clone();
+                self.h.orig_name_value = self.h.name_value.clone();
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
             Message::SaveOnExit => {

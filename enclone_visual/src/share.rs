@@ -6,6 +6,10 @@ use chrono::prelude::*;
 use iced::Color;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
+    if !slf.sharing_enabled {
+        return;
+    }
+
     // Import shares.
 
     GET_MY_SHARES.store(true, SeqCst);
