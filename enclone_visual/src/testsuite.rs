@@ -54,7 +54,6 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::ArchiveRefresh,
             Message::ArchiveRefreshComplete(Ok(())),
             Message::ExpandArchiveEntry(true, 0),
-            Message::UserName("*****".to_string(), 0),
             Message::SetName("share"),    // test share
         ],
     ]
