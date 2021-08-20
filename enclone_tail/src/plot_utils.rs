@@ -7,6 +7,15 @@ use enclone_core::defs::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+#[derive(Clone)]
+pub struct PlotCluster {
+    pub clonotype_index: usize,         // index of the clonotype
+    pub colors: Vec<String>,            // color of a cell
+    pub coords: Vec<(f64, f64)>,        // coordinates of a cell
+    pub barcodes: Vec<(usize, String)>, // (dataset index, barcode) of a cell
+    pub radius: f64,                    // radius of the group of circles defining the clonotype
+}
+
 // Traverse the clonotypes, building one cluster for each.
 
 pub fn build_clusters(
@@ -16,20 +25,8 @@ pub fn build_clusters(
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     const_names: &Vec<String>,
-) -> Vec<(
-    Vec<String>,
-    Vec<(f64, f64)>,
-    usize,
-    Vec<(usize, String)>,
-    f64,
-)> {
-    let mut clusters = Vec::<(
-        Vec<String>,
-        Vec<(f64, f64)>,
-        usize,
-        Vec<(usize, String)>,
-        f64,
-    )>::new();
+) -> Vec<PlotCluster> {
+    let mut clusters = Vec::<PlotCluster>::new();
     const SEP: f64 = 1.0; // separation between clusters
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
@@ -103,7 +100,13 @@ pub fn build_clusters(
                 radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
         }
         radius += SEP;
-        clusters.push((colors, coords, i, barcodes, radius));
+        clusters.push(PlotCluster {
+            colors: colors,
+            coords: coords,
+            clonotype_index: i,
+            barcodes: barcodes,
+            radius: radius,
+        });
     }
     clusters
 }

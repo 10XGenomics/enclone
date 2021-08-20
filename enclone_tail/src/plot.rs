@@ -97,7 +97,7 @@ pub fn plot_clonotypes(
     );
     let mut radii = Vec::<f64>::new();
     for i in 0..clusters.len() {
-        radii.push(clusters[i].4);
+        radii.push(clusters[i].radius);
     }
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
@@ -181,7 +181,7 @@ pub fn plot_clonotypes(
                 if new_group_names[i].is_some() {
                     nx.push((
                         new_group_names[i].as_ref().unwrap().to_string(),
-                        clusters[i].1.len(),
+                        clusters[i].coords.len(),
                     ));
                 }
             }
@@ -276,11 +276,11 @@ pub fn plot_clonotypes(
         let mut clusters2 = clusters.clone();
         for i in 0..ids.len() {
             let id = ids[i];
-            let mut c = clusters[id].0.clone();
+            let mut c = clusters[id].colors.clone();
             unique_sort(&mut c);
             if c.solo() {
                 // Note confusion here between the last argument, i, and clusters[i].2:
-                ccc.push((clusters[i].0.len(), c[0].clone(), i));
+                ccc.push((clusters[i].colors.len(), c[0].clone(), i));
             }
         }
         ccc.sort();
@@ -296,9 +296,9 @@ pub fn plot_clonotypes(
             for k in i..j {
                 let new_id = angle[k - i].1;
                 let id = ccc[k].2;
-                clusters2[ids[new_id]].0 = clusters[id].0.clone();
-                clusters2[ids[new_id]].2 = clusters[id].2;
-                clusters2[ids[new_id]].3 = clusters[id].3.clone();
+                clusters2[ids[new_id]].colors = clusters[id].colors.clone();
+                clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
+                clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
             }
             i = j;
         }
@@ -310,9 +310,9 @@ pub fn plot_clonotypes(
 
     let t = Instant::now();
     for i in 0..clusters.len() {
-        for j in 0..clusters[i].1.len() {
-            clusters[i].1[j].0 += centers[i].0;
-            clusters[i].1[j].1 += centers[i].1;
+        for j in 0..clusters[i].coords.len() {
+            clusters[i].coords[j].0 += centers[i].0;
+            clusters[i].coords[j].1 += centers[i].1;
         }
     }
     let mut center = Vec::<(f64, f64)>::new();
@@ -330,12 +330,12 @@ pub fn plot_clonotypes(
     let mut group_index2 = Vec::<usize>::new();
     let mut clonotype_index2 = Vec::<usize>::new();
     for i in 0..clusters.len() {
-        for j in 0..clusters[i].0.len() {
-            color.push(clusters[i].0[j].clone());
-            barcodes.push(clusters[i].3[j].clone());
-            center.push((clusters[i].1[j].0, clusters[i].1[j].1));
+        for j in 0..clusters[i].colors.len() {
+            color.push(clusters[i].colors[j].clone());
+            barcodes.push(clusters[i].barcodes[j].clone());
+            center.push((clusters[i].coords[j].0, clusters[i].coords[j].1));
             radius.push(1.0);
-            let ind = clusters[i].2;
+            let ind = clusters[i].clonotype_index;
             group_index2.push(group_index[&ind]);
             clonotype_index2.push(clonotype_index[ind]);
         }
