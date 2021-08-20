@@ -76,3 +76,7 @@ NICE TO HAVE
     to individual elements without unzipping everything.
 
 10. Implement sharing of archives in enclone visual.
+
+11. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
+a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
+to have something to do with using cfg! macros.

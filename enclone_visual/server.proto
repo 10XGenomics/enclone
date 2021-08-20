@@ -83,6 +83,7 @@ message SendShareResponse {
 
 message GetMySharesRequest {
   string share_dir = 1;
+  bool me_only = 2;
 }
 
 message GetMySharesResponse {

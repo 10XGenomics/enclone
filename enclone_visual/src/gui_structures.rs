@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::history::*;
+use crate::messages::*;
 use crate::*;
 use canvas_view::CanvasView;
 use chrono::prelude::*;
@@ -62,6 +63,7 @@ pub struct EncloneVisual {
     pub save_on_exit: bool,
     pub shares: Vec<Share>,
     pub visual: String,
+    pub meta_pos: usize,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -96,12 +98,15 @@ pub struct EncloneVisual {
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
-    pub receive_shares_button: button::State,
+    pub archive_refresh_button: button::State,
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
     pub archive_name_change_button: Vec<button::State>,
     pub archive_narrative_button: Vec<button::State>,
+    pub copy_archive_narrative_button: Vec<button::State>,
     pub narrative_button: button::State,
+    pub this_meta: Vec<Message>,
+    pub save_name: String,
     //
     // history
     //
@@ -129,6 +134,7 @@ pub struct EncloneVisual {
     pub archive_doc_open: bool,
     pub share_start: Option<Instant>,
     pub archive_name_change_button_color: Vec<Color>,
+    pub copy_archive_narrative_button_color: Vec<Color>,
     //
     // users for sharing
     //
@@ -139,7 +145,7 @@ pub struct EncloneVisual {
     pub user_valid: Vec<bool>,
     pub do_share: bool,
     pub do_share_complete: bool,
-    pub receive_shares_button_color: Color,
+    pub archive_refresh_button_color: Color,
     //
     // current window dimensions
     //
@@ -247,16 +253,10 @@ impl EncloneVisual {
         }
     }
     pub fn save(&mut self) {
-        let dir;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
-        } else {
-            dir = format!("{}/history", self.visual);
-        }
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
-        let filename = format!("{}/{}", dir, now);
+        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
         let res = write_enclone_visual_history(&self.h, &filename);
         if res.is_err() {
             xprintln!(
@@ -278,9 +278,13 @@ impl EncloneVisual {
         self.archive_name_value.insert(0, String::new());
         self.archive_name_change_button_color
             .insert(0, Color::from_rgb(0.0, 0.0, 0.0));
+        self.copy_archive_narrative_button_color
+            .insert(0, Color::from_rgb(0.0, 0.0, 0.0));
         self.archive_name_change_button
             .insert(0, button::State::default());
         self.archive_narrative_button
+            .insert(0, button::State::default());
+        self.copy_archive_narrative_button
             .insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());

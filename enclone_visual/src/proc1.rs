@@ -2,12 +2,74 @@
 
 use crate::messages::*;
 use crate::*;
+use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use gui_structures::ComputeState::*;
 use iced::Command;
+use io_utils::*;
 use itertools::Itertools;
+use std::fs::File;
+use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
+
+pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Command<Message> {
+    slf.do_share = check_val;
+    if !check_val {
+        slf.do_share_complete = false;
+    } else {
+        let mut recipients = Vec::<String>::new();
+        for i in 0..slf.user_value.len() {
+            if slf.user_valid[i] {
+                recipients.push(slf.user_value[i].clone());
+            }
+        }
+        let mut index = 0;
+        for i in 0..slf.archive_share_requested.len() {
+            if slf.archive_share_requested[i] {
+                index = i;
+            }
+        }
+        let path = format!(
+            "{}/{}",
+            slf.archive_dir.as_ref().unwrap(),
+            slf.archive_list[index]
+        );
+        if !path_exists(&path) {
+            xprintln!("could not find path for archive file\n");
+            std::process::exit(1);
+        }
+        let mut content = Vec::<u8>::new();
+        let f = File::open(&path);
+        if f.is_err() {
+            xprintln!("could not open archive file\n");
+            std::process::exit(1);
+        }
+        let mut f = f.unwrap();
+        let res = f.read_to_end(&mut content);
+        if res.is_err() {
+            xprintln!("could not read archive file\n");
+            std::process::exit(1);
+        }
+        SHARE_CONTENT.lock().unwrap().clear();
+        SHARE_CONTENT.lock().unwrap().push(content);
+        SHARE_RECIPIENTS.lock().unwrap().clear();
+        let days = Utc::now().num_days_from_ce();
+        for i in 0..recipients.len() {
+            SHARE_RECIPIENTS.lock().unwrap().push(recipients[i].clone());
+            let mut user_name = [0 as u8; 32];
+            for j in 0..recipients[i].len() {
+                user_name[j] = recipients[i].as_bytes()[j];
+            }
+            slf.shares.push(Share {
+                days_since_ce: days,
+                user_id: user_name,
+            });
+        }
+        SENDING_SHARE.store(true, SeqCst);
+    }
+    Command::perform(compute_share(), Message::CompleteDoShare)
+}
 
 pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;

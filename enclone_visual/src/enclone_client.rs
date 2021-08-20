@@ -92,9 +92,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             assert!(fixed_port.unwrap() >= 1024);
         } else if arg == "TEST" {
             TEST_MODE.store(true, SeqCst);
-        } else if arg.starts_with("VISUAL_HISTORY_DIR=") {
-            let dir = arg.after("VISUAL_HISTORY_DIR=").to_string();
-            VISUAL_HISTORY_DIR.lock().unwrap().push(dir);
+        } else if arg.starts_with("VISUAL_DIR=") {
+            let dir = arg.after("VISUAL_DIR=").to_string();
+            VISUAL_DIR.lock().unwrap().push(dir);
+        } else if arg == "PLAYBACK" {
+            PLAYBACK.store(true, SeqCst);
+        } else if arg.starts_with("META=") {
+            META_TESTING.store(true, SeqCst);
+            META.store(arg.after("META=").force_usize() - 1, SeqCst);
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
@@ -716,6 +721,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let share_dir = REMOTE_SHARE.lock().unwrap()[0].clone();
                     let request = tonic::Request::new(GetMySharesRequest {
                         share_dir: share_dir,
+                        me_only: META_TESTING.load(SeqCst),
                     });
                     let response = client.get_my_shares(request).await;
                     if response.is_err() {

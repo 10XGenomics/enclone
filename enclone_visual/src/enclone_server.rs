@@ -375,6 +375,7 @@ impl Analyzer for EncloneAnalyzer {
     ) -> Result<Response<GetMySharesResponse>, Status> {
         let req: GetMySharesRequest = request.into_inner();
         let dir = &req.share_dir;
+        let me_only = req.me_only;
         let me = users::get_current_username();
         if me.is_none() {
             return Err(Status::new(Code::Internal, "unable to determine user name"));
@@ -424,6 +425,9 @@ impl Analyzer for EncloneAnalyzer {
                 return Err(Status::new(Code::Internal, "malformed file name"));
             }
             let sender = all[i].rev_after("_");
+            if me_only && sender != me {
+                continue;
+            }
             let when = all[i].rev_before("_");
             if !when.contains("___") {
                 return Err(Status::new(

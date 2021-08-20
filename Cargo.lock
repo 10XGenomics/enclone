@@ -1553,6 +1553,7 @@ dependencies = [
  "enclone_version",
  "failure",
  "flate2",
+ "fs_extra",
  "iced",
  "iced_native",
  "image",

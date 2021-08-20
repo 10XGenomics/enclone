@@ -6,6 +6,10 @@ use chrono::prelude::*;
 use iced::Color;
 
 pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
+    if !slf.sharing_enabled {
+        return;
+    }
+
     // Import shares.
 
     GET_MY_SHARES.store(true, SeqCst);
@@ -18,18 +22,15 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let bytes = &RECEIVED_SHARES_CONTENT.lock().unwrap()[i];
         let origin = RECEIVED_SHARES_MESSAGES.lock().unwrap()[i].clone();
         let mut evh = EncloneVisualHistory::restore_from_bytes(&bytes).unwrap();
-        evh.origin = origin;
-        let dir;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
-        } else {
-            dir = format!("{}/history", slf.visual);
+        evh.origin = origin.clone();
+        if META_TESTING.load(SeqCst) {
+            evh.origin = "session shared by ***** on ***** at *****".to_string();
         }
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
         let filename = format!("{}.{}", now, i + 1);
-        let path = format!("{}/{}", dir, filename);
+        let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), filename);
         let res = write_enclone_visual_history(&evh, &path);
         if res.is_err() {
             xprintln!(
@@ -58,11 +59,19 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         &vec![Color::from_rgb(0.0, 0.0, 0.0); k],
     );
     prepend_to_vec(
+        &mut slf.copy_archive_narrative_button_color,
+        &vec![Color::from_rgb(0.0, 0.0, 0.0); k],
+    );
+    prepend_to_vec(
         &mut slf.archive_name_change_button,
         &vec![iced::button::State::default(); k],
     );
     prepend_to_vec(
         &mut slf.archive_narrative_button,
+        &vec![iced::button::State::default(); k],
+    );
+    prepend_to_vec(
+        &mut slf.copy_archive_narrative_button,
         &vec![iced::button::State::default(); k],
     );
     prepend_to_vec(&mut slf.archive_share_requested, &vec![false; k]);

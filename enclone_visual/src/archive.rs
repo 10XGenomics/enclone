@@ -26,19 +26,17 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("Hide documentation"),
     )
     .on_press(Message::CloseArchiveDoc);
-    let receive_shares_button = Button::new(
-        &mut slf.receive_shares_button,
-        Text::new("Receive shares").color(slf.receive_shares_button_color),
+    let refresh_button = Button::new(
+        &mut slf.archive_refresh_button,
+        Text::new("Refresh").color(slf.archive_refresh_button_color),
     )
-    .on_press(Message::UpdateShares);
-    let mut top_bar = Row::new()
+    .on_press(Message::ArchiveRefresh);
+    let top_bar = Row::new()
         .push(archive_title)
-        .push(Space::with_width(Length::Fill));
-    if slf.sharing_enabled {
-        top_bar = top_bar.push(receive_shares_button);
-        top_bar = top_bar.push(Space::with_width(Units(8)));
-    }
-    top_bar = top_bar.push(archive_close_button);
+        .push(Space::with_width(Length::Fill))
+        .push(refresh_button)
+        .push(Space::with_width(Units(8)))
+        .push(archive_close_button);
 
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
@@ -59,7 +57,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
-         Conversely another user may share with you.  Use the top button to receive shares.",
+         Conversely another user may share with you.  Use the Refresh button to receive shares.",
     );
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
@@ -69,7 +67,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text7 = Text::new(
         "▒ Narrative is displayed in a box:\n\
          • if there is no narrative, a tiny box is seen\n\
-         • clicking on the box will change the narrative to whatever is on your clipboard.",
+         • clicking on the box will change the narrative to whatever is on your clipboard\n\
+         • clicking on the Copy button to the right of it will copy the existing narrative \
+           to your clipboard.",
     );
     let mut help_col = Column::new();
     if slf.archive_doc_open {
@@ -209,11 +209,12 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut share_body = Some(share_body);
 
     let mut count = 0;
-    for (i, y, q, narbut) in izip!(
+    for (i, y, q, narbut, copynarbut) in izip!(
         0..slf.archive_name.len(),
         slf.archive_name.iter_mut(),
         slf.archive_name_change_button.iter_mut(),
-        slf.archive_narrative_button.iter_mut()
+        slf.archive_narrative_button.iter_mut(),
+        slf.copy_archive_narrative_button.iter_mut()
     ) {
         let x = &slf.archive_list[i];
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
@@ -228,7 +229,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let date2 = date.after("-").to_string();
             let mut date = format!("{}-{}", date2, date1);
             let mut time = x.after("___").rev_before(":").to_string();
-            if TEST_MODE.load(SeqCst) {
+            if TEST_MODE.load(SeqCst) || META_TESTING.load(SeqCst) {
                 date = stringme(&vec![b' '; 8]);
                 time = stringme(&vec![b' '; 5]);
             }
@@ -307,9 +308,19 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 }
                 log += &mut rows[i][0].clone();
             }
-            let row = Row::new()
+            let copy_narrative_button = Button::new(
+                copynarbut,
+                Text::new("Copy").color(slf.copy_archive_narrative_button_color[i]),
+            )
+            .on_press(Message::CopyArchiveNarrative(i));
+            let mut row = Row::new()
                 .push(Text::new("    ").font(DEJAVU))
                 .push(Button::new(narbut, Text::new(&log)).on_press(Message::ArchiveNarrative(i)));
+            if slf.archive_narrative[i].len() > 0 {
+                row = row
+                    .push(Space::with_width(Units(8)))
+                    .push(copy_narrative_button);
+            }
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             archive_scrollable = archive_scrollable.push(row);
 

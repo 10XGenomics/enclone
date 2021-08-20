@@ -3,6 +3,7 @@
 use crate::archive::*;
 use crate::help::*;
 use crate::popover::*;
+use crate::testsuite::*;
 use crate::*;
 use chrono::{TimeZone, Utc};
 use enclone_core::version_string;
@@ -105,21 +106,7 @@ pub fn prepare_for_apocalypse_visual() {
 
             // Get messages and shrink.
 
-            let mut messages = Vec::<String>::new();
-            let n = MESSAGE_HISTORY.lock().unwrap().len();
-            for i in 0..n {
-                messages.push(MESSAGE_HISTORY.lock().unwrap()[i].clone());
-            }
-            let mut messages2 = Vec::<String>::new();
-            for i in 0..messages.len() {
-                if i == messages.len() - 1
-                    || !messages[i].starts_with("InputChanged1(")
-                    || !messages[i + 1].starts_with("InputChanged1(")
-                {
-                    messages2.push(messages[i].clone());
-                }
-            }
-            messages = messages2;
+            let mut messages = compressed_message_history();
             let mut messages2 = Vec::<String>::new();
             for i in 0..messages.len() {
                 if i == messages.len() - 1
@@ -164,10 +151,10 @@ pub fn prepare_for_apocalypse_visual() {
             let mut i = 0;
             while i < messages.len() {
                 if i < messages.len() - 1
-                    && messages[i] == "UpdateShares"
-                    && messages[i + 1] == "UpdateSharesComplete(Ok(()))"
+                    && messages[i] == "ArchiveRefresh"
+                    && messages[i + 1] == "ArchiveRefreshComplete(Ok(()))"
                 {
-                    messages2.push("Receive shares button pressed".to_string());
+                    messages2.push("Refresh button pressed".to_string());
                     i += 1;
                 } else {
                     messages2.push(messages[i].clone());
@@ -261,7 +248,7 @@ impl Application for EncloneVisual {
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-        x.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;
@@ -288,6 +275,9 @@ impl Application for EncloneVisual {
             std::process::exit(1);
         }
         x.visual = format!("{}/visual", enclone);
+        if VISUAL_DIR.lock().unwrap().len() > 0 {
+            x.visual = VISUAL_DIR.lock().unwrap()[0].clone();
+        }
         let history = format!("{}/history", x.visual);
         if !path_exists(&history) {
             let res = create_dir_all(&history);
@@ -300,30 +290,29 @@ impl Application for EncloneVisual {
             }
         }
         x.sharing_enabled = REMOTE_SHARE.lock().unwrap().len() > 0;
-        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-            x.archive_dir = Some(VISUAL_HISTORY_DIR.lock().unwrap()[0].clone());
-        } else {
-            x.archive_dir = Some(history.clone());
+        x.archive_dir = Some(history.clone());
 
-            // Read shares.  If the file is corrupted, silently ignore it.
+        // Read shares.  If the file is corrupted, silently ignore it.
 
-            if x.sharing_enabled {
-                let shares = format!("{}/shares", x.visual);
-                if path_exists(&shares) {
-                    let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
-                    let n = std::mem::size_of::<Share>();
-                    if share_size % n == 0 {
-                        let mut bytes = Vec::<u8>::new();
-                        let mut f = File::open(&shares).unwrap();
-                        f.read_to_end(&mut bytes).unwrap();
-                        assert_eq!(bytes.len(), share_size);
-                        unsafe {
-                            x.shares = bytes.align_to::<Share>().1.to_vec();
-                        }
+        if x.sharing_enabled {
+            let shares = format!("{}/shares", x.visual);
+            if path_exists(&shares) {
+                let share_size = std::fs::metadata(&shares).unwrap().len() as usize;
+                let n = std::mem::size_of::<Share>();
+                if share_size % n == 0 {
+                    let mut bytes = Vec::<u8>::new();
+                    let mut f = File::open(&shares).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                    assert_eq!(bytes.len(), share_size);
+                    unsafe {
+                        x.shares = bytes.align_to::<Share>().1.to_vec();
                     }
                 }
             }
         }
+
+        // Keep going.
+
         if x.archive_dir.is_some() {
             let arch_dir = &x.archive_dir.as_ref().unwrap();
             if path_exists(&arch_dir) {
@@ -343,19 +332,26 @@ impl Application for EncloneVisual {
         x.archive_name = vec![iced::text_input::State::default(); n];
         x.archive_name_value = vec![String::new(); n];
         x.archive_name_change_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); n];
+        x.copy_archive_narrative_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); n];
         x.archive_name_change_button = vec![iced::button::State::default(); n];
         x.archive_narrative_button = vec![iced::button::State::default(); n];
+        x.copy_archive_narrative_button = vec![iced::button::State::default(); n];
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
 
-        // Handle test mode.
+        // Handle test and meta modes.
 
-        if !TEST_MODE.load(SeqCst) {
+        if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
             (x, Command::none())
-        } else {
+        } else if !META_TESTING.load(SeqCst) {
             thread::sleep(Duration::from_millis(1000));
             (x, Command::perform(noop(), Message::RunTests))
+        } else {
+            let id = META.load(SeqCst); // id of meta test
+            x.this_meta = metatests()[id].clone();
+            x.meta_pos = 0;
+            (x, Command::perform(noop0(), Message::Meta))
         }
     }
 
@@ -365,8 +361,8 @@ impl Application for EncloneVisual {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
-        self.process_message(message)
+    fn update(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
+        self.process_message(message, clipboard)
     }
 
     /*
@@ -465,6 +461,7 @@ impl Application for EncloneVisual {
 
         // Define the button complex that is the "control panel".
 
+        let command_complex_height;
         let mut command_complex = Row::new().spacing(10);
         {
             const FB_BUTTON_FONT_SIZE: u16 = 45;
@@ -539,6 +536,7 @@ impl Application for EncloneVisual {
             // Add command box.
 
             const MAX_LINE: usize = 35;
+            let mut log_lines = 1;
             let mut log = String::new();
             if self.h.history_index >= 1 {
                 let cmd = self.h.translated_input_hist_uniq
@@ -546,6 +544,7 @@ impl Application for EncloneVisual {
                     .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
+                log_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
                 }
@@ -569,6 +568,7 @@ impl Application for EncloneVisual {
 
             const MAX_NARRATIVE_LINE: usize = 33;
             let mut logx = String::new();
+            let mut logx_lines = 1;
             if self.h.history_index >= 1 {
                 let mut cmd = self.h.narrative_hist_uniq
                     [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
@@ -578,6 +578,7 @@ impl Application for EncloneVisual {
                 }
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_NARRATIVE_LINE);
+                logx_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
                 }
@@ -610,10 +611,14 @@ impl Application for EncloneVisual {
                 .on_press(Message::CommandCopyButtonPressed),
             );
             let mut col = Column::new().spacing(8).align_items(Align::End);
+            const SMALL_FONT: u16 = 12;
+            command_complex_height = ((log_lines + logx_lines) * SMALL_FONT as usize)
+                + (3 * 8)
+                + (2 * COPY_BUTTON_FONT_SIZE as usize);
             col = col.push(
                 Button::new(
                     &mut self.null_button,
-                    Text::new(&log).font(DEJAVU_BOLD).size(12),
+                    Text::new(&log).font(DEJAVU_BOLD).size(SMALL_FONT),
                 )
                 .on_press(Message::DoNothing),
             );
@@ -672,7 +677,9 @@ impl Application for EncloneVisual {
         if self.h.history_index > 0 {
             blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
-        let svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
+        let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
+        // 50 is a fudge factor:
+        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 50);
 
         // Display the SVG.
 

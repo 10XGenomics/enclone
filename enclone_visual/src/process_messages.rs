@@ -10,20 +10,77 @@ use crate::*;
 use chrono::prelude::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
-use iced::{Color, Command};
+use iced::{Clipboard, Color, Command};
 use io_utils::*;
-use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
 
 impl EncloneVisual {
-    pub fn process_message(&mut self, message: Message) -> Command<Message> {
+    pub fn process_message(
+        &mut self,
+        message: Message,
+        clipboard: &mut Clipboard,
+    ) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyArchiveNarrative(i) => {
+                self.copy_archive_narrative_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.archive_narrative[i].as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyArchiveNarrative)
+            }
+
+            Message::CompleteCopyArchiveNarrative(_) => {
+                for i in 0..self.copy_archive_narrative_button_color.len() {
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
+                Command::none()
+            }
+
+            Message::Snap(x) => {
+                capture(&x, self.window_id);
+                Command::none()
+            }
+
+            Message::SetName(x) => {
+                self.save_name = x.to_string();
+                Command::none()
+            }
+
+            Message::Meta(_) => {
+                let mut done = false;
+                for i in self.meta_pos..self.this_meta.len() {
+                    if i == 0 {
+                        self.window_id = get_window_id();
+                    }
+                    self.update(self.this_meta[i].clone(), clipboard);
+                    match self.this_meta[i] {
+                        Message::SetName(_) => {
+                            self.meta_pos = i + 1;
+                            done = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+                }
+                if done {
+                    Command::perform(noop0(), Message::CompleteMeta)
+                } else {
+                    Command::none()
+                }
+            }
+
+            Message::CompleteMeta(_) => {
+                capture(&self.save_name, self.window_id);
+                if self.meta_pos == self.this_meta.len() {
+                    std::process::exit(0);
+                }
+                Command::perform(noop0(), Message::Meta)
+            }
+
             Message::Narrative => {
                 self.modified = true;
                 let copy = get_clipboard_content();
@@ -65,63 +122,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::DoShare(check_val) => {
-                self.do_share = check_val;
-                if !check_val {
-                    self.do_share_complete = false;
-                } else {
-                    let mut recipients = Vec::<String>::new();
-                    for i in 0..self.user_value.len() {
-                        if self.user_valid[i] {
-                            recipients.push(self.user_value[i].clone());
-                        }
-                    }
-                    let mut index = 0;
-                    for i in 0..self.archive_share_requested.len() {
-                        if self.archive_share_requested[i] {
-                            index = i;
-                        }
-                    }
-                    let path = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    if !path_exists(&path) {
-                        xprintln!("could not find path for archive file\n");
-                        std::process::exit(1);
-                    }
-                    let mut content = Vec::<u8>::new();
-                    let f = File::open(&path);
-                    if f.is_err() {
-                        xprintln!("could not open archive file\n");
-                        std::process::exit(1);
-                    }
-                    let mut f = f.unwrap();
-                    let res = f.read_to_end(&mut content);
-                    if res.is_err() {
-                        xprintln!("could not read archive file\n");
-                        std::process::exit(1);
-                    }
-                    SHARE_CONTENT.lock().unwrap().clear();
-                    SHARE_CONTENT.lock().unwrap().push(content);
-                    SHARE_RECIPIENTS.lock().unwrap().clear();
-                    let days = Utc::now().num_days_from_ce();
-                    for i in 0..recipients.len() {
-                        SHARE_RECIPIENTS.lock().unwrap().push(recipients[i].clone());
-                        let mut user_name = [0 as u8; 32];
-                        for j in 0..recipients[i].len() {
-                            user_name[j] = recipients[i].as_bytes()[j];
-                        }
-                        self.shares.push(Share {
-                            days_since_ce: days,
-                            user_id: user_name,
-                        });
-                    }
-                    SENDING_SHARE.store(true, SeqCst);
-                }
-                Command::perform(compute_share(), Message::CompleteDoShare)
-            }
+            Message::DoShare(check_val) => do_share_button_pressed(self, check_val),
 
             Message::CompleteDoShare(_) => {
                 self.do_share_complete = true;
@@ -154,7 +155,11 @@ impl EncloneVisual {
                         self.just_restored = true;
                         self.modified = false;
                     } else {
-                        self.restore_msg[index] = "Oh dear, restoration failed.".to_string();
+                        self.restore_msg[index] = format!(
+                            "Oh dear, restoration of the file {} \
+                            failed.",
+                            filename
+                        );
                     }
                 }
                 Command::none()
@@ -179,16 +184,10 @@ impl EncloneVisual {
                         std::fs::write(&share_file, &share_bytes).unwrap();
                     }
                     if self.save_on_exit {
-                        let dir;
-                        if VISUAL_HISTORY_DIR.lock().unwrap().len() > 0 {
-                            dir = VISUAL_HISTORY_DIR.lock().unwrap()[0].clone();
-                        } else {
-                            dir = format!("{}/history", self.visual);
-                        }
                         let mut now = format!("{:?}", Local::now());
                         now = now.replace("T", "___");
                         now = now.before(".").to_string();
-                        let filename = format!("{}/{}", dir, now);
+                        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
                         let res = write_enclone_visual_history(&self.h, &filename);
                         if res.is_err() {
                             xprintln!(
@@ -199,6 +198,14 @@ impl EncloneVisual {
                             std::process::exit(1);
                         }
                     }
+                    if PLAYBACK.load(SeqCst) {
+                        println!("message history:\n");
+                        let messages = compressed_message_history();
+                        for i in 0..messages.len() {
+                            println!("[{}] {}", i + 1, messages[i]);
+                        }
+                    }
+                    println!("");
                     std::process::exit(0);
                 }
                 Command::none()
@@ -523,34 +530,21 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::UpdateShares => {
+            Message::ArchiveRefresh => {
                 self.share_start = Some(Instant::now());
-                self.receive_shares_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                Command::perform(noop(), Message::UpdateSharesComplete)
+                self.archive_refresh_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop(), Message::ArchiveRefreshComplete)
             }
 
-            Message::UpdateSharesComplete(_) => {
+            Message::ArchiveRefreshComplete(_) => {
                 update_shares(self);
                 let n = self.archive_name.len();
-                for i in 0..n {
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let (command_list, name, origin, narrative) = read_metadata(&path).unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
                 self.orig_archive_name = self.archive_name_value.clone();
                 self.h.orig_name_value = self.h.name_value.clone();
-                self.receive_shares_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                self.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
 
                 // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
-                // keeps the "Receive shares" button red for at least that amount of time.
+                // keeps the Refresh button red for at least that amount of time.
 
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.share_start.unwrap());
@@ -558,20 +552,7 @@ impl EncloneVisual {
                     let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
                     thread::sleep(Duration::from_millis(ms));
                 }
-
-                Command::none()
-            }
-
-            Message::ArchiveOpen(_) => {
-                self.archive_mode = true;
-                if self.sharing_enabled {
-                    update_shares(self);
-                }
-                let n = self.archive_name.len();
                 for i in 0..n {
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
                     if self.archived_command_list[i].is_none() {
                         let x = &self.archive_list[i];
                         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
@@ -591,8 +572,31 @@ impl EncloneVisual {
                         self.archive_narrative[i] = narrative;
                     }
                 }
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
+                self.do_share = false;
+                self.do_share_complete = false;
+                self.user.clear();
+                self.user_value.clear();
+                self.user_selected.clear();
+                self.user_valid.clear();
+                for i in 0..self.archive_share_requested.len() {
+                    self.archive_share_requested[i] = false;
+                }
+                for i in 0..self.expand_archive_entry.len() {
+                    self.expand_archive_entry[i] = false;
+                }
+                for i in 0..self.restore_msg.len() {
+                    self.restore_msg[i].clear();
+                    self.restore_requested[i] = false;
+                    if self.delete_requested[i] {
+                        self.deleted[i] = true;
+                    }
+                }
+                self.just_restored = false;
+                for i in 0..n {
+                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -626,6 +630,43 @@ impl EncloneVisual {
                 }
                 self.just_restored = false;
                 Command::none()
+            }
+
+            Message::ArchiveOpen(_) => {
+                self.archive_mode = true;
+                update_shares(self);
+                let n = self.archive_name.len();
+                for i in 0..n {
+                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                    // This is a dorky way of causing loading of command lists, etc. from disk
+                    // occurs just once per session, and only if the archive button is pushed.
+                    if self.archived_command_list[i].is_none() {
+                        let x = &self.archive_list[i];
+                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
+                        let res = read_metadata(&path);
+                        if res.is_err() {
+                            panic!(
+                                "Unable to read the history file at\n{}\n\
+                                This could either be a bug in enclone or it could be that \
+                                the file is corrupted.\n",
+                                path,
+                            );
+                        }
+                        let (command_list, name, origin, narrative) = res.unwrap();
+                        self.archived_command_list[i] = Some(command_list);
+                        self.archive_name_value[i] = name;
+                        self.archive_origin[i] = origin;
+                        self.archive_narrative[i] = narrative;
+                    }
+                }
+                self.orig_archive_name = self.archive_name_value.clone();
+                self.h.orig_name_value = self.h.name_value.clone();
+                if !TEST_MODE.load(SeqCst) {
+                    Command::none()
+                } else {
+                    Command::perform(noop1(), Message::Capture)
+                }
             }
 
             Message::SaveOnExit => {
@@ -884,7 +925,7 @@ impl EncloneVisual {
                 }
                 let count = COUNT.load(SeqCst);
                 if count >= 1 {
-                    capture(count, self.window_id);
+                    capture(&TESTS[count - 1].2, self.window_id);
                 }
                 Command::perform(noop0(), Message::RunTests)
             }
