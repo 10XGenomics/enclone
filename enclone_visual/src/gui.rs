@@ -461,6 +461,7 @@ impl Application for EncloneVisual {
 
         // Define the button complex that is the "control panel".
 
+        let command_complex_height;
         let mut command_complex = Row::new().spacing(10);
         {
             const FB_BUTTON_FONT_SIZE: u16 = 45;
@@ -535,6 +536,7 @@ impl Application for EncloneVisual {
             // Add command box.
 
             const MAX_LINE: usize = 35;
+            let mut log_lines = 1;
             let mut log = String::new();
             if self.h.history_index >= 1 {
                 let cmd = self.h.translated_input_hist_uniq
@@ -542,6 +544,7 @@ impl Application for EncloneVisual {
                     .clone();
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_LINE);
+                log_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
                 }
@@ -565,6 +568,7 @@ impl Application for EncloneVisual {
 
             const MAX_NARRATIVE_LINE: usize = 33;
             let mut logx = String::new();
+            let mut logx_lines = 1;
             if self.h.history_index >= 1 {
                 let mut cmd = self.h.narrative_hist_uniq
                     [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
@@ -574,6 +578,7 @@ impl Application for EncloneVisual {
                 }
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_NARRATIVE_LINE);
+                logx_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
                 }
@@ -606,10 +611,14 @@ impl Application for EncloneVisual {
                 .on_press(Message::CommandCopyButtonPressed),
             );
             let mut col = Column::new().spacing(8).align_items(Align::End);
+            const SMALL_FONT: u16 = 12;
+            command_complex_height = ((log_lines + logx_lines) * SMALL_FONT as usize)
+                + (3 * 8)
+                + (2 * COPY_BUTTON_FONT_SIZE as usize);
             col = col.push(
                 Button::new(
                     &mut self.null_button,
-                    Text::new(&log).font(DEJAVU_BOLD).size(12),
+                    Text::new(&log).font(DEJAVU_BOLD).size(SMALL_FONT),
                 )
                 .on_press(Message::DoNothing),
             );
@@ -668,7 +677,9 @@ impl Application for EncloneVisual {
         if self.h.history_index > 0 {
             blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
-        let svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
+        let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
+        // 50 is a fudge factor:
+        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 50);
 
         // Display the SVG.
 
