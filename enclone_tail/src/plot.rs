@@ -69,13 +69,28 @@ pub fn plot_clonotypes(
             region names.  If this is a problem, please let us know and we will generalize it.\n"
         ));
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<(usize, String)>)>::new();
-    let mut radii = Vec::<f64>::new();
-    const SEP: f64 = 1.0; // separation between clusters
+
+    // Get origins.
+
     let mut origins = Vec::<String>::new();
+    for i in 0..exacts.len() {
+        for j in 0..exacts[i].len() {
+            let ex = &exact_clonotypes[exacts[i][j]];
+            for k in 0..ex.clones.len() {
+                if ex.clones[k][0].origin_index.is_some() {
+                    let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
+                    origins.push(s.clone());
+                }
+            }
+        }
+    }
+    unique_sort(&mut origins);
 
     // Traverse the clonotypes, building one cluster for each.
 
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<(usize, String)>)>::new();
+    let mut radii = Vec::<f64>::new();
+    const SEP: f64 = 1.0; // separation between clusters
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
@@ -111,14 +126,6 @@ pub fn plot_clonotypes(
                     ex.clones[k][0].dataset_index,
                     ex.clones[k][0].barcode.clone(),
                 ));
-                if plot_opt.plot_by_isotype {
-                } else if plot_opt.plot_by_mark {
-                } else {
-                    if ex.clones[k][0].origin_index.is_some() {
-                        let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
-                        origins.push(s.clone());
-                    }
-                }
                 let color = assign_cell_color(
                     &ctl,
                     &plot_opt,
@@ -159,7 +166,6 @@ pub fn plot_clonotypes(
         clusters.push((colors, coords, i, barcodes));
         radii.push(radius);
     }
-    unique_sort(&mut origins);
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
     // Note that CLONOTYPE_GROUP_NAMES is probably broken now.
