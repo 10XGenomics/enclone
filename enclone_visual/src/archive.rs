@@ -57,7 +57,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
-         Conversely another user may share with you.  Use the top button to receive shares.",
+         Conversely another user may share with you.  Use the Refresh button to receive shares.",
     );
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
