@@ -88,8 +88,13 @@ pub fn plot_clonotypes(
 
     // Traverse the clonotypes, building one cluster for each.
 
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<(usize, String)>)>::new();
-    let mut radii = Vec::<f64>::new();
+    let mut clusters = Vec::<(
+        Vec<String>,
+        Vec<(f64, f64)>,
+        usize,
+        Vec<(usize, String)>,
+        f64,
+    )>::new();
     const SEP: f64 = 1.0; // separation between clusters
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
@@ -163,8 +168,11 @@ pub fn plot_clonotypes(
                 radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
         }
         radius += SEP;
-        clusters.push((colors, coords, i, barcodes));
-        radii.push(radius);
+        clusters.push((colors, coords, i, barcodes, radius));
+    }
+    let mut radii = Vec::<f64>::new();
+    for i in 0..clusters.len() {
+        radii.push(clusters[i].4);
     }
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
