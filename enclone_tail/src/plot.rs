@@ -74,7 +74,7 @@ pub fn plot_clonotypes(
     const SEP: f64 = 1.0; // separation between clusters
     let mut origins = Vec::<String>::new();
 
-    // Go through the clonotypes.
+    // Traverse the clonotypes, building one cluster for each.
 
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
@@ -136,7 +136,6 @@ pub fn plot_clonotypes(
                 n += 1;
             }
         }
-        unique_sort(&mut origins);
 
         // Move colors around to get vertical separation, e.g. blues on left, reds on right.
 
@@ -160,6 +159,7 @@ pub fn plot_clonotypes(
         clusters.push((colors, coords, i, barcodes));
         radii.push(radius);
     }
+    unique_sort(&mut origins);
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
     // Note that CLONOTYPE_GROUP_NAMES is probably broken now.
