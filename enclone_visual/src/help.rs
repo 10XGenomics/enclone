@@ -254,7 +254,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "If you've displayed a honeycomb plot (see cookbook for examples), \
             then positioning your mouse over a cell will cause a box to appear that \
-            provides some information about that cell.",
+            provides some information about that cell.  This also causes the boxes on the \
+            right to temporarily disappear.",
             )
             .width(max_width),
         )
