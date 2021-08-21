@@ -129,15 +129,18 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     let message = match button {
                         mouse::Button::Left => {
                             let g = self.state.geometry_value.as_ref().unwrap();
-                            let (_width, height) = self.dimensions();
-                            let mut scale = 1.0;
+                            let (width, height) = self.dimensions();
                             let mut max_height = SVG_HEIGHT as f32;
                             if g.len() == 1 {
                                 max_height = SVG_NULL_HEIGHT as f32;
                             }
+                            const MAX_WIDTH: f32 = 530.0;
                             max_height -= 5.0;
-                            if height > max_height {
-                                scale = max_height / height;
+                            let scale_x = MAX_WIDTH / width;
+                            let scale_y = max_height / height;
+                            let mut scale = scale_y;
+                            if scale_x < scale_y {
+                                scale = scale_x;
                             }
                             let mut group_id = None;
                             let pos = cursor.position_in(&bounds);
@@ -253,14 +256,17 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
         let g = self.state.geometry_value.as_ref().unwrap();
         let (width, height) = self.dimensions();
-        let mut scale = 1.0;
         let mut max_height = SVG_HEIGHT as f32;
         if g.len() == 1 {
             max_height = SVG_NULL_HEIGHT as f32;
         }
+        const MAX_WIDTH: f32 = 530.0;
         max_height -= 5.0;
-        if height > max_height {
-            scale = max_height / height;
+        let scale_x = MAX_WIDTH / width;
+        let scale_y = max_height / height;
+        let mut scale = scale_y;
+        if scale_x < scale_y {
+            scale = scale_x;
         }
 
         // Rebuild geometries if needed.
