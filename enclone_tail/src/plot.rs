@@ -251,10 +251,8 @@ pub fn plot_clonotypes(
                 let mut indices = Vec::<usize>::new();
                 for i in 0..radiix.len() {
                     let li = clusters[i].barcodes[0].0;
-                    let p = bin_position(
-                        &ctl.origin_info.origin_list,
-                        &ctl.origin_info.origin_id[li],
-                    );
+                    let p =
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
                     if pass != p as usize {
                         continue;
                     }
