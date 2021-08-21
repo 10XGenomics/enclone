@@ -260,15 +260,20 @@ pub fn plot_clonotypes(
                     indices.push(i);
                 }
                 let centersy = pack_circles(&radiiy, &blacklist, plot_opt.plot_quad);
+                let mut left = 0.0_f64;
+                for j in 0..centersy.len() {
+                    left = left.max(-centersy[j].0 + radiiy[j]);
+                }
+                xstart += left;
                 for j in 0..centersy.len() {
                     centersx[indices[j]] = (centersy[j].0 + xstart, centersy[j].1);
                 }
-                let mut width = 0.0_f64;
+                let mut right = 0.0_f64;
                 for j in 0..centersy.len() {
-                    width = width.max(centersy[j].0 + radiiy[0]);
+                    right = right.max(centersy[j].0 + radiiy[j]);
                 }
                 const HSEP: f64 = 10.0;
-                xstart += width + HSEP;
+                xstart += right + HSEP;
             }
         } else {
             centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
