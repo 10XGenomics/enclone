@@ -38,10 +38,10 @@ pub fn build_clusters(
             let mut coords = Vec::<(f64, f64)>::new();
             let mut barcodes = Vec::<(usize, String)>::new();
             let mut n = 0;
-    
+
             // For PLOT_BY_MARK, find the dataset having the largest number of cells.
             // Ignoring SPLIT_PLOT_BY_ORIGIN.
-    
+
             let mut dsx = 0;
             if plot_opt.plot_by_mark {
                 let mut ds = Vec::<usize>::new();
@@ -56,20 +56,20 @@ pub fn build_clusters(
                 make_freq(&ds, &mut freq);
                 dsx = freq[0].1;
             }
-    
+
             // Go through the exact subclonotypes in a clonotype.
-    
+
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
-    
+
                 // Traverse the cells in the exact subclonotype.
-    
+
                 for k in 0..ex.clones.len() {
                     if passes > 1 {
                         let li = ex.clones[k][0].dataset_index;
                         let p = bin_position(
                             &ctl.origin_info.origin_list,
-                            &ctl.origin_info.origin_id[li]
+                            &ctl.origin_info.origin_id[li],
                         );
                         if pass != p as usize {
                             continue;
@@ -96,24 +96,24 @@ pub fn build_clusters(
                     n += 1;
                 }
             }
-    
+
             // Move colors around to get vertical separation, e.g. blues on left, reds on right.
-    
+
             coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
             sort_sync2(&mut colors, &mut barcodes);
-    
+
             // Substitute enclone colors.
-    
+
             for j in 0..colors.len() {
                 substitute_enclone_color(&mut colors[j]);
             }
-    
+
             // Save.
-    
+
             let mut radius = 0.0f64;
             for j in 0..coords.len() {
-                radius =
-                    radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
+                radius = radius
+                    .max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
             }
             radius += SEP;
             clusters.push(PlotCluster {
