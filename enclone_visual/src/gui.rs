@@ -339,6 +339,7 @@ impl Application for EncloneVisual {
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
+        x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
 
         // Handle test and meta modes.
 
@@ -569,12 +570,15 @@ impl Application for EncloneVisual {
             const MAX_NARRATIVE_LINE: usize = 33;
             let mut logx = String::new();
             let mut logx_lines = 1;
+            let mut have_narrative = false;
             if self.h.history_index >= 1 {
                 let mut cmd = self.h.narrative_hist_uniq
                     [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
                     .clone();
                 if cmd.len() == 0 {
                     cmd = "Narrative: click to paste in clipboard".to_string();
+                } else {
+                    have_narrative = true;
                 }
                 let mut rows = Vec::<Vec<String>>::new();
                 let folds = fold(&cmd, MAX_NARRATIVE_LINE);
@@ -595,6 +599,12 @@ impl Application for EncloneVisual {
             )
             .on_press(Message::Narrative);
 
+            let copy_narrative_button = Button::new(
+                &mut self.copy_narrative_button,
+                Text::new("Copy").size(COPY_BUTTON_FONT_SIZE).color(self.copy_narrative_button_color),
+            )
+            .on_press(Message::CopyNarrative);
+
             // Build the command column.
 
             let mut row = Row::new().spacing(8);
@@ -612,8 +622,8 @@ impl Application for EncloneVisual {
             );
             let mut col = Column::new().spacing(8).align_items(Align::End);
             const SMALL_FONT: u16 = 12;
-            command_complex_height = ((log_lines + logx_lines) * SMALL_FONT as usize)
-                + (3 * 8)
+            command_complex_height = ((1 + log_lines + logx_lines) * SMALL_FONT as usize)
+                + (4 * 8)
                 + (2 * COPY_BUTTON_FONT_SIZE as usize);
             col = col.push(
                 Button::new(
@@ -625,6 +635,9 @@ impl Application for EncloneVisual {
             col = col.push(row);
             col = col.push(summary_button);
             col = col.push(narrative_button);
+            if have_narrative {
+                col = col.push(copy_narrative_button);
+            }
 
             // Add the command column to the row.
 

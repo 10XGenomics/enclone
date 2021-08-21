@@ -105,6 +105,7 @@ pub struct EncloneVisual {
     pub archive_narrative_button: Vec<button::State>,
     pub copy_archive_narrative_button: Vec<button::State>,
     pub narrative_button: button::State,
+    pub copy_narrative_button: button::State,
     pub this_meta: Vec<Message>,
     pub save_name: String,
     //
@@ -135,6 +136,7 @@ pub struct EncloneVisual {
     pub share_start: Option<Instant>,
     pub archive_name_change_button_color: Vec<Color>,
     pub copy_archive_narrative_button_color: Vec<Color>,
+    pub copy_narrative_button_color: Color,
     //
     // users for sharing
     //

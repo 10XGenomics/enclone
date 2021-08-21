@@ -58,4 +58,6 @@ pub enum Message {
     CompleteMeta(Result<(), String>),
     Snap(&'static str),
     SetName(&'static str),
+    CopyNarrative,
+    CompleteCopyNarrative(Result<(), String>),
 }
