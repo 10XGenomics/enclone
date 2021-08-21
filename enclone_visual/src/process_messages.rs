@@ -119,7 +119,7 @@ impl EncloneVisual {
                     let res = rewrite_narrative(&filename, &copy);
                     if res.is_err() {
                         xprintln!(
-                        "\nSomething went wrong changing the narrative of\n{}\n\
+                            "\nSomething went wrong changing the narrative of\n{}\n\
                             Possibly the file has been corrupted.\n",
                             filename,
                         );

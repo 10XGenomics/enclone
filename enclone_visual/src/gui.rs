@@ -601,7 +601,9 @@ impl Application for EncloneVisual {
 
             let copy_narrative_button = Button::new(
                 &mut self.copy_narrative_button,
-                Text::new("Copy").size(COPY_BUTTON_FONT_SIZE).color(self.copy_narrative_button_color),
+                Text::new("Copy")
+                    .size(COPY_BUTTON_FONT_SIZE)
+                    .color(self.copy_narrative_button_color),
             )
             .on_press(Message::CopyNarrative);
 

@@ -120,7 +120,7 @@ fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
     const MAX_WIDTH: f32 = 770.0;
     max_height -= 5.0;
     let scale_x = MAX_WIDTH / width;
-                            let scale_y = max_height / height;
+    let scale_y = max_height / height;
     let mut scale = scale_y;
     if scale_x < scale_y {
         scale = scale_x;
