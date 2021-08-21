@@ -110,19 +110,21 @@ pub fn build_clusters(
 
             // Save.
 
-            let mut radius = 0.0f64;
-            for j in 0..coords.len() {
-                radius = radius
-                    .max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
+            if !barcodes.is_empty() {
+                let mut radius = 0.0f64;
+                for j in 0..coords.len() {
+                    radius = radius
+                        .max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
+                }
+                radius += SEP;
+                clusters.push(PlotCluster {
+                    colors: colors,
+                    coords: coords,
+                    clonotype_index: i,
+                    barcodes: barcodes,
+                    radius: radius,
+                });
             }
-            radius += SEP;
-            clusters.push(PlotCluster {
-                colors: colors,
-                coords: coords,
-                clonotype_index: i,
-                barcodes: barcodes,
-                radius: radius,
-            });
         }
     }
     clusters

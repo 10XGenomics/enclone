@@ -241,7 +241,40 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
+        let mut centersx;
+        if plot_opt.split_plot_by_origin {
+            centersx = vec![(0.0, 0.0); radiix.len()];
+            let passes = ctl.origin_info.origin_list.len();
+            let mut xstart = 0.0;
+            for pass in 0..passes {
+                let mut radiiy = Vec::<f64>::new();
+                let mut indices = Vec::<usize>::new();
+                for i in 0..radiix.len() {
+                    let li = clusters[i].barcodes[0].0;
+                    let p = bin_position(
+                        &ctl.origin_info.origin_list,
+                        &ctl.origin_info.origin_id[li],
+                    );
+                    if pass != p as usize {
+                        continue;
+                    }
+                    radiiy.push(radiix[i]);
+                    indices.push(i);
+                }
+                let centersy = pack_circles(&radiiy, &blacklist, plot_opt.plot_quad);
+                for j in 0..centersy.len() {
+                    centersx[indices[j]] = (centersy[j].0 + xstart, centersy[j].1);
+                }
+                let mut width = 0.0_f64;
+                for j in 0..centersy.len() {
+                    width = width.max(centersy[j].0 + radiiy[0]);
+                }
+                const HSEP: f64 = 10.0;
+                xstart += width + HSEP;
+            }
+        } else {
+            centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
+        }
         for i in 0..ids.len() {
             centers[ids[i]] = centersx[i];
         }
