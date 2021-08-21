@@ -377,13 +377,17 @@ impl EncloneVisual {
             }
 
             Message::GroupClicked(_message) => {
-                self.modified = true;
-                let group_id = GROUP_ID.load(SeqCst);
-                self.input_value = format!("{}", group_id);
-                self.input1_value = format!("{}", group_id);
-                self.input2_value.clear();
-                GROUP_ID_CLICKED_ON.store(false, SeqCst);
-                Command::perform(noop0(), Message::SubmitButtonPressed)
+                if GROUP_ID_CLICKED_ON.load(SeqCst) {
+                    self.modified = true;
+                    let group_id = GROUP_ID.load(SeqCst);
+                    self.input_value = format!("{}", group_id);
+                    self.input1_value = format!("{}", group_id);
+                    self.input2_value.clear();
+                    GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                    Command::perform(noop0(), Message::SubmitButtonPressed)
+                } else {
+                    Command::none()
+                }
             }
 
             Message::SubmitButtonPressed(_) => submit_button_pressed(self),

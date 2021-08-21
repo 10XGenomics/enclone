@@ -712,7 +712,9 @@ impl Application for EncloneVisual {
                 graphic_row = graphic_row.push(Space::with_width(Length::Fill));
             }
 
-            graphic_row = graphic_row.push(command_complex);
+            if !have_canvas || !TOOLTIP_BEING_DISPLAYED.load(SeqCst) {
+                graphic_row = graphic_row.push(command_complex);
+            }
         }
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

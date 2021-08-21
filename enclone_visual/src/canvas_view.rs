@@ -40,6 +40,7 @@ pub struct CanvasView {
 
 #[derive(Debug, Clone)]
 pub enum Message {
+    DoNothing,
     GroupClick,
 }
 
@@ -116,7 +117,7 @@ fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
     if empty {
         max_height = SVG_NULL_HEIGHT as f32;
     }
-    const MAX_WIDTH: f32 = 530.0;
+    const MAX_WIDTH: f32 = 770.0;
     max_height -= 5.0;
     let scale_x = MAX_WIDTH / width;
                             let scale_y = max_height / height;
@@ -182,7 +183,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     };
                     (event::Status::Captured, message)
                 }
-                _ => (event::Status::Captured, None),
+                _ => (event::Status::Captured, Some(Message::DoNothing)),
             },
             _ => (event::Status::Captured, None),
         }
@@ -386,6 +387,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
         }
         if !pos_same && pos.is_some() {
             let mut frame = Frame::new(bounds.size());
+            let mut tooltip_being_displayed = false;
             for i in 0..g.len() {
                 match &g[i] {
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
@@ -409,6 +411,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             print_tabular_vbox(&mut log, &rows, 0, &b"l|r".to_vec(), false, true);
                             let xpos = 15.0 + width * scale;
                             frame.translate(Vector { x: xpos, y: 0.0 });
+
                             let text = canvas::Text {
                                 content: log,
                                 size: 13.5,
@@ -418,12 +421,14 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             };
                             frame.fill_text(text);
                             frame.translate(Vector { x: -xpos, y: -10.0 });
+                            tooltip_being_displayed = true;
                             break;
                         }
                     }
                     _ => {}
                 };
             }
+            TOOLTIP_BEING_DISPLAYED.store(tooltip_being_displayed, SeqCst);
             let mut w = vec![frame.into_geometry()];
             OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clear();
             OUT_GEOMETRIES_TOOLTIP
