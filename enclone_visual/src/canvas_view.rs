@@ -183,7 +183,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     };
                     (event::Status::Captured, message)
                 }
-                _ => (event::Status::Captured, Some(Message::DoNothing)),
+                _ => (event::Status::Captured, None),
             },
             _ => (event::Status::Captured, None),
         }
@@ -387,7 +387,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
         }
         if !pos_same && pos.is_some() {
             let mut frame = Frame::new(bounds.size());
-            let mut tooltip_being_displayed = false;
             for i in 0..g.len() {
                 match &g[i] {
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
@@ -412,23 +411,40 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let xpos = 15.0 + width * scale;
                             frame.translate(Vector { x: xpos, y: 0.0 });
 
+                            let mut logp = String::new();
+                            for char in log.chars() {
+                                if char == '\n' {
+                                    logp.push(char);
+                                } else {
+                                    logp.push('█');
+                                }
+                            }
+
+                            let text = canvas::Text {
+                                content: logp,
+                                size: 13.5,
+                                font: DEJAVU,
+                                color: Color::from_rgb(0.0, 0.0, 0.0),
+                                ..canvas::Text::default()
+                            };
+                            frame.fill_text(text);
+
                             let text = canvas::Text {
                                 content: log,
                                 size: 13.5,
                                 font: DEJAVU,
-                                color: Color::from_rgb(0.5, 0.3, 0.3),
+                                color: Color::from_rgb(1.0, 1.0, 1.0),
                                 ..canvas::Text::default()
                             };
                             frame.fill_text(text);
+
                             frame.translate(Vector { x: -xpos, y: -10.0 });
-                            tooltip_being_displayed = true;
                             break;
                         }
                     }
                     _ => {}
                 };
             }
-            TOOLTIP_BEING_DISPLAYED.store(tooltip_being_displayed, SeqCst);
             let mut w = vec![frame.into_geometry()];
             OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clear();
             OUT_GEOMETRIES_TOOLTIP
