@@ -65,7 +65,7 @@ NICE TO HAVE
 
 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
 
-5.  Add scale slider for plots.
+5.  Add scale slider for plots, and/or zooming.
 
 6.  Make "enclone help ..." work.
 
@@ -78,8 +78,6 @@ NICE TO HAVE
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
 
-10. Implement sharing of archives in enclone visual.
-
-11. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
+10. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
 a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
 to have something to do with using cfg! macros.
