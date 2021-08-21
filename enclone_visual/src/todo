@@ -49,6 +49,9 @@ WAITING ON ICED
 8.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
+9.  When the tooltip box is live, instead of disappearing the control panel, have the tooltip
+    box appear on top of it.
+
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
