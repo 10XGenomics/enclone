@@ -82,7 +82,7 @@ pub fn compressed_message_history() -> Vec<String> {
 // there are compilation issues when compiled for Linux via GitHub Actions.
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub fn get_clipboard_content() -> String {
+pub fn get_clipboard_content() -> Option<String> {
     let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
     if ctx.is_err() {
         xprintln!("\nSomething went wrong accessing clipboard.");
@@ -92,15 +92,14 @@ pub fn get_clipboard_content() -> String {
     let mut ctx = ctx.unwrap();
     let copy = ctx.get_contents();
     if copy.is_err() {
-        xprintln!("\nSomething went wrong copying from clipboard.");
-        xprintln!("This is weird so please ask for help.");
-        std::process::exit(1);
+        None
+    } else {
+        Some(format!("{}", ctx.get_contents().unwrap()))
     }
-    format!("{}", ctx.get_contents().unwrap())
 }
 
 #[cfg(target_os = "linux")]
-pub fn get_clipboard_content() -> String {
+pub fn get_clipboard_content() -> Option<String> {
     String::new()
 }
 

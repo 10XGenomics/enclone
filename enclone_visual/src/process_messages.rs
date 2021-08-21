@@ -84,30 +84,36 @@ impl EncloneVisual {
             Message::Narrative => {
                 self.modified = true;
                 let copy = get_clipboard_content();
-                self.narrative_value = copy.clone();
-                let len = self.h.narrative_hist_uniq.len();
-                self.h.narrative_hist_uniq.push(copy);
-                self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    self.narrative_value = copy.clone();
+                    let len = self.h.narrative_hist_uniq.len();
+                    self.h.narrative_hist_uniq.push(copy);
+                    self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                }
                 Command::none()
             }
 
             Message::ArchiveNarrative(i) => {
                 self.modified = true;
                 let copy = get_clipboard_content();
-                self.archive_narrative[i] = copy.clone();
-                let filename = format!(
-                    "{}/{}",
-                    self.archive_dir.as_ref().unwrap(),
-                    &self.archive_list[i]
-                );
-                let res = rewrite_narrative(&filename, &copy);
-                if res.is_err() {
-                    xprintln!(
-                        "\nSomething went wrong changing the narrative of\n{}\n\
-                        Possibly the file has been corrupted.\n",
-                        filename,
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    self.archive_narrative[i] = copy.clone();
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        &self.archive_list[i]
                     );
-                    std::process::exit(1);
+                    let res = rewrite_narrative(&filename, &copy);
+                    if res.is_err() {
+                        xprintln!(
+                        "\nSomething went wrong changing the narrative of\n{}\n\
+                            Possibly the file has been corrupted.\n",
+                            filename,
+                        );
+                        std::process::exit(1);
+                    }
                 }
                 Command::none()
             }
