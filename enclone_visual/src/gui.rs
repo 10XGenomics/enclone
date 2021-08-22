@@ -595,7 +595,10 @@ impl Application for EncloneVisual {
             }
             let narrative_button = Button::new(
                 &mut self.narrative_button,
-                Text::new(&logx).font(DEJAVU_BOLD).size(12).color(Color::from_rgb(1.0, 0.0, 0.5)),
+                Text::new(&logx)
+                    .font(DEJAVU_BOLD)
+                    .size(12)
+                    .color(Color::from_rgb(1.0, 0.0, 0.5)),
             )
             .on_press(Message::Narrative);
 

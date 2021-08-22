@@ -849,7 +849,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 23] = [
+pub const SITE_EXAMPLES: [(&str, &str); 24] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -982,6 +982,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 23] = [
         "img/sim_mat_plot.svg",
         "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
          NOPRINT H5",
+    ),
+    // 24.
+    (
+        "img/twin_plot.svg",
+        "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout SPLIT_PLOT_BY_ORIGIN NOPRINT H5",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
