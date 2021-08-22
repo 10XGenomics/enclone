@@ -696,8 +696,8 @@ impl Application for EncloneVisual {
             blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
         let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
-        // 50 is a fudge factor:
-        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 50);
+        // 60 is a fudge factor:
+        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 60);
 
         // Display the SVG.
 
