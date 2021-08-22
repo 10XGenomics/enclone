@@ -295,7 +295,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
             // Show narrative.
 
-            const MAX_LINE: usize = 120;
+            const MAX_LINE: usize = 118;
             let mut log = String::new();
             let mut rows = Vec::<Vec<String>>::new();
             let folds = fold(&slf.archive_narrative[i], MAX_LINE);
