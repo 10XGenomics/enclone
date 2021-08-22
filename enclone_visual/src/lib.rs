@@ -100,7 +100,7 @@ pub fn get_clipboard_content() -> Option<String> {
 
 #[cfg(target_os = "linux")]
 pub fn get_clipboard_content() -> Option<String> {
-    String::new()
+    None
 }
 
 pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
