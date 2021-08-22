@@ -81,3 +81,7 @@ NICE TO HAVE
 10. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
 a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
 to have something to do with using cfg! macros.
+
+11. Provide a mechanism for recomputing a session, i.e. rerunning all the enclone commands.
+This would be useful in particular for cookbooks, where the displayed outputs might lag actual
+enclone behavior.
