@@ -267,38 +267,45 @@ pub fn get_window_id() -> usize {
     m.after("id=").force_usize()
 }
 
-pub fn fold(line: &str, max_line: usize) -> Vec<String> {
+pub fn fold(all: &str, max_line: usize) -> Vec<String> {
     let mut pieces = Vec::<String>::new();
-    let words = line.split(' ').collect::<Vec<&str>>();
-    let mut current = String::new();
-    let mut i = 0;
-    while i < words.len() {
-        if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
-            pieces.push(current.clone());
-            current.clear();
-            i -= 1;
-        } else if words[i].len() >= max_line {
-            let mut w = words[i].as_bytes().to_vec();
-            loop {
-                let n = std::cmp::min(max_line, w.len());
-                let sub = stringme(&w[0..n]);
-                if n < w.len() {
-                    pieces.push(sub);
-                    w = w[n..w.len()].to_vec();
-                } else {
-                    current = stringme(&w);
-                    break;
-                }
-            }
-        } else if current.len() == 0 {
-            current += &mut words[i].clone();
+    let lines = all.split('\n').collect::<Vec<&str>>();
+    for line in lines.iter() {
+        if line.len() == 0 {
+            pieces.push(String::new());
         } else {
-            current += &mut format!(" {}", words[i]);
+            let words = line.split(' ').collect::<Vec<&str>>();
+            let mut current = String::new();
+            let mut i = 0;
+            while i < words.len() {
+                if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
+                    pieces.push(current.clone());
+                    current.clear();
+                    i -= 1;
+                } else if words[i].len() >= max_line {
+                    let mut w = words[i].as_bytes().to_vec();
+                    loop {
+                        let n = std::cmp::min(max_line, w.len());
+                        let sub = stringme(&w[0..n]);
+                        if n < w.len() {
+                            pieces.push(sub);
+                            w = w[n..w.len()].to_vec();
+                        } else {
+                            current = stringme(&w);
+                            break;
+                        }
+                    }
+                } else if current.len() == 0 {
+                    current += &mut words[i].clone();
+                } else {
+                    current += &mut format!(" {}", words[i]);
+                }
+                i += 1;
+            }
+            if current.len() > 0 {
+                pieces.push(current);
+            }
         }
-        i += 1;
-    }
-    if current.len() > 0 {
-        pieces.push(current);
     }
     pieces
 }
