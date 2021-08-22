@@ -54,6 +54,47 @@ pub struct EncloneVisualHistory {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// clean: remove unused elements of hist_uniq vectors
+
+pub fn clean<T: Clone>(hist_uniq: &mut Vec<T>, history: &mut Vec<u32>) {
+    let mut used = vec![false; hist_uniq.len()];
+    for i in 0..history.len() {
+        used[history[i] as usize] = true;
+    }
+    let mut to_new = vec![0; hist_uniq.len()];
+    let mut j = 0;
+    for i in 0..hist_uniq.len() {
+        if used[i] {
+            if i != j {
+                hist_uniq[j] = hist_uniq[i].clone();
+            }
+            to_new[i] = j;
+            j += 1;
+        }
+    }
+    hist_uniq.truncate(j);
+    for i in 0..history.len() {
+        history[i] = to_new[i] as u32;
+    }
+}
+
+impl EncloneVisualHistory {
+    pub fn clean(&mut self) {
+        clean(&mut self.svg_hist_uniq, &mut self.svg_history);
+        clean(&mut self.summary_hist_uniq, &mut self.summary_history);
+        clean(&mut self.input1_hist_uniq, &mut self.input1_history);
+        clean(&mut self.input2_hist_uniq, &mut self.input2_history);
+        clean(&mut self.narrative_hist_uniq, &mut self.narrative_history);
+        clean(&mut self.translated_input_hist_uniq, &mut self.translated_input_history);
+        clean(&mut self.displayed_tables_hist_uniq, &mut self.displayed_tables_history);
+        clean(&mut self.table_comp_hist_uniq, &mut self.table_comp_history);
+        clean(&mut self.last_widths_hist_uniq, &mut self.last_widths_history);
+        clean(&mut self.descrip_hist_uniq, &mut self.descrip_history);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
 const HEADER_LENGTH: usize = 40;
 const NAME_BYTES: usize = 160;

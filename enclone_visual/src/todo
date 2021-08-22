@@ -85,3 +85,5 @@ to have something to do with using cfg! macros.
 11. Provide a mechanism for recomputing a session, i.e. rerunning all the enclone commands.
 This would be useful in particular for cookbooks, where the displayed outputs might lag actual
 enclone behavior.
+
+12. Clean up hist_uniq vectors after each del operation to avoid wasting memory.
