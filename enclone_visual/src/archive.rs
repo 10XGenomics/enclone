@@ -268,7 +268,6 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         archive_scrollable = archive_scrollable.push(Space::with_height(Units(12)));
         archive_scrollable = archive_scrollable.push(row);
-        archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
         if slf.restore_cookbook_msg[i].len() > 0 {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
             let mut row = Row::new();
@@ -318,6 +317,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
             }
         }
+        archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     }
 
     // Display saved sessions.
