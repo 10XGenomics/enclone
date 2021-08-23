@@ -443,6 +443,28 @@ pub fn test_evh_read_write(evh: &EncloneVisualHistory, filename: &str) {
     write_enclone_visual_history(&evh, &filename).unwrap();
     let evh2 = read_enclone_visual_history(&filename).unwrap();
     if *evh != evh2 {
+        eprintln!("");
+        if evh.svg_hist_uniq != evh2.svg_hist_uniq {
+            eprintln!("svg_hist_uniq changed");
+            if evh.svg_hist_uniq.len() != evh2.svg_hist_uniq.len() {
+                eprintln!("length is different");
+            }
+        }
+        if evh.history_index != evh2.history_index {
+            eprintln!("history index changed");
+        }
+        if evh.orig_name_value != evh2.orig_name_value {
+            eprintln!("orig name changed");
+        }
+        if evh.name_value != evh2.name_value {
+            eprintln!("name changed");
+        }
+        if evh.narrative != evh2.narrative {
+            eprintln!("narrative changed");
+        }
+        if evh.origin != evh2.origin {
+            eprintln!("origin changed");
+        }
         panic!("evh != evh2 for {}", filename);
     }
     for name in ["gerbilspit the great".to_string(), "shorter".to_string()].iter() {
