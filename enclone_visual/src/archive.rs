@@ -224,9 +224,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let mut row = Row::new().align_items(Align::Center);
         let date = "········";
         let time = "·····";
-        row = row.push(
-            Text::new(&format!("{:<3} {}    {}    ", i + 1, date, time,)).font(DEJAVU),
-        );
+        row = row.push(Text::new(&format!("{:<3} {}    {}    ", i + 1, date, time,)).font(DEJAVU));
         row = row
             .push(Checkbox::new(
                 slf.expand_cookbook_entry[i],
@@ -313,8 +311,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     );
                     archive_scrollable = archive_scrollable.push(row);
                     if j < clist.len() - 1 || k < lines.len() - 1 {
-                        archive_scrollable =
-                            archive_scrollable.push(Space::with_height(Units(4)));
+                        archive_scrollable = archive_scrollable.push(Space::with_height(Units(4)));
                     }
                 }
             }
@@ -353,7 +350,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 time = stringme(&vec![b' '; 5]);
             }
             row = row.push(
-                Text::new(&format!("{:<3} {}    {}    ", count + 1 + slf.cookbooks.len(), date, time,)).font(DEJAVU),
+                Text::new(&format!(
+                    "{:<3} {}    {}    ",
+                    count + 1 + slf.cookbooks.len(),
+                    date,
+                    time,
+                ))
+                .font(DEJAVU),
             );
             row = row
                 .push(Checkbox::new(

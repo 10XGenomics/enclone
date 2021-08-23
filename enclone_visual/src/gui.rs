@@ -361,8 +361,10 @@ impl Application for EncloneVisual {
             x.cookbook_name.push(evh.name_value.clone());
             let mut cc = Vec::<String>::new();
             for j in 0..evh.translated_input_history.len() {
-                cc.push(evh.translated_input_hist_uniq[evh.translated_input_history[j] as usize]
-                    .clone());
+                cc.push(
+                    evh.translated_input_hist_uniq[evh.translated_input_history[j] as usize]
+                        .clone(),
+                );
             }
             x.cookbook_command_list.push(Some(cc));
             x.cookbook_narrative.push(evh.narrative.clone());
