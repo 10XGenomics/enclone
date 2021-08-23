@@ -47,6 +47,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
            (pushing again toggles state)\n\
          • when you later push the Exit button, your session will be saved.",
     );
+    let text1b = Text::new(
+        "▒ cookbooks - These are hardcoded sessions that are provided with enclone visual.  They \
+            do not have date or time fields and may not be deleted or renamed.",
+    );
     let text2 =
         Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
@@ -76,6 +80,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         help_col = help_col
             .spacing(SPACING)
             .push(text1)
+            .push(text1b)
             .push(text2)
             .push(text3)
             .push(text4);
