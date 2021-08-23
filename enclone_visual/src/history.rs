@@ -443,7 +443,7 @@ pub fn test_evh_read_write(evh: &EncloneVisualHistory, filename: &str) {
     write_enclone_visual_history(&evh, &filename).unwrap();
     let evh2 = read_enclone_visual_history(&filename).unwrap();
     if *evh != evh2 {
-        panic!("evh != evh2");
+        panic!("evh != evh2 for {}", filename);
     }
     for name in ["gerbilspit the great".to_string(), "shorter".to_string()].iter() {
         rewrite_name(&filename, &*name).unwrap();
