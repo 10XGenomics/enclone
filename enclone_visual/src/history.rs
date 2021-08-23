@@ -447,7 +447,7 @@ pub fn test_evh_read_write(evh: &EncloneVisualHistory, filename: &str) {
         if evh.svg_hist_uniq != evh2.svg_hist_uniq {
             eprintln!("svg_hist_uniq changed");
             if evh.svg_hist_uniq.len() != evh2.svg_hist_uniq.len() {
-                eprintln!("length is different");
+                eprintln!("length changed from {} to {}", evh.svg_hist_uniq.len(), evh2.svg_hist_uniq.len());
             }
         }
         if evh.history_index != evh2.history_index {
