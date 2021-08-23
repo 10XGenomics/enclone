@@ -112,12 +112,13 @@ impl CanvasView {
     }
 }
 
+const MAX_WIDTH: f32 = 770.0;
+
 fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
     let mut max_height = SVG_HEIGHT as f32;
     if empty {
         max_height = SVG_NULL_HEIGHT as f32;
     }
-    const MAX_WIDTH: f32 = 770.0;
     max_height -= 5.0;
     let scale_x = MAX_WIDTH / width;
     let scale_y = max_height / height;
@@ -420,18 +421,55 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 }
                             }
 
-                            let text = canvas::Text {
-                                content: logp,
-                                size: 13.5,
-                                font: DEJAVU,
-                                color: Color::from_rgb(0.0, 0.0, 0.0),
-                                ..canvas::Text::default()
-                            };
-                            frame.fill_text(text);
+                            // We put a layer of black below the tooltip text, which is going to
+                            // be white.  There are two approaches.  First, if the tooltip box lies
+                            // strictly within the canvas (and not to the right of it), we display 
+                            // a black rectangle.  Otherwise, we contruct the layer out of box
+                            // characters.  This is not fully satisfactory because there are small
+                            // gaps between them.
+
+                            let tooltip_font_size: f32 = 13.5;
+                            let mut width_in_chars = 0;
+                            let mut height_in_chars = 0;
+                            for line in log.lines() {
+                                let mut nchars = 0;
+                                for _char in line.chars() {
+                                    nchars += 1;
+                                }
+                                width_in_chars = std::cmp::max(width_in_chars, nchars);
+                                height_in_chars += 1;
+                            }
+                            let box_width 
+                                = width_in_chars as f32 * tooltip_font_size * DEJAVU_WIDTH_OVER_HEIGHT;
+                            let box_height = height_in_chars as f32 * tooltip_font_size;
+                            if xpos + box_width <= MAX_WIDTH {
+                                frame.fill_rectangle(
+                                    Point { 
+                                        x: 0.0,
+                                        y: 0.0,
+                                    },
+                                    Size {
+                                        width: box_width,
+                                        height: box_height,
+                                    },
+                                    iced::canvas::Fill::from(Color::BLACK),
+                                );
+                            } else {
+                                let text = canvas::Text {
+                                    content: logp,
+                                    size: tooltip_font_size,
+                                    font: DEJAVU,
+                                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                                    ..canvas::Text::default()
+                                };
+                                frame.fill_text(text);
+                            }
+
+                            // Now display the actual text in the tooltip box.
 
                             let text = canvas::Text {
                                 content: log,
-                                size: 13.5,
+                                size: tooltip_font_size,
                                 font: DEJAVU,
                                 color: Color::from_rgb(1.0, 1.0, 1.0),
                                 ..canvas::Text::default()

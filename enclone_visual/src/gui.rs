@@ -657,7 +657,7 @@ impl Application for EncloneVisual {
         // Build the scrollable for clonotypes.  We truncate lines to prevent wrapping.
 
         const CLONOTYPE_FONT_SIZE: u16 = 13;
-        let font_width = CLONOTYPE_FONT_SIZE as f32 * 0.5175;
+        let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
         let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
         let nchars = (available as f32 / font_width).round() as usize;
         let mut trunc = String::new();

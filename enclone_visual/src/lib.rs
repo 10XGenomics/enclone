@@ -50,6 +50,8 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
+
 pub fn compressed_message_history() -> Vec<String> {
     let mut messages = Vec::<String>::new();
     let n = MESSAGE_HISTORY.lock().unwrap().len();
