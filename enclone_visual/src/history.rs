@@ -7,7 +7,7 @@ use io_utils::*;
 use std::fs::{File, OpenOptions};
 use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};
 
-#[derive(Default, PartialEq)]
+#[derive(Default, PartialEq, Clone)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
@@ -56,7 +56,7 @@ pub struct EncloneVisualHistory {
 
 // clean: remove unused elements of hist_uniq vectors
 
-pub fn clean<T: Clone>(hist_uniq: &mut Vec<T>, history: &mut Vec<u32>) {
+pub fn clean_history<T: Clone>(hist_uniq: &mut Vec<T>, history: &mut Vec<u32>) {
     let mut used = vec![false; hist_uniq.len()];
     for i in 0..history.len() {
         used[history[i] as usize] = true;
@@ -74,22 +74,22 @@ pub fn clean<T: Clone>(hist_uniq: &mut Vec<T>, history: &mut Vec<u32>) {
     }
     hist_uniq.truncate(j);
     for i in 0..history.len() {
-        history[i] = to_new[i] as u32;
+        history[i] = to_new[history[i] as usize] as u32;
     }
 }
 
 impl EncloneVisualHistory {
-    pub fn clean(&mut self) {
-        clean(&mut self.svg_hist_uniq, &mut self.svg_history);
-        clean(&mut self.summary_hist_uniq, &mut self.summary_history);
-        clean(&mut self.input1_hist_uniq, &mut self.input1_history);
-        clean(&mut self.input2_hist_uniq, &mut self.input2_history);
-        clean(&mut self.narrative_hist_uniq, &mut self.narrative_history);
-        clean(&mut self.translated_input_hist_uniq, &mut self.translated_input_history);
-        clean(&mut self.displayed_tables_hist_uniq, &mut self.displayed_tables_history);
-        clean(&mut self.table_comp_hist_uniq, &mut self.table_comp_history);
-        clean(&mut self.last_widths_hist_uniq, &mut self.last_widths_history);
-        clean(&mut self.descrip_hist_uniq, &mut self.descrip_history);
+    pub fn clean_history(&mut self) {
+        clean_history(&mut self.svg_hist_uniq, &mut self.svg_history);
+        clean_history(&mut self.summary_hist_uniq, &mut self.summary_history);
+        clean_history(&mut self.input1_hist_uniq, &mut self.input1_history);
+        clean_history(&mut self.input2_hist_uniq, &mut self.input2_history);
+        clean_history(&mut self.narrative_hist_uniq, &mut self.narrative_history);
+        clean_history(&mut self.translated_input_hist_uniq, &mut self.translated_input_history);
+        clean_history(&mut self.displayed_tables_hist_uniq, &mut self.displayed_tables_history);
+        clean_history(&mut self.table_comp_hist_uniq, &mut self.table_comp_history);
+        clean_history(&mut self.last_widths_hist_uniq, &mut self.last_widths_history);
+        clean_history(&mut self.descrip_hist_uniq, &mut self.descrip_history);
     }
 }
 
@@ -401,6 +401,8 @@ pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistor
 }
 
 pub fn write_enclone_visual_history(evh: &EncloneVisualHistory, filename: &str) -> Result<(), ()> {
+    let mut evh = evh.clone();
+    evh.clean_history();
     let f = File::create(&filename);
     if f.is_err() {
         return Err(());
