@@ -26,8 +26,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
                 clonotypes to see."
                 .to_string();
         } else {
-            reply_text = "There are no clonotypes.  Please have a look at the summary."
-                .to_string();
+            reply_text = "There are no clonotypes.  Please have a look at the summary.".to_string();
         }
     }
 
@@ -108,9 +107,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
             .insert(hi as usize, (len - 1) as u32);
     } else {
         slf.h.narrative_history.insert(hi as usize, len as u32);
-        slf.h
-            .narrative_hist_uniq
-            .push(slf.narrative_value.clone());
+        slf.h.narrative_hist_uniq.push(slf.narrative_value.clone());
     }
     let len = slf.h.displayed_tables_hist_uniq.len();
     if len > 0 && slf.h.displayed_tables_hist_uniq[len - 1] == reply_text {
@@ -145,9 +142,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         slf.h.descrip_hist_uniq.push(slf.descrip_value.clone());
     }
     let len = slf.h.translated_input_hist_uniq.len();
-    if len > 0
-        && slf.h.translated_input_hist_uniq[len - 1] == slf.translated_input_value
-    {
+    if len > 0 && slf.h.translated_input_hist_uniq[len - 1] == slf.translated_input_value {
         slf.h
             .translated_input_history
             .insert(hi as usize, (len - 1) as u32);
