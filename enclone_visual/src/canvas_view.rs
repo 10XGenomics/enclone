@@ -423,7 +423,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
                             // We put a layer of black below the tooltip text, which is going to
                             // be white.  There are two approaches.  First, if the tooltip box lies
-                            // strictly within the canvas (and not to the right of it), we display 
+                            // strictly within the canvas (and not to the right of it), we display
                             // a black rectangle.  Otherwise, we contruct the layer out of box
                             // characters.  This is not fully satisfactory because there are small
                             // gaps between them.
@@ -439,15 +439,13 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 width_in_chars = std::cmp::max(width_in_chars, nchars);
                                 height_in_chars += 1;
                             }
-                            let box_width 
-                                = width_in_chars as f32 * tooltip_font_size * DEJAVU_WIDTH_OVER_HEIGHT;
+                            let box_width = width_in_chars as f32
+                                * tooltip_font_size
+                                * DEJAVU_WIDTH_OVER_HEIGHT;
                             let box_height = height_in_chars as f32 * tooltip_font_size;
                             if xpos + box_width <= MAX_WIDTH {
                                 frame.fill_rectangle(
-                                    Point { 
-                                        x: 0.0,
-                                        y: 0.0,
-                                    },
+                                    Point { x: 0.0, y: 0.0 },
                                     Size {
                                         width: box_width,
                                         height: box_height,

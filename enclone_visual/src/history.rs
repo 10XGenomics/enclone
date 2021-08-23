@@ -85,10 +85,19 @@ impl EncloneVisualHistory {
         clean_history(&mut self.input1_hist_uniq, &mut self.input1_history);
         clean_history(&mut self.input2_hist_uniq, &mut self.input2_history);
         clean_history(&mut self.narrative_hist_uniq, &mut self.narrative_history);
-        clean_history(&mut self.translated_input_hist_uniq, &mut self.translated_input_history);
-        clean_history(&mut self.displayed_tables_hist_uniq, &mut self.displayed_tables_history);
+        clean_history(
+            &mut self.translated_input_hist_uniq,
+            &mut self.translated_input_history,
+        );
+        clean_history(
+            &mut self.displayed_tables_hist_uniq,
+            &mut self.displayed_tables_history,
+        );
         clean_history(&mut self.table_comp_hist_uniq, &mut self.table_comp_history);
-        clean_history(&mut self.last_widths_hist_uniq, &mut self.last_widths_history);
+        clean_history(
+            &mut self.last_widths_hist_uniq,
+            &mut self.last_widths_history,
+        );
         clean_history(&mut self.descrip_hist_uniq, &mut self.descrip_history);
     }
 }
