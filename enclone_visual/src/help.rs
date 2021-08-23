@@ -398,10 +398,11 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "Finally at the bottom is the narrative box.  This is text for \
+                                "Finally near the bottom is the narrative box.  This is text for \
                     a given state that you can set by first copying text to your clipboard \
                     (outside enclone visual), and then clicking on the narrative box to copy \
-                    the text into it.",
+                    the text into it.  Conversely, there is a Copy button below the narrative box \
+                    that will copy the narrative text onto your clipboard.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         ),
