@@ -401,6 +401,8 @@ impl EncloneVisual {
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
                     GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                    let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
+                    copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)
                 } else {
                     Command::none()

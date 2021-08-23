@@ -412,6 +412,9 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let xpos = 15.0 + width * scale;
                             frame.translate(Vector { x: xpos, y: 0.0 });
 
+                            TOOLTIP_TEXT.lock().unwrap().clear();
+                            TOOLTIP_TEXT.lock().unwrap().push(log.clone());
+
                             let mut logp = String::new();
                             for char in log.chars() {
                                 if char == '\n' {
