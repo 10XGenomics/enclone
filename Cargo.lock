@@ -1557,6 +1557,7 @@ dependencies = [
  "iced",
  "iced_native",
  "image",
+ "include_dir",
  "io_utils",
  "itertools",
  "jpeg-decoder",
@@ -2237,6 +2238,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "glob"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
+
+[[package]]
 name = "gloo-timers"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2704,6 +2711,30 @@ dependencies = [
  "num-traits",
  "png",
  "tiff",
+]
+
+[[package]]
+name = "include_dir"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31a924bd335356c7622dff9ee33d06920afcf7f762a1a991236645e08c8a484b"
+dependencies = [
+ "glob",
+ "include_dir_impl",
+ "proc-macro-hack",
+]
+
+[[package]]
+name = "include_dir_impl"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "afae3917f781921d7c7813992ccadff7e816f7e6ecb4b70a9ec3e740d51da3d6"
+dependencies = [
+ "anyhow",
+ "proc-macro-hack",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

@@ -2,6 +2,7 @@
 
 use crate::archive::*;
 use crate::help::*;
+use crate::history::*;
 use crate::popover::*;
 use crate::testsuite::*;
 use crate::*;
@@ -340,6 +341,32 @@ impl Application for EncloneVisual {
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
         x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+
+        // Fetch cookbooks.
+
+        let cookbook_dir = include_dir::include_dir!("src/cookbooks");
+        for cookbook in cookbook_dir.find("*.cb").unwrap() {
+            let f = cookbook_dir.get_file(cookbook.path()).unwrap();
+            x.cookbooks.push(f.contents().to_vec());
+        }
+        let nc = x.cookbooks.len();
+        x.expand_cookbook_entry = vec![false; nc];
+        x.restore_cookbook_requested = vec![false; nc];
+        x.cookbook_narrative_button = vec![iced::button::State::default(); nc];
+        x.copy_cookbook_narrative_button = vec![iced::button::State::default(); nc];
+        x.copy_cookbook_narrative_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); nc];
+        x.restore_cookbook_msg = vec![String::new(); nc];
+        for i in 0..nc {
+            let evh = EncloneVisualHistory::restore_from_bytes(&x.cookbooks[i]).unwrap();
+            x.cookbook_name.push(evh.name_value.clone());
+            let mut cc = Vec::<String>::new();
+            for j in 0..evh.translated_input_history.len() {
+                cc.push(evh.translated_input_hist_uniq[evh.translated_input_history[j] as usize]
+                    .clone());
+            }
+            x.cookbook_command_list.push(Some(cc));
+            x.cookbook_narrative.push(evh.narrative.clone());
+        }
 
         // Handle test and meta modes.
 

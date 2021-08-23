@@ -34,6 +34,7 @@ fs_extra = "1"
 iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
+include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.2"
 itertools = "0.10"
 jpeg-decoder = "0.1"

@@ -51,6 +51,19 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::CopyCookbookNarrative(i) => {
+                self.copy_cookbook_narrative_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.cookbook_narrative[i].as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyCookbookNarrative)
+            }
+
+            Message::CompleteCopyCookbookNarrative(_) => {
+                for i in 0..self.copy_cookbook_narrative_button_color.len() {
+                    self.copy_cookbook_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
+                Command::none()
+            }
+
             Message::Snap(x) => {
                 capture(&x, self.window_id);
                 Command::none()
@@ -178,6 +191,27 @@ impl EncloneVisual {
                             filename
                         );
                     }
+                }
+                Command::none()
+            }
+
+            Message::RestoreCookbook(check_val, index) => {
+                if !self.just_restored {
+                    self.restore_cookbook_requested[index] = check_val;
+                    if self.modified {
+                        self.save();
+                    }
+                    let res = EncloneVisualHistory::restore_from_bytes(&self.cookbooks[index]);
+                    self.h = res.unwrap();
+                    // Ignore history index and instead rewind.
+                    if self.h.history_index > 1 {
+                        self.h.history_index = 1;
+                    }
+                    self.update_to_current();
+                    self.restore_cookbook_msg[index] =
+                        "Restored!  Now click Dismiss at top.".to_string();
+                    self.just_restored = true;
+                    self.modified = false;
                 }
                 Command::none()
             }
@@ -384,6 +418,11 @@ impl EncloneVisual {
                 if !self.delete_requested[index] {
                     self.expand_archive_entry[index] = check_val;
                 }
+                Command::none()
+            }
+
+            Message::ExpandCookbookEntry(check_val, index) => {
+                self.expand_cookbook_entry[index] = check_val;
                 Command::none()
             }
 
@@ -607,12 +646,19 @@ impl EncloneVisual {
                 for i in 0..self.expand_archive_entry.len() {
                     self.expand_archive_entry[i] = false;
                 }
+                for i in 0..self.cookbooks.len() {
+                    self.expand_cookbook_entry[i] = false;
+                    self.restore_cookbook_requested[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
                         self.deleted[i] = true;
                     }
+                }
+                for i in 0..self.restore_cookbook_msg.len() {
+                    self.restore_cookbook_msg[i].clear();
                 }
                 self.just_restored = false;
                 for i in 0..n {
@@ -644,12 +690,19 @@ impl EncloneVisual {
                 for i in 0..self.expand_archive_entry.len() {
                     self.expand_archive_entry[i] = false;
                 }
+                for i in 0..self.cookbooks.len() {
+                    self.expand_cookbook_entry[i] = false;
+                    self.restore_cookbook_requested[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
                         self.deleted[i] = true;
                     }
+                }
+                for i in 0..self.restore_cookbook_msg.len() {
+                    self.restore_cookbook_msg[i].clear();
                 }
                 self.just_restored = false;
                 Command::none()
