@@ -53,7 +53,9 @@ WAITING ON ICED
     not bleed through.  In addition, block characters that underlie the actual text in the tooltip
     box do not fully connect, leaving tiny white spaces in between.  Finally, allowing the tooltip
     box to escape the canvas may be relying on unstable iced behavior that could disappear in a 
-    future release.
+    future release.  Note that if we know that the box lies strictly within the canvas, we could
+    replace the layer of box characters by a filled rectangle, thus eliminating the tiny white
+    spaces.
 
 ---------------------------------------------------------------------------------------------------
 
