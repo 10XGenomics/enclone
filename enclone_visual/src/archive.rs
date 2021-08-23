@@ -242,8 +242,8 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_width(Units(51)));
         if slf.sharing_enabled {
             row = row
-            .push(Text::new("·····").font(DEJAVU))
-            .push(Space::with_width(Units(39)));
+                .push(Text::new("·····").font(DEJAVU))
+                .push(Space::with_width(Units(39)));
         }
         row = row.push(Space::with_width(Units(5)));
         row = row.push(Text::new(&*y));
