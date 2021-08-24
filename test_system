@@ -1,15 +1,40 @@
 #!/bin/bash
 
 printf "\ntesting for availability of enclone command by asking enclone to print its version\n\n"
+#
+# 1. Debugging is started if `$SHELL -c "enclone --version"` fails or returns the incorrect version.
+# 2. Print the shell that is being used.
+# 3. Print the path that is being used by the given shell.
+# 4. Define a list of initialization files, as a function of the shell.
+# 5. For each initialization file, test if it exists, and if it exists, check for path setting.
+#
+ok=0
 $SHELL -c "enclone --version" 
-if ! [ "$?" -eq "1" ]; then
-    printf "\nFor some reason enclone is not available as a command.  Some diagnostic information\n"
-    printf "will be printed out below.\n"
+if [ "$?" -eq "0" ]; then
+    available_version=$($SHELL -c "enclone --version")
+    available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
+    if [ "$_current_version" == "$available_version" ]; then
+        printf "\nGood, the version of enclone that you would get from the command line is the\n"
+        printf "version $_current_version that was just downloaded.\n\n"
+        ok=1
+    else
+        printf "\nIt would appear that enclone is available as a command, as determined by your\n"
+        printf "current shell and shell initialization files, but your configuration does not\n"
+        printf "give you the enclone version $_current_version that was just downloaded.\n"
+    fi
+else
+    printf "\nIt would appear that enclone is not available as a command, as determined by your\n"
+    printf "current shell and shell initialization files.\n"
+fi
+if [ "$ok" -eq "0" ]; then
+    printf "\nSome diagnostic information will be printed out below.\n"
     printf "\n1. Determining which shell you are using.\n"
     printf "\n$SHELL\n"
     printf "\n2. Determining the path defined by your shell.\n\n"
     $SHELL -c "echo $PATH"
-    printf "\n3. Testing for existence of various initialization files in your home directory\n"
+    printf "\n3. Show the output of which enclone.\n\n"
+    which enclone
+    printf "\n4. Testing for existence of various initialization files in your home directory\n"
     printf "   and for each such file, if present, whether it sets your path.\n\n"
     cd
     NEWLINE=1
@@ -52,8 +77,9 @@ if ! [ "$?" -eq "1" ]; then
     if [ "$NEWLINE" -eq "0" ]; then
         echo ""
     fi
-    printf "As indicated above, something has gone wrong with your enclone installation.\n\n"
-    printf "Please cut and paste what is in your terminal window, as text, starting with the\n"
-    printf "curl command that you typed to install enclone, and send it to\n"
-    printf "enclone@10xgenomics.com.  We will try to diagnose the problem!\n\n"
+    printf "🌹 As indicated above, something has gone wrong with your enclone installation. 🌹\n"
+    printf "🌹                                                                              🌹\n"
+    printf "🌹 Please cut and paste what is in your terminal window, as text, starting with 🌹\n"
+    printf "🌹 the curl command that you typed to install enclone, and send it to           🌹\n"
+    printf "🌹 enclone@10xgenomics.com.  We will try to diagnose the problem!               🌹\n\n"
 fi
