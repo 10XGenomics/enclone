@@ -60,6 +60,8 @@ main() {
     fi
     # We used to have "set -e" here to force exit upon error.  However that is inconsistent with
     # several parts of the code that allow for a command to fail and then check status.
+    # There has to have been a reason why we added set -e.  If we figure out what it was, we can
+    # protect the specific parts of code that need protection.
     need_cmd awk
     need_cmd chmod
     need_cmd grep
