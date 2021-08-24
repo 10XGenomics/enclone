@@ -192,7 +192,7 @@ main() {
         if test -f "$HOME/enclone/version"; then
             _local_version=$(cat $HOME/enclone/version)
             if [ "$_local_version" == "$_current_version" ]; then
-                printf "\nThe local version of enclone is current so not downloading executable.\n"
+                printf "\nThe local version of enclone is current so not downloading executable.  "
                 printf "Both versions are $_local_version.\n"
                 _enclone_is_current=true
             fi
