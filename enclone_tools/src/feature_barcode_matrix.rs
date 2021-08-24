@@ -30,6 +30,7 @@ use vector_utils::*;
 
 pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
     let t = Instant::now();
+    println!("getting feature barcode matrix for {}", id);
 
     // Get configuration.
 
