@@ -119,7 +119,7 @@ fn main() {
 
         // Start copy.
 
-        println!("copying {}", id);
+        println!("copying {} using path = {}", id, p);
         for i in (0..dests.len()).rev() {
             let dest = &dests[i];
             let target = format!("{}/{}", dest, id);
