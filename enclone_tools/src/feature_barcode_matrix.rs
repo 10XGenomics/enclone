@@ -28,8 +28,16 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
-    let t = Instant::now();
+pub struct SequencingDef {
+    read_path: String,
+    sample_indices: Vec<String>,
+    lanes: Vec<usize>,
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn feature_barcode_matrix_head1(id: usize) -> SequencingDef {
+    println!("getting feature barcode matrix for {}", id);
 
     // Get configuration.
 
@@ -135,16 +143,30 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
         std::process::exit(1);
     }
 
+    let seq_def = SequencingDef {
+        read_path: read_path,
+        sample_indices: si,
+        lanes: lanes,
+    };
+    seq_def
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
+    let t = Instant::now();
+    let seq_def = feature_barcode_matrix_head1(id);
+
     // Find the read files.
 
     let mut read_files = Vec::<String>::new();
-    let x = dir_list(&read_path);
+    let x = dir_list(&seq_def.read_path);
     if verbose {
         println!("");
     }
     for f in x.iter() {
-        for sample_index in si.iter() {
-            for lane in lanes.iter() {
+        for sample_index in seq_def.sample_indices.iter() {
+            for lane in seq_def.lanes.iter() {
                 if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
                     if verbose {
                         println!("{}", f);
@@ -152,7 +174,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
                     if f.ends_with("__evap") {
                         eprintln!(
                             "\nfound an evaporated read file =\n{}\n",
-                            format!("{}/{}", read_path, f),
+                            format!("{}/{}", seq_def.read_path, f),
                         );
                         std::process::exit(1);
                     }
@@ -169,9 +191,9 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     // Report what we found.
 
     if verbose {
-        println!("\nread path = {}", read_path);
-        println!("lanes = {}", lanes.iter().format(","));
-        println!("sample indices = {}", si.iter().format(","));
+        println!("\nread path = {}", seq_def.read_path);
+        println!("lanes = {}", seq_def.lanes.iter().format(","));
+        println!("sample indices = {}", seq_def.sample_indices.iter().format(","));
         println!("used {:.1} seconds\n", elapsed(&t));
     }
 
@@ -182,7 +204,7 @@ pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMa
     let mut total_reads = 0;
     let mut junk = 0;
     for rf in read_files.iter() {
-        let f = format!("{}/{}", read_path, rf);
+        let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
 
