@@ -58,8 +58,10 @@ main() {
         printf "and follow the instructions, and then rerun the enclone installation command.\n\n"
         exit 1
     fi
-    # force failure if error
-    set -e
+    # We used to have "set -e" here to force exit upon error.  However that is inconsistent with
+    # several parts of the code that allow for a command to fail and then check status.
+    # There has to have been a reason why we added set -e.  If we figure out what it was, we can
+    # protect the specific parts of code that need protection.
     need_cmd awk
     need_cmd chmod
     need_cmd grep
@@ -190,7 +192,7 @@ main() {
         if test -f "$HOME/enclone/version"; then
             _local_version=$(cat $HOME/enclone/version)
             if [ "$_local_version" == "$_current_version" ]; then
-                printf "\nThe local version of enclone is current so not downloading executable.\n"
+                printf "\nThe local version of enclone is current so not downloading executable.  "
                 printf "Both versions are $_local_version.\n"
                 _enclone_is_current=true
             fi
@@ -357,6 +359,102 @@ main() {
             printf "\nLarge version of datasets already current so not downloading them.\n"
         fi
     fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 13. Test to see if the user would get enclone, and the right version, from the
+    #     command line.
+
+    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
+    #
+    # 1. Debugging is started if `$SHELL -c "enclone --version"` fails or returns the wrong version.
+    # 2. Print the shell that is being used.
+    # 3. Print the path that is being used by the given shell.
+    # 4. Define a list of initialization files, as a function of the shell.
+    # 5. For each initialization file, test if it exists, and if it exists, check for path setting.
+    #
+    ok=0
+    $SHELL -c "enclone --version" 
+    if [ "$?" -eq "0" ]; then
+        available_version=$($SHELL -c "enclone --version")
+        available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
+        if [ "$_current_version" == "$available_version" ]; then
+            printf "\nGood, the version of enclone that you would get from the command line is\n"
+            printf "the version $_current_version that was just downloaded.\n\n"
+            ok=1
+        else
+            printf "\nIt would appear that enclone is available as a command, as determined by\n"
+            printf "your current shell and shell initialization files, but your configuration\n"
+            printf "does not give you the enclone version $_current_version that was just "
+            printf "downloaded.\n"
+        fi
+    else
+        printf "\nIt would appear that enclone is not available as a command, as determined by\n"
+        printf "your current shell and shell initialization files.\n"
+    fi
+    if [ "$ok" -eq "0" ]; then
+        printf "\nSome diagnostic information will be printed out below.\n"
+        printf "\n1. Determining which shell you are using: $SHELL.\n"
+        printf "\n2. Determining the path defined by your shell.\n\n"
+        $SHELL -c "echo $PATH"
+        printf "\n3. Show the output of which enclone.\n\n"
+        which enclone
+        printf "\n4. Testing for existence of various initialization files in your home directory\n"
+        printf "   and for each such file, if present, whether it sets your path.\n\n"
+        cd
+        NEWLINE=1
+    
+        # Decide which initialization files to test.
+    
+        if [ "$SHELL" == "/bin/tcsh" ]; then
+            files=( ".tcshrc" ".login" ".cshrc" )
+        elif [ "$SHELL" == "/bin/zsh" ]; then
+            files=( ".zshenv" ".zprofile" ".zshrc" ".zlogin" )
+        elif [ "$SHELL" == "/bin/bash" ]; then
+            files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
+        elif [ "$SHELL" == "/bin/sh" ]; then
+            files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
+        else
+            files=( ".profile" \
+                ".zshenv" ".zprofile" ".zshrc" ".zlogin" \
+                ".bash_login" ".bash_profile" ".bashrc" \
+                ".tcshrc" ".login" ".cshrc" )
+        fi
+    
+        # Test initialization files.
+    
+        for i in "${files[@]}"
+        do
+            ls -l $i >& /dev/null
+            if [ "$?" -eq "0" ]; then
+                 if [ "$NEWLINE" -eq "0" ]; then
+                     echo ""
+                     NEWLINE=1
+                 fi
+                 printf "$i: present\ntesting it for setting path\n"
+                 cat $i | grep -i PATH | grep -v "^#" | uniq
+                 echo ""
+            else
+                 echo "$i: absent"
+                 NEWLINE=0
+            fi
+        done
+        if [ "$NEWLINE" -eq "0" ]; then
+            echo ""
+        fi
+        printf "🌹 As indicated above, something has gone awry with your enclone installation. 🌹\n"
+        printf "🌹                                                                             🌹\n"
+        printf "🌹 Please cut and paste what is in your terminal window, as text, starting with🌹\n"
+        printf "🌹 the curl command that you typed to install enclone, and send it to          🌹\n"
+        printf "🌹 enclone@10xgenomics.com.  We will try to diagnose the problem!              🌹\n"
+        echo
+    fi
+    exit 1
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 14. Succesfully completed.
+
     ENDTIME=$(date +%s)
     echo
     if [ "$is_update" = true ]; then
