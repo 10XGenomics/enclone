@@ -394,8 +394,7 @@ main() {
     fi
     if [ "$ok" -eq "0" ]; then
         printf "\nSome diagnostic information will be printed out below.\n"
-        printf "\n1. Determining which shell you are using.\n"
-        printf "\n$SHELL\n"
+        printf "\n1. Determining which shell you are using: $SHELL.\n"
         printf "\n2. Determining the path defined by your shell.\n\n"
         $SHELL -c "echo $PATH"
         printf "\n3. Show the output of which enclone.\n\n"
