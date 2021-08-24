@@ -430,7 +430,7 @@ main() {
                      echo ""
                      NEWLINE=1
                  fi
-                 printf "$i: present\ntesting it for setting path"
+                 printf "$i: present\ntesting it for setting path\n"
                  cat $i | grep -i PATH | grep -v "^#" | uniq
                  echo ""
             else
