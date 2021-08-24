@@ -1,0 +1,59 @@
+#!/bin/bash
+
+printf "\ntesting for availability of enclone command by asking enclone to print its version\n\n"
+$SHELL -c "enclone --version" 
+if ! [ "$?" -eq "1" ]; then
+    printf "\nFor some reason enclone is not available as a command.  Some diagnostic information\n"
+    printf "will be printed out below.\n"
+    printf "\n1. Determining which shell you are using.\n"
+    printf "\n$SHELL\n"
+    printf "\n2. Determining the path defined by your shell.\n\n"
+    $SHELL -c "echo $PATH"
+    printf "\n3. Testing for existence of various initialization files in your home directory\n"
+    printf "   and for each such file, if present, whether it sets your path.\n\n"
+    cd
+    NEWLINE=1
+
+    # Decide which initialization files to test.
+
+    if [ "$SHELL" == "/bin/tcsh" ]; then
+        files=( ".tcshrc" ".login" ".cshrc" )
+    elif [ "$SHELL" == "/bin/zsh" ]; then
+        files=( ".zshenv" ".zprofile" ".zshrc" ".zlogin" )
+    elif [ "$SHELL" == "/bin/bash" ]; then
+        files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
+    elif [ "$SHELL" == "/bin/sh" ]; then
+        files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
+    else
+        files=( ".profile" \
+            ".zshenv" ".zprofile" ".zshrc" ".zlogin" \
+            ".bash_login" ".bash_profile" ".bashrc" \
+            ".tcshrc" ".login" ".cshrc" )
+    fi
+
+    # Test initialization files.
+
+    for i in "${files[@]}"
+    do
+        ls -l $i >& /dev/null
+        if [ "$?" -eq "0" ]; then
+             if [ "$NEWLINE" -eq "0" ]; then
+                 echo ""
+                 NEWLINE=1
+             fi
+             printf "$i: present\ntesting it for setting path"
+             cat $i | grep -i PATH | grep -v "^#" | uniq
+             echo ""
+        else
+             echo "$i: absent"
+             NEWLINE=0
+        fi
+    done
+    if [ "$NEWLINE" -eq "0" ]; then
+        echo ""
+    fi
+    printf "As indicated above, something has gone wrong with your enclone installation.\n\n"
+    printf "Please cut and paste what is in your terminal window, as text, starting with the\n"
+    printf "curl command that you typed to install enclone, and send it to\n"
+    printf "enclone@10xgenomics.com.  We will try to diagnose the problem!\n\n"
+fi
