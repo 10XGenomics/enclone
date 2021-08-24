@@ -36,6 +36,9 @@ fn lz4_file(f: &str) {
         .arg(&f)
         .status()
         .expect("lz4 failed");
+    if !path_exists(&format!("{}.lz4", f)) {
+        eprintln!("\nAttempt to run lz4 -q {} appears to have failed.", f);
+    }
     assert!(path_exists(&format!("{}.lz4", f)));
     remove_file(&f).unwrap();
 }

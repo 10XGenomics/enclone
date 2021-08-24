@@ -8,6 +8,7 @@ name: Build and Upload Release
 
 env:
   CARGO_INCREMENTAL: 0
+  DEBIAN_FRONTEND=noninteractive
 
 jobs:
 
