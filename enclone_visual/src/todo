@@ -39,15 +39,17 @@ WAITING ON ICED
 5.  Flaky behavior scrolling large texts.
     Issue filed: https:github.com/hecrj/iced/issues/897.
 
-6.  Button text does not change from "Submit" to "thinking" (but worked around).
-    Submitted as issue 908.  This is also bugs/button_text_update_issue.  I left a question
-    on the issue so the ball is in their court.
-
-7.  Canvas in scrollable crashes.  So we can't put plots in a scrollable window.
+6.  Canvas in scrollable crashes.  So we can't put plots in a scrollable window.
     Reported as issue #924, flagged as bug.
 
-8.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
+7.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
+
+8.  When the tooltip box is placed on top of the control panel, text from the control panel should
+    not bleed through.  In addition, block characters that underlie the actual text in the tooltip
+    box do not fully connect, leaving tiny white spaces in between.  Finally, allowing the tooltip
+    box to escape the canvas may be relying on unstable iced behavior that could disappear in a 
+    future release.  
 
 ---------------------------------------------------------------------------------------------------
 
@@ -62,7 +64,7 @@ NICE TO HAVE
 
 4.  Use native ssh calls rather than ssh commands, as this might be faster and more robust.
 
-5.  Add scale slider for plots.
+5.  Add scale slider for plots, and/or zooming.
 
 6.  Make "enclone help ..." work.
 
@@ -75,8 +77,12 @@ NICE TO HAVE
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
 
-10. Implement sharing of archives in enclone visual.
+10. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
+    a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
+    to have something to do with using cfg! macros.
 
-11. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
-a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
-to have something to do with using cfg! macros.
+11. Provide a mechanism for recomputing a session, i.e. rerunning all the enclone commands.
+    This would be useful in particular for cookbooks, where the displayed outputs might lag actual
+    enclone behavior.
+
+12. Clean up hist_uniq vectors after each del operation to avoid wasting memory.

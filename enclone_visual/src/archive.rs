@@ -47,6 +47,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
            (pushing again toggles state)\n\
          • when you later push the Exit button, your session will be saved.",
     );
+    let text1b = Text::new(
+        "▒ cookbooks - These are hardcoded sessions that are provided with enclone visual.  They \
+            do not have date or time fields and may not be deleted or renamed.",
+    );
     let text2 =
         Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
@@ -76,6 +80,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         help_col = help_col
             .spacing(SPACING)
             .push(text1)
+            .push(text1b)
             .push(text2)
             .push(text3)
             .push(text4);
@@ -208,6 +213,123 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     }
     let mut share_body = Some(share_body);
 
+    // Display cookbooks.
+
+    for (i, y, narbut, copynarbut) in izip!(
+        0..slf.cookbooks.len(),
+        slf.cookbook_name.iter_mut(),
+        slf.cookbook_narrative_button.iter_mut(),
+        slf.copy_cookbook_narrative_button.iter_mut()
+    ) {
+        let mut row = Row::new().align_items(Align::Center);
+        let date = "········";
+        let time = "·····";
+        row = row.push(Text::new(&format!("{:<3} {}    {}    ", i + 1, date, time,)).font(DEJAVU));
+        row = row
+            .push(Checkbox::new(
+                slf.expand_cookbook_entry[i],
+                "",
+                move |x: bool| Message::ExpandCookbookEntry(x, i),
+            ))
+            .push(Space::with_width(Units(70)))
+            .push(Checkbox::new(
+                slf.restore_cookbook_requested[i],
+                "",
+                move |x: bool| Message::RestoreCookbook(x, i),
+            ))
+            .push(Space::with_width(Units(67)))
+            .push(Text::new("·····").font(DEJAVU))
+            .push(Space::with_width(Units(51)));
+        if slf.sharing_enabled {
+            row = row
+                .push(Text::new("·····").font(DEJAVU))
+                .push(Space::with_width(Units(39)));
+        }
+        row = row.push(Space::with_width(Units(5)));
+        row = row.push(Text::new(&*y));
+        archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+        archive_scrollable = archive_scrollable.push(row);
+        const MAX_LINE: usize = 116;
+        let mut log = String::new();
+        let mut rows = Vec::<Vec<String>>::new();
+        let folds = fold(&slf.cookbook_narrative[i], MAX_LINE);
+        for i in 0..folds.len() {
+            rows.push(vec![folds[i].clone()]);
+        }
+        for i in 0..rows.len() {
+            if i > 0 {
+                log += "\n";
+            }
+            log += &mut rows[i][0].clone();
+        }
+        let copy_cookbook_narrative_button = Button::new(
+            copynarbut,
+            Text::new("Copy").color(slf.copy_cookbook_narrative_button_color[i]),
+        )
+        .on_press(Message::CopyCookbookNarrative(i));
+        let mut row = Row::new()
+            .push(Text::new("    ").font(DEJAVU))
+            .push(Button::new(narbut, Text::new(&log)).on_press(Message::CopyCookbookNarrative(i)));
+        if slf.cookbook_narrative[i].len() > 0 {
+            row = row
+                .push(Space::with_width(Units(8)))
+                .push(copy_cookbook_narrative_button);
+        }
+        archive_scrollable = archive_scrollable.push(Space::with_height(Units(12)));
+        archive_scrollable = archive_scrollable.push(row);
+        if slf.restore_cookbook_msg[i].len() > 0 {
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            let mut row = Row::new();
+            row = row.push(Space::with_width(Units(43)));
+            row = row.push(
+                Text::new(&format!("{}", slf.restore_cookbook_msg[i]))
+                    .font(DEJAVU)
+                    .color(Color::from_rgb(1.0, 0.0, 0.0))
+                    .size(16),
+            );
+            archive_scrollable = archive_scrollable.push(row);
+        }
+        if slf.expand_cookbook_entry[i] {
+            let clist = &slf.cookbook_command_list[i].as_ref().unwrap();
+            if !clist.is_empty() {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            }
+            for (j, y) in clist.iter().enumerate() {
+                // THIS CODE IS DUPLICATED BELOW.
+                // Determine max_line.  Sloppy, as we don't actually do the correct math.
+                const MAX_LINE: usize = 110;
+                let max_line = MAX_LINE as f64 * slf.width as f64 / INITIAL_WIDTH as f64;
+                let max_line = max_line.round() as usize;
+                let lines = fold(&y, max_line);
+                for k in 0..lines.len() {
+                    let s = if k == 0 {
+                        format!("     {} = {}", j + 1, lines[k])
+                    } else {
+                        let len = format!("     {} = ", j + 1).len();
+                        let b = stringme(&vec![b' '; len]);
+                        format!("{}{}", b, lines[k])
+                    };
+                    let row = Row::new().push(
+                        Text::new(&s)
+                            .font(DEJAVU)
+                            .color(Color::from_rgb(0.0, 0.0, 0.4))
+                            .size(16),
+                    );
+                    archive_scrollable = archive_scrollable.push(row);
+                    if j < clist.len() - 1 || k < lines.len() - 1 {
+                        archive_scrollable = archive_scrollable.push(Space::with_height(Units(4)));
+                    }
+                }
+            }
+            if !clist.is_empty() {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
+            }
+        }
+        archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+    }
+
+    // Display saved sessions.
+
     let mut count = 0;
     for (i, y, q, narbut, copynarbut) in izip!(
         0..slf.archive_name.len(),
@@ -234,7 +356,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 time = stringme(&vec![b' '; 5]);
             }
             row = row.push(
-                Text::new(&format!("{:<3} {}    {}    ", count + 1, date, time,)).font(DEJAVU),
+                Text::new(&format!(
+                    "{:<3} {}    {}    ",
+                    count + 1 + slf.cookbooks.len(),
+                    date,
+                    time,
+                ))
+                .font(DEJAVU),
             );
             row = row
                 .push(Checkbox::new(
@@ -295,7 +423,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
             // Show narrative.
 
-            const MAX_LINE: usize = 120;
+            const MAX_LINE: usize = 116;
             let mut log = String::new();
             let mut rows = Vec::<Vec<String>>::new();
             let folds = fold(&slf.archive_narrative[i], MAX_LINE);

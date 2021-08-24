@@ -6,5 +6,5 @@ use enclone_visual::*;
 
 fn main() {
     let copy = get_clipboard_content();
-    println!("{}", copy);
+    println!("{:?}", copy);
 }

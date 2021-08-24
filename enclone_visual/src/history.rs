@@ -7,7 +7,7 @@ use io_utils::*;
 use std::fs::{File, OpenOptions};
 use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};
 
-#[derive(Default, PartialEq)]
+#[derive(Default, PartialEq, Clone)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
@@ -50,6 +50,56 @@ pub struct EncloneVisualHistory {
     // origin of this session (if shared)
     //
     pub origin: String,
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// clean: remove unused elements of hist_uniq vectors
+
+pub fn clean_history<T: Clone>(hist_uniq: &mut Vec<T>, history: &mut Vec<u32>) {
+    let mut used = vec![false; hist_uniq.len()];
+    for i in 0..history.len() {
+        used[history[i] as usize] = true;
+    }
+    let mut to_new = vec![0; hist_uniq.len()];
+    let mut j = 0;
+    for i in 0..hist_uniq.len() {
+        if used[i] {
+            if i != j {
+                hist_uniq[j] = hist_uniq[i].clone();
+            }
+            to_new[i] = j;
+            j += 1;
+        }
+    }
+    hist_uniq.truncate(j);
+    for i in 0..history.len() {
+        history[i] = to_new[history[i] as usize] as u32;
+    }
+}
+
+impl EncloneVisualHistory {
+    pub fn clean_history(&mut self) {
+        clean_history(&mut self.svg_hist_uniq, &mut self.svg_history);
+        clean_history(&mut self.summary_hist_uniq, &mut self.summary_history);
+        clean_history(&mut self.input1_hist_uniq, &mut self.input1_history);
+        clean_history(&mut self.input2_hist_uniq, &mut self.input2_history);
+        clean_history(&mut self.narrative_hist_uniq, &mut self.narrative_history);
+        clean_history(
+            &mut self.translated_input_hist_uniq,
+            &mut self.translated_input_history,
+        );
+        clean_history(
+            &mut self.displayed_tables_hist_uniq,
+            &mut self.displayed_tables_history,
+        );
+        clean_history(&mut self.table_comp_hist_uniq, &mut self.table_comp_history);
+        clean_history(
+            &mut self.last_widths_hist_uniq,
+            &mut self.last_widths_history,
+        );
+        clean_history(&mut self.descrip_hist_uniq, &mut self.descrip_history);
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -360,6 +410,8 @@ pub fn read_enclone_visual_history(filename: &str) -> Result<EncloneVisualHistor
 }
 
 pub fn write_enclone_visual_history(evh: &EncloneVisualHistory, filename: &str) -> Result<(), ()> {
+    let mut evh = evh.clone();
+    evh.clean_history();
     let f = File::create(&filename);
     if f.is_err() {
         return Err(());
@@ -389,9 +441,37 @@ impl EncloneVisualHistory {
 
 pub fn test_evh_read_write(evh: &EncloneVisualHistory, filename: &str) {
     write_enclone_visual_history(&evh, &filename).unwrap();
+    let mut evh = evh.clone();
+    evh.clean_history();
     let evh2 = read_enclone_visual_history(&filename).unwrap();
-    if *evh != evh2 {
-        panic!("evh != evh2");
+    if evh != evh2 {
+        eprintln!("");
+        if evh.svg_hist_uniq != evh2.svg_hist_uniq {
+            eprintln!("svg_hist_uniq changed");
+            if evh.svg_hist_uniq.len() != evh2.svg_hist_uniq.len() {
+                eprintln!(
+                    "length changed from {} to {}",
+                    evh.svg_hist_uniq.len(),
+                    evh2.svg_hist_uniq.len()
+                );
+            }
+        }
+        if evh.history_index != evh2.history_index {
+            eprintln!("history index changed");
+        }
+        if evh.orig_name_value != evh2.orig_name_value {
+            eprintln!("orig name changed");
+        }
+        if evh.name_value != evh2.name_value {
+            eprintln!("name changed");
+        }
+        if evh.narrative != evh2.narrative {
+            eprintln!("narrative changed");
+        }
+        if evh.origin != evh2.origin {
+            eprintln!("origin changed");
+        }
+        panic!("evh != evh2 for {}", filename);
     }
     for name in ["gerbilspit the great".to_string(), "shorter".to_string()].iter() {
         rewrite_name(&filename, &*name).unwrap();

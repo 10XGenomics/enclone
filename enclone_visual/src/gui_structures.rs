@@ -104,9 +104,16 @@ pub struct EncloneVisual {
     pub archive_name_change_button: Vec<button::State>,
     pub archive_narrative_button: Vec<button::State>,
     pub copy_archive_narrative_button: Vec<button::State>,
+    pub copy_cookbook_narrative_button: Vec<button::State>,
     pub narrative_button: button::State,
+    pub copy_narrative_button: button::State,
+    pub cookbook_narrative_button: Vec<button::State>,
+    //
+    // more
+    //
     pub this_meta: Vec<Message>,
     pub save_name: String,
+    pub cookbooks: Vec<Vec<u8>>,
     //
     // history
     //
@@ -117,12 +124,16 @@ pub struct EncloneVisual {
     pub archive_dir: Option<String>,
     pub archive_list: Vec<String>,
     pub expand_archive_entry: Vec<bool>,
+    pub expand_cookbook_entry: Vec<bool>,
     pub restore_requested: Vec<bool>,
+    pub restore_cookbook_requested: Vec<bool>,
     pub delete_requested: Vec<bool>,
     pub deleted: Vec<bool>,
     pub restore_msg: Vec<String>,
+    pub restore_cookbook_msg: Vec<String>,
     pub just_restored: bool,
     pub archived_command_list: Vec<Option<Vec<String>>>,
+    pub cookbook_command_list: Vec<Option<Vec<String>>>,
     pub archive_name: Vec<text_input::State>,
     pub archive_name_value: Vec<String>,
     pub name: text_input::State,
@@ -135,6 +146,10 @@ pub struct EncloneVisual {
     pub share_start: Option<Instant>,
     pub archive_name_change_button_color: Vec<Color>,
     pub copy_archive_narrative_button_color: Vec<Color>,
+    pub copy_cookbook_narrative_button_color: Vec<Color>,
+    pub copy_narrative_button_color: Color,
+    pub cookbook_name: Vec<String>,
+    pub cookbook_narrative: Vec<String>,
     //
     // users for sharing
     //

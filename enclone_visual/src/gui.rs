@@ -2,6 +2,7 @@
 
 use crate::archive::*;
 use crate::help::*;
+use crate::history::*;
 use crate::popover::*;
 use crate::testsuite::*;
 use crate::*;
@@ -339,6 +340,35 @@ impl Application for EncloneVisual {
         x.archive_share_requested = vec![false; n];
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
+        x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+
+        // Fetch cookbooks.
+
+        let cookbook_dir = include_dir::include_dir!("src/cookbooks");
+        for cookbook in cookbook_dir.find("*.cb").unwrap() {
+            let f = cookbook_dir.get_file(cookbook.path()).unwrap();
+            x.cookbooks.push(f.contents().to_vec());
+        }
+        let nc = x.cookbooks.len();
+        x.expand_cookbook_entry = vec![false; nc];
+        x.restore_cookbook_requested = vec![false; nc];
+        x.cookbook_narrative_button = vec![iced::button::State::default(); nc];
+        x.copy_cookbook_narrative_button = vec![iced::button::State::default(); nc];
+        x.copy_cookbook_narrative_button_color = vec![Color::from_rgb(0.0, 0.0, 0.0); nc];
+        x.restore_cookbook_msg = vec![String::new(); nc];
+        for i in 0..nc {
+            let evh = EncloneVisualHistory::restore_from_bytes(&x.cookbooks[i]).unwrap();
+            x.cookbook_name.push(evh.name_value.clone());
+            let mut cc = Vec::<String>::new();
+            for j in 0..evh.translated_input_history.len() {
+                cc.push(
+                    evh.translated_input_hist_uniq[evh.translated_input_history[j] as usize]
+                        .clone(),
+                );
+            }
+            x.cookbook_command_list.push(Some(cc));
+            x.cookbook_narrative.push(evh.narrative.clone());
+        }
 
         // Handle test and meta modes.
 
@@ -566,18 +596,20 @@ impl Application for EncloneVisual {
 
             // Create narrative button.
 
-            const MAX_NARRATIVE_LINE: usize = 33;
             let mut logx = String::new();
             let mut logx_lines = 1;
+            let mut have_narrative = false;
             if self.h.history_index >= 1 {
                 let mut cmd = self.h.narrative_hist_uniq
                     [self.h.narrative_history[self.h.history_index as usize - 1] as usize]
                     .clone();
                 if cmd.len() == 0 {
                     cmd = "Narrative: click to paste in clipboard".to_string();
+                } else {
+                    have_narrative = true;
                 }
                 let mut rows = Vec::<Vec<String>>::new();
-                let folds = fold(&cmd, MAX_NARRATIVE_LINE);
+                let folds = fold(&cmd, MAX_LINE);
                 logx_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
@@ -591,9 +623,20 @@ impl Application for EncloneVisual {
             }
             let narrative_button = Button::new(
                 &mut self.narrative_button,
-                Text::new(&logx).font(DEJAVU_BOLD).size(12),
+                Text::new(&logx)
+                    .font(DEJAVU_BOLD)
+                    .size(12)
+                    .color(Color::from_rgb(1.0, 0.0, 0.5)),
             )
             .on_press(Message::Narrative);
+
+            let copy_narrative_button = Button::new(
+                &mut self.copy_narrative_button,
+                Text::new("Copy")
+                    .size(COPY_BUTTON_FONT_SIZE)
+                    .color(self.copy_narrative_button_color),
+            )
+            .on_press(Message::CopyNarrative);
 
             // Build the command column.
 
@@ -612,8 +655,8 @@ impl Application for EncloneVisual {
             );
             let mut col = Column::new().spacing(8).align_items(Align::End);
             const SMALL_FONT: u16 = 12;
-            command_complex_height = ((log_lines + logx_lines) * SMALL_FONT as usize)
-                + (3 * 8)
+            command_complex_height = ((1 + log_lines + logx_lines) * SMALL_FONT as usize)
+                + (4 * 8)
                 + (2 * COPY_BUTTON_FONT_SIZE as usize);
             col = col.push(
                 Button::new(
@@ -625,6 +668,9 @@ impl Application for EncloneVisual {
             col = col.push(row);
             col = col.push(summary_button);
             col = col.push(narrative_button);
+            if have_narrative {
+                col = col.push(copy_narrative_button);
+            }
 
             // Add the command column to the row.
 
@@ -640,7 +686,7 @@ impl Application for EncloneVisual {
         // Build the scrollable for clonotypes.  We truncate lines to prevent wrapping.
 
         const CLONOTYPE_FONT_SIZE: u16 = 13;
-        let font_width = CLONOTYPE_FONT_SIZE as f32 * 0.5175;
+        let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
         let available = self.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
         let nchars = (available as f32 / font_width).round() as usize;
         let mut trunc = String::new();
@@ -678,8 +724,8 @@ impl Application for EncloneVisual {
             blank = self.h.is_blank[self.h.history_index as usize - 1];
         }
         let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
-        // 50 is a fudge factor:
-        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 50);
+        // 60 is a fudge factor:
+        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 60);
 
         // Display the SVG.
 
@@ -711,7 +757,6 @@ impl Application for EncloneVisual {
             if !have_canvas {
                 graphic_row = graphic_row.push(Space::with_width(Length::Fill));
             }
-
             graphic_row = graphic_row.push(command_complex);
         }
 

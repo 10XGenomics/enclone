@@ -1,9 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::history::*;
 use crate::messages::*;
 use crate::*;
 use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
+use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
 use iced::Command;
 use io_utils::*;
@@ -12,6 +14,202 @@ use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
+
+pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
+    let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
+    if reply_text.contains("enclone failed") {
+        reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
+    }
+    if reply_text.len() == 0 {
+        if slf.translated_input_value.contains(" NOPRINT") {
+            reply_text = "You used the NOPRINT option, so there are no \
+                clonotypes to see."
+                .to_string();
+        } else {
+            reply_text = "There are no clonotypes.  Please have a look at the summary.".to_string();
+        }
+    }
+
+    // Start storing values.
+
+    let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
+    slf.table_comp_value = reply_table_comp.clone();
+    let hi = slf.h.history_index;
+    let len = slf.h.table_comp_hist_uniq.len();
+    if len > 0 && slf.h.table_comp_hist_uniq[len - 1] == reply_table_comp {
+        slf.h
+            .table_comp_history
+            .insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.table_comp_history.insert(hi as usize, len as u32);
+        slf.h.table_comp_hist_uniq.push(reply_table_comp.clone());
+        if slf.table_comp_value.len() > 0 {
+            let mut gunzipped = Vec::<u8>::new();
+            let mut d = GzDecoder::new(&*reply_table_comp);
+            d.read_to_end(&mut gunzipped).unwrap();
+            slf.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
+        } else {
+            slf.current_tables.clear();
+        }
+    }
+
+    // Keep going.
+
+    reply_text += "\n \n \n"; // papering over truncation bug in display
+    let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+    let reply_last_widths = SERVER_REPLY_LAST_WIDTHS.lock().unwrap()[0].clone();
+    let mut reply_svg = String::new();
+    let mut blank = false;
+    if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
+        reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
+        if reply_svg.len() == 0 {
+            reply_svg = blank_svg();
+            blank = true;
+        }
+    }
+
+    // Continue storing values.
+    //
+    // We want to push as little as possible onto the hist_uniq vectors,
+    // and we want to do this as rapidly as possible.  The code here is not
+    // optimal, for two reasons:
+    // 1. We only compare to the last entry.
+    // 2. We make comparisons in cases where we should already know the answer.
+
+    let len = slf.h.last_widths_hist_uniq.len();
+    if len > 0 && slf.h.last_widths_hist_uniq[len - 1] == reply_last_widths {
+        slf.h
+            .last_widths_history
+            .insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.last_widths_history.insert(hi as usize, len as u32);
+        slf.h.last_widths_hist_uniq.push(reply_last_widths.clone());
+    }
+    let len = slf.h.svg_hist_uniq.len();
+    if len > 0 && slf.h.svg_hist_uniq[len - 1] == reply_svg {
+        slf.h.svg_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.svg_history.insert(hi as usize, len as u32);
+        slf.h.svg_hist_uniq.push(reply_svg.clone());
+    }
+    let len = slf.h.summary_hist_uniq.len();
+    if len > 0 && slf.h.summary_hist_uniq[len - 1] == reply_summary {
+        slf.h.summary_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.summary_history.insert(hi as usize, len as u32);
+        slf.h.summary_hist_uniq.push(reply_summary.clone());
+    }
+    slf.narrative_value.clear();
+    let len = slf.h.narrative_hist_uniq.len();
+    if len > 0 && slf.h.narrative_hist_uniq[len - 1] == slf.narrative_value {
+        slf.h
+            .narrative_history
+            .insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.narrative_history.insert(hi as usize, len as u32);
+        slf.h.narrative_hist_uniq.push(slf.narrative_value.clone());
+    }
+    let len = slf.h.displayed_tables_hist_uniq.len();
+    if len > 0 && slf.h.displayed_tables_hist_uniq[len - 1] == reply_text {
+        slf.h
+            .displayed_tables_history
+            .insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h
+            .displayed_tables_history
+            .insert(hi as usize, len as u32);
+        slf.h.displayed_tables_hist_uniq.push(reply_text.clone());
+    }
+    let len = slf.h.input1_hist_uniq.len();
+    if len > 0 && slf.h.input1_hist_uniq[len - 1] == slf.input1_value {
+        slf.h.input1_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.input1_history.insert(hi as usize, len as u32);
+        slf.h.input1_hist_uniq.push(slf.input1_value.clone());
+    }
+    let len = slf.h.input2_hist_uniq.len();
+    if len > 0 && slf.h.input2_hist_uniq[len - 1] == slf.input2_value {
+        slf.h.input2_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.input2_history.insert(hi as usize, len as u32);
+        slf.h.input2_hist_uniq.push(slf.input2_value.clone());
+    }
+    let len = slf.h.descrip_hist_uniq.len();
+    if len > 0 && slf.h.descrip_hist_uniq[len - 1] == slf.descrip_value {
+        slf.h.descrip_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.descrip_history.insert(hi as usize, len as u32);
+        slf.h.descrip_hist_uniq.push(slf.descrip_value.clone());
+    }
+    let len = slf.h.translated_input_hist_uniq.len();
+    if len > 0 && slf.h.translated_input_hist_uniq[len - 1] == slf.translated_input_value {
+        slf.h
+            .translated_input_history
+            .insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h
+            .translated_input_history
+            .insert(hi as usize, len as u32);
+        slf.h
+            .translated_input_hist_uniq
+            .push(slf.translated_input_value.clone());
+    }
+    slf.h.is_blank.insert(hi as usize, blank);
+    slf.h.history_index += 1;
+    slf.output_value = reply_text.to_string();
+    slf.svg_value = reply_svg.to_string();
+    slf.summary_value = reply_summary.to_string();
+    slf.last_widths_value = reply_last_widths.clone();
+    SUMMARY_CONTENTS.lock().unwrap().clear();
+    SUMMARY_CONTENTS
+        .lock()
+        .unwrap()
+        .push(slf.summary_value.clone());
+    if slf.svg_value.len() > 0 {
+        slf.post_svg(&reply_svg);
+    }
+    slf.compute_state = WaitingForRequest;
+    xprintln!(
+        "total time to run command = {:.1} seconds",
+        elapsed(&slf.start_command.unwrap())
+    );
+    let maxrss_slf;
+    unsafe {
+        let mut rusage: libc::rusage = std::mem::zeroed();
+        let retval = libc::getrusage(libc::RUSAGE_SELF, &mut rusage as *mut _);
+        assert_eq!(retval, 0);
+        maxrss_slf = rusage.ru_maxrss;
+    }
+    let peak_mem_mb = maxrss_slf as f64 / ((1024 * 1024) as f64);
+    xprintln!(
+        "all time peak mem of this process is {:.1} MB\n",
+        peak_mem_mb
+    );
+    if VERBOSE.load(SeqCst) {
+        let mb = (1024 * 1024) as f64;
+        let mut total_svg = 0;
+        for x in slf.h.svg_hist_uniq.iter() {
+            total_svg += x.len();
+        }
+        xprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
+        let mut total_tables = 0;
+        for x in slf.h.table_comp_hist_uniq.iter() {
+            total_tables += x.len();
+        }
+        xprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
+        xprintln!("");
+    }
+
+    if !TEST_MODE.load(SeqCst) {
+        Command::none()
+    } else {
+        slf.sanity_check();
+        assert!(slf.h.save_restore_works());
+        test_evh_read_write(&slf.h, "/tmp/evh_test");
+        std::fs::remove_file("/tmp/evh_test").unwrap();
+        Command::perform(noop0(), Message::Capture)
+    }
+}
 
 pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Command<Message> {
     slf.do_share = check_val;

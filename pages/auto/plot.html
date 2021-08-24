@@ -111,6 +111,28 @@ enclone BCR=123085:123089 PLOT="plot.svg,s1->blue,s2->red" QUAD_HIVE NOPRINT
 
 <img src="../../img/quad_hive.svg" alt="quad hive plot" title="quad hive plot">
 
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can make side-by-side honeycomb plots to facilitate comparison between different cell
+origins.  For example, these origins could be from different tissues, or the cells could be 
+prepared differently.</p>
+
+<p>In this example we have two datasets, specified using a colon as <code>123085:123089</code>, 
+which treats them as arising from two origins.  These particular data are actually replicates.</p>
+
+<p>Specification in this manner with <code>SPLIT_PLOT_BY_ORIGIN</code> causes all the 
+<code>123085</code> cells to be shown in the left plot, and all the <code>123089</code> cells to 
+be shown in the right plot.  Thus a cluster in the picture may be a partial clonotype, relative to 
+the entirety of the data.</p>
+
+<p>In principle more than two origins can be specified.</p>
+
+<p>
+<code>
+enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
+</code>
+</p>
+
+<img src="../../img/twin_plot.svg" alt="twin plot" title="twin plot">
+
 <br><br>
 
 <hr>

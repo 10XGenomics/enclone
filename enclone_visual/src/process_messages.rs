@@ -8,11 +8,8 @@ use crate::share::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
-use flate2::read::GzDecoder;
-use gui_structures::ComputeState::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
-use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
 
@@ -27,6 +24,17 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyNarrative => {
+                self.copy_narrative_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.narrative_current().as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyNarrative)
+            }
+
+            Message::CompleteCopyNarrative(_) => {
+                self.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyArchiveNarrative(i) => {
                 self.copy_archive_narrative_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.archive_narrative[i].as_bytes());
@@ -36,6 +44,19 @@ impl EncloneVisual {
             Message::CompleteCopyArchiveNarrative(_) => {
                 for i in 0..self.copy_archive_narrative_button_color.len() {
                     self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+                }
+                Command::none()
+            }
+
+            Message::CopyCookbookNarrative(i) => {
+                self.copy_cookbook_narrative_button_color[i] = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.cookbook_narrative[i].as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyCookbookNarrative)
+            }
+
+            Message::CompleteCopyCookbookNarrative(_) => {
+                for i in 0..self.copy_cookbook_narrative_button_color.len() {
+                    self.copy_cookbook_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
                 }
                 Command::none()
             }
@@ -84,30 +105,36 @@ impl EncloneVisual {
             Message::Narrative => {
                 self.modified = true;
                 let copy = get_clipboard_content();
-                self.narrative_value = copy.clone();
-                let len = self.h.narrative_hist_uniq.len();
-                self.h.narrative_hist_uniq.push(copy);
-                self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    self.narrative_value = copy.clone();
+                    let len = self.h.narrative_hist_uniq.len();
+                    self.h.narrative_hist_uniq.push(copy);
+                    self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                }
                 Command::none()
             }
 
             Message::ArchiveNarrative(i) => {
                 self.modified = true;
                 let copy = get_clipboard_content();
-                self.archive_narrative[i] = copy.clone();
-                let filename = format!(
-                    "{}/{}",
-                    self.archive_dir.as_ref().unwrap(),
-                    &self.archive_list[i]
-                );
-                let res = rewrite_narrative(&filename, &copy);
-                if res.is_err() {
-                    xprintln!(
-                        "\nSomething went wrong changing the narrative of\n{}\n\
-                        Possibly the file has been corrupted.\n",
-                        filename,
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    self.archive_narrative[i] = copy.clone();
+                    let filename = format!(
+                        "{}/{}",
+                        self.archive_dir.as_ref().unwrap(),
+                        &self.archive_list[i]
                     );
-                    std::process::exit(1);
+                    let res = rewrite_narrative(&filename, &copy);
+                    if res.is_err() {
+                        xprintln!(
+                            "\nSomething went wrong changing the narrative of\n{}\n\
+                            Possibly the file has been corrupted.\n",
+                            filename,
+                        );
+                        std::process::exit(1);
+                    }
                 }
                 Command::none()
             }
@@ -161,6 +188,27 @@ impl EncloneVisual {
                             filename
                         );
                     }
+                }
+                Command::none()
+            }
+
+            Message::RestoreCookbook(check_val, index) => {
+                if !self.just_restored {
+                    self.restore_cookbook_requested[index] = check_val;
+                    if self.modified {
+                        self.save();
+                    }
+                    let res = EncloneVisualHistory::restore_from_bytes(&self.cookbooks[index]);
+                    self.h = res.unwrap();
+                    // Ignore history index and instead rewind.
+                    if self.h.history_index > 1 {
+                        self.h.history_index = 1;
+                    }
+                    self.update_to_current();
+                    self.restore_cookbook_msg[index] =
+                        "Restored!  Now click Dismiss at top.".to_string();
+                    self.just_restored = true;
+                    self.modified = false;
                 }
                 Command::none()
             }
@@ -370,6 +418,11 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ExpandCookbookEntry(check_val, index) => {
+                self.expand_cookbook_entry[index] = check_val;
+                Command::none()
+            }
+
             Message::Resize(width, height) => {
                 self.width = width;
                 self.height = height;
@@ -377,13 +430,19 @@ impl EncloneVisual {
             }
 
             Message::GroupClicked(_message) => {
-                self.modified = true;
-                let group_id = GROUP_ID.load(SeqCst);
-                self.input_value = format!("{}", group_id);
-                self.input1_value = format!("{}", group_id);
-                self.input2_value.clear();
-                GROUP_ID_CLICKED_ON.store(false, SeqCst);
-                Command::perform(noop0(), Message::SubmitButtonPressed)
+                if GROUP_ID_CLICKED_ON.load(SeqCst) {
+                    self.modified = true;
+                    let group_id = GROUP_ID.load(SeqCst);
+                    self.input_value = format!("{}", group_id);
+                    self.input1_value = format!("{}", group_id);
+                    self.input2_value.clear();
+                    GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                    let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
+                    copy_bytes_to_clipboard(&tt.as_bytes());
+                    Command::perform(noop0(), Message::SubmitButtonPressed)
+                } else {
+                    Command::none()
+                }
             }
 
             Message::SubmitButtonPressed(_) => submit_button_pressed(self),
@@ -584,12 +643,19 @@ impl EncloneVisual {
                 for i in 0..self.expand_archive_entry.len() {
                     self.expand_archive_entry[i] = false;
                 }
+                for i in 0..self.cookbooks.len() {
+                    self.expand_cookbook_entry[i] = false;
+                    self.restore_cookbook_requested[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
                         self.deleted[i] = true;
                     }
+                }
+                for i in 0..self.restore_cookbook_msg.len() {
+                    self.restore_cookbook_msg[i].clear();
                 }
                 self.just_restored = false;
                 for i in 0..n {
@@ -621,12 +687,19 @@ impl EncloneVisual {
                 for i in 0..self.expand_archive_entry.len() {
                     self.expand_archive_entry[i] = false;
                 }
+                for i in 0..self.cookbooks.len() {
+                    self.expand_cookbook_entry[i] = false;
+                    self.restore_cookbook_requested[i] = false;
+                }
                 for i in 0..self.restore_msg.len() {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
                         self.deleted[i] = true;
                     }
+                }
+                for i in 0..self.restore_cookbook_msg.len() {
+                    self.restore_cookbook_msg[i].clear();
                 }
                 self.just_restored = false;
                 Command::none()
@@ -703,206 +776,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::ComputationDone(_) => {
-                let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
-                if reply_text.contains("enclone failed") {
-                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
-                }
-                if reply_text.len() == 0 {
-                    if self.translated_input_value.contains(" NOPRINT") {
-                        reply_text = "You used the NOPRINT option, so there are no \
-                            clonotypes to see."
-                            .to_string();
-                    } else {
-                        reply_text = "There are no clonotypes.  Please have a look at the summary."
-                            .to_string();
-                    }
-                }
-
-                // Start storing values.
-
-                let reply_table_comp = SERVER_REPLY_TABLE_COMP.lock().unwrap()[0].clone();
-                self.table_comp_value = reply_table_comp.clone();
-                let hi = self.h.history_index;
-                let len = self.h.table_comp_hist_uniq.len();
-                if len > 0 && self.h.table_comp_hist_uniq[len - 1] == reply_table_comp {
-                    self.h
-                        .table_comp_history
-                        .insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.table_comp_history.insert(hi as usize, len as u32);
-                    self.h.table_comp_hist_uniq.push(reply_table_comp.clone());
-                    if self.table_comp_value.len() > 0 {
-                        let mut gunzipped = Vec::<u8>::new();
-                        let mut d = GzDecoder::new(&*reply_table_comp);
-                        d.read_to_end(&mut gunzipped).unwrap();
-                        self.current_tables = serde_json::from_str(&strme(&gunzipped)).unwrap();
-                    } else {
-                        self.current_tables.clear();
-                    }
-                }
-
-                // Keep going.
-
-                reply_text += "\n \n \n"; // papering over truncation bug in display
-                let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
-                let reply_last_widths = SERVER_REPLY_LAST_WIDTHS.lock().unwrap()[0].clone();
-                let mut reply_svg = String::new();
-                let mut blank = false;
-                if SERVER_REPLY_SVG.lock().unwrap().len() > 0 {
-                    reply_svg = SERVER_REPLY_SVG.lock().unwrap()[0].clone();
-                    if reply_svg.len() == 0 {
-                        reply_svg = blank_svg();
-                        blank = true;
-                    }
-                }
-
-                // Continue storing values.
-                //
-                // We want to push as little as possible onto the hist_uniq vectors,
-                // and we want to do this as rapidly as possible.  The code here is not
-                // optimal, for two reasons:
-                // 1. We only compare to the last entry.
-                // 2. We make comparisons in cases where we should already know the answer.
-
-                let len = self.h.last_widths_hist_uniq.len();
-                if len > 0 && self.h.last_widths_hist_uniq[len - 1] == reply_last_widths {
-                    self.h
-                        .last_widths_history
-                        .insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.last_widths_history.insert(hi as usize, len as u32);
-                    self.h.last_widths_hist_uniq.push(reply_last_widths.clone());
-                }
-                let len = self.h.svg_hist_uniq.len();
-                if len > 0 && self.h.svg_hist_uniq[len - 1] == reply_svg {
-                    self.h.svg_history.insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.svg_history.insert(hi as usize, len as u32);
-                    self.h.svg_hist_uniq.push(reply_svg.clone());
-                }
-                let len = self.h.summary_hist_uniq.len();
-                if len > 0 && self.h.summary_hist_uniq[len - 1] == reply_summary {
-                    self.h.summary_history.insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.summary_history.insert(hi as usize, len as u32);
-                    self.h.summary_hist_uniq.push(reply_summary.clone());
-                }
-                self.narrative_value.clear();
-                let len = self.h.narrative_hist_uniq.len();
-                if len > 0 && self.h.narrative_hist_uniq[len - 1] == self.narrative_value {
-                    self.h
-                        .narrative_history
-                        .insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.narrative_history.insert(hi as usize, len as u32);
-                    self.h
-                        .narrative_hist_uniq
-                        .push(self.narrative_value.clone());
-                }
-                let len = self.h.displayed_tables_hist_uniq.len();
-                if len > 0 && self.h.displayed_tables_hist_uniq[len - 1] == reply_text {
-                    self.h
-                        .displayed_tables_history
-                        .insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h
-                        .displayed_tables_history
-                        .insert(hi as usize, len as u32);
-                    self.h.displayed_tables_hist_uniq.push(reply_text.clone());
-                }
-                let len = self.h.input1_hist_uniq.len();
-                if len > 0 && self.h.input1_hist_uniq[len - 1] == self.input1_value {
-                    self.h.input1_history.insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.input1_history.insert(hi as usize, len as u32);
-                    self.h.input1_hist_uniq.push(self.input1_value.clone());
-                }
-                let len = self.h.input2_hist_uniq.len();
-                if len > 0 && self.h.input2_hist_uniq[len - 1] == self.input2_value {
-                    self.h.input2_history.insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.input2_history.insert(hi as usize, len as u32);
-                    self.h.input2_hist_uniq.push(self.input2_value.clone());
-                }
-                let len = self.h.descrip_hist_uniq.len();
-                if len > 0 && self.h.descrip_hist_uniq[len - 1] == self.descrip_value {
-                    self.h.descrip_history.insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h.descrip_history.insert(hi as usize, len as u32);
-                    self.h.descrip_hist_uniq.push(self.descrip_value.clone());
-                }
-                let len = self.h.translated_input_hist_uniq.len();
-                if len > 0
-                    && self.h.translated_input_hist_uniq[len - 1] == self.translated_input_value
-                {
-                    self.h
-                        .translated_input_history
-                        .insert(hi as usize, (len - 1) as u32);
-                } else {
-                    self.h
-                        .translated_input_history
-                        .insert(hi as usize, len as u32);
-                    self.h
-                        .translated_input_hist_uniq
-                        .push(self.translated_input_value.clone());
-                }
-                self.h.is_blank.insert(hi as usize, blank);
-                self.h.history_index += 1;
-                self.output_value = reply_text.to_string();
-                self.svg_value = reply_svg.to_string();
-                self.summary_value = reply_summary.to_string();
-                self.last_widths_value = reply_last_widths.clone();
-                SUMMARY_CONTENTS.lock().unwrap().clear();
-                SUMMARY_CONTENTS
-                    .lock()
-                    .unwrap()
-                    .push(self.summary_value.clone());
-                if self.svg_value.len() > 0 {
-                    self.post_svg(&reply_svg);
-                }
-                self.compute_state = WaitingForRequest;
-                xprintln!(
-                    "total time to run command = {:.1} seconds",
-                    elapsed(&self.start_command.unwrap())
-                );
-                let maxrss_self;
-                unsafe {
-                    let mut rusage: libc::rusage = std::mem::zeroed();
-                    let retval = libc::getrusage(libc::RUSAGE_SELF, &mut rusage as *mut _);
-                    assert_eq!(retval, 0);
-                    maxrss_self = rusage.ru_maxrss;
-                }
-                let peak_mem_mb = maxrss_self as f64 / ((1024 * 1024) as f64);
-                xprintln!(
-                    "all time peak mem of this process is {:.1} MB\n",
-                    peak_mem_mb
-                );
-                if VERBOSE.load(SeqCst) {
-                    let mb = (1024 * 1024) as f64;
-                    let mut total_svg = 0;
-                    for x in self.h.svg_hist_uniq.iter() {
-                        total_svg += x.len();
-                    }
-                    xprintln!("stored svgs = {:.1} MB", total_svg as f64 / mb);
-                    let mut total_tables = 0;
-                    for x in self.h.table_comp_hist_uniq.iter() {
-                        total_tables += x.len();
-                    }
-                    xprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
-                    xprintln!("");
-                }
-
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    self.sanity_check();
-                    assert!(self.h.save_restore_works());
-                    test_evh_read_write(&self.h, "/tmp/evh_test");
-                    std::fs::remove_file("/tmp/evh_test").unwrap();
-                    Command::perform(noop0(), Message::Capture)
-                }
-            }
+            Message::ComputationDone(_) => do_computation_done(self),
 
             Message::Capture(_) => {
                 let verbose = false;

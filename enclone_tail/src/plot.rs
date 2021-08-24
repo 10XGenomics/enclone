@@ -5,11 +5,10 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
-use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::group_colors::*;
-use crate::hex::*;
 use crate::pack_circles::*;
+use crate::plot_utils::*;
 use crate::polygon::*;
 use crate::string_width::*;
 use crate::*;
@@ -69,96 +68,36 @@ pub fn plot_clonotypes(
             region names.  If this is a problem, please let us know and we will generalize it.\n"
         ));
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize, Vec<(usize, String)>)>::new();
-    let mut radii = Vec::<f64>::new();
-    const SEP: f64 = 1.0; // separation between clusters
+
+    // Get origins.
+
     let mut origins = Vec::<String>::new();
-
-    // Go through the clonotypes.
-
     for i in 0..exacts.len() {
-        let mut colors = Vec::<String>::new();
-        let mut coords = Vec::<(f64, f64)>::new();
-        let mut barcodes = Vec::<(usize, String)>::new();
-        let mut n = 0;
-
-        // For PLOT_BY_MARK, find the dataset having the largest number of cells.
-
-        let mut dsx = 0;
-        if plot_opt.plot_by_mark {
-            let mut ds = Vec::<usize>::new();
-            for j in 0..exacts[i].len() {
-                let ex = &exact_clonotypes[exacts[i][j]];
-                for j in 0..ex.clones.len() {
-                    ds.push(ex.clones[j][0].dataset_index);
-                }
-            }
-            ds.sort();
-            let mut freq = Vec::<(u32, usize)>::new();
-            make_freq(&ds, &mut freq);
-            dsx = freq[0].1;
-        }
-
-        // Go through the exact subclonotypes in a clonotype.
-
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
-
-            // Traverse the cells in the exact subclonotype.
-
             for k in 0..ex.clones.len() {
-                barcodes.push((
-                    ex.clones[k][0].dataset_index,
-                    ex.clones[k][0].barcode.clone(),
-                ));
-                if plot_opt.plot_by_isotype {
-                } else if plot_opt.plot_by_mark {
-                } else {
-                    if ex.clones[k][0].origin_index.is_some() {
-                        let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
-                        origins.push(s.clone());
-                    }
+                if ex.clones[k][0].origin_index.is_some() {
+                    let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
+                    origins.push(s.clone());
                 }
-                let color = assign_cell_color(
-                    &ctl,
-                    &plot_opt,
-                    &refdata,
-                    &const_names,
-                    dsx,
-                    &exacts,
-                    &exact_clonotypes,
-                    i,
-                    j,
-                    k,
-                );
-                colors.push(color);
-                coords.push(hex_coord(n, 1.0));
-                n += 1;
             }
         }
-        unique_sort(&mut origins);
+    }
+    unique_sort(&mut origins);
 
-        // Move colors around to get vertical separation, e.g. blues on left, reds on right.
+    // Build one cluster for each clonotype.
 
-        coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        sort_sync2(&mut colors, &mut barcodes);
-
-        // Substitute enclone colors.
-
-        for j in 0..colors.len() {
-            substitute_enclone_color(&mut colors[j]);
-        }
-
-        // Save.
-
-        let mut radius = 0.0f64;
-        for j in 0..coords.len() {
-            radius =
-                radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
-        }
-        radius += SEP;
-        clusters.push((colors, coords, i, barcodes));
-        radii.push(radius);
+    let mut clusters = build_clusters(
+        &ctl,
+        &plot_opt,
+        &refdata,
+        &exacts,
+        &exact_clonotypes,
+        &const_names,
+    );
+    let mut radii = Vec::<f64>::new();
+    for i in 0..clusters.len() {
+        radii.push(clusters[i].radius);
     }
 
     // Set group specification, if CLONOTYPE_GROUP_NAMES was specified.
@@ -242,7 +181,7 @@ pub fn plot_clonotypes(
                 if new_group_names[i].is_some() {
                     nx.push((
                         new_group_names[i].as_ref().unwrap().to_string(),
-                        clusters[i].1.len(),
+                        clusters[i].coords.len(),
                     ));
                 }
             }
@@ -302,7 +241,43 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
+        let mut centersx;
+        if plot_opt.split_plot_by_origin {
+            centersx = vec![(0.0, 0.0); radiix.len()];
+            let passes = ctl.origin_info.origin_list.len();
+            let mut xstart = 0.0;
+            for pass in 0..passes {
+                let mut radiiy = Vec::<f64>::new();
+                let mut indices = Vec::<usize>::new();
+                for i in 0..radiix.len() {
+                    let li = clusters[i].barcodes[0].0;
+                    let p =
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
+                    if pass != p as usize {
+                        continue;
+                    }
+                    radiiy.push(radiix[i]);
+                    indices.push(i);
+                }
+                let centersy = pack_circles(&radiiy, &blacklist, plot_opt.plot_quad);
+                let mut left = 0.0_f64;
+                for j in 0..centersy.len() {
+                    left = left.max(-centersy[j].0 + radiiy[j]);
+                }
+                xstart += left;
+                for j in 0..centersy.len() {
+                    centersx[indices[j]] = (centersy[j].0 + xstart, centersy[j].1);
+                }
+                let mut right = 0.0_f64;
+                for j in 0..centersy.len() {
+                    right = right.max(centersy[j].0 + radiiy[j]);
+                }
+                const HSEP: f64 = 10.0;
+                xstart += right + HSEP;
+            }
+        } else {
+            centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
+        }
         for i in 0..ids.len() {
             centers[ids[i]] = centersx[i];
         }
@@ -337,11 +312,11 @@ pub fn plot_clonotypes(
         let mut clusters2 = clusters.clone();
         for i in 0..ids.len() {
             let id = ids[i];
-            let mut c = clusters[id].0.clone();
+            let mut c = clusters[id].colors.clone();
             unique_sort(&mut c);
             if c.solo() {
                 // Note confusion here between the last argument, i, and clusters[i].2:
-                ccc.push((clusters[i].0.len(), c[0].clone(), i));
+                ccc.push((clusters[i].colors.len(), c[0].clone(), i));
             }
         }
         ccc.sort();
@@ -357,9 +332,9 @@ pub fn plot_clonotypes(
             for k in i..j {
                 let new_id = angle[k - i].1;
                 let id = ccc[k].2;
-                clusters2[ids[new_id]].0 = clusters[id].0.clone();
-                clusters2[ids[new_id]].2 = clusters[id].2;
-                clusters2[ids[new_id]].3 = clusters[id].3.clone();
+                clusters2[ids[new_id]].colors = clusters[id].colors.clone();
+                clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
+                clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
             }
             i = j;
         }
@@ -371,9 +346,9 @@ pub fn plot_clonotypes(
 
     let t = Instant::now();
     for i in 0..clusters.len() {
-        for j in 0..clusters[i].1.len() {
-            clusters[i].1[j].0 += centers[i].0;
-            clusters[i].1[j].1 += centers[i].1;
+        for j in 0..clusters[i].coords.len() {
+            clusters[i].coords[j].0 += centers[i].0;
+            clusters[i].coords[j].1 += centers[i].1;
         }
     }
     let mut center = Vec::<(f64, f64)>::new();
@@ -391,12 +366,12 @@ pub fn plot_clonotypes(
     let mut group_index2 = Vec::<usize>::new();
     let mut clonotype_index2 = Vec::<usize>::new();
     for i in 0..clusters.len() {
-        for j in 0..clusters[i].0.len() {
-            color.push(clusters[i].0[j].clone());
-            barcodes.push(clusters[i].3[j].clone());
-            center.push((clusters[i].1[j].0, clusters[i].1[j].1));
+        for j in 0..clusters[i].colors.len() {
+            color.push(clusters[i].colors[j].clone());
+            barcodes.push(clusters[i].barcodes[j].clone());
+            center.push((clusters[i].coords[j].0, clusters[i].coords[j].1));
             radius.push(1.0);
-            let ind = clusters[i].2;
+            let ind = clusters[i].clonotype_index;
             group_index2.push(group_index[&ind]);
             clonotype_index2.push(clonotype_index[ind]);
         }

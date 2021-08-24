@@ -50,6 +50,8 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
+
 pub fn compressed_message_history() -> Vec<String> {
     let mut messages = Vec::<String>::new();
     let n = MESSAGE_HISTORY.lock().unwrap().len();
@@ -82,7 +84,7 @@ pub fn compressed_message_history() -> Vec<String> {
 // there are compilation issues when compiled for Linux via GitHub Actions.
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub fn get_clipboard_content() -> String {
+pub fn get_clipboard_content() -> Option<String> {
     let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
     if ctx.is_err() {
         xprintln!("\nSomething went wrong accessing clipboard.");
@@ -92,16 +94,15 @@ pub fn get_clipboard_content() -> String {
     let mut ctx = ctx.unwrap();
     let copy = ctx.get_contents();
     if copy.is_err() {
-        xprintln!("\nSomething went wrong copying from clipboard.");
-        xprintln!("This is weird so please ask for help.");
-        std::process::exit(1);
+        None
+    } else {
+        Some(format!("{}", ctx.get_contents().unwrap()))
     }
-    format!("{}", ctx.get_contents().unwrap())
 }
 
 #[cfg(target_os = "linux")]
-pub fn get_clipboard_content() -> String {
-    String::new()
+pub fn get_clipboard_content() -> Option<String> {
+    None
 }
 
 pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
@@ -268,38 +269,45 @@ pub fn get_window_id() -> usize {
     m.after("id=").force_usize()
 }
 
-pub fn fold(line: &str, max_line: usize) -> Vec<String> {
+pub fn fold(all: &str, max_line: usize) -> Vec<String> {
     let mut pieces = Vec::<String>::new();
-    let words = line.split(' ').collect::<Vec<&str>>();
-    let mut current = String::new();
-    let mut i = 0;
-    while i < words.len() {
-        if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
-            pieces.push(current.clone());
-            current.clear();
-            i -= 1;
-        } else if words[i].len() >= max_line {
-            let mut w = words[i].as_bytes().to_vec();
-            loop {
-                let n = std::cmp::min(max_line, w.len());
-                let sub = stringme(&w[0..n]);
-                if n < w.len() {
-                    pieces.push(sub);
-                    w = w[n..w.len()].to_vec();
-                } else {
-                    current = stringme(&w);
-                    break;
-                }
-            }
-        } else if current.len() == 0 {
-            current += &mut words[i].clone();
+    let lines = all.split('\n').collect::<Vec<&str>>();
+    for line in lines.iter() {
+        if line.len() == 0 {
+            pieces.push(String::new());
         } else {
-            current += &mut format!(" {}", words[i]);
+            let words = line.split(' ').collect::<Vec<&str>>();
+            let mut current = String::new();
+            let mut i = 0;
+            while i < words.len() {
+                if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
+                    pieces.push(current.clone());
+                    current.clear();
+                    i -= 1;
+                } else if words[i].len() >= max_line {
+                    let mut w = words[i].as_bytes().to_vec();
+                    loop {
+                        let n = std::cmp::min(max_line, w.len());
+                        let sub = stringme(&w[0..n]);
+                        if n < w.len() {
+                            pieces.push(sub);
+                            w = w[n..w.len()].to_vec();
+                        } else {
+                            current = stringme(&w);
+                            break;
+                        }
+                    }
+                } else if current.len() == 0 {
+                    current += &mut words[i].clone();
+                } else {
+                    current += &mut format!(" {}", words[i]);
+                }
+                i += 1;
+            }
+            if current.len() > 0 {
+                pieces.push(current);
+            }
         }
-        i += 1;
-    }
-    if current.len() > 0 {
-        pieces.push(current);
     }
     pieces
 }
@@ -438,6 +446,7 @@ lazy_static! {
     pub static ref RECEIVED_SHARES_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
     pub static ref RECEIVED_SHARES_MESSAGES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref TOOLTIP_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

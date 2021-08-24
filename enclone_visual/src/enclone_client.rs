@@ -119,7 +119,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.00000000000000001";
+    let version = "0.0000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.

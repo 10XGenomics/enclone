@@ -40,6 +40,7 @@ pub struct CanvasView {
 
 #[derive(Debug, Clone)]
 pub enum Message {
+    DoNothing,
     GroupClick,
 }
 
@@ -111,6 +112,23 @@ impl CanvasView {
     }
 }
 
+const MAX_WIDTH: f32 = 770.0;
+
+fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
+    let mut max_height = SVG_HEIGHT as f32;
+    if empty {
+        max_height = SVG_NULL_HEIGHT as f32;
+    }
+    max_height -= 5.0;
+    let scale_x = MAX_WIDTH / width;
+    let scale_y = max_height / height;
+    let mut scale = scale_y;
+    if scale_x < scale_y {
+        scale = scale_x;
+    }
+    scale
+}
+
 impl<'a> canvas::Program<Message> for CanvasView {
     fn update(
         &mut self,
@@ -129,16 +147,8 @@ impl<'a> canvas::Program<Message> for CanvasView {
                     let message = match button {
                         mouse::Button::Left => {
                             let g = self.state.geometry_value.as_ref().unwrap();
-                            let (_width, height) = self.dimensions();
-                            let mut scale = 1.0;
-                            let mut max_height = SVG_HEIGHT as f32;
-                            if g.len() == 1 {
-                                max_height = SVG_NULL_HEIGHT as f32;
-                            }
-                            max_height -= 5.0;
-                            if height > max_height {
-                                scale = max_height / height;
-                            }
+                            let (width, height) = self.dimensions();
+                            let scale = get_scale(width, height, g.len() == 1);
                             let mut group_id = None;
                             let pos = cursor.position_in(&bounds);
                             for i in 0..g.len() {
@@ -253,15 +263,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
         let g = self.state.geometry_value.as_ref().unwrap();
         let (width, height) = self.dimensions();
-        let mut scale = 1.0;
-        let mut max_height = SVG_HEIGHT as f32;
-        if g.len() == 1 {
-            max_height = SVG_NULL_HEIGHT as f32;
-        }
-        max_height -= 5.0;
-        if height > max_height {
-            scale = max_height / height;
-        }
+        let scale = get_scale(width, height, g.len() == 1);
 
         // Rebuild geometries if needed.
 
@@ -409,14 +411,72 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             print_tabular_vbox(&mut log, &rows, 0, &b"l|r".to_vec(), false, true);
                             let xpos = 15.0 + width * scale;
                             frame.translate(Vector { x: xpos, y: 0.0 });
+
+                            TOOLTIP_TEXT.lock().unwrap().clear();
+                            TOOLTIP_TEXT.lock().unwrap().push(log.clone());
+
+                            let mut logp = String::new();
+                            for char in log.chars() {
+                                if char == '\n' {
+                                    logp.push(char);
+                                } else {
+                                    logp.push('█');
+                                }
+                            }
+
+                            // We put a layer of black below the tooltip text, which is going to
+                            // be white.  There are two approaches.  First, if the tooltip box lies
+                            // strictly within the canvas (and not to the right of it), we display
+                            // a black rectangle.  Otherwise, we contruct the layer out of box
+                            // characters.  This is not fully satisfactory because there are small
+                            // gaps between them.
+
+                            let tooltip_font_size: f32 = 13.5;
+                            let mut width_in_chars = 0;
+                            let mut height_in_chars = 0;
+                            for line in log.lines() {
+                                let mut nchars = 0;
+                                for _char in line.chars() {
+                                    nchars += 1;
+                                }
+                                width_in_chars = std::cmp::max(width_in_chars, nchars);
+                                height_in_chars += 1;
+                            }
+                            let box_width = width_in_chars as f32
+                                * tooltip_font_size
+                                * DEJAVU_WIDTH_OVER_HEIGHT;
+                            let box_height = height_in_chars as f32 * tooltip_font_size;
+                            if xpos + box_width <= MAX_WIDTH {
+                                frame.fill_rectangle(
+                                    Point { x: 0.0, y: 0.0 },
+                                    Size {
+                                        width: box_width,
+                                        height: box_height,
+                                    },
+                                    iced::canvas::Fill::from(Color::BLACK),
+                                );
+                            } else {
+                                let text = canvas::Text {
+                                    content: logp,
+                                    size: tooltip_font_size,
+                                    font: DEJAVU,
+                                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                                    ..canvas::Text::default()
+                                };
+                                frame.fill_text(text);
+                            }
+
+                            // Now display the actual text in the tooltip box.
+
                             let text = canvas::Text {
                                 content: log,
-                                size: 13.5,
+                                size: tooltip_font_size,
                                 font: DEJAVU,
-                                color: Color::from_rgb(0.5, 0.3, 0.3),
+                                color: Color::from_rgb(1.0, 1.0, 1.0),
                                 ..canvas::Text::default()
                             };
                             frame.fill_text(text);
+
                             frame.translate(Vector { x: -xpos, y: -10.0 });
                             break;
                         }

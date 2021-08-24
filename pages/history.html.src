@@ -33,6 +33,12 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>8/24/21</b>: <code>SPLIT_PLOT_BY_ORIGIN</code> now allows creation of side-by-side honeycomb
+plots, representing e.g. different cell types or preparations.  See
+<a href="../../pages/auto/plot.html">enclone plots</a>.
+</p>
+
+<p>
 <b>8/17/21</b>: <code>KEEP_CELL_IF</code> now allows feature variables to appear in constraints, 
 see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
 </p>

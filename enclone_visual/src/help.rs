@@ -253,16 +253,19 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(
             Text::new(
                 "If you've displayed a honeycomb plot (see cookbook for examples), \
-            then positioning your mouse over a cell will cause a box to appear that \
-            provides some information about that cell.",
+            then positioning your mouse over a cell will cause a \"tooltip\" box to appear that \
+            provides some information about that cell.  To use space effectively, we allow the \
+            box to appear (in some cases) on top of the buttons on the right.  We are aware that \
+            the text rendering is flawed in such cases.",
             )
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
-                "And clicking on a cell is the same as typing its number into \
-            the input box!",
+                "Clicking on a cell is the same as typing its number into \
+            the input box, thus displaying the corresponding clonotype table.  In addition, \
+            clicking on a cell will copy the tooltip text to your clipboard.",
             )
             .width(max_width),
         )
@@ -395,10 +398,11 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "Finally at the bottom is the narrative box.  This is text for \
+                                "Finally near the bottom is the narrative box.  This is text for \
                     a given state that you can set by first copying text to your clipboard \
                     (outside enclone visual), and then clicking on the narrative box to copy \
-                    the text into it.",
+                    the text into it.  Conversely, there is a Copy button below the narrative box \
+                    that will copy the narrative text onto your clipboard.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         ),
