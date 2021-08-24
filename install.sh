@@ -385,7 +385,7 @@ main() {
         else
             printf "\nIt would appear that enclone is available as a command, as determined by\n"
             printf "your current shell and shell initialization files, but your configuration\n"
-            printf "does not give you the enclone version $_current_version that was just\n"
+            printf "does not give you the enclone version $_current_version that was just "
             printf "downloaded.\n"
         fi
     else
