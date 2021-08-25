@@ -172,10 +172,21 @@ fn main() {
                 lanes.push(lane.to_string().between("\"", "\"").force_usize());
                 let si_data = rrr["sample_indexes"].as_array().unwrap();
                 for j in 0..si_data.len() {
-                    sample_indices.push(si_data[j]["seq"].to_string().between("\"", "\"").to_string());
+                    sample_indices.push(
+                        si_data[j]["seq"]
+                            .to_string()
+                            .between("\"", "\"")
+                            .to_string(),
+                    );
                 }
-                let flowcell = rrr["sequencing_run"]["name"].to_string().between("\"", "\"").to_string();
-                read_path = v["fastq_paths"][&flowcell].to_string().between("\"", "\"").to_string();
+                let flowcell = rrr["sequencing_run"]["name"]
+                    .to_string()
+                    .between("\"", "\"")
+                    .to_string();
+                read_path = v["fastq_paths"][&flowcell]
+                    .to_string()
+                    .between("\"", "\"")
+                    .to_string();
             }
             seq_def = Some(SequencingDef {
                 read_path: read_path,

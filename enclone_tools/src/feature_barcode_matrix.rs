@@ -153,7 +153,11 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn feature_barcode_matrix(seq_def: &SequencingDef, id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
+pub fn feature_barcode_matrix(
+    seq_def: &SequencingDef,
+    id: usize,
+    verbose: bool,
+) -> Result<MirrorSparseMatrix, String> {
     let t = Instant::now();
 
     // Find the read files.
@@ -192,7 +196,10 @@ pub fn feature_barcode_matrix(seq_def: &SequencingDef, id: usize, verbose: bool)
     if verbose {
         println!("\nread path = {}", seq_def.read_path);
         println!("lanes = {}", seq_def.lanes.iter().format(","));
-        println!("sample indices = {}", seq_def.sample_indices.iter().format(","));
+        println!(
+            "sample indices = {}",
+            seq_def.sample_indices.iter().format(",")
+        );
         println!("used {:.1} seconds\n", elapsed(&t));
     }
 
