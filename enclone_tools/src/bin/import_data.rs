@@ -182,7 +182,7 @@ fn main() {
                     }
                     let flowcell = rrr["sequencing_run"]["name"]
                         .to_string()
-                    .between("\"", "\"")
+                        .between("\"", "\"")
                         .to_string();
                     read_path = v["fastq_paths"][&flowcell]
                         .to_string()
