@@ -380,7 +380,7 @@ main() {
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
         if [ "$_current_version" == "$available_version" ]; then
             printf "\nGood, the version of enclone that you would get from the command line is\n"
-            printf "the version $_current_version that was just downloaded.\n\n"
+            printf "the version $_current_version that was just downloaded.\n"
             ok=1
         else
             printf "\nIt would appear that enclone is available as a command, as determined by\n"
