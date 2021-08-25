@@ -19,6 +19,7 @@ use enclone_tools::feature_barcode_matrix::*;
 use io_utils::*;
 use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{remove_dir_all, rename, File};
@@ -133,30 +134,73 @@ fn main() {
         // Determine if the feature barcode matrix for the top feature barcodes should be
         // generated, and if so, what id to use.
 
-        let mut fbm_id = None;
+        let mut seq_def = None;
         if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
-            fbm_id = Some(id.force_usize());
+            seq_def = Some(feature_barcode_matrix_seq_def(id.force_usize()));
         } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
-            let inv = format!("{}/../_invocation", p);
-            let f = open_for_read![inv];
-            let mut lines = Vec::<String>::new();
-            for line in f.lines() {
-                let s = line.unwrap();
-                lines.push(s);
-            }
-            for i in 0..lines.len() {
-                let fields = parse_csv(&lines[i]);
-                if fields.len() >= 5 && fields[4] == "Antibody Capture" {
-                    fbm_id = Some(fields[3].force_usize());
-                    break;
+            let mut sample_indices = Vec::<String>::new();
+            let mut lanes = Vec::<usize>::new();
+            let read_path;
+            {
+                let mut antibody_seq_id = None;
+                let inv = format!("{}/../_invocation", p);
+                let f = open_for_read![inv];
+                let mut lines = Vec::<String>::new();
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    lines.push(s);
+                }
+                for i in 0..lines.len() {
+                    let fields = parse_csv(&lines[i]);
+                    if fields.len() >= 5 && fields[4] == "Antibody Capture" {
+                        antibody_seq_id = Some(fields[3].force_usize());
+                        break;
+                    }
+                }
+                if antibody_seq_id.is_some() {
+                    let antibody_seq_id = antibody_seq_id.unwrap();
+                    let pid = m.between("\"pipestance_id\":\"", "\"").to_string();
+                    let meta = &config["meta"];
+                    let url = format!("{}/{}", meta, pid);
+                    let o = Command::new("curl")
+                        .arg(&url)
+                        .output()
+                        .expect("failed to execute curl for meta");
+                    let mm = String::from_utf8(o.stdout).unwrap();
+                    let v: Value = serde_json::from_str(&mm).unwrap();
+                    let rrr = &v["sample_bag"]["sequencing_libraries"][&antibody_seq_id];
+                    let lane = &rrr["metadata"]["lane"];
+                    lanes.push(lane.to_string().between("\"", "\"").force_usize());
+                    let si_data = rrr["sample_indexes"].as_array().unwrap();
+                    for j in 0..si_data.len() {
+                        sample_indices.push(
+                            si_data[j]["seq"]
+                                .to_string()
+                                .between("\"", "\"")
+                                .to_string(),
+                        );
+                    }
+                    let flowcell = rrr["sequencing_run"]["name"]
+                        .to_string()
+                        .between("\"", "\"")
+                        .to_string();
+                    read_path = v["fastq_paths"][&flowcell]
+                        .to_string()
+                        .between("\"", "\"")
+                        .to_string();
+                    seq_def = Some(SequencingDef {
+                        read_path: read_path,
+                        sample_indices: sample_indices,
+                        lanes: lanes,
+                    });
                 }
             }
         }
 
         // Build feature barcode matrix for top feature barcodes.
 
-        if fbm_id.is_some() {
-            let m = feature_barcode_matrix(fbm_id.unwrap(), false);
+        if seq_def.is_some() {
+            let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), false);
             if m.is_ok() {
                 let m = m.unwrap();
                 for i in (0..dests.len()).rev() {

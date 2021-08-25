@@ -31,6 +31,7 @@ fs_extra = "1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", default-features=false, features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.10"
+lz4 = "1"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 rayon = "1"
