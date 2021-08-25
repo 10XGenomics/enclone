@@ -140,7 +140,7 @@ fn main() {
         } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
             let mut sample_indices = Vec::<String>::new();
             let mut lanes = Vec::<usize>::new();
-            let mut read_path = String::new();
+            let read_path;
             {
                 let mut antibody_seq_id = None;
                 let inv = format!("{}/../_invocation", p);
@@ -188,12 +188,12 @@ fn main() {
                         .to_string()
                         .between("\"", "\"")
                         .to_string();
+                    seq_def = Some(SequencingDef {
+                        read_path: read_path,
+                        sample_indices: sample_indices,
+                        lanes: lanes,
+                    });
                 }
-                seq_def = Some(SequencingDef {
-                    read_path: read_path,
-                    sample_indices: sample_indices,
-                    lanes: lanes,
-                });
             }
         }
 
