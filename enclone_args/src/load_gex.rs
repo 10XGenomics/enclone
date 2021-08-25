@@ -12,7 +12,7 @@ use rayon::prelude::*;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
-    io::BufRead,
+    io::{BufRead, BufReader},
     time::Instant,
 };
 use string_utils::*;
@@ -140,6 +140,7 @@ pub fn load_gex(
             // Define possible places for the analysis directory.
 
             let mut analysis = Vec::<String>::new();
+            analysis.push(format!("{}", outs));
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
             analysis.push(format!("{}/count/analysis", outs));
@@ -167,6 +168,17 @@ pub fn load_gex(
                 pca_file = format!("{}/pca/10_components/projection.csv", x);
                 if path_exists(&pca_file) {
                     pathlist.push(pca_file.clone());
+                    break;
+                }
+            }
+
+            // Find the feature metrics file.
+
+            let mut feature_metrics_file = String::new();
+            for x in analysis.iter() {
+                feature_metrics_file = format!("{}/per_feature_metrics.csv", x);
+                if path_exists(&feature_metrics_file) {
+                    pathlist.push(feature_metrics_file.clone());
                     break;
                 }
             }
@@ -321,6 +333,45 @@ pub fn load_gex(
                     types_file
                 );
                 return;
+            }
+
+            // Read feature metrics file.
+    
+            if feature_metrics_file.len() > 0 {
+                let mut feature_metrics = HashMap::<(String, String), String>::new();
+                let mut count = 0;
+                let f = open_for_read![&feature_metrics_file];
+                let mut feature_pos = HashMap::<String, usize>::new();
+                let mut xfields = Vec::<String>::new();
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    if count == 0 {
+                        for j in 0..fields.len() {
+                            feature_pos.insert(fields[j].to_string(), j);
+                        }
+                        xfields = fields.clone();
+                    } else {
+                        let feature_type = &fields[feature_pos["feature_type"]];
+                        let mut feature = fields[feature_pos["feature_name"]].clone();
+                        if feature_type.starts_with(&"Antibody") {
+                            feature += "_ab";
+                        } else if feature_type.starts_with(&"CRISPR") {
+                            feature += "_cr";
+                        } else if feature_type.starts_with(&"CUSTOM") {
+                            feature += "_cu";
+                        } else if feature_type.starts_with(&"Gene") {
+                            feature += "_g";
+                        }
+                        for j in 0..fields.len() {
+                            if fields[j] == "num_umis" || fields[j] == "num_reads"
+                                || fields[j] == "num_umis_cells" || fields[j] == "num_reads_cells" {
+                                feature_metrics.insert((feature.clone(), xfields[j].clone()), fields[j].clone());
+                             }
+                        }
+                    }
+                    count += 1;
+                }
             }
 
             // Read PCA file.
