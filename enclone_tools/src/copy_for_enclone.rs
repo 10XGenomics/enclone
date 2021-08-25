@@ -5,9 +5,9 @@
 
 use enclone_core::slurp::*;
 use io_utils::*;
+use lz4::EncoderBuilder;
 use mirror_sparse_matrix::*;
-use std::fs::{copy, remove_file};
-use std::process::Command;
+use std::fs::{copy, remove_file, File};
 use vector_utils::*;
 
 fn copy_file(f: &str, dir1: &str, dir2: &str) {
@@ -30,16 +30,16 @@ fn mkdirp(d: &str) {
     std::fs::create_dir_all(&d).unwrap();
 }
 
+fn compress(source: &str, destination: &str) {
+    let mut input_file = File::open(source).unwrap();
+    let output_file = File::create(destination).unwrap();
+    let mut encoder = EncoderBuilder::new().level(4).build(output_file).unwrap();
+    std::io::copy(&mut input_file, &mut encoder).unwrap();
+    let _ = encoder.finish();
+}
+
 fn lz4_file(f: &str) {
-    Command::new("lz4")
-        .arg("-q")
-        .arg(&f)
-        .status()
-        .expect("lz4 failed");
-    if !path_exists(&format!("{}.lz4", f)) {
-        eprintln!("\nAttempt to run lz4 -q {} appears to have failed.", f);
-    }
-    assert!(path_exists(&format!("{}.lz4", f)));
+    compress(&f, &format!("{}.lz4", f));
     remove_file(&f).unwrap();
 }
 

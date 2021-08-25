@@ -1519,6 +1519,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "lz4",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
