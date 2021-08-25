@@ -102,7 +102,6 @@ fn main() {
 
     // Step 4. Test "cargo t".
 
-    /*
     println!("running cargo t");
     let new = Command::new("cargo")
         .arg("t")
@@ -113,7 +112,6 @@ fn main() {
         eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
-    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
