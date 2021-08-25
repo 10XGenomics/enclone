@@ -140,7 +140,7 @@ fn main() {
         } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
             let mut sample_indices = Vec::<String>::new();
             let mut lanes = Vec::<usize>::new();
-            let read_path;
+            let mut read_path = String::new();
             {
                 let mut antibody_seq_id = None;
                 let inv = format!("{}/../_invocation", p);
@@ -157,42 +157,44 @@ fn main() {
                         break;
                     }
                 }
-                let antibody_seq_id = antibody_seq_id.unwrap().to_string();
-                let pid = m.between("\"pipestance_id\":\"", "\"").to_string();
-                let meta = &config["meta"];
-                let url = format!("{}/{}", meta, pid);
-                let o = Command::new("curl")
-                    .arg(&url)
-                    .output()
-                    .expect("failed to execute curl for meta");
-                let mm = String::from_utf8(o.stdout).unwrap();
-                let v: Value = serde_json::from_str(&mm).unwrap();
-                let rrr = &v["sample_bag"]["sequencing_libraries"][&antibody_seq_id];
-                let lane = &rrr["metadata"]["lane"];
-                lanes.push(lane.to_string().between("\"", "\"").force_usize());
-                let si_data = rrr["sample_indexes"].as_array().unwrap();
-                for j in 0..si_data.len() {
-                    sample_indices.push(
-                        si_data[j]["seq"]
-                            .to_string()
-                            .between("\"", "\"")
-                            .to_string(),
-                    );
+                if antibody_seq_id.is_some() {
+                    let antibody_seq_id = antibody_seq_id.unwrap();
+                    let pid = m.between("\"pipestance_id\":\"", "\"").to_string();
+                    let meta = &config["meta"];
+                    let url = format!("{}/{}", meta, pid);
+                    let o = Command::new("curl")
+                        .arg(&url)
+                        .output()
+                        .expect("failed to execute curl for meta");
+                    let mm = String::from_utf8(o.stdout).unwrap();
+                    let v: Value = serde_json::from_str(&mm).unwrap();
+                    let rrr = &v["sample_bag"]["sequencing_libraries"][&antibody_seq_id];
+                    let lane = &rrr["metadata"]["lane"];
+                    lanes.push(lane.to_string().between("\"", "\"").force_usize());
+                    let si_data = rrr["sample_indexes"].as_array().unwrap();
+                    for j in 0..si_data.len() {
+                        sample_indices.push(
+                            si_data[j]["seq"]
+                                .to_string()
+                                .between("\"", "\"")
+                                .to_string(),
+                        );
+                    }
+                    let flowcell = rrr["sequencing_run"]["name"]
+                        .to_string()
+                    .between("\"", "\"")
+                        .to_string();
+                    read_path = v["fastq_paths"][&flowcell]
+                        .to_string()
+                        .between("\"", "\"")
+                        .to_string();
                 }
-                let flowcell = rrr["sequencing_run"]["name"]
-                    .to_string()
-                    .between("\"", "\"")
-                    .to_string();
-                read_path = v["fastq_paths"][&flowcell]
-                    .to_string()
-                    .between("\"", "\"")
-                    .to_string();
+                seq_def = Some(SequencingDef {
+                    read_path: read_path,
+                    sample_indices: sample_indices,
+                    lanes: lanes,
+                });
             }
-            seq_def = Some(SequencingDef {
-                read_path: read_path,
-                sample_indices: sample_indices,
-                lanes: lanes,
-            });
         }
 
         // Build feature barcode matrix for top feature barcodes.
