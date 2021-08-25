@@ -338,9 +338,9 @@ pub fn load_gex(
                 return;
             }
 
-            // Read feature metrics file.  Note that we do not enforce the requirement of this 
+            // Read feature metrics file.  Note that we do not enforce the requirement of this
             // file, so it may not be present.
-    
+
             if feature_metrics_file.len() > 0 {
                 let mut count = 0;
                 let f = open_for_read![&feature_metrics_file];
@@ -367,10 +367,16 @@ pub fn load_gex(
                             feature += "_g";
                         }
                         for j in 0..fields.len() {
-                            if fields[j] == "num_umis" || fields[j] == "num_reads"
-                                || fields[j] == "num_umis_cells" || fields[j] == "num_reads_cells" {
-                                r.16.insert((feature.clone(), xfields[j].clone()), fields[j].clone());
-                             }
+                            if fields[j] == "num_umis"
+                                || fields[j] == "num_reads"
+                                || fields[j] == "num_umis_cells"
+                                || fields[j] == "num_reads_cells"
+                            {
+                                r.16.insert(
+                                    (feature.clone(), xfields[j].clone()),
+                                    fields[j].clone(),
+                                );
+                            }
                         }
                     }
                     count += 1;

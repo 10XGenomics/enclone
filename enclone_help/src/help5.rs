@@ -277,6 +277,24 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         )?;
 
         h.print(
+            "\\bold{options that display dataset variables}\n\n\
+             enclone has some variables that are computed for each dataset, and whose values may \
+             by printed after everything else, in a table, and not otherwise used (currently).  \
+             These may be specified using \
+             \\bold{DVARS=var1,...,varn}.  The dataset-level variables that are supported \
+             currently are:\n\
+             <feature>_cellular_r\n\
+             <feature>_cellular_u\n\
+             which are, respectively, the percentage of reads [UMIs] for the given feature that \
+             are in cells that were called by the cellranger pipeline.",
+        )?;
+
+        h.print(
+            "\n\n\\red{━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━}\n\n",
+        )?;
+
+        h.print(
             "\\bold{options that control global variables}\n\n\
              enclone has some global variables that can be computed, with values printed after \
              everything else, and not otherwise used (currently).  These may be specified using \
