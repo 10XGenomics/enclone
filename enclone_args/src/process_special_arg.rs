@@ -638,6 +638,11 @@ pub fn process_special_arg(
             *x = x.replace("_sum", "_Σ");
             *x = x.replace("_mean", "_μ");
         }
+    } else if arg.starts_with("DVARS=") {
+        ctl.gen_opt.dvars.clear();
+        for x in arg.after("DVARS=").split(',').collect::<Vec<&str>>() {
+            ctl.gen_opt.dvars.push(x.to_string());
+        }
     } else if arg.starts_with("GVARS=") {
         ctl.gen_opt.gvars.clear();
         for x in arg.after("GVARS=").split(',').collect::<Vec<&str>>() {
