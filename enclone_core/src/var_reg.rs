@@ -31,6 +31,18 @@ pub fn variable_registry() -> Vec<Variable> {
         doc:        "For a given feature, the percent of UMIs that are identified by the \
                      cellranger pipeline as lying in a cell.".to_string(),
     });
+    
+    // <FeatureName>_cellular_r
+
+    reg.push( Variable {
+        name:       "<FeatureName>_cellular_r".to_string(),
+        scope:      "dataset".to_string(),
+        prereqs:    vec!["per_feature_metrics.csv".to_string()],
+        value_type: "float[0,100].precision(1)".to_string(),
+        function:   "in ***.rs".to_string(),
+        doc:        "For a given feature, the percent of reads that are identified by the \
+                     cellranger pipeline as lying in a cell.".to_string(),
+    });
 
     reg
 }
