@@ -743,6 +743,7 @@ pub struct GexInfo {
     pub feature_id: Vec<HashMap<String, usize>>,
     pub have_gex: bool,
     pub have_fb: bool,
+    pub feature_metrics: Vec<HashMap<(String, String), String>>,
 }
 
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains

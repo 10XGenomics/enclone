@@ -37,6 +37,7 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
     h5_paths: &mut Vec<String>,
+    feature_metrics: &mut Vec<HashMap<(String, String), String>>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -56,6 +57,7 @@ pub fn load_gex(
         MirrorSparseMatrix,
         Vec<String>,
         Vec<String>,
+        HashMap<(String, String), String>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -75,6 +77,7 @@ pub fn load_gex(
             MirrorSparseMatrix::new(),
             Vec::<String>::new(),
             Vec::<String>::new(),
+            HashMap::<(String, String), String>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -335,10 +338,10 @@ pub fn load_gex(
                 return;
             }
 
-            // Read feature metrics file.
+            // Read feature metrics file.  Note that we do not enforce the requirement of this 
+            // file, so it may not be present.
     
             if feature_metrics_file.len() > 0 {
-                let mut feature_metrics = HashMap::<(String, String), String>::new();
                 let mut count = 0;
                 let f = open_for_read![&feature_metrics_file];
                 let mut feature_pos = HashMap::<String, usize>::new();
@@ -366,7 +369,7 @@ pub fn load_gex(
                         for j in 0..fields.len() {
                             if fields[j] == "num_umis" || fields[j] == "num_reads"
                                 || fields[j] == "num_umis_cells" || fields[j] == "num_reads_cells" {
-                                feature_metrics.insert((feature.clone(), xfields[j].clone()), fields[j].clone());
+                                r.16.insert((feature.clone(), xfields[j].clone()), fields[j].clone());
                              }
                         }
                     }
@@ -670,7 +673,7 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -693,6 +696,7 @@ pub fn load_gex(
         cell_type.push(x8);
         pca.push(x9);
         cell_type_specified.push(x10);
+        feature_metrics.push(x16);
     }
     ctl.perf_stats(&t, "in load_gex tail");
     Ok(())
@@ -718,6 +722,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut have_gex = false;
     let mut have_fb = false;
     let mut h5_paths = Vec::<String>::new();
+    let mut feature_metrics = Vec::<HashMap<(String, String), String>>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -735,6 +740,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut have_gex,
         &mut have_fb,
         &mut h5_paths,
+        &mut feature_metrics,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -841,5 +847,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         feature_id: feature_id,
         have_gex: have_gex,
         have_fb: have_fb,
+        feature_metrics: feature_metrics,
     })
 }
