@@ -29,14 +29,14 @@ use string_utils::*;
 use vector_utils::*;
 
 pub struct SequencingDef {
-    read_path: String,
-    sample_indices: Vec<String>,
-    lanes: Vec<usize>,
+    pub read_path: String,
+    pub sample_indices: Vec<String>,
+    pub lanes: Vec<usize>,
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn feature_barcode_matrix_head1(id: usize) -> SequencingDef {
+pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
     println!("getting feature barcode matrix for {}", id);
 
     // Get configuration.
@@ -153,9 +153,8 @@ pub fn feature_barcode_matrix_head1(id: usize) -> SequencingDef {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn feature_barcode_matrix(id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
+pub fn feature_barcode_matrix(seq_def: &SequencingDef, id: usize, verbose: bool) -> Result<MirrorSparseMatrix, String> {
     let t = Instant::now();
-    let seq_def = feature_barcode_matrix_head1(id);
 
     // Find the read files.
 
