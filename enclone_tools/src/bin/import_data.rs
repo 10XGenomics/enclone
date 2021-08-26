@@ -169,7 +169,8 @@ fn main() {
                         .expect("failed to execute curl for meta");
                     let mm = String::from_utf8(o.stdout).unwrap();
                     let v: Value = serde_json::from_str(&mm).unwrap();
-                    let rrr = &v["sample_bag"]["sequencing_libraries"][&antibody_seq_id];
+                    let asi = format!("{}", antibody_seq_id);
+                    let rrr = &v["sample_bag"]["sequencing_libraries"][&asi];
                     let lane = &rrr["metadata"]["lane"];
                     let lane = lane.to_string().between("\"", "\"").to_string();
                     let lane = lane.split(',').collect::<Vec<&str>>();
