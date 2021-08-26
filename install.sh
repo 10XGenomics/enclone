@@ -242,25 +242,28 @@ main() {
     #    and some use .profile.
     #    If the instructions here don't work, this post may be helpful:
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
+    #
+    #    Note for this section and the next: putting ~/bin in the user's path will not necessarily
+    #    work.  Instead they should have <home dir>/bin, as in the commands below.
 
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
-            echo 'PATH=~/bin:$PATH' >> .profile
+        test -r .bash_profile && echo 'PATH=$HOME/bin:$PATH' >> .bash_profile || \
+            echo 'PATH=$HOME/bin:$PATH' >> .profile
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 8. Add ~/bin to zsh path if needed.
+    # 8. Add $HOME/bin to zsh path if needed.
     #
-    #    (a) If .zshrc exists and we have not already added ~/bin to the PATH in it, do so.
-    #    (b) If .zshrc does not exist but the user shell is zsh, add ~/bin as above.
+    #    (a) If .zshrc exists and we have not already added $HOME/bin to the PATH in it, do so.
+    #    (b) If .zshrc does not exist but the user shell is zsh, add $HOME/bin as above.
 
     if [ -f .zshrc ]; then
-        if [[ `cat .zshrc` != *"export PATH=~/bin:"* ]]; then
-            echo 'export PATH="~/bin:$PATH"' >> .zshrc
+        if [[ `cat .zshrc` != *"export PATH=$HOME/bin:"* ]]; then
+            echo 'export PATH="$HOME/bin:$PATH"' >> .zshrc
         fi
     elif [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo 'export PATH="~/bin:$PATH"' > .zshrc
+        echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
