@@ -270,9 +270,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                 return Err(format!("\nUnknown DVAR = {}.\n", var));
             }
             if !bin_member(&known_features, &feature) {
-                return Err(format!("\nIn DVAR = {}, the feature {} is unknown.\n",
-                    var,
-                    feature,
+                return Err(format!(
+                    "\nIn DVAR = {}, the feature {} is unknown.\n",
+                    var, feature,
                 ));
             }
         }
