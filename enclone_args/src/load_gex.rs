@@ -185,7 +185,7 @@ pub fn load_gex(
             if !ctl.gen_opt.cellranger {
                 for x in analysis.iter() {
                     let f = format!("{}/metrics_summary_json.json", x);
-                    if path_exists(&json_metrics_file) {
+                    if path_exists(&f) {
                         json_metrics_file = f.clone();
                         pathlist.push(f);
                         break;
@@ -199,7 +199,7 @@ pub fn load_gex(
             if !ctl.gen_opt.cellranger {
                 for x in analysis.iter() {
                     let f = format!("{}/per_feature_metrics.csv", x);
-                    if path_exists(&feature_metrics_file) {
+                    if path_exists(&f) {
                         feature_metrics_file = f.clone();
                         pathlist.push(f);
                         break;
