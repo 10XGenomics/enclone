@@ -279,8 +279,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.print(
             "\\bold{options that display dataset variables}\n\n\
              enclone has some variables that are computed for each dataset, and whose values may \
-             by printed after everything else, in a table, and not otherwise used (currently).  \
-             These may be specified using \
+             by printed as a table in the summary, and not otherwise used (currently).  \
+             These may be specified using\n\
              \\bold{DVARS=var1,...,varn}.  The dataset-level variables that are supported \
              currently are:\n\
              <feature>_cellular_r\n\
