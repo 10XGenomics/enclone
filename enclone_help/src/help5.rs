@@ -291,7 +291,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
              cellranger output file per_feature_metrics.csv is read.  In addition, one may also \
              use numeric values defined in the file metrics_summary_json.json, but this file is in \
              general not available.  To get it, it may be necessary to rerun the cellranger \
-             pipeline using --vdrmode=disable and then copy the json file to outs.",
+             pipeline using --vdrmode=disable and then copy the json file to outs.  Finally, \
+             variable names may be prefaced with abbreviation:, and in such cases, it is the \
+             abbreviation that is displayed in the table.",
         )?;
 
         h.print(

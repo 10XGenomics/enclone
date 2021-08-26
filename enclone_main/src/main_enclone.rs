@@ -260,7 +260,10 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.dvars.len() > 0 {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
-            let var = &ctl.gen_opt.dvars[j];
+            let mut var = ctl.gen_opt.dvars[j].clone();
+            if var.contains(":") {
+                var = var.after(":").to_string();
+            }
             let mut found = false;
             for k in 0..gex_info.json_metrics.len() {
                 if gex_info.json_metrics[k].contains_key(&var.to_string()) {

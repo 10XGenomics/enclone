@@ -728,14 +728,24 @@ pub fn print_stats(
         if ctl.gen_opt.dvars.len() > 0 {
             fwriteln!(logx, "\nDATASET-LEVEL METRICS");
             let mut row = vec!["dataset".to_string()];
-            row.append(&mut ctl.gen_opt.dvars.clone());
+            for j in 0..ctl.gen_opt.dvars.len() {
+                let var = ctl.gen_opt.dvars[j].clone();
+                let mut display_var = var.clone();
+                if var.contains(":") {
+                    display_var = var.before(":").to_string();
+                }
+                row.push(display_var);
+            }
             let mut rows = vec![row];
             for i in 0..ctl.origin_info.n() {
                 let mut row = Vec::<String>::new();
                 let dataset_name = &ctl.origin_info.dataset_id[i];
                 row.push(dataset_name.clone());
                 for j in 0..ctl.gen_opt.dvars.len() {
-                    let var = &ctl.gen_opt.dvars[j];
+                    let mut var = ctl.gen_opt.dvars[j].clone();
+                    if var.contains(":") {
+                        var = var.after(":").to_string();
+                    }
                     let mut value = String::new();
                     if gex_info.json_metrics[i].contains_key(&var.to_string()) {
                         value = format!("{:.2}", gex_info.json_metrics[i][&var.to_string()]);
