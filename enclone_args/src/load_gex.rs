@@ -9,6 +9,7 @@ use hdf5::Dataset;
 use io_utils::*;
 use mirror_sparse_matrix::*;
 use rayon::prelude::*;
+use serde_json::Value;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
@@ -38,6 +39,7 @@ pub fn load_gex(
     have_fb: &mut bool,
     h5_paths: &mut Vec<String>,
     feature_metrics: &mut Vec<HashMap<(String, String), String>>,
+    json_metrics: &mut Vec<HashMap<String, f64>>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -58,6 +60,7 @@ pub fn load_gex(
         Vec<String>,
         Vec<String>,
         HashMap<(String, String), String>,
+        HashMap<String, f64>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -78,6 +81,7 @@ pub fn load_gex(
             Vec::<String>::new(),
             Vec::<String>::new(),
             HashMap::<(String, String), String>::new(),
+            HashMap::<String, f64>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -175,13 +179,26 @@ pub fn load_gex(
                 }
             }
 
+            // Find the json metrics file.
+
+            let mut json_metrics_file = String::new();
+            for x in analysis.iter() {
+                let f = format!("{}/metrics_summary_json.json", x);
+                if path_exists(&json_metrics_file) {
+                    json_metrics_file = f.clone();
+                    pathlist.push(f);
+                    break;
+                }
+            }
+
             // Find the feature metrics file.
 
             let mut feature_metrics_file = String::new();
             for x in analysis.iter() {
+                let f = format!("{}/per_feature_metrics.csv", x);
                 if path_exists(&feature_metrics_file) {
-                    feature_metrics_file = format!("{}/per_feature_metrics.csv", x);
-                    pathlist.push(feature_metrics_file.clone());
+                    feature_metrics_file = f.clone();
+                    pathlist.push(f);
                     break;
                 }
             }
@@ -336,6 +353,23 @@ pub fn load_gex(
                     types_file
                 );
                 return;
+            }
+
+            // Read json metrics file.  Note that we do not enforce the requirement of this
+            // file, so it may not be present.  Also it is not present in the outs folder of CS
+            // pipelines, and a customer would have to rerun with --vdrmode=disable to avoid
+            // deleting the file, and then move it to outs so enclone could find it.
+
+            if json_metrics_file.len() > 0 {
+                let m = std::fs::read_to_string(&json_metrics_file).unwrap();
+                let v: Value = serde_json::from_str(&m).unwrap();
+                let z = v.as_object().unwrap();
+                for (var, value) in z.iter() {
+                    if value.as_f64().is_some() {
+                        let value = value.as_f64().unwrap();
+                        r.17.insert(var.to_string(), value);
+                    }
+                }
             }
 
             // Read feature metrics file.  Note that we do not enforce the requirement of this
@@ -686,7 +720,7 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16)) in
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17)) in
         results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -710,6 +744,7 @@ pub fn load_gex(
         pca.push(x9);
         cell_type_specified.push(x10);
         feature_metrics.push(x16);
+        json_metrics.push(x17);
     }
     ctl.perf_stats(&t, "in load_gex tail");
     Ok(())
@@ -736,6 +771,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut have_fb = false;
     let mut h5_paths = Vec::<String>::new();
     let mut feature_metrics = Vec::<HashMap<(String, String), String>>::new();
+    let mut json_metrics = Vec::<HashMap<String, f64>>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -754,6 +790,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut have_fb,
         &mut h5_paths,
         &mut feature_metrics,
+        &mut json_metrics,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -861,5 +898,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         have_gex: have_gex,
         have_fb: have_fb,
         feature_metrics: feature_metrics,
+        json_metrics: json_metrics,
     })
 }
