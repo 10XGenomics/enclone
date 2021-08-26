@@ -286,7 +286,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
              <feature>_cellular_r\n\
              <feature>_cellular_u\n\
              which are, respectively, the percentage of reads [UMIs] for the given feature that \
-             are in cells that were called by the cellranger pipeline.",
+             are in cells that were called by the cellranger pipeline.  A feature is e.g. \
+             IGHG1_g etc. as discussed at \"enclone help lvars\".  To compute the metrics, the \
+             cellranger output file per_feature_metrics.csv is read.",
         )?;
 
         h.print(
