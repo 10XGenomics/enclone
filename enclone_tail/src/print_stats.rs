@@ -805,6 +805,7 @@ pub fn print_stats(
                 }
                 row.push(value);
             }
+            rows.push(vec!["\\hline".to_string(); row.len()]);
             rows.push(row);
         }
         let mut just = vec![b'l'];

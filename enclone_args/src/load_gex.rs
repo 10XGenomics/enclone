@@ -356,26 +356,33 @@ pub fn load_gex(
                         xfields = fields.clone();
                     } else {
                         let feature_type = &fields[feature_pos["feature_type"]];
-                        let mut feature = fields[feature_pos["feature_name"]].clone();
-                        if feature_type.starts_with(&"Antibody") {
-                            feature += "_ab";
-                        } else if feature_type.starts_with(&"CRISPR") {
-                            feature += "_cr";
-                        } else if feature_type.starts_with(&"CUSTOM") {
-                            feature += "_cu";
-                        } else if feature_type.starts_with(&"Gene") {
-                            feature += "_g";
-                        }
-                        for j in 0..fields.len() {
-                            if fields[j] == "num_umis"
-                                || fields[j] == "num_reads"
-                                || fields[j] == "num_umis_cells"
-                                || fields[j] == "num_reads_cells"
-                            {
-                                r.16.insert(
-                                    (feature.clone(), xfields[j].clone()),
-                                    fields[j].clone(),
-                                );
+                        let mut feature;
+                        for pass in 1..=2 {
+                            if pass == 1 {
+                                feature = fields[feature_pos["feature_name"]].clone();
+                            } else {
+                                feature = fields[feature_pos["feature_id"]].clone();
+                            }
+                            if feature_type.starts_with(&"Antibody") {
+                                feature += "_ab";
+                            } else if feature_type.starts_with(&"CRISPR") {
+                                feature += "_cr";
+                            } else if feature_type.starts_with(&"CUSTOM") {
+                                feature += "_cu";
+                            } else if feature_type.starts_with(&"Gene") {
+                                feature += "_g";
+                            }
+                            for j in 0..fields.len() {
+                                if xfields[j] == "num_umis"
+                                    || xfields[j] == "num_reads"
+                                    || xfields[j] == "num_umis_cells"
+                                    || xfields[j] == "num_reads_cells"
+                                {
+                                    r.16.insert(
+                                        (feature.clone(), xfields[j].clone()),
+                                        fields[j].clone(),
+                                    );
+                                }
                             }
                         }
                     }
