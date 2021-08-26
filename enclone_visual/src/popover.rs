@@ -45,6 +45,7 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
     let summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+    let summary = format!("{}\n \n", summary);
     let font_size = 20;
     let summary_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
