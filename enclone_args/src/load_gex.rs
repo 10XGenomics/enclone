@@ -179,8 +179,8 @@ pub fn load_gex(
 
             let mut feature_metrics_file = String::new();
             for x in analysis.iter() {
-                feature_metrics_file = format!("{}/per_feature_metrics.csv", x);
                 if path_exists(&feature_metrics_file) {
+                    feature_metrics_file = format!("{}/per_feature_metrics.csv", x);
                     pathlist.push(feature_metrics_file.clone());
                     break;
                 }
