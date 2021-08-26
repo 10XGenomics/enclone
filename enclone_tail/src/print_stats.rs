@@ -726,6 +726,7 @@ pub fn print_stats(
         // Print dataset-level variable values.
 
         if ctl.gen_opt.dvars.len() > 0 {
+            fwriteln!(logx, "\nDATASET-LEVEL METRICS");
             let mut row = vec!["dataset".to_string()];
             row.append(&mut ctl.gen_opt.dvars.clone());
             let mut rows = vec![row];
