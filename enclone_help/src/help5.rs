@@ -296,8 +296,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
 
         h.print(
             "\\bold{options that control global variables}\n\n\
-             enclone has some global variables that can be computed, with values printed after \
-             everything else, and not otherwise used (currently).  These may be specified using \
+             enclone has some global variables that can be computed, with values printed in the \
+             summary, and not otherwise used (currently).  These may be specified using \
              \\bold{GVARS=var1,...,varn}.  The global variables that are supported currently are:\n\
              d_inconsistent_%\n\
              d_inconsistent_n\n\
