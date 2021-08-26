@@ -956,7 +956,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 24] = [
     // 19.
     (
         "pages/auto/d_gene_example2.html",
-        "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT \
+        "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT SUMMARY SUMMARY_CLEAN \
          HTML=\"D gene example2\"",
     ),
     // 20.
