@@ -403,7 +403,7 @@ main() {
         printf "\n3. Show the permissions on ~/bin/enclone:\n\n"
         ls -l ~/bin/enclone
         printf "\n4. Attempt to execute ~/bin/enclone directly:\n\n"
-        $SHELL -c "~/bin/enclone --version"
+        $SHELL -c "$HOME/bin/enclone --version"
         printf "\n5. Show the output of which enclone.\n\n"
         which enclone
         printf "\n6. Testing for existence of various initialization files in your home directory\n"
