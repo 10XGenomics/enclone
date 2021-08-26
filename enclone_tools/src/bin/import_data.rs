@@ -162,7 +162,7 @@ fn main() {
                     let pid = m.between("\"pipestance_id\":\"", "\"").to_string();
                     let meta = &config["meta"];
                     let url = format!("{}/{}", meta, pid);
-                    println!("gettin data for {} from {}", antibody_seq_id, url);
+                    println!("getting data for {} from {}", antibody_seq_id, url);
                     let o = Command::new("curl")
                         .arg(&url)
                         .output()
