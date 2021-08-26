@@ -261,19 +261,27 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
             let var = &ctl.gen_opt.dvars[j];
-            let feature;
-            if var.ends_with("_cellular_r") {
-                feature = var.before("_cellular_r").to_string();
-            } else if var.ends_with("_cellular_u") {
-                feature = var.before("_cellular_u").to_string();
-            } else {
-                return Err(format!("\nUnknown DVAR = {}.\n", var));
+            let mut found = false;
+            for k in 0..gex_info.json_metrics.len() {
+                if gex_info.json_metrics[k].contains_key(&var.to_string()) {
+                    found = true;
+                }
             }
-            if !bin_member(&known_features, &feature) {
-                return Err(format!(
-                    "\nIn DVAR = {}, the feature {} is unknown.\n",
-                    var, feature,
-                ));
+            if !found {
+                let feature;
+                if var.ends_with("_cellular_r") {
+                    feature = var.before("_cellular_r").to_string();
+                } else if var.ends_with("_cellular_u") {
+                    feature = var.before("_cellular_u").to_string();
+                } else {
+                    return Err(format!("\nUnknown DVAR = {}.\n", var));
+                }
+                if !bin_member(&known_features, &feature) {
+                    return Err(format!(
+                        "\nIn DVAR = {}, the feature {} is unknown.\n",
+                        var, feature,
+                    ));
+                }
             }
         }
     }

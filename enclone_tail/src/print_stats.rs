@@ -736,63 +736,68 @@ pub fn print_stats(
                 row.push(dataset_name.clone());
                 for j in 0..ctl.gen_opt.dvars.len() {
                     let var = &ctl.gen_opt.dvars[j];
-                    let mut feature = String::new();
-                    let mut typex = String::new();
-                    let mut fail = false;
-                    if var.ends_with("_cellular_r") {
-                        feature = var.before("_cellular_r").to_string();
-                        typex = "r".to_string();
-                    } else if var.ends_with("_cellular_u") {
-                        feature = var.before("_cellular_u").to_string();
-                        typex = "u".to_string();
-                    } else {
-                        fail = true;
+                    let mut value = String::new();
+                    if gex_info.json_metrics[i].contains_key(&var.to_string()) {
+                        value = format!("{:.2}", gex_info.json_metrics[i][&var.to_string()]);
                     }
-                    let value;
-                    if fail {
-                        value = "undefined".to_string();
-                    } else if typex == "r" {
-                        if !gex_info.feature_metrics[i]
-                            .contains_key(&(feature.clone(), "num_reads".to_string()))
-                        {
-                            value = "undefined".to_string();
-                        } else if !gex_info.feature_metrics[i]
-                            .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
-                        {
-                            value = "undefined".to_string();
+                    if value.len() == 0 {
+                        let mut feature = String::new();
+                        let mut typex = String::new();
+                        let mut fail = false;
+                        if var.ends_with("_cellular_r") {
+                            feature = var.before("_cellular_r").to_string();
+                            typex = "r".to_string();
+                        } else if var.ends_with("_cellular_u") {
+                            feature = var.before("_cellular_u").to_string();
+                            typex = "u".to_string();
                         } else {
-                            let num = gex_info.feature_metrics[i]
-                                [&(feature.clone(), "num_reads_cells".to_string())]
-                                .force_usize();
-                            let den = gex_info.feature_metrics[i]
-                                [&(feature.clone(), "num_reads".to_string())]
-                                .force_usize();
-                            if den == 0 {
-                                value = "0/0".to_string();
-                            } else {
-                                value = format!("{:.1}", 100.0 * num as f64 / den as f64);
-                            }
+                            fail = true;
                         }
-                    } else {
-                        if !gex_info.feature_metrics[i]
-                            .contains_key(&(feature.clone(), "num_umis".to_string()))
-                        {
+                        if fail {
                             value = "undefined".to_string();
-                        } else if !gex_info.feature_metrics[i]
-                            .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
-                        {
-                            value = "undefined".to_string();
-                        } else {
-                            let num = gex_info.feature_metrics[i]
-                                [&(feature.clone(), "num_umis_cells".to_string())]
-                                .force_usize();
-                            let den = gex_info.feature_metrics[i]
-                                [&(feature.clone(), "num_umis".to_string())]
-                                .force_usize();
-                            if den == 0 {
-                                value = "0/0".to_string();
+                        } else if typex == "r" {
+                            if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_reads".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
+                            {
+                                value = "undefined".to_string();
                             } else {
-                                value = format!("{:.1}", 100.0 * num as f64 / den as f64);
+                                let num = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_reads_cells".to_string())]
+                                    .force_usize();
+                                let den = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_reads".to_string())]
+                                    .force_usize();
+                                if den == 0 {
+                                    value = "0/0".to_string();
+                                } else {
+                                    value = format!("{:.1}", 100.0 * num as f64 / den as f64);
+                                }
+                            }
+                        } else {
+                            if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_umis".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else {
+                                let num = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_umis_cells".to_string())]
+                                    .force_usize();
+                                let den = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_umis".to_string())]
+                                    .force_usize();
+                                if den == 0 {
+                                    value = "0/0".to_string();
+                                } else {
+                                    value = format!("{:.1}", 100.0 * num as f64 / den as f64);
+                                }
                             }
                         }
                     }
