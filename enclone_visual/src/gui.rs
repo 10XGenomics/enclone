@@ -341,6 +341,7 @@ impl Application for EncloneVisual {
         x.archive_origin = vec![String::new(); n];
         x.archive_narrative = vec![String::new(); n];
         x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.copy_summary_button_color = Color::from_rgb(0.0, 0.0, 0.0);
 
         // Fetch cookbooks.
 
