@@ -288,7 +288,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
              which are, respectively, the percentage of reads [UMIs] for the given feature that \
              are in cells that were called by the cellranger pipeline.  A feature is e.g. \
              IGHG1_g etc. as discussed at \"enclone help lvars\".  To compute the metrics, the \
-             cellranger output file per_feature_metrics.csv is read.",
+             cellranger output file per_feature_metrics.csv is read.  In addition, one may also \
+             use numeric values defined in the file metrics_summary_json.json, but this file is in \
+             general not available.  To get it, it may be necessary to rerun the cellranger \
+             pipeline using --vdrmode=disable and then copy the json file to outs.",
         )?;
 
         h.print(
