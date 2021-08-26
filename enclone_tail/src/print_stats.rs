@@ -734,76 +734,87 @@ pub fn print_stats(
     // Print dataset-level variable values.
 
     if ctl.gen_opt.dvars.len() > 0 {
-        let mut row = vec!["dataset"];
+        let mut row = vec!["dataset".to_string()];
         row.append(&mut ctl.gen_opt.dvars.clone());
-        let mut row = vec![row];
+        let mut rows = vec![row];
         for i in 0..ctl.origin_info.n() {
             let mut row = Vec::<String>::new();
             let dataset_name = &ctl.origin_info.dataset_id[i];
-            row.push(dataset_name);
+            row.push(dataset_name.clone());
             for j in 0..ctl.gen_opt.dvars.len() {
                 let var = &ctl.gen_opt.dvars[j];
                 let mut feature = String::new();
-                let mut type = String::new();
+                let mut typex = String::new();
                 let mut fail = false;
                 if var.ends_with("_cellular_r") {
                     feature = var.before("_cellular_r").to_string();
-                    type = "r";
+                    typex = "r".to_string();
                 } else if var.ends_with("_cellular_u") {
                     feature = var.before("_cellular_u").to_string();
-                    type = "u";
+                    typex = "u".to_string();
                 } else {
                     fail = true;
                 }
                 let value;
                 if fail {
                     value = "undefined".to_string();
-                } else if type == "r" {
-                    if !gex_info[i].feature_metrics.contains_key(
-                        (feature.clone(), "num_reads".to_string())) {
-                        value = "undefined";
-                    } else if !gex_info[i].feature_metrics.contains_key(
-                        (feature.clone(), "num_reads_cells".to_string())) {
-                        value = "undefined";
+                } else if typex == "r" {
+                    if !gex_info.feature_metrics[i]
+                        .contains_key(&(feature.clone(), "num_reads".to_string()))
+                    {
+                        value = "undefined".to_string();
+                    } else if !gex_info.feature_metrics[i]
+                        .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
+                    {
+                        value = "undefined".to_string();
                     } else {
-                        let num = gex_info[i][(feature.clone(), "num_reads_cells".to_string())];
-                        let den = gex_info[i][(feature.clone(), "num_reads".to_string())];
+                        let num = gex_info.feature_metrics[i]
+                            [&(feature.clone(), "num_reads_cells".to_string())]
+                            .force_usize();
+                        let den = gex_info.feature_metrics[i]
+                            [&(feature.clone(), "num_reads".to_string())]
+                            .force_usize();
                         if den == 0 {
-                            value = "0/0";
+                            value = "0/0".to_string();
                         } else {
-                            value = format!("{:.1}", 
-                                100.0 * num.force_usize() as f64 / den.force_usize() as f64
-                            );
+                            value = format!("{:.1}", 100.0 * num as f64 / den as f64);
                         }
                     }
                 } else {
-                    if !gex_info[i].feature_metrics.contains_key(
-                        (feature.clone(), "num_umis".to_string())) {
-                        value = "undefined";
-                        continue;
-                    } else if !gex_info[i].feature_metrics.contains_key(
-                        (feature.clone(), "num_umis_cells".to_string())) {
-                        value = "undefined";
-                        continue;
+                    if !gex_info.feature_metrics[i]
+                        .contains_key(&(feature.clone(), "num_umis".to_string()))
+                    {
+                        value = "undefined".to_string();
+                    } else if !gex_info.feature_metrics[i]
+                        .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
+                    {
+                        value = "undefined".to_string();
                     } else {
-                        let num = gex_info[i][(feature.clone(), "num_umis_cells".to_string())];
-                        let den = gex_info[i][(feature.clone(), "num_umis".to_string())];
+                        let num = gex_info.feature_metrics[i]
+                            [&(feature.clone(), "num_umis_cells".to_string())]
+                            .force_usize();
+                        let den = gex_info.feature_metrics[i]
+                            [&(feature.clone(), "num_umis".to_string())]
+                            .force_usize();
                         if den == 0 {
-                            value = "0/0";
+                            value = "0/0".to_string();
                         } else {
-                            value = format!("{:.1}", 
-                                100.0 * num.force_usize() as f64 / den.force_usize() as f64
-                            );
+                            value = format!("{:.1}", 100.0 * num as f64 / den as f64);
                         }
                     }
                 }
-                row.push_value();
+                row.push(value);
             }
             rows.push(row);
         }
-
-        // ... TO DO ...
-   
+        let mut just = vec![b'l'];
+        for _ in 0..ctl.gen_opt.dvars.len() {
+            just.push(b'|');
+            just.push(b'r');
+        }
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
+        fwrite!(logx, "{}", log);
     }
 
     // Print global variable values.
