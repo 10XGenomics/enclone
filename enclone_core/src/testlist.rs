@@ -49,7 +49,7 @@ pub const DTESTS: [&str; 15] = [
     // 6. the JALIGN1 in this example had a boundary location that was off by one
     r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=d1_name CDR3=CAKAGPTESGYYVWYFDLW"###,
     // 7. test d_inconsistent_{%,n}
-    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
+    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 8. test ALIGN<n>
     r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=d1_name"###,
     // 9. test ALIGN<n> and JALIGN<n>, case where there's a D segment
