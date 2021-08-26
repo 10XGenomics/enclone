@@ -397,9 +397,13 @@ main() {
         printf "\n1. Determining which shell you are using: $SHELL.\n"
         printf "\n2. Determining the path defined by your shell.\n\n"
         $SHELL -c "echo $PATH"
-        printf "\n3. Show the output of which enclone.\n\n"
+        printf "\n3. Show the permissions on ~/bin/enclone:\n\n"
+        ls -l ~/bin/enclone
+        printf "\n4. Attempt to execute ~/bin/enclone directly:\n\n"
+        $SHELL -c "~/bin/enclone --version"
+        printf "\n5. Show the output of which enclone.\n\n"
         which enclone
-        printf "\n4. Testing for existence of various initialization files in your home directory\n"
+        printf "\n6. Testing for existence of various initialization files in your home directory\n"
         printf "   and for each such file, if present, whether it sets your path.\n\n"
         cd
         NEWLINE=1
