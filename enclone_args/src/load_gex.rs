@@ -724,8 +724,10 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17)) in
-        results.into_iter().take(n).enumerate()
+    for (
+        _i,
+        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17),
+    ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
         gex_barcodes.push(x2);
