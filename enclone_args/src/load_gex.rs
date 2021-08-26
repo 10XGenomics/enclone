@@ -182,24 +182,28 @@ pub fn load_gex(
             // Find the json metrics file.
 
             let mut json_metrics_file = String::new();
-            for x in analysis.iter() {
-                let f = format!("{}/metrics_summary_json.json", x);
-                if path_exists(&json_metrics_file) {
-                    json_metrics_file = f.clone();
-                    pathlist.push(f);
-                    break;
+            if !ctl.gen_opt.cellranger {
+                for x in analysis.iter() {
+                    let f = format!("{}/metrics_summary_json.json", x);
+                    if path_exists(&json_metrics_file) {
+                        json_metrics_file = f.clone();
+                        pathlist.push(f);
+                        break;
+                    }
                 }
             }
 
             // Find the feature metrics file.
 
             let mut feature_metrics_file = String::new();
-            for x in analysis.iter() {
-                let f = format!("{}/per_feature_metrics.csv", x);
-                if path_exists(&feature_metrics_file) {
-                    feature_metrics_file = f.clone();
-                    pathlist.push(f);
-                    break;
+            if !ctl.gen_opt.cellranger {
+                for x in analysis.iter() {
+                    let f = format!("{}/per_feature_metrics.csv", x);
+                    if path_exists(&feature_metrics_file) {
+                        feature_metrics_file = f.clone();
+                        pathlist.push(f);
+                        break;
+                    }
                 }
             }
 
