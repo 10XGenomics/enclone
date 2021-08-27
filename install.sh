@@ -5,6 +5,8 @@
 
 # This is the installation and update script for enclone.  For instructions on how to
 # run it, please see bit.ly/enclone.  A few more details are here.
+#
+# Run shellcheck if you change this script: you'll need to sort wheat from chaff.
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
