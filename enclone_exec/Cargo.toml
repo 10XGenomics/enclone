@@ -28,7 +28,7 @@ enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual" }
 io_utils = "0.2"
-nix = "0.22"
+nix = ">=0.20, <0.23"
 pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
