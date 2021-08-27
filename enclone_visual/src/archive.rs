@@ -215,8 +215,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Display cookbooks.
 
+    let ncookbooks = slf.cookbooks.len();
+    let narchive = slf.archive_name.len();
     for (i, y, narbut, copynarbut) in izip!(
-        0..slf.cookbooks.len(),
+        0..ncookbooks,
         slf.cookbook_name.iter_mut(),
         slf.cookbook_narrative_button.iter_mut(),
         slf.copy_cookbook_narrative_button.iter_mut()
@@ -325,6 +327,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
             }
         }
+
+        if i < ncookbooks - 1 || narchive > 0 {
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            archive_scrollable = 
+                archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
+        }
+
         archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     }
 
@@ -332,7 +341,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     let mut count = 0;
     for (i, y, q, narbut, copynarbut) in izip!(
-        0..slf.archive_name.len(),
+        0..narchive,
         slf.archive_name.iter_mut(),
         slf.archive_name_change_button.iter_mut(),
         slf.archive_narrative_button.iter_mut(),
@@ -511,6 +520,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
                 }
             }
+
+            if i < narchive - 1 {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+                archive_scrollable = 
+                    archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
+            }
+
             count += 1;
         }
     }
