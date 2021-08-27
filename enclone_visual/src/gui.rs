@@ -354,10 +354,12 @@ impl Application for EncloneVisual {
         while GET_MY_COOKBOOKS.load(SeqCst) {
             thread::sleep(Duration::from_millis(10));
         }
-        let n = REMOTE_COOKBOOKS.lock().unwrap().len();
-        for i in 0..n {
-            x.cookbooks
-                .push(REMOTE_COOKBOOKS.lock().unwrap()[i].clone());
+        if !META_TESTING.load(SeqCst) && !TEST_MODE.load(SeqCst) {
+            let n = REMOTE_COOKBOOKS.lock().unwrap().len();
+            for i in 0..n {
+                x.cookbooks
+                    .push(REMOTE_COOKBOOKS.lock().unwrap()[i].clone());
+            }
         }
         let nc = x.cookbooks.len();
         x.expand_cookbook_entry = vec![false; nc];
