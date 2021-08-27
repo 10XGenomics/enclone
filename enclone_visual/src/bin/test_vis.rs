@@ -54,7 +54,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let options = fs_extra::dir::CopyOptions::new();
-    let source = "enclone_visual/sample_visual";
+    let source = "enclone_visual/tests/sample_visual";
     let target = "enclone_visual/outputs/sample_visual";
     if path_exists(&target) {
         fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
@@ -167,7 +167,7 @@ fn main() {
     let o = Command::new("enclone")
         .arg(&"VIS")
         .arg(&"TEST")
-        .arg(&"VISUAL_DIR=enclone_visual/sample_visual")
+        .arg(&"VISUAL_DIR=enclone_visual/tests/sample_visual")
         .output()
         .expect("failed to execute enclone visual test");
     if o.status.code() != Some(0) {

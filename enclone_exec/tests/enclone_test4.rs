@@ -460,3 +460,28 @@ fn test_honey() {
         std::process::exit(1);
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 36. Test to see if GitHub Actions scripts are valid YAML.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_yaml() {
+    PrettyTrace::new().on();
+    let content = include_str!["../../.github/workflows/release.yaml"];
+    let yaml = yaml_rust::YamlLoader::load_from_str(&content);
+    if yaml.is_err() {
+        eprintln!("\nrelease.yaml is not valid YAML.\n");
+        std::process::exit(1);
+    }
+    let content = include_str!["../../.github/workflows/test.yaml"];
+    let yaml = yaml_rust::YamlLoader::load_from_str(&content);
+    if yaml.is_err() {
+        eprintln!("\ntest.yaml is not valid YAML.\n");
+        std::process::exit(1);
+    }
+}

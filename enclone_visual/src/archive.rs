@@ -40,6 +40,11 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             is_restore_requested = true;
         }
     }
+    for i in 0..slf.restore_cookbook_requested.len() {
+        if slf.restore_cookbook_requested[i] {
+            is_restore_requested = true;
+        }
+    }
     let mut top_bar = Row::new()
         .push(archive_title)
         .push(Space::with_width(Length::Fill));
