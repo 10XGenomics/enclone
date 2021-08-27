@@ -492,6 +492,11 @@ impl Application for EncloneVisual {
 
         // Define the button complex that is the "control panel".
 
+        // let svg_height = if !self.h.is_blank_current() {
+        let mut blank = false;
+        if self.h.history_index > 0 {
+            blank = self.h.is_blank[self.h.history_index as usize - 1];
+        }
         let command_complex_height;
         let mut command_complex = Row::new().spacing(10);
         {
@@ -597,6 +602,12 @@ impl Application for EncloneVisual {
 
             // Create narrative button.
 
+            let narrative_width;
+            if !blank {
+                narrative_width = MAX_LINE;
+            } else {
+                narrative_width = 80;
+            }
             let mut logx = String::new();
             let mut logx_lines = 1;
             let mut have_narrative = false;
@@ -610,7 +621,7 @@ impl Application for EncloneVisual {
                     have_narrative = true;
                 }
                 let mut rows = Vec::<Vec<String>>::new();
-                let folds = fold(&cmd, MAX_LINE);
+                let folds = fold(&cmd, narrative_width);
                 logx_lines = folds.len();
                 for i in 0..folds.len() {
                     rows.push(vec![folds[i].clone()]);
@@ -719,11 +730,6 @@ impl Application for EncloneVisual {
         // the clonotype tables.  We do not set the width because it's the height that we need
         // to control.
 
-        // let svg_height = if !self.h.is_blank_current() {
-        let mut blank = false;
-        if self.h.history_index > 0 {
-            blank = self.h.is_blank[self.h.history_index as usize - 1];
-        }
         let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
         // 60 is a fudge factor:
         svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 60);
