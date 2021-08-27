@@ -737,7 +737,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 32] = [
+pub const EXTENDED_TESTS: [&str; 33] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -820,6 +820,9 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
+    // 33. test DVARS
+    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
 ];
 
 // Tests of internal features.
