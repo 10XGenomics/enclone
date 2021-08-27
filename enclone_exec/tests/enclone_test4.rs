@@ -471,15 +471,14 @@ fn test_honey() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_yaml() {
-    let path = include_str!["../../.github/workflows/release.yaml"];
-    let content = std::fs::read_to_string(&path).unwrap();
+    PrettyTrace::new().on();
+    let content = include_str!["../../.github/workflows/release.yaml"];
     let yaml = yaml_rust::YamlLoader::load_from_str(&content);
     if yaml.is_err() {
         eprintln!("\nrelease.yaml is not valid YAML.\n");
         std::process::exit(1);
     }
-    let path = include_str!["../../.github/workflows/test.yaml"];
-    let content = std::fs::read_to_string(&path).unwrap();
+    let content = include_str!["../../.github/workflows/test.yaml"];
     let yaml = yaml_rust::YamlLoader::load_from_str(&content);
     if yaml.is_err() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
