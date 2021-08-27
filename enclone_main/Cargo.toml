@@ -35,14 +35,14 @@ enclone_args = { path = "../enclone_args" }
 equiv = "0.1"
 evalexpr = "6"
 failure = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.10"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
-ndarray = "0.14"
-nix = "0.22"
+ndarray = ">=0.14, <0.16"
+nix = ">=0.20, <0.23"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 prost = { version = "0.8", default_features = false }
