@@ -37,7 +37,7 @@ float-ord = "0.3"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
 iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
@@ -51,8 +51,8 @@ log = "0.4"
 lz4 = "1"
 mach = "0.3"
 mirror_sparse_matrix = "0.1"
-ndarray = "0.14"
-nix = "0.22"
+ndarray = ">=0.14, <0.16"
+nix = ">=0.20, <0.23"
 objc = "0.2"
 pager = "0.16"
 perf_stats = "0.1"
