@@ -24,6 +24,17 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopySummary => {
+                self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.summary_current().as_bytes());
+                Command::perform(noop1(), Message::CompleteCopySummary)
+            }
+
+            Message::CompleteCopySummary(_) => {
+                self.copy_summary_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyNarrative => {
                 self.copy_narrative_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.narrative_current().as_bytes());

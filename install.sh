@@ -5,6 +5,8 @@
 
 # This is the installation and update script for enclone.  For instructions on how to
 # run it, please see bit.ly/enclone.  A few more details are here.
+#
+# Run shellcheck if you change this script: you'll need to sort wheat from chaff.
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -242,25 +244,28 @@ main() {
     #    and some use .profile.
     #    If the instructions here don't work, this post may be helpful:
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
+    #
+    #    Note for this section and the next: putting ~/bin in the user's path will not necessarily
+    #    work.  Instead they should have <home dir>/bin, as in the commands below.
 
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
-            echo 'PATH=~/bin:$PATH' >> .profile
+        test -r .bash_profile && echo 'PATH=$HOME/bin:$PATH' >> .bash_profile || \
+            echo 'PATH=$HOME/bin:$PATH' >> .profile
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 8. Add ~/bin to zsh path if needed.
+    # 8. Add $HOME/bin to zsh path if needed.
     #
-    #    (a) If .zshrc exists and we have not already added ~/bin to the PATH in it, do so.
-    #    (b) If .zshrc does not exist but the user shell is zsh, add ~/bin as above.
+    #    (a) If .zshrc exists and we have not already added $HOME/bin to the PATH in it, do so.
+    #    (b) If .zshrc does not exist but the user shell is zsh, add $HOME/bin as above.
 
     if [ -f .zshrc ]; then
-        if [[ `cat .zshrc` != *"export PATH=~/bin:"* ]]; then
-            echo 'export PATH="~/bin:$PATH"' >> .zshrc
+        if [[ `cat .zshrc` != *"export PATH=$HOME/bin:"* ]]; then
+            echo 'export PATH="$HOME/bin:$PATH"' >> .zshrc
         fi
     elif [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo 'export PATH="~/bin:$PATH"' > .zshrc
+        echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -273,7 +278,6 @@ main() {
 
     # 10. Download small data.  
 
-    raw_data_repo=https://raw.githubusercontent.com/10XGenomics/enclone-data
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
@@ -380,7 +384,7 @@ main() {
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
         if [ "$_current_version" == "$available_version" ]; then
             printf "\nGood, the version of enclone that you would get from the command line is\n"
-            printf "the version $_current_version that was just downloaded.\n\n"
+            printf "the version $_current_version that was just downloaded.\n"
             ok=1
         else
             printf "\nIt would appear that enclone is available as a command, as determined by\n"
@@ -397,9 +401,13 @@ main() {
         printf "\n1. Determining which shell you are using: $SHELL.\n"
         printf "\n2. Determining the path defined by your shell.\n\n"
         $SHELL -c "echo $PATH"
-        printf "\n3. Show the output of which enclone.\n\n"
+        printf "\n3. Show the permissions on ~/bin/enclone:\n\n"
+        ls -l ~/bin/enclone
+        printf "\n4. Attempt to execute ~/bin/enclone directly:\n\n"
+        $SHELL -c "$HOME/bin/enclone --version"
+        printf "\n5. Show the output of which enclone.\n\n"
         which enclone
-        printf "\n4. Testing for existence of various initialization files in your home directory\n"
+        printf "\n6. Testing for existence of various initialization files in your home directory\n"
         printf "   and for each such file, if present, whether it sets your path.\n\n"
         cd
         NEWLINE=1
@@ -457,7 +465,7 @@ main() {
 
     ENDTIME=$(date +%s)
     echo
-    if [ "$is_update" = true ]; then
+    if [ "$_is_update" = true ]; then
         echo "enclone update took $(($ENDTIME - $STARTTIME)) seconds."
     else
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."

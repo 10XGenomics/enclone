@@ -5,19 +5,15 @@
 pub fn enclone_testdata() -> String {
     include_str!["enclone.testdata"].to_string()
 }
-
 pub fn enclone_testdata_public_bcr_human() -> String {
     include_str!["testdata.public.bcr.human"].to_string()
 }
-
 pub fn enclone_testdata_public_tcr_human() -> String {
     include_str!["testdata.public.tcr.human"].to_string()
 }
-
 pub fn enclone_testdata_public_tcr_mouse() -> String {
     include_str!["testdata.public.tcr.mouse"].to_string()
 }
-
 pub fn enclone_testdata_public_gex_human() -> String {
     include_str!["testdata.public.gex.human"].to_string()
 }
@@ -49,7 +45,7 @@ pub const DTESTS: [&str; 15] = [
     // 6. the JALIGN1 in this example had a boundary location that was off by one
     r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=d1_name CDR3=CAKAGPTESGYYVWYFDLW"###,
     // 7. test d_inconsistent_{%,n}
-    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
+    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 8. test ALIGN<n>
     r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=d1_name"###,
     // 9. test ALIGN<n> and JALIGN<n>, case where there's a D segment
@@ -737,7 +733,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 32] = [
+pub const EXTENDED_TESTS: [&str; 33] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -820,6 +816,9 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
+    // 33. test DVARS
+    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
 ];
 
 // Tests of internal features.
@@ -956,7 +955,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 24] = [
     // 19.
     (
         "pages/auto/d_gene_example2.html",
-        "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT \
+        "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT SUMMARY SUMMARY_CLEAN \
          HTML=\"D gene example2\"",
     ),
     // 20.

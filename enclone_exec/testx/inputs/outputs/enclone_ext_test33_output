@@ -1,0 +1,51 @@
+
+SUMMARY STATISTICS
+1. overall
+   • number of datasets = 2
+   • number of donors = 1
+   • original number of cells = 2856
+2. barcode fate
+   ┌──────────┬────────────────────────────┐
+   │barcodes  │  why deleted               │
+   ├──────────┼────────────────────────────┤
+   │     341  │  failed CROSS filter       │
+   │       8  │  failed GRAPH_FILTER filter│
+   │       4  │  failed IMPROPER filter    │
+   │       2  │  failed GEX filter         │
+   │       2  │  failed BC_DUP filter      │
+   │     357  │  total                     │
+   └──────────┴────────────────────────────┘
+3. for the selected clonotypes
+   ┌────────┬────────────────────────┬──────────────────┬───────┐
+   │chains  │  clonotypes with this  │  cells in these  │      %│
+   │        │      number of chains  │      clonotypes  │       │
+   ├────────┼────────────────────────┼──────────────────┼───────┤
+   │1       │                    15  │              15  │    0.6│
+   │2       │                   103  │            2367  │   94.9│
+   │3       │                    21  │             111  │    4.4│
+   │4       │                     2  │               2  │    0.1│
+   │total   │                   141  │            2495  │  100.0│
+   └────────┴────────────────────────┴──────────────────┴───────┘
+   • number of clonotypes having at least two cells = 68
+   • number of cell-cell merges = 2,354
+   • number of cells having 1 chain = 556
+   • number of cells having 2 or 3 chains = 1937
+   • estimated T-T doublet rate = 0.1% = 2/1867 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (TRB) = 14.92
+   • mean over middle third of contig UMI counts (TRA) = 4.04
+   • mean over middle third of cell UMI counts for cells having two chains = 21.55
+   • mean UMIs per cell = 20.51
+   • mean UMIs per cell having two chains = 23.10
+   • for reads contributing to UMIs in reported chains, mean reads per UMI = 428.50
+   • median validated UMIs: TRB = 10 (65.9%), TRA = 3 (75.6%)
+   • fraction of two-chain cells having validated UMIs for both chains: 98.9%
+
+DATASET-LEVEL METRICS
+┌─────────┬─────────────────────────────┬───────────────────────────┐
+│dataset  │  Ag_PE-C0951_ab_cellular_u  │  Ag_PE-C0951_ab_cellular_r│
+├─────────┼─────────────────────────────┼───────────────────────────┤
+│1175300  │                       89.7  │                       90.1│
+├─────────┼─────────────────────────────┼───────────────────────────┤
+│1175301  │                       14.0  │                        3.3│
+└─────────┴─────────────────────────────┴───────────────────────────┘
+

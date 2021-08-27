@@ -9,10 +9,11 @@ use hdf5::Dataset;
 use io_utils::*;
 use mirror_sparse_matrix::*;
 use rayon::prelude::*;
+use serde_json::Value;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
-    io::BufRead,
+    io::{BufRead, BufReader},
     time::Instant,
 };
 use string_utils::*;
@@ -37,6 +38,8 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
     h5_paths: &mut Vec<String>,
+    feature_metrics: &mut Vec<HashMap<(String, String), String>>,
+    json_metrics: &mut Vec<HashMap<String, f64>>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -56,6 +59,8 @@ pub fn load_gex(
         MirrorSparseMatrix,
         Vec<String>,
         Vec<String>,
+        HashMap<(String, String), String>,
+        HashMap<String, f64>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -75,6 +80,8 @@ pub fn load_gex(
             MirrorSparseMatrix::new(),
             Vec::<String>::new(),
             Vec::<String>::new(),
+            HashMap::<(String, String), String>::new(),
+            HashMap::<String, f64>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -140,6 +147,7 @@ pub fn load_gex(
             // Define possible places for the analysis directory.
 
             let mut analysis = Vec::<String>::new();
+            analysis.push(format!("{}", outs));
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
             analysis.push(format!("{}/count/analysis", outs));
@@ -168,6 +176,34 @@ pub fn load_gex(
                 if path_exists(&pca_file) {
                     pathlist.push(pca_file.clone());
                     break;
+                }
+            }
+
+            // Find the json metrics file.
+
+            let mut json_metrics_file = String::new();
+            if !ctl.gen_opt.cellranger {
+                for x in analysis.iter() {
+                    let f = format!("{}/metrics_summary_json.json", x);
+                    if path_exists(&f) {
+                        json_metrics_file = f.clone();
+                        pathlist.push(f);
+                        break;
+                    }
+                }
+            }
+
+            // Find the feature metrics file.
+
+            let mut feature_metrics_file = String::new();
+            if !ctl.gen_opt.cellranger {
+                for x in analysis.iter() {
+                    let f = format!("{}/per_feature_metrics.csv", x);
+                    if path_exists(&f) {
+                        feature_metrics_file = f.clone();
+                        pathlist.push(f);
+                        break;
+                    }
                 }
             }
 
@@ -321,6 +357,75 @@ pub fn load_gex(
                     types_file
                 );
                 return;
+            }
+
+            // Read json metrics file.  Note that we do not enforce the requirement of this
+            // file, so it may not be present.  Also it is not present in the outs folder of CS
+            // pipelines, and a customer would have to rerun with --vdrmode=disable to avoid
+            // deleting the file, and then move it to outs so enclone could find it.
+
+            if json_metrics_file.len() > 0 {
+                let m = std::fs::read_to_string(&json_metrics_file).unwrap();
+                let v: Value = serde_json::from_str(&m).unwrap();
+                let z = v.as_object().unwrap();
+                for (var, value) in z.iter() {
+                    if value.as_f64().is_some() {
+                        let value = value.as_f64().unwrap();
+                        r.17.insert(var.to_string(), value);
+                    }
+                }
+            }
+
+            // Read feature metrics file.  Note that we do not enforce the requirement of this
+            // file, so it may not be present.
+
+            if feature_metrics_file.len() > 0 {
+                let mut count = 0;
+                let f = open_for_read![&feature_metrics_file];
+                let mut feature_pos = HashMap::<String, usize>::new();
+                let mut xfields = Vec::<String>::new();
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    if count == 0 {
+                        for j in 0..fields.len() {
+                            feature_pos.insert(fields[j].to_string(), j);
+                        }
+                        xfields = fields.clone();
+                    } else {
+                        let feature_type = &fields[feature_pos["feature_type"]];
+                        let mut feature;
+                        for pass in 1..=2 {
+                            if pass == 1 {
+                                feature = fields[feature_pos["feature_name"]].clone();
+                            } else {
+                                feature = fields[feature_pos["feature_id"]].clone();
+                            }
+                            if feature_type.starts_with(&"Antibody") {
+                                feature += "_ab";
+                            } else if feature_type.starts_with(&"CRISPR") {
+                                feature += "_cr";
+                            } else if feature_type.starts_with(&"CUSTOM") {
+                                feature += "_cu";
+                            } else if feature_type.starts_with(&"Gene") {
+                                feature += "_g";
+                            }
+                            for j in 0..fields.len() {
+                                if xfields[j] == "num_umis"
+                                    || xfields[j] == "num_reads"
+                                    || xfields[j] == "num_umis_cells"
+                                    || xfields[j] == "num_reads_cells"
+                                {
+                                    r.16.insert(
+                                        (feature.clone(), xfields[j].clone()),
+                                        fields[j].clone(),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    count += 1;
+                }
             }
 
             // Read PCA file.
@@ -619,8 +724,10 @@ pub fn load_gex(
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
-    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15)) in
-        results.into_iter().take(n).enumerate()
+    for (
+        _i,
+        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17),
+    ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
         gex_barcodes.push(x2);
@@ -642,6 +749,8 @@ pub fn load_gex(
         cell_type.push(x8);
         pca.push(x9);
         cell_type_specified.push(x10);
+        feature_metrics.push(x16);
+        json_metrics.push(x17);
     }
     ctl.perf_stats(&t, "in load_gex tail");
     Ok(())
@@ -667,6 +776,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut have_gex = false;
     let mut have_fb = false;
     let mut h5_paths = Vec::<String>::new();
+    let mut feature_metrics = Vec::<HashMap<(String, String), String>>::new();
+    let mut json_metrics = Vec::<HashMap<String, f64>>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -684,6 +795,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut have_gex,
         &mut have_fb,
         &mut h5_paths,
+        &mut feature_metrics,
+        &mut json_metrics,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -790,5 +903,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         feature_id: feature_id,
         have_gex: have_gex,
         have_fb: have_fb,
+        feature_metrics: feature_metrics,
+        json_metrics: json_metrics,
     })
 }

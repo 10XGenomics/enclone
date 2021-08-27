@@ -108,6 +108,8 @@ pub struct EncloneVisual {
     pub narrative_button: button::State,
     pub copy_narrative_button: button::State,
     pub cookbook_narrative_button: Vec<button::State>,
+    pub summary_copy_button: button::State,
+    pub copy_summary_button_color: Color,
     //
     // more
     //

@@ -254,9 +254,43 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     check_pcols(&ctl, &gex_info, &ctl.plot_opt.sim_mat_plot_vars)?;
     ctl.perf_stats(&twoof, "checking pcols");
 
-    // Test fcell.
+    // Check DVARS.
 
     let tfcell = Instant::now();
+    if ctl.gen_opt.dvars.len() > 0 {
+        let known_features = get_known_features(&gex_info)?;
+        for j in 0..ctl.gen_opt.dvars.len() {
+            let mut var = ctl.gen_opt.dvars[j].clone();
+            if var.contains(":") {
+                var = var.after(":").to_string();
+            }
+            let mut found = false;
+            for k in 0..gex_info.json_metrics.len() {
+                if gex_info.json_metrics[k].contains_key(&var.to_string()) {
+                    found = true;
+                }
+            }
+            if !found {
+                let feature;
+                if var.ends_with("_cellular_r") {
+                    feature = var.before("_cellular_r").to_string();
+                } else if var.ends_with("_cellular_u") {
+                    feature = var.before("_cellular_u").to_string();
+                } else {
+                    return Err(format!("\nUnknown DVAR = {}.\n", var));
+                }
+                if !bin_member(&known_features, &feature) {
+                    return Err(format!(
+                        "\nIn DVAR = {}, the feature {} is unknown.\n",
+                        var, feature,
+                    ));
+                }
+            }
+        }
+    }
+
+    // Test fcell.
+
     if !ctl.clono_filt_opt_def.fcell.is_empty() {
         let mut alt_bcs = Vec::<String>::new();
         for li in 0..ctl.origin_info.alt_bc_fields.len() {

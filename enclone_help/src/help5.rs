@@ -277,9 +277,34 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         )?;
 
         h.print(
+            "\\bold{options that display dataset variables}\n\n\
+             enclone has some variables that are computed for each dataset, and whose values may \
+             by printed as a table in the summary, and not otherwise used (currently).  \
+             These may be specified using\n\
+             \\bold{DVARS=var1,...,varn}.  The dataset-level variables that are supported \
+             currently are:\n\
+             <feature>_cellular_r\n\
+             <feature>_cellular_u\n\
+             which are, respectively, the percentage of reads [UMIs] for the given feature that \
+             are in cells that were called by the cellranger pipeline.  A feature is e.g. \
+             IGHG1_g etc. as discussed at \"enclone help lvars\".  To compute the metrics, the \
+             cellranger output file per_feature_metrics.csv is read.  In addition, one may also \
+             use numeric values defined in the file metrics_summary_json.json, but this file is in \
+             general not available.  To get it, it may be necessary to rerun the cellranger \
+             pipeline using --vdrmode=disable and then copy the json file to outs.  Finally, \
+             variable names may be prefaced with abbreviation:, and in such cases, it is the \
+             abbreviation that is displayed in the table.",
+        )?;
+
+        h.print(
+            "\n\n\\red{━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━}\n\n",
+        )?;
+
+        h.print(
             "\\bold{options that control global variables}\n\n\
-             enclone has some global variables that can be computed, with values printed after \
-             everything else, and not otherwise used (currently).  These may be specified using \
+             enclone has some global variables that can be computed, with values printed in the \
+             summary, and not otherwise used (currently).  These may be specified using \
              \\bold{GVARS=var1,...,varn}.  The global variables that are supported currently are:\n\
              d_inconsistent_%\n\
              d_inconsistent_n\n\

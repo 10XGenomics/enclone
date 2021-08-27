@@ -446,6 +446,34 @@ impl Analyzer for EncloneAnalyzer {
         }))
     }
 
+    async fn get_my_cookbooks(
+        &self,
+        request: Request<GetMyCookbooksRequest>,
+    ) -> Result<Response<GetMyCookbooksResponse>, Status> {
+        let req: GetMyCookbooksRequest = request.into_inner();
+        let dirs = &req.cookbook_dirs;
+        let mut cookbooks = Vec::<Vec<u8>>::new();
+        for dir in dirs.iter() {
+            if path_exists(&*dir) {
+                let x = std::fs::read_dir(&*dir);
+                if x.is_ok() {
+                    let x = x.unwrap();
+                    for f in x {
+                        let s: String = f.unwrap().file_name().into_string().unwrap();
+                        let cb = format!("{}/{}", dir, s);
+                        let mut f = File::open(&cb).unwrap();
+                        let mut bytes = Vec::<u8>::new();
+                        f.read_to_end(&mut bytes).unwrap();
+                        cookbooks.push(bytes);
+                    }
+                }
+            }
+        }
+        Ok(Response::new(GetMyCookbooksResponse {
+            cookbooks: cookbooks,
+        }))
+    }
+
     async fn release_my_shares(
         &self,
         request: Request<ReleaseMySharesRequest>,

@@ -119,7 +119,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.0000000000000001";
+    let version = "0.000000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -254,6 +254,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         if line == "internal=true" {
             internal = true;
+        }
+        if line.starts_with("cookbooks=") {
+            let cb = line.after("cookbooks=").split(',').collect::<Vec<&str>>();
+            for i in 0..cb.len() {
+                COOKBOOK_DIRS.lock().unwrap().push(cb[i].to_string());
+            }
         }
         if config_name.len() > 0 {
             let prefix = format!("vis.{}.", config_name);
@@ -688,6 +694,29 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 if DONE.load(SeqCst) {
                     cleanup();
                     std::process::exit(0);
+                }
+
+                if GET_MY_COOKBOOKS.load(SeqCst) {
+                    let cookbook_dirs = COOKBOOK_DIRS.lock().unwrap().clone();
+                    let request = tonic::Request::new(GetMyCookbooksRequest {
+                        cookbook_dirs: cookbook_dirs,
+                    });
+                    let response = client.get_my_cookbooks(request).await;
+                    if response.is_err() {
+                        eprintln!("Attempt to get cookbooks failed.");
+                        let err = format!("{:?}", response);
+                        eprintln!("err = {}\n", err);
+                        eprintln!("Please ask for help!\n");
+                        std::process::exit(1);
+                    }
+                    let res = response.unwrap().into_inner();
+                    for i in 0..res.cookbooks.len() {
+                        REMOTE_COOKBOOKS
+                            .lock()
+                            .unwrap()
+                            .push(res.cookbooks[i].clone());
+                    }
+                    GET_MY_COOKBOOKS.store(false, SeqCst);
                 }
 
                 if SENDING_SHARE.load(SeqCst) {

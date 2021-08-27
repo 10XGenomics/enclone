@@ -31,12 +31,26 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("Refresh").color(slf.archive_refresh_button_color),
     )
     .on_press(Message::ArchiveRefresh);
-    let top_bar = Row::new()
+
+    // Display top bar.  Don't display the refresh button if a restore has been requested.
+
+    let mut is_restore_requested = false;
+    for i in 0..slf.restore_requested.len() {
+        if slf.restore_requested[i] {
+            is_restore_requested = true;
+        }
+    }
+    let mut top_bar = Row::new()
         .push(archive_title)
-        .push(Space::with_width(Length::Fill))
-        .push(refresh_button)
-        .push(Space::with_width(Units(8)))
-        .push(archive_close_button);
+        .push(Space::with_width(Length::Fill));
+    if !is_restore_requested {
+        top_bar = top_bar
+            .push(refresh_button)
+            .push(Space::with_width(Units(8)));
+    }
+    top_bar = top_bar.push(archive_close_button);
+
+    // Define help text messages.
 
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
@@ -75,6 +89,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • clicking on the Copy button to the right of it will copy the existing narrative \
            to your clipboard.",
     );
+
+    // Define help column.
+
     let mut help_col = Column::new();
     if slf.archive_doc_open {
         help_col = help_col
@@ -215,8 +232,10 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Display cookbooks.
 
+    let ncookbooks = slf.cookbooks.len();
+    let narchive = slf.archive_name.len();
     for (i, y, narbut, copynarbut) in izip!(
-        0..slf.cookbooks.len(),
+        0..ncookbooks,
         slf.cookbook_name.iter_mut(),
         slf.cookbook_narrative_button.iter_mut(),
         slf.copy_cookbook_narrative_button.iter_mut()
@@ -325,6 +344,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
             }
         }
+
+        if i < ncookbooks - 1 || narchive > 0 {
+            archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+            archive_scrollable =
+                archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
+        }
+
         archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
     }
 
@@ -332,7 +358,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     let mut count = 0;
     for (i, y, q, narbut, copynarbut) in izip!(
-        0..slf.archive_name.len(),
+        0..narchive,
         slf.archive_name.iter_mut(),
         slf.archive_name_change_button.iter_mut(),
         slf.archive_narrative_button.iter_mut(),
@@ -511,6 +537,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     archive_scrollable = archive_scrollable.push(Space::with_height(Units(3)));
                 }
             }
+
+            if i < narchive - 1 {
+                archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
+                archive_scrollable =
+                    archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
+            }
+
             count += 1;
         }
     }

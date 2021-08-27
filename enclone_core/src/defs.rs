@@ -216,6 +216,7 @@ pub struct GeneralOpt {
     pub chains_to_jun_align: Vec<usize>,
     pub chains_to_jun_align2: Vec<usize>,
     pub align_jun_align_consistency: bool,
+    pub dvars: Vec<String>, // per dataset variables
     pub gvars: Vec<String>, // per run variables
     pub jscore_match: i32,
     pub jscore_mismatch: i32,
@@ -743,6 +744,8 @@ pub struct GexInfo {
     pub feature_id: Vec<HashMap<String, usize>>,
     pub have_gex: bool,
     pub have_fb: bool,
+    pub feature_metrics: Vec<HashMap<(String, String), String>>,
+    pub json_metrics: Vec<HashMap<String, f64>>,
 }
 
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains

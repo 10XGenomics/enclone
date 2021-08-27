@@ -162,15 +162,21 @@ fn main() {
                     let pid = m.between("\"pipestance_id\":\"", "\"").to_string();
                     let meta = &config["meta"];
                     let url = format!("{}/{}", meta, pid);
+                    println!("getting data for {} from {}", antibody_seq_id, url);
                     let o = Command::new("curl")
                         .arg(&url)
                         .output()
                         .expect("failed to execute curl for meta");
                     let mm = String::from_utf8(o.stdout).unwrap();
                     let v: Value = serde_json::from_str(&mm).unwrap();
-                    let rrr = &v["sample_bag"]["sequencing_libraries"][&antibody_seq_id];
+                    let asi = format!("{}", antibody_seq_id);
+                    let rrr = &v["sample_bag"]["sequencing_libraries"][&asi];
                     let lane = &rrr["metadata"]["lane"];
-                    lanes.push(lane.to_string().between("\"", "\"").force_usize());
+                    let lane = lane.to_string().between("\"", "\"").to_string();
+                    let lane = lane.split(',').collect::<Vec<&str>>();
+                    for x in lane.iter() {
+                        lanes.push(x.force_usize());
+                    }
                     let si_data = rrr["sample_indexes"].as_array().unwrap();
                     for j in 0..si_data.len() {
                         sample_indices.push(

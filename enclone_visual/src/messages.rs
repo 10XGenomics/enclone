@@ -64,4 +64,6 @@ pub enum Message {
     SetName(&'static str),
     CopyNarrative,
     CompleteCopyNarrative(Result<(), String>),
+    CopySummary,
+    CompleteCopySummary(Result<(), String>),
 }

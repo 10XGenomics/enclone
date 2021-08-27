@@ -61,6 +61,7 @@ Test 25 is sensitive to the structure of the file.
 <li>exact: defined for each exact subclonotype</li>
 <li>clono: defined for each clonotype</li>
 <li>group: defined for each group of clonotypes</li>
+<li>dataset: defined for each dataset</li>
 <li>global: defined for entirety of all clonotypes.</li>
 </ul>
 </p>
@@ -123,12 +124,20 @@ Test 25 is sensitive to the structure of the file.
 <td>not available at all for visual output</td>
 </tr>
 <tr>
+<td align="center">dataset</td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td>currently only accessible via <code>DVARS</code></td>
+</tr>
+<tr>
 <td align="center">global</td>
 <td align="center">no  </td>
 <td align="center">no  </td>
 <td align="center">no  </td>
 <td align="center">no  </td>
-<td>only accessible via <code>GVARS</code></td>
+<td>currently only accessible via <code>GVARS</code></td>
 </tr>
 </tbody>
 </table>
@@ -244,6 +253,22 @@ is not present for an exact subclonotype.
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> percent of total expression for a particular gene                              </td></tr>
+
+<tr><td> <code> &ltfeature>_cellular_r </code>                                          </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> dataset                                                                        </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> </td>
+    <td> percent of feature reads in cells, for a given dataset                         </td></tr>
+
+<tr><td> <code> &ltfeature>_cellular_u </code>                                          </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> dataset                                                                        </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> </td>
+    <td> percent of feature UMIs in cells, for a given dataset                          </td></tr>
 
 <tr><td> <code> &ltfeature>_max </code>                                                 </td>
     <td>                                                                                </td>

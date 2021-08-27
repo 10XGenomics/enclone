@@ -659,6 +659,8 @@ directory:
 │analysis/clustering/graphclust/clusters.csv  │  GEX     │
 ├─────────────────────────────────────────────┼──────────┤
 │analysis/pca/10_components/projection.csv    │  GEX     │
+├─────────────────────────────────────────────┼──────────┤
+│per_feature_metrics.csv                      │  GEX     │
 └─────────────────────────────────────────────┴──────────┘
 
 The first file is required, and the second should be supplied if Cell Ranger version 4.0 or
@@ -1660,10 +1662,28 @@ cases:
 
 <span style="color:#c23621;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
 
+<span style="font-weight:bold;">options that display dataset variables</span>
+
+enclone has some variables that are computed for each dataset, and whose values may by printed as
+a table in the summary, and not otherwise used (currently).  These may be specified using
+<span style="font-weight:bold;">DVARS=var1,...,varn</span>.  The dataset-level variables that are supported currently are:
+&lt;feature>_cellular_r
+&lt;feature>_cellular_u
+which are, respectively, the percentage of reads [UMIs] for the given feature that are in cells
+that were called by the cellranger pipeline.  A feature is e.g. IGHG1_g etc. as discussed at
+<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.  To compute the metrics, the cellranger output file per_feature_metrics.csv
+is read.  In addition, one may also use numeric values defined in the file
+metrics_summary_json.json, but this file is in general not available.  To get it, it may be
+necessary to rerun the cellranger pipeline using --vdrmode=disable and then copy the json file to
+outs.  Finally, variable names may be prefaced with abbreviation:, and in such cases, it is the
+abbreviation that is displayed in the table.
+
+<span style="color:#c23621;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
 <span style="font-weight:bold;">options that control global variables</span>
 
-enclone has some global variables that can be computed, with values printed after everything else,
-and not otherwise used (currently).  These may be specified using <span style="font-weight:bold;">GVARS=var1,...,varn</span>.  The global
+enclone has some global variables that can be computed, with values printed in the summary, and
+not otherwise used (currently).  These may be specified using <span style="font-weight:bold;">GVARS=var1,...,varn</span>.  The global
 variables that are supported currently are:
 d_inconsistent_%
 d_inconsistent_n

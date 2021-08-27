@@ -722,41 +722,137 @@ pub fn print_stats(
                 fwrite!(logx, "   {}", log);
             }
         }
-    }
 
-    // Print summary csv stats.
+        // Print dataset-level variable values.
 
-    if ctl.gen_opt.summary_csv {
-        println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,n_twothreesie");
-        println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
-    }
-
-    // Print global variable values.
-
-    if ctl.gen_opt.gvars.len() > 0 {
-        fwriteln!(logx, "\nGLOBAL VARIABLES\n");
-        let (mut total, mut bads) = (0, 0);
-        let mut need_inc = false;
-        for x in ctl.gen_opt.gvars.iter() {
-            if x.starts_with("d_inconsistent_") {
-                need_inc = true;
+        if ctl.gen_opt.dvars.len() > 0 {
+            fwriteln!(logx, "\nDATASET-LEVEL METRICS");
+            let mut row = vec!["dataset".to_string()];
+            for j in 0..ctl.gen_opt.dvars.len() {
+                let var = ctl.gen_opt.dvars[j].clone();
+                let mut display_var = var.clone();
+                if var.contains(":") {
+                    display_var = var.before(":").to_string();
+                }
+                row.push(display_var);
             }
+            let mut rows = vec![row];
+            for i in 0..ctl.origin_info.n() {
+                let mut row = Vec::<String>::new();
+                let dataset_name = &ctl.origin_info.dataset_id[i];
+                row.push(dataset_name.clone());
+                for j in 0..ctl.gen_opt.dvars.len() {
+                    let mut var = ctl.gen_opt.dvars[j].clone();
+                    if var.contains(":") {
+                        var = var.after(":").to_string();
+                    }
+                    let mut value = String::new();
+                    if gex_info.json_metrics[i].contains_key(&var.to_string()) {
+                        value = format!("{:.2}", gex_info.json_metrics[i][&var.to_string()]);
+                    }
+                    if value.len() == 0 {
+                        let mut feature = String::new();
+                        let mut typex = String::new();
+                        let mut fail = false;
+                        if var.ends_with("_cellular_r") {
+                            feature = var.before("_cellular_r").to_string();
+                            typex = "r".to_string();
+                        } else if var.ends_with("_cellular_u") {
+                            feature = var.before("_cellular_u").to_string();
+                            typex = "u".to_string();
+                        } else {
+                            fail = true;
+                        }
+                        if fail {
+                            value = "undefined".to_string();
+                        } else if typex == "r" {
+                            if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_reads".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else {
+                                let num = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_reads_cells".to_string())]
+                                    .force_usize();
+                                let den = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_reads".to_string())]
+                                    .force_usize();
+                                if den == 0 {
+                                    value = "0/0".to_string();
+                                } else {
+                                    value = format!("{:.1}", 100.0 * num as f64 / den as f64);
+                                }
+                            }
+                        } else {
+                            if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_umis".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else if !gex_info.feature_metrics[i]
+                                .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
+                            {
+                                value = "undefined".to_string();
+                            } else {
+                                let num = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_umis_cells".to_string())]
+                                    .force_usize();
+                                let den = gex_info.feature_metrics[i]
+                                    [&(feature.clone(), "num_umis".to_string())]
+                                    .force_usize();
+                                if den == 0 {
+                                    value = "0/0".to_string();
+                                } else {
+                                    value = format!("{:.1}", 100.0 * num as f64 / den as f64);
+                                }
+                            }
+                        }
+                    }
+                    row.push(value);
+                }
+                rows.push(vec!["\\hline".to_string(); row.len()]);
+                rows.push(row);
+            }
+            let mut just = vec![b'l'];
+            for _ in 0..ctl.gen_opt.dvars.len() {
+                just.push(b'|');
+                just.push(b'r');
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
+            fwrite!(logx, "{}", log);
         }
-        if need_inc {
-            for i in 0..exacts.len() {
-                for col in 0..rsi[i].mat.len() {
-                    for u1 in 0..exacts[i].len() {
-                        let m1 = rsi[i].mat[col][u1];
-                        if m1.is_some() {
-                            let m1 = m1.unwrap();
-                            let ex1 = &exact_clonotypes[exacts[i][u1]];
-                            if ex1.share[m1].left {
-                                for u2 in (u1 + 1)..exacts[i].len() {
-                                    let m2 = rsi[i].mat[col][u2];
-                                    if m2.is_some() {
-                                        total += 1;
-                                        if opt_d_val[i].1[col][u1] != opt_d_val[i].1[col][u2] {
-                                            bads += 1;
+
+        // Print global variable values.
+
+        if ctl.gen_opt.gvars.len() > 0 {
+            fwriteln!(logx, "\nGLOBAL VARIABLES\n");
+            let (mut total, mut bads) = (0, 0);
+            let mut need_inc = false;
+            for x in ctl.gen_opt.gvars.iter() {
+                if x.starts_with("d_inconsistent_") {
+                    need_inc = true;
+                }
+            }
+            if need_inc {
+                for i in 0..exacts.len() {
+                    for col in 0..rsi[i].mat.len() {
+                        for u1 in 0..exacts[i].len() {
+                            let m1 = rsi[i].mat[col][u1];
+                            if m1.is_some() {
+                                let m1 = m1.unwrap();
+                                let ex1 = &exact_clonotypes[exacts[i][u1]];
+                                if ex1.share[m1].left {
+                                    for u2 in (u1 + 1)..exacts[i].len() {
+                                        let m2 = rsi[i].mat[col][u2];
+                                        if m2.is_some() {
+                                            total += 1;
+                                            if opt_d_val[i].1[col][u1] != opt_d_val[i].1[col][u2] {
+                                                bads += 1;
+                                            }
                                         }
                                     }
                                 }
@@ -765,15 +861,22 @@ pub fn print_stats(
                     }
                 }
             }
-        }
-        for var in ctl.gen_opt.gvars.iter() {
-            let mut val = String::new();
-            if *var == "d_inconsistent_%" {
-                val = format!("{:.2}", 100.0 * bads as f64 / total as f64);
-            } else if *var == "d_inconsistent_n" {
-                val = format!("{}", total);
+            for var in ctl.gen_opt.gvars.iter() {
+                let mut val = String::new();
+                if *var == "d_inconsistent_%" {
+                    val = format!("{:.2}", 100.0 * bads as f64 / total as f64);
+                } else if *var == "d_inconsistent_n" {
+                    val = format!("{}", total);
+                }
+                fwriteln!(logx, "{} = {}", var, val);
             }
-            fwriteln!(logx, "{} = {}", var, val);
         }
+    }
+
+    // Print summary csv stats.
+
+    if ctl.gen_opt.summary_csv {
+        println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,n_twothreesie");
+        println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
     }
 }
