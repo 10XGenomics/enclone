@@ -276,7 +276,6 @@ main() {
 
     # 10. Download small data.  
 
-    raw_data_repo=https://raw.githubusercontent.com/10XGenomics/enclone-data
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
