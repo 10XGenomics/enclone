@@ -464,7 +464,7 @@ main() {
 
     ENDTIME=$(date +%s)
     echo
-    if [ "$is_update" = true ]; then
+    if [ "$_is_update" = true ]; then
         echo "enclone update took $(($ENDTIME - $STARTTIME)) seconds."
     else
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
