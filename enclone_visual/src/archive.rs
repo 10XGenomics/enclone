@@ -330,7 +330,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         if i < ncookbooks - 1 || narchive > 0 {
             archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
-            archive_scrollable = 
+            archive_scrollable =
                 archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
         }
 
@@ -523,7 +523,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
             if i < narchive - 1 {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
-                archive_scrollable = 
+                archive_scrollable =
                     archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
             }
 
