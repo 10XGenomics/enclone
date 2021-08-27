@@ -31,12 +31,26 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("Refresh").color(slf.archive_refresh_button_color),
     )
     .on_press(Message::ArchiveRefresh);
-    let top_bar = Row::new()
+
+    // Display top bar.  Don't display the refresh button if a restore has been requested.
+
+    let mut is_restore_requested = false;
+    for i in 0..slf.restore_requested.len() {
+        if slf.restore_requested[i] {
+            is_restore_requested = true;
+        }
+    }
+    let mut top_bar = Row::new()
         .push(archive_title)
-        .push(Space::with_width(Length::Fill))
-        .push(refresh_button)
-        .push(Space::with_width(Units(8)))
-        .push(archive_close_button);
+        .push(Space::with_width(Length::Fill));
+    if !is_restore_requested {
+        top_bar = top_bar
+            .push(refresh_button)
+            .push(Space::with_width(Units(8)));
+    }
+    top_bar = top_bar.push(archive_close_button);
+
+    // Define help text messages.
 
     let text0 =
         Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
@@ -75,6 +89,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
          • clicking on the Copy button to the right of it will copy the existing narrative \
            to your clipboard.",
     );
+
+    // Define help column.
+
     let mut help_col = Column::new();
     if slf.archive_doc_open {
         help_col = help_col
