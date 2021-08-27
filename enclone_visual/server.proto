@@ -37,6 +37,10 @@ service Analyzer {
 
   rpc release_my_shares(ReleaseMySharesRequest) returns (ReleaseMySharesResponse);
 
+  // Fetch remote cookbooks.
+
+  rpc get_my_cookbooks(GetMyCookbooksRequest) returns (GetMyCookbooksResponse);
+
 }
 
 message Unit {}
@@ -99,4 +103,12 @@ message ReleaseMySharesRequest {
 
 message ReleaseMySharesResponse {
   bool ok = 1;
+}
+
+message GetMyCookbooksRequest {
+  repeated string cookbook_dirs = 1;
+}
+
+message GetMyCookbooksResponse {
+  repeated bytes cookbooks = 1;
 }

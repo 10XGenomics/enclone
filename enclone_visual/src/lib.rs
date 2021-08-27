@@ -414,6 +414,7 @@ pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
+pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);
@@ -434,10 +435,6 @@ lazy_static! {
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
-    pub static ref SHARE_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
-    pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<u32>>> =
-        Mutex::new(Vec::<Vec<u32>>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
@@ -447,6 +444,18 @@ lazy_static! {
     pub static ref RECEIVED_SHARES_MESSAGES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref TOOLTIP_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref COOKBOOK_DIRS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+}
+
+lazy_static! {
+    pub static ref SHARE_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref SERVER_REPLY_TABLE_COMP: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+    pub static ref REMOTE_COOKBOOKS: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
+}
+
+lazy_static! {
+    pub static ref SERVER_REPLY_LAST_WIDTHS: Mutex<Vec<Vec<u32>>> =
+        Mutex::new(Vec::<Vec<u32>>::new());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

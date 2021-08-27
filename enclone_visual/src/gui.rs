@@ -350,6 +350,15 @@ impl Application for EncloneVisual {
             let f = cookbook_dir.get_file(cookbook.path()).unwrap();
             x.cookbooks.push(f.contents().to_vec());
         }
+        GET_MY_COOKBOOKS.store(true, SeqCst);
+        while GET_MY_COOKBOOKS.load(SeqCst) {
+            thread::sleep(Duration::from_millis(10));
+        }
+        let n = REMOTE_COOKBOOKS.lock().unwrap().len();
+        for i in 0..n {
+            x.cookbooks
+                .push(REMOTE_COOKBOOKS.lock().unwrap()[i].clone());
+        }
         let nc = x.cookbooks.len();
         x.expand_cookbook_entry = vec![false; nc];
         x.restore_cookbook_requested = vec![false; nc];
