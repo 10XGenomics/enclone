@@ -209,7 +209,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "Above, you can see two boxes.  You can type a command into \
             these.  The reason for having two boxes is that it allows for longer \
-            commands: you can split a command between the two boxes",
+            commands: you can split a command between the two boxes.  If you have a particularly \
+            long command, you can also widen the enclone visual window.",
             )
             .width(max_width),
         )
