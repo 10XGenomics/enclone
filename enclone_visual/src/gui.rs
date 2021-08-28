@@ -377,7 +377,7 @@ impl Application for EncloneVisual {
             } else if path_exists(&local_remote) {
                 let list = dir_list(&local_remote);
                 for f in list.iter() {
-                    let mut h = File::open(&*f).unwrap();
+                    let mut h = File::open(&format!("{}/{}", local_remote, f)).unwrap();
                     let mut content = Vec::<u8>::new();
                     h.read_to_end(&mut content).unwrap();
                     x.cookbooks.push(content);
