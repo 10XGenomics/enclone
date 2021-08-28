@@ -413,6 +413,7 @@ pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
+pub static FAIL_ON_ERROR: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
 

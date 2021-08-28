@@ -97,6 +97,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             VISUAL_DIR.lock().unwrap().push(dir);
         } else if arg == "PLAYBACK" {
             PLAYBACK.store(true, SeqCst);
+        } else if arg == "FAIL_ON_ERROR" {
+            FAIL_ON_ERROR.store(true, SeqCst);
         } else if arg.starts_with("META=") {
             META_TESTING.store(true, SeqCst);
             META.store(arg.after("META=").force_usize() - 1, SeqCst);
@@ -839,6 +841,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         } else {
                             output = "an actual enclone command needs to start with \"enclone\""
                                 .to_string();
+                            if FAIL_ON_ERROR.load(SeqCst) {
+                                eprintln!("\nFAIL_ON_ERROR: command must start with enclone\n");
+                                std::process::exit(1);
+                            }
                         }
                     } else {
                         if CONFIG_FILE.lock().unwrap().len() > 0 {
