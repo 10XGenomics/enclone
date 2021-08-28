@@ -214,7 +214,7 @@ pub fn copy_for_enclone(source: &str, target: &str) {
 
         let summary = format!("{}/multi_web_summary_json/metrics_summary_csv", p);
         if path_exists(&summary) {
-            let summary_out = format!("{}/outs/web_summary_json/metrics_summary_csv", target);
+            let summary_out = format!("{}/outs/multi_web_summary_json/metrics_summary_csv", target);
             mkdirp(&summary_out);
             let list = dir_list(&summary);
             for f in list.iter() {
