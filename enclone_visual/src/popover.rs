@@ -108,12 +108,13 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 for j in 0..nd {
                     row.push(values[j][i].clone());
                 }
+                rows.push(vec!["\\hline".to_string(); nd + 1]);
                 rows.push(row);
             }
-
             let mut log = String::new();
             let mut just = vec![b'l'];
             for _ in 0..nd {
+                just.push(b'|');
                 just.push(b'r');
             }
             print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
