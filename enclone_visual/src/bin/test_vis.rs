@@ -196,9 +196,6 @@ fn main() {
         let mut image_new = Vec::<u8>::new();
         let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);
         let new_png_file = format!("enclone_visual/outputs/{}.png", all_testnames[i]);
-        if !path_exists(&new_png_file) {
-            eprintln!("\nWeird, can't find new_png_file = {}.\n", new_png_file);
-        }
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
         let (header, image_data_new0) = png_decoder::decode(&image_new).unwrap();
