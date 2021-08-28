@@ -3,7 +3,9 @@
 use crate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use itertools::Itertools;
 use messages::Message;
+use vector_utils::*;
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let console_title = Text::new(&format!("Console")).size(30);
@@ -45,7 +47,83 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
-    let summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+    let mut summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+
+    // Disect the summary, unscrewing the grotesque way that information is packed in it.
+
+    let mut dataset_names = Vec::<String>::new();
+    let mut metrics = Vec::<Vec<String>>::new();
+    if summary.contains("$$$") {
+        let p1 = summary.split("$$$").collect::<Vec<&str>>();
+        let mut p1x = Vec::<String>::new();
+        for i in 0..p1.len() {
+            p1x.push(p1[i].to_string());
+        }
+        summary = p1x[0].to_string();
+        for i in 1..p1x.len() {
+            if p1x[i].contains("###") {
+                dataset_names.push(p1x[i].before("###").to_string());
+                let p2 = p1x[i].split("###").collect::<Vec<&str>>();
+                for j in 1..p2.len() {
+                    let mut lines = Vec::<String>::new();
+                    for line in p2[j].lines() {
+                        lines.push(line.to_string());
+                    }
+                    metrics.push(lines);
+                }
+            } else {
+                dataset_names.push(p1x[i].to_string());
+            }
+        }
+        if dataset_names.len() == metrics.len() {
+            let mut all_metric_names = Vec::<String>::new();
+            for i in 0..metrics.len() {
+                for j in 1..metrics[i].len() {
+                    let mut s = parse_csv(&metrics[i][j]);
+                    s.truncate(s.len() - 1);
+                    let m = format!("{}", s.iter().format(","));
+                    all_metric_names.push(m);
+                }
+            }
+            unique_sort(&mut all_metric_names);
+            let nd = dataset_names.len();
+            let nm = all_metric_names.len();
+            let mut values = vec![vec![String::new(); nm]; nd];
+            for i in 0..nd {
+                for j in 1..metrics[i].len() {
+                    let mut s = parse_csv(&metrics[i][j]);
+                    let value = s[s.len() - 1].clone();
+                    s.truncate(s.len() - 1);
+                    let m = format!("{}", s.iter().format(","));
+                    let p = bin_position(&all_metric_names, &m) as usize;
+                    values[i][p] = value;
+                }
+            }
+            let mut rows = Vec::<Vec<String>>::new();
+            let mut row = vec!["metric".to_string()];
+            row.append(&mut dataset_names.clone());
+            rows.push(row);
+            for i in 0..nm {
+                let mut row = vec![all_metric_names[i].clone()];
+                for j in 0..nd {
+                    row.push(values[j][i].clone());
+                }
+                rows.push(row);
+            }
+
+            let mut log = String::new();
+            let mut just = vec![b'l'];
+            for _ in 0..nd {
+                just.push(b'r');
+            }
+            print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
+            summary += "\n\n";
+            summary += &mut log;
+        }
+    }
+
+    // Proceed.
+
     let summary = format!("{}\n \n", summary);
     let font_size = 20;
     let summary_copy_button = Button::new(
