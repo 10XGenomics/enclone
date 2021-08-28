@@ -46,13 +46,6 @@ pub fn metatests() -> Vec<Vec<Message>> {
         ],
         vec![
             Message::ArchiveOpen(Ok(())),
-            Message::RestoreCookbook(true, 0),
-            Message::ArchiveClose,
-            Message::SubmitButtonPressed(Ok(())),
-            Message::SetName("submit_after_restore"), // see if this works
-        ],
-        vec![
-            Message::ArchiveOpen(Ok(())),
             Message::ArchiveShare(true, 0),
             Message::UserName(user, 0),
             Message::UserSelected(true, 0),
