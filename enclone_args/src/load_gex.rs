@@ -214,7 +214,7 @@ pub fn load_gex(
 
             let mut metrics_file = String::new();
             if !ctl.gen_opt.cellranger {
-                let summary_dir = format!("{}/multi_web_summary_json/metrics_summary_csv", outs);
+                let summary_dir = format!("{}/../multi_web_summary_json/metrics_summary_csv", outs);
                 if path_exists(&summary_dir) {
                     let list = dir_list(&summary_dir);
                     if list.solo() {
