@@ -56,6 +56,12 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::ExpandArchiveEntry(true, 0),
             Message::SetName("share"),    // test share
         ],
+        vec![
+            Message::ArchiveOpen(Ok(())),
+            Message::RestoreCookbook(true, 0),
+            Message::ArchiveClose,
+            Message::SubmitButtonPressed(Ok(())),
+        ],
     ]
 }
 

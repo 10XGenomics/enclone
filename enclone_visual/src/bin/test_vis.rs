@@ -130,6 +130,40 @@ fn main() {
     all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // ANOTHER TEST
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    let metas = metatests()[2].clone();
+    let mut testnames = Vec::<String>::new();
+    for m in metas.iter() {
+        match m {
+            Message::SetName(x) => {
+                testnames.push(x.to_string());
+            }
+            _ => {}
+        };
+    }
+    for t in testnames.iter() {
+        let png = format!("enclone_visual/outputs/{}.png", t);
+        if path_exists(&png) {
+            std::fs::remove_file(&png).unwrap();
+        }
+    }
+    let o = Command::new("enclone")
+        .arg(&"VIS")
+        .arg("FAIL_ON_ERROR")
+        .arg(&"META=3")
+        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+        .output()
+        .expect("failed to execute enclone visual metatest 3");
+    if o.status.code() != Some(0) {
+        eprintln!("\nnonzero exit code from enclone visual metatest 3\n");
+        eprintln!("stderr =\n{}", strme(&o.stderr));
+        std::process::exit(1);
+    }
+    all_testnames.append(&mut testnames);
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

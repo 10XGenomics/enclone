@@ -97,6 +97,10 @@ impl EncloneVisual {
                         }
                         _ => {}
                     }
+                    if i == self.this_meta.len() - 1 {
+                        self.meta_pos = i + 1;
+                        done = true;
+                    }
                 }
                 if done {
                     Command::perform(noop0(), Message::CompleteMeta)
