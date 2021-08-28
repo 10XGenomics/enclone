@@ -58,6 +58,7 @@ pub struct MainEncloneOutput {
     pub svgs: Vec<String>, // SVG objects
     pub summary: String,   // summary
     pub metrics: Vec<String>,
+    pub dataset_names: Vec<String>,
     pub noprint: bool,
     pub noprintx: bool,
     pub html: bool,

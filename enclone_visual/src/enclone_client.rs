@@ -833,6 +833,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let mut svg_output = String::new();
                     let mut summary = String::new();
                     let mut metrics = Vec::<String>::new();
+                    let mut dataset_names = Vec::<String>::new();
                     let mut table_comp = Vec::<u8>::new();
                     let mut last_widths = Vec::<u32>::new();
                     if line != "enclone" && !line.starts_with("enclone ") {
@@ -886,6 +887,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let r = response.into_inner();
                             svg_output = r.plot.clone();
                             metrics = r.metrics.clone();
+                            dataset_names = r.dataset_names.clone();
                             output = format!("{}", r.table);
                             table_comp = r.table_comp.clone();
                             for x in r.last_widths.iter() {
@@ -905,6 +907,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             .lock()
                             .unwrap()
                             .push(metrics[i].clone());
+                    }
+                    SERVER_REPLY_DATASET_NAMES.lock().unwrap().clear();
+                    let n = dataset_names.len();
+                    for i in 0..n {
+                        SERVER_REPLY_DATASET_NAMES
+                            .lock()
+                            .unwrap()
+                            .push(dataset_names[i].clone());
                     }
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);

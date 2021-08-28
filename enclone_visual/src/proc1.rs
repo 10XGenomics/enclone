@@ -53,10 +53,14 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         }
     }
 
-    // Get the summary, and stuff the metrics into it.  The reason for this grotesque operation
-    // was to avoid updating the history data structure.
+    // Get the summary, and stuff the dataset names and metrics into it.  The reason for this 
+    // grotesque operation was to avoid updating the history data structure.
 
     let mut reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+    let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
+    for i in 0..n {
+        reply_summary += &mut format!("$$${}", SERVER_REPLY_DATASET_NAMES.lock().unwrap()[i]);
+    }
     let n = SERVER_REPLY_METRICS.lock().unwrap().len();
     for i in 0..n {
         reply_summary += &mut format!("###{}", SERVER_REPLY_METRICS.lock().unwrap()[i]);

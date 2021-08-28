@@ -348,6 +348,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         svgs: svgs,
         summary: summary,
         metrics: gex_info.metrics.clone(),
+        dataset_names: ctl.origin_info.dataset_id.clone(),
         noprint: ctl.gen_opt.noprint,
         noprintx: ctl.gen_opt.noprintx,
         html: ctl.gen_opt.html,
