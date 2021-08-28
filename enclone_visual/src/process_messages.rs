@@ -406,7 +406,7 @@ impl EncloneVisual {
             }
 
             Message::DeleteArchiveEntry(check_val, index) => {
-                if !self.delete_requested[index] {
+                if !self.delete_requested[index] && !self.just_restored {
                     self.delete_requested[index] = check_val;
                     self.expand_archive_entry[index] = false;
                     let filename = format!(
