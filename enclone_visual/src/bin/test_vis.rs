@@ -197,7 +197,7 @@ fn main() {
         let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);
         let new_png_file = format!("enclone_visual/outputs/{}.png", all_testnames[i]);
         if !path_exists(&new_png_file) {
-            eprintln!("\nWeird, can't find new_png_file = {}.", new_png_file);
+            eprintln!("\nWeird, can't find new_png_file = {}.\n", new_png_file);
         }
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
