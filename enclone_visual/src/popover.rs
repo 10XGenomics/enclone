@@ -115,7 +115,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 just.push(b'r');
             }
             print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
-            summary += "\n\n";
+            summary += "\nMETRICS BY DATASET\n";
             summary += &mut log;
         }
     }
