@@ -3,7 +3,6 @@
 use crate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
-use itertools::Itertools;
 use messages::Message;
 use vector_utils::*;
 
@@ -79,9 +78,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let mut all_metric_names = Vec::<String>::new();
             for i in 0..metrics.len() {
                 for j in 1..metrics[i].len() {
-                    let mut s = parse_csv(&metrics[i][j]);
-                    s.truncate(s.len() - 1);
-                    let m = format!("{}", s.iter().format(","));
+                    let s = parse_csv(&metrics[i][j]);
+                    let m = format!("{},{}", s[1], s[4]);
                     all_metric_names.push(m);
                 }
             }
@@ -91,10 +89,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let mut values = vec![vec![String::new(); nm]; nd];
             for i in 0..nd {
                 for j in 1..metrics[i].len() {
-                    let mut s = parse_csv(&metrics[i][j]);
+                    let s = parse_csv(&metrics[i][j]);
                     let value = s[s.len() - 1].clone();
-                    s.truncate(s.len() - 1);
-                    let m = format!("{}", s.iter().format(","));
+                    let m = format!("{},{}", s[1], s[4]);
                     let p = bin_position(&all_metric_names, &m) as usize;
                     values[i][p] = value;
                 }
