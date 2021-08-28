@@ -40,6 +40,7 @@ pub fn load_gex(
     h5_paths: &mut Vec<String>,
     feature_metrics: &mut Vec<HashMap<(String, String), String>>,
     json_metrics: &mut Vec<HashMap<String, f64>>,
+    metrics: &mut Vec<String>,
 ) -> Result<(), String> {
     let t = Instant::now();
     let mut results = Vec::<(
@@ -61,6 +62,7 @@ pub fn load_gex(
         Vec<String>,
         HashMap<(String, String), String>,
         HashMap<String, f64>,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -82,6 +84,7 @@ pub fn load_gex(
             Vec::<String>::new(),
             HashMap::<(String, String), String>::new(),
             HashMap::<String, f64>::new(),
+            String::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -203,6 +206,21 @@ pub fn load_gex(
                         feature_metrics_file = f.clone();
                         pathlist.push(f);
                         break;
+                    }
+                }
+            }
+
+            // Find the metrics file.
+
+            let mut metrics_file = String::new();
+            if !ctl.gen_opt.cellranger {
+                let summary_dir = format!("{}/multi_web_summary_json/metrics_summary_csv", outs);
+                if path_exists(&summary_dir) {
+                    let list = dir_list(&summary_dir);
+                    if list.solo() {
+                        let path = format!("{}/{}", summary_dir, list[0]);
+                        pathlist.push(path.clone());
+                        metrics_file = path;
                     }
                 }
             }
@@ -374,6 +392,12 @@ pub fn load_gex(
                         r.17.insert(var.to_string(), value);
                     }
                 }
+            }
+
+            // Read metrics file.
+
+            if metrics_file.len() > 0 {
+                r.18 = std::fs::read_to_string(&metrics_file).unwrap();
             }
 
             // Read feature metrics file.  Note that we do not enforce the requirement of this
@@ -726,7 +750,7 @@ pub fn load_gex(
     let n = results.len();
     for (
         _i,
-        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17),
+        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18),
     ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -751,6 +775,7 @@ pub fn load_gex(
         cell_type_specified.push(x10);
         feature_metrics.push(x16);
         json_metrics.push(x17);
+        metrics.push(x18);
     }
     ctl.perf_stats(&t, "in load_gex tail");
     Ok(())
@@ -778,6 +803,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut h5_paths = Vec::<String>::new();
     let mut feature_metrics = Vec::<HashMap<(String, String), String>>::new();
     let mut json_metrics = Vec::<HashMap<String, f64>>::new();
+    let mut metrics = Vec::<String>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -797,6 +823,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut h5_paths,
         &mut feature_metrics,
         &mut json_metrics,
+        &mut metrics,
     )?;
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
@@ -905,5 +932,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         have_fb: have_fb,
         feature_metrics: feature_metrics,
         json_metrics: json_metrics,
+        metrics: metrics,
     })
 }
