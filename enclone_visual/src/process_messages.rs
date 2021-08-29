@@ -24,6 +24,14 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::WaitCommand(_) => {
+                while PROCESSING_REQUEST.load(SeqCst) {
+                    thread::sleep(Duration::from_millis(10));
+                }
+                println!("wait complete"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                Command::perform(noop1(), Message::Meta)
+            }
+
             Message::CopySummary => {
                 self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.summary_current().as_bytes());
@@ -83,16 +91,43 @@ impl EncloneVisual {
             }
 
             Message::Meta(_) => {
+                println!("\nat top of meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 let mut done = false;
+                let mut null = false;
+                let mut submit = false;
+                let mut wait = false;
                 for i in self.meta_pos..self.this_meta.len() {
                     if i == 0 {
                         self.window_id = get_window_id();
                     }
+                    
+                    println!("in Meta with {:?}", self.this_meta[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXX
+
+                    match self.this_meta[i] {
+                        Message::SubmitButtonPressed(_) => {
+                            self.meta_pos = i + 1;
+                            submit = true;
+                            break;
+                        }
+                        Message::WaitCommand(_) => {
+                            self.meta_pos = i + 1;
+                            wait = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+
+                    println!("updating with {:?}", self.this_meta[i]); // XXXXXXXXXXXXXXXXXXXXXXXXX
                     self.update(self.this_meta[i].clone(), clipboard);
                     match self.this_meta[i] {
                         Message::SetName(_) => {
                             self.meta_pos = i + 1;
                             done = true;
+                            break;
+                        }
+                        Message::WaitCommand(_) => {
+                            self.meta_pos = i + 1;
+                            null = true;
                             break;
                         }
                         _ => {}
@@ -102,7 +137,16 @@ impl EncloneVisual {
                         done = true;
                     }
                 }
-                if done {
+                println!("at bottom of meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                if submit {
+                    Command::perform(noop0(), Message::SubmitButtonPressed)
+                } else if wait {
+                    Command::perform(noop0(), Message::WaitCommand)
+                } else if null {
+                    println!("running NullMeta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    Command::perform(noop0(), Message::NullMeta)
+                } else if done {
+                    println!("running CompleteMeta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     Command::perform(noop0(), Message::CompleteMeta)
                 } else {
                     Command::none()
@@ -110,10 +154,16 @@ impl EncloneVisual {
             }
 
             Message::CompleteMeta(_) => {
+                println!("in complete meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 capture(&self.save_name, self.window_id);
                 if self.meta_pos == self.this_meta.len() {
                     std::process::exit(0);
                 }
+                Command::perform(noop0(), Message::Meta)
+            }
+
+            Message::NullMeta(_) => {
+                println!("in null meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 Command::perform(noop0(), Message::Meta)
             }
 

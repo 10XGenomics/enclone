@@ -69,6 +69,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
         vec![
             Message::InputChanged1("enclone BCR=123085".to_string()),
             Message::SubmitButtonPressed(Ok(())),
+            Message::WaitCommand(Ok(())),
             Message::SetName("experiment"),
         ],
     ]

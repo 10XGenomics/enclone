@@ -60,10 +60,12 @@ pub enum Message {
     Narrative,
     Meta(Result<(), String>),
     CompleteMeta(Result<(), String>),
+    NullMeta(Result<(), String>),
     Snap(&'static str),
     SetName(&'static str),
     CopyNarrative,
     CompleteCopyNarrative(Result<(), String>),
     CopySummary,
     CompleteCopySummary(Result<(), String>),
+    WaitCommand(Result<(), String>),
 }
