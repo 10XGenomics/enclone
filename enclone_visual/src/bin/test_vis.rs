@@ -17,6 +17,8 @@
 // 123217    public, but we use our internal copy, which includes feature_barcode_matrix.bin
 // 1145040   not public
 // 1142282   not public
+// 1175299   not public
+// 1175300   not public
 //
 // Part of these tests assume that you can connect to a server.  Also we test receiving shares,
 // and this could fail and mess things up if someone else happened to send a share.
