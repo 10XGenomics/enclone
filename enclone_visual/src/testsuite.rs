@@ -64,13 +64,14 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::RestoreCookbook(true, 0),
             Message::ArchiveClose,
             Message::SubmitButtonPressed(Ok(())),
+            Message::WaitCommand(Ok(())),
         ],
         // 4 = enclone VIS
         vec![
             Message::InputChanged1("enclone BCR=123085".to_string()),
             Message::SubmitButtonPressed(Ok(())),
             Message::WaitCommand(Ok(())),
-            Message::SetName("experiment"),
+            Message::SetName("metrics"),
         ],
     ]
 }

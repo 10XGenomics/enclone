@@ -92,6 +92,9 @@ impl EncloneVisual {
 
             Message::Meta(_) => {
                 println!("\nat top of meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                if self.meta_pos == self.this_meta.len() {
+                    std::process::exit(0);
+                }
                 let mut done = false;
                 let mut null = false;
                 let mut submit = false;
