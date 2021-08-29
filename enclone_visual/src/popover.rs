@@ -96,27 +96,38 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     values[i][p] = value;
                 }
             }
-            let mut rows = Vec::<Vec<String>>::new();
-            let mut row = vec!["metric".to_string()];
-            row.append(&mut dataset_names.clone());
-            rows.push(row);
+            let mut categories = Vec::<String>::new();
             for i in 0..nm {
-                let mut row = vec![all_metric_names[i].clone()];
-                for j in 0..nd {
-                    row.push(values[j][i].clone());
-                }
-                rows.push(vec!["\\hline".to_string(); nd + 1]);
+                categories.push(all_metric_names[i].before(",").to_string());
+            }
+            unique_sort(&mut categories);
+            for cat in categories.iter() {
+                let catc = format!("{},", cat);
+                let upcat = cat.to_ascii_uppercase();
+                let mut rows = Vec::<Vec<String>>::new();
+                let mut row = vec!["metric".to_string()];
+                row.append(&mut dataset_names.clone());
                 rows.push(row);
+                for i in 0..nm {
+                    if all_metric_names[i].starts_with(&catc) {
+                        let mut row = vec![all_metric_names[i].clone().after(&catc).to_string()];
+                        for j in 0..nd {
+                            row.push(values[j][i].clone());
+                        }
+                        rows.push(vec!["\\hline".to_string(); nd + 1]);
+                        rows.push(row);
+                    }
+                }
+                let mut log = String::new();
+                let mut just = vec![b'l'];
+                for _ in 0..nd {
+                    just.push(b'|');
+                    just.push(b'r');
+                }
+                print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
+                summary += &mut format!("\n{} METRICS BY DATASET\n", upcat);
+                summary += &mut log;
             }
-            let mut log = String::new();
-            let mut just = vec![b'l'];
-            for _ in 0..nd {
-                just.push(b'|');
-                just.push(b'r');
-            }
-            print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
-            summary += "\nMETRICS BY DATASET\n";
-            summary += &mut log;
         }
     }
 
