@@ -21,6 +21,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
         }
     }
     vec![
+        // enclone VIS
         vec![
             Message::ArchiveOpen(Ok(())),
             Message::ExpandArchiveEntry(true, 0),
@@ -44,6 +45,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::ArchiveOpen(Ok(())),
             Message::SetName("rename"),   // see if rename occurs
         ],
+        // enclone VIS=b
         vec![
             Message::ArchiveOpen(Ok(())),
             Message::ArchiveShare(true, 0),
@@ -56,6 +58,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::ExpandArchiveEntry(true, 0),
             Message::SetName("share"),    // test share
         ],
+        // enclone VIS FAIL_ON_ERROR
         vec![
             Message::ArchiveOpen(Ok(())),
             Message::RestoreCookbook(true, 0),
