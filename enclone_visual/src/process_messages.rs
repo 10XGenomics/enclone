@@ -11,7 +11,6 @@ use chrono::prelude::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
 use std::time::{Duration, Instant};
-use vector_utils::*;
 
 impl EncloneVisual {
     pub fn process_message(
@@ -346,55 +345,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::ArchiveShare(check_val, index) => {
-                if !check_val {
-                    self.do_share = false;
-                    self.do_share_complete = false;
-                }
-                let mut already_sharing = false;
-                for i in 0..self.archive_share_requested.len() {
-                    if i != index && self.archive_share_requested[i] {
-                        already_sharing = true;
-                    }
-                }
-                if !already_sharing {
-                    self.archive_share_requested[index] = check_val;
-                    if !check_val {
-                        self.user.clear();
-                        self.user_value.clear();
-                        self.user_selected.clear();
-                        self.user_valid.clear();
-                    } else {
-                        let mut names = Vec::<String>::new();
-                        for i in 0..self.shares.len() {
-                            let mut j = 0;
-                            while j < self.shares[i].user_id.len() {
-                                if self.shares[i].user_id[j] == 0 {
-                                    break;
-                                }
-                                j += 1;
-                            }
-                            names.push(stringme(&self.shares[i].user_id[0..j]));
-                        }
-                        names.sort();
-                        let mut freq = Vec::<(u32, String)>::new();
-                        make_freq(&names, &mut freq);
-                        const MAX_USERS_TO_SHOW: usize = 6;
-                        let show = std::cmp::min(MAX_USERS_TO_SHOW, freq.len());
-                        for i in 0..show {
-                            self.user.push(iced::text_input::State::new());
-                            self.user_value.push(freq[i].1.clone());
-                            self.user_selected.push(false);
-                            self.user_valid.push(false);
-                        }
-                        self.user.push(iced::text_input::State::new());
-                        self.user_value.push(String::new());
-                        self.user_selected.push(false);
-                        self.user_valid.push(false);
-                    }
-                }
-                Command::none()
-            }
+            Message::ArchiveShare(check_val, index) => do_archive_share(self, check_val, index),
 
             Message::NameChange(check_val) => {
                 self.name_change_requested = check_val;

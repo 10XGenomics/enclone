@@ -16,6 +16,60 @@ use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
 
+pub fn do_archive_share(
+    slf: &mut EncloneVisual,
+    check_val: bool,
+    index: usize,
+) -> Command<Message> {
+    if !check_val {
+        slf.do_share = false;
+        slf.do_share_complete = false;
+    }
+    let mut already_sharing = false;
+    for i in 0..slf.archive_share_requested.len() {
+        if i != index && slf.archive_share_requested[i] {
+            already_sharing = true;
+        }
+    }
+    if !already_sharing {
+        slf.archive_share_requested[index] = check_val;
+        if !check_val {
+            slf.user.clear();
+            slf.user_value.clear();
+            slf.user_selected.clear();
+            slf.user_valid.clear();
+        } else {
+            let mut names = Vec::<String>::new();
+            for i in 0..slf.shares.len() {
+                let mut j = 0;
+                while j < slf.shares[i].user_id.len() {
+                    if slf.shares[i].user_id[j] == 0 {
+                        break;
+                    }
+                    j += 1;
+                }
+                names.push(stringme(&slf.shares[i].user_id[0..j]));
+            }
+            names.sort();
+            let mut freq = Vec::<(u32, String)>::new();
+            make_freq(&names, &mut freq);
+            const MAX_USERS_TO_SHOW: usize = 6;
+            let show = std::cmp::min(MAX_USERS_TO_SHOW, freq.len());
+            for i in 0..show {
+                slf.user.push(iced::text_input::State::new());
+                slf.user_value.push(freq[i].1.clone());
+                slf.user_selected.push(false);
+                slf.user_valid.push(false);
+            }
+            slf.user.push(iced::text_input::State::new());
+            slf.user_value.push(String::new());
+            slf.user_selected.push(false);
+            slf.user_valid.push(false);
+        }
+    }
+    Command::none()
+}
+
 pub fn do_archive_refresh_complete(slf: &mut EncloneVisual) -> Command<Message> {
     update_shares(slf);
     let n = slf.archive_name.len();
