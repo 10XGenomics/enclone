@@ -101,7 +101,7 @@ impl EncloneVisual {
                     if i == 0 {
                         self.window_id = get_window_id();
                     }
-                    
+
                     match self.this_meta[i] {
                         Message::SubmitButtonPressed(_) => {
                             self.meta_pos = i + 1;
@@ -156,9 +156,7 @@ impl EncloneVisual {
                 Command::perform(noop0(), Message::Meta)
             }
 
-            Message::NullMeta(_) => {
-                Command::perform(noop0(), Message::Meta)
-            }
+            Message::NullMeta(_) => Command::perform(noop0(), Message::Meta),
 
             Message::Narrative => {
                 self.modified = true;
@@ -653,80 +651,7 @@ impl EncloneVisual {
                 Command::perform(noop(), Message::ArchiveRefreshComplete)
             }
 
-            Message::ArchiveRefreshComplete(_) => {
-                update_shares(self);
-                let n = self.archive_name.len();
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
-                self.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-
-                // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
-                // keeps the Refresh button red for at least that amount of time.
-
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.share_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
-                for i in 0..n {
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_metadata(&path);
-                        if res.is_err() {
-                            panic!(
-                                "Unable to read the history file at\n{}\n\
-                                This could either be a bug in enclone or it could be that \
-                                the file is corrupted.\n",
-                                path,
-                            );
-                        }
-                        let (command_list, name, origin, narrative) = res.unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
-                self.do_share = false;
-                self.do_share_complete = false;
-                self.user.clear();
-                self.user_value.clear();
-                self.user_selected.clear();
-                self.user_valid.clear();
-                for i in 0..self.archive_share_requested.len() {
-                    self.archive_share_requested[i] = false;
-                }
-                for i in 0..self.expand_archive_entry.len() {
-                    self.expand_archive_entry[i] = false;
-                }
-                for i in 0..self.cookbooks.len() {
-                    self.expand_cookbook_entry[i] = false;
-                    self.restore_cookbook_requested[i] = false;
-                }
-                for i in 0..self.restore_msg.len() {
-                    self.restore_msg[i].clear();
-                    self.restore_requested[i] = false;
-                    if self.delete_requested[i] {
-                        self.deleted[i] = true;
-                    }
-                }
-                for i in 0..self.restore_cookbook_msg.len() {
-                    self.restore_cookbook_msg[i].clear();
-                }
-                self.just_restored = false;
-                for i in 0..n {
-                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                }
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop1(), Message::Capture)
-                }
-            }
+            Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
             Message::ArchiveClose => {
                 for i in 0..self.archive_name_value.len() {
