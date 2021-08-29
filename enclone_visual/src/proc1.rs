@@ -16,7 +16,6 @@ use std::time::{Duration, Instant};
 use vector_utils::*;
 
 pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
-    println!("***** starting computation done"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
     if reply_text.contains("enclone failed") {
         reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
@@ -212,7 +211,6 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         xprintln!("stored tables = {:.1} MB", total_tables as f64 / mb);
         xprintln!("");
     }
-    println!("at end of computation done"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     if META_TESTING.load(SeqCst) {
         Command::perform(noop0(), Message::Meta)
@@ -426,7 +424,6 @@ pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
                 .unwrap()
                 .push(slf.translated_input_value.clone());
             PROCESSING_REQUEST.store(true, SeqCst);
-            println!("processing request"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             Command::perform(compute(), Message::ComputationDone)
         }
     }

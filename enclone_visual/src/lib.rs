@@ -147,13 +147,11 @@ async fn noop1() -> Result<(), String> {
 }
 
 async fn compute() -> Result<(), String> {
-    println!("in compute"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let t = Instant::now();
     while PROCESSING_REQUEST.load(SeqCst) {
         thread::sleep(Duration::from_millis(10));
     }
     xprintln!("time used processing command = {:.1} seconds", elapsed(&t));
-    println!("exiting compute"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     Ok(())
 }
 

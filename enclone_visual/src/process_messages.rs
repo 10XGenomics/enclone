@@ -28,7 +28,6 @@ impl EncloneVisual {
                 while PROCESSING_REQUEST.load(SeqCst) {
                     thread::sleep(Duration::from_millis(10));
                 }
-                println!("wait complete"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 Command::perform(noop1(), Message::Meta)
             }
 
@@ -91,7 +90,6 @@ impl EncloneVisual {
             }
 
             Message::Meta(_) => {
-                println!("\nat top of meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if self.meta_pos == self.this_meta.len() {
                     std::process::exit(0);
                 }
@@ -104,8 +102,6 @@ impl EncloneVisual {
                         self.window_id = get_window_id();
                     }
                     
-                    println!("in Meta with {:?}", self.this_meta[i]); // XXXXXXXXXXXXXXXXXXXXXXXXXX
-
                     match self.this_meta[i] {
                         Message::SubmitButtonPressed(_) => {
                             self.meta_pos = i + 1;
@@ -120,7 +116,6 @@ impl EncloneVisual {
                         _ => {}
                     }
 
-                    println!("updating with {:?}", self.this_meta[i]); // XXXXXXXXXXXXXXXXXXXXXXXXX
                     self.update(self.this_meta[i].clone(), clipboard);
                     match self.this_meta[i] {
                         Message::SetName(_) => {
@@ -140,16 +135,13 @@ impl EncloneVisual {
                         done = true;
                     }
                 }
-                println!("at bottom of meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if submit {
                     Command::perform(noop0(), Message::SubmitButtonPressed)
                 } else if wait {
                     Command::perform(noop0(), Message::WaitCommand)
                 } else if null {
-                    println!("running NullMeta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     Command::perform(noop0(), Message::NullMeta)
                 } else if done {
-                    println!("running CompleteMeta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     Command::perform(noop0(), Message::CompleteMeta)
                 } else {
                     Command::none()
@@ -157,7 +149,6 @@ impl EncloneVisual {
             }
 
             Message::CompleteMeta(_) => {
-                println!("in complete meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 capture(&self.save_name, self.window_id);
                 if self.meta_pos == self.this_meta.len() {
                     std::process::exit(0);
@@ -166,7 +157,6 @@ impl EncloneVisual {
             }
 
             Message::NullMeta(_) => {
-                println!("in null meta"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 Command::perform(noop0(), Message::Meta)
             }
 
