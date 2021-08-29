@@ -134,7 +134,22 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Proceed.
 
     let summary = format!("{}\n \n", summary);
-    let font_size = 20;
+    let mut font_size = 20;
+    let mut max_line = 0;
+    for line in summary.lines() {
+        let mut nchars = 0;
+        for _ in line.chars() {
+            nchars += 1;
+        }
+        max_line = std::cmp::max(max_line, nchars);
+    }
+    const FUDGE: f32 = 175.0;
+    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+    let iwidth = width.ceil() as u32;
+    if iwidth > slf.width {
+        let fs = slf.width as f32 / width * (font_size as f32);
+        font_size = fs.floor() as usize;
+    }
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
         Text::new("Copy").color(slf.copy_summary_button_color),
