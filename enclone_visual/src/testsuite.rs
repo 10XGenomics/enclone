@@ -106,6 +106,8 @@ const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 const X3: &str = "enclone + BCR=123085 NOPRINT";
 const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
+const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
+                          SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
 
 #[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 40] = [
@@ -144,14 +146,17 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     (X5,     SUBMIT,  "test15"),  // enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX="u1 >= 6000" SEG=IGHM
     ("#5",   SUBMIT,  "test16"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT 
                                   //         NGEX LVARSP=fb1,fb1_n,fb2,fb2_n
-    ("#6",   SUBMIT,  "test17"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX 
+    (X6,     SUBMIT,  "test17"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX 
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
+                                  //         SUMMARY_CLEAN
     ("",     HELP1,   "test18"),  // (help)
     ("",     HELP2,   ""),        // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
+                                  //         SUMMARY_CLEAN
     ("",     SUMMARY1, "test19"), // (summary)
     ("",     SUMMARY2, ""),       // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
+                                  //         SUMMARY_CLEAN
     ("",     ARCH1,    "test20"), // (archive)
 ];
 
