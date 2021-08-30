@@ -6,6 +6,19 @@ use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Sp
 use messages::Message;
 use vector_utils::*;
 
+pub fn pack_summary() -> String {
+    let mut reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+    let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
+    for i in 0..n {
+        reply_summary += &mut format!("$$${}", SERVER_REPLY_DATASET_NAMES.lock().unwrap()[i]);
+    }
+    let n = SERVER_REPLY_METRICS.lock().unwrap().len();
+    for i in 0..n {
+        reply_summary += &mut format!("###{}", SERVER_REPLY_METRICS.lock().unwrap()[i]);
+    }
+    reply_summary
+}
+
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
     let mut summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
