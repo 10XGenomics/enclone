@@ -59,10 +59,7 @@ fn main() {
         } else if args[i] == "VERBOSE" {
             verbose = true;
         } else if args[i].starts_with("TESTS=") {
-            let x = args[i].after("TESTS=").split(',').collect::<Vec<&str>>();
-            for i in 0..x.len() {
-                tests.push(x[i].to_string());
-            }
+            tests = args[i].after("TESTS=").split(',').map(str::to_owned).collect();
         } else {
             eprintln!("\nUnknown argument {}.\n", args[i]);
             std::process::exit(1);
