@@ -806,6 +806,26 @@ pub fn load_gex(
         h5_paths.push(results[i].12.clone());
     }
 
+    // Add some metrics (just one for now).
+
+    let metric_name = "ANTIBODY_G_perfect_homopolymer_frac".to_string();
+    let metric_display_name = "Antibody Capture,G Homopolymer Frac".to_string();
+    let mut have = false;
+    for i in 0..results.len() {
+        if results[i].17.contains_key(&metric_name) {
+            have = true;
+        }
+    }
+    if have {
+        for i in 0..results.len() {
+            let mut value = String::new();
+            if results[i].17.contains_key(&metric_name) {
+                value = format!("{:.3}", results[i].17[&metric_name]);
+            }
+            results[i].18 += &mut format!("{},{}\n", metric_display_name, value);
+        }
+    }
+
     // Save results.  This avoids cloning, which saves a lot of time.
 
     let n = results.len();
@@ -838,6 +858,9 @@ pub fn load_gex(
         json_metrics.push(x17);
         metrics.push(x18);
     }
+
+    // Done.
+
     ctl.perf_stats(&t, "in load_gex tail");
     Ok(())
 }
