@@ -6,6 +6,11 @@ use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Sp
 use messages::Message;
 use vector_utils::*;
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This section contains the grotesque packing and unpacking of the summary.  We did this to
+// avoid changing history (which would require introducing a new history version)
+
 pub fn pack_summary() -> String {
     let mut reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
     let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
@@ -19,21 +24,23 @@ pub fn pack_summary() -> String {
     reply_summary
 }
 
-pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let summary_title = Text::new(&format!("Summary")).size(30);
-    let mut summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+// #[derive(Default, PartialEq, Clone)]
+pub struct SummaryStuff {
+    pub summary: String,
+    pub dataset_names: Vec<String>,
+    pub metrics: Vec<Vec<String>>,
+}
 
-    // Disect the summary, unscrewing the grotesque way that information is packed in it.
-
-    let mut dataset_names = Vec::<String>::new();
-    let mut metrics = Vec::<Vec<String>>::new();
-    if summary.contains("$$$") {
-        let p1 = summary.split("$$$").collect::<Vec<&str>>();
+impl SummaryStuff {
+    pub fn unpack_summary(s: &str) -> Self {
+        let mut dataset_names = Vec::<String>::new();
+        let mut metrics = Vec::<Vec<String>>::new();
+        let p1 = s.split("$$$").collect::<Vec<&str>>();
         let mut p1x = Vec::<String>::new();
         for i in 0..p1.len() {
             p1x.push(p1[i].to_string());
         }
-        summary = p1x[0].to_string();
+        let summary = p1x[0].to_string();
         for i in 1..p1x.len() {
             if p1x[i].contains("###") {
                 dataset_names.push(p1x[i].before("###").to_string());
@@ -49,6 +56,24 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 dataset_names.push(p1x[i].to_string());
             }
         }
+        SummaryStuff {
+            summary: summary,
+            dataset_names: dataset_names,
+            metrics: metrics,
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let summary_title = Text::new(&format!("Summary")).size(30);
+    let mut summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+    if summary.contains("$$$") {
+        let summary_stuff = SummaryStuff::unpack_summary(&summary);
+        summary = summary_stuff.summary.clone();
+        let dataset_names = summary_stuff.dataset_names.clone();
+        let metrics = summary_stuff.metrics.clone();
         if dataset_names.len() == metrics.len() {
             let mut all_metric_names = Vec::<String>::new();
             for i in 0..metrics.len() {
