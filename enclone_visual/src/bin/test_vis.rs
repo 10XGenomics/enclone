@@ -6,6 +6,7 @@
 //
 // Argument: QUIET.
 // Argument: VERBOSE.
+// Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,main).
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -45,6 +46,28 @@ use tilde_expand::*;
 fn main() {
     PrettyTrace::new().on();
     let tall = Instant::now();
+    let args: Vec<String> = env::args().collect();
+    let mut update = false;
+    let mut quiet = false;
+    let mut verbose = false;
+    let mut tests = Vec::<String>::new();
+    for i in 1..args.len() {
+        if args[i] == "UPDATE" {
+            update = true;
+        } else if args[i] == "QUIET" {
+            quiet = true;
+        } else if args[i] == "VERBOSE" {
+            verbose = true;
+        } else if args[i].starts_with("TESTS=") {
+            let x = args[i].after("TESTS=").split(',').collect::<Vec<&str>>();
+            for i in 0..x.len() {
+                tests.push(x[i].to_string());
+            }
+        } else {
+            eprintln!("\nUnknown argument {}.\n", args[i]);
+            std::process::exit(1);
+        }
+    }
     if !path_exists("enclone_visual") {
         eprintln!("\nYou need to run this from the top level directory of the enclone repo.\n");
         std::process::exit(1);
@@ -62,67 +85,71 @@ fn main() {
     // RUN A TEST IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    let metas = metatests()[3].clone();
-    let mut testnames = Vec::<String>::new();
-    for m in metas.iter() {
-        match m {
-            Message::SetName(x) => {
-                testnames.push(x.to_string());
-            }
-            _ => {}
-        };
-    }
-    for t in testnames.iter() {
-        let png = format!("enclone_visual/outputs/{}.png", t);
-        if path_exists(&png) {
-            std::fs::remove_file(&png).unwrap();
+    if tests.is_empty() || tests.contains(&"4".to_string()) {
+        let metas = metatests()[3].clone();
+        let mut testnames = Vec::<String>::new();
+        for m in metas.iter() {
+            match m {
+                Message::SetName(x) => {
+                    testnames.push(x.to_string());
+                }
+                _ => {}
+            };
         }
+        for t in testnames.iter() {
+            let png = format!("enclone_visual/outputs/{}.png", t);
+            if path_exists(&png) {
+                std::fs::remove_file(&png).unwrap();
+            }
+        }
+        let o = Command::new("enclone")
+            .arg(&"VIS")
+            .arg(&"META=4")
+            .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+            .output()
+            .expect("failed to execute enclone visual metatest 4");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual metatest 4\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        all_testnames.append(&mut testnames);
     }
-    let o = Command::new("enclone")
-        .arg(&"VIS")
-        .arg(&"META=4")
-        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
-        .output()
-        .expect("failed to execute enclone visual metatest 4");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual metatest 4\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
-    }
-    all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // RUN ARCHIVE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    let metas = metatests()[0].clone();
-    let mut testnames = Vec::<String>::new();
-    for m in metas.iter() {
-        match m {
-            Message::SetName(x) => {
-                testnames.push(x.to_string());
-            }
-            _ => {}
-        };
-    }
-    for t in testnames.iter() {
-        let png = format!("enclone_visual/outputs/{}.png", t);
-        if path_exists(&png) {
-            std::fs::remove_file(&png).unwrap();
+    if tests.is_empty() || tests.contains(&"1".to_string()) {
+        let metas = metatests()[0].clone();
+        let mut testnames = Vec::<String>::new();
+        for m in metas.iter() {
+            match m {
+                Message::SetName(x) => {
+                    testnames.push(x.to_string());
+                }
+                _ => {}
+            };
         }
+        for t in testnames.iter() {
+            let png = format!("enclone_visual/outputs/{}.png", t);
+            if path_exists(&png) {
+                std::fs::remove_file(&png).unwrap();
+            }
+        }
+        let o = Command::new("enclone")
+            .arg(&"VIS")
+            .arg(&"META=1")
+            .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+            .output()
+            .expect("failed to execute enclone visual metatest 1");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual metatest 1\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        all_testnames.append(&mut testnames);
     }
-    let o = Command::new("enclone")
-        .arg(&"VIS")
-        .arg(&"META=1")
-        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
-        .output()
-        .expect("failed to execute enclone visual metatest 1");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual metatest 1\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
-    }
-    all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // RUN ARCHIVE TESTS IN REMOTE MODE
@@ -131,72 +158,76 @@ fn main() {
     // This is dangerous, because it tests receiving shares, and someone else could send a share
     // before or during the test.  Should change to restrict to receiving only shares from self.
 
-    if path_exists(&target) {
-        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
-    }
-    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
-    let metas = metatests()[1].clone();
-    let mut testnames = Vec::<String>::new();
-    for m in metas.iter() {
-        match m {
-            Message::SetName(x) => {
-                testnames.push(x.to_string());
-            }
-            _ => {}
-        };
-    }
-    for t in testnames.iter() {
-        let png = format!("enclone_visual/outputs/{}.png", t);
-        if path_exists(&png) {
-            std::fs::remove_file(&png).unwrap();
+    if tests.is_empty() || tests.contains(&"2".to_string()) {
+        if path_exists(&target) {
+            fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
         }
+        fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
+        let metas = metatests()[1].clone();
+        let mut testnames = Vec::<String>::new();
+        for m in metas.iter() {
+            match m {
+                Message::SetName(x) => {
+                    testnames.push(x.to_string());
+                }
+                _ => {}
+            };
+        }
+        for t in testnames.iter() {
+            let png = format!("enclone_visual/outputs/{}.png", t);
+            if path_exists(&png) {
+                std::fs::remove_file(&png).unwrap();
+            }
+        }
+        let o = Command::new("enclone")
+            .arg(&"VIS=b")
+            .arg(&"META=2")
+            .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+            .output()
+            .expect("failed to execute enclone visual metatest 2");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual metatest 2\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        all_testnames.append(&mut testnames);
     }
-    let o = Command::new("enclone")
-        .arg(&"VIS=b")
-        .arg(&"META=2")
-        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
-        .output()
-        .expect("failed to execute enclone visual metatest 2");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual metatest 2\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
-    }
-    all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // ANOTHER TEST
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    let metas = metatests()[2].clone();
-    let mut testnames = Vec::<String>::new();
-    for m in metas.iter() {
-        match m {
-            Message::SetName(x) => {
-                testnames.push(x.to_string());
-            }
-            _ => {}
-        };
-    }
-    for t in testnames.iter() {
-        let png = format!("enclone_visual/outputs/{}.png", t);
-        if path_exists(&png) {
-            std::fs::remove_file(&png).unwrap();
+    if tests.is_empty() || tests.contains(&"3".to_string()) {
+        let metas = metatests()[2].clone();
+        let mut testnames = Vec::<String>::new();
+        for m in metas.iter() {
+            match m {
+                Message::SetName(x) => {
+                    testnames.push(x.to_string());
+                }
+                _ => {}
+            };
         }
+        for t in testnames.iter() {
+            let png = format!("enclone_visual/outputs/{}.png", t);
+            if path_exists(&png) {
+                std::fs::remove_file(&png).unwrap();
+            }
+        }
+        let o = Command::new("enclone")
+            .arg(&"VIS")
+            .arg("FAIL_ON_ERROR")
+            .arg(&"META=3")
+            .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+            .output()
+            .expect("failed to execute enclone visual metatest 3");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual metatest 3\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        all_testnames.append(&mut testnames);
     }
-    let o = Command::new("enclone")
-        .arg(&"VIS")
-        .arg("FAIL_ON_ERROR")
-        .arg(&"META=3")
-        .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
-        .output()
-        .expect("failed to execute enclone visual metatest 3");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual metatest 3\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
-    }
-    all_testnames.append(&mut testnames);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
@@ -205,14 +236,16 @@ fn main() {
     // Run enclone once to get it in cache.  This doesn't totally make sense but seems to improve
     // the reproducibility of timing of the actual work.
 
-    let o = Command::new("enclone")
-        .arg(&"--version")
-        .output()
-        .expect("failed to execute enclone visual pretest");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual pretest\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
+    if tests.is_empty() {
+        let o = Command::new("enclone")
+            .arg(&"--version")
+            .output()
+            .expect("failed to execute enclone visual pretest");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual pretest\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -220,36 +253,25 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let t = Instant::now();
-    let args: Vec<String> = env::args().collect();
-    let mut update = false;
-    let mut quiet = false;
-    let mut verbose = false;
-    if args.len() >= 2 && args[1] == "UPDATE" {
-        update = true;
-    }
-    if args.len() >= 2 && args[1] == "QUIET" {
-        quiet = true;
-    }
-    if args.len() >= 2 && args[1] == "VERBOSE" {
-        verbose = true;
-    }
-    let o = Command::new("enclone")
-        .arg(&"VIS")
-        .arg(&"TEST")
-        .arg(&"VISUAL_DIR=enclone_visual/tests/sample_visual")
-        .output()
-        .expect("failed to execute enclone visual test");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone visual test\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
-    }
-    if !quiet {
-        print!("{}", strme(&o.stdout));
-    }
-    for i in 0..TESTS.len() {
-        if TESTS[i].2.len() > 0 {
-            all_testnames.push(TESTS[i].2.to_string());
+    if tests.is_empty() || tests.contains(&"main".to_string()) {
+        let o = Command::new("enclone")
+            .arg(&"VIS")
+            .arg(&"TEST")
+            .arg(&"VISUAL_DIR=enclone_visual/tests/sample_visual")
+            .output()
+            .expect("failed to execute enclone visual test");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone visual test\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        if !quiet {
+            print!("{}", strme(&o.stdout));
+        }
+        for i in 0..TESTS.len() {
+            if TESTS[i].2.len() > 0 {
+                all_testnames.push(TESTS[i].2.to_string());
+            }
         }
     }
 
@@ -372,83 +394,87 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let used = elapsed(&t);
-    const EXPECTED_TIME: f64 = 40.5; // this is supposed to be the lowest observed value
-    const MAX_PERCENT_OVER: f64 = 4.2;
-    let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
-    if percent_over > MAX_PERCENT_OVER {
+    if tests.is_empty() {
+        const EXPECTED_TIME: f64 = 40.5; // this is supposed to be the lowest observed value
+        const MAX_PERCENT_OVER: f64 = 4.2;
+        let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
+        if percent_over > MAX_PERCENT_OVER {
+            eprintln!(
+                "\nUsed {:.1} seconds, exceeding expected test time of {:.1} seconds by {:.1}%, \
+                    versus max allowed = {}%.",
+                used, EXPECTED_TIME, percent_over, MAX_PERCENT_OVER,
+            );
+            eprintln!(
+                "You might want to retry a second time.  Note that if you're disconnected from\n\
+                the internet, then the Mac Gatekeeper could introduce very long delays.\n"
+            );
+            std::process::exit(1);
+        }
+
+        // Get peak memory.  This is sensitive to changes of a few percent or so.
+
+        let maxrss_children;
+        unsafe {
+            let mut rusage: libc::rusage = std::mem::zeroed();
+            let retval = libc::getrusage(libc::RUSAGE_CHILDREN, &mut rusage as *mut _);
+            assert_eq!(retval, 0);
+            maxrss_children = rusage.ru_maxrss;
+        }
+        let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
+        const MAX_PEAK_MEM: f64 = 114.1; // this is supposed to be the lowest observed value
+        const MAX_PERCENT_OVER_MEM: f64 = 17.6;
+        let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
+
         eprintln!(
-            "\nUsed {:.1} seconds, exceeding expected test time of {:.1} seconds by {:.1}%, \
+            "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
                 versus max allowed = {}%.",
-            used, EXPECTED_TIME, percent_over, MAX_PERCENT_OVER,
+            peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
         );
-        eprintln!(
-            "You might want to retry a second time.  Note that if you're disconnected from\n\
-            the internet, then the Mac Gatekeeper could introduce very long delays.\n"
-        );
-        std::process::exit(1);
-    }
-
-    // Get peak memory.  This is sensitive to changes of a few percent or so.
-
-    let maxrss_children;
-    unsafe {
-        let mut rusage: libc::rusage = std::mem::zeroed();
-        let retval = libc::getrusage(libc::RUSAGE_CHILDREN, &mut rusage as *mut _);
-        assert_eq!(retval, 0);
-        maxrss_children = rusage.ru_maxrss;
-    }
-    let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-    const MAX_PEAK_MEM: f64 = 114.1; // this is supposed to be the lowest observed value
-    const MAX_PERCENT_OVER_MEM: f64 = 17.6;
-    let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
-
-    eprintln!(
-        "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
-            versus max allowed = {}%.",
-        peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
-    );
-    if percent_over > MAX_PERCENT_OVER_MEM {
-        eprintln!("That's too high.  This happens occasionally, so please retry.\n");
-        std::process::exit(1);
+        if percent_over > MAX_PERCENT_OVER_MEM {
+            eprintln!("That's too high.  This happens occasionally, so please retry.\n");
+            std::process::exit(1);
+        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // TEST FOR STRAY PROCESSES
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    let o = Command::new("ps")
-        .arg(&"ux")
-        .output()
-        .expect("failed to execute ps");
-    let out = strme(&o.stdout);
-    for line in out.lines() {
-        if line.contains("ssh -p") {
-            eprintln!(
-                "\nLooks like you may have a stray process running:\n{}\n\n\
-                Treating this as an error.\n",
-                line
-            );
-            std::process::exit(1);
+    if tests.is_empty() {
+        let o = Command::new("ps")
+            .arg(&"ux")
+            .output()
+            .expect("failed to execute ps");
+        let out = strme(&o.stdout);
+        for line in out.lines() {
+            if line.contains("ssh -p") {
+                eprintln!(
+                    "\nLooks like you may have a stray process running:\n{}\n\n\
+                    Treating this as an error.\n",
+                    line
+                );
+                std::process::exit(1);
+            }
         }
-    }
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            let host = value.before(":");
-            let o = Command::new("ssh")
-                .arg(&host)
-                .arg(&"ps x")
-                .output()
-                .expect("failed to execute ssh");
-            let out = strme(&o.stdout);
-            for line in out.lines() {
-                if line.contains("enclone") {
-                    eprintln!(
-                        "\nLooks like you may have a stray process running on the \
-                        remote server:\n{}\n\n\
-                        Treating this as an error.\n",
-                        line
-                    );
-                    std::process::exit(1);
+        for (key, value) in env::vars() {
+            if key == "ENCLONE_CONFIG" {
+                let host = value.before(":");
+                let o = Command::new("ssh")
+                    .arg(&host)
+                    .arg(&"ps x")
+                    .output()
+                    .expect("failed to execute ssh");
+                let out = strme(&o.stdout);
+                for line in out.lines() {
+                    if line.contains("enclone") {
+                        eprintln!(
+                            "\nLooks like you may have a stray process running on the \
+                            remote server:\n{}\n\n\
+                            Treating this as an error.\n",
+                            line
+                        );
+                        std::process::exit(1);
+                    }
                 }
             }
         }
@@ -460,20 +486,22 @@ fn main() {
 
     // Test that a particular case of tilde expansion works on a Mac.
 
-    let o = Command::new("enclone")
-        .arg("BCR=123085")
-        .arg("MIN_CELLS=10")
-        .arg("PLOT_BY_ISOTYPE=gui")
-        .arg("HONEY_OUT=~/enclone_temp_test_file")
-        .arg("NOPRINT")
-        .output()
-        .expect("failed to execute enclone tilde test");
-    if o.status.code() != Some(0) {
-        eprintln!("\nnonzero exit code from enclone tilde test\n");
-        eprintln!("stderr =\n{}", strme(&o.stderr));
-        std::process::exit(1);
+    if tests.is_empty() {
+        let o = Command::new("enclone")
+            .arg("BCR=123085")
+            .arg("MIN_CELLS=10")
+            .arg("PLOT_BY_ISOTYPE=gui")
+            .arg("HONEY_OUT=~/enclone_temp_test_file")
+            .arg("NOPRINT")
+            .output()
+            .expect("failed to execute enclone tilde test");
+        if o.status.code() != Some(0) {
+            eprintln!("\nnonzero exit code from enclone tilde test\n");
+            eprintln!("stderr =\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        std::fs::remove_file(&strme(&tilde_expand("~/enclone_temp_test_file".as_bytes()))).unwrap();
     }
-    std::fs::remove_file(&strme(&tilde_expand("~/enclone_temp_test_file".as_bytes()))).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // DONE, REPORT STATUS
