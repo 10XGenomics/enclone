@@ -4,6 +4,7 @@ use crate::archive::*;
 use crate::help::*;
 use crate::history::*;
 use crate::popover::*;
+use crate::summary::*;
 use crate::testsuite::*;
 use crate::*;
 use chrono::{TimeZone, Utc};

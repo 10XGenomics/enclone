@@ -46,6 +46,7 @@ pub mod proc1;
 pub mod process_messages;
 pub mod share;
 pub mod style;
+pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
