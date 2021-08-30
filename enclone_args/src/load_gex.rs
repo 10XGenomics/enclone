@@ -7,6 +7,7 @@ use enclone_core::defs::*;
 use enclone_core::slurp::*;
 use hdf5::Dataset;
 use io_utils::*;
+use itertools::Itertools;
 use mirror_sparse_matrix::*;
 use rayon::prelude::*;
 use serde_json::Value;
@@ -18,6 +19,40 @@ use std::{
 };
 use string_utils::*;
 use vector_utils::*;
+
+// parse_csv_pure: same as parse_csv, but don't strip out quotes
+
+pub fn parse_csv_pure(x: &str) -> Vec<String> {
+    let mut y = Vec::<String>::new();
+    let mut w = Vec::<char>::new();
+    for c in x.chars() {
+        w.push(c);
+    }
+    let (mut quotes, mut i) = (0, 0);
+    while i < w.len() {
+        let mut j = i;
+        while j < w.len() {
+            if quotes % 2 == 0 && w[j] == ',' {
+                break;
+            }
+            if w[j] == '"' {
+                quotes += 1;
+            }
+            j += 1;
+        }
+        let (start, stop) = (i, j);
+        let mut s = String::new();
+        for m in start..stop {
+            s.push(w[m]);
+        }
+        y.push(s);
+        i = j + 1;
+    }
+    if w.len() > 0 && *w.last().unwrap() == ',' {
+        y.push(String::new());
+    }
+    y
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -394,10 +429,36 @@ pub fn load_gex(
                 }
             }
 
-            // Read metrics file.
+            // Read and parse metrics file.  Rewrite as metrics class, metric name, metric value.
 
             if metrics_file.len() > 0 {
-                r.18 = std::fs::read_to_string(&metrics_file).unwrap();
+                let m = std::fs::read_to_string(&metrics_file).unwrap();
+                let fields = parse_csv_pure(&m.before("\n"));
+                let (mut class, mut name, mut value) = (None, None, None);
+                for i in 0..fields.len() {
+                    if fields[i] == "Library Type" {
+                        class = Some(i);
+                    } else if fields[i] == "Metric Name" {
+                        name = Some(i);
+                    } else if fields[i] == "Metric Value" {
+                        value = Some(i);
+                    }
+                }
+                let (class, name, value) = (class.unwrap(), name.unwrap(), value.unwrap());
+                let mut lines = Vec::<String>::new();
+                let mut first = true;
+                for line in m.lines() {
+                    if first {
+                        first = false;
+                    } else {
+                        let fields = parse_csv_pure(&line);
+                        lines.push(format!(
+                            "{},{},{}",
+                            fields[class], fields[name], fields[value]
+                        ));
+                    }
+                }
+                r.18 = format!("{}\n", lines.iter().format("\n"));
             }
 
             // Read feature metrics file.  Note that we do not enforce the requirement of this

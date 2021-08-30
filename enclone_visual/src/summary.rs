@@ -77,9 +77,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         if dataset_names.len() == metrics.len() {
             let mut all_metric_names = Vec::<String>::new();
             for i in 0..metrics.len() {
-                for j in 1..metrics[i].len() {
+                for j in 0..metrics[i].len() {
                     let s = parse_csv(&metrics[i][j]);
-                    let m = format!("{},{}", s[1], s[4]);
+                    let m = format!("{},{}", s[0], s[1]);
                     all_metric_names.push(m);
                 }
             }
@@ -88,10 +88,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let nm = all_metric_names.len();
             let mut values = vec![vec![String::new(); nm]; nd];
             for i in 0..nd {
-                for j in 1..metrics[i].len() {
+                for j in 0..metrics[i].len() {
                     let s = parse_csv(&metrics[i][j]);
-                    let value = s[s.len() - 1].clone();
-                    let m = format!("{},{}", s[1], s[4]);
+                    let value = s[2].clone();
+                    let m = format!("{},{}", s[0], s[1]);
                     let p = bin_position(&all_metric_names, &m) as usize;
                     values[i][p] = value;
                 }
