@@ -54,8 +54,10 @@ message EncloneResponse {
   string plot = 2; // SVG
   string table = 3; // partial clonotype table as terminal text
   string summary = 4;
-  bytes table_comp = 5; // full clonotype table as terminal text, compressed
-  repeated uint32 last_widths = 6;
+  repeated string metrics = 5;
+  repeated string dataset_names = 6;
+  bytes table_comp = 7; // full clonotype table as terminal text, compressed
+  repeated uint32 last_widths = 8;
 }
 
 message ClonotypeRequest {

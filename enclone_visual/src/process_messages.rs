@@ -5,13 +5,13 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::share::*;
+use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
 use std::time::{Duration, Instant};
-use vector_utils::*;
 
 impl EncloneVisual {
     pub fn process_message(
@@ -24,9 +24,16 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::WaitCommand(_) => {
+                while PROCESSING_REQUEST.load(SeqCst) {
+                    thread::sleep(Duration::from_millis(10));
+                }
+                Command::perform(noop1(), Message::Meta)
+            }
+
             Message::CopySummary => {
                 self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                copy_bytes_to_clipboard(&self.summary_current().as_bytes());
+                copy_bytes_to_clipboard(&expand_summary(&self.summary_current()).as_bytes());
                 Command::perform(noop1(), Message::CompleteCopySummary)
             }
 
@@ -83,11 +90,32 @@ impl EncloneVisual {
             }
 
             Message::Meta(_) => {
+                if self.meta_pos == self.this_meta.len() {
+                    std::process::exit(0);
+                }
                 let mut done = false;
+                let mut null = false;
+                let mut submit = false;
+                let mut wait = false;
                 for i in self.meta_pos..self.this_meta.len() {
                     if i == 0 {
                         self.window_id = get_window_id();
                     }
+
+                    match self.this_meta[i] {
+                        Message::SubmitButtonPressed(_) => {
+                            self.meta_pos = i + 1;
+                            submit = true;
+                            break;
+                        }
+                        Message::WaitCommand(_) => {
+                            self.meta_pos = i + 1;
+                            wait = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+
                     self.update(self.this_meta[i].clone(), clipboard);
                     match self.this_meta[i] {
                         Message::SetName(_) => {
@@ -95,10 +123,25 @@ impl EncloneVisual {
                             done = true;
                             break;
                         }
+                        Message::WaitCommand(_) => {
+                            self.meta_pos = i + 1;
+                            null = true;
+                            break;
+                        }
                         _ => {}
                     }
+                    if i == self.this_meta.len() - 1 {
+                        self.meta_pos = i + 1;
+                        done = true;
+                    }
                 }
-                if done {
+                if submit {
+                    Command::perform(noop0(), Message::SubmitButtonPressed)
+                } else if wait {
+                    Command::perform(noop0(), Message::WaitCommand)
+                } else if null {
+                    Command::perform(noop0(), Message::NullMeta)
+                } else if done {
                     Command::perform(noop0(), Message::CompleteMeta)
                 } else {
                     Command::none()
@@ -112,6 +155,8 @@ impl EncloneVisual {
                 }
                 Command::perform(noop0(), Message::Meta)
             }
+
+            Message::NullMeta(_) => Command::perform(noop0(), Message::Meta),
 
             Message::Narrative => {
                 self.modified = true;
@@ -301,55 +346,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::ArchiveShare(check_val, index) => {
-                if !check_val {
-                    self.do_share = false;
-                    self.do_share_complete = false;
-                }
-                let mut already_sharing = false;
-                for i in 0..self.archive_share_requested.len() {
-                    if i != index && self.archive_share_requested[i] {
-                        already_sharing = true;
-                    }
-                }
-                if !already_sharing {
-                    self.archive_share_requested[index] = check_val;
-                    if !check_val {
-                        self.user.clear();
-                        self.user_value.clear();
-                        self.user_selected.clear();
-                        self.user_valid.clear();
-                    } else {
-                        let mut names = Vec::<String>::new();
-                        for i in 0..self.shares.len() {
-                            let mut j = 0;
-                            while j < self.shares[i].user_id.len() {
-                                if self.shares[i].user_id[j] == 0 {
-                                    break;
-                                }
-                                j += 1;
-                            }
-                            names.push(stringme(&self.shares[i].user_id[0..j]));
-                        }
-                        names.sort();
-                        let mut freq = Vec::<(u32, String)>::new();
-                        make_freq(&names, &mut freq);
-                        const MAX_USERS_TO_SHOW: usize = 6;
-                        let show = std::cmp::min(MAX_USERS_TO_SHOW, freq.len());
-                        for i in 0..show {
-                            self.user.push(iced::text_input::State::new());
-                            self.user_value.push(freq[i].1.clone());
-                            self.user_selected.push(false);
-                            self.user_valid.push(false);
-                        }
-                        self.user.push(iced::text_input::State::new());
-                        self.user_value.push(String::new());
-                        self.user_selected.push(false);
-                        self.user_valid.push(false);
-                    }
-                }
-                Command::none()
-            }
+            Message::ArchiveShare(check_val, index) => do_archive_share(self, check_val, index),
 
             Message::NameChange(check_val) => {
                 self.name_change_requested = check_val;
@@ -406,7 +403,7 @@ impl EncloneVisual {
             }
 
             Message::DeleteArchiveEntry(check_val, index) => {
-                if !self.delete_requested[index] {
+                if !self.delete_requested[index] && !self.just_restored {
                     self.delete_requested[index] = check_val;
                     self.expand_archive_entry[index] = false;
                     let filename = format!(
@@ -606,80 +603,7 @@ impl EncloneVisual {
                 Command::perform(noop(), Message::ArchiveRefreshComplete)
             }
 
-            Message::ArchiveRefreshComplete(_) => {
-                update_shares(self);
-                let n = self.archive_name.len();
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
-                self.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-
-                // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
-                // keeps the Refresh button red for at least that amount of time.
-
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.share_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
-                for i in 0..n {
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_metadata(&path);
-                        if res.is_err() {
-                            panic!(
-                                "Unable to read the history file at\n{}\n\
-                                This could either be a bug in enclone or it could be that \
-                                the file is corrupted.\n",
-                                path,
-                            );
-                        }
-                        let (command_list, name, origin, narrative) = res.unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
-                self.do_share = false;
-                self.do_share_complete = false;
-                self.user.clear();
-                self.user_value.clear();
-                self.user_selected.clear();
-                self.user_valid.clear();
-                for i in 0..self.archive_share_requested.len() {
-                    self.archive_share_requested[i] = false;
-                }
-                for i in 0..self.expand_archive_entry.len() {
-                    self.expand_archive_entry[i] = false;
-                }
-                for i in 0..self.cookbooks.len() {
-                    self.expand_cookbook_entry[i] = false;
-                    self.restore_cookbook_requested[i] = false;
-                }
-                for i in 0..self.restore_msg.len() {
-                    self.restore_msg[i].clear();
-                    self.restore_requested[i] = false;
-                    if self.delete_requested[i] {
-                        self.deleted[i] = true;
-                    }
-                }
-                for i in 0..self.restore_cookbook_msg.len() {
-                    self.restore_cookbook_msg[i].clear();
-                }
-                self.just_restored = false;
-                for i in 0..n {
-                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                }
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop1(), Message::Capture)
-                }
-            }
+            Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
             Message::ArchiveClose => {
                 for i in 0..self.archive_name_value.len() {

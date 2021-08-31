@@ -97,6 +97,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             VISUAL_DIR.lock().unwrap().push(dir);
         } else if arg == "PLAYBACK" {
             PLAYBACK.store(true, SeqCst);
+        } else if arg == "FAIL_ON_ERROR" {
+            FAIL_ON_ERROR.store(true, SeqCst);
         } else if arg.starts_with("META=") {
             META_TESTING.store(true, SeqCst);
             META.store(arg.after("META=").force_usize() - 1, SeqCst);
@@ -119,7 +121,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set enclone visual version.
 
-    let version = "0.000000000000001";
+    let version = "0.00000000000001";
     VERSION.lock().unwrap().push(version.to_string());
 
     // Monitor threads.
@@ -830,6 +832,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     let output;
                     let mut svg_output = String::new();
                     let mut summary = String::new();
+                    let mut metrics = Vec::<String>::new();
+                    let mut dataset_names = Vec::<String>::new();
                     let mut table_comp = Vec::<u8>::new();
                     let mut last_widths = Vec::<u32>::new();
                     if line != "enclone" && !line.starts_with("enclone ") {
@@ -838,6 +842,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                         } else {
                             output = "an actual enclone command needs to start with \"enclone\""
                                 .to_string();
+                            if FAIL_ON_ERROR.load(SeqCst) {
+                                eprintln!("\nFAIL_ON_ERROR: command must start with enclone\n");
+                                std::process::exit(1);
+                            }
                         }
                     } else {
                         if CONFIG_FILE.lock().unwrap().len() > 0 {
@@ -878,6 +886,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             let response = response.unwrap();
                             let r = response.into_inner();
                             svg_output = r.plot.clone();
+                            metrics = r.metrics.clone();
+                            dataset_names = r.dataset_names.clone();
                             output = format!("{}", r.table);
                             table_comp = r.table_comp.clone();
                             for x in r.last_widths.iter() {
@@ -890,6 +900,22 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     SERVER_REPLY_SVG.lock().unwrap().push(svg_output);
                     SERVER_REPLY_SUMMARY.lock().unwrap().clear();
                     SERVER_REPLY_SUMMARY.lock().unwrap().push(summary);
+                    SERVER_REPLY_METRICS.lock().unwrap().clear();
+                    let n = metrics.len();
+                    for i in 0..n {
+                        SERVER_REPLY_METRICS
+                            .lock()
+                            .unwrap()
+                            .push(metrics[i].clone());
+                    }
+                    SERVER_REPLY_DATASET_NAMES.lock().unwrap().clear();
+                    let n = dataset_names.len();
+                    for i in 0..n {
+                        SERVER_REPLY_DATASET_NAMES
+                            .lock()
+                            .unwrap()
+                            .push(dataset_names[i].clone());
+                    }
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
                     SERVER_REPLY_LAST_WIDTHS.lock().unwrap().clear();

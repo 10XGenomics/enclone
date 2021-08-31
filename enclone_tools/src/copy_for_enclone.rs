@@ -211,6 +211,17 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             let fasta_to = format!("{}/outs/vdj_reference/fasta", target);
             copy_file("regions.fa", &fasta_from, &fasta_to);
         }
+
+        let summary = format!("{}/multi_web_summary_json/metrics_summary_csv", p);
+        if path_exists(&summary) {
+            let summary_out = format!("{}/outs/multi_web_summary_json/metrics_summary_csv", target);
+            mkdirp(&summary_out);
+            let list = dir_list(&summary);
+            for f in list.iter() {
+                copy_file(f, &summary, &summary_out);
+            }
+        }
+
         let mut gex_files = gex_files.clone();
         gex_files.push("raw_feature_bc_matrix.h5");
         let count_pd_from = format!("{}/{}", p, count);

@@ -162,7 +162,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
                             let fields = s.split(' ').collect::<Vec<&str>>();
                             for j in 0..fields.len() {
                                 if fields[j].len() > 0 {
-                                    args2.push(fields[j].to_string());
+                                    args2.insert(1, fields[j].to_string());
                                 }
                             }
                         }

@@ -86,3 +86,5 @@ NICE TO HAVE
     enclone behavior.
 
 12. Clean up hist_uniq vectors after each del operation to avoid wasting memory.
+
+13. Make sure layout is optimal when the enclone visual window is widened.

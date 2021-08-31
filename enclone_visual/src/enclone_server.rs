@@ -85,6 +85,8 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: msg,
                 summary: String::new(),
+                metrics: Vec::<String>::new(),
+                dataset_names: Vec::<String>::new(),
                 table_comp: Vec::<u8>::new(),
                 last_widths: Vec::<u32>::new(),
             };
@@ -97,6 +99,8 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: String::new(),
                 summary: String::new(),
+                metrics: Vec::<String>::new(),
+                dataset_names: Vec::<String>::new(),
                 table_comp: Vec::<u8>::new(),
                 last_widths: Vec::<u32>::new(),
             };
@@ -191,6 +195,8 @@ impl Analyzer for EncloneAnalyzer {
                     plot: String::new(),
                     table: msg,
                     summary: String::new(),
+                    metrics: Vec::<String>::new(),
+                    dataset_names: Vec::<String>::new(),
                     table_comp: Vec::<u8>::new(),
                     last_widths: Vec::<u32>::new(),
                 };
@@ -203,6 +209,8 @@ impl Analyzer for EncloneAnalyzer {
                     plot: String::new(),
                     table: String::new(),
                     summary: String::new(),
+                    metrics: Vec::<String>::new(),
+                    dataset_names: Vec::<String>::new(),
                     table_comp: Vec::<u8>::new(),
                     last_widths: Vec::<u32>::new(),
                 };
@@ -224,6 +232,8 @@ impl Analyzer for EncloneAnalyzer {
                 plot: String::new(),
                 table: msg,
                 summary: String::new(),
+                metrics: Vec::<String>::new(),
+                dataset_names: Vec::<String>::new(),
                 table_comp: Vec::<u8>::new(),
                 last_widths: Vec::<u32>::new(),
             };
@@ -277,6 +287,8 @@ impl Analyzer for EncloneAnalyzer {
                 plot: plot,
                 table: table_string,
                 summary: enclone_state.outs.summary.clone(),
+                metrics: enclone_state.outs.metrics.clone(),
+                dataset_names: enclone_state.outs.dataset_names.clone(),
                 table_comp: gzipped,
                 last_widths: last_widths,
             };

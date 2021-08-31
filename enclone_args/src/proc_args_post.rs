@@ -49,6 +49,9 @@ pub fn proc_args_post(
         for i in 0..fields.len() {
             if fields[i] != "vj_seq1" && fields[i] != "vj_seq2" {
                 ctl.gen_opt.info_fields.push(fields[i].to_string());
+                ctl.gen_opt
+                    .info_fields
+                    .push(format!("log10({})", fields[i]));
             }
         }
         let mut tags = Vec::<String>::new();
@@ -73,6 +76,14 @@ pub fn proc_args_post(
                     vj2 = vals[i].to_string();
                 } else {
                     other.push(vals[i].to_string());
+                    let mut log10_val = "".to_string();
+                    if vals[i].parse::<f64>().is_ok() {
+                        let val = vals[i].force_f64();
+                        if val > 0.0 {
+                            log10_val = format!("{:.2}", val.log10());
+                        }
+                    }
+                    other.push(log10_val);
                 }
             }
             let tag = format!("{}_{}", vj1, vj2);

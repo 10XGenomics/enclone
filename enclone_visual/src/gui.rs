@@ -4,6 +4,7 @@ use crate::archive::*;
 use crate::help::*;
 use crate::history::*;
 use crate::popover::*;
+use crate::summary::*;
 use crate::testsuite::*;
 use crate::*;
 use chrono::{TimeZone, Utc};
@@ -24,7 +25,7 @@ use itertools::Itertools;
 use messages::Message;
 use pretty_trace::*;
 use std::env;
-use std::fs::{create_dir_all, metadata, File};
+use std::fs::{create_dir, create_dir_all, metadata, remove_file, File};
 use std::io::{Read, Write};
 use std::process::Stdio;
 use std::sync::atomic::Ordering::SeqCst;
@@ -343,7 +344,8 @@ impl Application for EncloneVisual {
         x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_summary_button_color = Color::from_rgb(0.0, 0.0, 0.0);
 
-        // Fetch cookbooks.
+        // Fetch cookbooks.  For remote cookbooks, we keep a local copy, which may or may not
+        // be current.
 
         let cookbook_dir = include_dir::include_dir!("src/cookbooks");
         for cookbook in cookbook_dir.find("*.cb").unwrap() {
@@ -355,10 +357,32 @@ impl Application for EncloneVisual {
             thread::sleep(Duration::from_millis(10));
         }
         if !META_TESTING.load(SeqCst) && !TEST_MODE.load(SeqCst) {
-            let n = REMOTE_COOKBOOKS.lock().unwrap().len();
-            for i in 0..n {
-                x.cookbooks
-                    .push(REMOTE_COOKBOOKS.lock().unwrap()[i].clone());
+            let local_remote = format!("{}/remote_cookbooks", x.visual);
+            if REMOTE.load(SeqCst) {
+                if path_exists(&local_remote) {
+                    let list = dir_list(&local_remote);
+                    for f in list.iter() {
+                        remove_file(&format!("{}/{}", local_remote, f)).unwrap();
+                    }
+                } else {
+                    create_dir(&local_remote).unwrap();
+                }
+                let n = REMOTE_COOKBOOKS.lock().unwrap().len();
+                for i in 0..n {
+                    let content = &REMOTE_COOKBOOKS.lock().unwrap()[i];
+                    x.cookbooks.push(content.clone());
+                    let f = format!("{}/{}", local_remote, i + 1);
+                    let mut file = File::create(&f).unwrap();
+                    file.write_all(&content).unwrap();
+                }
+            } else if path_exists(&local_remote) {
+                let list = dir_list(&local_remote);
+                for f in list.iter() {
+                    let mut h = File::open(&format!("{}/{}", local_remote, f)).unwrap();
+                    let mut content = Vec::<u8>::new();
+                    h.read_to_end(&mut content).unwrap();
+                    x.cookbooks.push(content);
+                }
             }
         }
         let nc = x.cookbooks.len();

@@ -104,7 +104,10 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             .width(max_width),
                         )
                         .push(Text::new("2.  Help, to get to this page."))
-                        .push(Text::new("3.  Cookbook, to show some sample commands.")),
+                        .push(Text::new(
+                            "3.  Cookbook, to show some sample commands.  And \
+                            see below, at Archive.",
+                        )),
                 ),
         )
         .push(Space::with_height(Units(20)))
@@ -127,10 +130,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             .width(max_width2),
                         )
                         .push(
-                            Text::new(
-                                "2.  Save, to cause the session to be saved.",
-                            )
-                            .width(max_width2),
+                            Text::new("2.  Save, to cause the session to be saved.")
+                                .width(max_width2),
                         )
                         .push(
                             Text::new(
@@ -141,8 +142,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         )
                         .push(
                             Text::new(
-                                "4.  Archive.  Opens a page to allow restoration or sharing of a previous \
-                                 session.",
+                                "4.  Archive.  Opens a page to allow restoration or sharing of a \
+                                 previous session.",
                             )
                             .width(max_width2),
                         )
@@ -152,6 +153,10 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 pushing the Archive button on the main page.",
                             )
                             .width(max_width2),
+                        )
+                        .push(
+                            Text::new("The archive page also gives you access to more cookbooks!")
+                                .width(max_width2),
                         ),
                 )
                 .push(Space::with_width(Length::Fill))
@@ -204,7 +209,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "Above, you can see two boxes.  You can type a command into \
             these.  The reason for having two boxes is that it allows for longer \
-            commands: you can split a command between the two boxes",
+            commands: you can split a command between the two boxes.  If you have a particularly \
+            long command, you can also widen the enclone visual window.",
             )
             .width(max_width),
         )
@@ -213,8 +219,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "Except for special cases (see below), every command begins with \
             the word enclone.  You can see examples by pushing the Cookbook button on the \
-            main screen.  You can learn about enclone commands in general by going to \
-            the site bit.ly/enclone.",
+            main screen, and from the cookbooks at the Archive page.  You can learn about \
+            enclone commands in general by going to the site bit.ly/enclone.",
             )
             .width(max_width),
         )

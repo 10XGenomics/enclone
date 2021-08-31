@@ -46,6 +46,7 @@ pub mod proc1;
 pub mod process_messages;
 pub mod share;
 pub mod style;
+pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
@@ -413,6 +414,7 @@ pub static GROUP_ID_CLICKED_ON: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
+pub static FAIL_ON_ERROR: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
 
@@ -435,6 +437,9 @@ lazy_static! {
     pub static ref SERVER_REPLY_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SVG: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SERVER_REPLY_SUMMARY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SERVER_REPLY_METRICS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref SERVER_REPLY_DATASET_NAMES: Mutex<Vec<String>> =
+        Mutex::new(Vec::<String>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());

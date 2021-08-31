@@ -2,18 +2,149 @@
 
 use crate::history::*;
 use crate::messages::*;
+use crate::share::*;
+use crate::summary::*;
 use crate::*;
 use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
 use flate2::read::GzDecoder;
 use gui_structures::ComputeState::*;
-use iced::Command;
+use iced::{Color, Command};
 use io_utils::*;
 use itertools::Itertools;
 use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
+
+pub fn do_archive_share(
+    slf: &mut EncloneVisual,
+    check_val: bool,
+    index: usize,
+) -> Command<Message> {
+    if !check_val {
+        slf.do_share = false;
+        slf.do_share_complete = false;
+    }
+    let mut already_sharing = false;
+    for i in 0..slf.archive_share_requested.len() {
+        if i != index && slf.archive_share_requested[i] {
+            already_sharing = true;
+        }
+    }
+    if !already_sharing {
+        slf.archive_share_requested[index] = check_val;
+        if !check_val {
+            slf.user.clear();
+            slf.user_value.clear();
+            slf.user_selected.clear();
+            slf.user_valid.clear();
+        } else {
+            let mut names = Vec::<String>::new();
+            for i in 0..slf.shares.len() {
+                let mut j = 0;
+                while j < slf.shares[i].user_id.len() {
+                    if slf.shares[i].user_id[j] == 0 {
+                        break;
+                    }
+                    j += 1;
+                }
+                names.push(stringme(&slf.shares[i].user_id[0..j]));
+            }
+            names.sort();
+            let mut freq = Vec::<(u32, String)>::new();
+            make_freq(&names, &mut freq);
+            const MAX_USERS_TO_SHOW: usize = 6;
+            let show = std::cmp::min(MAX_USERS_TO_SHOW, freq.len());
+            for i in 0..show {
+                slf.user.push(iced::text_input::State::new());
+                slf.user_value.push(freq[i].1.clone());
+                slf.user_selected.push(false);
+                slf.user_valid.push(false);
+            }
+            slf.user.push(iced::text_input::State::new());
+            slf.user_value.push(String::new());
+            slf.user_selected.push(false);
+            slf.user_valid.push(false);
+        }
+    }
+    Command::none()
+}
+
+pub fn do_archive_refresh_complete(slf: &mut EncloneVisual) -> Command<Message> {
+    update_shares(slf);
+    let n = slf.archive_name.len();
+    slf.orig_archive_name = slf.archive_name_value.clone();
+    slf.h.orig_name_value = slf.h.name_value.clone();
+    slf.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+
+    // Sleep so that total time for updating of shares is at least 0.4 seconds.  This
+    // keeps the Refresh button red for at least that amount of time.
+
+    const MIN_SLEEP: f64 = 0.4;
+    let used = elapsed(&slf.share_start.unwrap());
+    if used < MIN_SLEEP {
+        let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+        thread::sleep(Duration::from_millis(ms));
+    }
+    for i in 0..n {
+        if slf.archived_command_list[i].is_none() {
+            let x = &slf.archive_list[i];
+            let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
+            let res = read_metadata(&path);
+            if res.is_err() {
+                panic!(
+                    "Unable to read the history file at\n{}\n\
+                    This could either be a bug in enclone or it could be that \
+                    the file is corrupted.\n",
+                    path,
+                );
+            }
+            let (command_list, name, origin, narrative) = res.unwrap();
+            slf.archived_command_list[i] = Some(command_list);
+            slf.archive_name_value[i] = name;
+            slf.archive_origin[i] = origin;
+            slf.archive_narrative[i] = narrative;
+        }
+    }
+    slf.do_share = false;
+    slf.do_share_complete = false;
+    slf.user.clear();
+    slf.user_value.clear();
+    slf.user_selected.clear();
+    slf.user_valid.clear();
+    for i in 0..slf.archive_share_requested.len() {
+        slf.archive_share_requested[i] = false;
+    }
+    for i in 0..slf.expand_archive_entry.len() {
+        slf.expand_archive_entry[i] = false;
+    }
+    for i in 0..slf.cookbooks.len() {
+        slf.expand_cookbook_entry[i] = false;
+        slf.restore_cookbook_requested[i] = false;
+    }
+    for i in 0..slf.restore_msg.len() {
+        slf.restore_msg[i].clear();
+        slf.restore_requested[i] = false;
+        if slf.delete_requested[i] {
+            slf.deleted[i] = true;
+        }
+    }
+    for i in 0..slf.restore_cookbook_msg.len() {
+        slf.restore_cookbook_msg[i].clear();
+    }
+    slf.just_restored = false;
+    for i in 0..n {
+        slf.archive_name_value[i] = slf.orig_archive_name[i].clone();
+        slf.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+        slf.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+    }
+    if !TEST_MODE.load(SeqCst) {
+        Command::none()
+    } else {
+        Command::perform(noop1(), Message::Capture)
+    }
+}
 
 pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
     let mut reply_text = SERVER_REPLY_TEXT.lock().unwrap()[0].clone();
@@ -53,10 +184,14 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         }
     }
 
+    // Get the summary, and stuff the dataset names and metrics into it.  The reason for this
+    // grotesque operation was to avoid updating the history data structure.
+
+    let reply_summary = pack_summary();
+
     // Keep going.
 
     reply_text += "\n \n \n"; // papering over truncation bug in display
-    let reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
     let reply_last_widths = SERVER_REPLY_LAST_WIDTHS.lock().unwrap()[0].clone();
     let mut reply_svg = String::new();
     let mut blank = false;
@@ -200,7 +335,9 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         xprintln!("");
     }
 
-    if !TEST_MODE.load(SeqCst) {
+    if META_TESTING.load(SeqCst) {
+        Command::perform(noop0(), Message::Meta)
+    } else if !TEST_MODE.load(SeqCst) {
         Command::none()
     } else {
         slf.sanity_check();
@@ -271,6 +408,11 @@ pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Comm
 
 pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;
+    slf.input_value = slf.input1_value.clone();
+    if slf.input1_value.len() > 0 && slf.input2_value.len() > 0 {
+        slf.input_value += " ";
+    }
+    slf.input_value += &mut slf.input2_value.clone();
     let mut group_spec = true;
     let mut group_ids = Vec::<usize>::new();
     let s = slf.input_value.split(',').collect::<Vec<&str>>();
