@@ -1,6 +1,39 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use iced::{button, Background};
+
 // This file defines styles for some elements in the GUI.
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub struct ButtonBoxStyle;
+
+impl button::StyleSheet for ButtonBoxStyle {
+    fn active(&self) -> button::Style {
+        button::Style {
+            background: Some(Background::Color(Color::BLACK)),
+            border_radius: 3.0,
+            text_color: Color::WHITE,
+            ..button::Style::default()
+        }
+    }
+
+    fn hovered(&self) -> button::Style {
+        button::Style {
+            background: Some(Background::Color(Color::BLACK)),
+            text_color: Color::WHITE,
+            ..self.active()
+        }
+    }
+
+    fn pressed(&self) -> button::Style {
+        button::Style {
+            border_width: 1.0,
+            border_color: Color::WHITE,
+            ..self.hovered()
+        }
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
