@@ -5,6 +5,7 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::share::*;
+use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
@@ -32,7 +33,7 @@ impl EncloneVisual {
 
             Message::CopySummary => {
                 self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                copy_bytes_to_clipboard(&self.summary_current().as_bytes());
+                copy_bytes_to_clipboard(&expand_summary(&self.summary_current()).as_bytes());
                 Command::perform(noop1(), Message::CompleteCopySummary)
             }
 
