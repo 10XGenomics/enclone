@@ -68,7 +68,7 @@ impl SummaryStuff {
 
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
-    let mut summary = SUMMARY_CONTENTS.lock().unwrap()[0].clone();
+    let mut summary = slf.summary_value.clone();
     let summary_stuff = SummaryStuff::unpack_summary(&summary);
     let n = summary_stuff.metrics.len();
     if n > 0 && n == summary_stuff.dataset_names.len() {
