@@ -30,6 +30,7 @@
 
 use crate::launch_gui;
 use crate::proto::{analyzer_client::AnalyzerClient, *};
+use crate::summary::*;
 use crate::update_restart::*;
 use crate::*;
 use enclone_core::parse_bsv;
@@ -916,6 +917,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                             .unwrap()
                             .push(dataset_names[i].clone());
                     }
+                    let summary = form_summary_from_server_response().pack();
+                    SERVER_REPLY_SUMMARY_PLUS.lock().unwrap().clear();
+                    SERVER_REPLY_SUMMARY_PLUS.lock().unwrap().push(summary);
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().clear();
                     SERVER_REPLY_TABLE_COMP.lock().unwrap().push(table_comp);
                     SERVER_REPLY_LAST_WIDTHS.lock().unwrap().clear();
