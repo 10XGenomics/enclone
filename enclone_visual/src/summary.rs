@@ -66,6 +66,11 @@ impl SummaryStuff {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub struct Metric {
+    pub metric_name: String,
+    pub values: Vec<String>,
+}
+
 pub fn expand_summary(summary: &str) -> String {
     let mut summary = summary.to_string();
     let summary_stuff = SummaryStuff::unpack_summary(&summary);
@@ -73,11 +78,11 @@ pub fn expand_summary(summary: &str) -> String {
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary = summary_stuff.summary.clone();
         let dataset_names = summary_stuff.dataset_names.clone();
-        let metrics = summary_stuff.metrics.clone();
+        let metricsx = summary_stuff.metrics.clone();
         let mut all_metric_names = Vec::<String>::new();
-        for i in 0..metrics.len() {
-            for j in 0..metrics[i].len() {
-                let s = parse_csv(&metrics[i][j]);
+        for i in 0..metricsx.len() {
+            for j in 0..metricsx[i].len() {
+                let s = parse_csv(&metricsx[i][j]);
                 let m = format!("{},{}", s[0], s[1]);
                 all_metric_names.push(m);
             }
@@ -87,8 +92,8 @@ pub fn expand_summary(summary: &str) -> String {
         let nm = all_metric_names.len();
         let mut values = vec![vec![String::new(); nd]; nm];
         for i in 0..nd {
-            for j in 0..metrics[i].len() {
-                let s = parse_csv(&metrics[i][j]);
+            for j in 0..metricsx[i].len() {
+                let s = parse_csv(&metricsx[i][j]);
                 let value = s[2].clone();
                 let m = format!("{},{}", s[0], s[1]);
                 let p = bin_position(&all_metric_names, &m) as usize;
@@ -144,11 +149,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary = summary_stuff.summary.clone();
         let dataset_names = summary_stuff.dataset_names.clone();
-        let metrics = summary_stuff.metrics.clone();
+        let metricsx = summary_stuff.metrics.clone();
         let mut all_metric_names = Vec::<String>::new();
-        for i in 0..metrics.len() {
-            for j in 0..metrics[i].len() {
-                let s = parse_csv(&metrics[i][j]);
+        for i in 0..metricsx.len() {
+            for j in 0..metricsx[i].len() {
+                let s = parse_csv(&metricsx[i][j]);
                 let m = format!("{},{}", s[0], s[1]);
                 all_metric_names.push(m);
             }
@@ -158,8 +163,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let nm = all_metric_names.len();
         let mut values = vec![vec![String::new(); nd]; nm];
         for i in 0..nd {
-            for j in 0..metrics[i].len() {
-                let s = parse_csv(&metrics[i][j]);
+            for j in 0..metricsx[i].len() {
+                let s = parse_csv(&metricsx[i][j]);
                 let value = s[2].clone();
                 let m = format!("{},{}", s[0], s[1]);
                 let p = bin_position(&all_metric_names, &m) as usize;
