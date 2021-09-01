@@ -66,10 +66,44 @@ impl SummaryStuff {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+#[derive(Clone, Default)]
 pub struct Metric {
-    pub metric_name: String,
+    pub name: String,
     pub values: Vec<String>,
 }
+
+pub fn get_metrics(metricsx: &Vec<Vec<String>>, nd: usize) -> Vec<Metric> {
+    let mut all_metric_names = Vec::<String>::new();
+    for i in 0..metricsx.len() {
+        for j in 0..metricsx[i].len() {
+            let s = parse_csv(&metricsx[i][j]);
+            let m = format!("{},{}", s[0], s[1]);
+            all_metric_names.push(m);
+        }
+    }
+    unique_sort(&mut all_metric_names);
+    let nm = all_metric_names.len();
+    let mut values = vec![vec![String::new(); nd]; nm];
+    for i in 0..nd {
+        for j in 0..metricsx[i].len() {
+            let s = parse_csv(&metricsx[i][j]);
+            let value = s[2].clone();
+            let m = format!("{},{}", s[0], s[1]);
+            let p = bin_position(&all_metric_names, &m) as usize;
+            values[p][i] = value;
+        }
+    }
+    let mut metrics = vec![Metric::default(); nm];
+    for i in 0..nm {
+        metrics[i] = Metric {
+            name: all_metric_names[i].clone(),
+            values: values[i].clone(),
+        }
+    }
+    metrics
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn expand_summary(summary: &str) -> String {
     let mut summary = summary.to_string();
@@ -78,31 +112,13 @@ pub fn expand_summary(summary: &str) -> String {
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary = summary_stuff.summary.clone();
         let dataset_names = summary_stuff.dataset_names.clone();
-        let metricsx = summary_stuff.metrics.clone();
-        let mut all_metric_names = Vec::<String>::new();
-        for i in 0..metricsx.len() {
-            for j in 0..metricsx[i].len() {
-                let s = parse_csv(&metricsx[i][j]);
-                let m = format!("{},{}", s[0], s[1]);
-                all_metric_names.push(m);
-            }
-        }
-        unique_sort(&mut all_metric_names);
         let nd = dataset_names.len();
-        let nm = all_metric_names.len();
-        let mut values = vec![vec![String::new(); nd]; nm];
-        for i in 0..nd {
-            for j in 0..metricsx[i].len() {
-                let s = parse_csv(&metricsx[i][j]);
-                let value = s[2].clone();
-                let m = format!("{},{}", s[0], s[1]);
-                let p = bin_position(&all_metric_names, &m) as usize;
-                values[p][i] = value;
-            }
-        }
+        let metricsx = summary_stuff.metrics.clone();
+        let metrics = get_metrics(&metricsx, nd);
+        let nm = metrics.len();
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
-            categories.push(all_metric_names[i].before(",").to_string());
+            categories.push(metrics[i].name.before(",").to_string());
         }
         unique_sort(&mut categories);
         for cat in categories.iter() {
@@ -113,10 +129,10 @@ pub fn expand_summary(summary: &str) -> String {
             row.append(&mut dataset_names.clone());
             rows.push(row);
             for i in 0..nm {
-                if all_metric_names[i].starts_with(&catc) {
-                    let mut row = vec![all_metric_names[i].clone().after(&catc).to_string()];
+                if metrics[i].name.starts_with(&catc) {
+                    let mut row = vec![metrics[i].name.after(&catc).to_string()];
                     for j in 0..nd {
-                        row.push(values[i][j].clone());
+                        row.push(metrics[i].values[j].clone());
                     }
                     rows.push(vec!["\\hline".to_string(); nd + 1]);
                     rows.push(row);
@@ -149,31 +165,13 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary = summary_stuff.summary.clone();
         let dataset_names = summary_stuff.dataset_names.clone();
-        let metricsx = summary_stuff.metrics.clone();
-        let mut all_metric_names = Vec::<String>::new();
-        for i in 0..metricsx.len() {
-            for j in 0..metricsx[i].len() {
-                let s = parse_csv(&metricsx[i][j]);
-                let m = format!("{},{}", s[0], s[1]);
-                all_metric_names.push(m);
-            }
-        }
-        unique_sort(&mut all_metric_names);
         let nd = dataset_names.len();
-        let nm = all_metric_names.len();
-        let mut values = vec![vec![String::new(); nd]; nm];
-        for i in 0..nd {
-            for j in 0..metricsx[i].len() {
-                let s = parse_csv(&metricsx[i][j]);
-                let value = s[2].clone();
-                let m = format!("{},{}", s[0], s[1]);
-                let p = bin_position(&all_metric_names, &m) as usize;
-                values[p][i] = value;
-            }
-        }
+        let metricsx = summary_stuff.metrics.clone();
+        let metrics = get_metrics(&metricsx, nd);
+        let nm = metrics.len();
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
-            categories.push(all_metric_names[i].before(",").to_string());
+            categories.push(metrics[i].name.before(",").to_string());
         }
         unique_sort(&mut categories);
         for cat in categories.iter() {
@@ -184,10 +182,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             row.append(&mut dataset_names.clone());
             rows.push(row);
             for i in 0..nm {
-                if all_metric_names[i].starts_with(&catc) {
-                    let mut row = vec![all_metric_names[i].clone().after(&catc).to_string()];
+                if metrics[i].name.starts_with(&catc) {
+                    let mut row = vec![metrics[i].name.after(&catc).to_string()];
                     for j in 0..nd {
-                        row.push(values[i][j].clone());
+                        row.push(metrics[i].values[j].clone());
                     }
                     rows.push(vec!["\\hline".to_string(); nd + 1]);
                     rows.push(row);
