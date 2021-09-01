@@ -311,7 +311,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(summary_copy_button)
         .push(Space::with_width(Units(8)))
         .push(summary_close_button);
-    let summary_scrollable = Scrollable::new(&mut slf.scroll)
+    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
         .scrollbar_width(SCROLLBAR_WIDTH)
@@ -321,8 +321,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(&format!("{}", summary))
                 .font(DEJAVU_BOLD)
                 .size(font_size as u16),
-        )
+        );
+    if n > 0 && n == summary_stuff.dataset_names.len() {
+        summary_scrollable = summary_scrollable
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(button_text_row);
+    }
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)
