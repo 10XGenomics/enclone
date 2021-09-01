@@ -1,8 +1,10 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
+use crate::style::ButtonBoxStyle;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use itertools::izip;
 use messages::Message;
 use vector_utils::*;
 
@@ -162,6 +164,29 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut summary = slf.summary_value.clone();
     let summary_stuff = SummaryStuff::unpack_summary(&summary);
     let n = summary_stuff.metrics.len();
+
+    // Determine initial font size.
+
+    let mut font_size = 20;
+    let mut max_line = 0;
+    for line in summary.lines() {
+        let mut nchars = 0;
+        for _ in line.chars() {
+            nchars += 1;
+        }
+        max_line = std::cmp::max(max_line, nchars);
+    }
+    const FUDGE: f32 = 175.0;
+    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+    let iwidth = width.ceil() as u32;
+    if iwidth > slf.width {
+        let fs = slf.width as f32 / width * (font_size as f32);
+        font_size = fs.floor() as usize;
+    }
+
+    // Suppose we have dataset level metrics.
+
+    let mut button_text_row = Row::new();
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary = summary_stuff.summary.clone();
         let dataset_names = summary_stuff.dataset_names.clone();
@@ -169,11 +194,16 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let metricsx = summary_stuff.metrics.clone();
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
+        slf.metric_button = vec![iced::button::State::default(); nm];
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
             categories.push(metrics[i].name.before(",").to_string());
         }
         unique_sort(&mut categories);
+
+        // Make text for metrics.
+
+        let mut text = String::new();
         for cat in categories.iter() {
             let catc = format!("{},", cat);
             let upcat = cat.to_ascii_uppercase();
@@ -198,30 +228,63 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 just.push(b'r');
             }
             print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
-            summary += &mut format!("\n{} METRICS BY DATASET\n", upcat);
-            summary += &mut log;
+            text += &mut format!("\n{} METRICS BY DATASET\n", upcat);
+            text += &mut log;
         }
+
+        // Update font size.
+
+        for line in text.lines() {
+            let mut nchars = 0;
+            for _ in line.chars() {
+                nchars += 1;
+            }
+            max_line = std::cmp::max(max_line, nchars);
+        }
+        let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+        let iwidth = width.ceil() as u32;
+        if iwidth > slf.width {
+            let fs = slf.width as f32 / width * (font_size as f32);
+            font_size = fs.floor() as usize;
+        }
+
+        // Make text column for metrics.
+
+        let font_size = font_size as u16;
+        let text_column = Column::new().push(Text::new(&text).font(DEJAVU_BOLD).size(font_size));
+
+        // Make button column for metrics.
+
+        let mut button_column = Column::new();
+        for (i, y) in izip!(
+            0..nm,
+            slf.metric_button.iter_mut()
+        ) {
+            if i == 0 || metrics[i].name.before(",") != metrics[i-1].name.before(",") {
+                button_column = button_column.push(Space::with_height(Units(2*font_size)));
+            }
+            button_column = button_column
+                .push(Space::with_height(Units(font_size)))
+                .push(
+                    Button::new(
+                        y, 
+                        Text::new("").height(Units(font_size)).width(Units(font_size))
+                    )
+                    .style(ButtonBoxStyle)
+                    .padding(0)
+                    .on_press(Message::MetricButton(i)));
+        }
+
+        // Put together buttons and text.
+
+        button_text_row = Row::new()
+            .push(button_column)
+            .push(text_column);
     }
 
     // Build final structure.
 
     let summary = format!("{}\n \n", summary);
-    let mut font_size = 20;
-    let mut max_line = 0;
-    for line in summary.lines() {
-        let mut nchars = 0;
-        for _ in line.chars() {
-            nchars += 1;
-        }
-        max_line = std::cmp::max(max_line, nchars);
-    }
-    const FUDGE: f32 = 175.0;
-    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
-    let iwidth = width.ceil() as u32;
-    if iwidth > slf.width {
-        let fs = slf.width as f32 / width * (font_size as f32);
-        font_size = fs.floor() as usize;
-    }
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
         Text::new("Copy").color(slf.copy_summary_button_color),
@@ -245,7 +308,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(&format!("{}", summary))
                 .font(DEJAVU_BOLD)
                 .size(font_size as u16),
-        );
+        )
+        .push(button_text_row);
     let content = Column::new()
         .spacing(SPACING)
         .padding(20)

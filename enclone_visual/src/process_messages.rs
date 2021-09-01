@@ -24,6 +24,10 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::MetricButton(_index) => {
+                Command::none()
+            }
+
             Message::WaitCommand(_) => {
                 while PROCESSING_REQUEST.load(SeqCst) {
                     thread::sleep(Duration::from_millis(10));

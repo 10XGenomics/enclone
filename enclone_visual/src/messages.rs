@@ -68,4 +68,5 @@ pub enum Message {
     CopySummary,
     CompleteCopySummary(Result<(), String>),
     WaitCommand(Result<(), String>),
+    MetricButton(usize),
 }
