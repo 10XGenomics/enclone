@@ -69,4 +69,5 @@ pub enum Message {
     CompleteCopySummary(Result<(), String>),
     WaitCommand(Result<(), String>),
     MetricButton(usize),
+    CondenseMetrics,
 }

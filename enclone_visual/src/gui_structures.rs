@@ -65,6 +65,7 @@ pub struct EncloneVisual {
     pub visual: String,
     pub meta_pos: usize,
     pub metric_selected: Vec<bool>,
+    pub metrics_condensed: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -112,6 +113,7 @@ pub struct EncloneVisual {
     pub summary_copy_button: button::State,
     pub copy_summary_button_color: Color,
     pub metric_button: Vec<button::State>,
+    pub condense_metrics_button: button::State,
     //
     // more
     //

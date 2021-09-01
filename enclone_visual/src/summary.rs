@@ -208,31 +208,48 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         let mut text = String::new();
         for cat in categories.iter() {
+            let mut have_some = false;
             let catc = format!("{},", cat);
-            let upcat = cat.to_ascii_uppercase();
-            let mut rows = Vec::<Vec<String>>::new();
-            let mut row = vec!["metric".to_string()];
-            row.append(&mut dataset_names.clone());
-            rows.push(row);
-            for i in 0..nm {
-                if metrics[i].name.starts_with(&catc) {
-                    let mut row = vec![metrics[i].name.after(&catc).to_string()];
-                    for j in 0..nd {
-                        row.push(metrics[i].values[j].clone());
+            if !slf.metrics_condensed {
+                have_some = true;
+            } else {
+                for i in 0..nm {
+                    if metrics[i].name.starts_with(&catc) {
+                        if slf.metric_selected[i] {
+                            have_some = true;
+                        }
                     }
-                    rows.push(vec!["\\hline".to_string(); nd + 1]);
-                    rows.push(row);
                 }
             }
-            let mut log = String::new();
-            let mut just = vec![b'l'];
-            for _ in 0..nd {
-                just.push(b'|');
-                just.push(b'r');
+            if have_some {
+                let upcat = cat.to_ascii_uppercase();
+                let mut rows = Vec::<Vec<String>>::new();
+                let mut row = vec!["metric".to_string()];
+                row.append(&mut dataset_names.clone());
+                rows.push(row);
+                for i in 0..nm {
+                    if metrics[i].name.starts_with(&catc) {
+                        if slf.metrics_condensed && !slf.metric_selected[i] {
+                            continue;
+                        }
+                        let mut row = vec![metrics[i].name.after(&catc).to_string()];
+                        for j in 0..nd {
+                            row.push(metrics[i].values[j].clone());
+                        }
+                        rows.push(vec!["\\hline".to_string(); nd + 1]);
+                        rows.push(row);
+                    }
+                }
+                let mut log = String::new();
+                let mut just = vec![b'l'];
+                for _ in 0..nd {
+                    just.push(b'|');
+                    just.push(b'r');
+                }
+                print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
+                text += &mut format!("\n{} METRICS BY DATASET\n", upcat);
+                text += &mut log;
             }
-            print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
-            text += &mut format!("\n{} METRICS BY DATASET\n", upcat);
-            text += &mut log;
         }
         text = format!("{}\n \n", text);
 
@@ -289,10 +306,15 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         // Put together buttons and text.
 
-        button_text_row = Row::new()
-            .push(button_column)
-            .push(Space::with_width(Units(font_size/4)))
-            .push(text_column);
+        if slf.metrics_condensed {
+            button_text_row = Row::new()
+                .push(text_column);
+        } else {
+            button_text_row = Row::new()
+                .push(button_column)
+                .push(Space::with_width(Units(font_size/4)))
+                .push(text_column);
+        }
     }
 
     // Build final structure.
@@ -324,8 +346,19 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         );
     if n > 0 && n == summary_stuff.dataset_names.len() {
         summary_scrollable = summary_scrollable
-        .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(button_text_row);
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)));
+        let text = if slf.metrics_condensed { "Show all metrics".to_string() } 
+            else { "Show selected metrics".to_string() };
+        summary_scrollable = summary_scrollable
+            .push(Button::new(
+                &mut slf.condense_metrics_button, Text::new(&text))
+                .on_press(Message::CondenseMetrics)
+            );
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(button_text_row);
     }
     let content = Column::new()
         .spacing(SPACING)
