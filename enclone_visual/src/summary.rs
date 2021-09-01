@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use crate::*;
 use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
+use crate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use itertools::izip;
@@ -282,28 +282,25 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         // Make button column for metrics.
 
         let mut button_column = Column::new();
-        for (i, y) in izip!(
-            0..nm,
-            slf.metric_button.iter_mut()
-        ) {
-            if i == 0 || metrics[i].name.before(",") != metrics[i-1].name.before(",") {
-                button_column = button_column.push(Space::with_height(Units(4*font_size)));
+        for (i, y) in izip!(0..nm, slf.metric_button.iter_mut()) {
+            if i == 0 || metrics[i].name.before(",") != metrics[i - 1].name.before(",") {
+                button_column = button_column.push(Space::with_height(Units(4 * font_size)));
             }
-            if i > 0 && metrics[i].name.before(",") != metrics[i-1].name.before(",") {
+            if i > 0 && metrics[i].name.before(",") != metrics[i - 1].name.before(",") {
                 button_column = button_column.push(Space::with_height(Units(font_size)));
             }
-            let mut button =
-                Button::new(
-                    y, 
-                    Text::new("").height(Units(font_size)).width(Units(font_size))
-                );
+            let mut button = Button::new(
+                y,
+                Text::new("")
+                    .height(Units(font_size))
+                    .width(Units(font_size)),
+            );
             if !slf.metric_selected[i] {
                 button = button.style(ButtonBoxStyle1);
             } else {
                 button = button.style(ButtonBoxStyle2);
             }
-            button = button.padding(0)
-                .on_press(Message::MetricButton(i));
+            button = button.padding(0).on_press(Message::MetricButton(i));
             button_column = button_column
                 .push(Space::with_height(Units(font_size)))
                 .push(button);
@@ -312,12 +309,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         // Put together buttons and text.
 
         if slf.metrics_condensed {
-            button_text_row = Row::new()
-                .push(text_column);
+            button_text_row = Row::new().push(text_column);
         } else {
             button_text_row = Row::new()
                 .push(button_column)
-                .push(Space::with_width(Units(font_size/4)))
+                .push(Space::with_width(Units(font_size / 4)))
                 .push(text_column);
         }
     }
@@ -353,13 +349,15 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)));
-        let text = if slf.metrics_condensed { "Show all metrics".to_string() } 
-            else { "Show selected metrics".to_string() };
-        summary_scrollable = summary_scrollable
-            .push(Button::new(
-                &mut slf.condense_metrics_button, Text::new(&text))
-                .on_press(Message::CondenseMetrics)
-            );
+        let text = if slf.metrics_condensed {
+            "Show all metrics".to_string()
+        } else {
+            "Show selected metrics".to_string()
+        };
+        summary_scrollable = summary_scrollable.push(
+            Button::new(&mut slf.condense_metrics_button, Text::new(&text))
+                .on_press(Message::CondenseMetrics),
+        );
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
