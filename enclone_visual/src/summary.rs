@@ -26,7 +26,6 @@ pub fn pack_summary() -> String {
     reply_summary
 }
 
-// #[derive(Default, PartialEq, Clone)]
 pub struct SummaryStuff {
     pub summary: String,
     pub dataset_names: Vec<String>,
@@ -349,6 +348,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)));
+        if !slf.metrics_condensed {
+            summary_scrollable = summary_scrollable
+                .push(Text::new("Metrics below can be selectively displayed by clicking on boxes, \
+                    and then pushing this button:"))
+                .push(Space::with_height(Units(8)));
+        }
         let text = if slf.metrics_condensed {
             "Show all metrics".to_string()
         } else {
