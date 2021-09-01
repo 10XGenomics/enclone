@@ -71,6 +71,43 @@ pub fn unpack_summary(s: &str) -> Summary {
     }
 }
 
+pub fn form_summary_from_server_response() -> Summary {
+    let summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+    let mut dataset_names = Vec::<String>::new();
+    let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
+    for i in 0..n {
+        dataset_names.push(SERVER_REPLY_DATASET_NAMES.lock().unwrap()[i].clone());
+    }
+    let mut metrics = Vec::<Vec<String>>::new();
+    let n = SERVER_REPLY_METRICS.lock().unwrap().len();
+    for i in 0..n {
+        let m = SERVER_REPLY_METRICS.lock().unwrap()[i].clone();
+        let mut lines = Vec::<String>::new();
+        for line in m.lines() {
+            lines.push(line.to_string());
+        }
+        metrics.push(lines);
+    }
+    let mut all_metric_names = Vec::<String>::new();
+    for i in 0..metrics.len() {
+        for j in 0..metrics[i].len() {
+            let s = parse_csv(&metrics[i][j]);
+            let m = format!("{},{}", s[0], s[1]);
+            all_metric_names.push(m);
+        }
+    }
+    unique_sort(&mut all_metric_names);
+    let nm = all_metric_names.len();
+    Summary {
+        summary: summary,
+        dataset_names: dataset_names,
+        metrics: metrics,
+        metric_selected: vec![false; nm],
+        metrics_condensed: false,
+        uncondensed_font_size: 0,
+    }
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // This section contains the grotesque packing and unpacking of the summary.  We did this to
