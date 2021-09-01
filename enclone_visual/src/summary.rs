@@ -255,18 +255,23 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         // Update font size.
 
-        for line in text.lines() {
-            let mut nchars = 0;
-            for _ in line.chars() {
-                nchars += 1;
+        if slf.metrics_condensed {
+            font_size = slf.uncondensed_font_size;
+        } else {
+            for line in text.lines() {
+                let mut nchars = 0;
+                for _ in line.chars() {
+                    nchars += 1;
+                }
+                max_line = std::cmp::max(max_line, nchars);
             }
-            max_line = std::cmp::max(max_line, nchars);
-        }
-        let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
-        let iwidth = width.ceil() as u32;
-        if iwidth > slf.width {
-            let fs = slf.width as f32 / width * (font_size as f32);
-            font_size = fs.floor() as usize;
+            let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+            let iwidth = width.ceil() as u32;
+            if iwidth > slf.width {
+                let fs = slf.width as f32 / width * (font_size as f32);
+                font_size = fs.floor() as usize;
+            }
+            slf.uncondensed_font_size = font_size;
         }
 
         // Make text column for metrics.
