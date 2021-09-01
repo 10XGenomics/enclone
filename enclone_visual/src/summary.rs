@@ -195,6 +195,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
         slf.metric_button = vec![iced::button::State::default(); nm];
+        slf.metric_selected = vec![false; nm];
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
             categories.push(metrics[i].name.before(",").to_string());
@@ -267,16 +268,18 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             if i > 0 && metrics[i].name.before(",") != metrics[i-1].name.before(",") {
                 button_column = button_column.push(Space::with_height(Units(font_size)));
             }
+            let button =
+                Button::new(
+                    y, 
+                    Text::new("").height(Units(font_size)).width(Units(font_size))
+                )
+                .style(ButtonBoxStyle)
+                .padding(0)
+                .on_press(Message::MetricButton(i));
+
             button_column = button_column
                 .push(Space::with_height(Units(font_size)))
-                .push(
-                    Button::new(
-                        y, 
-                        Text::new("").height(Units(font_size)).width(Units(font_size))
-                    )
-                    .style(ButtonBoxStyle)
-                    .padding(0)
-                    .on_press(Message::MetricButton(i)));
+                .push(button);
         }
 
         // Put together buttons and text.

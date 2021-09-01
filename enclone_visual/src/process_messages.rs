@@ -24,7 +24,8 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
-            Message::MetricButton(_index) => {
+            Message::MetricButton(index) => {
+                self.metric_selected[index] = !self.metric_selected[index];
                 Command::none()
             }
 
