@@ -231,6 +231,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             text += &mut format!("\n{} METRICS BY DATASET\n", upcat);
             text += &mut log;
         }
+        text = format!("{}\n \n", text);
 
         // Update font size.
 
@@ -261,7 +262,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.metric_button.iter_mut()
         ) {
             if i == 0 || metrics[i].name.before(",") != metrics[i-1].name.before(",") {
-                button_column = button_column.push(Space::with_height(Units(2*font_size)));
+                button_column = button_column.push(Space::with_height(Units(4*font_size)));
+            }
+            if i > 0 && metrics[i].name.before(",") != metrics[i-1].name.before(",") {
+                button_column = button_column.push(Space::with_height(Units(font_size)));
             }
             button_column = button_column
                 .push(Space::with_height(Units(font_size)))
@@ -279,6 +283,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         button_text_row = Row::new()
             .push(button_column)
+            .push(Space::with_width(Units(font_size/4)))
             .push(text_column);
     }
 
