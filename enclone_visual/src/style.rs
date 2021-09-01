@@ -11,7 +11,7 @@ pub struct ButtonBoxStyle1;
 impl button::StyleSheet for ButtonBoxStyle1 {
     fn active(&self) -> button::Style {
         button::Style {
-            background: Some(Background::Color(Color::from_rgb(0.8, 0.7, 0.7))),
+            background: Some(Background::Color(Color::from_rgb(0.8, 0.93, 0.9))),
             border_radius: 3.0,
             text_color: Color::WHITE,
             ..button::Style::default()
@@ -20,7 +20,7 @@ impl button::StyleSheet for ButtonBoxStyle1 {
 
     fn hovered(&self) -> button::Style {
         button::Style {
-            background: Some(Background::Color(Color::from_rgb(0.8, 0.7, 0.7))),
+            background: Some(Background::Color(Color::from_rgb(0.8, 0.93, 0.9))),
             text_color: Color::WHITE,
             ..self.active()
         }
@@ -40,7 +40,7 @@ pub struct ButtonBoxStyle2;
 impl button::StyleSheet for ButtonBoxStyle2 {
     fn active(&self) -> button::Style {
         button::Style {
-            background: Some(Background::Color(Color::BLACK)),
+            background: Some(Background::Color(Color::from_rgb(0.6, 0.73, 0.7))),
             border_radius: 3.0,
             text_color: Color::WHITE,
             ..button::Style::default()
@@ -49,7 +49,7 @@ impl button::StyleSheet for ButtonBoxStyle2 {
 
     fn hovered(&self) -> button::Style {
         button::Style {
-            background: Some(Background::Color(Color::BLACK)),
+            background: Some(Background::Color(Color::from_rgb(0.6, 0.73, 0.7))),
             text_color: Color::WHITE,
             ..self.active()
         }

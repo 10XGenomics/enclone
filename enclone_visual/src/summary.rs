@@ -194,8 +194,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let metricsx = summary_stuff.metrics.clone();
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
-        slf.metric_button = vec![iced::button::State::default(); nm];
-        slf.metric_selected = vec![false; nm];
+        if slf.metric_button.is_empty() {
+            slf.metric_button = vec![iced::button::State::default(); nm];
+            slf.metric_selected = vec![false; nm];
+        }
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
             categories.push(metrics[i].name.before(",").to_string());
