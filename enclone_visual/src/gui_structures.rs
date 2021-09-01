@@ -2,6 +2,7 @@
 
 use crate::history::*;
 use crate::messages::*;
+use crate::packing::*;
 use crate::*;
 use canvas_view::CanvasView;
 use chrono::prelude::*;
@@ -23,6 +24,57 @@ impl Default for ComputeState {
     fn default() -> ComputeState {
         WaitingForRequest
     }
+}
+
+pub fn convert_bytes_to_string(bytes: &[u8]) -> String {
+    base64::encode(&bytes)
+}
+
+pub fn convert_string_to_bytes(s: &str) -> Vec<u8> {
+    base64::decode(&s).unwrap()
+}
+
+pub struct Summary {
+    pub summary: String,
+    pub dataset_names: Vec<String>,
+    pub metrics: Vec<Vec<String>>,
+    pub metric_selected: Vec<bool>,
+    pub metrics_condensed: bool,
+    pub uncondensed_font_size: u32,
+}
+
+impl Summary {
+
+    pub fn pack(&self) -> String {
+        let mut bytes = Vec::<u8>::new();
+        bytes.append(&mut save_string(&self.summary));
+        bytes.append(&mut save_vec_string(&self.dataset_names));
+        bytes.append(&mut save_vec_vec_string(&self.metrics));
+        bytes.append(&mut save_vec_bool(&self.metric_selected));
+        bytes.append(&mut save_bool(self.metrics_condensed));
+        bytes.append(&mut save_u32(self.uncondensed_font_size));
+        convert_bytes_to_string(&bytes)
+    }
+
+    pub fn unpack(s: &str) -> Self {
+        let bytes = convert_string_to_bytes(&s);
+        let mut pos = 0;
+        let summary = restore_string(&bytes, &mut pos).unwrap();
+        let dataset_names = restore_vec_string(&bytes, &mut pos).unwrap();
+        let metrics = restore_vec_vec_string(&bytes, &mut pos).unwrap();
+        let metric_selected = restore_vec_bool(&bytes, &mut pos).unwrap();
+        let metrics_condensed = restore_bool(&bytes, &mut pos).unwrap();
+        let uncondensed_font_size = restore_u32(&bytes, &mut pos).unwrap();
+        Summary {
+            summary: summary,
+            dataset_names: dataset_names,
+            metrics: metrics,
+            metric_selected: metric_selected,
+            metrics_condensed: metrics_condensed,
+            uncondensed_font_size: uncondensed_font_size,
+        }
+    }
+
 }
 
 use ComputeState::*;

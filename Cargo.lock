@@ -1523,6 +1523,7 @@ name = "enclone_visual"
 version = "0.5.96"
 dependencies = [
  "arboard",
+ "base64 0.13.0",
  "chrono",
  "clipboard",
  "cocoa",

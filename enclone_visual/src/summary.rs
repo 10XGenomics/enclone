@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use crate::gui_structures::*;
 use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
 use iced::Length::Units;
@@ -7,6 +8,70 @@ use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Sp
 use itertools::izip;
 use messages::Message;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This section contains the packing and unpacking of the summary.  The main reason for packing
+// various pieces of information into the summary was to avoid invalidating session files that
+// people might have written.  We could have done this by raising the output file version, but
+// that would have been messy.
+//
+// There are actually two versions of the packing.  The first existed for about a week.
+
+pub fn unpack_summary(s: &str) -> Summary {
+
+    // Handle the case of the format that existed only briefly.  This is flaky because it's
+    // conceivable that the string $$$ would appear in the second format.
+
+    if s.contains("$$$") {
+        let mut dataset_names = Vec::<String>::new();
+        let mut metrics = Vec::<Vec<String>>::new();
+        let p1 = s.split("$$$").collect::<Vec<&str>>();
+        let mut p1x = Vec::<String>::new();
+        for i in 0..p1.len() {
+            p1x.push(p1[i].to_string());
+        }
+        let summary = p1x[0].to_string();
+        for i in 1..p1x.len() {
+            if p1x[i].contains("###") {
+                dataset_names.push(p1x[i].before("###").to_string());
+                let p2 = p1x[i].split("###").collect::<Vec<&str>>();
+                for j in 1..p2.len() {
+                    let mut lines = Vec::<String>::new();
+                    for line in p2[j].lines() {
+                        lines.push(line.to_string());
+                    }
+                    metrics.push(lines);
+                }
+            } else {
+                dataset_names.push(p1x[i].to_string());
+            }
+        }
+        let mut all_metric_names = Vec::<String>::new();
+        for i in 0..metrics.len() {
+            for j in 0..metrics[i].len() {
+                let s = parse_csv(&metrics[i][j]);
+                let m = format!("{},{}", s[0], s[1]);
+                all_metric_names.push(m);
+            }
+        }
+        unique_sort(&mut all_metric_names);
+        let nm = all_metric_names.len();
+        Summary {
+            summary: summary,
+            dataset_names: dataset_names,
+            metrics: metrics,
+            metric_selected: vec![false; nm],
+            metrics_condensed: false,
+            uncondensed_font_size: 0,
+        }
+
+    // Handle the current case.
+
+    } else {
+        Summary::unpack(&s)
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -254,7 +319,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         // Update font size.
 
-        if slf.metrics_condensed {
+        if slf.metrics_condensed && slf.uncondensed_font_size > 0 {
             font_size = slf.uncondensed_font_size;
         } else {
             for line in text.lines() {
