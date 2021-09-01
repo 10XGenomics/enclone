@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use crate::style::ButtonBoxStyle;
+use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use itertools::izip;
@@ -268,15 +268,18 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             if i > 0 && metrics[i].name.before(",") != metrics[i-1].name.before(",") {
                 button_column = button_column.push(Space::with_height(Units(font_size)));
             }
-            let button =
+            let mut button =
                 Button::new(
                     y, 
                     Text::new("").height(Units(font_size)).width(Units(font_size))
-                )
-                .style(ButtonBoxStyle)
-                .padding(0)
+                );
+            if !slf.metric_selected[i] {
+                button = button.style(ButtonBoxStyle1);
+            } else {
+                button = button.style(ButtonBoxStyle2);
+            }
+            button = button.padding(0)
                 .on_press(Message::MetricButton(i));
-
             button_column = button_column
                 .push(Space::with_height(Units(font_size)))
                 .push(button);

@@ -6,9 +6,38 @@ use iced::{button, Background};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub struct ButtonBoxStyle;
+pub struct ButtonBoxStyle1;
 
-impl button::StyleSheet for ButtonBoxStyle {
+impl button::StyleSheet for ButtonBoxStyle1 {
+    fn active(&self) -> button::Style {
+        button::Style {
+            background: Some(Background::Color(Color::from_rgb(0.8, 0.7, 0.7))),
+            border_radius: 3.0,
+            text_color: Color::WHITE,
+            ..button::Style::default()
+        }
+    }
+
+    fn hovered(&self) -> button::Style {
+        button::Style {
+            background: Some(Background::Color(Color::from_rgb(0.8, 0.7, 0.7))),
+            text_color: Color::WHITE,
+            ..self.active()
+        }
+    }
+
+    fn pressed(&self) -> button::Style {
+        button::Style {
+            border_width: 1.0,
+            border_color: Color::WHITE,
+            ..self.hovered()
+        }
+    }
+}
+
+pub struct ButtonBoxStyle2;
+
+impl button::StyleSheet for ButtonBoxStyle2 {
     fn active(&self) -> button::Style {
         button::Style {
             background: Some(Background::Color(Color::BLACK)),
