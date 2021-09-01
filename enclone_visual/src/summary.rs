@@ -85,14 +85,14 @@ pub fn expand_summary(summary: &str) -> String {
         unique_sort(&mut all_metric_names);
         let nd = dataset_names.len();
         let nm = all_metric_names.len();
-        let mut values = vec![vec![String::new(); nm]; nd];
+        let mut values = vec![vec![String::new(); nd]; nm];
         for i in 0..nd {
             for j in 0..metrics[i].len() {
                 let s = parse_csv(&metrics[i][j]);
                 let value = s[2].clone();
                 let m = format!("{},{}", s[0], s[1]);
                 let p = bin_position(&all_metric_names, &m) as usize;
-                values[i][p] = value;
+                values[p][i] = value;
             }
         }
         let mut categories = Vec::<String>::new();
@@ -111,7 +111,7 @@ pub fn expand_summary(summary: &str) -> String {
                 if all_metric_names[i].starts_with(&catc) {
                     let mut row = vec![all_metric_names[i].clone().after(&catc).to_string()];
                     for j in 0..nd {
-                        row.push(values[j][i].clone());
+                        row.push(values[i][j].clone());
                     }
                     rows.push(vec!["\\hline".to_string(); nd + 1]);
                     rows.push(row);
@@ -156,14 +156,14 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         unique_sort(&mut all_metric_names);
         let nd = dataset_names.len();
         let nm = all_metric_names.len();
-        let mut values = vec![vec![String::new(); nm]; nd];
+        let mut values = vec![vec![String::new(); nd]; nm];
         for i in 0..nd {
             for j in 0..metrics[i].len() {
                 let s = parse_csv(&metrics[i][j]);
                 let value = s[2].clone();
                 let m = format!("{},{}", s[0], s[1]);
                 let p = bin_position(&all_metric_names, &m) as usize;
-                values[i][p] = value;
+                values[p][i] = value;
             }
         }
         let mut categories = Vec::<String>::new();
@@ -182,7 +182,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 if all_metric_names[i].starts_with(&catc) {
                     let mut row = vec![all_metric_names[i].clone().after(&catc).to_string()];
                     for j in 0..nd {
-                        row.push(values[j][i].clone());
+                        row.push(values[i][j].clone());
                     }
                     rows.push(vec!["\\hline".to_string(); nd + 1]);
                     rows.push(row);
