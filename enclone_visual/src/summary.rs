@@ -19,7 +19,6 @@ use vector_utils::*;
 // There are actually two versions of the packing.  The first existed for about a week.
 
 pub fn unpack_summary(s: &str) -> Summary {
-
     // Handle the case of the format that existed only briefly.  This is flaky because it's
     // conceivable that the string $$$ would appear in the second format.
 
@@ -67,7 +66,6 @@ pub fn unpack_summary(s: &str) -> Summary {
         }
 
     // Handle the current case.
-
     } else {
         Summary::unpack(&s)
     }
@@ -415,8 +413,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_height(Units(8)));
         if !slf.metrics_condensed {
             summary_scrollable = summary_scrollable
-                .push(Text::new("Metrics below can be selectively displayed by clicking on boxes, \
-                    and then pushing this button:"))
+                .push(Text::new(
+                    "Metrics below can be selectively displayed by clicking on boxes, \
+                    and then pushing this button:",
+                ))
                 .push(Space::with_height(Units(8)));
         }
         let text = if slf.metrics_condensed {

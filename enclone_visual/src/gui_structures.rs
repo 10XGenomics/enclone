@@ -44,7 +44,6 @@ pub struct Summary {
 }
 
 impl Summary {
-
     pub fn pack(&self) -> String {
         let mut bytes = Vec::<u8>::new();
         bytes.append(&mut save_string(&self.summary));
@@ -74,7 +73,6 @@ impl Summary {
             uncondensed_font_size: uncondensed_font_size,
         }
     }
-
 }
 
 use ComputeState::*;
