@@ -320,12 +320,13 @@ impl EncloneVisual {
         }
     }
     pub fn save_as(&mut self, filename: &str) {
-        let res = write_enclone_visual_history(&self.h, &filename);
+        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), filename);
+        let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
             xprintln!(
                 "Was Unable to write history to the file {}, \
                 so Save failed.\n",
-                filename
+                path
             );
             std::process::exit(1);
         }
@@ -358,7 +359,6 @@ impl EncloneVisual {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
-        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
-        self.save_as(&filename);
+        self.save_as(&now);
     }
 }
