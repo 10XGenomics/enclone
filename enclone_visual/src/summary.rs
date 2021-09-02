@@ -18,6 +18,19 @@ use vector_utils::*;
 //
 // There are actually two versions of the packing.  The first existed for about a week.
 
+// pub fn pack_summary() -> String {
+//     let mut reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
+//     let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
+//     for i in 0..n {
+//         reply_summary += &mut format!("$$${}", SERVER_REPLY_DATASET_NAMES.lock().unwrap()[i]);
+//     }
+//     let n = SERVER_REPLY_METRICS.lock().unwrap().len();
+//     for i in 0..n {
+//         reply_summary += &mut format!("###{}", SERVER_REPLY_METRICS.lock().unwrap()[i]);
+//     }
+//     reply_summary
+// }
+
 pub fn unpack_summary(s: &str) -> Summary {
     // Handle the case of the format that existed only briefly.  This is flaky because it's
     // conceivable that the string $$$ would appear in the second format.
@@ -110,63 +123,6 @@ pub fn form_summary_from_server_response() -> Summary {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This section contains the grotesque packing and unpacking of the summary.  We did this to
-// avoid changing history (which would require introducing a new history version)
-
-pub fn pack_summary() -> String {
-    let mut reply_summary = SERVER_REPLY_SUMMARY.lock().unwrap()[0].clone();
-    let n = SERVER_REPLY_DATASET_NAMES.lock().unwrap().len();
-    for i in 0..n {
-        reply_summary += &mut format!("$$${}", SERVER_REPLY_DATASET_NAMES.lock().unwrap()[i]);
-    }
-    let n = SERVER_REPLY_METRICS.lock().unwrap().len();
-    for i in 0..n {
-        reply_summary += &mut format!("###{}", SERVER_REPLY_METRICS.lock().unwrap()[i]);
-    }
-    reply_summary
-}
-
-pub struct SummaryStuff {
-    pub summary: String,
-    pub dataset_names: Vec<String>,
-    pub metrics: Vec<Vec<String>>,
-}
-
-impl SummaryStuff {
-    pub fn unpack_summary(s: &str) -> Self {
-        let mut dataset_names = Vec::<String>::new();
-        let mut metrics = Vec::<Vec<String>>::new();
-        let p1 = s.split("$$$").collect::<Vec<&str>>();
-        let mut p1x = Vec::<String>::new();
-        for i in 0..p1.len() {
-            p1x.push(p1[i].to_string());
-        }
-        let summary = p1x[0].to_string();
-        for i in 1..p1x.len() {
-            if p1x[i].contains("###") {
-                dataset_names.push(p1x[i].before("###").to_string());
-                let p2 = p1x[i].split("###").collect::<Vec<&str>>();
-                for j in 1..p2.len() {
-                    let mut lines = Vec::<String>::new();
-                    for line in p2[j].lines() {
-                        lines.push(line.to_string());
-                    }
-                    metrics.push(lines);
-                }
-            } else {
-                dataset_names.push(p1x[i].to_string());
-            }
-        }
-        SummaryStuff {
-            summary: summary,
-            dataset_names: dataset_names,
-            metrics: metrics,
-        }
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 #[derive(Clone, Default)]
 pub struct Metric {
     pub name: String,
@@ -207,14 +163,13 @@ pub fn get_metrics(metricsx: &Vec<Vec<String>>, nd: usize) -> Vec<Metric> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn expand_summary(summary: &str) -> String {
-    let mut summary = summary.to_string();
-    let summary_stuff = SummaryStuff::unpack_summary(&summary);
-    let n = summary_stuff.metrics.len();
-    if n > 0 && n == summary_stuff.dataset_names.len() {
-        summary = summary_stuff.summary.clone();
-        let dataset_names = summary_stuff.dataset_names.clone();
+    let summaryx = unpack_summary(&summary);
+    let mut summary = summaryx.summary.clone();
+    let n = summaryx.metrics.len();
+    if n > 0 && n == summaryx.dataset_names.len() {
+        let dataset_names = summaryx.dataset_names.clone();
         let nd = dataset_names.len();
-        let metricsx = summary_stuff.metrics.clone();
+        let metricsx = summaryx.metrics.clone();
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
         let mut categories = Vec::<String>::new();
@@ -260,9 +215,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Expand summary.
 
-    let mut summary = slf.summary_value.clone();
-    let summary_stuff = SummaryStuff::unpack_summary(&summary);
-    let n = summary_stuff.metrics.len();
+    let summaryx = unpack_summary(&slf.summary_value);
+    let summary = summaryx.summary.clone();
+    let n = summaryx.metrics.len();
 
     // Determine initial font size.
 
@@ -286,16 +241,14 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Suppose we have dataset level metrics.
 
     let mut button_text_row = Row::new();
-    if n > 0 && n == summary_stuff.dataset_names.len() {
-        summary = summary_stuff.summary.clone();
-        let dataset_names = summary_stuff.dataset_names.clone();
+    if n > 0 && n == summaryx.dataset_names.len() {
+        let dataset_names = summaryx.dataset_names.clone();
         let nd = dataset_names.len();
-        let metricsx = summary_stuff.metrics.clone();
+        let metricsx = summaryx.metrics.clone();
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
         if slf.metric_button.is_empty() {
             slf.metric_button = vec![iced::button::State::default(); nm];
-            slf.metric_selected = vec![false; nm];
         }
         let mut categories = Vec::<String>::new();
         for i in 0..nm {
@@ -444,7 +397,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .font(DEJAVU_BOLD)
                 .size(font_size as u16),
         );
-    if n > 0 && n == summary_stuff.dataset_names.len() {
+    if n > 0 && n == summaryx.dataset_names.len() {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)));

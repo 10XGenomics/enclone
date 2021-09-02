@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
+use crate::gui_structures::Summary;
 use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
@@ -43,7 +44,9 @@ impl EncloneVisual {
 
             Message::CopySummary => {
                 self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+
                 copy_bytes_to_clipboard(&expand_summary(&self.summary_current()).as_bytes());
+
                 Command::perform(noop1(), Message::CompleteCopySummary)
             }
 
@@ -581,6 +584,10 @@ impl EncloneVisual {
 
             Message::SummaryOpen(_) => {
                 self.summary_mode = true;
+                let summaryx = Summary::unpack(&self.summary_value);
+                self.metric_selected = summaryx.metric_selected.clone();
+                self.metrics_condensed = summaryx.metrics_condensed;
+                self.uncondensed_font_size = summaryx.uncondensed_font_size as usize;
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -590,6 +597,11 @@ impl EncloneVisual {
 
             Message::SummaryClose(_) => {
                 self.summary_mode = false;
+                let mut summaryx = Summary::unpack(&self.summary_value);
+                summaryx.metric_selected = self.metric_selected.clone();
+                summaryx.metrics_condensed = self.metrics_condensed;
+                summaryx.uncondensed_font_size = self.uncondensed_font_size as u32;
+                self.summary_value = summaryx.pack();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
