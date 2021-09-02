@@ -15,10 +15,25 @@ pub fn restart_enclone() {
         let msg = format!("{}", o.as_ref().err().unwrap());
         if msg.contains("No such file or directory") {
             xprintln!(
-                "Attempt to restart enclone failed because the executable could not be \
-                found.\nThis is unexpected, and perhaps attributable to a problem with your PATH.\n\
-                Please ask for help!\n"
+                "Attempt to restart enclone failed because the executable could not be found.\n\
+                This is unexpected, and perhaps attributable to a problem with your PATH.\n"
             );
+            xprintln!("Here is some debugging information that might be helpful:\n");
+            for (key, value) in env::vars() {
+                if key == "PATH" {
+                    xprintln!("Your PATH is\n\n{}\n", value);
+                }
+            }
+            let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+            let enclone_path = format!("{}/bin/enclone", home);
+            xprintln!("Here is the output of ls -l {}:\n", enclone_path);
+            let o = Command::new("ls")
+                .arg("-l")
+                .arg(&enclone_path)
+                .output()
+                .expect("failed to execute ls");
+            xprint!("{}{}", strme(&o.stdout), strme(&o.stderr));
+            xprintln!("\nPlease ask for help!\n");
             std::process::exit(1);
         }
     }

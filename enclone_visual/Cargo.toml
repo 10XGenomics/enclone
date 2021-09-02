@@ -24,7 +24,9 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
+base64 = "0.13"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+dirs = "3"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_version = { path = "../enclone_version" }

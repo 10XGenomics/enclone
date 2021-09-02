@@ -2,6 +2,7 @@
 
 use crate::history::*;
 use crate::messages::*;
+use crate::packing::*;
 use crate::*;
 use canvas_view::CanvasView;
 use chrono::prelude::*;
@@ -22,6 +23,51 @@ pub enum ComputeState {
 impl Default for ComputeState {
     fn default() -> ComputeState {
         WaitingForRequest
+    }
+}
+
+pub fn convert_bytes_to_string(bytes: &[u8]) -> String {
+    base64::encode(&bytes)
+}
+
+pub fn convert_string_to_bytes(s: &str) -> Vec<u8> {
+    base64::decode(&s).unwrap()
+}
+
+pub struct Summary {
+    pub summary: String,
+    pub dataset_names: Vec<String>,
+    pub metrics: Vec<Vec<String>>,
+    pub metric_selected: Vec<bool>,
+    pub metrics_condensed: bool,
+}
+
+impl Summary {
+    pub fn pack(&self) -> String {
+        let mut bytes = Vec::<u8>::new();
+        bytes.append(&mut save_string(&self.summary));
+        bytes.append(&mut save_vec_string(&self.dataset_names));
+        bytes.append(&mut save_vec_vec_string(&self.metrics));
+        bytes.append(&mut save_vec_bool(&self.metric_selected));
+        bytes.append(&mut save_bool(self.metrics_condensed));
+        convert_bytes_to_string(&bytes)
+    }
+
+    pub fn unpack(s: &str) -> Self {
+        let bytes = convert_string_to_bytes(&s);
+        let mut pos = 0;
+        let summary = restore_string(&bytes, &mut pos).unwrap();
+        let dataset_names = restore_vec_string(&bytes, &mut pos).unwrap();
+        let metrics = restore_vec_vec_string(&bytes, &mut pos).unwrap();
+        let metric_selected = restore_vec_bool(&bytes, &mut pos).unwrap();
+        let metrics_condensed = restore_bool(&bytes, &mut pos).unwrap();
+        Summary {
+            summary: summary,
+            dataset_names: dataset_names,
+            metrics: metrics,
+            metric_selected: metric_selected,
+            metrics_condensed: metrics_condensed,
+        }
     }
 }
 
@@ -64,6 +110,8 @@ pub struct EncloneVisual {
     pub shares: Vec<Share>,
     pub visual: String,
     pub meta_pos: usize,
+    pub metric_selected: Vec<bool>,
+    pub metrics_condensed: bool,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -110,6 +158,10 @@ pub struct EncloneVisual {
     pub cookbook_narrative_button: Vec<button::State>,
     pub summary_copy_button: button::State,
     pub copy_summary_button_color: Color,
+    pub metric_button: Vec<button::State>,
+    pub condense_metrics_button: button::State,
+    pub copy_selected_metrics_button: button::State,
+    pub copy_selected_metrics_button_color: Color,
     //
     // more
     //
@@ -254,11 +306,6 @@ impl EncloneVisual {
             self.input1_value = self.input1_current();
             self.input2_value = self.input2_current();
             self.translated_input_value = self.translated_input_current();
-            SUMMARY_CONTENTS.lock().unwrap().clear();
-            SUMMARY_CONTENTS
-                .lock()
-                .unwrap()
-                .push(self.summary_value.clone());
             if self.table_comp_value.len() > 0 {
                 let mut gunzipped = Vec::<u8>::new();
                 let mut d = GzDecoder::new(&*self.table_comp_value);
@@ -269,21 +316,18 @@ impl EncloneVisual {
             }
         }
     }
-    pub fn save(&mut self) {
-        let mut now = format!("{:?}", Local::now());
-        now = now.replace("T", "___");
-        now = now.before(".").to_string();
-        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
-        let res = write_enclone_visual_history(&self.h, &filename);
+    pub fn save_as(&mut self, filename: &str) {
+        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), filename);
+        let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
             xprintln!(
                 "Was Unable to write history to the file {}, \
                 so Save failed.\n",
-                filename
+                path
             );
             std::process::exit(1);
         }
-        self.archive_list.insert(0, now.clone());
+        self.archive_list.insert(0, filename.to_string());
         self.restore_requested.insert(0, false);
         self.delete_requested.insert(0, false);
         self.deleted.insert(0, false);
@@ -307,5 +351,11 @@ impl EncloneVisual {
         self.archive_origin.insert(0, String::new());
         self.archive_narrative.insert(0, String::new());
         self.orig_archive_name.insert(0, String::new());
+    }
+    pub fn save(&mut self) {
+        let mut now = format!("{:?}", Local::now());
+        now = now.replace("T", "___");
+        now = now.before(".").to_string();
+        self.save_as(&now);
     }
 }

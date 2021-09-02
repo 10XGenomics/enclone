@@ -366,10 +366,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 13. Test to see if the user would get enclone, and the right version, from the
-    #     command line.
-
-    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
+    # 13. Test to see if the user would get enclone, and the right version, from the command line.
     #
     # 1. Debugging is started if `$SHELL -c "enclone --version"` fails or returns the wrong version.
     # 2. Print the shell that is being used.
@@ -377,8 +374,34 @@ main() {
     # 4. Define a list of initialization files, as a function of the shell.
     # 5. For each initialization file, test if it exists, and if it exists, check for path setting.
     #
+    # The command used for the initial assessment of whether enclone would work from the command
+    # line:
+    #
+    # $SHELL -c -i "enclone --version" 
+    #
+    # is delicate, and may not be completely correct (or correct for all shells).  Some things you
+    # should know about testing this:
+    #
+    # (a) To test, you may want to change your shell.  On a Mac, this cannot be done simply by
+    # typing chsh.  Possibly it is enough to type chsh and then reboot (not tested).  What does
+    # appear to work is to first type chsh, and then, in terminal preferences, change the shell.
+    #
+    # (b) We carried out the following test on a Mac.  First the shell was changed to zsh, as
+    # above.  Then the following script was run from a fresh terminal window:
+    #
+    # #!/bin/bash
+    # echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
+    # $SHELL -i -c "enclone --version < /dev/null"
+    # rm .zshrc
+    #
+    # This printed the enclone version, as expected.
+    #
+    # Note also that another thing that can happen is that some versions of the command will cause 
+    # ./test to stop.  The < /dev/null part is to avoid that.
+
+    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
     ok=0
-    $SHELL -c "enclone --version" 
+    $SHELL -i -c "enclone --version < /dev/null"
     if [ "$?" -eq "0" ]; then
         available_version=$($SHELL -c "enclone --version")
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
@@ -405,9 +428,7 @@ main() {
         ls -l ~/bin/enclone
         printf "\n4. Attempt to execute ~/bin/enclone directly:\n\n"
         $SHELL -c "$HOME/bin/enclone --version"
-        printf "\n5. Show the output of which enclone.\n\n"
-        which enclone
-        printf "\n6. Testing for existence of various initialization files in your home directory\n"
+        printf "\n5. Testing for existence of various initialization files in your home directory\n"
         printf "   and for each such file, if present, whether it sets your path.\n\n"
         cd
         NEWLINE=1
@@ -451,6 +472,10 @@ main() {
             echo ""
         fi
         printf "🌹 As indicated above, something has gone awry with your enclone installation. 🌹\n"
+        printf "🌹                                                                             🌹\n"
+        printf "🌹 Something has PROBABLY gone awry.  To be sure, you should open a new        🌹\n"
+        printf "🌹 terminal window and type enclone.  It is possible that it will work.        🌹\n"
+        printf "🌹 We would still like to know about such an occurrence.                       🌹\n"
         printf "🌹                                                                             🌹\n"
         printf "🌹 Please cut and paste what is in your terminal window, as text, starting with🌹\n"
         printf "🌹 the curl command that you typed to install enclone, and send it to          🌹\n"

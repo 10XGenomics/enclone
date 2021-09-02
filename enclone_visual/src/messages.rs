@@ -31,6 +31,7 @@ pub enum Message {
     ArchiveOpen(Result<(), String>),
     ArchiveClose,
     Save,
+    SaveAs(String),
     CompleteSave(Result<(), String>),
     SaveOnExit,
     Restore(bool, usize),
@@ -68,4 +69,8 @@ pub enum Message {
     CopySummary,
     CompleteCopySummary(Result<(), String>),
     WaitCommand(Result<(), String>),
+    MetricButton(usize),
+    CondenseMetrics,
+    CopySelectedMetrics,
+    CompleteCopySelectedMetrics(Result<(), String>),
 }

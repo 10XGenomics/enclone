@@ -251,6 +251,7 @@ impl Application for EncloneVisual {
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         x.height = INITIAL_HEIGHT;

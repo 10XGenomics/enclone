@@ -3,7 +3,6 @@
 use crate::history::*;
 use crate::messages::*;
 use crate::share::*;
-use crate::summary::*;
 use crate::*;
 use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
@@ -187,7 +186,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
     // Get the summary, and stuff the dataset names and metrics into it.  The reason for this
     // grotesque operation was to avoid updating the history data structure.
 
-    let reply_summary = pack_summary();
+    let reply_summary = SERVER_REPLY_SUMMARY_PLUS.lock().unwrap()[0].clone();
 
     // Keep going.
 
@@ -295,11 +294,6 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
     slf.svg_value = reply_svg.to_string();
     slf.summary_value = reply_summary.to_string();
     slf.last_widths_value = reply_last_widths.clone();
-    SUMMARY_CONTENTS.lock().unwrap().clear();
-    SUMMARY_CONTENTS
-        .lock()
-        .unwrap()
-        .push(slf.summary_value.clone());
     if slf.svg_value.len() > 0 {
         slf.post_svg(&reply_svg);
     }

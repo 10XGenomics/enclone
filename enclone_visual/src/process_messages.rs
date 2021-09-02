@@ -24,6 +24,30 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopySelectedMetrics => {
+                self.copy_selected_metrics_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                let show = &self.metric_selected;
+                copy_bytes_to_clipboard(
+                    &expand_summary(&self.summary_current(), false, &show).as_bytes(),
+                );
+                Command::perform(noop1(), Message::CompleteCopySelectedMetrics)
+            }
+
+            Message::CompleteCopySelectedMetrics(_) => {
+                self.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CondenseMetrics => {
+                self.metrics_condensed = !self.metrics_condensed;
+                Command::none()
+            }
+
+            Message::MetricButton(index) => {
+                self.metric_selected[index] = !self.metric_selected[index];
+                Command::none()
+            }
+
             Message::WaitCommand(_) => {
                 while PROCESSING_REQUEST.load(SeqCst) {
                     thread::sleep(Duration::from_millis(10));
@@ -33,7 +57,15 @@ impl EncloneVisual {
 
             Message::CopySummary => {
                 self.copy_summary_button_color = Color::from_rgb(1.0, 0.0, 0.0);
-                copy_bytes_to_clipboard(&expand_summary(&self.summary_current()).as_bytes());
+                let show;
+                if !self.metrics_condensed {
+                    show = vec![true; self.metric_selected.len()];
+                } else {
+                    show = self.metric_selected.clone();
+                }
+                copy_bytes_to_clipboard(
+                    &expand_summary(&self.summary_current(), true, &show).as_bytes(),
+                );
                 Command::perform(noop1(), Message::CompleteCopySummary)
             }
 
@@ -272,6 +304,12 @@ impl EncloneVisual {
             Message::Save => {
                 self.save_in_progress = true;
                 self.save();
+                Command::perform(noop1(), Message::CompleteSave)
+            }
+
+            Message::SaveAs(x) => {
+                self.save_in_progress = true;
+                self.save_as(&x);
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
@@ -571,6 +609,9 @@ impl EncloneVisual {
 
             Message::SummaryOpen(_) => {
                 self.summary_mode = true;
+                let summaryx = unpack_summary(&self.summary_value);
+                self.metric_selected = summaryx.metric_selected.clone();
+                self.metrics_condensed = summaryx.metrics_condensed;
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -580,6 +621,12 @@ impl EncloneVisual {
 
             Message::SummaryClose(_) => {
                 self.summary_mode = false;
+                let mut summaryx = unpack_summary(&self.summary_value);
+                summaryx.metric_selected = self.metric_selected.clone();
+                summaryx.metrics_condensed = self.metrics_condensed;
+                self.summary_value = summaryx.pack();
+                self.h.summary_hist_uniq[self.h.history_index as usize - 1] =
+                    self.summary_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {

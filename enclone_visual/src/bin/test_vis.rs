@@ -117,6 +117,13 @@ fn main() {
         all_testnames.append(&mut testnames);
     }
 
+    // Reset sample_visual.
+
+    if path_exists(&target) {
+        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
+    }
+    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
+
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // RUN ARCHIVE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -396,7 +403,7 @@ fn main() {
 
     let used = elapsed(&t);
     if tests.is_empty() {
-        const EXPECTED_TIME: f64 = 40.5; // this is supposed to be the lowest observed value
+        const EXPECTED_TIME: f64 = 42.2; // this is supposed to be the lowest observed value
         const MAX_PERCENT_OVER: f64 = 4.2;
         let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
         if percent_over > MAX_PERCENT_OVER {

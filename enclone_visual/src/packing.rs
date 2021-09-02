@@ -95,6 +95,8 @@ pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, (
     Ok(y)
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn save_vec_string_comp(x: &Vec<String>) -> Vec<u8> {
     let mut bytes = Vec::<u8>::new();
     let z = save_vec_string(&x);
@@ -120,6 +122,30 @@ pub fn restore_vec_string_comp(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Strin
     *pos += n;
     let mut posx = 0;
     restore_vec_string(&uncomp, &mut posx)
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn save_vec_vec_string(x: &Vec<Vec<String>>) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    bytes.append(&mut u32_bytes(x.len()));
+    for i in 0..x.len() {
+        bytes.append(&mut save_vec_string(&x[i]));
+    }
+    bytes
+}
+
+pub fn restore_vec_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<String>>, ()> {
+    if *pos + 4 > x.len() {
+        return Err(());
+    }
+    let n = u32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    let mut y = vec![Vec::<String>::new(); n];
+    for j in 0..n {
+        y[j] = restore_vec_string(&x, pos)?;
+    }
+    Ok(y)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -262,5 +288,20 @@ pub fn restore_u32(x: &Vec<u8>, pos: &mut usize) -> Result<u32, ()> {
     }
     let y = u32_from_bytes(&x[*pos..*pos + 4]);
     *pos += 4;
+    Ok(y)
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn save_bool(x: bool) -> Vec<u8> {
+    vec![x as u8]
+}
+
+pub fn restore_bool(x: &Vec<u8>, pos: &mut usize) -> Result<bool, ()> {
+    if *pos + 1 > x.len() {
+        return Err(());
+    }
+    let y = x[*pos] != 0;
+    *pos += 1;
     Ok(y)
 }
