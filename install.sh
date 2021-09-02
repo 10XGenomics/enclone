@@ -470,6 +470,10 @@ main() {
         fi
         printf "🌹 As indicated above, something has gone awry with your enclone installation. 🌹\n"
         printf "🌹                                                                             🌹\n"
+        printf "🌹 Something has PROBABLY gone awry.  To be sure, you should open a new        🌹\n"
+        printf "🌹 terminal window and type enclone.  It is possible that it will work.        🌹\n"
+        printf "🌹 We would still like to know about such an occurrence.                       🌹\n"
+        printf "🌹                                                                             🌹\n"
         printf "🌹 Please cut and paste what is in your terminal window, as text, starting with🌹\n"
         printf "🌹 the curl command that you typed to install enclone, and send it to          🌹\n"
         printf "🌹 enclone@10xgenomics.com.  We will try to diagnose the problem!              🌹\n"
