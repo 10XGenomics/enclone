@@ -319,11 +319,7 @@ impl EncloneVisual {
             }
         }
     }
-    pub fn save(&mut self) {
-        let mut now = format!("{:?}", Local::now());
-        now = now.replace("T", "___");
-        now = now.before(".").to_string();
-        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
+    pub fn save_as(&mut self, filename: &str) {
         let res = write_enclone_visual_history(&self.h, &filename);
         if res.is_err() {
             xprintln!(
@@ -333,7 +329,7 @@ impl EncloneVisual {
             );
             std::process::exit(1);
         }
-        self.archive_list.insert(0, now.clone());
+        self.archive_list.insert(0, filename.to_string());
         self.restore_requested.insert(0, false);
         self.delete_requested.insert(0, false);
         self.deleted.insert(0, false);
@@ -357,5 +353,12 @@ impl EncloneVisual {
         self.archive_origin.insert(0, String::new());
         self.archive_narrative.insert(0, String::new());
         self.orig_archive_name.insert(0, String::new());
+    }
+    pub fn save(&mut self) {
+        let mut now = format!("{:?}", Local::now());
+        now = now.replace("T", "___");
+        now = now.before(".").to_string();
+        let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
+        self.save_as(&filename);
     }
 }
