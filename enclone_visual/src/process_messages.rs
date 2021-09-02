@@ -612,7 +612,6 @@ impl EncloneVisual {
                 let summaryx = unpack_summary(&self.summary_value);
                 self.metric_selected = summaryx.metric_selected.clone();
                 self.metrics_condensed = summaryx.metrics_condensed;
-                self.uncondensed_font_size = summaryx.uncondensed_font_size as usize;
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
@@ -625,7 +624,6 @@ impl EncloneVisual {
                 let mut summaryx = unpack_summary(&self.summary_value);
                 summaryx.metric_selected = self.metric_selected.clone();
                 summaryx.metrics_condensed = self.metrics_condensed;
-                summaryx.uncondensed_font_size = self.uncondensed_font_size as u32;
                 self.summary_value = summaryx.pack();
                 self.h.summary_hist_uniq[self.h.history_index as usize - 1] =
                     self.summary_value.clone();

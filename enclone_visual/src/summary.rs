@@ -75,7 +75,6 @@ pub fn unpack_summary(s: &str) -> Summary {
             metrics: metrics,
             metric_selected: vec![false; nm],
             metrics_condensed: false,
-            uncondensed_font_size: 0,
         }
 
     // Handle the current case.
@@ -117,7 +116,6 @@ pub fn form_summary_from_server_response() -> Summary {
         metrics: metrics,
         metric_selected: vec![false; nm],
         metrics_condensed: false,
-        uncondensed_font_size: 0,
     }
 }
 
@@ -322,23 +320,18 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
         // Update font size.
 
-        if slf.metrics_condensed && slf.uncondensed_font_size > 0 {
-            font_size = slf.uncondensed_font_size;
-        } else {
-            for line in text.lines() {
-                let mut nchars = 0;
-                for _ in line.chars() {
-                    nchars += 1;
-                }
-                max_line = std::cmp::max(max_line, nchars);
+        for line in text.lines() {
+            let mut nchars = 0;
+            for _ in line.chars() {
+                nchars += 1;
             }
-            let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
-            let iwidth = width.ceil() as u32;
-            if iwidth > slf.width {
-                let fs = slf.width as f32 / width * (font_size as f32);
-                font_size = fs.floor() as usize;
-            }
-            slf.uncondensed_font_size = font_size;
+            max_line = std::cmp::max(max_line, nchars);
+        }
+        let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+        let iwidth = width.ceil() as u32;
+        if iwidth > slf.width {
+            let fs = slf.width as f32 / width * (font_size as f32);
+            font_size = fs.floor() as usize;
         }
 
         // Make text column for metrics.

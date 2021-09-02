@@ -40,7 +40,6 @@ pub struct Summary {
     pub metrics: Vec<Vec<String>>,
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
-    pub uncondensed_font_size: u32,
 }
 
 impl Summary {
@@ -51,7 +50,6 @@ impl Summary {
         bytes.append(&mut save_vec_vec_string(&self.metrics));
         bytes.append(&mut save_vec_bool(&self.metric_selected));
         bytes.append(&mut save_bool(self.metrics_condensed));
-        bytes.append(&mut save_u32(self.uncondensed_font_size));
         convert_bytes_to_string(&bytes)
     }
 
@@ -63,14 +61,12 @@ impl Summary {
         let metrics = restore_vec_vec_string(&bytes, &mut pos).unwrap();
         let metric_selected = restore_vec_bool(&bytes, &mut pos).unwrap();
         let metrics_condensed = restore_bool(&bytes, &mut pos).unwrap();
-        let uncondensed_font_size = restore_u32(&bytes, &mut pos).unwrap();
         Summary {
             summary: summary,
             dataset_names: dataset_names,
             metrics: metrics,
             metric_selected: metric_selected,
             metrics_condensed: metrics_condensed,
-            uncondensed_font_size: uncondensed_font_size,
         }
     }
 }
@@ -116,7 +112,6 @@ pub struct EncloneVisual {
     pub meta_pos: usize,
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
-    pub uncondensed_font_size: usize,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
