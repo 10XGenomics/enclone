@@ -73,6 +73,10 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::WaitCommand(Ok(())),
             Message::SummaryOpen(Ok(())),
             Message::SetName("metrics"),
+            Message::MetricButton(2),
+            Message::MetricButton(3),
+            Message::CondenseMetrics,
+            Message::SetName("select_metrics"),
         ],
     ]
 }
