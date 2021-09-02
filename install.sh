@@ -395,6 +395,9 @@ main() {
     # rm .zshrc
     #
     # This printed the enclone version, as expected.
+    #
+    # Note also that another thing that can happen is that some versions of the command will cause 
+    # ./test to stop.  The < /dev/null part is to avoid that.
 
     printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
     ok=0
