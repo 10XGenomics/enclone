@@ -1527,6 +1527,7 @@ dependencies = [
  "chrono",
  "clipboard",
  "cocoa",
+ "dirs",
  "enclone_core",
  "enclone_main",
  "enclone_version",
