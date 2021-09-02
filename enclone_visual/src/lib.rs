@@ -29,6 +29,7 @@ use clipboard::{ClipboardContext, ClipboardProvider};
 
 pub mod archive;
 pub mod canvas_view;
+pub mod client_requests;
 pub mod compare_images;
 pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
