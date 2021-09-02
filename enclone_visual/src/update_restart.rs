@@ -21,18 +21,18 @@ pub fn restart_enclone() {
             xprintln!("Here is some debugging information that might be helpful:\n");
             for (key, value) in env::vars() {
                 if key == "PATH" {
-                    xprintln!("Your PATH is {}\n", value);
+                    xprintln!("Your PATH is\n\n{}\n", value);
                 }
             }
             let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
             let enclone_path = format!("{}/bin/enclone", home);
-            xprintln!("Here is the output of ls -l {}:", enclone_path);
+            xprintln!("Here is the output of ls -l {}:\n", enclone_path);
             let o = Command::new("ls")
                 .arg("-l")
                 .arg(&enclone_path)
                 .output()
                 .expect("failed to execute ls");
-            xprintln!("{}{}\n", strme(&o.stdout), strme(&o.stderr));
+            xprint!("{}{}", strme(&o.stdout), strme(&o.stderr));
             xprintln!("\nPlease ask for help!\n");
             std::process::exit(1);
         }
