@@ -610,7 +610,7 @@ impl EncloneVisual {
 
             Message::SummaryOpen(_) => {
                 self.summary_mode = true;
-                let summaryx = Summary::unpack(&self.summary_value);
+                let summaryx = unpack_summary(&self.summary_value);
                 self.metric_selected = summaryx.metric_selected.clone();
                 self.metrics_condensed = summaryx.metrics_condensed;
                 self.uncondensed_font_size = summaryx.uncondensed_font_size as usize;
