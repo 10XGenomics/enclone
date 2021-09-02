@@ -405,7 +405,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             summary_scrollable = summary_scrollable
                 .push(Text::new(
                     "Metrics below can be selectively displayed by clicking on boxes, \
-                    and then pushing this button:",
+                    and then pushing the button below.  The display choices made here are \
+                    saveable, but cannot be recapitulated using an enclone command.",
                 ))
                 .push(Space::with_height(Units(8)));
         }
