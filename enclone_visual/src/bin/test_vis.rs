@@ -117,6 +117,13 @@ fn main() {
         all_testnames.append(&mut testnames);
     }
 
+    // Reset sample_visual.
+
+    if path_exists(&target) {
+        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
+    }
+    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
+
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // RUN ARCHIVE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -229,13 +236,6 @@ fn main() {
         }
         all_testnames.append(&mut testnames);
     }
-
-    // Reset sample_visual.
-
-    if path_exists(&target) {
-        fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
-    }
-    fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // PRETEST
