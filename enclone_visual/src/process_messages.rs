@@ -1,7 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
-use crate::gui_structures::Summary;
 use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
@@ -623,7 +622,7 @@ impl EncloneVisual {
 
             Message::SummaryClose(_) => {
                 self.summary_mode = false;
-                let mut summaryx = Summary::unpack(&self.summary_value);
+                let mut summaryx = unpack_summary(&self.summary_value);
                 summaryx.metric_selected = self.metric_selected.clone();
                 summaryx.metrics_condensed = self.metrics_condensed;
                 summaryx.uncondensed_font_size = self.uncondensed_font_size as u32;
