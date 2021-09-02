@@ -162,9 +162,12 @@ pub fn get_metrics(metricsx: &Vec<Vec<String>>, nd: usize) -> Vec<Metric> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn expand_summary(summary: &str) -> String {
+pub fn expand_summary(summary: &str, all: bool, show: &Vec<bool>) -> String {
     let summaryx = unpack_summary(&summary);
-    let mut summary = summaryx.summary.clone();
+    let mut summary = String::new();
+    if all {
+        summary = summaryx.summary.clone();
+    }
     let n = summaryx.metrics.len();
     if n > 0 && n == summaryx.dataset_names.len() {
         let dataset_names = summaryx.dataset_names.clone();
@@ -179,30 +182,42 @@ pub fn expand_summary(summary: &str) -> String {
         unique_sort(&mut categories);
         for cat in categories.iter() {
             let catc = format!("{},", cat);
-            let upcat = cat.to_ascii_uppercase();
-            let mut rows = Vec::<Vec<String>>::new();
-            let mut row = vec!["metric".to_string()];
-            row.append(&mut dataset_names.clone());
-            rows.push(row);
+            let mut have_some = false;
             for i in 0..nm {
-                if metrics[i].name.starts_with(&catc) {
-                    let mut row = vec![metrics[i].name.after(&catc).to_string()];
-                    for j in 0..nd {
-                        row.push(metrics[i].values[j].clone());
+                if show[i] {
+                    if metrics[i].name.starts_with(&catc) {
+                        have_some = true;
                     }
-                    rows.push(vec!["\\hline".to_string(); nd + 1]);
-                    rows.push(row);
                 }
             }
-            let mut log = String::new();
-            let mut just = vec![b'l'];
-            for _ in 0..nd {
-                just.push(b'|');
-                just.push(b'r');
+            if have_some {
+                let upcat = cat.to_ascii_uppercase();
+                let mut rows = Vec::<Vec<String>>::new();
+                let mut row = vec!["metric".to_string()];
+                row.append(&mut dataset_names.clone());
+                rows.push(row);
+                for i in 0..nm {
+                    if show[i] {
+                        if metrics[i].name.starts_with(&catc) {
+                            let mut row = vec![metrics[i].name.after(&catc).to_string()];
+                            for j in 0..nd {
+                                row.push(metrics[i].values[j].clone());
+                            }
+                            rows.push(vec!["\\hline".to_string(); nd + 1]);
+                            rows.push(row);
+                        }
+                    }
+                }
+                let mut log = String::new();
+                let mut just = vec![b'l'];
+                for _ in 0..nd {
+                    just.push(b'|');
+                    just.push(b'r');
+                }
+                print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
+                summary += &mut format!("\n{} METRICS BY DATASET\n", upcat);
+                summary += &mut log;
             }
-            print_tabular_vbox(&mut log, &rows, 0, &just, false, false);
-            summary += &mut format!("\n{} METRICS BY DATASET\n", upcat);
-            summary += &mut log;
         }
     }
     summary
@@ -412,6 +427,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "The display choices made here are \
                     saveable, but cannot be recapitulated using an enclone command.",
                 ))
+                .push(Space::with_height(Units(8)))
+                .push(Text::new(
+                    "The copy selected metrics button may be used to copy the selected \
+                    metrics to the clipboard.",
+                ))
                 .push(Space::with_height(Units(8)));
         }
         let text = if slf.metrics_condensed {
@@ -422,6 +442,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         summary_scrollable = summary_scrollable.push(
             Button::new(&mut slf.condense_metrics_button, Text::new(&text))
                 .on_press(Message::CondenseMetrics),
+        );
+        summary_scrollable = summary_scrollable.push(Space::with_height(Units(8)));
+        summary_scrollable = summary_scrollable.push(
+            Button::new(&mut slf.copy_selected_metrics_button, 
+                Text::new("Copy selected metrics").color(slf.copy_selected_metrics_button_color))
+                .on_press(Message::CopySelectedMetrics),
         );
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))

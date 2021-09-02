@@ -165,6 +165,8 @@ pub struct EncloneVisual {
     pub copy_summary_button_color: Color,
     pub metric_button: Vec<button::State>,
     pub condense_metrics_button: button::State,
+    pub copy_selected_metrics_button: button::State,
+    pub copy_selected_metrics_button_color: Color,
     //
     // more
     //

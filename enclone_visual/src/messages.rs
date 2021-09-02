@@ -71,4 +71,6 @@ pub enum Message {
     WaitCommand(Result<(), String>),
     MetricButton(usize),
     CondenseMetrics,
+    CopySelectedMetrics,
+    CompleteCopySelectedMetrics(Result<(), String>),
 }
