@@ -602,6 +602,7 @@ impl EncloneVisual {
                 summaryx.metrics_condensed = self.metrics_condensed;
                 summaryx.uncondensed_font_size = self.uncondensed_font_size as u32;
                 self.summary_value = summaryx.pack();
+                self.h.summary_hist_uniq[self.h.history_index as usize - 1] = self.summary_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
                 } else {
