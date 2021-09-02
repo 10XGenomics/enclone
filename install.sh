@@ -366,10 +366,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 13. Test to see if the user would get enclone, and the right version, from the
-    #     command line.
-
-    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
+    # 13. Test to see if the user would get enclone, and the right version, from the command line.
     #
     # 1. Debugging is started if `$SHELL -c "enclone --version"` fails or returns the wrong version.
     # 2. Print the shell that is being used.
@@ -377,8 +374,31 @@ main() {
     # 4. Define a list of initialization files, as a function of the shell.
     # 5. For each initialization file, test if it exists, and if it exists, check for path setting.
     #
+    # The command used for the initial assessment of whether enclone would work from the command
+    # line:
+    #
+    # $SHELL -c -i "enclone --version" 
+    #
+    # is delicate, and may not be completely correct (or correct for all shells).  Some things you
+    # should know about testing this:
+    #
+    # (a) To test, you may want to change your shell.  On a Mac, this cannot be done simply by
+    # typing chsh.  Possibly it is enough to type chsh and then reboot (not tested).  What does
+    # appear to work is to first type chsh, and then, in terminal preferences, change the shell.
+    #
+    # (b) We carried out the following test on a Mac.  First the shell was changed to zsh, as
+    # above.  Then the following script was run:
+    #
+    # #!/bin/bash
+    # echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
+    # $SHELL -c -i "enclone --version"
+    # rm .zshrc
+    #
+    # This printed the enclone version, as expected.
+
+    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
     ok=0
-    $SHELL -c "enclone --version" 
+    $SHELL -c -i "enclone --version" 
     if [ "$?" -eq "0" ]; then
         available_version=$($SHELL -c "enclone --version")
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
