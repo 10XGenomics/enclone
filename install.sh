@@ -387,18 +387,18 @@ main() {
     # appear to work is to first type chsh, and then, in terminal preferences, change the shell.
     #
     # (b) We carried out the following test on a Mac.  First the shell was changed to zsh, as
-    # above.  Then the following script was run:
+    # above.  Then the following script was run from a fresh terminal window:
     #
     # #!/bin/bash
     # echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
-    # $SHELL -c -i "enclone --version"
+    # $SHELL -i -c "enclone --version < /dev/null"
     # rm .zshrc
     #
     # This printed the enclone version, as expected.
 
     printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
     ok=0
-    $SHELL -c -i "enclone --version" 
+    $SHELL -i -c "enclone --version < /dev/null"
     if [ "$?" -eq "0" ]; then
         available_version=$($SHELL -c "enclone --version")
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
