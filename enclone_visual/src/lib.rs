@@ -443,7 +443,6 @@ lazy_static! {
         Mutex::new(Vec::<String>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    pub static ref SUMMARY_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref USER_NAME: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref RECEIVED_SHARES_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());

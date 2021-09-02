@@ -309,11 +309,6 @@ impl EncloneVisual {
             self.input1_value = self.input1_current();
             self.input2_value = self.input2_current();
             self.translated_input_value = self.translated_input_current();
-            SUMMARY_CONTENTS.lock().unwrap().clear();
-            SUMMARY_CONTENTS
-                .lock()
-                .unwrap()
-                .push(self.summary_value.clone());
             if self.table_comp_value.len() > 0 {
                 let mut gunzipped = Vec::<u8>::new();
                 let mut d = GzDecoder::new(&*self.table_comp_value);

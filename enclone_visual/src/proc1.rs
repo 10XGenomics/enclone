@@ -294,11 +294,6 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
     slf.svg_value = reply_svg.to_string();
     slf.summary_value = reply_summary.to_string();
     slf.last_widths_value = reply_last_widths.clone();
-    SUMMARY_CONTENTS.lock().unwrap().clear();
-    SUMMARY_CONTENTS
-        .lock()
-        .unwrap()
-        .push(slf.summary_value.clone());
     if slf.svg_value.len() > 0 {
         slf.post_svg(&reply_svg);
     }
