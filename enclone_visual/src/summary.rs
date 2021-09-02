@@ -422,12 +422,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "Metrics below can be selectively displayed by clicking on boxes, \
                     and then pushing the button below.",
                 ))
-                .push(Space::with_height(Units(8)))
+                .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The display choices made here are \
                     saveable, but cannot be recapitulated using an enclone command.",
                 ))
-                .push(Space::with_height(Units(8)))
+                .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The copy selected metrics button may be used to copy the selected \
                     metrics to the clipboard.",
@@ -445,9 +445,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         );
         summary_scrollable = summary_scrollable.push(Space::with_height(Units(8)));
         summary_scrollable = summary_scrollable.push(
-            Button::new(&mut slf.copy_selected_metrics_button, 
-                Text::new("Copy selected metrics").color(slf.copy_selected_metrics_button_color))
-                .on_press(Message::CopySelectedMetrics),
+            Button::new(
+                &mut slf.copy_selected_metrics_button,
+                Text::new("Copy selected metrics").color(slf.copy_selected_metrics_button_color),
+            )
+            .on_press(Message::CopySelectedMetrics),
         );
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))

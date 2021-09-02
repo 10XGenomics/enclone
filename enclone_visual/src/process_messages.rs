@@ -28,7 +28,9 @@ impl EncloneVisual {
             Message::CopySelectedMetrics => {
                 self.copy_selected_metrics_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let show = &self.metric_selected;
-                copy_bytes_to_clipboard(&expand_summary(&self.summary_current(), false, &show).as_bytes());
+                copy_bytes_to_clipboard(
+                    &expand_summary(&self.summary_current(), false, &show).as_bytes(),
+                );
                 Command::perform(noop1(), Message::CompleteCopySelectedMetrics)
             }
 
@@ -62,7 +64,9 @@ impl EncloneVisual {
                 } else {
                     show = self.metric_selected.clone();
                 }
-                copy_bytes_to_clipboard(&expand_summary(&self.summary_current(), true, &show).as_bytes());
+                copy_bytes_to_clipboard(
+                    &expand_summary(&self.summary_current(), true, &show).as_bytes(),
+                );
                 Command::perform(noop1(), Message::CompleteCopySummary)
             }
 
