@@ -447,7 +447,8 @@ impl EncloneVisual {
                         self.expand_archive_entry[index] = false;
                         self.restore_msg[index] = "Will be deleted upon refresh or dismissal of \
                             this page.  Before then, you can change your mind \
-                            and unclick!".to_string();
+                            and unclick!"
+                            .to_string();
                     } else {
                         self.restore_msg[index].clear();
                     }
