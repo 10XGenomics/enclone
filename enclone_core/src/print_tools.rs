@@ -10,7 +10,7 @@ use string_utils::*;
 // Extract the @font-face content from the current css file.
 
 pub fn font_face_in_css() -> String {
-    let f = include_str!["../../pages/enclone_css_v2.css"];
+    let f = include_str!["enclone_css_v2.css"];
     let mut x = String::new();
     let mut in_font_face = false;
     let mut count = 0;
