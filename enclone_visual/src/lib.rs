@@ -27,6 +27,7 @@ use tables::*;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
+pub mod apocalypse;
 pub mod archive;
 pub mod canvas_view;
 pub mod client_requests;
