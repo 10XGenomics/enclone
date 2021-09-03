@@ -441,18 +441,16 @@ impl EncloneVisual {
             }
 
             Message::DeleteArchiveEntry(check_val, index) => {
-                if !self.delete_requested[index] && !self.just_restored {
+                if !self.just_restored {
                     self.delete_requested[index] = check_val;
-                    self.expand_archive_entry[index] = false;
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    if path_exists(&filename) {
-                        std::fs::remove_file(&filename).unwrap();
+                    if check_val {
+                        self.expand_archive_entry[index] = false;
+                        self.restore_msg[index] = "Will be deleted upon refresh or dismissal of \
+                            this page.  Before then, you can change your mind \
+                            and unclick!".to_string();
+                    } else {
+                        self.restore_msg[index].clear();
                     }
-                    self.restore_msg[index] = "Deleted.".to_string();
                 }
                 Command::none()
             }
@@ -677,6 +675,14 @@ impl EncloneVisual {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
+                        let filename = format!(
+                            "{}/{}",
+                            self.archive_dir.as_ref().unwrap(),
+                            self.archive_list[i]
+                        );
+                        if path_exists(&filename) {
+                            std::fs::remove_file(&filename).unwrap();
+                        }
                         self.deleted[i] = true;
                     }
                 }

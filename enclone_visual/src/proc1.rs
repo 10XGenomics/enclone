@@ -73,6 +73,18 @@ pub fn do_archive_share(
 pub fn do_archive_refresh_complete(slf: &mut EncloneVisual) -> Command<Message> {
     update_shares(slf);
     let n = slf.archive_name.len();
+    for i in 0..n {
+        if slf.delete_requested[i] {
+            let filename = format!(
+                "{}/{}",
+                slf.archive_dir.as_ref().unwrap(),
+                slf.archive_list[i]
+            );
+            if path_exists(&filename) {
+                std::fs::remove_file(&filename).unwrap();
+            }
+        }
+    }
     slf.orig_archive_name = slf.archive_name_value.clone();
     slf.h.orig_name_value = slf.h.name_value.clone();
     slf.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
