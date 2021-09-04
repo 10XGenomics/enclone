@@ -61,7 +61,10 @@ pub fn process_special_arg(
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
     } else if arg.starts_with("CELL_COLOR=variable,") {
-        let var_args = arg.after("CELL_COLOR=variable,").split(',').collect::<Vec<&str>>();
+        let var_args = arg
+            .after("CELL_COLOR=variable,")
+            .split(',')
+            .collect::<Vec<&str>>();
         if var_args.is_empty() || var_args.len() > 3 {
             return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
         }
@@ -80,6 +83,9 @@ pub fn process_special_arg(
                 return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
             }
             max = Some(x.force_f64());
+        }
+        if min.is_some() && max.is_some() && min >= max {
+            return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
         }
         let v = ColorByVariableValue {
             var: var.to_string(),
