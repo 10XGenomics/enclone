@@ -27,8 +27,8 @@ pub struct ColorByIsotype {
 #[derive(Clone)]
 pub struct ColorByVariableValue {
     pub var: String,
-    pub min: f64,
-    pub max: f64,
+    pub min: Option<f64>,
+    pub max: Option<f64>,
 }
 
 #[derive(Clone)]
