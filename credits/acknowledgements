@@ -17,3 +17,5 @@ The crate bio_edit (in crates.io) is a copy of rust-bio, with one modified funct
 other parts deleted.  The cigar function is from rust-bio.
 
 The file convert_svg_to_png.rs is largely copied from the resvg crate.
+
+The file colors.rs is from Anton Mikhailov at Google.

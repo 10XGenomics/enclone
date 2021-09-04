@@ -6,6 +6,7 @@ pub mod align_n;
 pub mod assign_cell_color;
 pub mod circles_to_svg;
 pub mod clustal;
+pub mod colors;
 pub mod display_tree;
 pub mod fasta;
 pub mod group;
