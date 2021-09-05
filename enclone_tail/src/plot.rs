@@ -578,8 +578,8 @@ pub fn plot_clonotypes(
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
             legend_xstart, legend_ystart, band_width, actual_height,
         );
+        let band_height = actual_height/256.0;
         for i in 0..256 {
-            let band_height = actual_height/256.0;
             let ystart = legend_ystart + i as f64 * band_height;
             let c = &TURBO_SRGB_BYTES[i];
             let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
@@ -588,6 +588,10 @@ pub fn plot_clonotypes(
                  style=\"fill:{}\" />\n",
                 legend_xstart, ystart, band_width, band_height, color,
             );
+        }
+        for i in (0..256).step_by(64) {
+            let _text_xstart = legend_xstart + band_width + 10.0;
+            let _text_ystart = legend_ystart + i as f64 * band_height;
         }
         set_svg_width(svg, actual_width + band_width + 20.0 + BOUNDARY as f64);
         *svg += "</svg>";
