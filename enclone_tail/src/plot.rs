@@ -590,7 +590,7 @@ pub fn plot_clonotypes(
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
             legend_xstart, legend_ystart, band_width, actual_height,
         );
-        let band_height = actual_height/256.0;
+        let band_height = actual_height / 256.0;
         for i in 0..256 {
             let ystart = legend_ystart + i as f64 * band_height;
             let c = &TURBO_SRGB_BYTES[i];
@@ -622,10 +622,11 @@ pub fn plot_clonotypes(
                 text_xstart, text_ystart, font_size, text,
             );
             max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
-
         }
-        set_svg_width(svg, 
-            actual_width + band_width + 20.0 + BOUNDARY as f64 + sep_to_text + max_text_width);
+        set_svg_width(
+            svg,
+            actual_width + band_width + 20.0 + BOUNDARY as f64 + sep_to_text + max_text_width,
+        );
         set_svg_height(svg, actual_height + font_size as f64 / 2.0);
         *svg += "</svg>";
     } else if plot_opt.use_legend
