@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::colors::*;
 use crate::group_colors::*;
@@ -562,13 +563,24 @@ pub fn plot_clonotypes(
     // Add main legend.
 
     let mut by_var = false;
+    let mut var = String::new();
     match ctl.plot_opt.cell_color {
-        CellColor::ByVariableValue(_) => {
+        CellColor::ByVariableValue(ref x) => {
             by_var = true;
+            var = x.var.clone();
         }
         _ => {}
     };
     if by_var {
+        let mut low = 0.0;
+        let mut high = 0.0;
+        let n = VAR_LOW.lock().unwrap().len();
+        for i in 0..n {
+            if VAR_LOW.lock().unwrap()[i].0 == var {
+                low = VAR_LOW.lock().unwrap()[i].1;
+                high = VAR_HIGH.lock().unwrap()[i].1;
+            }
+        }
         *svg = svg.rev_before("<").to_string();
         let legend_xstart = actual_width + 20.0;
         let legend_ystart = BOUNDARY as f64;
@@ -589,11 +601,32 @@ pub fn plot_clonotypes(
                 legend_xstart, ystart, band_width, band_height, color,
             );
         }
-        for i in (0..256).step_by(64) {
-            let _text_xstart = legend_xstart + band_width + 10.0;
-            let _text_ystart = legend_ystart + i as f64 * band_height;
+        let mut max_text_width: f64 = 0.0;
+        let sep_to_text = 10.0;
+        let font_size = 20;
+        for i in [0, 64, 128, 192, 255].iter() {
+            let text_xstart = legend_xstart + band_width + sep_to_text;
+            // don't understand why dividing font size by four makes sense
+            let text_ystart = legend_ystart + *i as f64 * band_height + font_size as f64 / 4.0;
+            let val = low + (high - low) * *i as f64 / 255.0;
+            let mut text = format!("{:.1}", val);
+            while text.contains(".") && text.ends_with("0") {
+                text = text.rev_before("0").to_string();
+            }
+            if text.ends_with(".") {
+                text = text.rev_before(".").to_string();
+            }
+            *svg += &format!(
+                "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                text_xstart, text_ystart, font_size, text,
+            );
+            max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
+
         }
-        set_svg_width(svg, actual_width + band_width + 20.0 + BOUNDARY as f64);
+        set_svg_width(svg, 
+            actual_width + band_width + 20.0 + BOUNDARY as f64 + sep_to_text + max_text_width);
+        set_svg_height(svg, actual_height + font_size as f64 / 2.0);
         *svg += "</svg>";
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
