@@ -197,11 +197,18 @@ pub fn prepare_for_apocalypse_visual() {
                     .arg(&bug_report_address)
                     .stdin(Stdio::piped())
                     .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
                     .spawn();
-                let process = process.unwrap();
-                process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
-                let mut _s = String::new();
-                process.stdout.unwrap().read_to_string(&mut _s).unwrap();
+                let mut process = process.unwrap();
+                process
+                    .stdin
+                    .as_ref()
+                    .unwrap()
+                    .write_all(msg.as_bytes())
+                    .unwrap();
+                if !process.wait().unwrap().success() {
+                    eprintln!("\nAttempt to send email failed.\n");
+                }
             }
         }
         PrettyTrace::new()
