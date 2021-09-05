@@ -30,6 +30,7 @@ use enclone_args::load_gex::*;
 use enclone_args::proc_args2::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
@@ -244,6 +245,16 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ],
         )?;
     }
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(ref x) => {
+            check_pcols(
+                &ctl,
+                &gex_info,
+                &vec![x.var.clone()],
+            )?;
+        }
+        _  => {}
+    };
     let mut bound_vars = Vec::<String>::new();
     for bi in 0..ctl.clono_filt_opt.bounds.len() {
         let x = &ctl.clono_filt_opt.bounds[bi];
