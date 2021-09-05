@@ -6,6 +6,7 @@
 // the cells.
 
 use crate::circles_to_svg::*;
+use crate::colors::*;
 use crate::group_colors::*;
 use crate::pack_circles::*;
 use crate::plot_utils::*;
@@ -567,8 +568,25 @@ pub fn plot_clonotypes(
         }
         _ => {}
     };
-    let _by_var = by_var; // TO REMOVE ************************************************************
-    if plot_opt.use_legend
+    if by_var {
+        *svg = svg.rev_before("<").to_string();
+        let legend_xstart = actual_width + 20.0;
+        let legend_ystart = BOUNDARY as f64;
+        let band_width = 100.0;
+        for i in 0..256 {
+            let band_height = actual_height/256.0;
+            let ystart = legend_ystart + i as f64 * band_height;
+            let c = &TURBO_SRGB_BYTES[i];
+            let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+            *svg += &format!(
+                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                 style=\"fill:{};stroke:black;stroke-width:0\" />\n",
+                legend_xstart, ystart, band_width, band_height, color,
+            );
+        }
+        set_svg_width(svg, actual_width + band_width + 20.0 + BOUNDARY as f64);
+        *svg += "</svg>";
+    } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
     {
