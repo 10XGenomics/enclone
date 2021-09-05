@@ -93,7 +93,12 @@ pub fn assign_cell_color(
                     }
                     let val_list = &out_datas[i][j][&x.var];
                     let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
-                    let val = &vals[k];
+                    let val;
+                    if vals.solo() {
+                        val = &vals[0];
+                    } else {
+                        val = &vals[k];
+                    }
                     if val.parse::<f64>().is_ok() {
                         let mut v = val.force_f64();
                         if v.is_finite() {
