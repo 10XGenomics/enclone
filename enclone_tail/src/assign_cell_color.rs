@@ -62,12 +62,14 @@ pub fn assign_cell_color(
                                 if out_datas[i][j].contains_key(&x.var) {
                                     let val_list = &out_datas[i][j][&x.var];
                                     let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
-                                    let val = &vals[k];
-                                    if val.parse::<f64>().is_ok() {
-                                        let v = val.force_f64();
-                                        if v.is_finite() {
-                                            low = low.min(v);
-                                            high = high.max(v);
+                                    for k in 0..vals.len() {
+                                        let val = &vals[k];
+                                        if val.parse::<f64>().is_ok() {
+                                            let v = val.force_f64();
+                                            if v.is_finite() {
+                                                low = low.min(v);
+                                                high = high.max(v);
+                                            }
                                         }
                                     }
                                 }
