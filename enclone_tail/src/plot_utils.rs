@@ -4,6 +4,7 @@ use crate::assign_cell_color::*;
 use crate::hex::*;
 use crate::*;
 use enclone_core::defs::*;
+use std::collections::HashMap;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -24,6 +25,7 @@ pub fn build_clusters(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    out_datas: &Vec<Vec<HashMap<String, String>>>,
     const_names: &Vec<String>,
 ) -> Vec<PlotCluster> {
     let mut clusters = Vec::<PlotCluster>::new();
@@ -87,6 +89,7 @@ pub fn build_clusters(
                         dsx,
                         &exacts,
                         &exact_clonotypes,
+                        &out_datas,
                         i,
                         j,
                         k,

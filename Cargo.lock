@@ -1463,6 +1463,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "lazy_static",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",

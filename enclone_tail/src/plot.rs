@@ -32,6 +32,7 @@ pub fn plot_clonotypes(
     // exacts: One entry for each clonotype.
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    out_datas: &Vec<Vec<HashMap<String, String>>>,
     // groups: There is one entry for each group of clonotypes.  The first entries of the inner
     // vectors indexes into exacts, and the second entry (String) is not used here.
     groups: &Vec<Vec<(i32, String)>>,
@@ -93,6 +94,7 @@ pub fn plot_clonotypes(
         &refdata,
         &exacts,
         &exact_clonotypes,
+        &out_datas,
         &const_names,
     );
     let mut radii = Vec::<f64>::new();
