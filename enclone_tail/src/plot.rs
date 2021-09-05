@@ -563,7 +563,7 @@ pub fn plot_clonotypes(
 
     let mut by_var = false;
     match ctl.plot_opt.cell_color {
-        CellColor::ByVariableValue(ref _x) => {
+        CellColor::ByVariableValue(_) => {
             by_var = true;
         }
         _ => {}
@@ -573,6 +573,11 @@ pub fn plot_clonotypes(
         let legend_xstart = actual_width + 20.0;
         let legend_ystart = BOUNDARY as f64;
         let band_width = 100.0;
+        *svg += &format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+             style=\"fill:white;stroke:black;stroke-width:1\" />\n",
+            legend_xstart, legend_ystart, band_width, actual_height,
+        );
         for i in 0..256 {
             let band_height = actual_height/256.0;
             let ystart = legend_ystart + i as f64 * band_height;
