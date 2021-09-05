@@ -580,7 +580,7 @@ pub fn plot_clonotypes(
             let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
             *svg += &format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
-                 style=\"fill:{};stroke:black;stroke-width:0\" />\n",
+                 style=\"fill:{}\" />\n",
                 legend_xstart, ystart, band_width, band_height, color,
             );
         }
