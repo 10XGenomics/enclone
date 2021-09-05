@@ -666,7 +666,7 @@ pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
         CellColor::ByVariableValue(ref x) => {
             extra_args.push(x.var.clone());
         }
-        _  => {}
+        _ => {}
     };
     for i in 0..ctl.clono_filt_opt.bounds.len() {
         extra_args.append(&mut ctl.clono_filt_opt.bounds[i].var.clone());

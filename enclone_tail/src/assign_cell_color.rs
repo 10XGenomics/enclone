@@ -2,8 +2,8 @@
 
 // Assign the color to a cell in a honeycomb plot.
 
-use crate::*;
 use crate::colors::*;
+use crate::*;
 use ansi_escape::*;
 use enclone_core::cell_color::*;
 use enclone_core::defs::*;
@@ -42,7 +42,7 @@ pub fn assign_cell_color(
         CellColor::ByVariableValue(_) => {
             by_var = true;
         }
-        _  => {}
+        _ => {}
     };
     if by_var {
         match ctl.plot_opt.cell_color {
@@ -95,7 +95,7 @@ pub fn assign_cell_color(
                     let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
                     let val = &vals[k];
                     if val.parse::<f64>().is_ok() {
-                        let v = val.force_f64();
+                        let mut v = val.force_f64();
                         if v.is_finite() {
                             let xmin;
                             if x.min.is_some() {
@@ -109,6 +109,8 @@ pub fn assign_cell_color(
                             } else {
                                 xmax = high;
                             }
+                            v = v.min(xmax);
+                            v = v.max(xmin);
                             let vnorm = (v - xmin) / (xmax - xmin);
                             let c = &TURBO_SRGB_BYTES[(vnorm * 255.0).round() as usize];
                             color = format!("rgb({},{},{})", c[0], c[1], c[2]);
@@ -116,11 +118,10 @@ pub fn assign_cell_color(
                     }
                 }
             }
-            _  => {}
+            _ => {}
         };
 
     // Determine color for PLOT_BY_ISOTYPE.
-
     } else if plot_opt.plot_by_isotype {
         let mut crefs = Vec::<Option<usize>>::new();
         for l in 0..ex.share.len() {

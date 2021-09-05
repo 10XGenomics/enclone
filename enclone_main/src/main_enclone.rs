@@ -247,13 +247,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     }
     match ctl.plot_opt.cell_color {
         CellColor::ByVariableValue(ref x) => {
-            check_pcols(
-                &ctl,
-                &gex_info,
-                &vec![x.var.clone()],
-            )?;
+            check_pcols(&ctl, &gex_info, &vec![x.var.clone()])?;
         }
-        _  => {}
+        _ => {}
     };
     let mut bound_vars = Vec::<String>::new();
     for bi in 0..ctl.clono_filt_opt.bounds.len() {
