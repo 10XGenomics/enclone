@@ -13,6 +13,7 @@ use crate::polygon::*;
 use crate::string_width::*;
 use crate::*;
 use ansi_escape::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::collections::HashMap;
@@ -559,6 +560,14 @@ pub fn plot_clonotypes(
 
     // Add main legend.
 
+    let mut by_var = false;
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(ref _x) => {
+            by_var = true;
+        }
+        _ => {}
+    };
+    let _by_var = by_var; // TO REMOVE ************************************************************
     if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
