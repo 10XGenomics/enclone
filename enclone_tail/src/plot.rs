@@ -626,7 +626,7 @@ pub fn plot_clonotypes(
 
             let vshift;
             if *i == 0 {
-                vshift = font_size as f64 / 2.0;
+                vshift = font_size as f64 / 2.0 + 1.0;
             } else if *i == 255 {
                 vshift = 0.0;
             } else {
