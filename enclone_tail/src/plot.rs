@@ -560,7 +560,7 @@ pub fn plot_clonotypes(
         *svg += "</svg>";
     }
 
-    // Add main legend.
+    // Add legend for color by variable.
 
     let mut by_var = false;
     let mut var = String::new();
@@ -606,8 +606,25 @@ pub fn plot_clonotypes(
         let font_size = 20;
         for i in [0, 64, 128, 192, 255].iter() {
             let text_xstart = legend_xstart + band_width + sep_to_text;
-            // don't understand why dividing font size by four makes sense
-            let text_ystart = legend_ystart + *i as f64 * band_height + font_size as f64 / 4.0;
+        
+            // Define vertical shift for value text.  We vertically center the text at the correct
+            // point, adding font_size/4 to get this to happen.  We don't understand why four
+            // makes sense.  Also, even though it is less accurate, we treat the first and last
+            // labels differently, because it is aesthetically displeasing to have the text outside
+            // the boundaries of the color box.
+
+            let vshift;
+            if *i == 0 {
+                vshift = font_size as f64 / 2.0;
+            } else if *i == 255 {
+                vshift = 0.0;
+            } else {
+                vshift = font_size as f64 / 4.0;
+            }
+
+            // Keep going.
+
+            let text_ystart = legend_ystart + *i as f64 * band_height + vshift;
             let val = low + (high - low) * *i as f64 / 255.0;
             let mut text = format!("{:.1}", val);
             while text.contains(".") && text.ends_with("0") {
@@ -627,8 +644,11 @@ pub fn plot_clonotypes(
             svg,
             actual_width + band_width + 20.0 + BOUNDARY as f64 + sep_to_text + max_text_width,
         );
-        set_svg_height(svg, actual_height + font_size as f64 / 2.0);
+        set_svg_height(svg, actual_height);
         *svg += "</svg>";
+
+    // Add other main legends.
+
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
