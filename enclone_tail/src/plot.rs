@@ -590,12 +590,18 @@ pub fn plot_clonotypes(
         *svg += &format!(
             "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
              font-size=\"{}\">{}</text>\n",
-            legend_xstart, BOUNDARY as f64 + font_size as f64 / 2.0, font_size, var,
+            legend_xstart,
+            BOUNDARY as f64 + font_size as f64 / 2.0,
+            font_size,
+            var,
         );
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
-            legend_xstart, legend_ystart, band_width, actual_height - name_bar_height - BOUNDARY as f64,
+            legend_xstart,
+            legend_ystart,
+            band_width,
+            actual_height - name_bar_height - BOUNDARY as f64,
         );
         let band_height = (actual_height - name_bar_height - BOUNDARY as f64) / 256.0;
         for i in 0..256 {
@@ -612,10 +618,10 @@ pub fn plot_clonotypes(
         let sep_to_text = 10.0;
         for i in [0, 64, 128, 192, 255].iter() {
             let text_xstart = legend_xstart + band_width + sep_to_text;
-        
+
             // Define vertical shift for value text.  We vertically center the text at the correct
             // point, adding font_size/4 to get this to happen.  We don't understand why four
-            // makes sense.  Also, we treat the first and last labels differently, because it is 
+            // makes sense.  Also, we treat the first and last labels differently, because it is
             // aesthetically displeasing to have the text outside the boundaries of the color box.
 
             let vshift;
@@ -651,9 +657,9 @@ pub fn plot_clonotypes(
         for i in [64, 128, 192].iter() {
             *svg += &format!(
                 "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" stroke-width=\"0.5\"/>\n",
-                legend_xstart, 
+                legend_xstart,
                 legend_ystart + *i as f64 * band_height,
-                legend_xstart + band_width, 
+                legend_xstart + band_width,
                 legend_ystart + *i as f64 * band_height,
             );
         }
@@ -668,7 +674,6 @@ pub fn plot_clonotypes(
         *svg += "</svg>";
 
     // Add other main legends.
-
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
