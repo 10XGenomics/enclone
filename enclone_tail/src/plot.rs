@@ -767,13 +767,23 @@ pub fn plot_clonotypes(
                 font_size,
                 labels[i]
             );
-            *svg += &format!(
-                "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
-                legend_xstart + BOUNDARY as f64,
-                y - BOUNDARY as f64 / 2.0,
-                LEGEND_CIRCLE_RADIUS,
-                colors[i]
-            );
+            if colors[i] != "undefined" {
+                *svg += &format!(
+                    "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
+                    legend_xstart + BOUNDARY as f64,
+                    y - BOUNDARY as f64 / 2.0,
+                    LEGEND_CIRCLE_RADIUS,
+                    colors[i]
+                );
+            } else {
+                *svg += &format!(
+                    "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" \
+                     stroke=\"red\" stroke-width=\"0.5\" fill=\"white\" />\n",
+                    legend_xstart + BOUNDARY as f64,
+                    y - BOUNDARY as f64 / 2.0,
+                    LEGEND_CIRCLE_RADIUS
+                );
+            }
         }
         let new_height = actual_height.max(legend_height as f64) + BOUNDARY as f64;
         let new_width = actual_width + legend_width as f64 + 20.0 + BOUNDARY as f64;

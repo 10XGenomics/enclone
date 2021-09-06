@@ -47,6 +47,7 @@ pub fn assign_cell_color(
     if by_var {
         match ctl.plot_opt.cell_color {
             CellColor::ByVariableValue(ref x) => {
+                color = "undefined".to_string();
                 if out_datas[i][j].contains_key(&x.var) {
                     let n = VAR_LOW.lock().unwrap().len();
                     let mut computed = false;
