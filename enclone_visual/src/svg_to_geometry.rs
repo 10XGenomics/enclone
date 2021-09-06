@@ -255,13 +255,17 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
             let mut c = None;
             let mut o = 255 as u8; // opacity
             let mut t = String::new();
+            let mut stroke_width = None;
+            let mut sc = None;
             for m in kv.unwrap().iter() {
                 let key = &m.0;
                 let value = &m.1;
                 if verbose {
                     xprintln!("key = {}, value = {}", key, value);
                 }
-                if key == "stroke" || key == "stroke-width" {
+                if key == "stroke" {
+                    sc = parse_color(&value, &to_rgb);
+                } else if get_numeric(&key, &value, "stroke-width", &mut stroke_width) {
                 } else if key == "tooltip" {
                     t = value.to_string();
                 } else if get_numeric(&key, &value, "cx", &mut x) {
@@ -283,12 +287,22 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                     r: r.unwrap(),
                     c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 }));
-            } else {
+            } else if stroke_width.is_none() {
                 geom.push(Geometry::CircleWithTooltip(CircleWithTooltip {
                     p: Point::new(x.unwrap(), y.unwrap()),
                     r: r.unwrap(),
                     c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                     t: t,
+                }));
+            } else {
+                geom.push(Geometry::CircleWithTooltipAndStroke(CircleWithTooltipAndStroke {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                    t: t,
+                    w: stroke_width.unwrap(),
+                    // note probably wrong reuse of opacity
+                    s: Color::new(sc.unwrap().0, sc.unwrap().1, sc.unwrap().2, o),
                 }));
             }
 

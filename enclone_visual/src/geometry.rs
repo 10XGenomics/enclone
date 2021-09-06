@@ -8,6 +8,7 @@ pub enum Geometry {
     Text(Text),
     Circle(Circle),
     CircleWithTooltip(CircleWithTooltip),
+    CircleWithTooltipAndStroke(CircleWithTooltipAndStroke),
     Rectangle(Rectangle),
     PolySegment(PolySegment),
 }
@@ -92,6 +93,16 @@ pub struct CircleWithTooltip {
     pub r: f32,
     pub c: Color,
     pub t: String,
+}
+
+#[derive(PartialEq, Clone)]
+pub struct CircleWithTooltipAndStroke {
+    pub p: Point,
+    pub r: f32,
+    pub c: Color,
+    pub t: String,
+    pub w: f32,      // stroke width
+    pub s: Color,    // stroke color
 }
 
 #[derive(PartialEq, Clone)]
