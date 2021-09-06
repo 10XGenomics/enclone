@@ -582,15 +582,22 @@ pub fn plot_clonotypes(
             }
         }
         *svg = svg.rev_before("<").to_string();
+        let font_size = 20;
+        let name_bar_height = font_size as f64 + font_size as f64 / 2.0;
         let legend_xstart = actual_width + 20.0;
-        let legend_ystart = BOUNDARY as f64;
+        let legend_ystart = BOUNDARY as f64 + name_bar_height;
         let band_width = 100.0;
+        *svg += &format!(
+            "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+             font-size=\"{}\">{}</text>\n",
+            legend_xstart, BOUNDARY as f64 + font_size as f64 / 2.0, font_size, var,
+        );
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
-            legend_xstart, legend_ystart, band_width, actual_height,
+            legend_xstart, legend_ystart, band_width, actual_height - name_bar_height,
         );
-        let band_height = actual_height / 256.0;
+        let band_height = (actual_height - name_bar_height) / 256.0;
         for i in 0..256 {
             let ystart = legend_ystart + i as f64 * band_height;
             let c = &TURBO_SRGB_BYTES[i];
@@ -603,7 +610,6 @@ pub fn plot_clonotypes(
         }
         let mut max_text_width: f64 = 0.0;
         let sep_to_text = 10.0;
-        let font_size = 20;
         for i in [0, 64, 128, 192, 255].iter() {
             let text_xstart = legend_xstart + band_width + sep_to_text;
         
@@ -622,7 +628,7 @@ pub fn plot_clonotypes(
                 vshift = font_size as f64 / 4.0;
             }
 
-            // Keep going.
+            // Generate the text.
 
             let text_ystart = legend_ystart + *i as f64 * band_height + vshift;
             let val = low + (high - low) * *i as f64 / 255.0;
@@ -640,10 +646,10 @@ pub fn plot_clonotypes(
             );
             max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
         }
-        set_svg_width(
-            svg,
-            actual_width + band_width + 20.0 + BOUNDARY as f64 + sep_to_text + max_text_width,
-        );
+        let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
+        width = width.max(arial_width(&var, font_size as f64));
+        width += BOUNDARY as f64;
+        set_svg_width(svg, width);
         set_svg_height(svg, actual_height);
         *svg += "</svg>";
 
