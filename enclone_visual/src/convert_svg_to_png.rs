@@ -20,12 +20,14 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         keep_named_groups: false,
         fontdb: &fontdb,
     };
-    let tree = usvg::Tree::from_data(&svg, &usvg);
+    let mut svg = stringme(&svg);
+    svg = svg.replace("Arial", "Liberation Sans");
+    let tree = usvg::Tree::from_data(&svg.as_bytes(), &usvg);
     if tree.is_err() {
         panic!(
             "svg conversion failed with message {} on\n{}\n",
             tree.err().unwrap(),
-            strme(svg)
+            svg
         );
     }
     let tree = tree.unwrap();
@@ -43,12 +45,7 @@ fn load_fonts() -> fontdb::Database {
     let mut fontdb = fontdb::Database::new();
     let deja = include_bytes!("../../fonts/DejaVuLGCSansMono.ttf").to_vec();
     fontdb.load_font_data(deja);
-    fontdb.load_system_fonts();
-    // fontdb.set_generic_families();
-    fontdb.set_serif_family("Times New Roman");
-    fontdb.set_sans_serif_family("Arial");
-    fontdb.set_cursive_family("Comic Sans MS");
-    fontdb.set_fantasy_family("Impact");
-    fontdb.set_monospace_family("Courier New");
+    let liberation_sans = include_bytes!("../../fonts/LiberationSans-Regular.ttf").to_vec();
+    fontdb.load_font_data(liberation_sans);
     fontdb
 }
