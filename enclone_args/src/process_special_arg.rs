@@ -60,9 +60,9 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
-    } else if arg.starts_with("CELL_COLOR=variable,") {
+    } else if arg.starts_with("CELL_COLOR=var,") {
         let var_args = arg
-            .after("CELL_COLOR=variable,")
+            .after("CELL_COLOR=var,")
             .split(',')
             .collect::<Vec<&str>>();
         if var_args.is_empty() || var_args.len() > 3 {
