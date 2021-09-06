@@ -101,8 +101,8 @@ pub struct CircleWithTooltipAndStroke {
     pub r: f32,
     pub c: Color,
     pub t: String,
-    pub w: f32,      // stroke width
-    pub s: Color,    // stroke color
+    pub w: f32,   // stroke width
+    pub s: Color, // stroke color
 }
 
 #[derive(PartialEq, Clone)]

@@ -295,15 +295,17 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                     t: t,
                 }));
             } else {
-                geom.push(Geometry::CircleWithTooltipAndStroke(CircleWithTooltipAndStroke {
-                    p: Point::new(x.unwrap(), y.unwrap()),
-                    r: r.unwrap(),
-                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-                    t: t,
-                    w: stroke_width.unwrap(),
-                    // note probably wrong reuse of opacity
-                    s: Color::new(sc.unwrap().0, sc.unwrap().1, sc.unwrap().2, o),
-                }));
+                geom.push(Geometry::CircleWithTooltipAndStroke(
+                    CircleWithTooltipAndStroke {
+                        p: Point::new(x.unwrap(), y.unwrap()),
+                        r: r.unwrap(),
+                        c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                        t: t,
+                        w: stroke_width.unwrap(),
+                        // note probably wrong reuse of opacity
+                        s: Color::new(sc.unwrap().0, sc.unwrap().1, sc.unwrap().2, o),
+                    },
+                ));
             }
 
         // Process line.
