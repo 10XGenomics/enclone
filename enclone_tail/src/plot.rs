@@ -615,9 +615,8 @@ pub fn plot_clonotypes(
         
             // Define vertical shift for value text.  We vertically center the text at the correct
             // point, adding font_size/4 to get this to happen.  We don't understand why four
-            // makes sense.  Also, even though it is less accurate, we treat the first and last
-            // labels differently, because it is aesthetically displeasing to have the text outside
-            // the boundaries of the color box.
+            // makes sense.  Also, we treat the first and last labels differently, because it is 
+            // aesthetically displeasing to have the text outside the boundaries of the color box.
 
             let vshift;
             if *i == 0 {
@@ -646,6 +645,21 @@ pub fn plot_clonotypes(
             );
             max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
         }
+
+        // Add tick lines.
+
+        for i in [64, 128, 192].iter() {
+            *svg += &format!(
+                "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" stroke-width=\"0.5\"/>\n",
+                legend_xstart, 
+                legend_ystart + *i as f64 * band_height,
+                legend_xstart + band_width, 
+                legend_ystart + *i as f64 * band_height,
+            );
+        }
+
+        // Finish.
+
         let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
         width = width.max(arial_width(&var, font_size as f64));
         width += BOUNDARY as f64;
