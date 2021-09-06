@@ -595,9 +595,9 @@ pub fn plot_clonotypes(
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
-            legend_xstart, legend_ystart, band_width, actual_height - name_bar_height,
+            legend_xstart, legend_ystart, band_width, actual_height - name_bar_height - BOUNDARY as f64,
         );
-        let band_height = (actual_height - name_bar_height) / 256.0;
+        let band_height = (actual_height - name_bar_height - BOUNDARY as f64) / 256.0;
         for i in 0..256 {
             let ystart = legend_ystart + i as f64 * band_height;
             let c = &TURBO_SRGB_BYTES[i];
