@@ -403,7 +403,7 @@ main() {
     ok=0
     $SHELL -i -c "enclone --version < /dev/null"
     if [ "$?" -eq "0" ]; then
-        available_version=$($SHELL -c "enclone --version")
+        available_version=$($SHELL -i -c "enclone --version < /dev/null")
         available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
         if [ "$_current_version" == "$available_version" ]; then
             printf "\nGood, the version of enclone that you would get from the command line is\n"
