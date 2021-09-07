@@ -10,6 +10,7 @@ use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::{BufReader, Read, Seek, SeekFrom};
+use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -31,6 +32,7 @@ fn main() {
         let mut chunk_type = vec![0 as u8; 4];
         f.read_exact(&mut chunk_type).unwrap();
         pos += 4;
+        println!("found chunk of type {}", strme(&chunk_type));
         if chunk_type == b"pHYs" {
             found = true;
             f.seek(SeekFrom::Start(pos)).unwrap();
@@ -55,7 +57,7 @@ fn main() {
             let crc = Crc::<u32>::new(&CRC_32_ISO_HDLC);
             let cs = crc.checksum(&bytes);
             println!("computed checksum = {}", cs);
-            break;
+            // break;
         }
         pos += len as u64 + 4;
     }
