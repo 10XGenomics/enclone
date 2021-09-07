@@ -95,6 +95,7 @@ pub struct EncloneVisual {
     // pub should_exit: bool,
     pub compute_state: ComputeState,
     pub copy_image_button_color: Color,
+    pub snapshot_button_color: Color,
     pub canvas_view: CanvasView,
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,

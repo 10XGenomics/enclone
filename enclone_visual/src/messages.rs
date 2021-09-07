@@ -74,4 +74,5 @@ pub enum Message {
     CopySelectedMetrics,
     CompleteCopySelectedMetrics(Result<(), String>),
     Snapshot,
+    CompleteSnapshot(Result<(), String>),
 }

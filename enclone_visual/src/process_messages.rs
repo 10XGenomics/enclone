@@ -27,6 +27,7 @@ impl EncloneVisual {
             .push(format!("{:?}", message));
         match message {
             Message::Snapshot => {
+                self.snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let filename = "/tmp/enclone_visual_snapshot.png";
                 capture_as_file(&filename, get_window_id());
                 let mut bytes = Vec::<u8>::new();
@@ -36,6 +37,11 @@ impl EncloneVisual {
                 }
                 remove_file(&filename).unwrap();
                 copy_png_bytes_to_clipboard(&bytes);
+                Command::perform(noop1(), Message::CompleteSnapshot)
+            }
+
+            Message::CompleteSnapshot(_) => {
+                self.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
 

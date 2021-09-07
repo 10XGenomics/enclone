@@ -45,6 +45,7 @@ impl Application for EncloneVisual {
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
@@ -615,7 +616,7 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
-        let snapshot_button = Button::new(&mut self.snapshot_button, Text::new("Snapshot"))
+        let snapshot_button = Button::new(&mut self.snapshot_button, Text::new("Snapshot").color(self.snapshot_button_color))
             .on_press(Message::Snapshot);
         let console_row = Row::new()
             .spacing(8)
