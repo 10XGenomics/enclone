@@ -92,7 +92,7 @@ fn test_site_examples() {
             if in_filex.starts_with("../") {
                 in_filex = in_filex.after("../").to_string();
             }
-            eprintln!("\nPlease diff {} enclone_main/{}.", in_filex, save);
+            eprintln!("\nPlease diff {} enclone_exec/{}.", in_filex, save);
             eprintln!(
                 "\nPossibly this could be because you're running \"cargo t\" in an \
                 environment without the\n\
