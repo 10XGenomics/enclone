@@ -629,14 +629,12 @@ pub fn plot_clonotypes(
             if have_undefined {
                 height_for_undefined = 20.0;
             }
-            let available = actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
+            let available =
+                actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
             *svg += &format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                  style=\"fill:white;stroke:black;stroke-width:1\" />\n",
-                legend_xstart,
-                legend_ystart,
-                band_width,
-                available,
+                legend_xstart, legend_ystart, band_width, available,
             );
             let band_height = available / 256.0;
             for i in 0..256 {
@@ -653,11 +651,10 @@ pub fn plot_clonotypes(
             let sep_to_text = 10.0;
             let text_xstart = legend_xstart + band_width + sep_to_text;
             for i in [0, 64, 128, 192, 255].iter() {
-
                 // Define vertical shift for value text.  We vertically center the text at the
                 // correct point, adding font_size/4 to get this to happen.  We don't understand
                 // why four makes sense.  Also, we treat the first and last labels differently,
-                // because it is aesthetically displeasing to have the text outside the boundaries 
+                // because it is aesthetically displeasing to have the text outside the boundaries
                 // of the color box.
 
                 let vshift;
@@ -710,12 +707,17 @@ pub fn plot_clonotypes(
                 *svg += &format!(
                     "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" stroke=\"red\" stroke-width=\"0.5\" \
                      fill=\"white\" />\n",
-                     legend_xstart + band_width - r, legend_ystart + available + vsep + r, r,
+                    legend_xstart + band_width - r,
+                    legend_ystart + available + vsep + r,
+                    r,
                 );
                 *svg += &format!(
                     "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                      font-size=\"{}\">{}</text>\n",
-                    text_xstart, y + font_size as f64 / 4.0 - 1.0, font_size, "undefined",
+                    text_xstart,
+                    y + font_size as f64 / 4.0 - 1.0,
+                    font_size,
+                    "undefined",
                 );
             }
 

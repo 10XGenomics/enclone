@@ -288,16 +288,14 @@ pub fn svg_to_geometry(svg: &str, verbose: bool) -> Option<Vec<Geometry>> {
                     c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
                 }));
             } else if t.len() == 0 {
-                geom.push(Geometry::CircleWithStroke(
-                    CircleWithStroke {
-                        p: Point::new(x.unwrap(), y.unwrap()),
-                        r: r.unwrap(),
-                        c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
-                        w: stroke_width.unwrap(),
-                        // note probably wrong reuse of opacity
-                        s: Color::new(sc.unwrap().0, sc.unwrap().1, sc.unwrap().2, o),
-                    },
-                ));
+                geom.push(Geometry::CircleWithStroke(CircleWithStroke {
+                    p: Point::new(x.unwrap(), y.unwrap()),
+                    r: r.unwrap(),
+                    c: Color::new(c.unwrap().0, c.unwrap().1, c.unwrap().2, o),
+                    w: stroke_width.unwrap(),
+                    // note probably wrong reuse of opacity
+                    s: Color::new(sc.unwrap().0, sc.unwrap().1, sc.unwrap().2, o),
+                }));
             } else if stroke_width.is_none() {
                 geom.push(Geometry::CircleWithTooltip(CircleWithTooltip {
                     p: Point::new(x.unwrap(), y.unwrap()),

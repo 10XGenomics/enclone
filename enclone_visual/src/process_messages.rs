@@ -11,7 +11,7 @@ use crate::*;
 use chrono::prelude::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
-use std::fs::{File, remove_file};
+use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
 
