@@ -2,11 +2,21 @@
 
 // Assign the color to a cell in a honeycomb plot.
 
+use crate::colors::*;
 use crate::*;
 use ansi_escape::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
+use lazy_static::lazy_static;
+use std::collections::HashMap;
+use std::sync::Mutex;
 use vdj_ann::refx::*;
 use vector_utils::*;
+
+lazy_static! {
+    pub static ref VAR_LOW: Mutex<Vec<(String, f64)>> = Mutex::new(Vec::<(String, f64)>::new());
+    pub static ref VAR_HIGH: Mutex<Vec<(String, f64)>> = Mutex::new(Vec::<(String, f64)>::new());
+}
 
 pub fn assign_cell_color(
     ctl: &EncloneControl,
@@ -16,17 +26,109 @@ pub fn assign_cell_color(
     dsx: usize,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    out_datas: &Vec<Vec<HashMap<String, String>>>,
     // three variables that specify the cell:
-    i: usize, // index into exacts
-    j: usize, // index into exacts[i]
-    k: usize, // index into clones
+    i: usize, // index into exacts    = clonotype index
+    j: usize, // index into exacts[i] = exact subclonotype index
+    k: usize, // index into clones    = cell index
 ) -> String {
     let ex = &exact_clonotypes[exacts[i][j]];
     let mut color = "black".to_string();
 
-    // Determine color for PLOT_BY_ISOTYPE.
+    // Determine color for coloring by variable.
 
-    if plot_opt.plot_by_isotype {
+    let mut by_var = false;
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(_) => {
+            by_var = true;
+        }
+        _ => {}
+    };
+    if by_var {
+        match ctl.plot_opt.cell_color {
+            CellColor::ByVariableValue(ref x) => {
+                color = "undefined".to_string();
+                if out_datas[i][j].contains_key(&x.var) {
+                    let n = VAR_LOW.lock().unwrap().len();
+                    let mut computed = false;
+                    for z in 0..n {
+                        if VAR_LOW.lock().unwrap()[z].0 == x.var {
+                            computed = true;
+                        }
+                    }
+                    if !computed {
+                        let (mut low, mut high) = (f64::MAX, f64::MIN);
+                        for i in 0..out_datas.len() {
+                            for j in 0..out_datas[i].len() {
+                                if out_datas[i][j].contains_key(&x.var) {
+                                    let val_list = &out_datas[i][j][&x.var];
+                                    let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
+                                    for k in 0..vals.len() {
+                                        let val = &vals[k];
+                                        if val.parse::<f64>().is_ok() {
+                                            let v = val.force_f64();
+                                            if v.is_finite() {
+                                                low = low.min(v);
+                                                high = high.max(v);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        VAR_LOW.lock().unwrap().push((x.var.clone(), low));
+                        VAR_HIGH.lock().unwrap().push((x.var.clone(), high));
+                    }
+                    let (mut low, mut high) = (0.0, 0.0);
+                    let n = VAR_LOW.lock().unwrap().len();
+                    for z in 0..n {
+                        if VAR_LOW.lock().unwrap()[z].0 == x.var {
+                            low = VAR_LOW.lock().unwrap()[z].1;
+                        }
+                    }
+                    let n = VAR_HIGH.lock().unwrap().len();
+                    for z in 0..n {
+                        if VAR_HIGH.lock().unwrap()[z].0 == x.var {
+                            high = VAR_HIGH.lock().unwrap()[z].1;
+                        }
+                    }
+                    let val_list = &out_datas[i][j][&x.var];
+                    let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
+                    let val;
+                    if vals.solo() {
+                        val = &vals[0];
+                    } else {
+                        val = &vals[k];
+                    }
+                    if val.parse::<f64>().is_ok() {
+                        let mut v = val.force_f64();
+                        if v.is_finite() {
+                            let xmin;
+                            if x.min.is_some() {
+                                xmin = x.min.unwrap();
+                            } else {
+                                xmin = low;
+                            }
+                            let xmax;
+                            if x.max.is_some() {
+                                xmax = x.max.unwrap();
+                            } else {
+                                xmax = high;
+                            }
+                            v = v.min(xmax);
+                            v = v.max(xmin);
+                            let vnorm = (v - xmin) / (xmax - xmin);
+                            let c = &TURBO_SRGB_BYTES[(vnorm * 255.0).round() as usize];
+                            color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                        }
+                    }
+                }
+            }
+            _ => {}
+        };
+
+    // Determine color for PLOT_BY_ISOTYPE.
+    } else if plot_opt.plot_by_isotype {
         let mut crefs = Vec::<Option<usize>>::new();
         for l in 0..ex.share.len() {
             if ex.share[l].left {

@@ -2,6 +2,7 @@
 
 use amino::*;
 use ansi_escape::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
 use io_utils::*;
@@ -661,6 +662,12 @@ pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
         extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
         extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
     }
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(ref x) => {
+            extra_args.push(x.var.clone());
+        }
+        _ => {}
+    };
     for i in 0..ctl.clono_filt_opt.bounds.len() {
         extra_args.append(&mut ctl.clono_filt_opt.bounds[i].var.clone());
     }

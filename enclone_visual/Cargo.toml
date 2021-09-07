@@ -26,12 +26,14 @@ publish = false
 [dependencies]
 base64 = "0.13"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+crc = "2"
 dirs = "3"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_version = { path = "../enclone_version" }
 failure = "0.1"
 flate2 = "1"
+fontdb = "0.6"
 fs_extra = "1"
 iced = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "8fe8b6b168f193fadb495c78c076262d9114b14e" }
@@ -50,18 +52,18 @@ pretty_trace = "0.5"
 prost = { version = "0.8", default_features = false }
 rayon = "1"
 # resvg = "0.15.0"
-resvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb" }
+resvg = { version = "0.17", default-features = false }
 serde_json = "1"
 string_utils = "0.1"
 tables = "0.1"
 tilde-expand = "0.1"
-tiny-skia = "0.5"
+tiny-skia = "0.6"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 users = "0.11"
 # usvg = { version = "0.14.1", default-features = false }
-usvg = { git = "https://github.com/RazrFalcon/resvg", rev = "6b29007311edc5022635362fe56f6e5c0318fdeb", default-features = false }
+usvg = { version = "0.17", features = ["text"] }
 vector_utils = "0.1"
 zstd = "0.9"
 

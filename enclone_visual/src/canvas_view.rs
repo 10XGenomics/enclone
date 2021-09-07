@@ -102,7 +102,15 @@ impl CanvasView {
                     height = height.max(circ.p.y + circ.r);
                     width = width.max(circ.p.x + circ.r);
                 }
+                crate::geometry::Geometry::CircleWithTooltipAndStroke(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
                 crate::geometry::Geometry::Circle(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
+                crate::geometry::Geometry::CircleWithStroke(circ) => {
                     height = height.max(circ.p.y + circ.r);
                     width = width.max(circ.p.x + circ.r);
                 }
@@ -154,6 +162,24 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             for i in 0..g.len() {
                                 match &g[i] {
                                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                                        let xdiff = pos.unwrap().x - circ.p.x * scale;
+                                        let ydiff = pos.unwrap().y - circ.p.y * scale;
+                                        let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                                        if dist <= circ.r {
+                                            let stext = circ.t.clone();
+                                            let xs = stext.split(',').collect::<Vec<&str>>();
+                                            for j in 0..xs.len() {
+                                                if xs[j].starts_with("group_id=") {
+                                                    group_id = Some(xs[j].after("=").force_usize());
+                                                }
+                                            }
+                                            let group_id = group_id.unwrap();
+                                            GROUP_ID_CLICKED_ON.store(true, SeqCst);
+                                            GROUP_ID.store(group_id, SeqCst);
+                                            break;
+                                        }
+                                    }
+                                    crate::geometry::Geometry::CircleWithTooltipAndStroke(circ) => {
                                         let xdiff = pos.unwrap().x - circ.p.x * scale;
                                         let ydiff = pos.unwrap().y - circ.p.y * scale;
                                         let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
@@ -366,6 +392,23 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
                     }
+                    crate::geometry::Geometry::CircleWithTooltipAndStroke(circ) => {
+                        let circle = Path::circle(
+                            Point {
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
+                            },
+                            circ.r * scale,
+                        );
+                        let c = &circ.c;
+                        frame.fill(&circle, to_color(c));
+                        frame.stroke(
+                            &circle,
+                            Stroke::default()
+                                .with_color(to_color(&circ.s))
+                                .with_width(circ.w),
+                        );
+                    }
                     crate::geometry::Geometry::Circle(circ) => {
                         let circle = Path::circle(
                             Point {
@@ -376,6 +419,23 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         );
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
+                    }
+                    crate::geometry::Geometry::CircleWithStroke(circ) => {
+                        let circle = Path::circle(
+                            Point {
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
+                            },
+                            circ.r * scale,
+                        );
+                        let c = &circ.c;
+                        frame.fill(&circle, to_color(c));
+                        frame.stroke(
+                            &circle,
+                            Stroke::default()
+                                .with_color(to_color(&circ.s))
+                                .with_width(circ.w),
+                        );
                     }
                 };
             }
@@ -390,7 +450,101 @@ impl<'a> canvas::Program<Message> for CanvasView {
             let mut frame = Frame::new(bounds.size());
             for i in 0..g.len() {
                 match &g[i] {
+                    //
+                    // NOTE MASSIVE CODE DUPLICATION HERE.
+                    //
                     crate::geometry::Geometry::CircleWithTooltip(circ) => {
+                        let xdiff = pos.unwrap().x - circ.p.x * scale;
+                        let ydiff = pos.unwrap().y - circ.p.y * scale;
+                        let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();
+                        if dist <= circ.r {
+                            let stext = circ.t.clone();
+                            let xs = stext.split(',').collect::<Vec<&str>>();
+                            let mut rows = Vec::<Vec<String>>::new();
+                            for i in 0..xs.len() {
+                                if i > 0 {
+                                    rows.push(vec!["\\hline".to_string(); 2]);
+                                }
+                                let mut row = Vec::<String>::new();
+                                row.push(xs[i].before("=").to_string());
+                                row.push(xs[i].after("=").to_string());
+                                rows.push(row);
+                            }
+                            let mut log = String::new();
+                            print_tabular_vbox(&mut log, &rows, 0, &b"l|r".to_vec(), false, true);
+                            let xpos = 15.0 + width * scale;
+                            frame.translate(Vector { x: xpos, y: 0.0 });
+
+                            TOOLTIP_TEXT.lock().unwrap().clear();
+                            TOOLTIP_TEXT.lock().unwrap().push(log.clone());
+
+                            let mut logp = String::new();
+                            for char in log.chars() {
+                                if char == '\n' {
+                                    logp.push(char);
+                                } else {
+                                    logp.push('█');
+                                }
+                            }
+
+                            // We put a layer of black below the tooltip text, which is going to
+                            // be white.  There are two approaches.  First, if the tooltip box lies
+                            // strictly within the canvas (and not to the right of it), we display
+                            // a black rectangle.  Otherwise, we contruct the layer out of box
+                            // characters.  This is not fully satisfactory because there are small
+                            // gaps between them.
+
+                            let tooltip_font_size: f32 = 13.5;
+                            let mut width_in_chars = 0;
+                            let mut height_in_chars = 0;
+                            for line in log.lines() {
+                                let mut nchars = 0;
+                                for _char in line.chars() {
+                                    nchars += 1;
+                                }
+                                width_in_chars = std::cmp::max(width_in_chars, nchars);
+                                height_in_chars += 1;
+                            }
+                            let box_width = width_in_chars as f32
+                                * tooltip_font_size
+                                * DEJAVU_WIDTH_OVER_HEIGHT;
+                            let box_height = height_in_chars as f32 * tooltip_font_size;
+                            if xpos + box_width <= MAX_WIDTH {
+                                frame.fill_rectangle(
+                                    Point { x: 0.0, y: 0.0 },
+                                    Size {
+                                        width: box_width,
+                                        height: box_height,
+                                    },
+                                    iced::canvas::Fill::from(Color::BLACK),
+                                );
+                            } else {
+                                let text = canvas::Text {
+                                    content: logp,
+                                    size: tooltip_font_size,
+                                    font: DEJAVU,
+                                    color: Color::from_rgb(0.0, 0.0, 0.0),
+                                    ..canvas::Text::default()
+                                };
+                                frame.fill_text(text);
+                            }
+
+                            // Now display the actual text in the tooltip box.
+
+                            let text = canvas::Text {
+                                content: log,
+                                size: tooltip_font_size,
+                                font: DEJAVU,
+                                color: Color::from_rgb(1.0, 1.0, 1.0),
+                                ..canvas::Text::default()
+                            };
+                            frame.fill_text(text);
+
+                            frame.translate(Vector { x: -xpos, y: -10.0 });
+                            break;
+                        }
+                    }
+                    crate::geometry::Geometry::CircleWithTooltipAndStroke(circ) => {
                         let xdiff = pos.unwrap().x - circ.p.x * scale;
                         let ydiff = pos.unwrap().y - circ.p.y * scale;
                         let dist = (xdiff * xdiff + ydiff * ydiff).sqrt();

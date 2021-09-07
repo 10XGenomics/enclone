@@ -100,10 +100,18 @@ pub fn circles_to_svg(
                 barcodes[i].1,
             );
         }
-        out += &format!(
-            "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
-            tooltipx, center[i].0, center[i].1, radius[i], color[i]
-        );
+        if color[i] != "undefined" {
+            out += &format!(
+                "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
+                tooltipx, center[i].0, center[i].1, radius[i], color[i]
+            );
+        } else {
+            out += &format!(
+                "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" stroke=\"red\" \
+                 stroke-width=\"0.5\" fill=\"white\" />\n",
+                tooltipx, center[i].0, center[i].1, radius[i]
+            );
+        }
     }
     out += "</svg>\n";
     out

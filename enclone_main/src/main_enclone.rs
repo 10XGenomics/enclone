@@ -30,6 +30,7 @@ use enclone_args::load_gex::*;
 use enclone_args::proc_args2::*;
 use enclone_args::proc_args_check::*;
 use enclone_args::read_json::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_print::loupe::*;
@@ -232,8 +233,18 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     check_lvars(&ctl, &gex_info)?;
     let twoof = Instant::now();
     check_gvars(&ctl)?;
-    check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols)?;
-    check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree)?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.parseable_opt.pcols,
+        ctl.parseable_opt.pbarcode,
+    )?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.gen_opt.tree,
+        ctl.parseable_opt.pbarcode,
+    )?;
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
         check_pcols(
             &ctl,
@@ -242,8 +253,15 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                 ctl.plot_opt.plot_xy_xvar.clone(),
                 ctl.plot_opt.plot_xy_yvar.clone(),
             ],
+            ctl.parseable_opt.pbarcode,
         )?;
     }
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(ref x) => {
+            check_pcols(&ctl, &gex_info, &vec![x.var.clone()], true)?;
+        }
+        _ => {}
+    };
     let mut bound_vars = Vec::<String>::new();
     for bi in 0..ctl.clono_filt_opt.bounds.len() {
         let x = &ctl.clono_filt_opt.bounds[bi];
@@ -252,8 +270,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
     }
     unique_sort(&mut bound_vars);
-    check_pcols(&ctl, &gex_info, &bound_vars)?;
-    check_pcols(&ctl, &gex_info, &ctl.plot_opt.sim_mat_plot_vars)?;
+    check_pcols(&ctl, &gex_info, &bound_vars, ctl.parseable_opt.pbarcode)?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.plot_opt.sim_mat_plot_vars,
+        ctl.parseable_opt.pbarcode,
+    )?;
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Check DVARS.

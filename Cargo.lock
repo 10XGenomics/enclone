@@ -888,6 +888,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "crc"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10c2722795460108a7872e1cd933a85d6ec38abc4baecad51028f702da28889f"
+dependencies = [
+ "crc-catalog",
+]
+
+[[package]]
+name = "crc-catalog"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccaeedb56da03b09f598226e25e80088cb4cd25f316e6e4df7d695f0feeb1403"
+
+[[package]]
 name = "crc32fast"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1063,6 +1078,15 @@ checksum = "73770f8e1fe7d64df17ca66ad28994a0a623ea497fa69486e14984e715c5d174"
 dependencies = [
  "adler32",
  "byteorder",
+]
+
+[[package]]
+name = "deflate"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f95bf05dffba6e6cce8dfbb30def788154949ccd9aed761b472119c21e01c70"
+dependencies = [
+ "adler32",
 ]
 
 [[package]]
@@ -1463,6 +1487,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "lazy_static",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -1527,12 +1552,14 @@ dependencies = [
  "chrono",
  "clipboard",
  "cocoa",
+ "crc",
  "dirs",
  "enclone_core",
  "enclone_main",
  "enclone_version",
  "failure",
  "flate2",
+ "fontdb",
  "fs_extra",
  "iced",
  "iced_native",
@@ -1753,9 +1780,9 @@ dependencies = [
 
 [[package]]
 name = "float-cmp"
-version = "0.5.3"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75224bec9bfe1a65e2d34132933f2de7fe79900c96a0174307554244ece8150e"
+checksum = "98de4bbd547a563b716d8dfa9aad1cb19bfab00f4fa09a6a4ed21dbcf44ce9c4"
 
 [[package]]
 name = "float-ord"
@@ -1802,12 +1829,12 @@ dependencies = [
 
 [[package]]
 name = "fontdb"
-version = "0.5.4"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e58903f4f8d5b58c7d300908e4ebe5289c1bfdf5587964330f12023b8ff17fd1"
+checksum = "1d66551cc28351f0bc6a73da86459ee7765caaad03ce284f2dc36472dbf539cd"
 dependencies = [
  "log",
- "memmap2 0.2.3",
+ "memmap2 0.3.1",
  "ttf-parser 0.12.3",
 ]
 
@@ -2688,7 +2715,7 @@ dependencies = [
  "num-iter",
  "num-rational 0.3.2",
  "num-traits",
- "png",
+ "png 0.16.8",
  "tiff",
 ]
 
@@ -3045,9 +3072,9 @@ dependencies = [
 
 [[package]]
 name = "memmap2"
-version = "0.2.3"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "723e3ebdcdc5c023db1df315364573789f8857c11b631a2fdfad7c00f5c046b4"
+checksum = "00b6c2ebff6180198788f5db08d7ce3bc1d0b617176678831a7510825973e357"
 dependencies = [
  "libc",
 ]
@@ -3652,8 +3679,20 @@ checksum = "3c3287920cb847dee3de33d301c463fba14dda99db24214ddf93f83d3021f4c6"
 dependencies = [
  "bitflags",
  "crc32fast",
- "deflate",
+ "deflate 0.8.6",
  "miniz_oxide 0.3.7",
+]
+
+[[package]]
+name = "png"
+version = "0.17.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "641fb192b191c2cb8f35985f47eb1e78cf1d464542f9fe5d1dbc5ee8f989288d"
+dependencies = [
+ "bitflags",
+ "crc32fast",
+ "deflate 0.9.1",
+ "miniz_oxide 0.4.4",
 ]
 
 [[package]]
@@ -3993,9 +4032,9 @@ dependencies = [
 
 [[package]]
 name = "rctree"
-version = "0.3.3"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be9e29cb19c8fe84169fcb07f8f11e66bc9e6e0280efd4715c54818296f8a4a8"
+checksum = "9ae028b272a6e99d9f8260ceefa3caa09300a8d6c8d2b2001316474bc52122e9"
 
 [[package]]
 name = "redox_syscall"
@@ -4056,13 +4095,14 @@ checksum = "f1382d1f0a252c4bf97dc20d979a2fdd05b024acd7c2ed0f7595d7817666a157"
 
 [[package]]
 name = "resvg"
-version = "0.14.1"
-source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1c2893a46a2ae920f64177fb39b17f3001214ed857db71cbc84446eec02be4c"
 dependencies = [
  "jpeg-decoder",
  "log",
  "pico-args",
- "png",
+ "png 0.17.1",
  "rgb",
  "svgfilters",
  "tiny-skia",
@@ -4157,14 +4197,14 @@ dependencies = [
 
 [[package]]
 name = "rustybuzz"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ab463a295d00f3692e0974a0bfd83c7a9bcd119e27e07c2beecdb1b44a09d10"
+checksum = "44561062e583c4873162861261f16fd1d85fe927c4904d71329a4fe43dc355ef"
 dependencies = [
  "bitflags",
  "bytemuck",
  "smallvec",
- "ttf-parser 0.9.0",
+ "ttf-parser 0.12.3",
  "unicode-bidi-mirroring",
  "unicode-ccc",
  "unicode-general-category",
@@ -4330,18 +4370,18 @@ dependencies = [
 
 [[package]]
 name = "simplecss"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "596554e63596d556a0dbd681416342ca61c75f1a45203201e7e77d3fa2fa9014"
+checksum = "a11be7c62927d9427e9f40f3444d5499d868648e2edbc4e2116de69e7ec0e89d"
 dependencies = [
  "log",
 ]
 
 [[package]]
 name = "siphasher"
-version = "0.2.3"
+version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b8de496cf83d4ed58b6be86c3a275b8602f6ffe98d3024a869e124147a9a3ac"
+checksum = "533494a8f9b724d33625ab53c6c4800f7cc445895924a8ef649222dcb76e938b"
 
 [[package]]
 name = "slab"
@@ -4528,8 +4568,9 @@ checksum = "8fb1df15f412ee2e9dfc1c504260fa695c1c3f10fe9f4a6ee2d2184d7d6450e2"
 
 [[package]]
 name = "svgfilters"
-version = "0.3.0"
-source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "639abcebc15fdc2df179f37d6f5463d660c1c79cd552c12343a4600827a04bce"
 dependencies = [
  "float-cmp",
  "rgb",
@@ -4537,11 +4578,10 @@ dependencies = [
 
 [[package]]
 name = "svgtypes"
-version = "0.5.0"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c536faaff1a10837cfe373142583f6e27d81e96beba339147e77b67c9f260ff"
+checksum = "b29efa43503b88855bdf4dc74f61f26b3c787d2fb66daeb65eb272c1539e87f4"
 dependencies = [
- "float-cmp",
  "siphasher",
 ]
 
@@ -4684,15 +4724,15 @@ dependencies = [
 
 [[package]]
 name = "tiny-skia"
-version = "0.5.1"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bf81f2900d2e235220e6f31ec9f63ade6a7f59090c556d74fe949bb3b15e9fe"
+checksum = "1657db71220a7b20cc51aa6a8a0e14961cff9decb3d99b5415fbd34ca0a21cdc"
 dependencies = [
  "arrayref",
  "arrayvec",
  "bytemuck",
  "cfg-if 1.0.0",
- "png",
+ "png 0.17.1",
  "safe_arch",
 ]
 
@@ -4921,12 +4961,6 @@ checksum = "3e5d7cd7ab3e47dda6e56542f4bbf3824c15234958c6e1bd6aaa347e93499fdc"
 
 [[package]]
 name = "ttf-parser"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62ddb402ac6c2af6f7a2844243887631c4e94b51585b229fcfddb43958cd55ca"
-
-[[package]]
-name = "ttf-parser"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ae2f58a822f08abdaf668897e96a5656fe72f5a9ce66422423e8849384872e6"
@@ -4977,9 +5011,9 @@ checksum = "cc2520efa644f8268dce4dcd3050eaa7fc044fca03961e9998ac7e2e92b77cf1"
 
 [[package]]
 name = "unicode-general-category"
-version = "0.2.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f9af028e052a610d99e066b33304625dea9613170a2563314490a4e6ec5cf7f"
+checksum = "07547e3ee45e28326cc23faac56d44f58f16ab23e413db526debce3b0bfd2742"
 
 [[package]]
 name = "unicode-normalization"
@@ -5050,16 +5084,17 @@ dependencies = [
 
 [[package]]
 name = "usvg"
-version = "0.14.1"
-source = "git+https://github.com/RazrFalcon/resvg?rev=6b29007311edc5022635362fe56f6e5c0318fdeb#6b29007311edc5022635362fe56f6e5c0318fdeb"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3de43bc5bf95ae8f45b06a14c61ea3700a33cd20fc0485fc4a9acb5a123fc0d"
 dependencies = [
  "base64 0.13.0",
  "data-url",
  "flate2",
+ "float-cmp",
  "fontdb",
  "kurbo",
  "log",
- "memmap2 0.2.3",
  "pico-args",
  "rctree",
  "roxmltree",

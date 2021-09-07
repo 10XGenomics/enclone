@@ -413,6 +413,7 @@ pub fn check_pcols(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
     cols: &Vec<String>,
+    allow_cell: bool,
 ) -> Result<(), String> {
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
@@ -504,7 +505,7 @@ pub fn check_pcols(
                 {
                     let y = x.rev_before(&ps);
                     if CVARS_ALLOWED.contains(&y)
-                        || (ctl.parseable_opt.pbarcode && CVARS_ALLOWED_PCELL.contains(&y))
+                        || (allow_cell && CVARS_ALLOWED_PCELL.contains(&y))
                     {
                         ok = true;
                     } else if PCVARS_ALLOWED.contains(&y) {

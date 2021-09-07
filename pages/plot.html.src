@@ -107,16 +107,15 @@ enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
 <pre><code>PLOT=filename</code></pre>
 on the command line, and then provide the color field in the CSV defined by the <code>META</code> 
 option (see <a href="../../pages/auto/help.input.html">enclone help input</a>).  
-This assigns a color to each dataset.  You can also use the <code>BC</code> option, or use the
-<code>bc</code> field for <code>META</code>, to assign a color to each barcode.
+This assigns a color to each dataset.  
 
 <br><br>
 
 <hr>
 
 <br><span style="color:red; font-weight:bold">3.</span> The third way is to use the simple 
-<code>PLOT</code> specification, and assign a color to 
-each barcode using the <code>bc</code> field for <code>META</code>.
+<code>PLOT</code> specification, and assign a color to each barcode using 
+the <code>BC</code> option or the <code>bc</code> field for <code>META</code>.
 
 <br><br>
 

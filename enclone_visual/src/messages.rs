@@ -73,4 +73,6 @@ pub enum Message {
     CondenseMetrics,
     CopySelectedMetrics,
     CompleteCopySelectedMetrics(Result<(), String>),
+    Snapshot,
+    CompleteSnapshot(Result<(), String>),
 }

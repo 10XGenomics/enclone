@@ -11,6 +11,8 @@ use crate::*;
 use chrono::prelude::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
+use std::fs::{remove_file, File};
+use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
@@ -24,6 +26,32 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Snapshot => {
+                self.snapshot_start = Some(Instant::now());
+                self.snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteSnapshot)
+            }
+
+            Message::CompleteSnapshot(_) => {
+                let filename = "/tmp/enclone_visual_snapshot.png";
+                capture_as_file(&filename, get_window_id());
+                let mut bytes = Vec::<u8>::new();
+                {
+                    let mut f = File::open(&filename).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                }
+                remove_file(&filename).unwrap();
+                copy_png_bytes_to_clipboard(&bytes);
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.snapshot_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                self.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopySelectedMetrics => {
                 self.copy_selected_metrics_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let show = &self.metric_selected;
@@ -441,18 +469,17 @@ impl EncloneVisual {
             }
 
             Message::DeleteArchiveEntry(check_val, index) => {
-                if !self.delete_requested[index] && !self.just_restored {
+                if !self.just_restored {
                     self.delete_requested[index] = check_val;
-                    self.expand_archive_entry[index] = false;
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    if path_exists(&filename) {
-                        std::fs::remove_file(&filename).unwrap();
+                    if check_val {
+                        self.expand_archive_entry[index] = false;
+                        self.restore_msg[index] = "Will be deleted upon refresh or dismissal of \
+                            this page.  Before then, you can change your mind \
+                            and unclick!"
+                            .to_string();
+                    } else {
+                        self.restore_msg[index].clear();
                     }
-                    self.restore_msg[index] = "Deleted.".to_string();
                 }
                 Command::none()
             }
@@ -483,6 +510,13 @@ impl EncloneVisual {
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
                     GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                    if TOOLTIP_TEXT.lock().unwrap().is_empty() {
+                        panic!(
+                            "Internal error: group click detected for group id = {}, but \
+                            TOOLTIP_TEXT is empty.",
+                            group_id
+                        );
+                    }
                     let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
                     copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)
@@ -677,6 +711,14 @@ impl EncloneVisual {
                     self.restore_msg[i].clear();
                     self.restore_requested[i] = false;
                     if self.delete_requested[i] {
+                        let filename = format!(
+                            "{}/{}",
+                            self.archive_dir.as_ref().unwrap(),
+                            self.archive_list[i]
+                        );
+                        if path_exists(&filename) {
+                            std::fs::remove_file(&filename).unwrap();
+                        }
                         self.deleted[i] = true;
                     }
                 }

@@ -3,6 +3,7 @@
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
 use crate::proc_args2::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use enclone_core::linear_condition::*;
 use evalexpr::*;
@@ -59,6 +60,40 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
+    } else if arg.starts_with("CELL_COLOR=var,") {
+        let var_args = arg
+            .after("CELL_COLOR=var,")
+            .split(',')
+            .collect::<Vec<&str>>();
+        if var_args.is_empty() || var_args.len() > 3 {
+            return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+        }
+        let var = &var_args[0];
+        let (mut min, mut max) = (None, None);
+        if var_args.len() >= 2 {
+            let x = var_args[1];
+            if !x.parse::<f64>().is_ok() {
+                return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+            }
+            min = Some(x.force_f64());
+        }
+        if var_args.len() == 3 {
+            let x = var_args[2];
+            if !x.parse::<f64>().is_ok() {
+                return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+            }
+            max = Some(x.force_f64());
+        }
+        if min.is_some() && max.is_some() && min >= max {
+            return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+        }
+        let v = ColorByVariableValue {
+            var: var.to_string(),
+            min: min,
+            max: max,
+        };
+        let cc = CellColor::ByVariableValue(v);
+        ctl.plot_opt.cell_color = cc;
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {

@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::cell_color::*;
 use crate::linear_condition::*;
 use debruijn::dna_string::*;
 use evalexpr::*;
@@ -236,6 +237,7 @@ pub struct GeneralOpt {
 
 #[derive(Clone, Default)]
 pub struct PlotOpt {
+    pub cell_color: CellColor,
     pub plot_xy_filename: String,
     pub plot_xy_xvar: String,
     pub plot_xy_yvar: String,

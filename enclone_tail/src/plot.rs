@@ -5,7 +5,9 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
+use crate::colors::*;
 use crate::group_colors::*;
 use crate::pack_circles::*;
 use crate::plot_utils::*;
@@ -13,6 +15,7 @@ use crate::polygon::*;
 use crate::string_width::*;
 use crate::*;
 use ansi_escape::*;
+use enclone_core::cell_color::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::collections::HashMap;
@@ -32,6 +35,7 @@ pub fn plot_clonotypes(
     // exacts: One entry for each clonotype.
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    out_datas: &Vec<Vec<HashMap<String, String>>>,
     // groups: There is one entry for each group of clonotypes.  The first entries of the inner
     // vectors indexes into exacts, and the second entry (String) is not used here.
     groups: &Vec<Vec<(i32, String)>>,
@@ -93,6 +97,7 @@ pub fn plot_clonotypes(
         &refdata,
         &exacts,
         &exact_clonotypes,
+        &out_datas,
         &const_names,
     );
     let mut radii = Vec::<f64>::new();
@@ -495,6 +500,7 @@ pub fn plot_clonotypes(
         }
     }
     set_svg_width(svg, actual_width + BOUNDARY as f64);
+    set_svg_height(svg, actual_height + BOUNDARY as f64);
 
     // Add legend for shading.
 
@@ -549,15 +555,185 @@ pub fn plot_clonotypes(
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
         let legend_height_plus = legend_height + vsep + 15.0;
-        if legend_height_plus > get_svg_height(&svg) {
-            set_svg_height(svg, legend_height_plus);
-        }
+        let height = get_svg_height(&svg).max(legend_height_plus);
+        set_svg_height(svg, height + BOUNDARY as f64);
         *svg += "</svg>";
     }
 
-    // Add main legend.
+    // Add legend for color by variable.
 
-    if plot_opt.use_legend
+    let mut by_var = false;
+    let mut var = String::new();
+    match ctl.plot_opt.cell_color {
+        CellColor::ByVariableValue(ref x) => {
+            by_var = true;
+            var = x.var.clone();
+        }
+        _ => {}
+    };
+    if by_var {
+        let mut low = 0.0;
+        let mut high = 0.0;
+        let n = VAR_LOW.lock().unwrap().len();
+        let mut defined = false;
+        let mut have_undefined = false;
+        for i in 0..color.len() {
+            if color[i] == "undefined" {
+                have_undefined = true;
+            }
+        }
+        for i in 0..n {
+            if VAR_LOW.lock().unwrap()[i].0 == var {
+                low = VAR_LOW.lock().unwrap()[i].1;
+                high = VAR_HIGH.lock().unwrap()[i].1;
+                defined = true;
+            }
+        }
+        *svg = svg.rev_before("<").to_string();
+        let font_size = 20;
+        let name_bar_height = font_size as f64 + font_size as f64 / 2.0;
+        let legend_xstart = actual_width + 20.0;
+        let legend_ystart = BOUNDARY as f64 + name_bar_height;
+        let band_width = 100.0;
+        *svg += &format!(
+            "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+             font-size=\"{}\">{}</text>\n",
+            legend_xstart,
+            BOUNDARY as f64 + font_size as f64 / 2.0,
+            font_size,
+            var,
+        );
+
+        // Handle the special case where all points are undefined.
+
+        if !defined {
+            let fail_text = "The variable is undefined for all points.";
+            *svg += &format!(
+                "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                legend_xstart,
+                BOUNDARY as f64 + 2.0 * font_size as f64,
+                font_size,
+                fail_text,
+            );
+            let mut max_text_width = arial_width(&var, font_size as f64);
+            max_text_width = max_text_width.max(arial_width(&fail_text, font_size as f64));
+
+            let width = legend_xstart + max_text_width + BOUNDARY as f64;
+            set_svg_width(svg, width);
+            *svg += "</svg>";
+
+        // Handle the case where there is at least one defined point.
+        } else {
+            let mut height_for_undefined = 0.0;
+            if have_undefined {
+                height_for_undefined = 20.0;
+            }
+            let available =
+                actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
+            *svg += &format!(
+                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                 style=\"fill:white;stroke:black;stroke-width:1\" />\n",
+                legend_xstart, legend_ystart, band_width, available,
+            );
+            let band_height = available / 256.0;
+            for i in 0..256 {
+                let ystart = legend_ystart + i as f64 * band_height;
+                let c = &TURBO_SRGB_BYTES[i];
+                let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                *svg += &format!(
+                    "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                     style=\"fill:{}\" />\n",
+                    legend_xstart, ystart, band_width, band_height, color,
+                );
+            }
+            let mut max_text_width: f64 = 0.0;
+            let sep_to_text = 10.0;
+            let text_xstart = legend_xstart + band_width + sep_to_text;
+            for i in [0, 64, 128, 192, 255].iter() {
+                // Define vertical shift for value text.  We vertically center the text at the
+                // correct point, adding font_size/4 to get this to happen.  We don't understand
+                // why four makes sense.  Also, we treat the first and last labels differently,
+                // because it is aesthetically displeasing to have the text outside the boundaries
+                // of the color box.
+
+                let vshift;
+                if *i == 0 {
+                    vshift = font_size as f64 / 2.0 + 1.0;
+                } else if *i == 255 {
+                    vshift = 0.0;
+                } else {
+                    vshift = font_size as f64 / 4.0;
+                }
+
+                // Generate the text.
+
+                let text_ystart = legend_ystart + *i as f64 * band_height + vshift;
+                let val = low + (high - low) * *i as f64 / 255.0;
+                let mut text = format!("{:.1}", val);
+                while text.contains(".") && text.ends_with("0") {
+                    text = text.rev_before("0").to_string();
+                }
+                if text.ends_with(".") {
+                    text = text.rev_before(".").to_string();
+                }
+                *svg += &format!(
+                    "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                     font-size=\"{}\">{}</text>\n",
+                    text_xstart, text_ystart, font_size, text,
+                );
+                max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
+            }
+
+            // Add tick lines.
+
+            for i in [64, 128, 192].iter() {
+                *svg += &format!(
+                    "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" \
+                     stroke-width=\"0.5\"/>\n",
+                    legend_xstart,
+                    legend_ystart + *i as f64 * band_height,
+                    legend_xstart + band_width,
+                    legend_ystart + *i as f64 * band_height,
+                );
+            }
+
+            // Add legend for undefined points.
+
+            if have_undefined {
+                let r = 5.0;
+                let vsep = 10.0;
+                let y = legend_ystart + available + vsep + r;
+                *svg += &format!(
+                    "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" stroke=\"red\" stroke-width=\"0.5\" \
+                     fill=\"white\" />\n",
+                    legend_xstart + band_width - r,
+                    legend_ystart + available + vsep + r,
+                    r,
+                );
+                *svg += &format!(
+                    "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                     font-size=\"{}\">{}</text>\n",
+                    text_xstart,
+                    y + font_size as f64 / 4.0 - 1.0,
+                    font_size,
+                    "undefined",
+                );
+                max_text_width = max_text_width.max(arial_width("undefined", font_size as f64));
+            }
+
+            // Finish.
+
+            let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
+            width = width.max(arial_width(&var, font_size as f64));
+            width += BOUNDARY as f64;
+            set_svg_width(svg, width + BOUNDARY as f64);
+            set_svg_height(svg, actual_height + BOUNDARY as f64);
+            *svg += "</svg>";
+        }
+
+    // Add other main legends.
+    } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
     {

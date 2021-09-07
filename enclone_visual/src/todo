@@ -91,3 +91,10 @@ NICE TO HAVE
 
 14. Make horizontal rules in scrollables less wide so they don't overlap the scrollbar, which
     seems ugly.
+
+15. The copy image button yields low quality.  Inspection of the PNG shows that the DPI is 72,
+    regardless of the value given for DPI.  Filed issue #451 for resvg crate.  Note that
+    screen capture gives 144 DPI, and the screen capture images are much better.  Note that one
+    can increase quality for resvg e.g.
+    cargo run --release -- --width 8000 --background white ~/plot.svg ~/plot.png
+    but that results in a physically much larger image, because it's still at 72 DPI.
