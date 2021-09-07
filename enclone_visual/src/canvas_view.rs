@@ -110,6 +110,10 @@ impl CanvasView {
                     height = height.max(circ.p.y + circ.r);
                     width = width.max(circ.p.x + circ.r);
                 }
+                crate::geometry::Geometry::CircleWithStroke(circ) => {
+                    height = height.max(circ.p.y + circ.r);
+                    width = width.max(circ.p.x + circ.r);
+                }
             };
         }
         (width, height)
@@ -415,6 +419,23 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         );
                         let c = &circ.c;
                         frame.fill(&circle, to_color(c));
+                    }
+                    crate::geometry::Geometry::CircleWithStroke(circ) => {
+                        let circle = Path::circle(
+                            Point {
+                                x: circ.p.x * scale,
+                                y: circ.p.y * scale,
+                            },
+                            circ.r * scale,
+                        );
+                        let c = &circ.c;
+                        frame.fill(&circle, to_color(c));
+                        frame.stroke(
+                            &circle,
+                            Stroke::default()
+                                .with_color(to_color(&circ.s))
+                                .with_width(circ.w),
+                        );
                     }
                 };
             }

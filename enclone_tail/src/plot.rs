@@ -575,10 +575,18 @@ pub fn plot_clonotypes(
         let mut low = 0.0;
         let mut high = 0.0;
         let n = VAR_LOW.lock().unwrap().len();
+        let mut defined = false;
+        let mut have_undefined = false;
+        for i in 0..color.len() {
+            if color[i] == "undefined" {
+                have_undefined = true;
+            }
+        }
         for i in 0..n {
             if VAR_LOW.lock().unwrap()[i].0 == var {
                 low = VAR_LOW.lock().unwrap()[i].1;
                 high = VAR_HIGH.lock().unwrap()[i].1;
+                defined = true;
             }
         }
         *svg = svg.rev_before("<").to_string();
@@ -598,7 +606,7 @@ pub fn plot_clonotypes(
 
         // Handle the special case where all points are undefined.
 
-        if low == 0.0 && high == 0.0 {
+        if !defined {
             let fail_text = "The variable is undefined for all points.";
             *svg += &format!(
                 "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
@@ -615,17 +623,22 @@ pub fn plot_clonotypes(
             set_svg_width(svg, width);
             *svg += "</svg>";
 
-        // Handle the general case.
+        // Handle the case where there is at least one defined point.
         } else {
+            let mut height_for_undefined = 0.0;
+            if have_undefined {
+                height_for_undefined = 20.0;
+            }
+            let available = actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
             *svg += &format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                  style=\"fill:white;stroke:black;stroke-width:1\" />\n",
                 legend_xstart,
                 legend_ystart,
                 band_width,
-                actual_height - name_bar_height - BOUNDARY as f64,
+                available,
             );
-            let band_height = (actual_height - name_bar_height - BOUNDARY as f64) / 256.0;
+            let band_height = available / 256.0;
             for i in 0..256 {
                 let ystart = legend_ystart + i as f64 * band_height;
                 let c = &TURBO_SRGB_BYTES[i];
@@ -638,13 +651,14 @@ pub fn plot_clonotypes(
             }
             let mut max_text_width: f64 = 0.0;
             let sep_to_text = 10.0;
+            let text_xstart = legend_xstart + band_width + sep_to_text;
             for i in [0, 64, 128, 192, 255].iter() {
-                let text_xstart = legend_xstart + band_width + sep_to_text;
 
-                // Define vertical shift for value text.  We vertically center the text at the correct
-                // point, adding font_size/4 to get this to happen.  We don't understand why four
-                // makes sense.  Also, we treat the first and last labels differently, because it is
-                // aesthetically displeasing to have the text outside the boundaries of the color box.
+                // Define vertical shift for value text.  We vertically center the text at the
+                // correct point, adding font_size/4 to get this to happen.  We don't understand
+                // why four makes sense.  Also, we treat the first and last labels differently,
+                // because it is aesthetically displeasing to have the text outside the boundaries 
+                // of the color box.
 
                 let vshift;
                 if *i == 0 {
@@ -678,11 +692,30 @@ pub fn plot_clonotypes(
 
             for i in [64, 128, 192].iter() {
                 *svg += &format!(
-                    "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" stroke-width=\"0.5\"/>\n",
+                    "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" \
+                     stroke-width=\"0.5\"/>\n",
                     legend_xstart,
                     legend_ystart + *i as f64 * band_height,
                     legend_xstart + band_width,
                     legend_ystart + *i as f64 * band_height,
+                );
+            }
+
+            // Add legend for undefined points.
+
+            if have_undefined {
+                let r = 5.0;
+                let vsep = 10.0;
+                let y = legend_ystart + available + vsep + r;
+                *svg += &format!(
+                    "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" stroke=\"red\" stroke-width=\"0.5\" \
+                     fill=\"white\" />\n",
+                     legend_xstart + band_width - r, legend_ystart + available + vsep + r, r,
+                );
+                *svg += &format!(
+                    "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                     font-size=\"{}\">{}</text>\n",
+                    text_xstart, y + font_size as f64 / 4.0 - 1.0, font_size, "undefined",
                 );
             }
 
