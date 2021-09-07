@@ -719,6 +719,7 @@ pub fn plot_clonotypes(
                     font_size,
                     "undefined",
                 );
+                max_text_width = max_text_width.max(arial_width("undefined", font_size as f64));
             }
 
             // Finish.
