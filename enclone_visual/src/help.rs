@@ -18,7 +18,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_width(Length::Fill))
         .push(help_close_button);
     let max_width = Units((slf.width - 60) as u16);
-    let max_width2 = Units((slf.width - 200) as u16);
+    let max_width2 = Units((slf.width - 250) as u16);
     let png_input_region = include_bytes!("../images/input_region.png").to_vec();
     let input_region =
         Image::new(iced::image::Handle::from_memory(png_input_region)).width(max_width);
@@ -118,31 +118,38 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Column::new()
                         .push(Space::with_height(Units(10)))
                         .push(Text::new(
-                            "Here are four buttons that appear in the upper right \
+                            "Here are five buttons that appear in the upper right \
                              corner of the screen:",
                         ))
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "1.  Console, to show what's in the terminal window.  \
+                                "1.  Snapshot, to copy a screenshot of the entire window \
+                                 to the clipboard.",
+                            )
+                            .width(max_width2),
+                        )
+                        .push(
+                            Text::new(
+                                "2.  Console, to show what's in the terminal window.  \
                                  At the moment this is mostly of interest to developers.",
                             )
                             .width(max_width2),
                         )
                         .push(
-                            Text::new("2.  Save, to cause the session to be saved.")
+                            Text::new("3.  Save, to cause the session to be saved.")
                                 .width(max_width2),
                         )
                         .push(
                             Text::new(
-                                "3.  On Exit, to cause the session to be saved \
+                                "4.  On Exit, to cause the session to be saved \
                                  when the Exit button is pushed.",
                             )
                             .width(max_width2),
                         )
                         .push(
                             Text::new(
-                                "4.  Archive.  Opens a page to allow restoration or sharing of a \
+                                "5.  Archive.  Opens a page to allow restoration or sharing of a \
                                  previous session.",
                             )
                             .width(max_width2),

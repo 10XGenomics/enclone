@@ -34,7 +34,7 @@ impl EncloneVisual {
                     let mut f = File::open(&filename).unwrap();
                     f.read_to_end(&mut bytes).unwrap();
                 }
-                remove_file(&filename);
+                remove_file(&filename).unwrap();
                 copy_png_bytes_to_clipboard(&bytes);
                 Command::none()
             }
