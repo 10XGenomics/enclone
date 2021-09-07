@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Takes a single argument, the name of a PNG file.  Print the pHYs chunk, which
-// if present contains the physical pixel dimensions.  
+// if present contains the physical pixel dimensions.
 // See https://www.w3.org/TR/2003/REC-PNG-20031110/#11pHYs
 
 use io_utils::*;

@@ -66,10 +66,10 @@ fn main() {
     std::fs::copy(&infile, &outfile).unwrap();
     if loc.is_none() {
         let mut file = OpenOptions::new()
-              .write(true)
-              .append(true)
-              .open(&outfile)
-              .unwrap();
+            .write(true)
+            .append(true)
+            .open(&outfile)
+            .unwrap();
         file.write_all(&bytes).unwrap();
     } else {
         let pos = loc.unwrap();

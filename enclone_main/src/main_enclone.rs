@@ -233,8 +233,18 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     check_lvars(&ctl, &gex_info)?;
     let twoof = Instant::now();
     check_gvars(&ctl)?;
-    check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols, ctl.parseable_opt.pbarcode)?;
-    check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree, ctl.parseable_opt.pbarcode)?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.parseable_opt.pcols,
+        ctl.parseable_opt.pbarcode,
+    )?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.gen_opt.tree,
+        ctl.parseable_opt.pbarcode,
+    )?;
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
         check_pcols(
             &ctl,
@@ -261,7 +271,12 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     }
     unique_sort(&mut bound_vars);
     check_pcols(&ctl, &gex_info, &bound_vars, ctl.parseable_opt.pbarcode)?;
-    check_pcols(&ctl, &gex_info, &ctl.plot_opt.sim_mat_plot_vars, ctl.parseable_opt.pbarcode)?;
+    check_pcols(
+        &ctl,
+        &gex_info,
+        &ctl.plot_opt.sim_mat_plot_vars,
+        ctl.parseable_opt.pbarcode,
+    )?;
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Check DVARS.
