@@ -11,7 +11,7 @@ use crate::*;
 use chrono::prelude::*;
 use iced::{Clipboard, Color, Command};
 use io_utils::*;
-use std::fs::File;
+use std::fs::{File, remove_file};
 use std::io::Read;
 use std::time::{Duration, Instant};
 
@@ -29,9 +29,12 @@ impl EncloneVisual {
             Message::Snapshot => {
                 let filename = "/tmp/enclone_visual_snapshot.png";
                 capture_as_file(&filename, get_window_id());
-                let mut f = File::open(&filename).unwrap();
                 let mut bytes = Vec::<u8>::new();
-                f.read_to_end(&mut bytes).unwrap();
+                {
+                    let mut f = File::open(&filename).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                }
+                remove_file(&filename);
                 copy_png_bytes_to_clipboard(&bytes);
                 Command::none()
             }
