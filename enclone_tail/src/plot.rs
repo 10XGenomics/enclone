@@ -555,9 +555,8 @@ pub fn plot_clonotypes(
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
         let legend_height_plus = legend_height + vsep + 15.0;
-        if legend_height_plus > get_svg_height(&svg) {
-            set_svg_height(svg, legend_height_plus);
-        }
+        let height = get_svg_height(&svg).max(legend_height_plus);
+        set_svg_height(svg, height + BOUNDARY as f64);
         *svg += "</svg>";
     }
 
@@ -727,8 +726,8 @@ pub fn plot_clonotypes(
             let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
             width = width.max(arial_width(&var, font_size as f64));
             width += BOUNDARY as f64;
-            set_svg_width(svg, width);
-            set_svg_height(svg, actual_height);
+            set_svg_width(svg, width + BOUNDARY as f64);
+            set_svg_height(svg, actual_height + BOUNDARY as f64);
             *svg += "</svg>";
         }
 
