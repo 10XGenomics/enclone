@@ -616,8 +616,11 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
-        let snapshot_button = Button::new(&mut self.snapshot_button, Text::new("Snapshot").color(self.snapshot_button_color))
-            .on_press(Message::Snapshot);
+        let snapshot_button = Button::new(
+            &mut self.snapshot_button,
+            Text::new("Snapshot").color(self.snapshot_button_color),
+        )
+        .on_press(Message::Snapshot);
         let console_row = Row::new()
             .spacing(8)
             .push(snapshot_button)
