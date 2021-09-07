@@ -113,6 +113,7 @@ pub struct EncloneVisual {
     pub meta_pos: usize,
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
+    pub snapshot_start: Option<Instant>,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
