@@ -49,7 +49,7 @@ fn main() {
             f.read_exact(&mut x).unwrap();
             let checksum = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
             println!("checksum in file  = {}", checksum);
-            f.seek(SeekFrom::Start(pos + 4)).unwrap();
+            f.seek(SeekFrom::Start(pos - 4)).unwrap();
             let mut bytes = vec![0 as u8; 13];
             f.read_exact(&mut bytes).unwrap();
             let crc = Crc::<u32>::new(&CRC_32_ISO_HDLC);
