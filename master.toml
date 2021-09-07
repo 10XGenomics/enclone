@@ -18,6 +18,7 @@ bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 clipboard = "0.5"
 cocoa = "0.24"
+crc = "2"
 debruijn = "0.3"
 dirs = "3"
 edit-distance = "2"
