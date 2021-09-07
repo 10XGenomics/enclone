@@ -500,6 +500,7 @@ pub fn plot_clonotypes(
         }
     }
     set_svg_width(svg, actual_width + BOUNDARY as f64);
+    set_svg_height(svg, actual_height + BOUNDARY as f64);
 
     // Add legend for shading.
 
