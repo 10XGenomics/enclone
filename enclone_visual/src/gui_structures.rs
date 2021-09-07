@@ -162,6 +162,7 @@ pub struct EncloneVisual {
     pub condense_metrics_button: button::State,
     pub copy_selected_metrics_button: button::State,
     pub copy_selected_metrics_button_color: Color,
+    pub snapshot_button: button::State,
     //
     // more
     //

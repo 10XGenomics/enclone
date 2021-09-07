@@ -615,6 +615,12 @@ impl Application for EncloneVisual {
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
+        let snapshot_button = Button::new(&mut self.snapshot_button, Text::new("Snapshot"))
+            .on_press(Message::Snapshot);
+        let console_row = Row::new()
+            .spacing(8)
+            .push(snapshot_button)
+            .push(console_button);
         let mut save_text = Text::new("Save");
         if self.save_in_progress {
             save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));
@@ -644,7 +650,7 @@ impl Application for EncloneVisual {
         let right_col = Column::new()
             .align_items(Align::End)
             .spacing(8)
-            .push(console_button)
+            .push(console_row)
             .push(save_row)
             .push(archive_button);
         top_row = top_row.push(right_col);

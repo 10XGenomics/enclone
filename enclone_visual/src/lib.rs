@@ -253,6 +253,21 @@ pub fn capture(testname: &str, window_id: usize) {
     }
 }
 
+pub fn capture_as_file(filename: &str, window_id: usize) {
+    thread::sleep(Duration::from_millis(50));
+    let o = std::process::Command::new("screencapture")
+        .arg("-x")
+        .arg(&format!("-l{}", window_id))
+        .arg(&filename)
+        .output()
+        .expect("failed to execute screencapture");
+    if o.status.code() != Some(0) {
+        xprintln!("\nCall to screencapture failed.");
+        xprintln!("stderr =\n{}\n", strme(&o.stderr));
+        std::process::exit(1);
+    }
+}
+
 pub fn get_window_id() -> usize {
     let o = Command::new("GetWindowID")
         .arg("enclone")
