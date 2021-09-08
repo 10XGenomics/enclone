@@ -61,10 +61,7 @@ pub fn process_special_arg(
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
     } else if arg.starts_with("HONEY=") {
-        let parts = arg
-            .after("HONEY=")
-            .split(';')
-            .collect::<Vec<&str>>();
+        let parts = arg.after("HONEY=").split(';').collect::<Vec<&str>>();
         if parts.len() != 2 && parts.len() != 3 {
             return Err(format!("\nImproper specification of HONEY argument.\n"));
         }
@@ -75,22 +72,27 @@ pub fn process_special_arg(
         } else if parts[2] == "none" {
             ctl.plot_opt.use_legend = false;
         } else {
-            return Err(format!("\nImproper specification of legend part of HONEY argument.\n"));
+            return Err(format!(
+                "\nImproper specification of legend part of HONEY argument.\n"
+            ));
         }
         ctl.plot_opt.plot_file = filename.to_string();
         if !var_spec.starts_with("var,") {
-            return Err(format!("\nImproper specification of coloring part of HONEY argument.\n"));
+            return Err(format!(
+                "\nImproper specification of coloring part of HONEY argument.\n"
+            ));
         }
-        let var_args = var_spec
-            .after("var,")
-            .split(',')
-            .collect::<Vec<&str>>();
+        let var_args = var_spec.after("var,").split(',').collect::<Vec<&str>>();
         if var_args.len() < 1 || var_args.len() > 4 {
-            return Err(format!("\nImproper specification of coloring part of HONEY argument.\n"));
+            return Err(format!(
+                "\nImproper specification of coloring part of HONEY argument.\n"
+            ));
         }
         let _coloring_scheme = "minmax".to_string();
         if var_args.len() >= 2 && var_args[1] != "minmax" {
-            return Err(format!("\nImproper specification of coloring part of HONEY argument.\n"));
+            return Err(format!(
+                "\nImproper specification of coloring part of HONEY argument.\n"
+            ));
         }
         let mut var = var_args[0].to_string();
         let mut display_var = var.clone();
@@ -104,7 +106,8 @@ pub fn process_special_arg(
             if x.len() > 0 {
                 if !x.parse::<f64>().is_ok() {
                     return Err(format!(
-                        "\nImproper specification of coloring part of HONEY argument.\n"));
+                        "\nImproper specification of coloring part of HONEY argument.\n"
+                    ));
                 }
                 min = Some(x.force_f64());
             }
@@ -112,13 +115,16 @@ pub fn process_special_arg(
         if var_args.len() == 4 {
             let x = &var_args[3];
             if !x.parse::<f64>().is_ok() {
-                return Err(
-                    format!("\nImproper specification of coloring part of HONEY argument.\n"));
+                return Err(format!(
+                    "\nImproper specification of coloring part of HONEY argument.\n"
+                ));
             }
             max = Some(x.force_f64());
         }
         if min.is_some() && max.is_some() && min >= max {
-            return Err(format!("\nImproper specification of coloring part of HONEY argument.\n"));
+            return Err(format!(
+                "\nImproper specification of coloring part of HONEY argument.\n"
+            ));
         }
         let v = ColorByVariableValue {
             var: var,
