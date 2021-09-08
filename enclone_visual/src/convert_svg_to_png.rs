@@ -92,7 +92,7 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         );
     }
     let tree = tree.unwrap();
-    const WIDTH: u32 = 1500;
+    const WIDTH: u32 = 4000;
     let fit_to = usvg::FitTo::Width(WIDTH);
     let size = fit_to
         .fit_to(tree.svg_node().size.to_screen_size())
