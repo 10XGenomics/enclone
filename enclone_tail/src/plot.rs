@@ -13,6 +13,7 @@ use crate::pack_circles::*;
 use crate::plot_utils::*;
 use crate::polygon::*;
 use crate::string_width::*;
+use crate::ticks::*;
 use crate::*;
 use ansi_escape::*;
 use enclone_core::cell_color::*;
@@ -651,7 +652,30 @@ pub fn plot_clonotypes(
             let mut max_text_width: f64 = 0.0;
             let sep_to_text = 10.0;
             let text_xstart = legend_xstart + band_width + sep_to_text;
-            for i in [0, 64, 128, 192, 255].iter() {
+
+            // Define the tick marks.
+
+            const MAX_TICKS: usize = 5;
+            let mut ticks = ticks(low as f32, high as f32, MAX_TICKS, false);
+            printme!(low, high, ticks.len());
+            let lowt = ticks[0].force_f64();
+            let hight = ticks.last().unwrap().force_f64();
+            const MIN_PROX: f64 = 0.1;
+            if (lowt - low) / (high - low) < MIN_PROX {
+                ticks[0] = format!("{}", low);
+            } else {
+                ticks.insert(0, format!("{}", low));
+            }
+            if (high - hight) / (high - low) < MIN_PROX {
+                let nt = ticks.len();
+                ticks[nt - 1] = format!("{}", high);
+            } else {
+                ticks.push(format!("{}", high));
+            }
+
+            // Add the ticks.
+
+            for (i, text) in ticks.iter().enumerate() {
                 // Define vertical shift for value text.  We vertically center the text at the
                 // correct point, adding font_size/4 to get this to happen.  We don't understand
                 // why four makes sense.  Also, we treat the first and last labels differently,
@@ -659,9 +683,9 @@ pub fn plot_clonotypes(
                 // of the color box.
 
                 let vshift;
-                if *i == 0 {
+                if i == 0 {
                     vshift = font_size as f64 / 2.0 + 1.0;
-                } else if *i == 255 {
+                } else if i == ticks.len() - 1 {
                     vshift = 0.0;
                 } else {
                     vshift = font_size as f64 / 4.0;
@@ -669,34 +693,27 @@ pub fn plot_clonotypes(
 
                 // Generate the text.
 
-                let text_ystart = legend_ystart + *i as f64 * band_height + vshift;
-                let val = low + (high - low) * *i as f64 / 255.0;
-                let mut text = format!("{:.1}", val);
-                while text.contains(".") && text.ends_with("0") {
-                    text = text.rev_before("0").to_string();
-                }
-                if text.ends_with(".") {
-                    text = text.rev_before(".").to_string();
-                }
+                let ystart = legend_ystart + available * text.force_f64() / (high - low);
+                let text_ystart = ystart + vshift;
                 *svg += &format!(
                     "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                      font-size=\"{}\">{}</text>\n",
                     text_xstart, text_ystart, font_size, text,
                 );
                 max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
-            }
 
-            // Add tick lines.
+                // Add tick lines.
 
-            for i in [64, 128, 192].iter() {
-                *svg += &format!(
-                    "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" \
-                     stroke-width=\"0.5\"/>\n",
-                    legend_xstart,
-                    legend_ystart + *i as f64 * band_height,
-                    legend_xstart + band_width,
-                    legend_ystart + *i as f64 * band_height,
-                );
+                if i > 0 && i < ticks.len() - 1 {
+                    *svg += &format!(
+                        "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" \
+                         stroke-width=\"0.5\"/>\n",
+                        legend_xstart,
+                        ystart,
+                        legend_xstart + band_width,
+                        ystart,
+                    );
+                }
             }
 
             // Add legend for undefined points.
