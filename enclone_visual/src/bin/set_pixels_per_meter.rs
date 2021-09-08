@@ -15,7 +15,7 @@ use io_utils::*;
 use pretty_trace::*;
 use std::env;
 use std::fs::File;
-use std::io::{BufWriter, BufReader, Read, Seek, SeekFrom, Write};
+use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
 fn main() {
@@ -42,7 +42,7 @@ fn main() {
     }
 
     // Copying the file, inserting a new pHYs chunk, and deleting the existing one.  We put the
-    // new one right after the IHDR chunk.  According to the spec, it needs to go after IHDR and 
+    // new one right after the IHDR chunk.  According to the spec, it needs to go after IHDR and
     // before the first IDAT.
 
     let mut f = open_for_read![&infile];
@@ -74,5 +74,5 @@ fn main() {
             first = false;
         }
         pos += total as u64;
-     }
+    }
 }
