@@ -11,13 +11,14 @@ use string_utils::*;
 // The only tested value for pixels per meter is 5669, which corresponds to 144 DPI.  Using this
 // value on a Mac causes the image to appear at half the size and hence at higher resolution,
 // closer to the true Mac resolution.  This was tested on one Mac and might not be fully
-// generalizable.
+// generalizable.  In fact, see last reference, 5669 is a special value.
 //
 // References:
 // 1. https://en.wikipedia.org/wiki/Portable_Network_Graphics
 // 2. https://www.w3.org/TR/2003/REC-PNG-20031110/#11pHYs
 // 3. https://stackoverflow.com/questions/33894790/what-is-the-idot-chunk
 // 4. https://www.hackerfactor.com/blog/index.php?/archives/895-Connecting-the-iDOTs.html
+// 5. https://forums.ldraw.org/thread-23525-post-33020.html
 
 pub fn set_pixels_per_meter(png: &mut Vec<u8>, pixels_per_meter: u32) {
     // Form the pHYs chunk.
