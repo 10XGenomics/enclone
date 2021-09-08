@@ -11,7 +11,7 @@ use io_utils::*;
 use pretty_trace::*;
 use std::env;
 use std::fs::{File, OpenOptions};
-use std::io::{BufReader, Read, Seek, SeekFrom, Write};
+use std::io::{BufWriter, BufReader, Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
 fn main() {
@@ -39,39 +39,66 @@ fn main() {
 
     // Locate the exiting pHYs chunk.
 
-    let mut f = open_for_read![&infile];
-    let mut pos = 8 as u64;
     let mut loc = None;
-    loop {
-        f.seek(SeekFrom::Start(pos)).unwrap();
-        let mut x = vec![0 as u8; 4];
-        let res = f.read_exact(&mut x);
-        if res.is_err() {
-            break;
+    {
+        let mut f = open_for_read![&infile];
+        let mut pos = 8 as u64;
+        loop {
+            f.seek(SeekFrom::Start(pos)).unwrap();
+            let mut x = vec![0 as u8; 4];
+            let res = f.read_exact(&mut x);
+            if res.is_err() {
+                break;
+            }
+            let len = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
+            pos += 4;
+            f.seek(SeekFrom::Start(pos)).unwrap();
+            let mut chunk_type = vec![0 as u8; 4];
+            f.read_exact(&mut chunk_type).unwrap();
+            pos += 4;
+            if chunk_type == b"pHYs" {
+                loc = Some(pos - 8);
+            }
+            pos += len as u64 + 4;
         }
-        let len = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
-        pos += 4;
-        f.seek(SeekFrom::Start(pos)).unwrap();
-        let mut chunk_type = vec![0 as u8; 4];
-        f.read_exact(&mut chunk_type).unwrap();
-        pos += 4;
-        if chunk_type == b"pHYs" {
-            loc = Some(pos - 8);
-        }
-        pos += len as u64 + 4;
     }
 
-    // Create the new file.
+    // If there is no pHYs chunk, add one.  According to the spec, it needs to go after the IHDR
+    // chunk and before the first IDAT chunk.  We put it immediately after the first chunk.
 
-    std::fs::copy(&infile, &outfile).unwrap();
     if loc.is_none() {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .append(true)
-            .open(&outfile)
-            .unwrap();
-        file.write_all(&bytes).unwrap();
+        let mut f = open_for_read![&infile];
+        let mut file = open_for_write_new![&outfile];
+        let mut header = vec![0 as u8; 8];
+        f.read_exact(&mut header).unwrap();
+        file.write_all(&header).unwrap();
+        let mut first = true;
+        let mut pos = 8;
+        loop {
+            f.seek(SeekFrom::Start(pos)).unwrap();
+            let mut x = vec![0 as u8; 4];
+            let res = f.read_exact(&mut x);
+            if res.is_err() {
+                break;
+            }
+            let len = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
+            eprintln!("reading {} bytes", len); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            let total = len + 12;
+            f.seek(SeekFrom::Start(pos)).unwrap();
+            let mut x = vec![0 as u8; total as usize];
+            f.read_exact(&mut x).unwrap();
+            file.write_all(&x).unwrap();
+            if first {
+                file.write_all(&bytes).unwrap();
+                first = false;
+            }
+            pos += total as u64;
+        }
+
+    // Otherwise copy the file and edit the existing pHYs chunk.
+
     } else {
+        std::fs::copy(&infile, &outfile).unwrap();
         let pos = loc.unwrap();
         let mut file = OpenOptions::new()
             .read(true)
