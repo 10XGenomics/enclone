@@ -20,7 +20,6 @@ use string_utils::*;
 // 4. https://www.hackerfactor.com/blog/index.php?/archives/895-Connecting-the-iDOTs.html
 
 pub fn set_pixels_per_meter(png: &mut Vec<u8>, pixels_per_meter: u32) {
-
     // Form the pHYs chunk.
 
     let mut bytes = Vec::<u8>::new();
