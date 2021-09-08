@@ -346,7 +346,11 @@ impl Analyzer for EncloneAnalyzer {
             }
             let rdir = format!("{}/{}", req.share_dir, recip);
             let perms = std::fs::Permissions::from_mode(0o777);
-            if !path_exists(&rdir) {
+
+            // Create directory if needed.
+
+            let dir_exists = path_exists(&rdir);
+            if !dir_exists {
                 let res = std::fs::create_dir(&rdir);
                 if res.is_err() {
                     return Err(Status::new(
@@ -354,21 +358,23 @@ impl Analyzer for EncloneAnalyzer {
                         "unable to create share directory",
                     ));
                 }
-
-                // Set permissions to allow group write on the directory.  Note that we don't do
-                // this if the directory already exists, because in that case we may not have
-                // permission to make the change.  In that case however, group write should
-                // already be enabled, because some other user will have executed this same code
-                // to create the directory.
-
-                let res = std::fs::set_permissions(&rdir, perms.clone());
-                if res.is_err() {
-                    return Err(Status::new(
-                        Code::Internal,
-                        format!("unable to set permissions on share directory {}", rdir),
-                    ));
-                }
             }
+
+            // Set permissions to allow group and world write on the directory.  Note that if the
+            // directory already existed, this may not work.  In such cases group and world write
+            // should already be enabled, because some other user will have executed this same
+            // code to create the directory.
+
+            let res = std::fs::set_permissions(&rdir, perms.clone());
+            if !dir_exists && res.is_err() {
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("unable to set permissions on share directory {}", rdir),
+                ));
+            }
+
+            // Now write the file.
+
             let mut now = format!("{:?}", Local::now());
             now = now.replace("T", "___");
             now = now.before(".").to_string();

@@ -5,13 +5,17 @@
 // Modify or add the pHYs chunk in a PNG file, to set the pixels per meter value to n.
 // See https://www.w3.org/TR/2003/REC-PNG-20031110/#11pHYs
 // See also print_phys.rs.
+//
+// Note that Mac tools including screen capture add an iDOT chunk. That's an undocumented
+// apple-ism, which appears to interfer with pHYs.  Googling will get you a partial structure
+// description, obtained by reverse engineering.
 
 use crc::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
-use std::fs::{File, OpenOptions};
-use std::io::{BufReader, Read, Seek, SeekFrom, Write};
+use std::fs::File;
+use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
 fn main() {
@@ -37,11 +41,17 @@ fn main() {
         bytes.append(&mut cs.to_be_bytes().to_vec());
     }
 
-    // Locate the exiting pHYs chunk.
+    // Copying the file, inserting a new pHYs chunk, and deleting the existing one.  We put the
+    // new one right after the IHDR chunk.  According to the spec, it needs to go after IHDR and
+    // before the first IDAT.
 
     let mut f = open_for_read![&infile];
-    let mut pos = 8 as u64;
-    let mut loc = None;
+    let mut file = open_for_write_new![&outfile];
+    let mut header = vec![0 as u8; 8];
+    f.read_exact(&mut header).unwrap();
+    file.write_all(&header).unwrap();
+    let mut first = true;
+    let mut pos = 8;
     loop {
         f.seek(SeekFrom::Start(pos)).unwrap();
         let mut x = vec![0 as u8; 4];
@@ -50,36 +60,19 @@ fn main() {
             break;
         }
         let len = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
-        pos += 4;
-        f.seek(SeekFrom::Start(pos)).unwrap();
-        let mut chunk_type = vec![0 as u8; 4];
-        f.read_exact(&mut chunk_type).unwrap();
-        pos += 4;
-        if chunk_type == b"pHYs" {
-            loc = Some(pos - 8);
+        let total = len + 12;
+        f.seek(SeekFrom::Start(pos + 4)).unwrap();
+        f.read_exact(&mut x).unwrap();
+        if x != b"pHYs" {
+            f.seek(SeekFrom::Start(pos)).unwrap();
+            let mut x = vec![0 as u8; total as usize];
+            f.read_exact(&mut x).unwrap();
+            file.write_all(&x).unwrap();
         }
-        pos += len as u64 + 4;
-    }
-
-    // Create the new file.
-
-    std::fs::copy(&infile, &outfile).unwrap();
-    if loc.is_none() {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .append(true)
-            .open(&outfile)
-            .unwrap();
-        file.write_all(&bytes).unwrap();
-    } else {
-        let pos = loc.unwrap();
-        let mut file = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .open(&outfile)
-            .unwrap();
-        file.seek(SeekFrom::Start(pos)).unwrap();
-        file.write_all(&bytes).unwrap();
+        if first {
+            file.write_all(&bytes).unwrap();
+            first = false;
+        }
+        pos += total as u64;
     }
 }
