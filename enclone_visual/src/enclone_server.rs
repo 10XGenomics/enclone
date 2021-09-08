@@ -355,11 +355,11 @@ impl Analyzer for EncloneAnalyzer {
                     ));
                 }
 
-                // Set permissions to allow group write on the directory.  Note that we don't do
-                // this if the directory already exists, because in that case we may not have
-                // permission to make the change.  In that case however, group write should
-                // already be enabled, because some other user will have executed this same code
-                // to create the directory.
+                // Set permissions to allow group and world write on the directory.  Note that we 
+                // don't do this if the directory already exists, because in that case we may not 
+                // have permission to make the change.  In that case however, group and world write
+                // should already be enabled, because some other user will have executed this 
+                // same code to create the directory.
 
                 let res = std::fs::set_permissions(&rdir, perms.clone());
                 if res.is_err() {
