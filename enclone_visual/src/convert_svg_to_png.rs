@@ -91,14 +91,18 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         );
     }
     let tree = tree.unwrap();
-    let fit_to = usvg::FitTo::Original;
+    const WIDTH: u32 = 1200;
+    let fit_to = usvg::FitTo::Width(WIDTH);
     let size = fit_to
         .fit_to(tree.svg_node().size.to_screen_size())
         .unwrap();
     let mut pixmap = tiny_skia::Pixmap::new(size.width(), size.height()).unwrap();
     pixmap.fill(tiny_skia::Color::from_rgba8(255, 255, 255, 255));
     resvg::render(&tree, fit_to, pixmap.as_mut());
-    pixmap.encode_png().unwrap()
+    let mut png = pixmap.encode_png().unwrap();
+    const PIXELS_PER_METER: u32 = 5669;
+    set_pixels_per_meter(&mut png, PIXELS_PER_METER);
+    png
 }
 
 fn load_fonts() -> fontdb::Database {
