@@ -10,7 +10,7 @@ use crc::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::{BufWriter, BufReader, Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
@@ -39,6 +39,7 @@ fn main() {
 
     // Locate the exiting pHYs chunk.
 
+    /*
     let mut loc = None;
     {
         let mut f = open_for_read![&infile];
@@ -62,11 +63,14 @@ fn main() {
             pos += len as u64 + 4;
         }
     }
+    */
 
     // If there is no pHYs chunk, add one.  According to the spec, it needs to go after the IHDR
     // chunk and before the first IDAT chunk.  We put it immediately after the first chunk.
 
-    if loc.is_none() {
+    // if loc.is_none() {
+
+
         let mut f = open_for_read![&infile];
         let mut file = open_for_write_new![&outfile];
         let mut header = vec![0 as u8; 8];
@@ -82,21 +86,32 @@ fn main() {
                 break;
             }
             let len = u32::from_be_bytes([x[0], x[1], x[2], x[3]]);
-            eprintln!("reading {} bytes", len); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             let total = len + 12;
-            f.seek(SeekFrom::Start(pos)).unwrap();
-            let mut x = vec![0 as u8; total as usize];
+            f.seek(SeekFrom::Start(pos + 4)).unwrap();
             f.read_exact(&mut x).unwrap();
-            file.write_all(&x).unwrap();
+            if x != b"pHYs" && x != b"iDOT" {
+
+                f.seek(SeekFrom::Start(pos)).unwrap();
+                let mut x = vec![0 as u8; total as usize];
+                f.read_exact(&mut x).unwrap();
+                file.write_all(&x).unwrap();
+            }
+
+
             if first {
                 file.write_all(&bytes).unwrap();
                 first = false;
             }
+
+
             pos += total as u64;
-        }
+
+
+         }
 
     // Otherwise copy the file and edit the existing pHYs chunk.
 
+    /*
     } else {
         std::fs::copy(&infile, &outfile).unwrap();
         let pos = loc.unwrap();
@@ -109,4 +124,5 @@ fn main() {
         file.seek(SeekFrom::Start(pos)).unwrap();
         file.write_all(&bytes).unwrap();
     }
+    */
 }
