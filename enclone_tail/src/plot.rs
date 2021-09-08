@@ -564,14 +564,16 @@ pub fn plot_clonotypes(
 
     let mut by_var = false;
     let mut var = String::new();
+    let mut display_var = String::new();
     match ctl.plot_opt.cell_color {
         CellColor::ByVariableValue(ref x) => {
             by_var = true;
             var = x.var.clone();
+            display_var = x.display_var.clone();
         }
         _ => {}
     };
-    if by_var {
+    if by_var && ctl.plot_opt.use_legend {
         let mut low = 0.0;
         let mut high = 0.0;
         let n = VAR_LOW.lock().unwrap().len();
@@ -601,7 +603,7 @@ pub fn plot_clonotypes(
             legend_xstart,
             BOUNDARY as f64 + font_size as f64 / 2.0,
             font_size,
-            var,
+            display_var,
         );
 
         // Handle the special case where all points are undefined.
@@ -616,9 +618,8 @@ pub fn plot_clonotypes(
                 font_size,
                 fail_text,
             );
-            let mut max_text_width = arial_width(&var, font_size as f64);
+            let mut max_text_width = arial_width(&display_var, font_size as f64);
             max_text_width = max_text_width.max(arial_width(&fail_text, font_size as f64));
-
             let width = legend_xstart + max_text_width + BOUNDARY as f64;
             set_svg_width(svg, width);
             *svg += "</svg>";
@@ -725,7 +726,7 @@ pub fn plot_clonotypes(
             // Finish.
 
             let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
-            width = width.max(arial_width(&var, font_size as f64));
+            width = width.max(arial_width(&display_var, font_size as f64));
             width += BOUNDARY as f64;
             set_svg_width(svg, width + BOUNDARY as f64);
             set_svg_height(svg, actual_height + BOUNDARY as f64);
