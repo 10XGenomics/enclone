@@ -62,7 +62,7 @@ pub fn process_special_arg(
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
     } else if arg.starts_with("HONEY=") {
-        let parts = Vec::<Vec<String>>::new();
+        let mut parts = Vec::<Vec<String>>::new();
         {
             let subparts = arg.after("HONEY=").split(',').collect::<Vec<&str>>();
             if subparts.len() == 0 || !subparts[0].contains("=") {
@@ -82,15 +82,20 @@ pub fn process_special_arg(
                 parts.push(part);
             }
         }
+        ctl.plot_opt.use_legend = true;
         let mut out_count = 0;
         let mut legend_count = 0;
+        let mut color_count = 0;
+        let (mut min, mut max) = (None, None);
+        let (mut var, mut display_var) = (String::new(), String::new());
         for p in parts.iter() {
-            let part_name = p[0].after("=");
-            *p[0] = p[0].after("=").to_string();
+            let mut p = p.clone();
+            let part_name = p[0].before("=").to_string();
+            p[0] = p[0].after("=").to_string();
             let err = format!(
                 "\nUnrecognized {} specification {}.\n",
                 part_name,
-                p.iter().format(","),
+                p.iter().format(",")
             );
             if part_name == "outs" {
                 if !p.solo() {
@@ -105,7 +110,43 @@ pub fn process_special_arg(
                 } else {
                     return Err(err);
                 }
-            } else if p[0].starts_with("color=") {
+            } else if part_name == "color" {
+                color_count += 1;
+                if p[0] != "var" || p.len() < 2 {
+                    return Err(err);
+                }
+                var = p[1].to_string();
+                display_var = var.clone();
+                if var.contains(":") {
+                    display_var = var.before(":").to_string();
+                    var = var.after(":").to_string();
+                }
+                if p.len() >= 3 {
+                    if p[2].len() > 0 && p[2] != "turbo" {
+                        return Err(err);
+                    }
+                }
+                if p.len() >= 4 {
+                    let scale = &p[3..];
+                    if scale.len() > 0 && scale[0] != "minmax" {
+                        return Err(err);
+                    }
+                    if scale.len() >= 2 {
+                        if !scale[1].parse::<f64>().is_ok() {
+                            return Err(err);
+                        }
+                        min = Some(scale[1].force_f64());
+                    }
+                    if scale.len() >= 3 {
+                        if !scale[2].parse::<f64>().is_ok() {
+                            return Err(err);
+                        }
+                        max = Some(scale[2].force_f64());
+                    }
+                    if min.is_some() && max.is_some() && min >= max {
+                        return Err(err);
+                    }
+                }
             } else {
                 return Err(format!("\nUnrecognized specification {}=....\n", part_name));
             }
@@ -119,79 +160,11 @@ pub fn process_special_arg(
         if legend_count > 1 {
             return Err(format!("\nHONEY=... may specify legend=... only once.\n"));
         }
-
-        let parts = arg.after("HONEY=").split(';').collect::<Vec<&str>>();
-        if parts.len() != 2 && parts.len() != 3 {
-            return Err(format!("\nImproper specification of HONEY argument.\n"));
+        if color_count == 0 {
+            return Err(format!("\nHONEY=... must specify color=....\n"));
         }
-        let filename = &parts[0];
-        let var_spec = &parts[1];
-        ctl.plot_opt.use_legend = true;
-        if parts.len() < 3 {
-        } else if parts[2] == "none" {
-            ctl.plot_opt.use_legend = false;
-        } else {
-            return Err(format!(
-                "\nImproper specification of legend part of HONEY argument.\n"
-            ));
-        }
-        ctl.plot_opt.plot_file = filename.to_string();
-        if !var_spec.starts_with("var,") {
-            return Err(format!(
-                "\nImproper specification of coloring part of HONEY argument.\n"
-            ));
-        }
-        let var_args = var_spec.after("var,").split(',').collect::<Vec<&str>>();
-        if var_args.len() < 1 || var_args.len() > 5 {
-            return Err(format!(
-                "\nImproper specification of coloring part of HONEY argument.\n"
-            ));
-        }
-        let _color_map = "turbo".to_string();
-        if var_args.len() >= 2 && var_args[1].len() > 0 && var_args[1] != "turbo" {
-            return Err(format!(
-                "\nImproper specification of color map part of HONEY argument.\n"
-            ));
-        }
-        let _coloring_scheme = "minmax".to_string();
-        if var_args.len() >= 3 && var_args[2] != "minmax" {
-            return Err(format!(
-                "\nImproper specification of coloring part of HONEY argument.\n"
-            ));
-        }
-        let mut var = var_args[0].to_string();
-        let mut display_var = var.clone();
-        if var.contains(":") {
-            display_var = var.before(":").to_string();
-            var = var.after(":").to_string();
-        }
-        let (mut min, mut max) = (None, None);
-        if var_args.len() >= 4 {
-            let x = &var_args[3];
-            if x.len() > 0 {
-                if !x.parse::<f64>().is_ok() {
-                    return Err(format!(
-                        "\nImproper specification of coloring part of HONEY argument.\n"
-                    ));
-                }
-                min = Some(x.force_f64());
-            }
-        }
-        if var_args.len() == 5 {
-            let x = &var_args[4];
-            if x.len() > 0 {
-                if !x.parse::<f64>().is_ok() {
-                    return Err(format!(
-                        "\nImproper specification of coloring part of HONEY argument.\n"
-                    ));
-                }
-                max = Some(x.force_f64());
-            }
-        }
-        if min.is_some() && max.is_some() && min >= max {
-            return Err(format!(
-                "\nImproper specification of coloring part of HONEY argument.\n"
-            ));
+        if color_count > 1 {
+            return Err(format!("\nHONEY=... must specify color=... only once.\n"));
         }
         let v = ColorByVariableValue {
             var: var,
