@@ -31,7 +31,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>9/9/21</b>: Add the ability to color cells in a honeycomb plot using the values of a variable.
+<b>9/10/21</b>: Add the ability to color cells in a honeycomb plot using the values of a variable.
 Please see <a href="../../pages/auto/plot.html">enclone plots</a>.
 </p>
 
