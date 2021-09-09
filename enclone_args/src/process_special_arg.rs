@@ -8,6 +8,7 @@ use enclone_core::defs::*;
 use enclone_core::linear_condition::*;
 use evalexpr::*;
 use io_utils::*;
+use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
 use string_utils::*;
@@ -60,7 +61,68 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
+
+
+
     } else if arg.starts_with("HONEY=") {
+        let parts = Vec::<Vec<String>>::new();
+        {
+            let subparts = arg.after("HONEY=").split(',').collect::<Vec<&str>>();
+            if subparts.len() == 0 || !subparts[0].contains("=") {
+                return Err(format!("\nSyntax for HONEY=... is incorrect.\n"));
+            }
+            let mut part = Vec::<String>::new();
+            for i in 0..subparts.len() {
+                if subparts[i].contains("=") {
+                    if part.len() > 0 {
+                        parts.push(part.clone());
+                        part.clear();
+                    }
+                }
+                part.push(subparts[i].clone());
+            }
+            if part.len() > 0 {
+                parts.push(part);
+            }
+        }
+        let mut out_count = 0;
+        let mut legend_count = 0;
+        for p in parts.iter() {
+            let part_name = p[0].after("=");
+            *p[0] = p[0].after("=").to_string();
+            let err = format!("\nUnrecognized {} specification {}.\n", p.iter().format(","));
+            if part_name == "outs" {
+                if !p.solo() {
+                    return Err(err);
+                }
+                ctl.plot_opt.plot_file = p[0].to_string();
+                out_count += 1;
+            } else if part_name == "legend" {
+                if p.solo() && if p[0] == "none" {
+                    ctl.plot_opt.use_legend = false;
+                    legend_count += 1;
+                } else {
+                    return Err(err);
+                }
+            } else if p[0].starts_with("color=") {
+
+
+            } else {
+                return Err(format!("\nUnrecognized specification {}=....\n", part_name));
+            }
+        }
+        if out_count == 0 {
+            return Err(format!("\nHONEY=... must specify out=....\n"));
+        }
+        if out_count > 1 {
+            return Err(format!("\nHONEY=... must specify out=... only once.\n"));
+        }
+        if legend_count > 1 {
+            return Err(format!("\nHONEY=... may specify legend=... only once.\n"));
+        }
+
+
+
         let parts = arg.after("HONEY=").split(';').collect::<Vec<&str>>();
         if parts.len() != 2 && parts.len() != 3 {
             return Err(format!("\nImproper specification of HONEY argument.\n"));
@@ -142,6 +204,8 @@ pub fn process_special_arg(
         };
         let cc = CellColor::ByVariableValue(v);
         ctl.plot_opt.cell_color = cc;
+
+
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
