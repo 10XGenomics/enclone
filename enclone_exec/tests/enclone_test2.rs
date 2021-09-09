@@ -547,7 +547,7 @@ fn test_for_broken_links_and_spellcheck() {
         googletagmanager grok gz html \
         hypermutation hypermutations igblast igh igk igl ighm igkc imgt immunoglobulins \
         indel indels inkt jsdelivr json krh levenshtein lgc linux loh lvar lvars \
-        macbook mait metadata mkdir \
+        macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
         pcell pdb pgas phad phylip \
