@@ -543,7 +543,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 }
             }
 
-            if i < narchive - 1 {
+            let mut have_more = false;
+            for j in i + 1..narchive {
+                if !slf.deleted[j] {
+                    have_more = true;
+                }
+            }
+            if have_more {
                 archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
                 archive_scrollable =
                     archive_scrollable.push(Rule::horizontal(10).style(style::ThinRuleStyle));
