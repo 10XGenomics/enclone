@@ -56,8 +56,9 @@ gtag('config', 'UA-58278925-3');
 
 <h2>honeycomb plots</h2>
 
-<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides four ways to assign colors in such a plot.  We describe them in order of
-precedence, i.e. color data for the first will be used if provided, etc.</p>
+<p>Honeycomb plots display cells as dots, with each clonotype represented as a hexagonal
+cluster of cells.  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides various controls over the configuration of the plots, as
+described in the next sections.
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
           padding: 8px; width: 950px">
@@ -66,6 +67,15 @@ You may wish to use the <code>MIN_CELLS</code> option
 (see <a href="../../pages/auto/help.filter.html">enclone help filter</a>) to exclude tiny 
 clonotypes, which might otherwise crowd the image and slow down plotting.
 </p>
+
+<hr>
+
+<h2>coloring of cells in honeycomb plots</h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides five ways to assign colors in such a plot.  We describe them in order of
+precedence, i.e. color data for the first will be used if provided, etc.</p>
+
+<p>The syntax for this is under development and fragmented at present.</p>
 
 <hr>
 
@@ -183,6 +193,48 @@ not long enough.</p>
 <p>The legend may be suppressed using the argument <code>SUPPRESS_ISOTYPE_LEGEND</code>.</p>
 
 <hr>
+
+
+
+
+<br><span style="color:red; font-weight:bold">5.</span> The fifth way is to color cells by the
+value of a variable.
+
+<p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY="plot.svg;var,u_cell1" 
+NOPRINT</code></p>
+
+<img src="../../img/var.svg" alt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
+
+<p>In the given dataset, for cells in clonotypes having at least ten cells,
+the plot colors each by the value of the variable 
+<code>u_cell1</code>, the number of UMIs in the first chain within the cell's clonotype.
+The variable is sometimes undefined because a clonotype can include cells which are missing the 
+first chain.  Note also that using the variable <code>u1</code> would have instead colored cells
+by the median number of UMIs for their first chain, where the median is computed across the
+exact subclonotype containing the cell.</p>
+
+<p>Here is the <i>current</i> full syntax, which we will generalize as requests are made:
+<pre><code>HONEY="&lt;file>;var,&lt;abbr:name>,turbo,minmax,&lt;min>,&lt;max>;none"
+                   -----      -----                    -----
+                   optional   optional                 optional to suppress legend
+                                    ------------------
+                                    may be omitted entirely or partially
+</code></pre>
+
+<p>The optional abbreviation <code>abbr</code> is a display name for the variable, which is
+shown in the legend.</p>
+
+<p>The name of the coloring map that is used is <code>turbo</code>.</p>
+
+<p>Values may be specified for <code>min</code> and <code>max</code>.  These describe the range
+to be used for the color map.</p>
+
+
+
+
+<hr>
+
+<h2>Colors</h2>
 
 <p>
 The colors should be valid colors for use in an svg file.  They can be named colors like red or

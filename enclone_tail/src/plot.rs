@@ -657,7 +657,6 @@ pub fn plot_clonotypes(
 
             const MAX_TICKS: usize = 5;
             let mut ticks = ticks(low as f32, high as f32, MAX_TICKS, false);
-            printme!(low, high, ticks.len());
             let lowt = ticks[0].force_f64();
             let hight = ticks.last().unwrap().force_f64();
             const MIN_PROX: f64 = 0.1;
