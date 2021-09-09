@@ -10,6 +10,16 @@
 // - origin,origin1,color1,...,originn,colorn by origin, using the given assignment
 // - bc                                       by color to barcode assignment, via BC or META/bc
 // - mark                                     (internal)
+//
+// Related, doesn't really belong here:
+//
+// HONEY=file:color-spec:legend-spec
+//                       none
+//                       origin,blue,123085,red,123089
+//
+// The default for :color-spec is const,black.  The :legend-spec would usually be omitted.
+//
+// Multiple HONEY commands can be supplied (but only one for enclone visual).
 
 use std::collections::HashMap;
 
