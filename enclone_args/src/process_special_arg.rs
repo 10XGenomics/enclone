@@ -83,13 +83,19 @@ pub fn process_special_arg(
             ));
         }
         let var_args = var_spec.after("var,").split(',').collect::<Vec<&str>>();
-        if var_args.len() < 1 || var_args.len() > 4 {
+        if var_args.len() < 1 || var_args.len() > 5 {
             return Err(format!(
                 "\nImproper specification of coloring part of HONEY argument.\n"
             ));
         }
+        let _color_map = "turbo".to_string();
+        if var_args.len() >= 2 && var_args[1].len() > 0 && var_args[1] != "turbo" {
+            return Err(format!(
+                "\nImproper specification of color map part of HONEY argument.\n"
+            ));
+        }
         let _coloring_scheme = "minmax".to_string();
-        if var_args.len() >= 2 && var_args[1] != "minmax" {
+        if var_args.len() >= 3 && var_args[2] != "minmax" {
             return Err(format!(
                 "\nImproper specification of coloring part of HONEY argument.\n"
             ));
@@ -101,8 +107,8 @@ pub fn process_special_arg(
             var = var.after(":").to_string();
         }
         let (mut min, mut max) = (None, None);
-        if var_args.len() >= 3 {
-            let x = &var_args[2];
+        if var_args.len() >= 4 {
+            let x = &var_args[3];
             if x.len() > 0 {
                 if !x.parse::<f64>().is_ok() {
                     return Err(format!(
@@ -112,8 +118,8 @@ pub fn process_special_arg(
                 min = Some(x.force_f64());
             }
         }
-        if var_args.len() == 4 {
-            let x = &var_args[3];
+        if var_args.len() == 5 {
+            let x = &var_args[4];
             if x.len() > 0 {
                 if !x.parse::<f64>().is_ok() {
                     return Err(format!(
