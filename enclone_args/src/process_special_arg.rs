@@ -114,12 +114,14 @@ pub fn process_special_arg(
         }
         if var_args.len() == 4 {
             let x = &var_args[3];
-            if !x.parse::<f64>().is_ok() {
-                return Err(format!(
-                    "\nImproper specification of coloring part of HONEY argument.\n"
-                ));
+            if x.len() > 0 {
+                if !x.parse::<f64>().is_ok() {
+                    return Err(format!(
+                        "\nImproper specification of coloring part of HONEY argument.\n"
+                    ));
+                }
+                max = Some(x.force_f64());
             }
-            max = Some(x.force_f64());
         }
         if min.is_some() && max.is_some() && min >= max {
             return Err(format!(
