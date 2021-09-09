@@ -61,9 +61,6 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
-
-
-
     } else if arg.starts_with("HONEY=") {
         let parts = Vec::<Vec<String>>::new();
         {
@@ -90,7 +87,10 @@ pub fn process_special_arg(
         for p in parts.iter() {
             let part_name = p[0].after("=");
             *p[0] = p[0].after("=").to_string();
-            let err = format!("\nUnrecognized {} specification {}.\n", p.iter().format(","));
+            let err = format!(
+                "\nUnrecognized {} specification {}.\n",
+                p.iter().format(",")
+            );
             if part_name == "outs" {
                 if !p.solo() {
                     return Err(err);
@@ -98,15 +98,13 @@ pub fn process_special_arg(
                 ctl.plot_opt.plot_file = p[0].to_string();
                 out_count += 1;
             } else if part_name == "legend" {
-                if p.solo() && if p[0] == "none" {
+                if p.solo() && p[0] == "none" {
                     ctl.plot_opt.use_legend = false;
                     legend_count += 1;
                 } else {
                     return Err(err);
                 }
             } else if p[0].starts_with("color=") {
-
-
             } else {
                 return Err(format!("\nUnrecognized specification {}=....\n", part_name));
             }
@@ -120,8 +118,6 @@ pub fn process_special_arg(
         if legend_count > 1 {
             return Err(format!("\nHONEY=... may specify legend=... only once.\n"));
         }
-
-
 
         let parts = arg.after("HONEY=").split(';').collect::<Vec<&str>>();
         if parts.len() != 2 && parts.len() != 3 {
@@ -204,8 +200,6 @@ pub fn process_special_arg(
         };
         let cc = CellColor::ByVariableValue(v);
         ctl.plot_opt.cell_color = cc;
-
-
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {

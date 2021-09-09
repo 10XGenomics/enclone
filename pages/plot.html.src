@@ -128,7 +128,7 @@ not long enough.</p>
 <br><span style="color:red; font-weight:bold">5.</span> The fifth way is to color cells by the
 value of a variable.
 
-<p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY="plot.svg;var,u_cell1" 
+<p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY="out=plot.svg,color=var,u_cell1" 
 NOPRINT</code></p>
 
 <img src="../../img/var.svg" alt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
@@ -142,12 +142,24 @@ by the median number of UMIs for their first chain, where the median is computed
 exact subclonotype containing the cell.</p>
 
 <p>Here is the <i>current</i> full syntax, which we will generalize as requests are made:
-<pre><code>HONEY="&lt;file>;var,&lt;abbr:name>,turbo,minmax,&lt;min>,&lt;max>;none"
-                   -----      ------                   -----
-                   optional   optional                 optional to suppress legend
-                                    ------------------
-                                    may be omitted entirely or partially
-</code></pre>
+
+
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+
+<tr><td> part </td>
+    <td> syntax </td>
+    <td> notes </td</tr>
+
+<tr><td> everything </td>
+    <td> HONEY=out-spec,color-spec,legend-spec </td>
+    <td> order of specification fields is ignored </td></tr>
+
+<tr><td> out-spec </td>
+    <td> out=filename </td>
+    <td> you fill in filename </td></tr>
+
+</table>
+
 
 <p>The optional abbreviation <code>abbr</code> is a display name for the variable, which is
 shown in the legend.</p>
