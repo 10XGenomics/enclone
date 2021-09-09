@@ -76,7 +76,7 @@ pub fn process_special_arg(
                         part.clear();
                     }
                 }
-                part.push(subparts[i].clone());
+                part.push(subparts[i].to_string());
             }
             if part.len() > 0 {
                 parts.push(part);
@@ -89,7 +89,8 @@ pub fn process_special_arg(
             *p[0] = p[0].after("=").to_string();
             let err = format!(
                 "\nUnrecognized {} specification {}.\n",
-                p.iter().format(",")
+                part_name,
+                p.iter().format(","),
             );
             if part_name == "outs" {
                 if !p.solo() {
