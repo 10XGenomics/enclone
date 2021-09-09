@@ -693,7 +693,7 @@ pub fn plot_clonotypes(
 
                 // Generate the text.
 
-                let ystart = legend_ystart + available * text.force_f64() / (high - low);
+                let ystart = legend_ystart + available * (text.force_f64() - low) / (high - low);
                 let text_ystart = ystart + vshift;
                 *svg += &format!(
                     "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
