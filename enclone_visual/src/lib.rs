@@ -298,20 +298,22 @@ pub fn fold(all: &str, max_line: usize) -> Vec<String> {
             let mut current = String::new();
             let mut i = 0;
             while i < words.len() {
-                if current.len() > 0 && current.len() + 1 + words[i].len() > max_line {
+                if current.len() > 0
+                    && current.chars().count() + 1 + words[i].chars().count() > max_line
+                {
                     pieces.push(current.clone());
                     current.clear();
                     i -= 1;
-                } else if words[i].len() >= max_line {
-                    let mut w = words[i].as_bytes().to_vec();
+                } else if words[i].chars().count() >= max_line {
+                    let mut w = words[i].to_string();
                     loop {
-                        let n = std::cmp::min(max_line, w.len());
-                        let sub = stringme(&w[0..n]);
-                        if n < w.len() {
+                        let n = std::cmp::min(max_line, w.chars().count());
+                        let sub = w[0..n].to_string();
+                        if n < w.chars().count() {
                             pieces.push(sub);
-                            w = w[n..w.len()].to_vec();
+                            w = w[n..w.len()].to_string();
                         } else {
-                            current = stringme(&w);
+                            current = w.clone();
                             break;
                         }
                     }
