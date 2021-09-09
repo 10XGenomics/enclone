@@ -200,21 +200,37 @@ exact subclonotype containing the cell.</p>
 
 <tr><td> <code>color-spec</code> </td>
     <td> <code>var,<span style="color:red">abbr</span>:<span style="color:red">name</span>,turbo,scale-spec</code></td>
-    <td><code>turbo</code> is the name of the color map and may be omitted<br><code><span style="color:red">abbr</span>:</code> may be omitted; 
+    <td>1. <code>turbo</code> is the name of the color map and may be omitted
+    <br>2. <code><span style="color:red">abbr</span>:</code> may be omitted; 
     <code><span style="color:red">abbr</code></span> is the display name</td></tr>
 
 <tr><td> <code>scale-spec</code> </td>
     <td><code>minmax,<span style="color:red">min</span>,<span style="color:red">max
     </span></code></td>
-    <td><code>scale-spec</code> may be omitted entirely<br>
-    <code><span style="color:red">min</span></code> 
+    <td>1. <code>scale-spec</code> may be omitted entirely<br>
+    2. <code><span style="color:red">min</span></code> 
     or <code><span style="color:red">max</span></code> or both may be omitted
-    <br>They describe the range of values that define the color map.
-    <br>Their default values are the min and max of the variable.</td></tr>
+    <br>3. They describe the range of values that define the color map.
+    <br>4. Their default values are the min and max of the variable values.
+    <br>5. If <code><span style="color:red">min</span></code> or <code><span style="color:red">max</span></code> is specified and a value is outside the range, the value 
+    <br>will be raised to
+        <code><span style="color:red">min</span></code> or lowered to <code><span style="color:red">max</span></code> before assigning its color.
+    </td></tr>
 
 </table>
 
 <br>
+
+Here are some examples that illustrate use of the optional fields:
+
+<br>
+
+<br><code>HONEY=out=plot.svg,color=var,u_cell1</code>
+<br><code>HONEY=out=plot.svg,color=var,u_cell1,legend=none</code>
+<br><code>HONEY=out=plot.svg,color=var,u1:u_cell1</code>
+<br><code>HONEY=out=plot.svg,color=var,u_cell1,,minmax,0,10000</code>
+
+<br><br>
 
 <hr>
 
