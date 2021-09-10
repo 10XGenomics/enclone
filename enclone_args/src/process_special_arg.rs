@@ -101,7 +101,11 @@ pub fn process_special_arg(
                 if !p.solo() {
                     return Err(err);
                 }
-                if !p[0].ends_with(".svg") && !p[0].ends_with(".png") {
+                if p[0] != "stdout"
+                    && p[0] != "gui"
+                    && !p[0].ends_with(".svg")
+                    && !p[0].ends_with(".png")
+                {
                     return Err(format!(
                         "\nHONEY out file needs to end with .svg or .png.\n"
                     ));
