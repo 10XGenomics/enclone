@@ -741,8 +741,9 @@ pub fn plot_clonotypes(
 
             // Finish.
 
-            let mut width = legend_xstart + band_width + sep_to_text + max_text_width;
-            width = width.max(arial_width(&display_var, font_size as f64));
+            let mut legend_width = band_width + sep_to_text + max_text_width;
+            legend_width = legend_width.max(arial_width(&display_var, font_size as f64));
+            let mut width = legend_xstart + legend_width;
             width += BOUNDARY as f64;
             set_svg_width(svg, width + BOUNDARY as f64);
             set_svg_height(svg, actual_height + BOUNDARY as f64);
