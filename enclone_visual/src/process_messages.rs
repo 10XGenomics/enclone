@@ -498,6 +498,7 @@ impl EncloneVisual {
 
             Message::Resize(width, height) => {
                 self.width = width;
+                CURRENT_WIDTH.store(width as usize, SeqCst);
                 self.height = height;
                 Command::none()
             }
