@@ -1556,6 +1556,7 @@ dependencies = [
  "dirs",
  "enclone_core",
  "enclone_main",
+ "enclone_tail",
  "enclone_version",
  "failure",
  "flate2",

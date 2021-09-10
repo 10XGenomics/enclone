@@ -3,6 +3,7 @@
 use crate::GROUP_ID;
 use crate::GROUP_ID_CLICKED_ON;
 use crate::*;
+use enclone_tail::string_width::*;
 use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
@@ -79,8 +80,12 @@ impl CanvasView {
             match &g[i] {
                 crate::geometry::Geometry::Text(o) => {
                     height = height.max(o.p.y);
-                    // not right: need to add text length
-                    width = width.max(o.p.x);
+                    let mut tmax = o.p.x;
+                    // what about dejavusans?
+                    if o.font == "Arial" {
+                        tmax += arial_width(&o.t, o.font_size as f64) as f32;
+                    }
+                    width = width.max(tmax);
                 }
                 crate::geometry::Geometry::Rectangle(rect) => {
                     height = height.max(rect.p.y + rect.height);
