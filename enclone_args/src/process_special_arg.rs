@@ -97,7 +97,7 @@ pub fn process_special_arg(
                 part_name,
                 p.iter().format(",")
             );
-            if part_name == "outs" {
+            if part_name == "out" {
                 if !p.solo() {
                     return Err(err);
                 }
