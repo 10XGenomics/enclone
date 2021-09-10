@@ -989,8 +989,8 @@ pub const SITE_EXAMPLES: [(&str, &str); 25] = [
     ),
     // 25.
     (
-        "img/var.svg",
-        "BCR=123085 MIN_CELLS=10 HONEY=\"stdout;var,u_cell1\" NOPRINT",
+        "img/var.png",
+        "BCR=123085 MIN_CELLS=10 HONEY=out=testx/outputs/var.png,color=var,u_cell1 NOPRINT",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
