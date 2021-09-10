@@ -59,7 +59,7 @@ fn main() {
             if !test.contains("var.png") {
                 fwrite!(&mut f, "{}", results[i].1);
             } else {
-                let mut in_file = File::open("enclone_tests/testx/outputs/var.png").unwrap();
+                let mut in_file = File::open("enclone_exec/testx/outputs/var.png").unwrap();
                 let mut out_file = File::create("img/var.png").unwrap();
                 std::io::copy(&mut in_file, &mut out_file).unwrap();
             }
