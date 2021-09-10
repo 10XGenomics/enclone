@@ -131,7 +131,7 @@ value of a variable.
 <p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY=out=plot.svg,color=var,u_cell1
 NOPRINT</code></p>
 
-<img src="../../img/var.svg" alt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
+<img src="../../img/var.png" style="max-width: 60%" lt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
 
 <p>In the given dataset, for cells in clonotypes having at least ten cells,
 the plot colors each by the value of the variable 
