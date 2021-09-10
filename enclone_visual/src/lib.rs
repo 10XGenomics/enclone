@@ -2,7 +2,7 @@
 
 use crate::copy_image_to_clipboard::*;
 use crate::gui_structures::EncloneVisual;
-use convert_svg_to_png::*;
+use enclone_core::convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
 use lazy_static::lazy_static;
@@ -32,7 +32,6 @@ pub mod archive;
 pub mod canvas_view;
 pub mod client_requests;
 pub mod compare_images;
-pub mod convert_svg_to_png;
 pub mod copy_image_to_clipboard;
 pub mod enclone_client;
 pub mod enclone_server;

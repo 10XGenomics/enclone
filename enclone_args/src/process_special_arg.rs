@@ -101,6 +101,9 @@ pub fn process_special_arg(
                 if !p.solo() {
                     return Err(err);
                 }
+                if !p[0].ends_with(".svg") && !p[0].ends_with(".png") {
+                    return Err(format!("\nHONEY out file needs to end with .svg or .png.\n"));
+                }
                 ctl.plot_opt.plot_file = p[0].to_string();
                 out_count += 1;
             } else if part_name == "legend" {

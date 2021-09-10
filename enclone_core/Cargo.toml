@@ -27,9 +27,11 @@ attohttpc = { version = "0.17", default-features = false, features = ["compress"
 bio_edit = "0.1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+crc = "2"
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "6"
+fontdb = "0.6"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.10"
@@ -38,6 +40,7 @@ mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
+resvg = { version = "0.17", default-features = false }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
@@ -45,6 +48,8 @@ stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
 superslice = "1"
+tiny-skia = "0.6"
+usvg = { version = "0.17", features = ["text"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
 

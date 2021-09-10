@@ -17,6 +17,7 @@ use crate::ticks::*;
 use crate::*;
 use ansi_escape::*;
 use enclone_core::cell_color::*;
+use enclone_core::convert_svg_to_png::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::collections::HashMap;
@@ -868,21 +869,26 @@ pub fn plot_clonotypes(
         *svg += "</svg>";
     }
 
-    // Output the svg file.
+    // Output the svg or png file.
 
     if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
         && plot_opt.plot_file != "gui_stdout"
     {
-        let f = File::create(&plot_opt.plot_file);
-        if f.is_err() {
-            return Err(format!(
-                "\nThe file {} in your PLOT argument could not be created.\n",
-                plot_opt.plot_file
-            ));
+        if !plot_opt.plot_file.ends_with(".png") {
+            let f = File::create(&plot_opt.plot_file);
+            if f.is_err() {
+                return Err(format!(
+                    "\nThe file {} in your PLOT argument could not be created.\n",
+                    plot_opt.plot_file
+                ));
+            }
+            let mut f = BufWriter::new(f.unwrap());
+            fwriteln!(f, "{}", svg);
+        } else {
+            let png = convert_svg_to_png(&svg.as_bytes());
+            std::fs::write(&plot_opt.plot_file, png).unwrap();
         }
-        let mut f = BufWriter::new(f.unwrap());
-        fwriteln!(f, "{}", svg);
     }
     ctl.perf_stats(&t, "building svg file");
     Ok(())
