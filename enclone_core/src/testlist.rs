@@ -989,6 +989,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 25] = [
     ),
     // 25.
     (
+        // Note that this is special cased in merge_html.rs.
         "img/var.png",
         "BCR=123085 MIN_CELLS=10 HONEY=out=testx/outputs/var.png,color=var,u_cell1 NOPRINT",
     ),

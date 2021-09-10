@@ -49,10 +49,20 @@ fn main() {
             r.1 = stringme(&new.stdout);
         });
         for i in 0..SITE_EXAMPLES.len() {
+            // Move file to the site location.  This is complicated and finicky in the .png case.
+            // And special cased.
+
             let example_name = SITE_EXAMPLES[i].0;
+            let test = SITE_EXAMPLES[i].1;
             let out_file = format!("{}", example_name);
             let mut f = open_for_write_new![&out_file];
-            fwrite!(&mut f, "{}", results[i].1);
+            if !test.contains("var.png") {
+                fwrite!(&mut f, "{}", results[i].1);
+            } else {
+                let mut in_file = File::open("enclone_tests/testx/outputs/var.png").unwrap();
+                let mut out_file = File::create("img/var.png").unwrap();
+                std::io::copy(&mut in_file, &mut out_file).unwrap();
+            }
         }
     }
     let mut site_ex = Vec::<String>::new();
