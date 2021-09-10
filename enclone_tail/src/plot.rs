@@ -656,10 +656,10 @@ pub fn plot_clonotypes(
             // Define the tick marks.
 
             const MAX_TICKS: usize = 5;
+            const MIN_PROX: f64 = 0.1;
             let mut ticks = ticks(low as f32, high as f32, MAX_TICKS, false);
             let lowt = ticks[0].force_f64();
             let hight = ticks.last().unwrap().force_f64();
-            const MIN_PROX: f64 = 0.1;
             if (lowt - low) / (high - low) < MIN_PROX {
                 ticks[0] = format!("{}", low);
             } else {
