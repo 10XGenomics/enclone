@@ -664,7 +664,6 @@ pub fn plot_clonotypes(
 
             let mut text_ystarts = Vec::<f64>::new();
             for (i, text) in ticks.iter().enumerate() {
-
                 // Define vertical shift for value text.  We vertically center the text at the
                 // correct point, adding font_size/4 to get this to happen.  We don't understand
                 // why four makes sense.  Also, we treat the first and last labels differently,
@@ -684,7 +683,6 @@ pub fn plot_clonotypes(
                 text_ystarts.push(text_ystart);
             }
             for (i, text) in ticks.iter().enumerate() {
-
                 // Generate the text.
 
                 let ystart = legend_ystart + available * (text.force_f64() - low) / (high - low);
@@ -692,7 +690,10 @@ pub fn plot_clonotypes(
                 if i == 1 && text_ystart - text_ystarts[0] < font_size as f64 {
                     continue;
                 }
-                if ticks.len() >= 2 && i == ticks.len() - 2 && text_ystarts[ticks.len() - 1] - text_ystart < font_size as f64 {
+                if ticks.len() >= 2
+                    && i == ticks.len() - 2
+                    && text_ystarts[ticks.len() - 1] - text_ystart < font_size as f64
+                {
                     continue;
                 }
                 *svg += &format!(
