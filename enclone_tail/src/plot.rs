@@ -613,7 +613,7 @@ pub fn plot_clonotypes(
         if !defined {
             let fail_text = "The variable is undefined for all points.";
             *svg += &format!(
-                "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
                 legend_xstart,
                 BOUNDARY as f64 + 2.0 * font_size as f64,
@@ -635,7 +635,7 @@ pub fn plot_clonotypes(
             let available =
                 actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
             *svg += &format!(
-                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
                  style=\"fill:white;stroke:black;stroke-width:1\" />\n",
                 legend_xstart, legend_ystart, band_width, available,
             );
@@ -655,7 +655,7 @@ pub fn plot_clonotypes(
                     add = band_height / 10.0;
                 }
                 *svg += &format!(
-                    "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+                    "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
                      style=\"fill:{}\" />\n",
                     legend_xstart, ystart, band_width, band_height + add, color,
                 );
@@ -708,7 +708,7 @@ pub fn plot_clonotypes(
                     continue;
                 }
                 *svg += &format!(
-                    "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                    "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
                      font-size=\"{}\">{}</text>\n",
                     text_xstart, text_ystart, font_size, text,
                 );
@@ -718,8 +718,8 @@ pub fn plot_clonotypes(
 
                 if i > 0 && i < ticks.len() - 1 {
                     *svg += &format!(
-                        "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"#000000\" \
-                         stroke-width=\"0.5\"/>\n",
+                        "<line x1=\"{:.2}\" y1=\"{:.2}\" x2=\"{:.2}\" y2=\"{:.2}\" \
+                         stroke=\"#000000\" stroke-width=\"0.5\"/>\n",
                         legend_xstart,
                         ystart,
                         legend_xstart + band_width,
@@ -735,14 +735,14 @@ pub fn plot_clonotypes(
                 let vsep = 10.0;
                 let y = legend_ystart + available + vsep + r;
                 *svg += &format!(
-                    "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" stroke=\"red\" stroke-width=\"0.5\" \
-                     fill=\"white\" />\n",
+                    "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" stroke=\"red\" \
+                     stroke-width=\"0.5\" fill=\"white\" />\n",
                     legend_xstart + band_width - r,
                     legend_ystart + available + vsep + r,
                     r,
                 );
                 *svg += &format!(
-                    "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                    "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
                      font-size=\"{}\">{}</text>\n",
                     text_xstart,
                     y + font_size as f64 / 4.0 - 1.0,
