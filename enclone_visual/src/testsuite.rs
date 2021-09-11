@@ -105,8 +105,12 @@ pub fn metatests() -> Vec<Vec<Message>> {
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("no_legend"),
-
-
+            Message::InputChanged1(
+                "enclone BCR=85333 HONEY=out=gui,color=var,u1:u_cell1"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("abbr"),
         ],
     ]
 }
