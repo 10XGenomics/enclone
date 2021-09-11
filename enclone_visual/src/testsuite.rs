@@ -92,7 +92,6 @@ pub fn metatests() -> Vec<Vec<Message>> {
                 .to_string()
             ),
             Message::SubmitButtonPressed(Ok(())),
-            Message::WaitCommand(Ok(())),
             Message::SetName("color_by_var"),
         ],
     ]
@@ -131,7 +130,8 @@ const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
                           SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
 
 // This block of tests is good because it tests a lot, but bad because one can't test parts of it.
-// For future tests, it would be better to have smaller chunks, as in the earlier tests.
+// For future tests, it would be better to have smaller chunks, as in the earlier tests.  Except
+// that, there is some startup cost, so we don't want the chunks to be too small.
 
 #[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 40] = [
