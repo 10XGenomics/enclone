@@ -157,7 +157,7 @@ exact subclonotype containing the cell.</p>
 <tr><td> <code>out-spec</code> </td>
     <td> <code>out=<span style="color:red">filename</span></code> </td>
     <td> <code><span style="color:red">filename</code></span> 
-    is output file to be generated; it should end with <code>.svg</code> 
+    is the output file to be generated; it should end with <code>.svg</code> 
     or <code>.png</code><br>depending on the desired output file type</td></tr>
 
 <tr><td> <code>legend-spec</code> </td>
