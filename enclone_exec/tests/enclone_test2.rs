@@ -8,6 +8,7 @@
 // 3. speed test (feature = cpu), requires non-public datasets.
 
 use ansi_escape::*;
+use enclone_core::main_testlist::*;
 use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
@@ -59,7 +60,7 @@ fn test_enclone() {
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let this = include_str!("../../enclone_core/src/main_testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();

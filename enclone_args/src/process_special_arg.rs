@@ -102,6 +102,7 @@ pub fn process_special_arg(
                     return Err(err);
                 }
                 if p[0] != "stdout"
+                    && p[0] != "stdout.png"
                     && p[0] != "gui"
                     && !p[0].ends_with(".svg")
                     && !p[0].ends_with(".png")

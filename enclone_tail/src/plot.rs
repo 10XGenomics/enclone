@@ -909,7 +909,10 @@ pub fn plot_clonotypes(
 
     // Output the svg or png file.
 
-    if plot_opt.plot_file != "stdout"
+    if plot_opt.plot_file == "stdout.png" {
+        let png = convert_svg_to_png(&svg.as_bytes());
+        std::io::stdout().write_all(&png).unwrap();
+    } else if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
         && plot_opt.plot_file != "gui_stdout"
     {

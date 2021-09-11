@@ -339,7 +339,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         }
     }
 
-    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
+    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") && !ctl.gen_opt.no_newline {
         println!("");
     }
     let outs = MainEncloneOutput {

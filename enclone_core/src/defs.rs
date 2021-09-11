@@ -231,6 +231,7 @@ pub struct GeneralOpt {
     pub evil_eye: bool, // extra printing to try to trace hangs
     pub toy: bool,      // toy with phylogeny
     pub group_post_filter: Option<Vec<usize>>,
+    pub no_newline: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
