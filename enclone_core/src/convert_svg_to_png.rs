@@ -92,7 +92,14 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         );
     }
     let tree = tree.unwrap();
+
+    // The following parameter controls the PNG resolution.  You can raise it, which may improve
+    // rendering, but the PNG will become larger.
+
     const WIDTH: u32 = 2000;
+
+    // Proceed.
+
     let fit_to = usvg::FitTo::Width(WIDTH);
     let size = fit_to
         .fit_to(tree.svg_node().size.to_screen_size())
