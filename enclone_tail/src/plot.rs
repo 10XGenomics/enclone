@@ -657,7 +657,11 @@ pub fn plot_clonotypes(
                 *svg += &format!(
                     "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
                      style=\"fill:{}\" />\n",
-                    legend_xstart, ystart, band_width, band_height + add, color,
+                    legend_xstart,
+                    ystart,
+                    band_width,
+                    band_height + add,
+                    color,
                 );
             }
 
