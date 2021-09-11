@@ -83,38 +83,41 @@ fn main() {
     fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-    // RUN A TEST IN LOCAL MODE
+    // RUN A COUPLE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    if tests.is_empty() || tests.contains(&"4".to_string()) {
-        let metas = metatests()[3].clone();
-        let mut testnames = Vec::<String>::new();
-        for m in metas.iter() {
-            match m {
-                Message::SetName(x) => {
-                    testnames.push(x.to_string());
-                }
-                _ => {}
-            };
-        }
-        for t in testnames.iter() {
-            let png = format!("enclone_visual/outputs/{}.png", t);
-            if path_exists(&png) {
-                std::fs::remove_file(&png).unwrap();
+    for n in [4, 5].iter() {
+        let n = *n;
+        if tests.is_empty() || tests.contains(&format!("{}", n)) {
+            let metas = metatests()[n - 1].clone();
+            let mut testnames = Vec::<String>::new();
+            for m in metas.iter() {
+                match m {
+                    Message::SetName(x) => {
+                        testnames.push(x.to_string());
+                    }
+                    _ => {}
+                };
             }
+            for t in testnames.iter() {
+                let png = format!("enclone_visual/outputs/{}.png", t);
+                if path_exists(&png) {
+                    std::fs::remove_file(&png).unwrap();
+                }
+            }
+            let o = Command::new("enclone")
+                .arg(&"VIS")
+                .arg(&format!("META={}", n))
+                .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
+                .output()
+                .expect(&format!("failed to execute enclone visual metatest {}", n));
+            if o.status.code() != Some(0) {
+                eprintln!("\nnonzero exit code from enclone visual metatest {}\n", n);
+                eprintln!("stderr =\n{}", strme(&o.stderr));
+                std::process::exit(1);
+            }
+            all_testnames.append(&mut testnames);
         }
-        let o = Command::new("enclone")
-            .arg(&"VIS")
-            .arg(&"META=4")
-            .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
-            .output()
-            .expect("failed to execute enclone visual metatest 4");
-        if o.status.code() != Some(0) {
-            eprintln!("\nnonzero exit code from enclone visual metatest 4\n");
-            eprintln!("stderr =\n{}", strme(&o.stderr));
-            std::process::exit(1);
-        }
-        all_testnames.append(&mut testnames);
     }
 
     // Reset sample_visual.

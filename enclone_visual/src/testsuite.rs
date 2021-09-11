@@ -85,6 +85,16 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::SummaryOpen(Ok(())),
             Message::SetName("restore_metrics"),
         ],
+        // 5 = enclone VIS
+        vec![
+            Message::InputChanged1(
+                "enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,IGHV3-7_g_cell"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::WaitCommand(Ok(())),
+            Message::SetName("color_by_var"),
+        ],
     ]
 }
 
