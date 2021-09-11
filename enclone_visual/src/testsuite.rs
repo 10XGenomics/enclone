@@ -93,6 +93,12 @@ pub fn metatests() -> Vec<Vec<Message>> {
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("color_by_var"),
+            Message::InputChanged1(
+                "enclone BCR=85333 HONEY=out=gui,color=var,u_cell1,,minmax,0,10"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("trunc"),
         ],
     ]
 }
