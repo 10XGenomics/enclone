@@ -639,6 +639,9 @@ pub fn plot_clonotypes(
                  style=\"fill:white;stroke:black;stroke-width:1\" />\n",
                 legend_xstart, legend_ystart, band_width, available,
             );
+
+            // Make the color bar.
+
             let band_height = available / 256.0;
             for i in 0..256 {
                 let ystart = legend_ystart + i as f64 * band_height;
@@ -650,9 +653,6 @@ pub fn plot_clonotypes(
                     legend_xstart, ystart, band_width, band_height, color,
                 );
             }
-            let mut max_text_width: f64 = 0.0;
-            let sep_to_text = 10.0;
-            let text_xstart = legend_xstart + band_width + sep_to_text;
 
             // Define the tick marks.
 
@@ -663,6 +663,9 @@ pub fn plot_clonotypes(
 
             // Add the ticks.
 
+            let mut max_text_width: f64 = 0.0;
+            let sep_to_text = 10.0;
+            let text_xstart = legend_xstart + band_width + sep_to_text;
             let mut text_ystarts = Vec::<f64>::new();
             for (i, text) in ticks.iter().enumerate() {
                 // Define vertical shift for value text.  We vertically center the text at the
