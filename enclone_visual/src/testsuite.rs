@@ -130,6 +130,9 @@ const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=I
 const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
                           SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
 
+// This block of tests is good because it tests a lot, but bad because one can't test parts of it.
+// For future tests, it would be better to have smaller chunks, as in the earlier tests.
+
 #[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 40] = [
     (X0,     SUBMIT,  ""),        // enclone woof
