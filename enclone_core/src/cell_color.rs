@@ -2,14 +2,24 @@
 //
 // Define the coloring scheme for cells.
 //
-// CELL_COLOR
-// =isotype,color1,...,colorn                   by isotype; uses default colors if none provided
-// =var,name,min,max                            by values of given variable
-// =sample_from_meta                            by sample, using the color field in META
-// =sample,sample1->color1,...,samplen->colorn  by sample, using the given assignment
-// =bc                                          by color to barcode assignment, via BC or META/bc
+// color_spec:
+// - const,color                              all cells are assigned the given color (default/black)
+// - iso,color1,...,colorn                    by isotype; uses default colors if none provided
+// - var,name,minmax,min,max                  by values of given variable
+// - dataset                                  by dataset, using the color field in META
+// - origin,origin1,color1,...,originn,colorn by origin, using the given assignment
+// - bc                                       by color to barcode assignment, via BC or META/bc
+// - mark                                     (internal)
 //
-// For the default (Unspecified) schema, all cells are black.
+// Related, doesn't really belong here:
+//
+// HONEY=file:color-spec:legend-spec
+//                       none
+//                       origin,blue,123085,red,123089
+//
+// The default for :color-spec is const,black.  The :legend-spec would usually be omitted.
+//
+// Multiple HONEY commands can be supplied (but only one for enclone visual).
 
 use std::collections::HashMap;
 
@@ -27,6 +37,7 @@ pub struct ColorByIsotype {
 #[derive(Clone)]
 pub struct ColorByVariableValue {
     pub var: String,
+    pub display_var: String,
     pub min: Option<f64>,
     pub max: Option<f64>,
 }

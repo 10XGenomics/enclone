@@ -31,6 +31,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>9/11/21</b>: Add the ability to color cells in a honeycomb plot using the values of a variable.
+Please see <a href="../../pages/auto/plot.html">enclone plots</a>.
+</p>
+
+<p>
 <b>8/27/21</b>: Add new argument <code>DVARS=...</code> that can display dataset-level variables,
 for now very limited, as described at
 see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.

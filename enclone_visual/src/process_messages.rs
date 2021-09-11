@@ -498,25 +498,24 @@ impl EncloneVisual {
 
             Message::Resize(width, height) => {
                 self.width = width;
+                CURRENT_WIDTH.store(width as usize, SeqCst);
                 self.height = height;
                 Command::none()
             }
 
             Message::GroupClicked(_message) => {
                 if GROUP_ID_CLICKED_ON.load(SeqCst) {
+                    GROUP_ID_CLICKED_ON.store(false, SeqCst);
+                    if TOOLTIP_TEXT.lock().unwrap().is_empty() {
+                        // This case happens rarely, and we don't know why, but haven't
+                        // studied the problem.
+                        return Command::none();
+                    }
                     self.modified = true;
                     let group_id = GROUP_ID.load(SeqCst);
                     self.input_value = format!("{}", group_id);
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
-                    GROUP_ID_CLICKED_ON.store(false, SeqCst);
-                    if TOOLTIP_TEXT.lock().unwrap().is_empty() {
-                        panic!(
-                            "Internal error: group click detected for group id = {}, but \
-                            TOOLTIP_TEXT is empty.",
-                            group_id
-                        );
-                    }
                     let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
                     copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)

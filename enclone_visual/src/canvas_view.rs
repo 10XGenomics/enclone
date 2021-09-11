@@ -3,6 +3,7 @@
 use crate::GROUP_ID;
 use crate::GROUP_ID_CLICKED_ON;
 use crate::*;
+use enclone_tail::string_width::*;
 use iced::canvas::event::{self, Event};
 use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
@@ -79,8 +80,12 @@ impl CanvasView {
             match &g[i] {
                 crate::geometry::Geometry::Text(o) => {
                     height = height.max(o.p.y);
-                    // not right: need to add text length
-                    width = width.max(o.p.x);
+                    let mut tmax = o.p.x;
+                    // what about dejavusans?
+                    if o.font == "Arial" {
+                        tmax += arial_width(&o.t, o.font_size as f64) as f32;
+                    }
+                    width = width.max(tmax);
                 }
                 crate::geometry::Geometry::Rectangle(rect) => {
                     height = height.max(rect.p.y + rect.height);
@@ -128,7 +133,12 @@ fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
         max_height = SVG_NULL_HEIGHT as f32;
     }
     max_height -= 5.0;
-    let scale_x = MAX_WIDTH / width;
+    let mut max_width = MAX_WIDTH;
+    let current_width = CURRENT_WIDTH.load(SeqCst);
+    if current_width > INITIAL_WIDTH as usize {
+        max_width += (current_width - INITIAL_WIDTH as usize) as f32;
+    }
+    let scale_x = max_width / width;
     let scale_y = max_height / height;
     let mut scale = scale_y;
     if scale_x < scale_y {
@@ -260,7 +270,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                 }
             }
         }
-        if pos_same && geom_same {
+        let mut size_same = true;
+        if CURRENT_WIDTH.load(SeqCst) != CURRENT_WIDTH_LAST_SEEN.load(SeqCst) {
+            size_same = false;
+            CURRENT_WIDTH_LAST_SEEN.store(CURRENT_WIDTH.load(SeqCst), SeqCst);
+        }
+        if pos_same && geom_same && size_same {
             let mut v = OUT_GEOMETRIES.lock().unwrap().clone();
             v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
             return v;
@@ -294,7 +309,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
         // Rebuild geometries if needed.
 
         let mut v;
-        if geom_same {
+        if geom_same && size_same {
             v = OUT_GEOMETRIES.lock().unwrap().clone();
         } else {
             let mut frame = Frame::new(bounds.size());
@@ -509,7 +524,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 * tooltip_font_size
                                 * DEJAVU_WIDTH_OVER_HEIGHT;
                             let box_height = height_in_chars as f32 * tooltip_font_size;
-                            if xpos + box_width <= MAX_WIDTH {
+                            let mut max_width = MAX_WIDTH;
+                            let current_width = CURRENT_WIDTH.load(SeqCst);
+                            if current_width > INITIAL_WIDTH as usize {
+                                max_width += (current_width - INITIAL_WIDTH as usize) as f32;
+                            }
+                            if xpos + box_width <= max_width {
                                 frame.fill_rectangle(
                                     Point { x: 0.0, y: 0.0 },
                                     Size {
@@ -600,7 +620,12 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 * tooltip_font_size
                                 * DEJAVU_WIDTH_OVER_HEIGHT;
                             let box_height = height_in_chars as f32 * tooltip_font_size;
-                            if xpos + box_width <= MAX_WIDTH {
+                            let mut max_width = MAX_WIDTH;
+                            let current_width = CURRENT_WIDTH.load(SeqCst);
+                            if current_width > INITIAL_WIDTH as usize {
+                                max_width += (current_width - INITIAL_WIDTH as usize) as f32;
+                            }
+                            if xpos + box_width <= max_width {
                                 frame.fill_rectangle(
                                     Point { x: 0.0, y: 0.0 },
                                     Size {

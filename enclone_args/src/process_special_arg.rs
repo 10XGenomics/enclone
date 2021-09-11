@@ -8,6 +8,7 @@ use enclone_core::defs::*;
 use enclone_core::linear_condition::*;
 use evalexpr::*;
 use io_utils::*;
+use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
 use string_utils::*;
@@ -60,35 +61,124 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
-    } else if arg.starts_with("CELL_COLOR=var,") {
-        let var_args = arg
-            .after("CELL_COLOR=var,")
-            .split(',')
-            .collect::<Vec<&str>>();
-        if var_args.is_empty() || var_args.len() > 3 {
-            return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+    } else if arg.starts_with("HONEY=") {
+        let mut parts = Vec::<Vec<String>>::new();
+        {
+            let subparts = arg.after("HONEY=").split(',').collect::<Vec<&str>>();
+            if subparts.len() == 0 || !subparts[0].contains("=") {
+                return Err(format!("\nSyntax for HONEY=... is incorrect.\n"));
+            }
+            let mut part = Vec::<String>::new();
+            for i in 0..subparts.len() {
+                if subparts[i].contains("=") {
+                    if part.len() > 0 {
+                        parts.push(part.clone());
+                        part.clear();
+                    }
+                }
+                part.push(subparts[i].to_string());
+            }
+            if part.len() > 0 {
+                parts.push(part);
+            }
         }
-        let var = &var_args[0];
+        ctl.plot_opt.use_legend = true;
+        let mut out_count = 0;
+        let mut legend_count = 0;
+        let mut color_count = 0;
         let (mut min, mut max) = (None, None);
-        if var_args.len() >= 2 {
-            let x = var_args[1];
-            if !x.parse::<f64>().is_ok() {
-                return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+        let (mut var, mut display_var) = (String::new(), String::new());
+        for p in parts.iter() {
+            let mut p = p.clone();
+            let part_name = p[0].before("=").to_string();
+            p[0] = p[0].after("=").to_string();
+            let err = format!(
+                "\nUnrecognized {} specification {}.\n",
+                part_name,
+                p.iter().format(",")
+            );
+            if part_name == "out" {
+                if !p.solo() {
+                    return Err(err);
+                }
+                if p[0] != "stdout"
+                    && p[0] != "stdout.png"
+                    && p[0] != "gui"
+                    && !p[0].ends_with(".svg")
+                    && !p[0].ends_with(".png")
+                {
+                    return Err(format!(
+                        "\nHONEY out file needs to end with .svg or .png.\n"
+                    ));
+                }
+                ctl.plot_opt.plot_file = p[0].to_string();
+                out_count += 1;
+            } else if part_name == "legend" {
+                if p.solo() && p[0] == "none" {
+                    ctl.plot_opt.use_legend = false;
+                    legend_count += 1;
+                } else {
+                    return Err(err);
+                }
+            } else if part_name == "color" {
+                color_count += 1;
+                if p[0] != "var" || p.len() < 2 {
+                    return Err(err);
+                }
+                var = p[1].to_string();
+                display_var = var.clone();
+                if var.contains(":") {
+                    display_var = var.before(":").to_string();
+                    var = var.after(":").to_string();
+                }
+                if p.len() >= 3 {
+                    if p[2].len() > 0 && p[2] != "turbo" {
+                        return Err(err);
+                    }
+                }
+                if p.len() >= 4 {
+                    let scale = &p[3..];
+                    if scale.len() > 0 && scale[0] != "minmax" {
+                        return Err(err);
+                    }
+                    if scale.len() >= 2 {
+                        if !scale[1].parse::<f64>().is_ok() {
+                            return Err(err);
+                        }
+                        min = Some(scale[1].force_f64());
+                    }
+                    if scale.len() >= 3 {
+                        if !scale[2].parse::<f64>().is_ok() {
+                            return Err(err);
+                        }
+                        max = Some(scale[2].force_f64());
+                    }
+                    if min.is_some() && max.is_some() && min >= max {
+                        return Err(err);
+                    }
+                }
+            } else {
+                return Err(format!("\nUnrecognized specification {}=....\n", part_name));
             }
-            min = Some(x.force_f64());
         }
-        if var_args.len() == 3 {
-            let x = var_args[2];
-            if !x.parse::<f64>().is_ok() {
-                return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
-            }
-            max = Some(x.force_f64());
+        if out_count == 0 {
+            return Err(format!("\nHONEY=... must specify out=....\n"));
         }
-        if min.is_some() && max.is_some() && min >= max {
-            return Err(format!("\nCELL_COLOR arguments don't make sense.\n"));
+        if out_count > 1 {
+            return Err(format!("\nHONEY=... must specify out=... only once.\n"));
+        }
+        if legend_count > 1 {
+            return Err(format!("\nHONEY=... may specify legend=... only once.\n"));
+        }
+        if color_count == 0 {
+            return Err(format!("\nHONEY=... must specify color=....\n"));
+        }
+        if color_count > 1 {
+            return Err(format!("\nHONEY=... must specify color=... only once.\n"));
         }
         let v = ColorByVariableValue {
-            var: var.to_string(),
+            var: var,
+            display_var: display_var,
             min: min,
             max: max,
         };

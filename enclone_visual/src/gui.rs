@@ -50,6 +50,8 @@ impl Application for EncloneVisual {
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
+        CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
+        CURRENT_WIDTH_LAST_SEEN.store(INITIAL_WIDTH as usize, SeqCst);
         x.height = INITIAL_HEIGHT;
         let mut home = String::new();
         for (key, value) in env::vars() {
@@ -324,7 +326,6 @@ impl Application for EncloneVisual {
 
         // Define the button complex that is the "control panel".
 
-        // let svg_height = if !self.h.is_blank_current() {
         let mut blank = false;
         if self.h.history_index > 0 {
             blank = self.h.is_blank[self.h.history_index as usize - 1];

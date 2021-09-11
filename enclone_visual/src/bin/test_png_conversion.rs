@@ -1,11 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_visual::convert_svg_to_png::*;
+use enclone_core::convert_svg_to_png::*;
 use pretty_trace::*;
+use std::env;
+use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
-    let svg = std::fs::read("/Users/david.jaffe/plot.svg").unwrap();
+    let args: Vec<String> = env::args().collect();
+    let svg_file = &args[1];
+    let png_file = format!("{}.png", svg_file.rev_before(".svg"));
+    let svg = std::fs::read(&svg_file).unwrap();
     let png = convert_svg_to_png(&svg);
-    std::fs::write("/Users/david.jaffe/plot.png", &png).unwrap();
+    std::fs::write(&png_file, &png).unwrap();
 }

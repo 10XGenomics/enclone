@@ -22,8 +22,9 @@
 
 <h2>honeycomb plots</h2>
 
-<p>#enclone provides four ways to assign colors in such a plot.  We describe them in order of
-precedence, i.e. color data for the first will be used if provided, etc.</p>
+<p>Honeycomb plots display cells as dots, with each clonotype represented as a hexagonal
+cluster of cells.  #enclone provides various controls over the configuration of the plots, as
+described in the next sections.
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
           padding: 8px; width: 950px">
@@ -32,6 +33,15 @@ You may wish to use the <code>MIN_CELLS</code> option
 (see <a href="../../pages/auto/help.filter.html">enclone help filter</a>) to exclude tiny 
 clonotypes, which might otherwise crowd the image and slow down plotting.
 </p>
+
+<hr>
+
+<h2>coloring of cells in honeycomb plots</h2>
+
+<p>#enclone provides five ways to assign colors in such a plot.  We describe them in order of
+precedence, i.e. color data for the first will be used if provided, etc.</p>
+
+<p>The syntax for this is under development and fragmented at present.</p>
 
 <hr>
 
@@ -63,41 +73,6 @@ will be picked for you.  You can specify a particular app e.g. with
 <code>enclone BCR=123085 MIN_CELLS=10 PLOT="plot.svg,s1->blue" NOPRINT</code>.</p>
 
 There is another example on the main #enclone page, based on pre- and post-vaccination samples.
-
-<p>
-If desired, the honeycomb plots can be forced into the first quadrant using the 
-<code>QUAD_HIVE</code> option.  Here, for variety, we show all cells, and skip the legend.
-</p>
-
-<p>
-<code>
-enclone BCR=123085:123089 PLOT="plot.svg,s1->blue,s2->red" QUAD_HIVE NOPRINT 
-</code>
-</p>
-
-<img src="../../img/quad_hive.svg" alt="quad hive plot" title="quad hive plot">
-
-<p>#enclone can make side-by-side honeycomb plots to facilitate comparison between different cell
-origins.  For example, these origins could be from different tissues, or the cells could be 
-prepared differently.</p>
-
-<p>In this example we have two datasets, specified using a colon as <code>123085:123089</code>, 
-which treats them as arising from two origins.  These particular data are actually replicates.</p>
-
-<p>Specification in this manner with <code>SPLIT_PLOT_BY_ORIGIN</code> causes all the 
-<code>123085</code> cells to be shown in the left plot, and all the <code>123089</code> cells to 
-be shown in the right plot.  Thus a cluster in the picture may be a partial clonotype, relative to 
-the entirety of the data.</p>
-
-<p>In principle more than two origins can be specified.</p>
-
-<p>
-<code>
-enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
-</code>
-</p>
-
-<img src="../../img/twin_plot.svg" alt="twin plot" title="twin plot">
 
 <br><br>
 
@@ -150,6 +125,83 @@ not long enough.</p>
 
 <hr>
 
+<br><span style="color:red; font-weight:bold">5.</span> The fifth way is to color cells by the
+value of a variable.
+
+<p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY=out=plot.svg,color=var,u_cell1
+NOPRINT</code></p>
+
+<img src="../../img/var.png" style="max-width: 60%" lt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
+
+<p>In the given dataset, for cells in clonotypes having at least ten cells,
+the plot colors each by the value of the variable 
+<code>u_cell1</code>, the number of UMIs in the first chain within the cell's clonotype.
+The variable is sometimes undefined because a clonotype can include cells which are missing the 
+first chain.  Note also that using the variable <code>u1</code> would have instead colored cells
+by the median number of UMIs for their first chain, where the median is computed across the
+exact subclonotype containing the cell.</p>
+
+<p>Here is the current full syntax.
+<span style="color:red">Red</span> fields are to be filled in by you.
+
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+
+<tr><td> <b>part</b> </td>
+    <td> <b>syntax</b> </td>
+    <td> <b>notes</b> </td</tr>
+
+<tr><td> <code>everything</code> </td>
+    <td> <code>HONEY=out-spec,color-spec,legend-spec</code> </td>
+    <td> order of specification fields is ignored </td></tr>
+
+<tr><td> <code>out-spec</code> </td>
+    <td> <code>out=<span style="color:red">filename</span></code> </td>
+    <td> <code><span style="color:red">filename</code></span> 
+    is the output file to be generated; it should end with <code>.svg</code> 
+    or <code>.png</code><br>depending on the desired output file type</td></tr>
+
+<tr><td> <code>legend-spec</code> </td>
+    <td> <code>legend=none</code></td>
+    <td> to suppress legend; omit this field to show the legend</td></tr>
+
+<tr><td> <code>color-spec</code> </td>
+    <td> <code>var,<span style="color:red">abbr</span>:<span style="color:red">name</span>,turbo,scale-spec</code></td>
+    <td>1. <code>turbo</code> is the name of the color map and may be omitted
+    <br>2. <code><span style="color:red">abbr</span>:</code> may be omitted; 
+    <code><span style="color:red">abbr</code></span> is the display name</td></tr>
+
+<tr><td> <code>scale-spec</code> </td>
+    <td><code>minmax,<span style="color:red">min</span>,<span style="color:red">max
+    </span></code></td>
+    <td>1. <code>scale-spec</code> may be omitted entirely<br>
+    2. <code><span style="color:red">min</span></code> 
+    or <code><span style="color:red">max</span></code> or both may be omitted
+    <br>3. They describe the range of values that define the color map.
+    <br>4. Their default values are the min and max of the variable values.
+    <br>5. If <code><span style="color:red">min</span></code> or <code><span style="color:red">max</span></code> is specified and a value is outside the range, the value 
+    <br>will be raised to
+        <code><span style="color:red">min</span></code> or lowered to <code><span style="color:red">max</span></code> before assigning its color.
+    </td></tr>
+
+</table>
+
+<br>
+
+Here are some examples that illustrate use of the optional fields:
+
+<br>
+
+<br><code>HONEY=out=plot.svg,color=var,u_cell1</code>
+<br><code>HONEY=out=plot.svg,color=var,u_cell1,legend=none</code>
+<br><code>HONEY=out=plot.svg,color=var,u1:u_cell1</code>
+<br><code>HONEY=out=plot.svg,color=var,u_cell1,,minmax,0,10000</code>
+
+<br><br>
+
+<hr>
+
+<h2>colors</h2>
+
 <p>
 The colors should be valid colors for use in an svg file.  They can be named colors like red or
 blue (see <a href="https://www.w3.org/TR/SVG11/types.html#ColorKeywords">here</a> for a full list) 
@@ -168,6 +220,51 @@ Each cell is shown as a disk having the given color, and each clonotype is shown
 these disks, which are positioned at random.  The filename argument may be "stdout". 
 </p>
 
+<hr>
+
+<h2>layout</h2>
+
+<p>We describe here two options that can be used to modify the layout of honeycomb plots.</p>
+
+<p>
+If desired, the honeycomb plots can be forced into the first quadrant using the 
+<code>QUAD_HIVE</code> option.  
+</p>
+
+<p>
+<code>
+enclone BCR=123085:123089 PLOT="plot.svg,s1->blue,s2->red" QUAD_HIVE NOPRINT 
+</code>
+</p>
+
+<img src="../../img/quad_hive.svg" alt="quad hive plot" title="quad hive plot">
+
+<p>#enclone can make side-by-side honeycomb plots to facilitate comparison between different cell
+origins.  For example, these origins could be from different tissues, or the cells could be 
+prepared differently.</p>
+
+<p>In this example we have two datasets, specified using a colon as <code>123085:123089</code>, 
+which treats them as arising from two origins.  These particular data are actually replicates.</p>
+
+<p>Specification in this manner with <code>SPLIT_PLOT_BY_ORIGIN</code> causes all the 
+<code>123085</code> cells to be shown in the left plot, and all the <code>123089</code> cells to 
+be shown in the right plot.  Thus a cluster in the picture may be a partial clonotype, relative to 
+the entirety of the data.</p>
+
+<p>In principle more than two origins can be specified.</p>
+
+<p>
+<code>
+enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
+</code>
+</p>
+
+<img src="../../img/twin_plot.svg" alt="twin plot" title="twin plot">
+
+<hr>
+
+<h2>other controls</h2>
+
 <p>
 To add a legend to the graph, add the argument <code>LEGEND</code> to your command line.  This 
 will give you an
@@ -175,8 +272,6 @@ auto-generated legend.  You can also customize the legend by adding an argument 
 <code>LEGEND=color1,"text1",...,colorn,"textn"</code>
 to the command line.
 </p>
-
-<hr>
 
 <p>
 When #enclone creates a honeycomb plot, it tries to rearrange clonotypes so as to place

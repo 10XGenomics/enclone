@@ -25,9 +25,9 @@ fn main() {
 
     let args: Vec<String> = env::args().collect();
     if args.len() == 2 && args[1] == "BUILD" {
-        let mut results = Vec::<(usize, String)>::new();
+        let mut results = Vec::<(usize, Vec<u8>)>::new();
         for i in 0..SITE_EXAMPLES.len() {
-            results.push((i, String::new()));
+            results.push((i, Vec::new()));
         }
         results.par_iter_mut().for_each(|r| {
             let i = r.0;
@@ -46,13 +46,15 @@ fn main() {
                 );
                 std::process::exit(1);
             }
-            r.1 = stringme(&new.stdout);
+            r.1 = new.stdout.clone();
         });
         for i in 0..SITE_EXAMPLES.len() {
+            // Move file to the site location.
+
             let example_name = SITE_EXAMPLES[i].0;
             let out_file = format!("{}", example_name);
-            let mut f = open_for_write_new![&out_file];
-            fwrite!(&mut f, "{}", results[i].1);
+            let mut file = File::create(&out_file).unwrap();
+            file.write_all(&results[i].1).unwrap();
         }
     }
     let mut site_ex = Vec::<String>::new();

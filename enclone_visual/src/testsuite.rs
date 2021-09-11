@@ -85,6 +85,33 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::SummaryOpen(Ok(())),
             Message::SetName("restore_metrics"),
         ],
+        // 5 = enclone VIS
+        vec![
+            Message::InputChanged1(
+                "enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,IGHV3-7_g_cell"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("color_by_var"),
+            Message::InputChanged1(
+                "enclone BCR=85333 HONEY=out=gui,color=var,u_cell1,,minmax,0,10"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("trunc"),
+            Message::InputChanged1(
+                "enclone BCR=85333 HONEY=out=gui,color=var,u_cell1,legend=none"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("no_legend"),
+            Message::InputChanged1(
+                "enclone BCR=85333 HONEY=out=gui,color=var,u1:u_cell1"
+                .to_string()
+            ),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetName("abbr"),
+        ],
     ]
 }
 
@@ -119,6 +146,10 @@ const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
 const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
                           SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
+
+// This block of tests is good because it tests a lot, but bad because one can't test parts of it.
+// For future tests, it would be better to have smaller chunks, as in the earlier tests.  Except
+// that, there is some startup cost, so we don't want the chunks to be too small.
 
 #[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 40] = [
