@@ -567,18 +567,19 @@ pub fn plot_clonotypes(
     let mut by_var = false;
     let mut var = String::new();
     let mut display_var = String::new();
+    let mut xmin = None;
+    let mut xmax = None;
     match ctl.plot_opt.cell_color {
         CellColor::ByVariableValue(ref x) => {
             by_var = true;
             var = x.var.clone();
             display_var = x.display_var.clone();
+            xmin = x.min.clone();
+            xmax = x.max.clone();
         }
         _ => {}
     };
     if by_var && ctl.plot_opt.use_legend {
-        let mut low = 0.0;
-        let mut high = 0.0;
-        let n = VAR_LOW.lock().unwrap().len();
         let mut defined = false;
         let mut have_undefined = false;
         for i in 0..color.len() {
@@ -586,6 +587,11 @@ pub fn plot_clonotypes(
                 have_undefined = true;
             }
         }
+
+        // Get the actual low and high values for the variable.
+
+        let (mut low, mut high) = (0.0, 0.0);
+        let n = VAR_LOW.lock().unwrap().len();
         for i in 0..n {
             if VAR_LOW.lock().unwrap()[i].0 == var {
                 low = VAR_LOW.lock().unwrap()[i].1;
@@ -593,6 +599,9 @@ pub fn plot_clonotypes(
                 defined = true;
             }
         }
+
+        // Print the variable name.
+
         *svg = svg.rev_before("<").to_string();
         let font_size = 20;
         let name_bar_height = font_size as f64 + font_size as f64 / 2.0;
@@ -668,9 +677,17 @@ pub fn plot_clonotypes(
             // Define the tick marks.
 
             const MAX_TICKS: usize = 5;
-            let mut ticks = ticks(low as f32, high as f32, MAX_TICKS, false);
-            ticks.insert(0, format!("{}", low));
-            ticks.push(format!("{}", high));
+            let mut zlow = low;
+            if xmin.is_some() {
+                zlow = xmin.unwrap();
+            }
+            let mut zhigh = high;
+            if xmax.is_some() {
+                zhigh = xmax.unwrap();
+            }
+            let mut ticks = ticks(zlow as f32, zhigh as f32, MAX_TICKS, false);
+            ticks.insert(0, format!("{}", zlow));
+            ticks.push(format!("{}", zhigh));
 
             // Add the ticks.
 
@@ -693,14 +710,14 @@ pub fn plot_clonotypes(
                 } else {
                     vshift = font_size as f64 / 4.0;
                 }
-                let ystart = legend_ystart + available * (text.force_f64() - low) / (high - low);
+                let ystart = legend_ystart + available * (text.force_f64() - zlow) / (zhigh - zlow);
                 let text_ystart = ystart + vshift;
                 text_ystarts.push(text_ystart);
             }
             for (i, text) in ticks.iter().enumerate() {
                 // Generate the text.
 
-                let ystart = legend_ystart + available * (text.force_f64() - low) / (high - low);
+                let ystart = legend_ystart + available * (text.force_f64() - zlow) / (zhigh - zlow);
                 let text_ystart = text_ystarts[i];
                 if i == 1 && text_ystart - text_ystarts[0] < font_size as f64 {
                     continue;
