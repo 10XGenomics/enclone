@@ -728,12 +728,19 @@ pub fn plot_clonotypes(
                 {
                     continue;
                 }
+                let mut textp = text.clone();
+                if i == 0 && zlow > low {
+                    textp = format!("≤ {}", text);
+                }
+                if i == ticks.len() - 1 && zhigh < high {
+                    textp = format!("≥ {}", text);
+                }
                 *svg += &format!(
                     "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
                      font-size=\"{}\">{}</text>\n",
-                    text_xstart, text_ystart, font_size, text,
+                    text_xstart, text_ystart, font_size, textp,
                 );
-                max_text_width = max_text_width.max(arial_width(&text, font_size as f64));
+                max_text_width = max_text_width.max(arial_width(&textp, font_size as f64));
 
                 // Add tick lines.
 
