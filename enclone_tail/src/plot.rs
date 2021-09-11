@@ -640,17 +640,24 @@ pub fn plot_clonotypes(
                 legend_xstart, legend_ystart, band_width, available,
             );
 
-            // Make the color bar.
+            // Make the color bar.  It would make sense to have 256 bars that abut exactly,
+            // however rendering appears to be better if the bars overlap slightly.  Since when
+            // there are overlapping rectangles, the later rectangle should dominate, this should
+            // not affect the appearance at all.  But it does.
 
             let band_height = available / 256.0;
             for i in 0..256 {
                 let ystart = legend_ystart + i as f64 * band_height;
                 let c = &TURBO_SRGB_BYTES[i];
                 let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                let mut add = 0.0;
+                if i < 255 {
+                    add = band_height / 10.0;
+                }
                 *svg += &format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                      style=\"fill:{}\" />\n",
-                    legend_xstart, ystart, band_width, band_height, color,
+                    legend_xstart, ystart, band_width, band_height + add, color,
                 );
             }
 
