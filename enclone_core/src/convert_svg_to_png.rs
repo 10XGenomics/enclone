@@ -82,6 +82,7 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
         fontdb: &fontdb,
     };
     let mut svg = stringme(&svg);
+    svg = svg.replace("arial", "Liberation Sans");
     svg = svg.replace("Arial", "Liberation Sans");
     let tree = usvg::Tree::from_data(&svg.as_bytes(), &usvg);
     if tree.is_err() {
