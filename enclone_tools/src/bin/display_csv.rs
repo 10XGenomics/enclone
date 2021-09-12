@@ -23,7 +23,13 @@ fn main() {
             fields = values;
         } else {
             for j in 0..fields.len() {
-                println!("\nline {}, fields {} ({}) = {}", i, j + 1, fields[j], values[j]);
+                println!(
+                    "\nline {}, fields {} ({}) = {}",
+                    i,
+                    j + 1,
+                    fields[j],
+                    values[j]
+                );
             }
         }
     }

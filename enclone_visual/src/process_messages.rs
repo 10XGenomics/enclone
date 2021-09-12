@@ -526,46 +526,7 @@ impl EncloneVisual {
 
             Message::SubmitButtonPressed(_) => submit_button_pressed(self),
 
-            Message::DelButtonPressed(_) => {
-                self.modified = true;
-                let h = self.h.history_index - 1;
-                self.h.svg_history.remove(h as usize);
-                self.h.summary_history.remove(h as usize);
-                self.h.input1_history.remove(h as usize);
-                self.h.input2_history.remove(h as usize);
-                self.h.narrative_history.remove(h as usize);
-                self.h.translated_input_history.remove(h as usize);
-                self.h.displayed_tables_history.remove(h as usize);
-                self.h.table_comp_history.remove(h as usize);
-                self.h.last_widths_history.remove(h as usize);
-                self.h.is_blank.remove(h as usize);
-                self.h.descrip_history.remove(h as usize);
-                if self.state_count() == 0 {
-                    self.h.history_index -= 1;
-                    self.input1_value.clear();
-                    self.input2_value.clear();
-                    self.svg_value.clear();
-                    self.png_value.clear();
-                    self.submit_button_text.clear();
-                    self.summary_value.clear();
-                    self.output_value.clear();
-                    self.table_comp_value.clear();
-                    self.last_widths_value.clear();
-                    self.descrip_value.clear();
-                    self.translated_input_value.clear();
-                    self.current_tables.clear();
-                } else {
-                    if h > 0 {
-                        self.h.history_index -= 1;
-                    }
-                    self.update_to_current();
-                }
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop0(), Message::Capture)
-                }
-            }
+            Message::DelButtonPressed(_) => do_del_button_pressed(self),
 
             Message::BackButtonPressed(_) => {
                 self.h.history_index -= 1;
