@@ -453,7 +453,7 @@ pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Comm
     Command::perform(compute_share(), Message::CompleteDoShare)
 }
 
-pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
+pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;
     slf.input_value = slf.input1_value.clone();
     if slf.input1_value.len() > 0 && slf.input2_value.len() > 0 {

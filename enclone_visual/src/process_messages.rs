@@ -524,7 +524,7 @@ impl EncloneVisual {
                 }
             }
 
-            Message::SubmitButtonPressed(_) => submit_button_pressed(self),
+            Message::SubmitButtonPressed(_) => do_submit_button_pressed(self),
 
             Message::DelButtonPressed(_) => do_del_button_pressed(self),
 
