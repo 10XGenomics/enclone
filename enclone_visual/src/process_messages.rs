@@ -276,7 +276,7 @@ impl EncloneVisual {
                 if !self.just_restored && !self.delete_requested[index] {
                     let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.modified {
+                    if self.modified && self.state_count() > 0 {
                         self.save();
                         index += 1;
                     }
