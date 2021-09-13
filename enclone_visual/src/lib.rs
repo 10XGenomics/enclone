@@ -434,6 +434,7 @@ pub static RELEASE_MY_SHARES: AtomicBool = AtomicBool::new(false);
 pub static PLAYBACK: AtomicBool = AtomicBool::new(false);
 pub static FAIL_ON_ERROR: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
+pub static PSEUDO_META: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);

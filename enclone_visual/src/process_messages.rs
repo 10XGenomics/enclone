@@ -26,6 +26,41 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Recompute => {
+                let n = self.state_count();
+                if n == 0 {
+                    return Command::none();
+                }
+                let mut messages = Vec::<Message>::new();
+                messages.push(Message::ConsoleClose);
+                let k = self.hi();
+                for _ in 0..k {
+                    messages.push(Message::BackButtonPressed(Ok(())));
+                }
+                for i in 0..n {
+                    messages.push(Message::SubmitButtonPressed(Ok(())));
+                    messages.push(Message::BackButtonPressed(Ok(())));
+                    messages.push(Message::DelButtonPressed(Ok(())));
+                    if i < n - 1 {
+                        messages.push(Message::ForwardButtonPressed(Ok(())));
+                        if i > 0 {
+                            messages.push(Message::ForwardButtonPressed(Ok(())));
+                        }
+                    }
+                }
+                if n >= 2 {
+                    for _ in 0..n - 2 {
+                        messages.push(Message::BackButtonPressed(Ok(())));
+                    }
+                }
+                messages.push(Message::ConsoleOpen);
+                self.meta_pos = 0;
+                self.this_meta = messages;
+                META_TESTING.store(true, SeqCst);
+                PSEUDO_META.store(true, SeqCst);
+                Command::perform(noop0(), Message::Meta)
+            }
+
             Message::Snapshot => {
                 self.snapshot_start = Some(Instant::now());
                 self.snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
@@ -151,6 +186,9 @@ impl EncloneVisual {
 
             Message::Meta(_) => {
                 if self.meta_pos == self.this_meta.len() {
+                    if PSEUDO_META.load(SeqCst) {
+                        return Command::none();
+                    }
                     std::process::exit(0);
                 }
                 let mut done = false;
@@ -211,6 +249,9 @@ impl EncloneVisual {
             Message::CompleteMeta(_) => {
                 capture(&self.save_name, self.window_id);
                 if self.meta_pos == self.this_meta.len() {
+                    if PSEUDO_META.load(SeqCst) {
+                        return Command::none();
+                    }
                     std::process::exit(0);
                 }
                 Command::perform(noop0(), Message::Meta)
