@@ -100,7 +100,8 @@ pub fn build_clusters(
                 }
             }
 
-            // Move colors around to get vertical separation, e.g. blues on left, reds on right.
+            // Move colors around to get vertical separation within a given clonotype, 
+            // e.g. blues on left, reds on right.
 
             coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
             sort_sync2(&mut colors, &mut barcodes);
