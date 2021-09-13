@@ -26,6 +26,15 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyLastNarrative => {
+                let index = self.h.narrative_history[(self.h.history_index - 2) as usize];
+                let last = self.h.narrative_hist_uniq[index as usize].clone();
+                let len = self.h.narrative_hist_uniq.len();
+                self.h.narrative_hist_uniq.push(last);
+                self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                Command::none()
+            }
+
             Message::Recompute => {
                 let n = self.state_count();
                 if n == 0 {
@@ -39,6 +48,7 @@ impl EncloneVisual {
                 }
                 for i in 0..n {
                     messages.push(Message::SubmitButtonPressed(Ok(())));
+                    messages.push(Message::CopyLastNarrative);
                     messages.push(Message::BackButtonPressed(Ok(())));
                     messages.push(Message::DelButtonPressed(Ok(())));
                     if i < n - 1 {
