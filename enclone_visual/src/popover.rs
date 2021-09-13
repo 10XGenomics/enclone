@@ -14,6 +14,18 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     console += " \n\n\n";
     let console_close_button = Button::new(&mut slf.console_close_button, Text::new("Dismiss"))
         .on_press(Message::ConsoleClose);
+    let console_text = "The current console output is shown below.";
+    let recompute_text = "The recompute button causes each state within the given session to be \
+        recomputed.  The purpose of this is to update the session to reflect the results of the \
+        current enclone visual code, in the event that it has changed.  The recompute button will \
+        cause the screen to flash as it recapitulates each computation.  When done, it will return \
+        to this page.\n\n\
+        Typically the way you would use this is to go to archive page, restore a session, then \
+        come here and push Recompute, then exit this page.  If the recomputed session looks right, \
+        then you would push Save, and finally go to the archive page and delete the original \
+        version.";
+    let recompute_button =
+        Button::new(&mut slf.recompute_button, Text::new("Recompute")).on_press(Message::Recompute);
     let top_bar = Row::new()
         .push(console_title)
         .push(Space::with_width(Length::Fill))
@@ -34,6 +46,11 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .spacing(SPACING)
         .padding(20)
         .push(top_bar)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(Text::new(recompute_text))
+        .push(recompute_button)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(Text::new(console_text))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(console_scrollable);
     Container::new(content)

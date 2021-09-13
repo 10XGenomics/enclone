@@ -897,6 +897,7 @@ pub fn group_and_print_clonotypes(
         );
         print!("{}", s);
     }
+    ctl.perf_stats(&t, "in group code, before plotting clonotypes");
 
     // Plot clonotypes.
 
@@ -915,6 +916,7 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
+    let t = Instant::now();
     if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {

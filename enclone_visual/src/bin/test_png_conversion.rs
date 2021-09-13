@@ -1,5 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// usage: test_png_conversion whatever.svg
+// ==> generates whatever.png
+
 use enclone_core::convert_svg_to_png::*;
 use pretty_trace::*;
 use std::env;

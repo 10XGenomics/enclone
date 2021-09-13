@@ -26,6 +26,51 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyLastNarrative => {
+                let index = self.h.narrative_history[(self.h.history_index - 2) as usize];
+                let last = self.h.narrative_hist_uniq[index as usize].clone();
+                let len = self.h.narrative_hist_uniq.len();
+                self.h.narrative_hist_uniq.push(last);
+                self.h.narrative_history[(self.h.history_index - 1) as usize] = len as u32;
+                Command::none()
+            }
+
+            Message::Recompute => {
+                let n = self.state_count();
+                if n == 0 {
+                    return Command::none();
+                }
+                let mut messages = Vec::<Message>::new();
+                messages.push(Message::ConsoleClose);
+                let k = self.hi();
+                for _ in 0..k {
+                    messages.push(Message::BackButtonPressed(Ok(())));
+                }
+                for i in 0..n {
+                    messages.push(Message::SubmitButtonPressed(Ok(())));
+                    messages.push(Message::CopyLastNarrative);
+                    messages.push(Message::BackButtonPressed(Ok(())));
+                    messages.push(Message::DelButtonPressed(Ok(())));
+                    if i < n - 1 {
+                        messages.push(Message::ForwardButtonPressed(Ok(())));
+                        if i > 0 {
+                            messages.push(Message::ForwardButtonPressed(Ok(())));
+                        }
+                    }
+                }
+                if n >= 2 {
+                    for _ in 0..n - 2 {
+                        messages.push(Message::BackButtonPressed(Ok(())));
+                    }
+                }
+                messages.push(Message::ConsoleOpen);
+                self.meta_pos = 0;
+                self.this_meta = messages;
+                META_TESTING.store(true, SeqCst);
+                PSEUDO_META.store(true, SeqCst);
+                Command::perform(noop0(), Message::Meta)
+            }
+
             Message::Snapshot => {
                 self.snapshot_start = Some(Instant::now());
                 self.snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
@@ -151,6 +196,11 @@ impl EncloneVisual {
 
             Message::Meta(_) => {
                 if self.meta_pos == self.this_meta.len() {
+                    if PSEUDO_META.load(SeqCst) {
+                        PSEUDO_META.store(false, SeqCst);
+                        META_TESTING.store(false, SeqCst);
+                        return Command::none();
+                    }
                     std::process::exit(0);
                 }
                 let mut done = false;
@@ -211,6 +261,11 @@ impl EncloneVisual {
             Message::CompleteMeta(_) => {
                 capture(&self.save_name, self.window_id);
                 if self.meta_pos == self.this_meta.len() {
+                    if PSEUDO_META.load(SeqCst) {
+                        PSEUDO_META.store(false, SeqCst);
+                        META_TESTING.store(false, SeqCst);
+                        return Command::none();
+                    }
                     std::process::exit(0);
                 }
                 Command::perform(noop0(), Message::Meta)
@@ -276,7 +331,7 @@ impl EncloneVisual {
                 if !self.just_restored && !self.delete_requested[index] {
                     let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.modified {
+                    if self.modified && self.state_count() > 0 {
                         self.save();
                         index += 1;
                     }
@@ -524,48 +579,9 @@ impl EncloneVisual {
                 }
             }
 
-            Message::SubmitButtonPressed(_) => submit_button_pressed(self),
+            Message::SubmitButtonPressed(_) => do_submit_button_pressed(self),
 
-            Message::DelButtonPressed(_) => {
-                self.modified = true;
-                let h = self.h.history_index - 1;
-                self.h.svg_history.remove(h as usize);
-                self.h.summary_history.remove(h as usize);
-                self.h.input1_history.remove(h as usize);
-                self.h.input2_history.remove(h as usize);
-                self.h.narrative_history.remove(h as usize);
-                self.h.translated_input_history.remove(h as usize);
-                self.h.displayed_tables_history.remove(h as usize);
-                self.h.table_comp_history.remove(h as usize);
-                self.h.last_widths_history.remove(h as usize);
-                self.h.is_blank.remove(h as usize);
-                self.h.descrip_history.remove(h as usize);
-                if self.state_count() == 0 {
-                    self.h.history_index -= 1;
-                    self.input1_value.clear();
-                    self.input2_value.clear();
-                    self.svg_value.clear();
-                    self.png_value.clear();
-                    self.submit_button_text.clear();
-                    self.summary_value.clear();
-                    self.output_value.clear();
-                    self.table_comp_value.clear();
-                    self.last_widths_value.clear();
-                    self.descrip_value.clear();
-                    self.translated_input_value.clear();
-                    self.current_tables.clear();
-                } else {
-                    if h > 0 {
-                        self.h.history_index -= 1;
-                    }
-                    self.update_to_current();
-                }
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop0(), Message::Capture)
-                }
-            }
+            Message::DelButtonPressed(_) => do_del_button_pressed(self),
 
             Message::BackButtonPressed(_) => {
                 self.h.history_index -= 1;

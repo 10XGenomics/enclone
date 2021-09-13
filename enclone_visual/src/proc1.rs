@@ -16,6 +16,47 @@ use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
 
+pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
+    slf.modified = true;
+    let h = slf.h.history_index - 1;
+    slf.h.svg_history.remove(h as usize);
+    slf.h.summary_history.remove(h as usize);
+    slf.h.input1_history.remove(h as usize);
+    slf.h.input2_history.remove(h as usize);
+    slf.h.narrative_history.remove(h as usize);
+    slf.h.translated_input_history.remove(h as usize);
+    slf.h.displayed_tables_history.remove(h as usize);
+    slf.h.table_comp_history.remove(h as usize);
+    slf.h.last_widths_history.remove(h as usize);
+    slf.h.is_blank.remove(h as usize);
+    slf.h.descrip_history.remove(h as usize);
+    if slf.state_count() == 0 {
+        slf.h.history_index -= 1;
+        slf.input1_value.clear();
+        slf.input2_value.clear();
+        slf.svg_value.clear();
+        slf.png_value.clear();
+        slf.submit_button_text.clear();
+        slf.summary_value.clear();
+        slf.output_value.clear();
+        slf.table_comp_value.clear();
+        slf.last_widths_value.clear();
+        slf.descrip_value.clear();
+        slf.translated_input_value.clear();
+        slf.current_tables.clear();
+    } else {
+        if h > 0 {
+            slf.h.history_index -= 1;
+        }
+        slf.update_to_current();
+    }
+    if !TEST_MODE.load(SeqCst) {
+        Command::none()
+    } else {
+        Command::perform(noop0(), Message::Capture)
+    }
+}
+
 pub fn do_archive_share(
     slf: &mut EncloneVisual,
     check_val: bool,
@@ -412,7 +453,7 @@ pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Comm
     Command::perform(compute_share(), Message::CompleteDoShare)
 }
 
-pub fn submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
+pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;
     slf.input_value = slf.input1_value.clone();
     if slf.input1_value.len() > 0 && slf.input2_value.len() > 0 {

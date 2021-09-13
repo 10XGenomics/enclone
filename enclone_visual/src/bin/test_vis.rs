@@ -406,7 +406,7 @@ fn main() {
 
     let used = elapsed(&t);
     if tests.is_empty() {
-        const EXPECTED_TIME: f64 = 43.2; // this is supposed to be the lowest observed value
+        const EXPECTED_TIME: f64 = 44.8; // this is supposed to be the lowest observed value
         const MAX_PERCENT_OVER: f64 = 4.2;
         let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
         if percent_over > MAX_PERCENT_OVER {
