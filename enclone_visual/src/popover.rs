@@ -24,8 +24,8 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         come here and push Recompute, then exit this page.  If the recomputed session looks right, \
         then you would push Save, and finally go to the archive page and delete the original \
         version.";
-    let recompute_button = Button::new(&mut slf.recompute_button, Text::new("Recompute"))
-        .on_press(Message::Recompute);
+    let recompute_button =
+        Button::new(&mut slf.recompute_button, Text::new("Recompute")).on_press(Message::Recompute);
     let top_bar = Row::new()
         .push(console_title)
         .push(Space::with_width(Length::Fill))
