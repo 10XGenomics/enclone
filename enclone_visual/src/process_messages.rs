@@ -187,6 +187,8 @@ impl EncloneVisual {
             Message::Meta(_) => {
                 if self.meta_pos == self.this_meta.len() {
                     if PSEUDO_META.load(SeqCst) {
+                        PSEUDO_META.store(false, SeqCst);
+                        META_TESTING.store(false, SeqCst);
                         return Command::none();
                     }
                     std::process::exit(0);
@@ -250,6 +252,8 @@ impl EncloneVisual {
                 capture(&self.save_name, self.window_id);
                 if self.meta_pos == self.this_meta.len() {
                     if PSEUDO_META.load(SeqCst) {
+                        PSEUDO_META.store(false, SeqCst);
+                        META_TESTING.store(false, SeqCst);
                         return Command::none();
                     }
                     std::process::exit(0);
