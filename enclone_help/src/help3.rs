@@ -89,8 +89,9 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              dataset will be used.\n\
              The parseable output fields may be specified using\n\
              \\bold{PCOLS=x1,...,xn}\n\
-             where each xi is one of the field names shown below.\n\\boldred{This option reduces} \
-             \\boldred{run time and memory usage, and prevents voluminous output.  Please use it!}",
+             where each xi is one of the field names shown below.\n\
+             \\boldred{If you use POUT, the PCOLS option reduces run time and memory usage, and }\
+             \\boldred{prevents voluminous}\n\\boldred{output.  Please use it!}",
             true,
         )?;
         h.print(
