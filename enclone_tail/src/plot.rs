@@ -311,6 +311,18 @@ pub fn plot_clonotypes(
             blacklist.push(p);
         }
 
+        // Partially translate turbo colors.
+
+        let tcn = turbo_color_names();
+        for i in 0..clusters.len() {
+            for j in 0..clusters[i].colors.len() {
+                if clusters[i].colors[j].starts_with("turbo-pre-") {
+                    let n = clusters[i].colors[j].after("turbo-pre-").force_usize();
+                    clusters[i].colors[j] = tcn[n].clone();
+                }
+            }
+        }
+
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
@@ -349,6 +361,19 @@ pub fn plot_clonotypes(
             i = j;
         }
         clusters = clusters2;
+
+        // Finish turbo color translation.
+
+        for i in 0..clusters.len() {
+            for j in 0..clusters[i].colors.len() {
+                if clusters[i].colors[j].starts_with("turbo-") {
+                    let n = bin_position(&tcn, &clusters[i].colors[j]);
+                    let c = &TURBO_SRGB_BYTES[n as usize];
+                    let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                    clusters[i].colors[j] = color;
+                }
+            }
+        }
     }
     ctl.perf_stats(&t, "plotting clonotypes");
 

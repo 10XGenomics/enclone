@@ -2,7 +2,6 @@
 
 // Assign the color to a cell in a honeycomb plot.
 
-use crate::colors::*;
 use crate::*;
 use ansi_escape::*;
 use enclone_core::cell_color::*;
@@ -118,8 +117,9 @@ pub fn assign_cell_color(
                             v = v.min(xmax);
                             v = v.max(xmin);
                             let vnorm = (v - xmin) / (xmax - xmin);
-                            let c = &TURBO_SRGB_BYTES[(vnorm * 255.0).round() as usize];
-                            color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                            // let c = &TURBO_SRGB_BYTES[(vnorm * 255.0).round() as usize];
+                            // color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                            color = format!("turbo-pre-{}", (vnorm * 255.0).round() as usize);
                         }
                     }
                 }
