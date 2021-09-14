@@ -47,6 +47,7 @@ message Unit {}
 
 message EncloneRequest {
   string args = 1;
+  optional string server_logfile = 2;
 }
 
 message EncloneResponse {

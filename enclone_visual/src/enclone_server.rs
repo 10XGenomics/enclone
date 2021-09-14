@@ -19,7 +19,7 @@ use itertools::Itertools;
 use log::{error, warn};
 use pretty_trace::*;
 use std::env;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use std::os::unix::fs::PermissionsExt;
 use std::sync::{Arc, Mutex};
@@ -69,6 +69,14 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
+        if req.server_logfile.is_some() {
+            let mut file = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(&req.server_logfile.as_ref().unwrap())
+                .unwrap();
+            writeln!(file, "Running enclone:\n  {}", args.join(" ")).unwrap();
+        }
         eprintln!("Running enclone:\n  {}", args.join(" "));
         let setup = main_enclone_setup(&args);
         if setup.is_err() {
@@ -282,6 +290,14 @@ impl Analyzer for EncloneAnalyzer {
             let mut e = GzEncoder::new(Vec::new(), Compression::default());
             let _ = e.write_all(&serialized);
             let gzipped = e.finish().unwrap();
+            if req.server_logfile.is_some() {
+                let mut file = OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(&req.server_logfile.as_ref().unwrap())
+                    .unwrap();
+                writeln!(file, "plot =\n{}", plot).unwrap();
+            }
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,

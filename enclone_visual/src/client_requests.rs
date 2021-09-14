@@ -177,7 +177,14 @@ pub async fn process_requests(
                 if CONFIG_FILE.lock().unwrap().len() > 0 {
                     line += &mut format!(" CONFIG={}", CONFIG_FILE.lock().unwrap()[0]);
                 }
-                let request = tonic::Request::new(EncloneRequest { args: line });
+                let mut server_logfile = None;
+                if SERVER_LOGFILE.lock().unwrap().len() > 0 {
+                    server_logfile = Some(SERVER_LOGFILE.lock().unwrap()[0].clone());
+                }
+                let request = tonic::Request::new(EncloneRequest {
+                    args: line,
+                    server_logfile: server_logfile,
+                });
                 let response = client.enclone(request).await;
                 if response.is_err() {
                     let left = r###"message: "\n"###;
