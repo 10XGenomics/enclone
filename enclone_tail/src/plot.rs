@@ -324,14 +324,12 @@ pub fn plot_clonotypes(
             }
         }
 
-
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
         //
         // We do the split_plot_by_origin case second.  It is a more complicated version of the
         // same algorithm.  The second part definitely does not work with grouping.
-
 
         if !plot_opt.split_plot_by_origin {
             let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
@@ -349,7 +347,7 @@ pub fn plot_clonotypes(
             ccc.sort();
             let mut i = 0;
             while i < ccc.len() {
-                // On a given iteration of the while loop, we process all the constant-color 
+                // On a given iteration of the while loop, we process all the constant-color
                 // clusters that have the same size.  First we do the clusters that contains
                 // just one cell, and so forth.
                 let j = next_diff1_3(&ccc, i as i32) as usize;
@@ -370,7 +368,6 @@ pub fn plot_clonotypes(
             }
             clusters = clusters2;
         } else {
-
             // WORK IN PROGRESS
 
             let mut clusters2 = clusters.clone();
@@ -407,7 +404,6 @@ pub fn plot_clonotypes(
                     }
                     angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-
                     for k in i..j {
                         let new_id = angle[k - i].1;
                         let id = ccc[k].2;
@@ -419,7 +415,6 @@ pub fn plot_clonotypes(
                 }
             }
             clusters = clusters2;
-
         }
 
         // Finish turbo color translation.
