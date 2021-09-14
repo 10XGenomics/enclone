@@ -13,6 +13,7 @@ pub mod group;
 pub mod group_colors;
 pub mod grouper;
 pub mod hex;
+pub mod legend;
 pub mod neighbor;
 pub mod newick;
 pub mod pack_circles;
@@ -30,6 +31,8 @@ pub mod ticks;
 pub mod tree;
 
 use string_utils::*;
+
+const BOUNDARY: usize = 10;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
