@@ -271,3 +271,14 @@ pub const TURBO_SRGB_BYTES: [[u8; 3]; 256] = [
     [126, 5, 2],
     [122, 4, 3],
 ];
+
+// Define a set of lexicographically ordered names for the turbo colors.
+
+pub fn turbo_color_names() -> Vec<String> {
+    let mut names = Vec::<String>::new();
+    for i in 0..256 {
+        names.push(format!("turbo-{}", i));
+    }
+    names.sort();
+    names
+}

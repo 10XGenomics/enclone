@@ -31,6 +31,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>9/14/21</b>: Fix some issues with cell coloring, affecting cell coloring by variable and
+<code>SPLIT_PLOT_BY_ORIGIN</code>.
+</p>
+
+<p>
 <b>9/11/21</b>: Add the ability to color cells in a honeycomb plot using the values of a variable.
 Please see <a href="../../pages/auto/plot.html">enclone plots</a>.
 </p>

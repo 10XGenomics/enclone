@@ -5,15 +5,14 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
-use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::colors::*;
 use crate::group_colors::*;
+use crate::legend::*;
 use crate::pack_circles::*;
 use crate::plot_utils::*;
 use crate::polygon::*;
 use crate::string_width::*;
-use crate::ticks::*;
 use crate::*;
 use ansi_escape::*;
 use enclone_core::cell_color::*;
@@ -248,9 +247,9 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let mut centersx;
+        let mut centersx = vec![(0.0, 0.0); radiix.len()];
+        let mut xshift = vec![0.0; radiix.len()];
         if plot_opt.split_plot_by_origin {
-            centersx = vec![(0.0, 0.0); radiix.len()];
             let passes = ctl.origin_info.origin_list.len();
             let mut xstart = 0.0;
             for pass in 0..passes {
@@ -274,6 +273,7 @@ pub fn plot_clonotypes(
                 xstart += left;
                 for j in 0..centersy.len() {
                     centersx[indices[j]] = (centersy[j].0 + xstart, centersy[j].1);
+                    xshift[indices[j]] = xstart;
                 }
                 let mut right = 0.0_f64;
                 for j in 0..centersy.len() {
@@ -314,38 +314,109 @@ pub fn plot_clonotypes(
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
+        //
+        // We do the split_plot_by_origin case second.  It is a more complicated version of the
+        // same algorithm.  The second part definitely does not work with grouping.
 
-        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-        let mut clusters2 = clusters.clone();
-        for i in 0..ids.len() {
-            let id = ids[i];
-            let mut c = clusters[id].colors.clone();
-            unique_sort(&mut c);
-            if c.solo() {
-                // Note confusion here between the last argument, i, and clusters[i].2:
-                ccc.push((clusters[i].colors.len(), c[0].clone(), i));
+        if !plot_opt.split_plot_by_origin {
+            let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+            let mut clusters2 = clusters.clone();
+            for i in 0..ids.len() {
+                let id = ids[i];
+                let mut c = clusters[id].colors.clone();
+                unique_sort(&mut c);
+                if c.solo() {
+                    // Note confusion here between the last argument, i, and clusters[i].2:
+                    // We had clusters[i].colors.len() below and that appears to have been a bug.
+                    ccc.push((clusters[id].colors.len(), c[0].clone(), i));
+                }
+            }
+            ccc.sort();
+            let mut i = 0;
+            while i < ccc.len() {
+                // On a given iteration of the while loop, we process all the constant-color
+                // clusters that have the same size.  First we do the clusters that contains
+                // just one cell, and so forth.
+                let j = next_diff1_3(&ccc, i as i32) as usize;
+                let mut angle = vec![(0.0, 0); j - i];
+                for k in i..j {
+                    let id = ccc[k].2;
+                    angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
+                }
+                angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                for k in i..j {
+                    let new_id = angle[k - i].1;
+                    let id = ccc[k].2;
+                    clusters2[ids[new_id]].colors = clusters[id].colors.clone();
+                    clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
+                    clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
+                }
+                i = j;
+            }
+            clusters = clusters2;
+        } else {
+            // WORK IN PROGRESS
+
+            let mut clusters2 = clusters.clone();
+            let mut centersp = centersx.clone();
+            for i in 0..centersp.len() {
+                centersp[i].0 -= xshift[i];
+            }
+            let passes = ctl.origin_info.origin_list.len();
+            for pass in 0..passes {
+                let mut ccc = Vec::<(usize, String, usize)>::new();
+                let mut this = Vec::<usize>::new();
+                for i in 0..radiix.len() {
+                    let li = clusters[i].barcodes[0].0;
+                    let p =
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
+                    if pass != p as usize {
+                        continue;
+                    }
+                    let mut c = clusters[i].colors.clone();
+                    unique_sort(&mut c);
+                    if c.solo() {
+                        ccc.push((clusters[i].colors.len(), c[0].clone(), i));
+                        this.push(i);
+                    }
+                }
+                ccc.sort();
+                let mut i = 0;
+                while i < ccc.len() {
+                    let j = next_diff1_3(&ccc, i as i32) as usize;
+                    let mut angle = vec![(0.0, 0); j - i];
+                    for k in i..j {
+                        let id = ccc[k].2;
+                        angle[k - i] = (centersp[id].1.atan2(centersp[id].0), id);
+                    }
+                    angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+                    for k in i..j {
+                        let new_id = angle[k - i].1;
+                        let id = ccc[k].2;
+                        clusters2[new_id].colors = clusters[id].colors.clone();
+                        clusters2[new_id].clonotype_index = clusters[id].clonotype_index;
+                        clusters2[new_id].barcodes = clusters[id].barcodes.clone();
+                    }
+                    i = j;
+                }
+            }
+            clusters = clusters2;
+        }
+
+        // Finish turbo color translation.
+
+        let tcn = turbo_color_names();
+        for i in 0..clusters.len() {
+            for j in 0..clusters[i].colors.len() {
+                if clusters[i].colors[j].starts_with("turbo-") {
+                    let n = bin_position(&tcn, &clusters[i].colors[j]);
+                    let c = &TURBO_SRGB_BYTES[n as usize];
+                    let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                    clusters[i].colors[j] = color;
+                }
             }
         }
-        ccc.sort();
-        let mut i = 0;
-        while i < ccc.len() {
-            let j = next_diff1_3(&ccc, i as i32) as usize;
-            let mut angle = vec![(0.0, 0); j - i];
-            for k in i..j {
-                let id = ccc[k].2;
-                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
-            }
-            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            for k in i..j {
-                let new_id = angle[k - i].1;
-                let id = ccc[k].2;
-                clusters2[ids[new_id]].colors = clusters[id].colors.clone();
-                clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
-                clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
-            }
-            i = j;
-        }
-        clusters = clusters2;
     }
     ctl.perf_stats(&t, "plotting clonotypes");
 
@@ -385,7 +456,6 @@ pub fn plot_clonotypes(
     }
     const WIDTH: usize = 400;
     const HEIGHT: usize = 400;
-    const BOUNDARY: usize = 10;
 
     // Negate y coordinates, as otherwise images are inverted, not sure why.
 
@@ -565,233 +635,14 @@ pub fn plot_clonotypes(
     // Add legend for color by variable.
 
     let mut by_var = false;
-    let mut var = String::new();
-    let mut display_var = String::new();
-    let mut xmin = None;
-    let mut xmax = None;
     match ctl.plot_opt.cell_color {
-        CellColor::ByVariableValue(ref x) => {
+        CellColor::ByVariableValue(ref _x) => {
             by_var = true;
-            var = x.var.clone();
-            display_var = x.display_var.clone();
-            xmin = x.min.clone();
-            xmax = x.max.clone();
         }
         _ => {}
     };
     if by_var && ctl.plot_opt.use_legend {
-        let mut defined = false;
-        let mut have_undefined = false;
-        for i in 0..color.len() {
-            if color[i] == "undefined" {
-                have_undefined = true;
-            }
-        }
-
-        // Get the actual low and high values for the variable.
-
-        let (mut low, mut high) = (0.0, 0.0);
-        let n = VAR_LOW.lock().unwrap().len();
-        for i in 0..n {
-            if VAR_LOW.lock().unwrap()[i].0 == var {
-                low = VAR_LOW.lock().unwrap()[i].1;
-                high = VAR_HIGH.lock().unwrap()[i].1;
-                defined = true;
-            }
-        }
-
-        // Print the variable name.
-
-        *svg = svg.rev_before("<").to_string();
-        let font_size = 20;
-        let name_bar_height = font_size as f64 + font_size as f64 / 2.0;
-        let legend_xstart = actual_width + 20.0;
-        let legend_ystart = BOUNDARY as f64 + name_bar_height;
-        let band_width = 100.0;
-        *svg += &format!(
-            "<text text-anchor=\"start\" x=\"{}\" y=\"{}\" font-family=\"Arial\" \
-             font-size=\"{}\">{}</text>\n",
-            legend_xstart,
-            BOUNDARY as f64 + font_size as f64 / 2.0,
-            font_size,
-            display_var,
-        );
-
-        // Handle the special case where all points are undefined.
-
-        if !defined {
-            let fail_text = "The variable is undefined for all points.";
-            *svg += &format!(
-                "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
-                 font-size=\"{}\">{}</text>\n",
-                legend_xstart,
-                BOUNDARY as f64 + 2.0 * font_size as f64,
-                font_size,
-                fail_text,
-            );
-            let mut max_text_width = arial_width(&display_var, font_size as f64);
-            max_text_width = max_text_width.max(arial_width(&fail_text, font_size as f64));
-            let width = legend_xstart + max_text_width + BOUNDARY as f64;
-            set_svg_width(svg, width);
-            *svg += "</svg>";
-
-        // Handle the case where there is at least one defined point.
-        } else {
-            let mut height_for_undefined = 0.0;
-            if have_undefined {
-                height_for_undefined = 20.0;
-            }
-            let available =
-                actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
-            *svg += &format!(
-                "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
-                 style=\"fill:white;stroke:black;stroke-width:1\" />\n",
-                legend_xstart, legend_ystart, band_width, available,
-            );
-
-            // Make the color bar.  It would make sense to have 256 bars that abut exactly,
-            // however rendering appears to be better if the bars overlap slightly.  Since when
-            // there are overlapping rectangles, the later rectangle should dominate, this should
-            // not affect the appearance at all.  But it does.
-
-            let band_height = available / 256.0;
-            for i in 0..256 {
-                let ystart = legend_ystart + i as f64 * band_height;
-                let c = &TURBO_SRGB_BYTES[i];
-                let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
-                let mut add = 0.0;
-                if i < 255 {
-                    add = band_height / 10.0;
-                }
-                *svg += &format!(
-                    "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
-                     style=\"fill:{}\" />\n",
-                    legend_xstart,
-                    ystart,
-                    band_width,
-                    band_height + add,
-                    color,
-                );
-            }
-
-            // Define the tick marks.
-
-            const MAX_TICKS: usize = 5;
-            let mut zlow = low;
-            if xmin.is_some() {
-                zlow = xmin.unwrap();
-            }
-            let mut zhigh = high;
-            if xmax.is_some() {
-                zhigh = xmax.unwrap();
-            }
-            let mut ticks = ticks(zlow as f32, zhigh as f32, MAX_TICKS, false);
-            ticks.insert(0, format!("{}", zlow));
-            ticks.push(format!("{}", zhigh));
-
-            // Add the ticks.
-
-            let mut max_text_width: f64 = 0.0;
-            let sep_to_text = 10.0;
-            let text_xstart = legend_xstart + band_width + sep_to_text;
-            let mut text_ystarts = Vec::<f64>::new();
-            for (i, text) in ticks.iter().enumerate() {
-                // Define vertical shift for value text.  We vertically center the text at the
-                // correct point, adding font_size/4 to get this to happen.  We don't understand
-                // why four makes sense.  Also, we treat the first and last labels differently,
-                // because it is aesthetically displeasing to have the text outside the boundaries
-                // of the color box.
-
-                let vshift;
-                if i == 0 {
-                    vshift = font_size as f64 / 2.0 + 1.0;
-                } else if i == ticks.len() - 1 {
-                    vshift = 0.0;
-                } else {
-                    vshift = font_size as f64 / 4.0;
-                }
-                let ystart = legend_ystart + available * (text.force_f64() - zlow) / (zhigh - zlow);
-                let text_ystart = ystart + vshift;
-                text_ystarts.push(text_ystart);
-            }
-            for (i, text) in ticks.iter().enumerate() {
-                // Generate the text.
-
-                let ystart = legend_ystart + available * (text.force_f64() - zlow) / (zhigh - zlow);
-                let text_ystart = text_ystarts[i];
-                if i == 1 && text_ystart - text_ystarts[0] < font_size as f64 {
-                    continue;
-                }
-                if ticks.len() >= 2
-                    && i == ticks.len() - 2
-                    && text_ystarts[ticks.len() - 1] - text_ystart < font_size as f64
-                {
-                    continue;
-                }
-                let mut textp = text.clone();
-                if i == 0 && zlow > low {
-                    textp = format!("≤ {}", text);
-                }
-                if i == ticks.len() - 1 && zhigh < high {
-                    textp = format!("≥ {}", text);
-                }
-                *svg += &format!(
-                    "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
-                     font-size=\"{}\">{}</text>\n",
-                    text_xstart, text_ystart, font_size, textp,
-                );
-                max_text_width = max_text_width.max(arial_width(&textp, font_size as f64));
-
-                // Add tick lines.
-
-                if i > 0 && i < ticks.len() - 1 {
-                    *svg += &format!(
-                        "<line x1=\"{:.2}\" y1=\"{:.2}\" x2=\"{:.2}\" y2=\"{:.2}\" \
-                         stroke=\"#000000\" stroke-width=\"0.5\"/>\n",
-                        legend_xstart,
-                        ystart,
-                        legend_xstart + band_width,
-                        ystart,
-                    );
-                }
-            }
-
-            // Add legend for undefined points.
-
-            if have_undefined {
-                let r = 5.0;
-                let vsep = 10.0;
-                let y = legend_ystart + available + vsep + r;
-                *svg += &format!(
-                    "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" stroke=\"red\" \
-                     stroke-width=\"0.5\" fill=\"white\" />\n",
-                    legend_xstart + band_width - r,
-                    legend_ystart + available + vsep + r,
-                    r,
-                );
-                *svg += &format!(
-                    "<text text-anchor=\"start\" x=\"{:.2}\" y=\"{:.2}\" font-family=\"Arial\" \
-                     font-size=\"{}\">{}</text>\n",
-                    text_xstart,
-                    y + font_size as f64 / 4.0 - 1.0,
-                    font_size,
-                    "undefined",
-                );
-                max_text_width = max_text_width.max(arial_width("undefined", font_size as f64));
-            }
-
-            // Finish.
-
-            let mut legend_width = band_width + sep_to_text + max_text_width;
-            legend_width = legend_width.max(arial_width(&display_var, font_size as f64));
-            let mut width = legend_xstart + legend_width;
-            width += BOUNDARY as f64;
-            set_svg_width(svg, width + BOUNDARY as f64);
-            set_svg_height(svg, actual_height + BOUNDARY as f64);
-            *svg += "</svg>";
-        }
-
-    // Add other main legends.
+        add_legend_for_color_by_variable(&plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark

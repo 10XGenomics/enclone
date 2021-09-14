@@ -261,6 +261,8 @@ enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
 
 <img src="../../img/twin_plot.svg" alt="twin plot" title="twin plot">
 
+<br><br>
+
 <hr>
 
 <h2>other controls</h2>

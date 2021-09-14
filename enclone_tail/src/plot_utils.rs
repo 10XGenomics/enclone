@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::assign_cell_color::*;
+use crate::colors::*;
 use crate::hex::*;
 use crate::*;
 use enclone_core::defs::*;
@@ -34,6 +35,7 @@ pub fn build_clusters(
     if plot_opt.split_plot_by_origin {
         passes = ctl.origin_info.origin_list.len();
     }
+    let tcn = turbo_color_names();
     for i in 0..exacts.len() {
         for pass in 0..passes {
             let mut colors = Vec::<String>::new();
@@ -81,7 +83,7 @@ pub fn build_clusters(
                         ex.clones[k][0].dataset_index,
                         ex.clones[k][0].barcode.clone(),
                     ));
-                    let color = assign_cell_color(
+                    let mut color = assign_cell_color(
                         &ctl,
                         &plot_opt,
                         &refdata,
@@ -94,13 +96,24 @@ pub fn build_clusters(
                         j,
                         k,
                     );
+
+                    // Partially translate turbo colors.
+
+                    if color.starts_with("turbo-pre-") {
+                        let n = color.after("turbo-pre-").force_usize();
+                        color = tcn[n].clone();
+                    }
+
+                    // Save.
+
                     colors.push(color);
                     coords.push(hex_coord(n, 1.0));
                     n += 1;
                 }
             }
 
-            // Move colors around to get vertical separation, e.g. blues on left, reds on right.
+            // Move colors around to get vertical separation within a given clonotype,
+            // e.g. blues on left, reds on right.
 
             coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
             sort_sync2(&mut colors, &mut barcodes);
