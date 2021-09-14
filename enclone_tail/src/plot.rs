@@ -248,9 +248,9 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let mut centersx;
+        let mut centersx = vec![(0.0, 0.0); radiix.len()];
+        let mut xshift = vec![0.0; radiix.len()];
         if plot_opt.split_plot_by_origin {
-            centersx = vec![(0.0, 0.0); radiix.len()];
             let passes = ctl.origin_info.origin_list.len();
             let mut xstart = 0.0;
             for pass in 0..passes {
@@ -274,6 +274,7 @@ pub fn plot_clonotypes(
                 xstart += left;
                 for j in 0..centersy.len() {
                     centersx[indices[j]] = (centersy[j].0 + xstart, centersy[j].1);
+                    xshift[indices[j]] = xstart;
                 }
                 let mut right = 0.0_f64;
                 for j in 0..centersy.len() {
@@ -323,45 +324,103 @@ pub fn plot_clonotypes(
             }
         }
 
+
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
+        //
+        // We do the split_plot_by_origin case second.  It is a more complicated version of the
+        // same algorithm.  The second part definitely does not work with grouping.
 
-        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-        let mut clusters2 = clusters.clone();
-        for i in 0..ids.len() {
-            let id = ids[i];
-            let mut c = clusters[id].colors.clone();
-            unique_sort(&mut c);
-            if c.solo() {
-                // Note confusion here between the last argument, i, and clusters[i].2:
-                // We had clusters[i].colors.len() below and that appears to have been a bug.
-                ccc.push((clusters[id].colors.len(), c[0].clone(), i));
+
+        if !plot_opt.split_plot_by_origin {
+            let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+            let mut clusters2 = clusters.clone();
+            for i in 0..ids.len() {
+                let id = ids[i];
+                let mut c = clusters[id].colors.clone();
+                unique_sort(&mut c);
+                if c.solo() {
+                    // Note confusion here between the last argument, i, and clusters[i].2:
+                    // We had clusters[i].colors.len() below and that appears to have been a bug.
+                    ccc.push((clusters[id].colors.len(), c[0].clone(), i));
+                }
             }
+            ccc.sort();
+            let mut i = 0;
+            while i < ccc.len() {
+                // On a given iteration of the while loop, we process all the constant-color 
+                // clusters that have the same size.  First we do the clusters that contains
+                // just one cell, and so forth.
+                let j = next_diff1_3(&ccc, i as i32) as usize;
+                let mut angle = vec![(0.0, 0); j - i];
+                for k in i..j {
+                    let id = ccc[k].2;
+                    angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
+                }
+                angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                for k in i..j {
+                    let new_id = angle[k - i].1;
+                    let id = ccc[k].2;
+                    clusters2[ids[new_id]].colors = clusters[id].colors.clone();
+                    clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
+                    clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
+                }
+                i = j;
+            }
+            clusters = clusters2;
+        } else {
+
+            // WORK IN PROGRESS
+
+            let mut clusters2 = clusters.clone();
+            let mut centersp = centersx.clone();
+            for i in 0..centersp.len() {
+                centersp[i].0 -= xshift[i];
+            }
+            let passes = ctl.origin_info.origin_list.len();
+            for pass in 0..passes {
+                let mut ccc = Vec::<(usize, String, usize)>::new();
+                let mut this = Vec::<usize>::new();
+                for i in 0..radiix.len() {
+                    let li = clusters[i].barcodes[0].0;
+                    let p =
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
+                    if pass != p as usize {
+                        continue;
+                    }
+                    let mut c = clusters[i].colors.clone();
+                    unique_sort(&mut c);
+                    if c.solo() {
+                        ccc.push((clusters[i].colors.len(), c[0].clone(), i));
+                        this.push(i);
+                    }
+                }
+                ccc.sort();
+                let mut i = 0;
+                while i < ccc.len() {
+                    let j = next_diff1_3(&ccc, i as i32) as usize;
+                    let mut angle = vec![(0.0, 0); j - i];
+                    for k in i..j {
+                        let id = ccc[k].2;
+                        angle[k - i] = (centersp[id].1.atan2(centersp[id].0), id);
+                    }
+                    angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+
+                    for k in i..j {
+                        let new_id = angle[k - i].1;
+                        let id = ccc[k].2;
+                        clusters2[new_id].colors = clusters[id].colors.clone();
+                        clusters2[new_id].clonotype_index = clusters[id].clonotype_index;
+                        clusters2[new_id].barcodes = clusters[id].barcodes.clone();
+                    }
+                    i = j;
+                }
+            }
+            clusters = clusters2;
+
         }
-        ccc.sort();
-        let mut i = 0;
-        while i < ccc.len() {
-            // On a given iteration of the while loop, we process all the constant-color clusters
-            // that have the same size.  First we do the clusters that contains just one cell,
-            // and so forth.
-            let j = next_diff1_3(&ccc, i as i32) as usize;
-            let mut angle = vec![(0.0, 0); j - i];
-            for k in i..j {
-                let id = ccc[k].2;
-                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
-            }
-            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            for k in i..j {
-                let new_id = angle[k - i].1;
-                let id = ccc[k].2;
-                clusters2[ids[new_id]].colors = clusters[id].colors.clone();
-                clusters2[ids[new_id]].clonotype_index = clusters[id].clonotype_index;
-                clusters2[ids[new_id]].barcodes = clusters[id].barcodes.clone();
-            }
-            i = j;
-        }
-        clusters = clusters2;
 
         // Finish turbo color translation.
 
