@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::colors::*;
 use crate::group_colors::*;
@@ -757,6 +758,8 @@ pub fn plot_clonotypes(
         }
         *svg += "</svg>";
     }
+    VAR_LOW.lock().unwrap().clear();
+    VAR_HIGH.lock().unwrap().clear();
 
     // Output the svg or png file.
 
