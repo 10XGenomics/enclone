@@ -79,4 +79,5 @@ pub enum Message {
     CopyLastNarrative,
     Sleep(u64),
     SanityCheck,
+    CompleteSanityCheck(Result<(), String>),
 }

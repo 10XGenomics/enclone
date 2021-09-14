@@ -27,7 +27,20 @@ impl EncloneVisual {
             .push(format!("{:?}", message));
         match message {
             Message::SanityCheck => {
+                self.sanity_check_start = Some(Instant::now());
+                self.sanity_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteSanityCheck)
+            }
+
+            Message::CompleteSanityCheck(_) => {
                 self.sanity_check();
+                let used = elapsed(&self.sanity_check_start.unwrap());
+                const MIN_SLEEP: f64 = 0.4;
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                self.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
 
