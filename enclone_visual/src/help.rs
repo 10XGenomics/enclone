@@ -400,7 +400,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "Next to it is a button to copy the command to your \
                     clipboard.  This copied command can be reentered in enclone visual, \
                     or supplied to \"regular\" enclone, so long as you change instances of gui \
-                    to actual file names.",
+                    to actual file names.  You also need to add double quotes \
+                    around arguments containing certain characters including < and >.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )
