@@ -323,12 +323,15 @@ pub fn plot_clonotypes(
             unique_sort(&mut c);
             if c.solo() {
                 // Note confusion here between the last argument, i, and clusters[i].2:
-                ccc.push((clusters[i].colors.len(), c[0].clone(), i));
+                ccc.push((clusters[id].colors.len(), c[0].clone(), i));
             }
         }
         ccc.sort();
         let mut i = 0;
         while i < ccc.len() {
+            // On a given iteration of the while loop, we process all the constant-color clusters
+            // that have the same size.  First we do the clusters that contains just one cell,
+            // and so forth.
             let j = next_diff1_3(&ccc, i as i32) as usize;
             let mut angle = vec![(0.0, 0); j - i];
             for k in i..j {
