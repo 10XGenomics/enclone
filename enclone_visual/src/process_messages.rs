@@ -869,10 +869,19 @@ impl EncloneVisual {
                 // the conversion time and MIN_FLASH_SECONDS.
                 const MIN_FLASH_SECONDS: f64 = 0.4;
                 let t = Instant::now();
-                if self.png_value.is_empty() {
-                    self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
+                let mut width = 2000;
+                let copy = get_clipboard_content();
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    if copy.parse::<usize>().is_ok() {
+                        let w = copy.force_usize();
+                        if w >= 1000 && w <= 4000 {
+                            width = w as u32;
+                        }
+                    }
                 }
-                copy_png_bytes_to_clipboard(&self.png_value);
+                let png = convert_svg_to_png(&self.svg_value.as_bytes(), width);
+                copy_png_bytes_to_clipboard(&png);
                 let used = elapsed(&t);
                 let extra = MIN_FLASH_SECONDS - used;
                 if extra > 0.0 {

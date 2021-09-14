@@ -761,7 +761,7 @@ pub fn plot_clonotypes(
     // Output the svg or png file.
 
     if plot_opt.plot_file == "stdout.png" {
-        let png = convert_svg_to_png(&svg.as_bytes());
+        let png = convert_svg_to_png(&svg.as_bytes(), 2000);
         std::io::stdout().write_all(&png).unwrap();
     } else if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
@@ -778,7 +778,7 @@ pub fn plot_clonotypes(
             let mut f = BufWriter::new(f.unwrap());
             fwriteln!(f, "{}", svg);
         } else {
-            let png = convert_svg_to_png(&svg.as_bytes());
+            let png = convert_svg_to_png(&svg.as_bytes(), 2000);
             std::fs::write(&plot_opt.plot_file, png).unwrap();
         }
     }

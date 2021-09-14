@@ -204,7 +204,7 @@ impl EncloneVisual {
         }
         if !using_geometry {
             self.canvas_view.state.geometry_value = None;
-            self.png_value = convert_svg_to_png(&svg.as_bytes());
+            self.png_value = convert_svg_to_png(&svg.as_bytes(), 2000);
         }
     }
 }

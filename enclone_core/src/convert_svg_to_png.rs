@@ -66,7 +66,7 @@ pub fn set_pixels_per_meter(png: &mut Vec<u8>, pixels_per_meter: u32) {
 // The following code is pretty much copied from the resvg crate,
 // rev = 6b29007311edc5022635362fe56f6e5c0318fdeb, done June 14, 2021.
 
-pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
+pub fn convert_svg_to_png(svg: &[u8], width: u32) -> Vec<u8> {
     let fontdb = load_fonts();
     let usvg = usvg::OptionsRef {
         resources_dir: None,
@@ -94,14 +94,9 @@ pub fn convert_svg_to_png(svg: &[u8]) -> Vec<u8> {
     }
     let tree = tree.unwrap();
 
-    // The following parameter controls the PNG resolution.  You can raise it, which may improve
-    // rendering, but the PNG will become larger.
-
-    const WIDTH: u32 = 2000;
-
     // Proceed.
 
-    let fit_to = usvg::FitTo::Width(WIDTH);
+    let fit_to = usvg::FitTo::Width(width);
     let size = fit_to
         .fit_to(tree.svg_node().size.to_screen_size())
         .unwrap();
