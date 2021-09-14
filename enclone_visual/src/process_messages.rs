@@ -26,6 +26,11 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::SanityCheck => {
+                self.sanity_check();
+                Command::none()
+            }
+
             Message::Sleep(ms) => {
                 thread::sleep(Duration::from_millis(ms));
                 Command::none()

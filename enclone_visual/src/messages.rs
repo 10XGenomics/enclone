@@ -78,4 +78,5 @@ pub enum Message {
     Recompute,
     CopyLastNarrative,
     Sleep(u64),
+    SanityCheck,
 }
