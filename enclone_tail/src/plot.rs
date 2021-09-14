@@ -335,6 +335,7 @@ pub fn plot_clonotypes(
             unique_sort(&mut c);
             if c.solo() {
                 // Note confusion here between the last argument, i, and clusters[i].2:
+                // We had clusters[i].colors.len() below and that appears to have been a bug.
                 ccc.push((clusters[id].colors.len(), c[0].clone(), i));
             }
         }
