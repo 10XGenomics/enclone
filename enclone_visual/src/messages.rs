@@ -77,4 +77,5 @@ pub enum Message {
     CompleteSnapshot(Result<(), String>),
     Recompute,
     CopyLastNarrative,
+    Sleep(u64),
 }

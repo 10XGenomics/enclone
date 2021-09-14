@@ -26,6 +26,11 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::Sleep(ms) => {
+                thread::sleep(Duration::from_millis(ms));
+                Command::none()
+            }
+
             Message::CopyLastNarrative => {
                 let index = self.h.narrative_history[(self.h.history_index - 2) as usize];
                 let last = self.h.narrative_hist_uniq[index as usize].clone();
