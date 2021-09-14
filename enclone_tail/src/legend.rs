@@ -90,8 +90,7 @@ pub fn add_legend_for_color_by_variable(
         if have_undefined {
             height_for_undefined = 20.0;
         }
-        let available =
-            actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
+        let available = actual_height - name_bar_height - height_for_undefined - BOUNDARY as f64;
         *svg += &format!(
             "<rect x=\"{:.2}\" y=\"{:.2}\" width=\"{:.2}\" height=\"{:.2}\" \
              style=\"fill:white;stroke:black;stroke-width:1\" />\n",
