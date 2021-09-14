@@ -697,7 +697,7 @@ impl EncloneVisual {
                 summaryx.metric_selected = self.metric_selected.clone();
                 summaryx.metrics_condensed = self.metrics_condensed;
                 self.summary_value = summaryx.pack();
-                self.h.summary_hist_uniq[self.h.history_index as usize - 1] =
+                self.h.summary_hist_uniq[self.h.summary_history[self.h.history_index as usize - 1] as usize] =
                     self.summary_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
