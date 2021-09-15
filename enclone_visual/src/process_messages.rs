@@ -9,7 +9,7 @@ use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
-use iced::{Clipboard, Color, Command};
+use iced::{Color, Command};
 use io_utils::*;
 use std::fs::{remove_file, File};
 use std::io::Read;
@@ -19,7 +19,6 @@ impl EncloneVisual {
     pub fn process_message(
         &mut self,
         message: Message,
-        clipboard: &mut Clipboard,
     ) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
@@ -249,7 +248,8 @@ impl EncloneVisual {
                         _ => {}
                     }
 
-                    self.update(self.this_meta[i].clone(), clipboard);
+                    // self.update(self.this_meta[i].clone(), clipboard);
+                    self.update(self.this_meta[i].clone());
                     match self.this_meta[i] {
                         Message::SetName(_) => {
                             self.meta_pos = i + 1;

@@ -12,7 +12,7 @@ use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Clipboard, Color, Column, Command, Container, Element, Image,
+    Align, Application, Button, Color, Column, Command, Container, Element, Image,
     Length, Row, Rule, Scrollable, Space, Subscription, Text, TextInput,
 };
 // use iced::Subscription;
@@ -227,8 +227,8 @@ impl Application for EncloneVisual {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
-        self.process_message(message, clipboard)
+    fn update(&mut self, message: Message) -> Command<Message> {
+        self.process_message(message)
     }
 
     /*
