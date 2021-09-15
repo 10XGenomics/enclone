@@ -770,19 +770,20 @@ pub fn plot_clonotypes(
         && plot_opt.plot_file != "gui"
         && plot_opt.plot_file != "gui_stdout"
     {
+        let f = File::create(&plot_opt.plot_file);
+        if f.is_err() {
+            return Err(format!(
+                "\nThe file {} in your PLOT or HONEY argument could not be created.\n",
+                plot_opt.plot_file
+            ));
+        }
+        let mut f = f.unwrap();
         if !plot_opt.plot_file.ends_with(".png") {
-            let f = File::create(&plot_opt.plot_file);
-            if f.is_err() {
-                return Err(format!(
-                    "\nThe file {} in your PLOT argument could not be created.\n",
-                    plot_opt.plot_file
-                ));
-            }
-            let mut f = BufWriter::new(f.unwrap());
+            let mut f = BufWriter::new(f);
             fwriteln!(f, "{}", svg);
         } else {
             let png = convert_svg_to_png(&svg.as_bytes(), 2000);
-            std::fs::write(&plot_opt.plot_file, png).unwrap();
+            f.write_all(&png).unwrap();
         }
     }
     ctl.perf_stats(&t, "building svg file");
