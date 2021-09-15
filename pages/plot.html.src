@@ -156,12 +156,12 @@ exact subclonotype containing the cell.</p>
 
 <tr><td> <code>out-spec</code> </td>
     <td> <code>out=<span style="color:red">filename</span>,<span style="color:red">width</span></code> </td>
-    <td> <code>1. <span style="color:red">filename</code></span> 
+    <td>1.  <code><span style="color:red">filename</span></code>
     is the output file to be generated; it should end with <code>.svg</code> 
     or <code>.png</code><br>depending on the desired output file type
-    <br>2. <span style="color:red">width</code></span> is the width in pixels of the image.  This 
-    only makes sense for <code>.png</code> files.  The default value is <code>2000</code>.  You
-    could use, for example, a value of <code>4000</code> to get a higher resolution imaage. 
+    <br>2. <code><span style="color:red">width</span></code> is the width in pixels of the image.  
+    This only makes sense for <code>.png</code> files.  The default value is <code>2000</code>.  You
+    could use, for example, a value of <code>4000</code> to get a higher resolution image. 
     </td></tr>
 
 <tr><td> <code>legend-spec</code> </td>
