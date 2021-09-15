@@ -18,8 +18,11 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         some tools for tracing bugs and maintaining cookbooks.";
     let sanity_text = "The sanity check button is for debugging.  It causes some sanity checks \
         to be run on the current enclone visual state.";
-    let sanity_button =
-        Button::new(&mut slf.sanity_button, Text::new("Sanity check").color(slf.sanity_button_color)).on_press(Message::SanityCheck);
+    let sanity_button = Button::new(
+        &mut slf.sanity_button,
+        Text::new("Sanity check").color(slf.sanity_button_color),
+    )
+    .on_press(Message::SanityCheck);
     let console_text = "The current console output is shown below.";
     let recompute_text = "The recompute button causes each state within the given session to be \
         recomputed.  The purpose of this is to update the session to reflect the results of the \

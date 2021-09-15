@@ -16,10 +16,7 @@ use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
-    pub fn process_message(
-        &mut self,
-        message: Message,
-    ) -> Command<Message> {
+    pub fn process_message(&mut self, message: Message) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
             .unwrap()
@@ -697,7 +694,8 @@ impl EncloneVisual {
                 summaryx.metric_selected = self.metric_selected.clone();
                 summaryx.metrics_condensed = self.metrics_condensed;
                 self.summary_value = summaryx.pack();
-                self.h.summary_hist_uniq[self.h.summary_history[self.h.history_index as usize - 1] as usize] =
+                self.h.summary_hist_uniq
+                    [self.h.summary_history[self.h.history_index as usize - 1] as usize] =
                     self.summary_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()

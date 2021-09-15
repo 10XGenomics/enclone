@@ -71,8 +71,15 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
         if req.server_logfile.is_some() {
-            if enclone_core::logging::SERVER_LOGFILE.lock().unwrap().is_empty() {
-                enclone_core::logging::SERVER_LOGFILE.lock().unwrap().push(req.server_logfile.as_ref().unwrap().clone());
+            if enclone_core::logging::SERVER_LOGFILE
+                .lock()
+                .unwrap()
+                .is_empty()
+            {
+                enclone_core::logging::SERVER_LOGFILE
+                    .lock()
+                    .unwrap()
+                    .push(req.server_logfile.as_ref().unwrap().clone());
             }
         }
         logme(&format!("Running enclone:\n  {}", args.join(" ")));

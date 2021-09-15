@@ -12,8 +12,8 @@ use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Color, Column, Command, Container, Element, Image,
-    Length, Row, Rule, Scrollable, Space, Subscription, Text, TextInput,
+    Align, Application, Button, Color, Column, Command, Container, Element, Image, Length, Row,
+    Rule, Scrollable, Space, Subscription, Text, TextInput,
 };
 // use iced::Subscription;
 // use iced_native::{window, Event};
