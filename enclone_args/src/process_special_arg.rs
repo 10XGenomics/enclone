@@ -98,13 +98,12 @@ pub fn process_special_arg(
                 p.iter().format(",")
             );
             if part_name == "out" {
-                if !p.solo() {
+                if p.len() > 2 {
                     return Err(err);
                 }
-                let mut filename = p[0].clone();
-                if filename.contains(",") && filename.rev_after(",").parse::<usize>().is_ok() {
-                    ctl.plot_opt.png_width = Some(filename.rev_after(",").force_usize());
-                    filename = filename.rev_before(",").to_string();
+                let filename = p[0].clone();
+                if p.len() == 2 && p[1].parse::<usize>().is_ok() {
+                    ctl.plot_opt.png_width = Some(p[1].force_usize());
                     if !filename.ends_with(".png") {
                         return Err(format!("\nWidth specification for the HONEY argument only \
                             makes sense if the filename ends with .png.\n"));
