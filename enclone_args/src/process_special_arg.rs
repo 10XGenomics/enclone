@@ -98,20 +98,30 @@ pub fn process_special_arg(
                 p.iter().format(",")
             );
             if part_name == "out" {
-                if !p.solo() {
+                if p.len() > 2 {
                     return Err(err);
                 }
-                if p[0] != "stdout"
-                    && p[0] != "stdout.png"
-                    && p[0] != "gui"
-                    && !p[0].ends_with(".svg")
-                    && !p[0].ends_with(".png")
+                let filename = p[0].clone();
+                if p.len() == 2 && p[1].parse::<usize>().is_ok() {
+                    ctl.plot_opt.png_width = Some(p[1].force_usize());
+                    if !filename.ends_with(".png") {
+                        return Err(format!(
+                            "\nWidth specification for the HONEY argument only \
+                            makes sense if the filename ends with .png.\n"
+                        ));
+                    }
+                }
+                if filename != "stdout"
+                    && filename != "stdout.png"
+                    && filename != "gui"
+                    && !filename.ends_with(".svg")
+                    && !filename.ends_with(".png")
                 {
                     return Err(format!(
-                        "\nHONEY out file needs to end with .svg or .png.\n"
+                        "\nHONEY out filename needs to end with .svg or .png.\n"
                     ));
                 }
-                ctl.plot_opt.plot_file = p[0].to_string();
+                ctl.plot_opt.plot_file = filename;
                 out_count += 1;
             } else if part_name == "legend" {
                 if p.solo() && p[0] == "none" {

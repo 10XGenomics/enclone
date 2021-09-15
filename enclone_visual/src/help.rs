@@ -386,7 +386,11 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(
                             Text::new(
                                 "Below it there is a button to copy the graphics image to \
-                    your clipboard, assuming that you have a graphics image.",
+                    your clipboard, assuming that you have a graphics image.  The default width \
+                    of the image is 2000 pixels.  To obtain lower or higher resolution, copy a \
+                    number between 1000 and 4000 onto your clipboard, before pushing Copy image.  \
+                    Then that number will be used as the width.  Note also that direct image copy \
+                    from the screen can be a good alternative.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )
@@ -396,7 +400,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "Next to it is a button to copy the command to your \
                     clipboard.  This copied command can be reentered in enclone visual, \
                     or supplied to \"regular\" enclone, so long as you change instances of gui \
-                    to actual file names.",
+                    to actual file names.  You also need to add double quotes \
+                    around arguments containing certain characters including < and >.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )

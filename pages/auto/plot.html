@@ -189,10 +189,14 @@ exact subclonotype containing the cell.</p>
     <td> order of specification fields is ignored </td></tr>
 
 <tr><td> <code>out-spec</code> </td>
-    <td> <code>out=<span style="color:red">filename</span></code> </td>
-    <td> <code><span style="color:red">filename</code></span> 
+    <td> <code>out=<span style="color:red">filename</span>,<span style="color:red">width</span></code> </td>
+    <td>1.  <code><span style="color:red">filename</span></code>
     is the output file to be generated; it should end with <code>.svg</code> 
-    or <code>.png</code><br>depending on the desired output file type</td></tr>
+    or <code>.png</code><br>depending on the desired output file type
+    <br>2. <code><span style="color:red">width</span></code> is the width in pixels of the image.  
+    This only makes sense for <code>.png</code> files.<br>The default value is <code>2000</code>.  
+    You could use, for example, a value of <code>4000</code> to get a<br>higher resolution image. 
+    </td></tr>
 
 <tr><td> <code>legend-spec</code> </td>
     <td> <code>legend=none</code></td>

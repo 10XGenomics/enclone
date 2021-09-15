@@ -260,6 +260,7 @@ pub struct PlotOpt {
     pub honey_in: Option<String>,
     pub honey_out: String,
     pub split_plot_by_origin: bool,
+    pub png_width: Option<usize>,
 }
 
 // Allele-finding algorithmic options.

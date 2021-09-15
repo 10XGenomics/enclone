@@ -8,6 +8,7 @@ pub mod convert_svg_to_png;
 pub mod defs;
 pub mod join_one;
 pub mod linear_condition;
+pub mod logging;
 pub mod main_testlist;
 pub mod mammalian_fixed_len;
 pub mod median;

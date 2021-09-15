@@ -204,7 +204,7 @@ impl EncloneVisual {
         }
         if !using_geometry {
             self.canvas_view.state.geometry_value = None;
-            self.png_value = convert_svg_to_png(&svg.as_bytes());
+            self.png_value = convert_svg_to_png(&svg.as_bytes(), 2000);
         }
     }
 }
@@ -447,6 +447,7 @@ pub static CURRENT_WIDTH: AtomicUsize = AtomicUsize::new(0);
 pub static CURRENT_WIDTH_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
+    pub static ref SERVER_LOGFILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref MESSAGE_HISTORY: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref BUG_REPORTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref REMOTE_SHARE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());

@@ -14,6 +14,6 @@ fn main() {
     let svg_file = &args[1];
     let png_file = format!("{}.png", svg_file.rev_before(".svg"));
     let svg = std::fs::read(&svg_file).unwrap();
-    let png = convert_svg_to_png(&svg);
+    let png = convert_svg_to_png(&svg, 2000);
     std::fs::write(&png_file, &png).unwrap();
 }

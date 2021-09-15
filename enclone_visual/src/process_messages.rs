@@ -9,23 +9,42 @@ use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
-use iced::{Clipboard, Color, Command};
+use iced::{Color, Command};
 use io_utils::*;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
-    pub fn process_message(
-        &mut self,
-        message: Message,
-        clipboard: &mut Clipboard,
-    ) -> Command<Message> {
+    pub fn process_message(&mut self, message: Message) -> Command<Message> {
         MESSAGE_HISTORY
             .lock()
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::SanityCheck => {
+                self.sanity_check_start = Some(Instant::now());
+                self.sanity_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteSanityCheck)
+            }
+
+            Message::CompleteSanityCheck(_) => {
+                self.sanity_check();
+                let used = elapsed(&self.sanity_check_start.unwrap());
+                const MIN_SLEEP: f64 = 0.4;
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                self.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::Sleep(ms) => {
+                thread::sleep(Duration::from_millis(ms));
+                Command::none()
+            }
+
             Message::CopyLastNarrative => {
                 let index = self.h.narrative_history[(self.h.history_index - 2) as usize];
                 let last = self.h.narrative_hist_uniq[index as usize].clone();
@@ -226,7 +245,8 @@ impl EncloneVisual {
                         _ => {}
                     }
 
-                    self.update(self.this_meta[i].clone(), clipboard);
+                    // self.update(self.this_meta[i].clone(), clipboard);
+                    self.update(self.this_meta[i].clone());
                     match self.this_meta[i] {
                         Message::SetName(_) => {
                             self.meta_pos = i + 1;
@@ -674,7 +694,8 @@ impl EncloneVisual {
                 summaryx.metric_selected = self.metric_selected.clone();
                 summaryx.metrics_condensed = self.metrics_condensed;
                 self.summary_value = summaryx.pack();
-                self.h.summary_hist_uniq[self.h.history_index as usize - 1] =
+                self.h.summary_hist_uniq
+                    [self.h.summary_history[self.h.history_index as usize - 1] as usize] =
                     self.summary_value.clone();
                 if !TEST_MODE.load(SeqCst) {
                     Command::none()
@@ -869,10 +890,19 @@ impl EncloneVisual {
                 // the conversion time and MIN_FLASH_SECONDS.
                 const MIN_FLASH_SECONDS: f64 = 0.4;
                 let t = Instant::now();
-                if self.png_value.is_empty() {
-                    self.png_value = convert_svg_to_png(&self.svg_value.as_bytes());
+                let mut width = 2000;
+                let copy = get_clipboard_content();
+                if copy.is_some() {
+                    let copy = copy.unwrap();
+                    if copy.parse::<usize>().is_ok() {
+                        let w = copy.force_usize();
+                        if w >= 1000 && w <= 4000 {
+                            width = w as u32;
+                        }
+                    }
                 }
-                copy_png_bytes_to_clipboard(&self.png_value);
+                let png = convert_svg_to_png(&self.svg_value.as_bytes(), width);
+                copy_png_bytes_to_clipboard(&png);
                 let used = elapsed(&t);
                 let extra = MIN_FLASH_SECONDS - used;
                 if extra > 0.0 {

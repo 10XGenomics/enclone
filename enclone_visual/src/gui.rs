@@ -12,8 +12,8 @@ use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Clipboard, Color, Column, Command, Container, Element, Image,
-    Length, Row, Rule, Scrollable, Space, Subscription, Text, TextInput,
+    Align, Application, Button, Color, Column, Command, Container, Element, Image, Length, Row,
+    Rule, Scrollable, Space, Subscription, Text, TextInput,
 };
 // use iced::Subscription;
 // use iced_native::{window, Event};
@@ -46,6 +46,7 @@ impl Application for EncloneVisual {
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
@@ -226,8 +227,8 @@ impl Application for EncloneVisual {
         String::from("EncloneVisual")
     }
 
-    fn update(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
-        self.process_message(message, clipboard)
+    fn update(&mut self, message: Message) -> Command<Message> {
+        self.process_message(message)
     }
 
     /*

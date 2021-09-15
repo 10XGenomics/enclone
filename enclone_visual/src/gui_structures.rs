@@ -96,6 +96,7 @@ pub struct EncloneVisual {
     pub compute_state: ComputeState,
     pub copy_image_button_color: Color,
     pub snapshot_button_color: Color,
+    pub sanity_button_color: Color,
     pub canvas_view: CanvasView,
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
@@ -114,6 +115,7 @@ pub struct EncloneVisual {
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
     pub snapshot_start: Option<Instant>,
+    pub sanity_check_start: Option<Instant>,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -166,6 +168,7 @@ pub struct EncloneVisual {
     pub copy_selected_metrics_button_color: Color,
     pub snapshot_button: button::State,
     pub recompute_button: button::State,
+    pub sanity_button: button::State,
     //
     // more
     //

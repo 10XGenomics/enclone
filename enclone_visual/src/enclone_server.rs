@@ -8,6 +8,7 @@ use crate::proto::{
 use crate::*;
 use chrono::prelude::*;
 use enclone_core::combine_group_pics::*;
+use enclone_core::logging::*;
 use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
@@ -69,6 +70,19 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
+        if req.server_logfile.is_some() {
+            if enclone_core::logging::SERVER_LOGFILE
+                .lock()
+                .unwrap()
+                .is_empty()
+            {
+                enclone_core::logging::SERVER_LOGFILE
+                    .lock()
+                    .unwrap()
+                    .push(req.server_logfile.as_ref().unwrap().clone());
+            }
+        }
+        logme(&format!("Running enclone:\n  {}", args.join(" ")));
         eprintln!("Running enclone:\n  {}", args.join(" "));
         let setup = main_enclone_setup(&args);
         if setup.is_err() {
@@ -282,6 +296,7 @@ impl Analyzer for EncloneAnalyzer {
             let mut e = GzEncoder::new(Vec::new(), Compression::default());
             let _ = e.write_all(&serialized);
             let gzipped = e.finish().unwrap();
+            logme(&format!("plot=\n{}", plot));
             response = EncloneResponse {
                 args: req.args,
                 plot: plot,

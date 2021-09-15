@@ -100,6 +100,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             PLAYBACK.store(true, SeqCst);
         } else if arg == "FAIL_ON_ERROR" {
             FAIL_ON_ERROR.store(true, SeqCst);
+        } else if arg.starts_with("SERVER_LOGFILE=") {
+            // don't use tilde because we don't expand it
+            let server_logfile = arg.after("SERVER_LOGFILE=").to_string();
+            SERVER_LOGFILE.lock().unwrap().push(server_logfile);
         } else if arg.starts_with("META=") {
             META_TESTING.store(true, SeqCst);
             META.store(arg.after("META=").force_usize() - 1, SeqCst);

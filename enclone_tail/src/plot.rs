@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::assign_cell_color::*;
 use crate::circles_to_svg::*;
 use crate::colors::*;
 use crate::group_colors::*;
@@ -757,29 +758,36 @@ pub fn plot_clonotypes(
         }
         *svg += "</svg>";
     }
+    VAR_LOW.lock().unwrap().clear();
+    VAR_HIGH.lock().unwrap().clear();
 
     // Output the svg or png file.
 
     if plot_opt.plot_file == "stdout.png" {
-        let png = convert_svg_to_png(&svg.as_bytes());
+        let png = convert_svg_to_png(&svg.as_bytes(), 2000);
         std::io::stdout().write_all(&png).unwrap();
     } else if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
         && plot_opt.plot_file != "gui_stdout"
     {
+        let f = File::create(&plot_opt.plot_file);
+        if f.is_err() {
+            return Err(format!(
+                "\nThe file {} in your PLOT or HONEY argument could not be created.\n",
+                plot_opt.plot_file
+            ));
+        }
+        let mut f = f.unwrap();
         if !plot_opt.plot_file.ends_with(".png") {
-            let f = File::create(&plot_opt.plot_file);
-            if f.is_err() {
-                return Err(format!(
-                    "\nThe file {} in your PLOT argument could not be created.\n",
-                    plot_opt.plot_file
-                ));
-            }
-            let mut f = BufWriter::new(f.unwrap());
+            let mut f = BufWriter::new(f);
             fwriteln!(f, "{}", svg);
         } else {
-            let png = convert_svg_to_png(&svg.as_bytes());
-            std::fs::write(&plot_opt.plot_file, png).unwrap();
+            let mut width = 2000;
+            if plot_opt.png_width.is_some() {
+                width = plot_opt.png_width.unwrap();
+            }
+            let png = convert_svg_to_png(&svg.as_bytes(), width as u32);
+            f.write_all(&png).unwrap();
         }
     }
     ctl.perf_stats(&t, "building svg file");
