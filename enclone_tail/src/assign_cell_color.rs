@@ -12,6 +12,9 @@ use std::sync::Mutex;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+// The use of these global variables is horrible.  It already lead to one bug that was very
+// difficult to track down.
+
 lazy_static! {
     pub static ref VAR_LOW: Mutex<Vec<(String, f64)>> = Mutex::new(Vec::<(String, f64)>::new());
     pub static ref VAR_HIGH: Mutex<Vec<(String, f64)>> = Mutex::new(Vec::<(String, f64)>::new());
