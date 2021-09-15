@@ -782,7 +782,11 @@ pub fn plot_clonotypes(
             let mut f = BufWriter::new(f);
             fwriteln!(f, "{}", svg);
         } else {
-            let png = convert_svg_to_png(&svg.as_bytes(), 2000);
+            let mut width = 2000;
+            if plot_opt.png_width.is_some() {
+                width = plot_opt.png_width.unwrap();
+            }
+            let png = convert_svg_to_png(&svg.as_bytes(), width as u32);
             f.write_all(&png).unwrap();
         }
     }
