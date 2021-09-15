@@ -105,8 +105,10 @@ pub fn process_special_arg(
                 if p.len() == 2 && p[1].parse::<usize>().is_ok() {
                     ctl.plot_opt.png_width = Some(p[1].force_usize());
                     if !filename.ends_with(".png") {
-                        return Err(format!("\nWidth specification for the HONEY argument only \
-                            makes sense if the filename ends with .png.\n"));
+                        return Err(format!(
+                            "\nWidth specification for the HONEY argument only \
+                            makes sense if the filename ends with .png.\n"
+                        ));
                     }
                 }
                 if filename != "stdout"
