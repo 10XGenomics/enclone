@@ -551,7 +551,7 @@ fn test_for_broken_links_and_spellcheck() {
         macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
-        pcell pcols pdb pgas phad phylip \
+        pcell pcols pdb pgas phad phylip png \
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
