@@ -602,7 +602,9 @@ pub fn group_and_print_clonotypes(
                     }
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
-                    rows.push(pcols.clone());
+                    if !ctl.gen_opt.noprint || (i == 0 && j == 0) {
+                        rows.push(pcols.clone());
+                    }
                 }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {
