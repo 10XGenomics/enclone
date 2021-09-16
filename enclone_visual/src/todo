@@ -68,31 +68,25 @@ NICE TO HAVE
 
 6.  Make "enclone help ..." work.
 
-7.  Add button to capture the entire enclone visual window.
-
-8.  Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
+7.  Improve rendering of enclone TCR=1146724-1146731,1146751-1146758 PLOT=gui.  The image
     exhibits weird fluctuations in darkness.
 
-9.  Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
+8.  Profile and optimize, including on large datasets.  Addition of last_widths seemed to slow
     things down, and gzipped representation of tables is crappy because it doesn't allow access
     to individual elements without unzipping everything.
 
-10. Possibly remove the window top bar, since the red exit button is broken anyway.  There is
+9.  Possibly remove the window top bar, since the red exit button is broken anyway.  There is
     a thing platform_specific.title_hidden in iced, but it's not clear how to use it.  This seems
     to have something to do with using cfg! macros.
 
-11. Provide a mechanism for recomputing a session, i.e. rerunning all the enclone commands.
-    This would be useful in particular for cookbooks, where the displayed outputs might lag actual
-    enclone behavior.
+10. Clean up hist_uniq vectors after each del operation to avoid wasting memory.
 
-12. Clean up hist_uniq vectors after each del operation to avoid wasting memory.
+11. Make sure layout is optimal when the enclone visual window is widened.
 
-13. Make sure layout is optimal when the enclone visual window is widened.
-
-14. Make horizontal rules in scrollables less wide so they don't overlap the scrollbar, which
+12. Make horizontal rules in scrollables less wide so they don't overlap the scrollbar, which
     seems ugly.
 
-15. The copy image button yields low quality.  Inspection of the PNG shows that the DPI is 72,
+13. The copy image button yields low quality.  Inspection of the PNG shows that the DPI is 72,
     regardless of the value given for DPI.  Filed issue #451 for resvg crate.  Note that
     screen capture gives 144 DPI, and the screen capture images are much better.  Note that one
     can increase quality for resvg e.g.
