@@ -773,6 +773,7 @@ pub fn print_clonotypes(
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
+                    let mut mins = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
                     // traverse the coefficients on the left hand side (each having a variable)
                     let mut fail = false;
@@ -788,11 +789,13 @@ pub fn print_clonotypes(
                                 break;
                             }
                         }
+                        let mut min = 1000_000_000.0_f64;
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
                         let mut count = 0;
                         for j in 0..vals.len() {
                             if !vals[j].is_nan() {
+                                min = min.min(vals[j]);
                                 mean += vals[j];
                                 max = max.max(vals[j]);
                                 count += 1;
@@ -801,6 +804,7 @@ pub fn print_clonotypes(
                         if count == 0 {
                             fail = true;
                         } else {
+                            mins.push(min);
                             mean /= count as f64;
                             means.push(mean);
                             maxs.push(max);
@@ -808,6 +812,15 @@ pub fn print_clonotypes(
                     }
                     if ctl.clono_filt_opt.bound_type[bi] == "mean" && (fail || !x.satisfied(&means))
                     {
+                        if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                            in_center = false;
+                        } else {
+                            for u in 0..nexacts {
+                                bads[u] = true;
+                            }
+                        }
+                    }
+                    if ctl.clono_filt_opt.bound_type[bi] == "min" && (fail || !x.satisfied(&mins)) {
                         if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                             in_center = false;
                         } else {

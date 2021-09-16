@@ -580,10 +580,15 @@ pub fn process_special_arg(
         let filt = arg.after("KEEP_CLONO_IF_CELL_MEAN=").to_string();
         ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("mean".to_string());
+    } else if arg.starts_with("KEEP_CLONO_IF_CELL_MIN=") {
+        let filt = arg.after("KEEP_CLONO_IF_CELL_MIN=").to_string();
+        ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
+        ctl.clono_filt_opt.bound_type.push("min".to_string());
     } else if arg.starts_with("KEEP_CLONO_IF_CELL_MAX=") {
         let filt = arg.after("KEEP_CLONO_IF_CELL_MAX=").to_string();
         ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("max".to_string());
+
     } else if arg.starts_with("SCAN=") {
         let mut x = arg.after("SCAN=").to_string();
         x = x.replace(" ", "").to_string();
