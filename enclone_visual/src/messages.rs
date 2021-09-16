@@ -26,6 +26,8 @@ pub enum Message {
     CookbookClose,
     SummaryOpen(Result<(), String>),
     SummaryClose(Result<(), String>),
+    ClonotypesOpen(Result<(), String>),
+    ClonotypesClose,
     ConsoleOpen,
     ConsoleClose,
     ArchiveOpen(Result<(), String>),

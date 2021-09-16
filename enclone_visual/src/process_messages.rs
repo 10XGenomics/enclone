@@ -676,6 +676,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ClonotypesOpen(_) => {
+                self.clonotypes_mode = true;
+                Command::none()
+            }
+
+            Message::ClonotypesClose => {
+                self.clonotypes_mode = false;
+                Command::none()
+            }
+
             Message::SummaryOpen(_) => {
                 self.summary_mode = true;
                 let summaryx = unpack_summary(&self.summary_value);

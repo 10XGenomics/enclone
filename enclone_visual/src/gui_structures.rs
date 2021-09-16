@@ -77,6 +77,7 @@ use ComputeState::*;
 pub struct EncloneVisual {
     pub modified: bool,
     pub scroll: scrollable::State,
+    pub clonotypes_scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
     pub input1_value: String,
@@ -106,6 +107,7 @@ pub struct EncloneVisual {
     pub summary_mode: bool,
     pub console_mode: bool,
     pub archive_mode: bool,
+    pub clonotypes_mode: bool,
     pub save: bool,
     pub save_in_progress: bool,
     pub save_on_exit: bool,
@@ -169,6 +171,8 @@ pub struct EncloneVisual {
     pub snapshot_button: button::State,
     pub recompute_button: button::State,
     pub sanity_button: button::State,
+    pub clonotypes_open_button: button::State,
+    pub clonotypes_close_button: button::State,
     //
     // more
     //

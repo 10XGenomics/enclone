@@ -268,6 +268,9 @@ impl Application for EncloneVisual {
         if self.summary_mode {
             return summary(self);
         }
+        if self.clonotypes_mode {
+            return clonotypes(self);
+        }
         if self.console_mode {
             return console(self);
         }
@@ -433,6 +436,15 @@ impl Application for EncloneVisual {
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::SummaryOpen(Ok(())));
+            let clonotypes_button = Button::new(
+                &mut self.clonotypes_open_button,
+                Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::ClonotypesOpen(Ok(())));
+            let summary_buttons_row = Row::new()
+                .spacing(8)
+                .push(clonotypes_button)
+                .push(summary_button);
 
             // Create narrative button.
 
@@ -512,7 +524,7 @@ impl Application for EncloneVisual {
                 .on_press(Message::DoNothing),
             );
             col = col.push(row);
-            col = col.push(summary_button);
+            col = col.push(summary_buttons_row);
             col = col.push(narrative_button);
             if have_narrative {
                 col = col.push(copy_narrative_button);
