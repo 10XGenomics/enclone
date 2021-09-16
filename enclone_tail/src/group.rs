@@ -748,6 +748,15 @@ pub fn group_and_print_clonotypes(
                         justify.push(justification(&x));
                     }
                     print_tabular(&mut log, &rows, 2, Some(justify));
+                    if ctl.gen_opt.noprint && (i > 0 || j > 0) {
+                        let mut x = String::new();
+                        for (k, line) in strme(&log).lines().enumerate() {
+                            if k > 0 {
+                                x += &mut format!("{}\n", line);
+                            }
+                        }
+                        log = x.as_bytes().to_vec();
+                    }
                     fwrite!(glog, "{}", strme(&log));
                 }
             }
