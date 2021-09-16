@@ -6,9 +6,9 @@ use messages::Message;
 
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
-    let clonotypes_close_button 
-        = Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
-        .on_press(Message::ClonotypesClose);
+    let clonotypes_close_button =
+        Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
+            .on_press(Message::ClonotypesClose);
     const CLONOTYPE_FONT_SIZE: u16 = 13;
     let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
     let available = slf.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
