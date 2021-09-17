@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use ansi_escape::*;
 use crate::defs::*;
+use ansi_escape::*;
 use io_utils::*;
 use std::io::Write;
 use string_utils::*;
@@ -17,7 +17,6 @@ pub fn combine_group_pics(
     ngroup: bool,
     pretty: bool,
 ) -> String {
-
     let mut glog = Vec::<u8>::new();
     let mut done = false;
     if noprint && parseable_stdouth && group_pics.len() > 0 {
@@ -31,7 +30,7 @@ pub fn combine_group_pics(
                 }
                 let s = x.split(' ').map(str::to_owned).collect();
                 rows.push(s);
-             }
+            }
         }
         let mut same = true;
         let n = rows[0].len();
@@ -51,17 +50,16 @@ pub fn combine_group_pics(
     }
 
     if !done {
-
         // Get the newlines right is tricky, so they're marked.
-    
+
         for i in 0..group_pics.len() {
             if !noprint {
                 if !html && !ngroup && (!noprintx || i > 0) {
                     fwriteln!(glog, ""); // NEWLINE 1
                 }
-    
+
                 // If we just printed a clonotype box, output a bar.
-    
+
                 if i > 0 && last_widths[i - 1] > 0 {
                     if ngroup || html {
                         fwriteln!(glog, ""); // NEWLINE 2

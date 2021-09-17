@@ -588,7 +588,6 @@ pub fn process_special_arg(
         let filt = arg.after("KEEP_CLONO_IF_CELL_MAX=").to_string();
         ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt)?);
         ctl.clono_filt_opt.bound_type.push("max".to_string());
-
     } else if arg.starts_with("SCAN=") {
         let mut x = arg.after("SCAN=").to_string();
         x = x.replace(" ", "").to_string();
