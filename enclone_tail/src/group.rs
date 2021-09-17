@@ -744,7 +744,7 @@ pub fn group_and_print_clonotypes(
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
                     if ctl.gen_opt.noprint {
                         for (k, r) in rows.iter().enumerate() {
-                            if k > 0 || (i == 0 && j ==0) {
+                            if k > 0 || (i == 0 && j == 0) {
                                 let s = format!("{}\n", r.iter().format("\t"));
                                 glog.append(&mut s.as_bytes().to_vec());
                             }
