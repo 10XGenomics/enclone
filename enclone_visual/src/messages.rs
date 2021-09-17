@@ -82,4 +82,6 @@ pub enum Message {
     Sleep(u64),
     SanityCheck,
     CompleteSanityCheck(Result<(), String>),
+    ClonotypesCopy,
+    CompleteClonotypesCopy(Result<(), String>),
 }

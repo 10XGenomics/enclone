@@ -22,6 +22,24 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ClonotypesCopy => {
+                self.clonotypes_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                let mut s = String::new();
+                for line in self.output_value.lines() {
+                    let t = line.replace(" ", "");
+                    if t.len() > 0 {
+                        s += &mut format!("{}\n", line);
+                    }
+                }
+                copy_bytes_to_clipboard(&s.as_bytes());
+                Command::perform(noop1(), Message::CompleteClonotypesCopy)
+            }
+
+            Message::CompleteClonotypesCopy(_) => {
+                self.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::SanityCheck => {
                 self.sanity_check_start = Some(Instant::now());
                 self.sanity_button_color = Color::from_rgb(1.0, 0.0, 0.0);

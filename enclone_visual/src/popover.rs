@@ -2,10 +2,16 @@
 
 use crate::*;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::Length::Units;
 use messages::Message;
 
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
+
+    let copy_button =
+        Button::new(&mut slf.clonotypes_copy_button, Text::new("Copy text").color(slf.clonotypes_copy_button_color))
+            .on_press(Message::ClonotypesCopy);
+
     let clonotypes_close_button =
         Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
             .on_press(Message::ClonotypesClose);
@@ -27,6 +33,8 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(clonotypes_title)
         .push(Space::with_width(Length::Fill))
+        .push(copy_button)
+        .push(Space::with_width(Units(8)))
         .push(clonotypes_close_button);
     let clonotypes_scrollable = Scrollable::new(&mut slf.clonotypes_scroll)
         .width(Length::Fill)

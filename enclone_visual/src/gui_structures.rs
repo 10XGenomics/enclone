@@ -98,6 +98,7 @@ pub struct EncloneVisual {
     pub copy_image_button_color: Color,
     pub snapshot_button_color: Color,
     pub sanity_button_color: Color,
+    pub clonotypes_copy_button_color: Color,
     pub canvas_view: CanvasView,
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
@@ -173,6 +174,7 @@ pub struct EncloneVisual {
     pub sanity_button: button::State,
     pub clonotypes_open_button: button::State,
     pub clonotypes_close_button: button::State,
+    pub clonotypes_copy_button: button::State,
     //
     // more
     //
