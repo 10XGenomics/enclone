@@ -1333,6 +1333,7 @@ dependencies = [
  "stirling_numbers",
  "string_utils",
  "superslice",
+ "tables",
  "tiny-skia",
  "usvg",
  "vdj_ann",

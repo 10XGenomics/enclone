@@ -48,6 +48,7 @@ stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
 superslice = "1"
+tables = "0.1"
 tiny-skia = "0.6"
 usvg = { version = "0.17", features = ["text"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }

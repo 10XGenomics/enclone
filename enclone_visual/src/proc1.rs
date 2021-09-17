@@ -516,6 +516,7 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
                     &group_pics,
                     &last_widths,
                     args.contains(&"NOPRINT"),
+                    args.contains(&"POUT=stdouth"),
                     true, // .noprintx
                     args.contains(&"HTML"),
                     args.contains(&"NGROUP"),

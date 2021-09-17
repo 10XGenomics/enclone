@@ -278,6 +278,7 @@ impl Analyzer for EncloneAnalyzer {
             let table_string = combine_group_pics(
                 &table,
                 &widths,
+                enclone_state.outs.parseable_stdouth,
                 enclone_state.outs.noprint,
                 enclone_state.outs.noprintx,
                 enclone_state.outs.html,

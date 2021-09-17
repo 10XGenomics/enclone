@@ -785,6 +785,7 @@ pub fn group_and_print_clonotypes(
             &mut combine_group_pics(
                 &group_pics,
                 &last_widths,
+                ctl.parseable_opt.pout == "stdouth",
                 ctl.gen_opt.noprint,
                 ctl.gen_opt.noprintx,
                 ctl.gen_opt.html,
