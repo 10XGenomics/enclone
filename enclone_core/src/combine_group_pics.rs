@@ -28,6 +28,9 @@ pub fn combine_group_pics(
                 while x.contains("  ") {
                     x = x.replace("  ", " ");
                 }
+                while x.starts_with(" ") {
+                    x = x.after(" ").to_string();
+                }
                 let s = x.split(' ').map(str::to_owned).collect();
                 rows.push(s);
             }
