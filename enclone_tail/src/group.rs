@@ -742,22 +742,31 @@ pub fn group_and_print_clonotypes(
                     }
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
-                    let mut log = Vec::<u8>::new();
-                    let mut justify = Vec::<u8>::new();
-                    for x in rows[0].iter() {
-                        justify.push(justification(&x));
-                    }
-                    print_tabular(&mut log, &rows, 2, Some(justify));
-                    if ctl.gen_opt.noprint && (i > 0 || j > 0) {
-                        let mut x = String::new();
-                        for (k, line) in strme(&log).lines().enumerate() {
-                            if k > 0 {
-                                x += &mut format!("{}\n", line);
+                    if ctl.gen_opt.noprint {
+                        for (k, r) in rows.iter().enumerate() {
+                            if k > 0 || (i == 0 && j ==0) {
+                                let s = format!("{}\n", r.iter().format("\t"));
+                                glog.append(&mut s.as_bytes().to_vec());
                             }
                         }
-                        log = x.as_bytes().to_vec();
+                    } else {
+                        let mut log = Vec::<u8>::new();
+                        let mut justify = Vec::<u8>::new();
+                        for x in rows[0].iter() {
+                            justify.push(justification(&x));
+                        }
+                        print_tabular(&mut log, &rows, 2, Some(justify));
+                        if ctl.gen_opt.noprint && (i > 0 || j > 0) {
+                            let mut x = String::new();
+                            for (k, line) in strme(&log).lines().enumerate() {
+                                if k > 0 {
+                                    x += &mut format!("{}\n", line);
+                                }
+                            }
+                            log = x.as_bytes().to_vec();
+                        }
+                        fwrite!(glog, "{}", strme(&log));
                     }
-                    fwrite!(glog, "{}", strme(&log));
                 }
             }
         }

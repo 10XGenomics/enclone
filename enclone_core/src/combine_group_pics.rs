@@ -24,14 +24,7 @@ pub fn combine_group_pics(
         for i in 0..group_pics.len() {
             let r: Vec<String> = group_pics[i].split('\n').map(str::to_owned).collect();
             for j in 0..r.len() - 1 {
-                let mut x = r[j].clone();
-                while x.contains("  ") {
-                    x = x.replace("  ", " ");
-                }
-                while x.starts_with(" ") {
-                    x = x.after(" ").to_string();
-                }
-                let s = x.split(' ').map(str::to_owned).collect();
+                let s = r[j].split('\t').map(str::to_owned).collect();
                 rows.push(s);
             }
         }
