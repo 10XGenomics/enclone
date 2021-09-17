@@ -287,7 +287,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(10)))
         .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
         .push(Space::with_height(Units(10)))
-        .push(Text::new("that can also be supplied to enclone.").width(max_width))
+        .push(Text::new("that can also be supplied to enclone.  In addition, G=all works.").width(max_width))
         //
         // History.
         //

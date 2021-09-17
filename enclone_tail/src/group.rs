@@ -775,19 +775,21 @@ pub fn group_and_print_clonotypes(
     }
     if ctl.gen_opt.group_post_filter.as_ref().is_some() {
         let x = &ctl.gen_opt.group_post_filter.as_ref().unwrap();
-        if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
-            return Err(format!(
-                "\nArgument to G= references a group id that exceeds the number of groups.\n"
-            ));
+        if x.len() > 0 {
+            if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
+                return Err(format!(
+                    "\nArgument to G= references a group id that exceeds the number of groups.\n"
+                ));
+            }
+            let mut group_pics2 = Vec::<String>::new();
+            let mut last_widths2 = Vec::<u32>::new();
+            for i in 0..x.len() {
+                group_pics2.push(group_pics[x[i] - 1].clone());
+                last_widths2.push(last_widths[x[i] - 1]);
+            }
+            *group_pics = group_pics2;
+            *last_widths = last_widths2;
         }
-        let mut group_pics2 = Vec::<String>::new();
-        let mut last_widths2 = Vec::<u32>::new();
-        for i in 0..x.len() {
-            group_pics2.push(group_pics[x[i] - 1].clone());
-            last_widths2.push(last_widths[x[i] - 1]);
-        }
-        *group_pics = group_pics2;
-        *last_widths = last_widths2;
     }
     if !ctl.gen_opt.noprintx {
         logx.append(
