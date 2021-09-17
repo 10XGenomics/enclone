@@ -23,10 +23,15 @@ pub fn combine_group_pics(
     if noprint && parseable_stdouth && group_pics.len() > 0 {
         let mut rows = Vec::<Vec<String>>::new();
         for i in 0..group_pics.len() {
-            let mut g = group_pics[i].clone();
-            g = g.replace("  ", " ");
-            let s = g.split(' ').map(str::to_owned).collect();
-            rows.push(s);
+            let r: Vec<String> = group_pics[i].split('\n').map(str::to_owned).collect();
+            for j in 0..r.len() - 1 {
+                let mut x = r[j].clone();
+                while x.contains("  ") {
+                    x = x.replace("  ", " ");
+                }
+                let s = x.split(' ').map(str::to_owned).collect();
+                rows.push(s);
+             }
         }
         let mut same = true;
         let n = rows[0].len();
