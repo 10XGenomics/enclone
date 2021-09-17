@@ -1,16 +1,18 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
-use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use iced::Length::Units;
+use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
 
-    let copy_button =
-        Button::new(&mut slf.clonotypes_copy_button, Text::new("Copy text").color(slf.clonotypes_copy_button_color))
-            .on_press(Message::ClonotypesCopy);
+    let copy_button = Button::new(
+        &mut slf.clonotypes_copy_button,
+        Text::new("Copy text").color(slf.clonotypes_copy_button_color),
+    )
+    .on_press(Message::ClonotypesCopy);
 
     let clonotypes_close_button =
         Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
