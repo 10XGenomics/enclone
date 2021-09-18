@@ -453,7 +453,7 @@ impl Application for EncloneVisual {
             if !blank {
                 narrative_width = MAX_LINE;
             } else {
-                narrative_width = 80;
+                narrative_width = 100;
             }
             let mut logx = String::new();
             let mut logx_lines = 1;
