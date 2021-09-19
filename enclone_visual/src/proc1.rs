@@ -16,6 +16,49 @@ use std::io::Read;
 use std::time::{Duration, Instant};
 use vector_utils::*;
 
+pub fn do_archive_close(slf: &mut EncloneVisual) -> Command<Message> {
+    for i in 0..slf.archive_name_value.len() {
+        slf.archive_name_value[i] = slf.orig_archive_name[i].clone();
+    }
+    slf.archive_mode = false;
+    slf.do_share = false;
+    slf.do_share_complete = false;
+    slf.user.clear();
+    slf.user_value.clear();
+    slf.user_selected.clear();
+    slf.user_valid.clear();
+    for i in 0..slf.archive_share_requested.len() {
+        slf.archive_share_requested[i] = false;
+    }
+    for i in 0..slf.expand_archive_entry.len() {
+        slf.expand_archive_entry[i] = false;
+    }
+    for i in 0..slf.cookbooks.len() {
+        slf.expand_cookbook_entry[i] = false;
+        slf.restore_cookbook_requested[i] = false;
+    }
+    for i in 0..slf.restore_msg.len() {
+        slf.restore_msg[i].clear();
+        slf.restore_requested[i] = false;
+        if slf.delete_requested[i] {
+            let filename = format!(
+                "{}/{}",
+                slf.archive_dir.as_ref().unwrap(),
+                slf.archive_list[i]
+            );
+            if path_exists(&filename) {
+                std::fs::remove_file(&filename).unwrap();
+            }
+            slf.deleted[i] = true;
+        }
+    }
+    for i in 0..slf.restore_cookbook_msg.len() {
+        slf.restore_cookbook_msg[i].clear();
+    }
+    slf.just_restored = false;
+    Command::none()
+}
+
 pub fn do_meta(slf: &mut EncloneVisual) -> Command<Message> {
     if slf.meta_pos == slf.this_meta.len() {
         if PSEUDO_META.load(SeqCst) {

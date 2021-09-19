@@ -10,7 +10,6 @@ use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
-use io_utils::*;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
@@ -687,48 +686,7 @@ impl EncloneVisual {
 
             Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
-            Message::ArchiveClose => {
-                for i in 0..self.archive_name_value.len() {
-                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
-                }
-                self.archive_mode = false;
-                self.do_share = false;
-                self.do_share_complete = false;
-                self.user.clear();
-                self.user_value.clear();
-                self.user_selected.clear();
-                self.user_valid.clear();
-                for i in 0..self.archive_share_requested.len() {
-                    self.archive_share_requested[i] = false;
-                }
-                for i in 0..self.expand_archive_entry.len() {
-                    self.expand_archive_entry[i] = false;
-                }
-                for i in 0..self.cookbooks.len() {
-                    self.expand_cookbook_entry[i] = false;
-                    self.restore_cookbook_requested[i] = false;
-                }
-                for i in 0..self.restore_msg.len() {
-                    self.restore_msg[i].clear();
-                    self.restore_requested[i] = false;
-                    if self.delete_requested[i] {
-                        let filename = format!(
-                            "{}/{}",
-                            self.archive_dir.as_ref().unwrap(),
-                            self.archive_list[i]
-                        );
-                        if path_exists(&filename) {
-                            std::fs::remove_file(&filename).unwrap();
-                        }
-                        self.deleted[i] = true;
-                    }
-                }
-                for i in 0..self.restore_cookbook_msg.len() {
-                    self.restore_cookbook_msg[i].clear();
-                }
-                self.just_restored = false;
-                Command::none()
-            }
+            Message::ArchiveClose => do_archive_close(self),
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
