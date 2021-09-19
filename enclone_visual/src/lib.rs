@@ -316,12 +316,15 @@ pub fn fold(all: &str, max_line: usize) -> Vec<String> {
                             break;
                         }
                     }
-                } else if current.len() == 0 {
+                } else if current.len() == 0 && words[i].len() > 0 {
                     current += &mut words[i].clone();
                 } else {
                     current += &mut format!(" {}", words[i]);
                 }
                 i += 1;
+            }
+            if current.starts_with(" ") {
+                current = current.after(" ").to_string();
             }
             if current.len() > 0 {
                 pieces.push(current);
