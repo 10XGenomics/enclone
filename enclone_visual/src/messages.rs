@@ -26,6 +26,8 @@ pub enum Message {
     CookbookClose,
     SummaryOpen(Result<(), String>),
     SummaryClose(Result<(), String>),
+    ClonotypesOpen(Result<(), String>),
+    ClonotypesClose,
     ConsoleOpen,
     ConsoleClose,
     ArchiveOpen(Result<(), String>),
@@ -80,4 +82,6 @@ pub enum Message {
     Sleep(u64),
     SanityCheck,
     CompleteSanityCheck(Result<(), String>),
+    ClonotypesCopy,
+    CompleteClonotypesCopy(Result<(), String>),
 }

@@ -5,6 +5,7 @@ use crate::gui_structures::EncloneVisual;
 use enclone_core::convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
+use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::SIGINT;
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
@@ -44,6 +45,7 @@ pub mod messages;
 pub mod packing;
 pub mod popover;
 pub mod proc1;
+pub mod proc2;
 pub mod process_messages;
 pub mod share;
 pub mod style;
@@ -53,6 +55,86 @@ pub mod testsuite;
 pub mod update_restart;
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Fold strings to put them in boxes.  This is more delicate than it might appear.
+
+pub fn fold(all: &str, max_line: usize) -> Vec<String> {
+    let mut pieces = Vec::<String>::new();
+    let lines = all.split('\n').collect::<Vec<&str>>();
+    for line in lines.iter() {
+        if line.len() == 0 {
+            pieces.push(String::new());
+        } else {
+            let words = line.split(' ').collect::<Vec<&str>>();
+            let mut current = String::new();
+            let mut i = 0;
+            while i < words.len() {
+                if current.len() > 0
+                    && current.chars().count() + 1 + words[i].chars().count() > max_line
+                {
+                    pieces.push(current.clone());
+                    current.clear();
+                    i -= 1;
+                } else if words[i].chars().count() >= max_line {
+                    let mut w = words[i].to_string();
+                    loop {
+                        let n = std::cmp::min(max_line, w.chars().count());
+                        let sub = w[0..n].to_string();
+                        if n < w.chars().count() {
+                            pieces.push(sub);
+                            w = w[n..w.len()].to_string();
+                        } else {
+                            current = w.clone();
+                            break;
+                        }
+                    }
+                } else if current.len() == 0 && words[i].len() > 0 {
+                    current += &mut words[i].clone();
+                } else {
+                    current += &mut format!(" {}", words[i]);
+                }
+                i += 1;
+            }
+            if current.starts_with(" ") {
+                current = current.after(" ").to_string();
+            }
+            if current.len() > 0 {
+                pieces.push(current);
+            }
+        }
+    }
+    pieces
+}
+
+pub fn test_fold() {
+    let input1 = r###"This and next state allows one to deduce:
+
+whatever
+
+             positive         negative
+xx  yyyyyy   zzzzzzzzzzzzzzz  .......................................................
+
+Those four gerbils acids stand out.  But of course just traversing columns and looking for differences is going to miss a lot.  Also note that the controls typically have very little wobble, forcing no change for the first three whatevers."###;
+
+    let output1 = r###"This and next state allows one to deduce:
+
+whatever
+
+             positive         negative
+xx  yyyyyy   zzzzzzzzzzzzzzz  .......................................................
+
+Those four gerbils acids stand out.  But of course just traversing columns and looking for
+differences is going to miss a lot.  Also note that the controls typically have very little wobble,
+forcing no change for the first three whatevers."###;
+
+    let folded1 = fold(&input1, 100);
+    let out1 = format!("{}", folded1.iter().format("\n"));
+    assert_eq!(&out1, &output1);
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn compressed_message_history() -> Vec<String> {
     let mut messages = Vec::<String>::new();
@@ -284,51 +366,6 @@ pub fn get_window_id() -> usize {
         std::process::exit(1);
     }
     m.after("id=").force_usize()
-}
-
-pub fn fold(all: &str, max_line: usize) -> Vec<String> {
-    let mut pieces = Vec::<String>::new();
-    let lines = all.split('\n').collect::<Vec<&str>>();
-    for line in lines.iter() {
-        if line.len() == 0 {
-            pieces.push(String::new());
-        } else {
-            let words = line.split(' ').collect::<Vec<&str>>();
-            let mut current = String::new();
-            let mut i = 0;
-            while i < words.len() {
-                if current.len() > 0
-                    && current.chars().count() + 1 + words[i].chars().count() > max_line
-                {
-                    pieces.push(current.clone());
-                    current.clear();
-                    i -= 1;
-                } else if words[i].chars().count() >= max_line {
-                    let mut w = words[i].to_string();
-                    loop {
-                        let n = std::cmp::min(max_line, w.chars().count());
-                        let sub = w[0..n].to_string();
-                        if n < w.chars().count() {
-                            pieces.push(sub);
-                            w = w[n..w.len()].to_string();
-                        } else {
-                            current = w.clone();
-                            break;
-                        }
-                    }
-                } else if current.len() == 0 {
-                    current += &mut words[i].clone();
-                } else {
-                    current += &mut format!(" {}", words[i]);
-                }
-                i += 1;
-            }
-            if current.len() > 0 {
-                pieces.push(current);
-            }
-        }
-    }
-    pieces
 }
 
 pub fn format_cookbook() -> String {

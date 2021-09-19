@@ -524,7 +524,9 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
                 specified, then the condition fails.\n\n",
         )?;
         h.print(
-            "Similarly, to filter by the max across all cells in a clonotype, one may use\n\
+            "Similarly, to filter by the min or max across all cells in a clonotype, one may use\n\
+             \\bold{KEEP_CLONO_IF_CELL_MIN=\"L\"}\n\
+             or\n\
              \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
              and otherwise as above.\n\n",
         )?;

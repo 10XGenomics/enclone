@@ -742,13 +742,31 @@ pub fn group_and_print_clonotypes(
                     }
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
-                    let mut log = Vec::<u8>::new();
-                    let mut justify = Vec::<u8>::new();
-                    for x in rows[0].iter() {
-                        justify.push(justification(&x));
+                    if ctl.gen_opt.noprint {
+                        for (k, r) in rows.iter().enumerate() {
+                            if k > 0 || (i == 0 && j == 0) {
+                                let s = format!("{}\n", r.iter().format("\t"));
+                                glog.append(&mut s.as_bytes().to_vec());
+                            }
+                        }
+                    } else {
+                        let mut log = Vec::<u8>::new();
+                        let mut justify = Vec::<u8>::new();
+                        for x in rows[0].iter() {
+                            justify.push(justification(&x));
+                        }
+                        print_tabular(&mut log, &rows, 2, Some(justify));
+                        if ctl.gen_opt.noprint && (i > 0 || j > 0) {
+                            let mut x = String::new();
+                            for (k, line) in strme(&log).lines().enumerate() {
+                                if k > 0 {
+                                    x += &mut format!("{}\n", line);
+                                }
+                            }
+                            log = x.as_bytes().to_vec();
+                        }
+                        fwrite!(glog, "{}", strme(&log));
                     }
-                    print_tabular(&mut log, &rows, 2, Some(justify));
-                    fwrite!(glog, "{}", strme(&log));
                 }
             }
         }
@@ -757,25 +775,28 @@ pub fn group_and_print_clonotypes(
     }
     if ctl.gen_opt.group_post_filter.as_ref().is_some() {
         let x = &ctl.gen_opt.group_post_filter.as_ref().unwrap();
-        if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
-            return Err(format!(
-                "\nArgument to G= references a group id that exceeds the number of groups.\n"
-            ));
+        if x.len() > 0 {
+            if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
+                return Err(format!(
+                    "\nArgument to G= references a group id that exceeds the number of groups.\n"
+                ));
+            }
+            let mut group_pics2 = Vec::<String>::new();
+            let mut last_widths2 = Vec::<u32>::new();
+            for i in 0..x.len() {
+                group_pics2.push(group_pics[x[i] - 1].clone());
+                last_widths2.push(last_widths[x[i] - 1]);
+            }
+            *group_pics = group_pics2;
+            *last_widths = last_widths2;
         }
-        let mut group_pics2 = Vec::<String>::new();
-        let mut last_widths2 = Vec::<u32>::new();
-        for i in 0..x.len() {
-            group_pics2.push(group_pics[x[i] - 1].clone());
-            last_widths2.push(last_widths[x[i] - 1]);
-        }
-        *group_pics = group_pics2;
-        *last_widths = last_widths2;
     }
     if !ctl.gen_opt.noprintx {
         logx.append(
             &mut combine_group_pics(
                 &group_pics,
                 &last_widths,
+                ctl.parseable_opt.pout == "stdouth",
                 ctl.gen_opt.noprint,
                 ctl.gen_opt.noprintx,
                 ctl.gen_opt.html,

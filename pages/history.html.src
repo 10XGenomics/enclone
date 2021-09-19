@@ -30,6 +30,13 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>9/17/21</b>: 
+<ul>
+<li>Add <code>KEEP_CLONO_IF_CELL_MIN</code>.  See
+<a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.</li>
+<li>Tweak handling of <code>NOPRINT PARSEABLE=stdouth</code> to make columns line up.</li>
+</ul>
+</p>
 
 <p><b>9/15/21</b>: Add control over PNG resolution for cell coloring by variable.</p>
 

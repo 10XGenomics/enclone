@@ -287,7 +287,10 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(10)))
         .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
         .push(Space::with_height(Units(10)))
-        .push(Text::new("that can also be supplied to enclone.").width(max_width))
+        .push(
+            Text::new("that can also be supplied to enclone.  In addition, G=all works.")
+                .width(max_width),
+        )
         //
         // History.
         //
@@ -408,8 +411,9 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
-                                "Below that is a button to display the summary \
-                    stats for your enclone command.",
+                                "Below that is a button to open a window displaying just the \
+                                clonotypes, and a button to display the summary \
+                                stats for your enclone command.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )

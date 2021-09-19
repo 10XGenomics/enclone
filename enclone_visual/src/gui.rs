@@ -49,6 +49,7 @@ impl Application for EncloneVisual {
         x.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
@@ -268,6 +269,9 @@ impl Application for EncloneVisual {
         if self.summary_mode {
             return summary(self);
         }
+        if self.clonotypes_mode {
+            return clonotypes(self);
+        }
         if self.console_mode {
             return console(self);
         }
@@ -433,6 +437,15 @@ impl Application for EncloneVisual {
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::SummaryOpen(Ok(())));
+            let clonotypes_button = Button::new(
+                &mut self.clonotypes_open_button,
+                Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::ClonotypesOpen(Ok(())));
+            let summary_buttons_row = Row::new()
+                .spacing(8)
+                .push(clonotypes_button)
+                .push(summary_button);
 
             // Create narrative button.
 
@@ -440,7 +453,7 @@ impl Application for EncloneVisual {
             if !blank {
                 narrative_width = MAX_LINE;
             } else {
-                narrative_width = 80;
+                narrative_width = 100;
             }
             let mut logx = String::new();
             let mut logx_lines = 1;
@@ -512,7 +525,7 @@ impl Application for EncloneVisual {
                 .on_press(Message::DoNothing),
             );
             col = col.push(row);
-            col = col.push(summary_button);
+            col = col.push(summary_buttons_row);
             col = col.push(narrative_button);
             if have_narrative {
                 col = col.push(copy_narrative_button);

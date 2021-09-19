@@ -4,13 +4,13 @@ use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
+use crate::proc2::*;
 use crate::share::*;
 use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
-use io_utils::*;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
@@ -22,6 +22,24 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ClonotypesCopy => {
+                self.clonotypes_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                let mut s = String::new();
+                for line in self.output_value.lines() {
+                    let t = line.replace(" ", "");
+                    if t.len() > 0 {
+                        s += &mut format!("{}\n", line);
+                    }
+                }
+                copy_bytes_to_clipboard(&s.as_bytes());
+                Command::perform(noop1(), Message::CompleteClonotypesCopy)
+            }
+
+            Message::CompleteClonotypesCopy(_) => {
+                self.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::SanityCheck => {
                 self.sanity_check_start = Some(Instant::now());
                 self.sanity_button_color = Color::from_rgb(1.0, 0.0, 0.0);
@@ -213,70 +231,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::Meta(_) => {
-                if self.meta_pos == self.this_meta.len() {
-                    if PSEUDO_META.load(SeqCst) {
-                        PSEUDO_META.store(false, SeqCst);
-                        META_TESTING.store(false, SeqCst);
-                        return Command::none();
-                    }
-                    std::process::exit(0);
-                }
-                let mut done = false;
-                let mut null = false;
-                let mut submit = false;
-                let mut wait = false;
-                for i in self.meta_pos..self.this_meta.len() {
-                    if i == 0 {
-                        self.window_id = get_window_id();
-                    }
-
-                    match self.this_meta[i] {
-                        Message::SubmitButtonPressed(_) => {
-                            self.meta_pos = i + 1;
-                            submit = true;
-                            break;
-                        }
-                        Message::WaitCommand(_) => {
-                            self.meta_pos = i + 1;
-                            wait = true;
-                            break;
-                        }
-                        _ => {}
-                    }
-
-                    // self.update(self.this_meta[i].clone(), clipboard);
-                    self.update(self.this_meta[i].clone());
-                    match self.this_meta[i] {
-                        Message::SetName(_) => {
-                            self.meta_pos = i + 1;
-                            done = true;
-                            break;
-                        }
-                        Message::WaitCommand(_) => {
-                            self.meta_pos = i + 1;
-                            null = true;
-                            break;
-                        }
-                        _ => {}
-                    }
-                    if i == self.this_meta.len() - 1 {
-                        self.meta_pos = i + 1;
-                        done = true;
-                    }
-                }
-                if submit {
-                    Command::perform(noop0(), Message::SubmitButtonPressed)
-                } else if wait {
-                    Command::perform(noop0(), Message::WaitCommand)
-                } else if null {
-                    Command::perform(noop0(), Message::NullMeta)
-                } else if done {
-                    Command::perform(noop0(), Message::CompleteMeta)
-                } else {
-                    Command::none()
-                }
-            }
+            Message::Meta(_) => do_meta(self),
 
             Message::CompleteMeta(_) => {
                 capture(&self.save_name, self.window_id);
@@ -676,6 +631,16 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::ClonotypesOpen(_) => {
+                self.clonotypes_mode = true;
+                Command::none()
+            }
+
+            Message::ClonotypesClose => {
+                self.clonotypes_mode = false;
+                Command::none()
+            }
+
             Message::SummaryOpen(_) => {
                 self.summary_mode = true;
                 let summaryx = unpack_summary(&self.summary_value);
@@ -722,48 +687,7 @@ impl EncloneVisual {
 
             Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
-            Message::ArchiveClose => {
-                for i in 0..self.archive_name_value.len() {
-                    self.archive_name_value[i] = self.orig_archive_name[i].clone();
-                }
-                self.archive_mode = false;
-                self.do_share = false;
-                self.do_share_complete = false;
-                self.user.clear();
-                self.user_value.clear();
-                self.user_selected.clear();
-                self.user_valid.clear();
-                for i in 0..self.archive_share_requested.len() {
-                    self.archive_share_requested[i] = false;
-                }
-                for i in 0..self.expand_archive_entry.len() {
-                    self.expand_archive_entry[i] = false;
-                }
-                for i in 0..self.cookbooks.len() {
-                    self.expand_cookbook_entry[i] = false;
-                    self.restore_cookbook_requested[i] = false;
-                }
-                for i in 0..self.restore_msg.len() {
-                    self.restore_msg[i].clear();
-                    self.restore_requested[i] = false;
-                    if self.delete_requested[i] {
-                        let filename = format!(
-                            "{}/{}",
-                            self.archive_dir.as_ref().unwrap(),
-                            self.archive_list[i]
-                        );
-                        if path_exists(&filename) {
-                            std::fs::remove_file(&filename).unwrap();
-                        }
-                        self.deleted[i] = true;
-                    }
-                }
-                for i in 0..self.restore_cookbook_msg.len() {
-                    self.restore_cookbook_msg[i].clear();
-                }
-                self.just_restored = false;
-                Command::none()
-            }
+            Message::ArchiveClose => do_archive_close(self),
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;

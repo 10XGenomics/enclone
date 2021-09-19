@@ -60,6 +60,7 @@ pub struct MainEncloneOutput {
     pub summary: String,   // summary
     pub metrics: Vec<String>,
     pub dataset_names: Vec<String>,
+    pub parseable_stdouth: bool,
     pub noprint: bool,
     pub noprintx: bool,
     pub html: bool,

@@ -1,8 +1,65 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
+use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
+
+pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
+
+    let copy_button = Button::new(
+        &mut slf.clonotypes_copy_button,
+        Text::new("Copy text").color(slf.clonotypes_copy_button_color),
+    )
+    .on_press(Message::ClonotypesCopy);
+
+    let clonotypes_close_button =
+        Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
+            .on_press(Message::ClonotypesClose);
+    const CLONOTYPE_FONT_SIZE: u16 = 13;
+    let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
+    let available = slf.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
+    let nchars = (available as f32 / font_width).round() as usize;
+    let mut trunc = String::new();
+    let failed = slf.output_value.contains("enclone failed");
+    for line in slf.output_value.lines() {
+        for (i, c) in line.chars().enumerate() {
+            if i == nchars && !failed {
+                break;
+            }
+            trunc.push(c);
+        }
+        trunc.push('\n');
+    }
+    let top_bar = Row::new()
+        .push(clonotypes_title)
+        .push(Space::with_width(Length::Fill))
+        .push(copy_button)
+        .push(Space::with_width(Units(8)))
+        .push(clonotypes_close_button);
+    let clonotypes_scrollable = Scrollable::new(&mut slf.clonotypes_scroll)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .scrollbar_width(SCROLLBAR_WIDTH)
+        .scroller_width(12)
+        .style(style::ScrollableStyle)
+        .push(
+            Text::new(&trunc)
+                .font(DEJAVU_BOLD)
+                .size(CLONOTYPE_FONT_SIZE),
+        );
+    let content = Column::new()
+        .spacing(SPACING)
+        .padding(20)
+        .push(top_bar)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(clonotypes_scrollable);
+    Container::new(content)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
+}
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let console_title = Text::new(&format!("Console")).size(30);

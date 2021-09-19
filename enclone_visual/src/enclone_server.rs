@@ -66,6 +66,12 @@ impl Analyzer for EncloneAnalyzer {
                 }
             }
         }
+        let mut g_specified = false;
+        for j in 0..args.len() {
+            if args[j].starts_with("G=") {
+                g_specified = true;
+            }
+        }
         args.push("SUMMARY".to_string());
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
@@ -267,9 +273,11 @@ impl Analyzer for EncloneAnalyzer {
             *enclone_state = output;
             let mut table = enclone_state.outs.pics.clone();
             let widths = enclone_state.outs.last_widths.clone();
-            const MAX_TABLE: usize = 50;
-            if table.len() > MAX_TABLE {
-                table.truncate(MAX_TABLE);
+            if !g_specified {
+                const MAX_TABLE: usize = 50;
+                if table.len() > MAX_TABLE {
+                    table.truncate(MAX_TABLE);
+                }
             }
             let mut last_widths = Vec::<u32>::new();
             for i in 0..widths.len() {
@@ -278,6 +286,7 @@ impl Analyzer for EncloneAnalyzer {
             let table_string = combine_group_pics(
                 &table,
                 &widths,
+                enclone_state.outs.parseable_stdouth,
                 enclone_state.outs.noprint,
                 enclone_state.outs.noprintx,
                 enclone_state.outs.html,
