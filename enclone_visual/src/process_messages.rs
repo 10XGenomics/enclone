@@ -4,6 +4,7 @@ use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
 use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
+use crate::proc2::*;
 use crate::share::*;
 use crate::summary::*;
 use crate::testsuite::TESTS;

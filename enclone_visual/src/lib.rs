@@ -45,6 +45,7 @@ pub mod messages;
 pub mod packing;
 pub mod popover;
 pub mod proc1;
+pub mod proc2;
 pub mod process_messages;
 pub mod share;
 pub mod style;
