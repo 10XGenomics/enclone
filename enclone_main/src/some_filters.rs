@@ -37,6 +37,97 @@ pub fn some_filters(
     );
     ctl.perf_stats(&tdoublet, "doublet filtering");
 
+    // Given a signature s, if the total cells in the two-chain signatures that are different
+    // from it but share a chain with it is at least 20 times greater, delete s.
+    //
+    // Note duplication of calls to define_mat with other code.  This is expensive.
+
+    /*
+
+    let mut tsig = Instant::now();
+    if ctl.clono_filt_opt_def.signature {
+        const SIG_MULT: usize = 20;
+        let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
+        for i in 0..orbits.len() {
+            results.push((i, Vec::new()));
+        }
+        let mut pures = Vec::<Vec<usize>>::new();
+        results.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            let o = orbits[i].clone();
+            let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
+            for id in o.iter() {
+                let x: &CloneInfo = &info[*id as usize];
+                od.push((x.origin.clone(), x.clonotype_id, *id));
+            }
+            od.sort();
+            let mut exacts = Vec::<usize>::new();
+            let mut j = 0;
+            while j < od.len() {
+                let k = next_diff12_3(&od, j as i32) as usize;
+                exacts.push(od[j].1);
+                j = k;
+            }
+            let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
+                &ctl,
+                &exact_clonotypes,
+                &exacts,
+                &od,
+                &info,
+                &raw_joins,
+            );
+            let mut types = Vec::<(Vec<usize>, usize)::new();
+            for u in 0..nexacts {
+                let mut t = Vec::<usize>::New();
+                for col in 0..mat.len() {
+                    if mat[col][u].is_some() {
+                        // NO, NEED TO TRACK NUMBER OF CELLS.
+                        // AND NEED COMBINE IDENTICAL SIGNATURES.
+                        t.push(col);
+                    }
+                }
+                types.push((t, exact_clonotypes[exacts[u]].ncells()));
+            }
+            let mut freq = Vec::<(usize, Vec<usize>)>::new();
+            let mut i = 0;
+            while i < types.len() {
+                let j = next_diff1_2(&types, i);
+                let mut mult = 0;
+                for k in i..j {
+                    mult += types[k].2;
+                }
+                freq.push((mult, types[i].0.clone()));
+                i = j;
+            }
+            let mut to_delete = vec![false; freq.len()];
+            for i in 0..freq.len() {
+                let mut n2 = 0;
+                for j in 0..freq.len() {
+                    if j != i && freq[j].1.len() == 2 {
+                        let mut share = false;
+                        for x in freq[j].1.iter() {
+                            if freq[i].1.contains(x) {
+                                share = true;
+                            }
+                        }
+                        if share {
+                            n2 += freq[j].0;
+                        }
+                    }
+                }
+                if n2 > SIG_MULT * freq[i].0 {
+                    to_delete[i] = true;
+                }
+            }
+            erase_if(&mut freq, &to_delete);
+    }
+    ctl.perf_stats(&tdoublet, "signature filtering");
+
+    */
+
     // Merge onesies where totally unambiguous.
 
     let tmerge = Instant::now();
