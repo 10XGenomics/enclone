@@ -47,7 +47,7 @@ pub fn some_filters(
     let mut tsig = Instant::now();
     if ctl.clono_filt_opt_def.signature {
         const SIG_MULT: usize = 20;
-        let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
+        let mut results = Vec::<(usize, Vec<usize>)>::new();
         for i in 0..orbits.len() {
             results.push((i, Vec::new()));
         }
@@ -84,8 +84,6 @@ pub fn some_filters(
                 let mut t = Vec::<usize>::New();
                 for col in 0..mat.len() {
                     if mat[col][u].is_some() {
-                        // NO, NEED TO TRACK NUMBER OF CELLS.
-                        // AND NEED COMBINE IDENTICAL SIGNATURES.
                         t.push(col);
                     }
                 }
@@ -102,7 +100,7 @@ pub fn some_filters(
                 freq.push((mult, types[i].0.clone()));
                 i = j;
             }
-            let mut to_delete = vec![false; freq.len()];
+            let mut dels = HashSet::<Vec<usize>>::new();
             for i in 0..freq.len() {
                 let mut n2 = 0;
                 for j in 0..freq.len() {
@@ -119,10 +117,26 @@ pub fn some_filters(
                     }
                 }
                 if n2 > SIG_MULT * freq[i].0 {
-                    to_delete[i] = true;
+                    dels.insert(freq[i].1.clone());
                 }
             }
             erase_if(&mut freq, &to_delete);
+            for u in 0..nexacts {
+                let mut t = Vec::<usize>::New();
+                for col in 0..mat.len() {
+                    if mat[col][u].is_some() {
+                        t.push(col);
+                    }
+                }
+                if dels.contains(&t) {
+                    res.1.push(exacts[u]);
+                }
+            }
+
+        });
+        
+        // .. delete the tagged exact subclonotypes ..
+
     }
     ctl.perf_stats(&tdoublet, "signature filtering");
 
