@@ -40,8 +40,8 @@ pub fn some_filters(
     );
     ctl.perf_stats(&tdoublet, "doublet filtering");
 
-    // Given a signature s having at least two chains, if the total cells in the two-chain 
-    // signatures that are different from it but share a chain with it is at least 20 times 
+    // Given a signature s having at least two chains, if the total cells in the two-chain
+    // signatures that are different from it but share a chain with it is at least 20 times
     // greater, delete s.
     //
     // Note duplication of calls to define_mat with other code.  This is expensive.
