@@ -231,70 +231,7 @@ impl EncloneVisual {
                 Command::none()
             }
 
-            Message::Meta(_) => {
-                if self.meta_pos == self.this_meta.len() {
-                    if PSEUDO_META.load(SeqCst) {
-                        PSEUDO_META.store(false, SeqCst);
-                        META_TESTING.store(false, SeqCst);
-                        return Command::none();
-                    }
-                    std::process::exit(0);
-                }
-                let mut done = false;
-                let mut null = false;
-                let mut submit = false;
-                let mut wait = false;
-                for i in self.meta_pos..self.this_meta.len() {
-                    if i == 0 {
-                        self.window_id = get_window_id();
-                    }
-
-                    match self.this_meta[i] {
-                        Message::SubmitButtonPressed(_) => {
-                            self.meta_pos = i + 1;
-                            submit = true;
-                            break;
-                        }
-                        Message::WaitCommand(_) => {
-                            self.meta_pos = i + 1;
-                            wait = true;
-                            break;
-                        }
-                        _ => {}
-                    }
-
-                    // self.update(self.this_meta[i].clone(), clipboard);
-                    self.update(self.this_meta[i].clone());
-                    match self.this_meta[i] {
-                        Message::SetName(_) => {
-                            self.meta_pos = i + 1;
-                            done = true;
-                            break;
-                        }
-                        Message::WaitCommand(_) => {
-                            self.meta_pos = i + 1;
-                            null = true;
-                            break;
-                        }
-                        _ => {}
-                    }
-                    if i == self.this_meta.len() - 1 {
-                        self.meta_pos = i + 1;
-                        done = true;
-                    }
-                }
-                if submit {
-                    Command::perform(noop0(), Message::SubmitButtonPressed)
-                } else if wait {
-                    Command::perform(noop0(), Message::WaitCommand)
-                } else if null {
-                    Command::perform(noop0(), Message::NullMeta)
-                } else if done {
-                    Command::perform(noop0(), Message::CompleteMeta)
-                } else {
-                    Command::none()
-                }
-            }
+            Message::Meta(_) => do_meta(self),
 
             Message::CompleteMeta(_) => {
                 capture(&self.save_name, self.window_id);
