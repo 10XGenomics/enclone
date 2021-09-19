@@ -26,10 +26,10 @@
 //
 // See also show_diffs.
 
-use enclone_visual::*;
 use enclone_visual::compare_images::*;
 use enclone_visual::messages::*;
 use enclone_visual::testsuite::{metatests, TESTS};
+use enclone_visual::*;
 use image::codecs::jpeg::JpegEncoder;
 use image::ColorType::Rgba8;
 use io_utils::*;

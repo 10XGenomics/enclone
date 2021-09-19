@@ -108,9 +108,7 @@ pub fn fold(all: &str, max_line: usize) -> Vec<String> {
 }
 
 pub fn test_fold() {
-
-    let input1 =
-        r###"This and next state allows one to deduce:
+    let input1 = r###"This and next state allows one to deduce:
 
 whatever
 
@@ -119,8 +117,7 @@ xx  yyyyyy   zzzzzzzzzzzzzzz  ..................................................
 
 Those four gerbils acids stand out.  But of course just traversing columns and looking for differences is going to miss a lot.  Also note that the controls typically have very little wobble, forcing no change for the first three whatevers."###;
 
-    let output1 =
-        r###"This and next state allows one to deduce:
+    let output1 = r###"This and next state allows one to deduce:
 
 whatever
 
@@ -134,7 +131,6 @@ forcing no change for the first three whatevers."###;
     let folded1 = fold(&input1, 100);
     let out1 = format!("{}", folded1.iter().format("\n"));
     assert_eq!(&out1, &output1);
-
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
