@@ -325,6 +325,7 @@ pub struct ClonoFiltOptDefault {
     pub whitef: bool,              // only show clonotypes exhibiting whitelist contamination
     pub ncross: bool,              // turn off cross filtering,
     pub bc_dup: bool,              // filter duplicated barcodes within an exact subclonotype
+    pub signature: bool,           // signature filtering
 }
 
 #[derive(Default)]

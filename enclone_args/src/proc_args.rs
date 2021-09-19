@@ -111,6 +111,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.clono_filt_opt.min_umi = 0;
     ctl.clono_filt_opt.max_chains = 1000000;
     ctl.clono_filt_opt.qual_filter = true;
+    ctl.clono_filt_opt_def.signature = true;
     ctl.clono_filt_opt_def.weak_chains = true;
     ctl.clono_filt_opt_def.weak_onesies = true;
     ctl.clono_filt_opt_def.weak_foursies = true;
