@@ -7,6 +7,12 @@
 # run it, please see bit.ly/enclone.  A few more details are here.
 #
 # Run shellcheck if you change this script: you'll need to sort wheat from chaff.
+#
+# Be very careful about ADDING lines to this script.  Please treat every line as a liability
+# and dangerous.  At one time the script included code to test if the install worked and if not
+# print debugging information.  This was a bad idea.  Now instead, the user is directed to a
+# debugging page, which has them run some things, including a separate debugging script.
+# Less here is more.
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
