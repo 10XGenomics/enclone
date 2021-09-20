@@ -314,11 +314,8 @@ their chain signature.  This filter sometimes breaks up complex clonotypes havin
 representing multiple true clonotypes that are glued together into a single clonotype via exact
 subclonotypes whose constituent barcodes do not arise fully from single cells.  
 
-<p> These complex clonotypes can arise but are not present in the internally generated datasets 
-that we have.  In typical data this affects <code>0.2%</code> or less of clonotypes, and the 
-typical action is 
-to delete certain three-chain exact subclonotypes in clonotypes having a two-chain exact 
-subclonotype that is much more frequent.</p>
+<p> This filter can dramatically affect certain datasets, but has almost no effect on typical data
+(less than one per million clonotypes tested).</p>
 
 <p>The algorithm uses some terminology described at doublet filtering, above.  Given a pure 
 subclonotype p having at least two chains, if the total cells in the two-chain pure subclonotypes 
