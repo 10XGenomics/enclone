@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# This prints some debugging information that may be helpful for debugging enclone installation
+# problems.
+#
+# At one time we had this as part of code in install.sh that attempted to detect installation
+# failures.  This did not work reliably.  Pretty much, there were two lessons of that attempt:
+#
+# 1. It is not possible for a shell script to determine what would happen if a command was typed
+#    from a fresh terminal window.  You can get close, but not all the way there.
+#
+# 2. Every line in a shell script should be treated as a liability and dangerous.  Do not add
+#    lines unless they are absolutely needed.
+
 printf "\nSome diagnostic information will be printed out below.\n"
 
 printf "\n1. Determining which shell you are using: $SHELL.\n"
