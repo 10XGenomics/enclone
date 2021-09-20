@@ -152,11 +152,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         h.docf2(
             "NFOURSIE_KILL",
             "Under certain circumstances, enclone will delete foursie exact subclonotypes.  \
-            Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
+            Please see 10xgenomics.github.io/enclone/pages/auto/default_filters.html.  \
             The foursies that are killed are believed to be artifacts arising \
             from repeated cell doublets or GEMs that contain two cells and multiple gel \
             beads.  The argument NFOURSIE_KILL turns off this filtering.",
-            65,
+            62,
         )?;
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -164,8 +164,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "NDOUBLET",
             "Under certain circumstances, enclone will delete exact subclonotypes that appear \
             to represent doublets.  \
-            Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
+            Please see 10xgenomics.github.io/enclone/pages/auto/default_filters.html.  \
             The argument NDOUBLET turns off this filtering.",
+            65,
+        )?;
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "NSIG",
+            "Under certain circumstances, enclone will delete exact subclonotypes that appear \
+            to be contaminants, based on their chain signature.  \
+            Please see 10xgenomics.github.io/enclone/pages/auto/default_filters.html.  \
+            The argument NSIG turns off this filtering.",
             65,
         )?;
 
@@ -231,9 +241,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         h.doc2("clonotype.");
         h.doc(
             "COMPLETE",
-            "delete any exact subclonotype that has less chains than the clonotype",
+            "delete any exact subclonotype that has less chains than the",
         );
-        h.doc2("for which you would like to see a simplified view.");
+        h.doc2("clonotype for which you would like to see a simplified view.");
         h.docf2(
             "CONST_IGH=\"<pattern>\"",
             "for BCR, keep only exact subclonotypes having a heavy chain whose constant region \
