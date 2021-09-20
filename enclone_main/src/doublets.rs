@@ -1,6 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Delete exact subclonotypes that appear to represent doublets.
+//
+// THIS FILTER DOESN'T PROPERLY TRACK FATE.
 
 use enclone_core::defs::*;
 use enclone_print::define_mat::*;
