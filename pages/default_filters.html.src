@@ -327,6 +327,8 @@ than the number of cells in p, then p is deleted.</p>
 <p>If the argument <code>NSIG</code> is supplied to #enclone, then signature filtering is not
 applied.</p>
 
+<p>This filter first appeared after cellranger version <code>6.1</code>.</p>
+
 <hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
