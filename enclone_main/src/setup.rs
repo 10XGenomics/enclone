@@ -303,6 +303,7 @@ pub fn setup(
                 && args_orig[i] != "NOPAGER"
                 && args_orig[i] != "FORCE_EXTERNAL"
                 && args_orig[i] != "NO_KILL"
+                && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")
                 && !args_orig[i].starts_with("MAX_CORES=")
             {

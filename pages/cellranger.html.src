@@ -59,6 +59,18 @@ some user datasets disproportionally.
 </td>
 </tr>
 
+<tr>
+<td> Sept. 20, 2021 </td>
+<td> <code>******</code> </td>
+<td> 
+Add a new default filter called <i>signature filtering</i> that under certain rare circumstances
+will decompose complex clonotypes that are incorrectly glued together.  This filter can 
+dramatically affect certain datasets, but has almost no effect on typical data (less than one 
+per million clonotypes tested).
+Please see <a href="../../pages/auto/default_filters.html">enclone default filters</a>.
+</td>
+</tr>
+
 </tbody>
 </table>
 </p>

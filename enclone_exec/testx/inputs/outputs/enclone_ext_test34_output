@@ -1,0 +1,43 @@
+
+SUMMARY STATISTICS
+1. overall
+   • number of datasets = 2
+   • number of donors = 1
+   • original number of cells = 11464
+2. barcode fate
+   ┌──────────┬────────────────────────────┐
+   │barcodes  │  why deleted               │
+   ├──────────┼────────────────────────────┤
+   │     355  │  failed GRAPH_FILTER filter│
+   │     206  │  failed CROSS filter       │
+   │      41  │  failed SIGNATURE filter   │
+   │      29  │  failed UMI_RATIO filter   │
+   │      17  │  failed QUAL filter        │
+   │      13  │  failed IMPROPER filter    │
+   │       4  │  failed WEAK_CHAINS filter │
+   │       2  │  failed BC_DUP filter      │
+   │     667  │  total                     │
+   └──────────┴────────────────────────────┘
+3. for the selected clonotypes
+   ┌────────┬────────────────────────┬──────────────────┬───────┐
+   │chains  │  clonotypes with this  │  cells in these  │      %│
+   │        │      number of chains  │      clonotypes  │       │
+   ├────────┼────────────────────────┼──────────────────┼───────┤
+   │1       │                  1239  │            1239  │   11.5│
+   │2       │                  4321  │            9151  │   84.8│
+   │3       │                   289  │             300  │    2.8│
+   │4       │                   107  │             107  │    1.0│
+   │total   │                  5956  │           10797  │  100.0│
+   └────────┴────────────────────────┴──────────────────┴───────┘
+   • number of clonotypes having at least two cells = 35
+   • number of cell-cell merges = 4,841
+   • number of cells having 1 chain = 1367
+   • number of cells having 2 or 3 chains = 9323
+   • estimated B-B doublet rate = 1.2% = 107/9141 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (heavy chain) = 6.73
+   • mean over middle third of contig UMI counts (light chain) = 16.45
+   • mean over middle third of cell UMI counts for cells having two chains = 26.64
+   • mean UMIs per cell = 66.29
+   • mean UMIs per cell having two chains = 67.27
+   • for reads contributing to UMIs in reported chains, mean reads per UMI = 300.93
+

@@ -550,7 +550,7 @@ fn test_for_broken_links_and_spellcheck() {
         indel indels inkt jsdelivr json krh levenshtein lgc linux loh lvar lvars \
         macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
-        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
+        nopager noprint nqual nsig nwhitef oligos onesie onesies parseable pbmc \
         pcell pcols pdb pgas phad phylip png \
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \

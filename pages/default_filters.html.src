@@ -120,18 +120,25 @@ examples, and add others as needed as protection against accidental deterioratio
 
 <tr>
 <td align="left"> 13                                                                       </td>
+<td align="left"> signature filter                                                         </td>
+<td align="left"> remove some barcodes that appear to be contaminants, based on their      
+                  chain signature                                                          </td>
+</tr>
+
+<tr>
+<td align="left"> 14                                                                       </td>
 <td align="left"> onesie merger                                                            </td>
 <td align="left"> prevent merger of some single-chain clonotypes into other clonotypes     </td>
 </tr>
 
 <tr>
-<td align="left"> 14                                                                       </td>
+<td align="left"> 15                                                                       </td>
 <td align="left"> weak chain filter                                                        </td>
 <td align="left"> remove cells having a chain that is probably spurious                    </td>
 </tr>
 
 <tr>
-<td align="left"> 15                                                                       </td>
+<td align="left"> 16                                                                       </td>
 <td align="left"> quality merger                                                           </td>
 <td align="left"> filter out exact subclonotypes having a position with low quality scores </td>
 </tr>
@@ -238,9 +245,11 @@ least a single <i>bona fide</i> cell that gave rise to it.
 </li>
 </ul>
 
+<p>
 A better test could probably be devised that started from the expected distribution of UMI counts.
 The test would trigger based on the number and improbability of low UMI counts.  The current test 
 only considers the number of counts that fall below a threshold, and not their particular values.
+</p>
 
 <hr>
 
@@ -294,6 +303,29 @@ together by shared chains.</p>
 
 <p>If the argument <code>NDOUBLET</code> is supplied to #enclone, then doublet filtering is
 not applied.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Signature filtering.</b>
+This filter removes some exact subclonotypes that appear to represent contaminants, based on
+their chain signature.  This filter sometimes breaks up complex clonotypes having many chains and 
+representing multiple true clonotypes that are glued together into a single clonotype via exact
+subclonotypes whose constituent barcodes do not arise fully from single cells.  
+
+<p> This filter can dramatically affect certain datasets, but has almost no effect on typical data
+(less than one per million clonotypes tested).</p>
+
+<p>The algorithm uses some terminology described at doublet filtering, above.  Given a pure 
+subclonotype p having at least two chains, if the total cells in the two-chain pure subclonotypes 
+that are different from it but share a chain with it is at least <code>20</code> times greater 
+than the number of cells in p, then p is deleted.</p>
+
+<p>If the argument <code>NSIG</code> is supplied to #enclone, then signature filtering is not
+applied.</p>
+
+<p>This filter first appeared after cellranger version <code>6.1</code>.</p>
 
 <hr>
 
