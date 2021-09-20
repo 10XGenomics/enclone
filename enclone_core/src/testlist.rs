@@ -134,7 +134,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 33] = [
+pub const EXTENDED_TESTS: [&str; 35] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -220,6 +220,16 @@ pub const EXTENDED_TESTS: [&str; 33] = [
     // 33. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
+    // 34. test signature filtering ON
+    // This is super annoying.  It is the only case we could find where signature filtering has
+    // an effect.  However, other changes will also affect this.  See the next test and make sure
+    // that the results are different from it.
+    r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
+    // 35. test signature filtering OFF
+    // This is super annoying.  It is the only case we could find where signature filtering has
+    // an effect.  However, other changes will also affect this.  See the previous test and make
+    // sure that the results are different from it.
+    r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
