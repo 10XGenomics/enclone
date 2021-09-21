@@ -268,7 +268,7 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
                     }
                 }
                 for i in 0..rows.len() {
-                    summary += &mut format!("{}\n", rows[i].iter().format(","));
+                    summary += &mut format!("{}\n", rows[i].iter().format("\t "));
                 }
             }
         }
