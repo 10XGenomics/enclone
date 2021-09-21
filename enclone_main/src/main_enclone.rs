@@ -41,7 +41,7 @@ use pretty_trace::*;
 use std::{
     collections::HashMap,
     env, fs,
-    fs::{File, read_to_string},
+    fs::{read_to_string, File},
     io::{BufRead, BufReader, BufWriter, Write},
     time::Instant,
 };
@@ -109,16 +109,21 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         let version_file = format!("{}/enclone/version", home);
         if !path_exists(&version_file) {
-            return Err(format!("\nError: the file ~/enclone/version does not exist.\n\
-                Please visit bit.ly/enclone_install_issues.\n"));
+            return Err(format!(
+                "\nError: the file ~/enclone/version does not exist.\n\
+                Please visit bit.ly/enclone_install_issues.\n"
+            ));
         }
         let mut version2 = read_to_string(&version_file).unwrap();
         if version2.ends_with("\n") {
             version2 = version2.before("\n").to_string();
         }
         if version2 != version1 {
-            return Err(format!("\nError: enclone sees version {} but you downloaded version {}.\n\
-                Please visit bit.ly/enclone_install_issues.\n", version1, version2));
+            return Err(format!(
+                "\nError: enclone sees version {} but you downloaded version {}.\n\
+                Please visit bit.ly/enclone_install_issues.\n",
+                version1, version2
+            ));
         }
         println!("\nCheck complete!  It appears that your install of enclone was successful!\n");
         return Ok(EncloneSetup::default());
