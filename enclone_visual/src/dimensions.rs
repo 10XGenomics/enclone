@@ -8,15 +8,20 @@ use std::sync::atomic::Ordering::SeqCst;
 pub const INITIAL_WIDTH: u32 = 1100;
 pub const INITIAL_HEIGHT: u32 = 1060;
 
-// Other dimensions.
+// Tracking the actual screen dimensions.
 
-pub const MAX_WIDTH: f32 = 770.0;
+pub static CURRENT_WIDTH: AtomicUsize = AtomicUsize::new(0);
+pub static CURRENT_WIDTH_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
+
+// The default height of the graphic part of the screen if there is not graphic, and if there
+// is a graphic.
 
 pub const SVG_NULL_HEIGHT: u16 = 190;
 pub const SVG_HEIGHT: u16 = 400;
 
-pub static CURRENT_WIDTH: AtomicUsize = AtomicUsize::new(0);
-pub static CURRENT_WIDTH_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
+// The default width of the graphic.
+
+pub const MAX_WIDTH: f32 = 770.0;
 
 // The function that determines the scale for the graphic object.
 
