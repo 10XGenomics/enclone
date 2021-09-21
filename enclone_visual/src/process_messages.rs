@@ -530,6 +530,7 @@ impl EncloneVisual {
                 self.width = width;
                 CURRENT_WIDTH.store(width as usize, SeqCst);
                 self.height = height;
+                CURRENT_HEIGHT.store(height as usize, SeqCst);
                 Command::none()
             }
 
