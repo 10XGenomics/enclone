@@ -31,6 +31,7 @@ pub fn get_graphic_scale(width: f32, height: f32, empty: bool) -> f32 {
     if empty {
         max_height = SVG_NULL_HEIGHT as f32;
     }
+    max_height *= CURRENT_HEIGHT.load(SeqCst) as f32 / INITIAL_HEIGHT as f32;
     max_height -= 5.0;
     let mut max_width = MAX_WIDTH;
     let current_width = CURRENT_WIDTH.load(SeqCst);
