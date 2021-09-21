@@ -246,6 +246,8 @@ pub fn proc_lvar1(
         lvar_stats1![i, x, format!("{}", n)];
     } else if x == "nchains" {
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
+    } else if x == "nchains_present" {
+        lvar_stats1![i, x, format!("{}", exact_clonotypes[exacts[u]].share.len())];
     } else if x == "datasets" {
         lvar_stats1![i, x, format!("{}", lenas.iter().format(","))];
     } else if x == "datasets_cell" {

@@ -138,7 +138,7 @@ impl EncloneVisual {
                 self.copy_selected_metrics_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let show = &self.metric_selected;
                 copy_bytes_to_clipboard(
-                    &expand_summary(&self.summary_current(), false, &show).as_bytes(),
+                    &expand_summary_as_csv(&self.summary_current(), &show).as_bytes(),
                 );
                 Command::perform(noop1(), Message::CompleteCopySelectedMetrics)
             }

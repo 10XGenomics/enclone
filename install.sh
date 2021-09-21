@@ -7,6 +7,12 @@
 # run it, please see bit.ly/enclone.  A few more details are here.
 #
 # Run shellcheck if you change this script: you'll need to sort wheat from chaff.
+#
+# Be very careful about ADDING lines to this script.  Please treat every line as a liability
+# and dangerous.  At one time the script included code to test if the install worked and if not
+# print debugging information.  This was a bad idea.  Now instead, the user is directed to a
+# debugging page, which has them run some things, including a separate debugging script.
+# Less here is more.
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -366,127 +372,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 13. Test to see if the user would get enclone, and the right version, from the command line.
-    #
-    # 1. Debugging is started if `$SHELL -c "enclone --version"` fails or returns the wrong version.
-    # 2. Print the shell that is being used.
-    # 3. Print the path that is being used by the given shell.
-    # 4. Define a list of initialization files, as a function of the shell.
-    # 5. For each initialization file, test if it exists, and if it exists, check for path setting.
-    #
-    # The command used for the initial assessment of whether enclone would work from the command
-    # line:
-    #
-    # $SHELL -c -i "enclone --version" 
-    #
-    # is delicate, and may not be completely correct (or correct for all shells).  Some things you
-    # should know about testing this:
-    #
-    # (a) To test, you may want to change your shell.  On a Mac, this cannot be done simply by
-    # typing chsh.  Possibly it is enough to type chsh and then reboot (not tested).  What does
-    # appear to work is to first type chsh, and then, in terminal preferences, change the shell.
-    #
-    # (b) We carried out the following test on a Mac.  First the shell was changed to zsh, as
-    # above.  Then the following script was run from a fresh terminal window:
-    #
-    # #!/bin/bash
-    # echo 'export PATH="$HOME/bin:$PATH"' > .zshrc
-    # $SHELL -i -c "enclone --version < /dev/null"
-    # rm .zshrc
-    #
-    # This printed the enclone version, as expected.
-    #
-    # Note also that another thing that can happen is that some versions of the command will cause 
-    # ./test to stop.  The < /dev/null part is to avoid that.
-
-    printf "\ntesting for availability of enclone by asking enclone to print its version\n\n"
-    ok=0
-    $SHELL -i -c "enclone --version < /dev/null"
-    if [ "$?" -eq "0" ]; then
-        available_version=$($SHELL -i -c "enclone --version < /dev/null")
-        available_version=v$(echo $available_version | tr ' ' '\n' | head -1)
-        if [ "$_current_version" == "$available_version" ]; then
-            printf "\nGood, the version of enclone that you would get from the command line is\n"
-            printf "the version $_current_version that was just downloaded.\n"
-            ok=1
-        else
-            printf "\nIt would appear that enclone is available as a command, as determined by\n"
-            printf "your current shell and shell initialization files, but your configuration\n"
-            printf "does not give you the enclone version $_current_version that was just "
-            printf "downloaded.\n"
-        fi
-    else
-        printf "\nIt would appear that enclone is not available as a command, as determined by\n"
-        printf "your current shell and shell initialization files.\n"
-    fi
-    if [ "$ok" -eq "0" ]; then
-        printf "\nSome diagnostic information will be printed out below.\n"
-        printf "\n1. Determining which shell you are using: $SHELL.\n"
-        printf "\n2. Determining the path defined by your shell.\n\n"
-        $SHELL -c "echo $PATH"
-        printf "\n3. Show the permissions on ~/bin/enclone:\n\n"
-        ls -l ~/bin/enclone
-        printf "\n4. Attempt to execute ~/bin/enclone directly:\n\n"
-        $SHELL -c "$HOME/bin/enclone --version"
-        printf "\n5. Testing for existence of various initialization files in your home directory\n"
-        printf "   and for each such file, if present, whether it sets your path.\n\n"
-        cd
-        NEWLINE=1
-    
-        # Decide which initialization files to test.
-    
-        if [ "$SHELL" == "/bin/tcsh" ]; then
-            files=( ".tcshrc" ".login" ".cshrc" )
-        elif [ "$SHELL" == "/bin/zsh" ]; then
-            files=( ".zshenv" ".zprofile" ".zshrc" ".zlogin" )
-        elif [ "$SHELL" == "/bin/bash" ]; then
-            files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
-        elif [ "$SHELL" == "/bin/sh" ]; then
-            files=( ".profile" ".bash_login" ".bash_profile" ".bashrc" )
-        else
-            files=( ".profile" \
-                ".zshenv" ".zprofile" ".zshrc" ".zlogin" \
-                ".bash_login" ".bash_profile" ".bashrc" \
-                ".tcshrc" ".login" ".cshrc" )
-        fi
-    
-        # Test initialization files.
-    
-        for i in "${files[@]}"
-        do
-            ls -l $i >& /dev/null
-            if [ "$?" -eq "0" ]; then
-                 if [ "$NEWLINE" -eq "0" ]; then
-                     echo ""
-                     NEWLINE=1
-                 fi
-                 printf "$i: present\ntesting it for setting path\n"
-                 cat $i | grep -i PATH | grep -v "^#" | uniq
-                 echo ""
-            else
-                 echo "$i: absent"
-                 NEWLINE=0
-            fi
-        done
-        if [ "$NEWLINE" -eq "0" ]; then
-            echo ""
-        fi
-        printf "🌹 As indicated above, something has gone awry with your enclone installation. 🌹\n"
-        printf "🌹                                                                             🌹\n"
-        printf "🌹 Something has PROBABLY gone awry.  To be sure, you should open a new        🌹\n"
-        printf "🌹 terminal window and type enclone.  It is possible that it will work.        🌹\n"
-        printf "🌹 We would still like to know about such an occurrence.                       🌹\n"
-        printf "🌹                                                                             🌹\n"
-        printf "🌹 Please cut and paste what is in your terminal window, as text, starting with🌹\n"
-        printf "🌹 the curl command that you typed to install enclone, and send it to          🌹\n"
-        printf "🌹 enclone@10xgenomics.com.  We will try to diagnose the problem!              🌹\n"
-        echo
-        exit 1
-    fi
-
-    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    # 14. Succesfully completed.
+    # 13. Succesfully completed.
 
     ENDTIME=$(date +%s)
     echo
@@ -496,10 +382,11 @@ main() {
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
     fi
     printf "\n"
-    printf "🌸 If you CLOSE this terminal window and open a new one, then enclone will be     🌸\n"
-    printf "🌸 in your executable path.  Otherwise enclone may not be found when you type it. 🌸\n"
+    printf "🌸 Please CLOSE this terminal window and open a new one.  Then type 🌸\n"
+    printf "🌸 enclone --check                                                  🌸\n"
+    printf "🌸 If that works, great!  Otherwise please seek help at             🌸\n"
+    printf "🌸 bit.ly/enclone_install_issues                                    🌸\n"
     printf "\nAll done, have a lovely day!\n\n"
-
 }
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone installation problems</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<a href="../../index.html#help">
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
+
+<h1><span style="color:rgb(120,123,175);font-weight:900">enclone</span> installation troubleshooting</h1>
+
+<p>The purpose of this page is to provide guidance in case the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> installation fails.</p>
+
+<hr>
+
+<h2>Case 1: the <code>curl</code> command is not found</h2>
+
+<p>The command <code>curl</code> is not installed on your computer.  In that case,
+you should have the command <code>wget</code>, and can use that instead.  To do so, run the
+following command:
+<pre style="margin-top:3px; margin-bottom:3px"><code>wget -nv bit.ly/enclone_install -O - | sh -s <span style="color:red; font-weight: bold">SIZE</span></code></pre>
+where <code><span style="color:red; font-weight: bold">SIZE</span></code>
+is as described on the main <span style="color:rgb(120,123,175);font-weight:900">enclone</span> page.
+</p>
+
+<hr>
+
+<h2>Case 2: download is so slow that it doesn't finish</h2>
+
+<p>In this case, please use the <code>SMALL</code> option, and if you
+still have difficulty, please contact us.  We might be able to reduce the download size.  Please
+let us know your typical download rate (MB/sec) and any other relevant information about the
+characteristics of your connection.</p>
+
+<hr>
+
+<h2>Case 3: installation seems to have succeeded but you get <code>command not found</code></h2>
+
+<p>In this case, the install script appears to succeed, but when you 
+<b>open a new terminal window</b> and
+type <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, you get a message about the command not being found.</p>
+
+<p>This should not happen, and we do not know <i>why</i> it happened to you, but we provide 
+instructions here on how you can report the problem to us.  Please do this and we will try to
+find a solution.</p>
+
+<p>Please <b>open a new terminal window</b>, type the following commands, and then cut and paste 
+the entirety (commands plus responses) as <b>text</b> into an email to
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>.
+
+<br>
+
+<p><b>1.</b> <code>enclone --check</code></p>
+
+<p>This should say something about <span style="color:rgb(120,123,175);font-weight:900">enclone</span> not being found.  Otherwise you have a different 
+problem.</p>
+
+<p><b>2.</b> <code>echo $PATH</code></p>
+
+<p>This reveals what directories are searched when you type a command.</p>
+
+<p><b>3.</b> <code>curl -sSf -L bit.ly/enclone_install_debug | bash</code>
+
+<p>This generates some further debugging information</p>
+
+<hr>
+
+<h2>Case 4: installation seems to have succeeded but <code>enclone</code> is killed</h2>
+
+<p>In this case, when you type <code>enclone</code> from the command line, you'll get a message
+about it being killed.  This has been reported to us once and we are actively searching for a
+solution.
+</p>
+
+<hr>
+
+<h2>Case 5: something else goes wrong</h2>
+
+Then please write to us at
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>.</p>
+
+</body>
+</html>

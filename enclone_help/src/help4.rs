@@ -479,6 +479,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              where each xi is one of:\n\n",
         )?;
         h.doc("nchains", "total number of chains in the clonotype");
+        h.doc(
+            "nchains_present",
+            "number of chains present in an exact subclonotype",
+        );
         h.ldoc("datasets", "dataset identifiers");
         h.doc("origin", "origin identifiers");
         h.doc("donors", "donor identifiers");

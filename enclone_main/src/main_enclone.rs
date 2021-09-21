@@ -41,7 +41,7 @@ use pretty_trace::*;
 use std::{
     collections::HashMap,
     env, fs,
-    fs::File,
+    fs::{read_to_string, File},
     io::{BufRead, BufReader, BufWriter, Write},
     time::Instant,
 };
@@ -101,12 +101,47 @@ pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
 
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
-    let args_orig = args.clone();
-    let mut ctl = EncloneControl::default();
-    let args = critical_args(&args, &mut ctl)?;
+
+    // Test for enclone --check.
+
+    if args.len() == 2 && args[1] == "--check" {
+        let version1 = env!("CARGO_PKG_VERSION");
+        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+        let version_file = format!("{}/enclone/version", home);
+        if !path_exists(&version_file) {
+            return Err(format!(
+                "\nError: the file ~/enclone/version does not exist.\n\
+                Please visit bit.ly/enclone_install_issues.\n"
+            ));
+        }
+        let mut version2 = read_to_string(&version_file).unwrap();
+        if !version2.starts_with("v") || !version2.ends_with("\n") {
+            return Err(format!(
+                "\nThe file ~/enclone/version appears to be damaged.\n\
+                Its content is \"{}\".\n\
+                Please visit bit.ly/enclone_install_issues.\n",
+                version2,
+            ));
+        }
+        version2 = version2.between("v", "\n").to_string();
+        if version2 != version1 {
+            return Err(format!(
+                "\nError: enclone sees version {} but you downloaded version {}.\n\
+                Please visit bit.ly/enclone_install_issues.\n",
+                version1, version2
+            ));
+        }
+        println!("\nCheck complete: it appears that your install of enclone was successful!\n");
+        print!("Your version is: ");
+        println!("{} : {}.\n", env!("CARGO_PKG_VERSION"), version_string());
+        return Ok(EncloneSetup::default());
+    }
 
     // Set up stuff, read args, etc.
 
+    let args_orig = args.clone();
+    let mut ctl = EncloneControl::default();
+    let args = critical_args(&args, &mut ctl)?;
     ctl.start_time = Some(tall.clone());
     for i in 0..args.len() {
         let arg = &args[i];

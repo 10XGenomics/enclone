@@ -44,5 +44,17 @@ pub fn variable_registry() -> Vec<Variable> {
                      cellranger pipeline as lying in a cell.".to_string(),
     });
 
+    // nchains_present
+
+    reg.push( Variable {
+        name:       "nchains_present".to_string(),
+        scope:      "exact".to_string(),
+        prereqs:    vec![],
+        value_type: "positive_integer".to_string(),
+        function:   "in ***.rs".to_string(),
+        doc:        "The number of chains that are present in a given exact subclonotype."
+                    .to_string(),
+    });
+
     reg
 }

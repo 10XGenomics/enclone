@@ -5,7 +5,7 @@ use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
-use itertools::izip;
+use itertools::{izip, Itertools};
 use messages::Message;
 use vector_utils::*;
 
@@ -221,6 +221,62 @@ pub fn expand_summary(summary: &str, all: bool, show: &Vec<bool>) -> String {
     summary
 }
 
+pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
+    let summaryx = unpack_summary(&summary);
+    let mut summary = String::new();
+    let n = summaryx.metrics.len();
+    let mut first = true;
+    if n > 0 && n == summaryx.dataset_names.len() {
+        let dataset_names = summaryx.dataset_names.clone();
+        let nd = dataset_names.len();
+        let metricsx = summaryx.metrics.clone();
+        let metrics = get_metrics(&metricsx, nd);
+        let nm = metrics.len();
+        let mut categories = Vec::<String>::new();
+        for i in 0..nm {
+            categories.push(metrics[i].name.before(",").to_string());
+        }
+        unique_sort(&mut categories);
+        for cat in categories.iter() {
+            let catc = format!("{},", cat);
+            let mut have_some = false;
+            for i in 0..nm {
+                if show[i] {
+                    if metrics[i].name.starts_with(&catc) {
+                        have_some = true;
+                    }
+                }
+            }
+            if have_some {
+                let mut rows = Vec::<Vec<String>>::new();
+                if first {
+                    let mut row = vec!["class".to_string(), "metric".to_string()];
+                    row.append(&mut dataset_names.clone());
+                    rows.push(row);
+                    first = false;
+                }
+                for i in 0..nm {
+                    if show[i] {
+                        if metrics[i].name.starts_with(&catc) {
+                            let mut row =
+                                vec![cat.clone(), metrics[i].name.after(&catc).to_string()];
+                            for j in 0..nd {
+                                let m = metrics[i].values[j].replace(",", "");
+                                row.push(m);
+                            }
+                            rows.push(row);
+                        }
+                    }
+                }
+                for i in 0..rows.len() {
+                    summary += &mut format!("{}\n", rows[i].iter().format("\t "));
+                }
+            }
+        }
+    }
+    summary
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
@@ -423,7 +479,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The copy selected metrics button may be used to copy the selected \
-                    metrics to the clipboard.",
+                    metrics to the clipboard, in a form that can be pasted into a spreadsheet.",
                 ))
                 .push(Space::with_height(Units(8)));
         }
