@@ -5,7 +5,7 @@ use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
-use itertools::{Itertools, izip};
+use itertools::{izip, Itertools};
 use messages::Message;
 use vector_utils::*;
 
@@ -258,7 +258,8 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
                 for i in 0..nm {
                     if show[i] {
                         if metrics[i].name.starts_with(&catc) {
-                            let mut row = vec![cat.clone(), metrics[i].name.after(&catc).to_string()];
+                            let mut row =
+                                vec![cat.clone(), metrics[i].name.after(&catc).to_string()];
                             for j in 0..nd {
                                 let m = metrics[i].values[j].replace(",", "");
                                 row.push(m);
