@@ -478,7 +478,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The copy selected metrics button may be used to copy the selected \
-                    metrics to the clipboard, as CSV.",
+                    metrics to the clipboard, in a form that can be pasted into a spreadsheet.",
                 ))
                 .push(Space::with_height(Units(8)));
         }
