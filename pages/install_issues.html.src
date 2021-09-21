@@ -13,7 +13,7 @@
 
 <hr>
 
-<h2>Case 1: The <code>curl</code> command is not found.</h2>
+<h2>Case 1: the <code>curl</code> command is not found</h2>
 
 <p>The command <code>curl</code> is not installed on your computer.  In that case,
 you should have the command <code>wget</code>, and can use that instead.  To do so, run the
@@ -36,7 +36,8 @@ characteristics of your connection.</p>
 
 <h2>Case 3: installation seems to have succeeded but you get <code>command not found</code></h2>
 
-<p>In this case, the install script appears to succeed, but when you open a new terminal window and
+<p>In this case, the install script appears to succeed, but when you 
+<b>open a new terminal window</b> and
 type #enclone, you get a message about the command not being found.</p>
 
 <p>This should not happen, and we do not know <i>why</i> it happened to you, but we provide 
@@ -73,7 +74,7 @@ solution.
 
 <hr>
 
-<h2>Case 5: something else goes wrong!</h2>
+<h2>Case 5: something else goes wrong</h2>
 
 Then please write to us at
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.</p>
