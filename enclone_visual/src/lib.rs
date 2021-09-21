@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::copy_image_to_clipboard::*;
+use crate::dimensions::*;
 use crate::gui_structures::EncloneVisual;
 use enclone_core::convert_svg_to_png::*;
 use failure::Error;
@@ -34,6 +35,7 @@ pub mod canvas_view;
 pub mod client_requests;
 pub mod compare_images;
 pub mod copy_image_to_clipboard;
+pub mod dimensions;
 pub mod enclone_client;
 pub mod enclone_server;
 pub mod geometry;
@@ -197,8 +199,6 @@ pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
 
 const SPACING: u16 = 20;
 const SCROLLBAR_WIDTH: u16 = 12;
-const SVG_NULL_HEIGHT: u16 = 190;
-const SVG_HEIGHT: u16 = 400;
 
 pub fn is_user_name_valid(name: &str) -> bool {
     users::get_user_by_name(&name).is_some()
@@ -304,9 +304,6 @@ xmlns="http://www.w3.org/2000/svg">
 pub mod proto {
     tonic::include_proto!("enclone");
 }
-
-const INITIAL_WIDTH: u32 = 1100;
-const INITIAL_HEIGHT: u32 = 1060;
 
 pub async fn launch_gui() -> iced::Result {
     let mut settings = Settings::default();
@@ -480,8 +477,6 @@ pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 pub static META: AtomicUsize = AtomicUsize::new(0);
-pub static CURRENT_WIDTH: AtomicUsize = AtomicUsize::new(0);
-pub static CURRENT_WIDTH_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref SERVER_LOGFILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());

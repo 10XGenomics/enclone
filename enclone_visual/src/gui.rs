@@ -2,6 +2,7 @@
 
 use crate::apocalypse::*;
 use crate::archive::*;
+use crate::dimensions::*;
 use crate::help::*;
 use crate::history::*;
 use crate::popover::*;

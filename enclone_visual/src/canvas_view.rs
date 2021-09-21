@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::dimensions::*;
 use crate::GROUP_ID;
 use crate::GROUP_ID_CLICKED_ON;
 use crate::*;
@@ -125,28 +126,6 @@ impl CanvasView {
     }
 }
 
-const MAX_WIDTH: f32 = 770.0;
-
-fn get_scale(width: f32, height: f32, empty: bool) -> f32 {
-    let mut max_height = SVG_HEIGHT as f32;
-    if empty {
-        max_height = SVG_NULL_HEIGHT as f32;
-    }
-    max_height -= 5.0;
-    let mut max_width = MAX_WIDTH;
-    let current_width = CURRENT_WIDTH.load(SeqCst);
-    if current_width > INITIAL_WIDTH as usize {
-        max_width += (current_width - INITIAL_WIDTH as usize) as f32;
-    }
-    let scale_x = max_width / width;
-    let scale_y = max_height / height;
-    let mut scale = scale_y;
-    if scale_x < scale_y {
-        scale = scale_x;
-    }
-    scale
-}
-
 impl<'a> canvas::Program<Message> for CanvasView {
     fn update(
         &mut self,
@@ -166,7 +145,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                         mouse::Button::Left => {
                             let g = self.state.geometry_value.as_ref().unwrap();
                             let (width, height) = self.dimensions();
-                            let scale = get_scale(width, height, g.len() == 1);
+                            let scale = get_graphic_scale(width, height, g.len() == 1);
                             let mut group_id = None;
                             let pos = cursor.position_in(&bounds);
                             for i in 0..g.len() {
@@ -304,7 +283,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
 
         let g = self.state.geometry_value.as_ref().unwrap();
         let (width, height) = self.dimensions();
-        let scale = get_scale(width, height, g.len() == 1);
+        let scale = get_graphic_scale(width, height, g.len() == 1);
 
         // Rebuild geometries if needed.
 
