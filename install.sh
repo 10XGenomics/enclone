@@ -382,10 +382,10 @@ main() {
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
     fi
     printf "\n"
-    printf "🌸 Please CLOSE this terminal window and open a new one.  Then type        🌸\n"
-    printf "🌸 enclone --check                                                         🌸\n"
-    printf "🌸 If that works, great!  Otherwise please seek help at                    🌸\n"
-    printf "🌸 bit.ly/enclone_install_issues                                           🌸\n"
+    printf "🌸 Please CLOSE this terminal window and open a new one.  Then type 🌸\n"
+    printf "🌸 enclone --check                                                  🌸\n"
+    printf "🌸 If that works, great!  Otherwise please seek help at             🌸\n"
+    printf "🌸 bit.ly/enclone_install_issues                                    🌸\n"
     printf "\nAll done, have a lovely day!\n\n"
 }
 
