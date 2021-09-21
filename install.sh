@@ -505,7 +505,7 @@ main() {
     printf "🌸 Please CLOSE this terminal window and open a new one.  Then type        🌸\n"
     printf "🌸 enclone --check                                                         🌸\n"
     printf "🌸 If that works, great!  Otherwise please seek help at                    🌸\n"
-    printf "🌸 https://10xgenomics.github.io/enclone/pages/auto/install_issues.html    🌸\n"
+    printf "🌸 bit.ly/enclone_install_issues                                           🌸\n"
     printf "\nAll done, have a lovely day!\n\n"
 }
 
