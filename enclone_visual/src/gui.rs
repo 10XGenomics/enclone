@@ -579,9 +579,14 @@ impl Application for EncloneVisual {
         // the clonotype tables.  We do not set the width because it's the height that we need
         // to control.
 
-        let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
+        let mut svg_height = SVG_HEIGHT as f32;
+        if blank {
+            svg_height = SVG_NULL_HEIGHT as f32;
+        }
+        svg_height *= CURRENT_HEIGHT.load(SeqCst) as f32 / INITIAL_HEIGHT as f32;
         // 60 is a fudge factor:
-        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 60);
+        svg_height = svg_height.max(command_complex_height as f32 + 60.0);
+        let svg_height = svg_height.round() as u16;
 
         // Display the SVG.
 
