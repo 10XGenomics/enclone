@@ -250,7 +250,7 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
             if have_some {
                 let mut rows = Vec::<Vec<String>>::new();
                 if first {
-                    let mut row = vec!["metric".to_string()];
+                    let mut row = vec!["class".to_string(), "metric".to_string()];
                     row.append(&mut dataset_names.clone());
                     rows.push(row);
                     first = false;
@@ -258,7 +258,7 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
                 for i in 0..nm {
                     if show[i] {
                         if metrics[i].name.starts_with(&catc) {
-                            let mut row = vec![metrics[i].name.after(&catc).to_string()];
+                            let mut row = vec![cat.clone(), metrics[i].name.after(&catc).to_string()];
                             for j in 0..nd {
                                 let m = metrics[i].values[j].replace(",", "");
                                 row.push(m);
