@@ -126,6 +126,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ));
         }
         println!("\nCheck complete!  It appears that your install of enclone was successful!\n");
+        println!("Your version is:");
+        println!("{} : {}\n", env!("CARGO_PKG_VERSION"), version_string());
         return Ok(EncloneSetup::default());
     }
 
