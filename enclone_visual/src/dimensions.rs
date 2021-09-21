@@ -13,6 +13,7 @@ pub const INITIAL_HEIGHT: u32 = 1060;
 pub static CURRENT_WIDTH: AtomicUsize = AtomicUsize::new(0);
 pub static CURRENT_WIDTH_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
 pub static CURRENT_HEIGHT: AtomicUsize = AtomicUsize::new(0);
+pub static CURRENT_HEIGHT_LAST_SEEN: AtomicUsize = AtomicUsize::new(0);
 
 // The default height of the graphic part of the screen if there is not graphic, and if there
 // is a graphic.

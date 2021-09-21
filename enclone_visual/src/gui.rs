@@ -56,6 +56,7 @@ impl Application for EncloneVisual {
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
         CURRENT_WIDTH_LAST_SEEN.store(INITIAL_WIDTH as usize, SeqCst);
         CURRENT_HEIGHT.store(INITIAL_HEIGHT as usize, SeqCst);
+        CURRENT_HEIGHT_LAST_SEEN.store(INITIAL_HEIGHT as usize, SeqCst);
         x.height = INITIAL_HEIGHT;
         let mut home = String::new();
         for (key, value) in env::vars() {
