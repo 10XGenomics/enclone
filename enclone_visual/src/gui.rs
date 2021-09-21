@@ -585,8 +585,8 @@ impl Application for EncloneVisual {
             svg_height = SVG_NULL_HEIGHT as f32;
         }
         svg_height *= CURRENT_HEIGHT.load(SeqCst) as f32 / INITIAL_HEIGHT as f32;
-        // 60 is a fudge factor:
-        svg_height = svg_height.max(command_complex_height as f32 + 60.0);
+        // 85 is a fudge factor:
+        svg_height = svg_height.max(command_complex_height as f32 + 85.0);
         let svg_height = svg_height.round() as u16;
 
         // Display the SVG.
