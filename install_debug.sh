@@ -61,3 +61,6 @@ do
 done
 if [ "$NEWLINE" -eq "0" ]; then
     echo ""
+fi
+
+printf "\nDone with printing diagnostic information.\n\n"
