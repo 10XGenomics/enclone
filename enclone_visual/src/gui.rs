@@ -2,6 +2,7 @@
 
 use crate::apocalypse::*;
 use crate::archive::*;
+use crate::dimensions::*;
 use crate::help::*;
 use crate::history::*;
 use crate::popover::*;
@@ -54,6 +55,8 @@ impl Application for EncloneVisual {
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
         CURRENT_WIDTH_LAST_SEEN.store(INITIAL_WIDTH as usize, SeqCst);
+        CURRENT_HEIGHT.store(INITIAL_HEIGHT as usize, SeqCst);
+        CURRENT_HEIGHT_LAST_SEEN.store(INITIAL_HEIGHT as usize, SeqCst);
         x.height = INITIAL_HEIGHT;
         let mut home = String::new();
         for (key, value) in env::vars() {
@@ -577,9 +580,14 @@ impl Application for EncloneVisual {
         // the clonotype tables.  We do not set the width because it's the height that we need
         // to control.
 
-        let mut svg_height = if !blank { SVG_HEIGHT } else { SVG_NULL_HEIGHT };
-        // 60 is a fudge factor:
-        svg_height = std::cmp::max(svg_height, command_complex_height as u16 + 60);
+        let mut svg_height = SVG_HEIGHT as f32;
+        if blank {
+            svg_height = SVG_NULL_HEIGHT as f32;
+        }
+        svg_height *= CURRENT_HEIGHT.load(SeqCst) as f32 / INITIAL_HEIGHT as f32;
+        // 85 is a fudge factor:
+        svg_height = svg_height.max(command_complex_height as f32 + 85.0);
+        let svg_height = svg_height.round() as u16;
 
         // Display the SVG.
 
