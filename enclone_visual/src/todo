@@ -92,3 +92,6 @@ NICE TO HAVE
     can increase quality for resvg e.g.
     cargo run --release -- --width 8000 --background white ~/plot.svg ~/plot.png
     but that results in a physically much larger image, because it's still at 72 DPI.
+
+14. Make the middle line vertically movable to change the relative window sizes.  Maybe.
+    Or maybe just make both halves viewable as separate windows.
