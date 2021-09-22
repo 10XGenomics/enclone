@@ -351,7 +351,7 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
     }
 }
 
-pub fn print_enclone_visual_window_info() {
+pub fn get_window_id() -> usize {
     let windows = create_window_list(0 as u32, 0 as u32);
     if windows.is_none() {
         eprintln!("\nattempty to create window list failed.\n");
@@ -374,46 +374,19 @@ pub fn print_enclone_visual_window_info() {
                     let window_name = d.get(&CFString::from("kCGWindowName"));
                     let window_name = window_name.deref().downcast::<CFString>().unwrap();
                     if window_name == "EncloneVisual" {
-                        println!("window name = {}", window_name.to_string());
-                        if d.contains_key(&CFString::from("kCGWindowOwnerName")) {
-                            let owner = d.get(&CFString::from("kCGWindowOwnerName"));
-                            let owner = owner.deref().downcast::<CFString>().unwrap();
-                            println!("owner = {:?}", owner.to_string());
-                        }
-                        if d.contains_key(&CFString::from("kCGWindowBounds")) {
-                            let bounds = d.get(&CFString::from("kCGWindowBounds"));
-                            println!("bounds = {:?}", bounds.deref());
-                        }
                         if d.contains_key(&CFString::from("kCGWindowNumber")) {
                             let window_number = d.get(&CFString::from("kCGWindowNumber"));
                             let window_number =
                                 window_number.deref().downcast::<CFNumber>().unwrap();
-                            println!("window number = {}", window_number.to_i64().unwrap());
+                            let window_number = window_number.to_i64().unwrap() as usize;
+                            return window_number;
                         }
                     }
                 }
             }
         }
     }
-}
-
-pub fn get_window_id() -> usize {
-    let o = Command::new("GetWindowID")
-        .arg("enclone")
-        .arg("--list")
-        .output()
-        .expect("failed to execute GetWindowID");
-    if o.status.code() != Some(0) {
-        xprintln!("\nCall to GetWindowID failed.\n");
-        std::process::exit(1);
-    }
-    let mut m = String::from_utf8(o.stdout).unwrap();
-    m = m.replace("\n", "");
-    if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
-        xprintln!("\nGetWindowId could not find id\n");
-        std::process::exit(1);
-    }
-    m.after("id=").force_usize()
+    panic!("\nUnable to determine window id.\n");
 }
 
 pub fn format_cookbook() -> String {
