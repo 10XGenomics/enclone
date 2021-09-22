@@ -5,6 +5,7 @@
 // Also shades smoothed polygons.  Also add tooltip notes if requested.
 
 use crate::polygon::*;
+use std::collections::HashMap;
 
 pub fn circles_to_svg(
     center: &Vec<(f64, f64)>,
@@ -20,6 +21,9 @@ pub fn circles_to_svg(
     height: usize,
     boundary: usize,
     tooltip: bool,
+    by_var: bool,
+    var: String,
+    barcode_to_var_value: &HashMap<(usize, String), String>,
 ) -> String {
     let n = center.len();
     assert!(!center.is_empty());
@@ -93,12 +97,23 @@ pub fn circles_to_svg(
     for i in 0..center.len() {
         let mut tooltipx = String::new();
         if tooltip {
-            tooltipx = format!(
-                " tooltip=\"group_id={},clonotype_id={},barcode={}\"",
-                group_index2[i] + 1,
-                clonotype_index2[i] + 1,
-                barcodes[i].1,
-            );
+            if !by_var {
+                tooltipx = format!(
+                    " tooltip=\"group_id={},clonotype_id={},barcode={}\"",
+                    group_index2[i] + 1,
+                    clonotype_index2[i] + 1,
+                    barcodes[i].1,
+                );
+            } else {
+                tooltipx = format!(
+                    " tooltip=\"group_id={},clonotype_id={},barcode={},{}={}\"",
+                    group_index2[i] + 1,
+                    clonotype_index2[i] + 1,
+                    barcodes[i].1,
+                    var,
+                    barcode_to_var_value[&barcodes[i]].clone(),
+                );
+            }
         }
         if color[i] != "undefined" {
             out += &format!(

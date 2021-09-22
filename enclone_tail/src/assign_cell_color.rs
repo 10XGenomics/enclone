@@ -40,14 +40,14 @@ pub fn assign_cell_color(
     // Determine color for coloring by variable.
 
     let mut by_var = false;
-    match ctl.plot_opt.cell_color {
+    match plot_opt.cell_color {
         CellColor::ByVariableValue(_) => {
             by_var = true;
         }
         _ => {}
     };
     if by_var {
-        match ctl.plot_opt.cell_color {
+        match plot_opt.cell_color {
             CellColor::ByVariableValue(ref x) => {
                 color = "undefined".to_string();
                 if out_datas[i][j].contains_key(&x.var) {
