@@ -550,8 +550,8 @@ pub fn plot_clonotypes(
                     let val_list = &out_datas[i][j][&var];
                     let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
                     let ex = &exact_clonotypes[exacts[i][j]];
-                    for k in 0..vals.len() {
-                        let val = &vals[k];
+                    for k in 0..ex.ncells() {
+                        let val = if vals.len() > 1 { &vals[k] } else { &vals[0] };
                         let li = ex.clones[k][0].dataset_index;
                         let bc = &ex.clones[k][0].barcode;
                         barcode_to_var_value.insert((li, bc.clone()), val.to_string());
