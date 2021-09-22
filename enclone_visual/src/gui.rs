@@ -232,6 +232,7 @@ impl Application for EncloneVisual {
     }
 
     fn update(&mut self, message: Message) -> Command<Message> {
+        print_window_info();
         self.process_message(message)
     }
 

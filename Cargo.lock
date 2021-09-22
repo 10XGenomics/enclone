@@ -1555,6 +1555,8 @@ dependencies = [
  "chrono",
  "clipboard",
  "cocoa",
+ "core-foundation 0.9.1",
+ "core-graphics 0.22.2",
  "crc",
  "dirs",
  "enclone_core",
