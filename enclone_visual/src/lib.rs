@@ -26,9 +26,16 @@ use string_utils::*;
 use svg_to_geometry::*;
 use tables::*;
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use core_foundation::number::CFNumber;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use core_foundation::string::CFString;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use core_graphics::window::{create_description_from_array, create_window_list};
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use std::ops::Deref;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
@@ -351,6 +358,7 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
     }
 }
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn get_window_id() -> usize {
     let windows = create_window_list(0 as u32, 0 as u32);
     if windows.is_none() {
@@ -387,6 +395,11 @@ pub fn get_window_id() -> usize {
         }
     }
     panic!("\nUnable to determine window id.\n");
+}
+
+#[cfg(target_os = "linux")]
+pub fn get_window_id() -> usize {
+    panic!("Unimplemented!");
 }
 
 pub fn format_cookbook() -> String {
