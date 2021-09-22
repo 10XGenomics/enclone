@@ -27,9 +27,9 @@ use svg_to_geometry::*;
 use tables::*;
 
 use core_foundation::number::CFNumber;
-use std::ops::Deref;
 use core_foundation::string::CFString;
 use core_graphics::window::{create_description_from_array, create_window_list};
+use std::ops::Deref;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
@@ -351,22 +351,20 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
     }
 }
 
-pub fn print_window_info() {
+pub fn print_enclone_visual_window_info() {
     let windows = create_window_list(0 as u32, 0 as u32);
     if windows.is_none() {
         eprintln!("\nattempty to create window list failed.\n");
         std::process::exit(1);
     }
-    let windows = windows.unwrap();
-    let descrips = create_description_from_array(windows);
+    let descrips = create_description_from_array(windows.unwrap());
     if descrips.is_none() {
         eprintln!("\nattempty to create window descriptions failed.\n");
         std::process::exit(1);
     }
-    let descrips = descrips.unwrap(); // CFArray<CFDictionary<CFString, CFType>>
+    let descrips = descrips.unwrap();
     let this_pid = std::process::id() as i64;
     for d in descrips.iter() {
-
         if d.contains_key(&CFString::from("kCGWindowOwnerPID")) {
             let pid = d.get(&CFString::from("kCGWindowOwnerPID"));
             let pid = pid.deref().downcast::<CFNumber>().unwrap();
@@ -377,26 +375,23 @@ pub fn print_window_info() {
                     let window_name = window_name.deref().downcast::<CFString>().unwrap();
                     if window_name == "EncloneVisual" {
                         println!("window name = {}", window_name.to_string());
-            
                         if d.contains_key(&CFString::from("kCGWindowOwnerName")) {
                             let owner = d.get(&CFString::from("kCGWindowOwnerName"));
                             let owner = owner.deref().downcast::<CFString>().unwrap();
                             println!("owner = {:?}", owner.to_string());
                         }
-                
                         if d.contains_key(&CFString::from("kCGWindowBounds")) {
                             let bounds = d.get(&CFString::from("kCGWindowBounds"));
                             println!("bounds = {:?}", bounds.deref());
                         }
-                
                         if d.contains_key(&CFString::from("kCGWindowNumber")) {
                             let window_number = d.get(&CFString::from("kCGWindowNumber"));
-                            let window_number = window_number.deref().downcast::<CFNumber>().unwrap();
+                            let window_number =
+                                window_number.deref().downcast::<CFNumber>().unwrap();
                             println!("window number = {}", window_number.to_i64().unwrap());
                         }
                     }
                 }
-
             }
         }
     }
