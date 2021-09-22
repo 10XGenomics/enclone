@@ -97,23 +97,17 @@ pub fn circles_to_svg(
     for i in 0..center.len() {
         let mut tooltipx = String::new();
         if tooltip {
-            if !by_var {
-                tooltipx = format!(
-                    " tooltip=\"group_id={},clonotype_id={},barcode={}\"",
-                    group_index2[i] + 1,
-                    clonotype_index2[i] + 1,
-                    barcodes[i].1,
-                );
-            } else {
-                tooltipx = format!(
-                    " tooltip=\"group_id={},clonotype_id={},barcode={},{}={}\"",
-                    group_index2[i] + 1,
-                    clonotype_index2[i] + 1,
-                    barcodes[i].1,
-                    var,
-                    barcode_to_var_value[&barcodes[i]].clone(),
-                );
+            let mut var_val = String::new();
+            if by_var && barcode_to_var_value.contains_key(&barcodes[i]) {
+                var_val = format!(",{}={}", var, barcode_to_var_value[&barcodes[i]]);
             }
+            tooltipx = format!(
+                " tooltip=\"group_id={},clonotype_id={},barcode={}{}\"",
+                group_index2[i] + 1,
+                clonotype_index2[i] + 1,
+                barcodes[i].1,
+                var_val,
+            );
         }
         if color[i] != "undefined" {
             out += &format!(
