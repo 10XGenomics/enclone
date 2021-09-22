@@ -561,7 +561,6 @@ pub fn plot_clonotypes(
         }
     }
 
-
     // Generate svg.
 
     *svg = circles_to_svg(
