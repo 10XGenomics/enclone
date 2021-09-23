@@ -516,11 +516,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             // characters.  This is not fully satisfactory because there are small
                             // gaps between them.
 
-                            let mut max_width = MAX_WIDTH;
-                            let current_width = CURRENT_WIDTH.load(SeqCst);
-                            if current_width > INITIAL_WIDTH as usize {
-                                max_width += (current_width - INITIAL_WIDTH as usize) as f32;
-                            }
                             frame.fill_rectangle(
                                 Point { x: 0.0, y: 0.0 },
                                 Size {
@@ -605,11 +600,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             // characters.  This is not fully satisfactory because there are small
                             // gaps between them.
 
-                            let mut max_width = MAX_WIDTH;
-                            let current_width = CURRENT_WIDTH.load(SeqCst);
-                            if current_width > INITIAL_WIDTH as usize {
-                                max_width += (current_width - INITIAL_WIDTH as usize) as f32;
-                            }
                             frame.fill_rectangle(
                                 Point { x: 0.0, y: 0.0 },
                                 Size {
