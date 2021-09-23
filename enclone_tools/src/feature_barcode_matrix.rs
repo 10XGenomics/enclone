@@ -106,7 +106,11 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
             sample_def.rev_before(","),
             sample_def.rev_after(",")
         );
-        let v: Value = serde_json::from_str(&sample_def).unwrap();
+        let v: Result<Value, _> = serde_json::from_str(&sample_def);
+        if v.is_err() {
+            println!("\nsample_def = $$${}$$$", sample_def);
+        }
+        let v = v.unwrap();
         let sample_def = &v.as_array().unwrap();
         for x in sample_def.iter() {
             if x["library_type"] == "Antibody Capture" {
