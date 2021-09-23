@@ -70,6 +70,24 @@ pub mod update_restart;
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
 
+pub fn dejavu_text_dim(t: &str, font_size: f32) -> (f32, f32) {
+    let mut width_in_chars = 0;
+    let mut height_in_chars = 0;
+    for line in t.lines() {
+        let mut nchars = 0;
+        for _char in line.chars() {
+            nchars += 1;
+        }
+        width_in_chars = std::cmp::max(width_in_chars, nchars);
+        height_in_chars += 1;
+    }
+    let box_width = width_in_chars as f32
+        * font_size
+        * DEJAVU_WIDTH_OVER_HEIGHT;
+    let box_height = height_in_chars as f32 * font_size;
+    (box_width, box_height)
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Fold strings to put them in boxes.  This is more delicate than it might appear.
