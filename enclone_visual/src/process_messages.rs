@@ -22,6 +22,44 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::GraphicSnapshot => {
+                self.graphic_snapshot_start = Some(Instant::now());
+                self.graphic_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteGraphicSnapshot)
+            }
+
+            Message::CompleteGraphicSnapshot(_) => {
+                let filename = "/tmp/enclone_visual_snapshot.png";
+                capture_as_file(&filename, get_window_id());
+                let mut bytes = Vec::<u8>::new();
+                {
+                    let mut f = File::open(&filename).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                }
+                remove_file(&filename).unwrap();
+                copy_png_bytes_to_clipboard(&bytes);
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.graphic_snapshot_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                self.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::GraphicOpen(_) => {
+                self.graphic_mode = true;
+                GRAPHIC_MODE.store(true, SeqCst);
+                Command::none()
+            }
+
+            Message::GraphicClose => {
+                self.graphic_mode = false;
+                GRAPHIC_MODE.store(false, SeqCst);
+                Command::none()
+            }
+
             Message::ClonotypesCopy => {
                 self.clonotypes_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let mut s = String::new();

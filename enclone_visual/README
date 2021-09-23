@@ -13,18 +13,10 @@ only know how Gatekeeper behaves on the version of OSX that we've tested.
 
 ---------------------------------------------------------------------------------------------------
 
-2.  For automated testing on a Mac, first do this
+2.  For automated testing on a Mac, the command to test is test_vis.
 
-brew install smokris/getwindowid/getwindowid
-
-This puts an executable GetWindowID in your path.  We also copied the source code into a directory
-enclone/get_window_id, which in principle could be refactored as a rust function call.
-
-The command to test is test_vis.
-
-Again this can be slow because of Gatekeeper behavior, both for enclone, and possibly for
-GetWindowId, which enclone forks.  And again the slowness generally goes away, either if one is
-online or after a period of time.
+Again this can be slow because of Gatekeeper behavior for enclone.  And again the slowness 
+generally goes away, either if one is online or after a period of time.
 
 Note that automated testing causes an enclone visual window to open on your Mac.
 

@@ -476,9 +476,9 @@ pub fn plot_clonotypes(
 
     // Implement HONEY_IN.
 
-    if ctl.plot_opt.honey_in.is_some() {
+    if plot_opt.honey_in.is_some() {
         let mut honey_map = HashMap::<(usize, String), (f64, f64)>::new();
-        let f = open_for_read![&ctl.plot_opt.honey_in.as_ref().unwrap()];
+        let f = open_for_read![&plot_opt.honey_in.as_ref().unwrap()];
         for line in f.lines() {
             let s = line.unwrap();
             let fields = s.split(',').collect::<Vec<&str>>();
@@ -516,15 +516,48 @@ pub fn plot_clonotypes(
 
     // Implement HONEY_OUT.
 
-    if ctl.plot_opt.honey_out.len() > 0 {
+    if plot_opt.honey_out.len() > 0 {
         let mut honey_map = Vec::<((usize, String), f64, f64)>::new();
         for i in 0..barcodes.len() {
             honey_map.push((barcodes[i].clone(), center[i].0, center[i].1));
         }
         honey_map.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        let mut f = open_for_write_new![&ctl.plot_opt.honey_out];
+        let mut f = open_for_write_new![&plot_opt.honey_out];
         for x in honey_map.iter() {
             fwriteln!(f, "{},{},{},{}", x.0 .0, x.0 .1, x.1, x.2);
+        }
+    }
+
+    // Determine if we are coloring cells by variable value.
+
+    let mut by_var = false;
+    let mut var = String::new();
+    match plot_opt.cell_color {
+        CellColor::ByVariableValue(ref x) => {
+            by_var = true;
+            var = x.var.clone();
+        }
+        _ => {}
+    };
+
+    // If so, look up the variable value.
+
+    let mut barcode_to_var_value = HashMap::<(usize, String), String>::new();
+    if by_var {
+        for i in 0..out_datas.len() {
+            for j in 0..out_datas[i].len() {
+                if out_datas[i][j].contains_key(&var) {
+                    let val_list = &out_datas[i][j][&var];
+                    let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
+                    let ex = &exact_clonotypes[exacts[i][j]];
+                    for k in 0..ex.ncells() {
+                        let val = if vals.len() > 1 { &vals[k] } else { &vals[0] };
+                        let li = ex.clones[k][0].dataset_index;
+                        let bc = &ex.clones[k][0].barcode;
+                        barcode_to_var_value.insert((li, bc.clone()), val.to_string());
+                    }
+                }
+            }
         }
     }
 
@@ -543,7 +576,10 @@ pub fn plot_clonotypes(
         WIDTH,
         HEIGHT,
         BOUNDARY,
-        ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout",
+        plot_opt.plot_file == "gui" || plot_opt.plot_file == "gui_stdout",
+        by_var,
+        var,
+        &barcode_to_var_value,
     );
 
     // Calculate the actual height and width of the svg.
@@ -635,14 +671,7 @@ pub fn plot_clonotypes(
 
     // Add legend for color by variable.
 
-    let mut by_var = false;
-    match ctl.plot_opt.cell_color {
-        CellColor::ByVariableValue(ref _x) => {
-            by_var = true;
-        }
-        _ => {}
-    };
-    if by_var && ctl.plot_opt.use_legend {
+    if by_var && plot_opt.use_legend {
         add_legend_for_color_by_variable(&plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)

@@ -412,8 +412,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(
                             Text::new(
                                 "Below that is a button to open a window displaying just the \
-                                clonotypes, and a button to display the summary \
-                                stats for your enclone command.",
+                                graphic, and one for just the clonotypes, and a button to display \
+                                the summary stats for your enclone command.",
                             )
                             .width(Units((slf.width - 350) as u16)),
                         )

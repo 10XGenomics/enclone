@@ -47,6 +47,7 @@ impl Application for EncloneVisual {
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
@@ -272,6 +273,9 @@ impl Application for EncloneVisual {
         if self.summary_mode {
             return summary(self);
         }
+        if self.graphic_mode {
+            return graphic(self);
+        }
         if self.clonotypes_mode {
             return clonotypes(self);
         }
@@ -440,13 +444,21 @@ impl Application for EncloneVisual {
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::SummaryOpen(Ok(())));
+            let graphic_button = Button::new(
+                &mut self.graphic_open_button,
+                Text::new("Graphic").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::GraphicOpen(Ok(())));
             let clonotypes_button = Button::new(
                 &mut self.clonotypes_open_button,
                 Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ClonotypesOpen(Ok(())));
-            let summary_buttons_row = Row::new()
-                .spacing(8)
+            let mut summary_buttons_row = Row::new().spacing(8);
+            if !blank {
+                summary_buttons_row = summary_buttons_row.push(graphic_button);
+            }
+            summary_buttons_row = summary_buttons_row
                 .push(clonotypes_button)
                 .push(summary_button);
 

@@ -18,6 +18,8 @@ bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 clipboard = "0.5"
 cocoa = "0.24"
+core-foundation = "0.9"
+core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "3"

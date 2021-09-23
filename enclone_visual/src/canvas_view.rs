@@ -258,6 +258,11 @@ impl<'a> canvas::Program<Message> for CanvasView {
             size_same = false;
             CURRENT_HEIGHT_LAST_SEEN.store(CURRENT_HEIGHT.load(SeqCst), SeqCst);
         }
+        let gmode = GRAPHIC_MODE.load(SeqCst);
+        if gmode != GRAPHIC_MODE_LAST_SEEN.load(SeqCst) {
+            size_same = false;
+            GRAPHIC_MODE_LAST_SEEN.store(gmode, SeqCst);
+        }
         if pos_same && geom_same && size_same {
             let mut v = OUT_GEOMETRIES.lock().unwrap().clone();
             v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
@@ -470,7 +475,15 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             }
                             let mut log = String::new();
                             print_tabular_vbox(&mut log, &rows, 0, &b"l|r".to_vec(), false, true);
-                            let xpos = 15.0 + width * scale;
+                            let tooltip_font_size: f32 = 13.5;
+                            let (box_width, box_height) = dejavu_text_dim(&log, tooltip_font_size);
+                            let xpos;
+                            if !GRAPHIC_MODE.load(SeqCst) {
+                                xpos = 15.0 + width * scale;
+                            } else {
+                                let fudge = 40.0;
+                                xpos = CURRENT_WIDTH.load(SeqCst) as f32 - box_width - fudge;
+                            }
                             frame.translate(Vector { x: xpos, y: 0.0 });
 
                             TOOLTIP_TEXT.lock().unwrap().clear();
@@ -492,21 +505,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             // characters.  This is not fully satisfactory because there are small
                             // gaps between them.
 
-                            let tooltip_font_size: f32 = 13.5;
-                            let mut width_in_chars = 0;
-                            let mut height_in_chars = 0;
-                            for line in log.lines() {
-                                let mut nchars = 0;
-                                for _char in line.chars() {
-                                    nchars += 1;
-                                }
-                                width_in_chars = std::cmp::max(width_in_chars, nchars);
-                                height_in_chars += 1;
-                            }
-                            let box_width = width_in_chars as f32
-                                * tooltip_font_size
-                                * DEJAVU_WIDTH_OVER_HEIGHT;
-                            let box_height = height_in_chars as f32 * tooltip_font_size;
                             let mut max_width = MAX_WIDTH;
                             let current_width = CURRENT_WIDTH.load(SeqCst);
                             if current_width > INITIAL_WIDTH as usize {
@@ -566,7 +564,15 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             }
                             let mut log = String::new();
                             print_tabular_vbox(&mut log, &rows, 0, &b"l|r".to_vec(), false, true);
-                            let xpos = 15.0 + width * scale;
+                            let tooltip_font_size: f32 = 13.5;
+                            let (box_width, box_height) = dejavu_text_dim(&log, tooltip_font_size);
+                            let xpos;
+                            if !GRAPHIC_MODE.load(SeqCst) {
+                                xpos = 15.0 + width * scale;
+                            } else {
+                                let fudge = 40.0;
+                                xpos = CURRENT_WIDTH.load(SeqCst) as f32 - box_width - fudge;
+                            }
                             frame.translate(Vector { x: xpos, y: 0.0 });
 
                             TOOLTIP_TEXT.lock().unwrap().clear();
@@ -588,21 +594,6 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             // characters.  This is not fully satisfactory because there are small
                             // gaps between them.
 
-                            let tooltip_font_size: f32 = 13.5;
-                            let mut width_in_chars = 0;
-                            let mut height_in_chars = 0;
-                            for line in log.lines() {
-                                let mut nchars = 0;
-                                for _char in line.chars() {
-                                    nchars += 1;
-                                }
-                                width_in_chars = std::cmp::max(width_in_chars, nchars);
-                                height_in_chars += 1;
-                            }
-                            let box_width = width_in_chars as f32
-                                * tooltip_font_size
-                                * DEJAVU_WIDTH_OVER_HEIGHT;
-                            let box_height = height_in_chars as f32 * tooltip_font_size;
                             let mut max_width = MAX_WIDTH;
                             let current_width = CURRENT_WIDTH.load(SeqCst);
                             if current_width > INITIAL_WIDTH as usize {

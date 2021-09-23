@@ -27,6 +27,18 @@ use svg_to_geometry::*;
 use tables::*;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
+use core_foundation::number::CFNumber;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use core_foundation::string::CFString;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use core_graphics::window::{create_description_from_array, create_window_list};
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+use std::ops::Deref;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
 pub mod apocalypse;
@@ -57,6 +69,22 @@ pub mod testsuite;
 pub mod update_restart;
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
+
+pub fn dejavu_text_dim(t: &str, font_size: f32) -> (f32, f32) {
+    let mut width_in_chars = 0;
+    let mut height_in_chars = 0;
+    for line in t.lines() {
+        let mut nchars = 0;
+        for _char in line.chars() {
+            nchars += 1;
+        }
+        width_in_chars = std::cmp::max(width_in_chars, nchars);
+        height_in_chars += 1;
+    }
+    let box_width = width_in_chars as f32 * font_size * DEJAVU_WIDTH_OVER_HEIGHT;
+    let box_height = height_in_chars as f32 * font_size;
+    (box_width, box_height)
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -346,23 +374,48 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
     }
 }
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn get_window_id() -> usize {
-    let o = Command::new("GetWindowID")
-        .arg("enclone")
-        .arg("--list")
-        .output()
-        .expect("failed to execute GetWindowID");
-    if o.status.code() != Some(0) {
-        xprintln!("\nCall to GetWindowID failed.\n");
+    let windows = create_window_list(0 as u32, 0 as u32);
+    if windows.is_none() {
+        eprintln!("\nattempty to create window list failed.\n");
         std::process::exit(1);
     }
-    let mut m = String::from_utf8(o.stdout).unwrap();
-    m = m.replace("\n", "");
-    if !m.contains("id=") || m.after("id=").parse::<usize>().is_err() {
-        xprintln!("\nGetWindowId could not find id\n");
+    let descrips = create_description_from_array(windows.unwrap());
+    if descrips.is_none() {
+        eprintln!("\nattempty to create window descriptions failed.\n");
         std::process::exit(1);
     }
-    m.after("id=").force_usize()
+    let descrips = descrips.unwrap();
+    let this_pid = std::process::id() as i64;
+    for d in descrips.iter() {
+        if d.contains_key(&CFString::from("kCGWindowOwnerPID")) {
+            let pid = d.get(&CFString::from("kCGWindowOwnerPID"));
+            let pid = pid.deref().downcast::<CFNumber>().unwrap();
+            let pid = pid.to_i64().unwrap();
+            if pid == this_pid {
+                if d.contains_key(&CFString::from("kCGWindowName")) {
+                    let window_name = d.get(&CFString::from("kCGWindowName"));
+                    let window_name = window_name.deref().downcast::<CFString>().unwrap();
+                    if window_name == "EncloneVisual" {
+                        if d.contains_key(&CFString::from("kCGWindowNumber")) {
+                            let window_number = d.get(&CFString::from("kCGWindowNumber"));
+                            let window_number =
+                                window_number.deref().downcast::<CFNumber>().unwrap();
+                            let window_number = window_number.to_i64().unwrap() as usize;
+                            return window_number;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    panic!("\nUnable to determine window id.\n");
+}
+
+#[cfg(target_os = "linux")]
+pub fn get_window_id() -> usize {
+    panic!("Unimplemented!");
 }
 
 pub fn format_cookbook() -> String {
@@ -470,6 +523,8 @@ pub static FAIL_ON_ERROR: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
 pub static PSEUDO_META: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
+pub static GRAPHIC_MODE: AtomicBool = AtomicBool::new(false);
+pub static GRAPHIC_MODE_LAST_SEEN: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);

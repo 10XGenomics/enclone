@@ -2,8 +2,53 @@
 
 use crate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
+
+pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let graphic_title = Text::new(&format!("Graphic")).size(30);
+    let graphic_snapshot_button = Button::new(
+        &mut slf.graphic_snapshot_button,
+        Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
+    )
+    .on_press(Message::GraphicSnapshot);
+    let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
+        .on_press(Message::GraphicClose);
+    let top_bar = Row::new()
+        .push(graphic_title)
+        .push(Space::with_width(Length::Fill))
+        .push(graphic_snapshot_button)
+        .push(Space::with_width(Units(8)))
+        .push(graphic_close_button);
+    let svg_height = CURRENT_HEIGHT.load(SeqCst) as u16;
+    let have_canvas = slf.canvas_view.state.geometry_value.is_some();
+    let mut graphic_row = Row::new().spacing(10);
+    if slf.svg_value.len() > 0 {
+        if have_canvas {
+            graphic_row = graphic_row
+                .push(
+                    slf.canvas_view
+                        .view()
+                        .map(move |message| Message::GroupClicked(message)),
+                )
+                .height(Units(svg_height));
+        } else {
+            let svg_as_png = Image::new(iced::image::Handle::from_memory(slf.png_value.clone()))
+                .height(Units(svg_height));
+            graphic_row = graphic_row.push(svg_as_png);
+        }
+    }
+    let content = Column::new()
+        .spacing(SPACING)
+        .padding(20)
+        .push(top_bar)
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(graphic_row);
+    Container::new(content)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
+}
 
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
