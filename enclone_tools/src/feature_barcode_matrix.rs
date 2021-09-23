@@ -140,8 +140,8 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
             println!("\nsample_def = $$${}$$$", sample_def);
         }
         let v = v.unwrap();
-        let sample_def = &v.as_array().unwrap();
-        for x in sample_def.iter() {
+        let sample_defx = &v.as_array().unwrap();
+        for x in sample_defx.iter() {
             if x["library_type"] == "Antibody Capture" {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
                 let y = x["sample_indices"].as_array().unwrap().to_vec();
@@ -159,6 +159,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
         }
         if read_path.len() == 0 {
             eprintln!("\nfailed to find read path\n");
+            println!("\nsample_def = $$${}$$$", sample_def);
             std::process::exit(1);
         }
         if !path_exists(&read_path) {
