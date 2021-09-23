@@ -508,6 +508,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 }
                             }
 
+                            // TO UPDATE THIS DOC.
                             // We put a layer of black below the tooltip text, which is going to
                             // be white.  There are two approaches.  First, if the tooltip box lies
                             // strictly within the canvas (and not to the right of it), we display
@@ -520,38 +521,27 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             if current_width > INITIAL_WIDTH as usize {
                                 max_width += (current_width - INITIAL_WIDTH as usize) as f32;
                             }
-                            if xpos + box_width <= max_width {
-                                frame.fill_rectangle(
-                                    Point { x: 0.0, y: 0.0 },
-                                    Size {
-                                        width: box_width,
-                                        height: box_height,
-                                    },
-                                    iced::canvas::Fill::from(Color::BLACK),
-                                );
-                            } else {
-                                let text = canvas::Text {
-                                    content: logp,
-                                    size: tooltip_font_size,
-                                    font: DEJAVU,
-                                    color: Color::from_rgb(0.0, 0.0, 0.0),
-                                    ..canvas::Text::default()
-                                };
-                                frame.fill_text(text);
-                            }
+                            frame.fill_rectangle(
+                                Point { x: 0.0, y: 0.0 },
+                                Size {
+                                    width: box_width,
+                                    height: box_height,
+                                },
+                                iced::canvas::Fill::from(Color::WHITE),
+                            );
 
                             // Now display the actual text in the tooltip box.
 
                             let text = canvas::Text {
                                 content: log,
                                 size: tooltip_font_size,
-                                font: DEJAVU,
-                                color: Color::from_rgb(1.0, 1.0, 1.0),
+                                font: DEJAVU_BOLD,
+                                color: Color::from_rgb(0.5, 0.0, 0.5),
                                 ..canvas::Text::default()
                             };
                             frame.fill_text(text);
 
-                            frame.translate(Vector { x: -xpos, y: -10.0 });
+                            frame.translate(Vector { x: -xpos, y: -ypos });
                             break;
                         }
                     }
@@ -607,6 +597,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                                 }
                             }
 
+                            // TO UPDATE THIS DOC.
                             // We put a layer of black below the tooltip text, which is going to
                             // be white.  There are two approaches.  First, if the tooltip box lies
                             // strictly within the canvas (and not to the right of it), we display
@@ -619,33 +610,22 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             if current_width > INITIAL_WIDTH as usize {
                                 max_width += (current_width - INITIAL_WIDTH as usize) as f32;
                             }
-                            if xpos + box_width <= max_width {
-                                frame.fill_rectangle(
-                                    Point { x: 0.0, y: 0.0 },
-                                    Size {
-                                        width: box_width,
-                                        height: box_height,
-                                    },
-                                    iced::canvas::Fill::from(Color::BLACK),
-                                );
-                            } else {
-                                let text = canvas::Text {
-                                    content: logp,
-                                    size: tooltip_font_size,
-                                    font: DEJAVU,
-                                    color: Color::from_rgb(0.0, 0.0, 0.0),
-                                    ..canvas::Text::default()
-                                };
-                                frame.fill_text(text);
-                            }
+                            frame.fill_rectangle(
+                                Point { x: 0.0, y: 0.0 },
+                                Size {
+                                    width: box_width,
+                                    height: box_height,
+                                },
+                                iced::canvas::Fill::from(Color::WHITE),
+                            );
 
                             // Now display the actual text in the tooltip box.
 
                             let text = canvas::Text {
                                 content: log,
                                 size: tooltip_font_size,
-                                font: DEJAVU,
-                                color: Color::from_rgb(1.0, 1.0, 1.0),
+                                font: DEJAVU_BOLD,
+                                color: Color::from_rgb(0.5, 0.0, 0.5),
                                 ..canvas::Text::default()
                             };
                             frame.fill_text(text);
