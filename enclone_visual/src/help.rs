@@ -151,8 +151,9 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             Text::new(
                                 "5.  Tooltip, to toggle the position of the tooltip text window.  \
                                  Clicking causes clockwise rotation of the position amongst the \
-                                 four corners of the graphics window.  If you click it, you'll see \
-                                 it flash, but no other change, until you mouse over a cell.",
+                                 four corners of the graphics window.  One position may yield a \
+                                 better overall view than another.  If you click, you'll see the \
+                                 button flash, but no other change, until you mouse over a cell.",
                             )
                             .width(max_width2),
                         )
