@@ -14,24 +14,10 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
         .push(graphic_close_button);
-
-    let mut blank = false;
-    if slf.h.history_index > 0 {
-        blank = slf.h.is_blank[slf.h.history_index as usize - 1];
-    }
-
-    let mut svg_height = SVG_HEIGHT as f32;
-    if blank {
-        svg_height = SVG_NULL_HEIGHT as f32;
-    }
-    svg_height *= CURRENT_HEIGHT.load(SeqCst) as f32 / INITIAL_HEIGHT as f32;
-    let svg_height = svg_height.round() as u16;
-
+    let svg_height = CURRENT_HEIGHT.load(SeqCst) as u16;
     let have_canvas = slf.canvas_view.state.geometry_value.is_some();
     let mut graphic_row = Row::new().spacing(10);
     if slf.svg_value.len() > 0 {
-        // Show the graphic.
-
         if have_canvas {
             graphic_row = graphic_row
                 .push(
