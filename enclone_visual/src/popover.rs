@@ -12,9 +12,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
     )
     .on_press(Message::GraphicSnapshot);
-    let graphic_close_button =
-        Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
-            .on_press(Message::GraphicClose);
+    let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
+        .on_press(Message::GraphicClose);
     let top_bar = Row::new()
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
@@ -34,9 +33,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 )
                 .height(Units(svg_height));
         } else {
-            let svg_as_png =
-                Image::new(iced::image::Handle::from_memory(slf.png_value.clone()))
-                    .height(Units(svg_height));
+            let svg_as_png = Image::new(iced::image::Handle::from_memory(slf.png_value.clone()))
+                .height(Units(svg_height));
             graphic_row = graphic_row.push(svg_as_png);
         }
     }

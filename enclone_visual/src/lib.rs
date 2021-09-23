@@ -81,9 +81,7 @@ pub fn dejavu_text_dim(t: &str, font_size: f32) -> (f32, f32) {
         width_in_chars = std::cmp::max(width_in_chars, nchars);
         height_in_chars += 1;
     }
-    let box_width = width_in_chars as f32
-        * font_size
-        * DEJAVU_WIDTH_OVER_HEIGHT;
+    let box_width = width_in_chars as f32 * font_size * DEJAVU_WIDTH_OVER_HEIGHT;
     let box_height = height_in_chars as f32 * font_size;
     (box_width, box_height)
 }

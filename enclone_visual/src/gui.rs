@@ -454,8 +454,7 @@ impl Application for EncloneVisual {
                 Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ClonotypesOpen(Ok(())));
-            let mut summary_buttons_row = Row::new()
-                .spacing(8);
+            let mut summary_buttons_row = Row::new().spacing(8);
             if !blank {
                 summary_buttons_row = summary_buttons_row.push(graphic_button);
             }
