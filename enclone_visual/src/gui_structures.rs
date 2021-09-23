@@ -109,6 +109,7 @@ pub struct EncloneVisual {
     pub console_mode: bool,
     pub archive_mode: bool,
     pub clonotypes_mode: bool,
+    pub graphic_mode: bool,
     pub save: bool,
     pub save_in_progress: bool,
     pub save_on_exit: bool,
@@ -174,6 +175,8 @@ pub struct EncloneVisual {
     pub sanity_button: button::State,
     pub clonotypes_open_button: button::State,
     pub clonotypes_close_button: button::State,
+    pub graphic_open_button: button::State,
+    pub graphic_close_button: button::State,
     pub clonotypes_copy_button: button::State,
     //
     // more

@@ -272,6 +272,9 @@ impl Application for EncloneVisual {
         if self.summary_mode {
             return summary(self);
         }
+        if self.graphic_mode {
+            return graphic(self);
+        }
         if self.clonotypes_mode {
             return clonotypes(self);
         }
@@ -440,6 +443,11 @@ impl Application for EncloneVisual {
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::SummaryOpen(Ok(())));
+            let graphic_button = Button::new(
+                &mut self.graphic_open_button,
+                Text::new("Graphic").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::GraphicOpen(Ok(())));
             let clonotypes_button = Button::new(
                 &mut self.clonotypes_open_button,
                 Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
@@ -447,6 +455,7 @@ impl Application for EncloneVisual {
             .on_press(Message::ClonotypesOpen(Ok(())));
             let summary_buttons_row = Row::new()
                 .spacing(8)
+                .push(graphic_button)
                 .push(clonotypes_button)
                 .push(summary_button);
 

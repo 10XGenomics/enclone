@@ -22,6 +22,16 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::GraphicOpen(_) => {
+                self.graphic_mode = true;
+                Command::none()
+            }
+
+            Message::GraphicClose => {
+                self.graphic_mode = false;
+                Command::none()
+            }
+
             Message::ClonotypesCopy => {
                 self.clonotypes_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let mut s = String::new();
