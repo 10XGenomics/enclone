@@ -532,6 +532,7 @@ pub static SETUP_PID: AtomicUsize = AtomicUsize::new(0);
 pub static COUNT: AtomicUsize = AtomicUsize::new(0);
 pub static GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 pub static META: AtomicUsize = AtomicUsize::new(0);
+pub static TOOLTIP_POS: AtomicUsize = AtomicUsize::new(0);
 
 lazy_static! {
     pub static ref SERVER_LOGFILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
