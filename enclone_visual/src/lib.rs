@@ -507,6 +507,8 @@ pub static FAIL_ON_ERROR: AtomicBool = AtomicBool::new(false);
 pub static META_TESTING: AtomicBool = AtomicBool::new(false);
 pub static PSEUDO_META: AtomicBool = AtomicBool::new(false);
 pub static GET_MY_COOKBOOKS: AtomicBool = AtomicBool::new(false);
+pub static GRAPHIC_MODE: AtomicBool = AtomicBool::new(false);
+pub static GRAPHIC_MODE_LAST_SEEN: AtomicBool = AtomicBool::new(false);
 
 pub static REMOTE_SERVER_ID: AtomicUsize = AtomicUsize::new(0);
 pub static SERVER_PROCESS_PID: AtomicUsize = AtomicUsize::new(0);

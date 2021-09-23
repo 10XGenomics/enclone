@@ -24,11 +24,13 @@ impl EncloneVisual {
         match message {
             Message::GraphicOpen(_) => {
                 self.graphic_mode = true;
+                GRAPHIC_MODE.store(true, SeqCst);
                 Command::none()
             }
 
             Message::GraphicClose => {
                 self.graphic_mode = false;
+                GRAPHIC_MODE.store(false, SeqCst);
                 Command::none()
             }
 

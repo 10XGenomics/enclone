@@ -258,6 +258,11 @@ impl<'a> canvas::Program<Message> for CanvasView {
             size_same = false;
             CURRENT_HEIGHT_LAST_SEEN.store(CURRENT_HEIGHT.load(SeqCst), SeqCst);
         }
+        let gmode = GRAPHIC_MODE.load(SeqCst);
+        if gmode != GRAPHIC_MODE_LAST_SEEN.load(SeqCst) {
+            size_same = false;
+            GRAPHIC_MODE_LAST_SEEN.store(gmode, SeqCst);
+        }
         if pos_same && geom_same && size_same {
             let mut v = OUT_GEOMETRIES.lock().unwrap().clone();
             v.append(&mut OUT_GEOMETRIES_TOOLTIP.lock().unwrap().clone());
