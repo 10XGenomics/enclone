@@ -478,13 +478,30 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let tooltip_font_size: f32 = 13.5;
                             let (box_width, box_height) = dejavu_text_dim(&log, tooltip_font_size);
                             let xpos;
-                            if !GRAPHIC_MODE.load(SeqCst) {
-                                xpos = 15.0 + width * scale;
+                            let mut ypos = 0.0;
+                            // if !GRAPHIC_MODE.load(SeqCst) {
+                                let fudge = 40.0;
+                                let tt = TOOLTIP_POS.load(SeqCst);
+                                if tt == 0 {
+                                    xpos = (bounds.x + bounds.width) - box_width - fudge;
+                                    ypos = 0.0;
+                                } else if tt == 1 {
+                                    xpos = (bounds.x + bounds.width) - box_width - fudge;
+                                    ypos = bounds.height - box_height;
+                                } else if tt == 2 {
+                                    xpos = 0.0;
+                                    ypos = bounds.height - box_height;
+                                } else {
+                                    xpos = 0.0;
+                                    ypos = 0.0;
+                                }
+                            /*
                             } else {
                                 let fudge = 40.0;
                                 xpos = CURRENT_WIDTH.load(SeqCst) as f32 - box_width - fudge;
                             }
-                            frame.translate(Vector { x: xpos, y: 0.0 });
+                            */
+                            frame.translate(Vector { x: xpos, y: ypos });
 
                             TOOLTIP_TEXT.lock().unwrap().clear();
                             TOOLTIP_TEXT.lock().unwrap().push(log.clone());
@@ -567,13 +584,28 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             let tooltip_font_size: f32 = 13.5;
                             let (box_width, box_height) = dejavu_text_dim(&log, tooltip_font_size);
                             let xpos;
+                            let mut ypos = 0.0;
                             if !GRAPHIC_MODE.load(SeqCst) {
-                                xpos = 15.0 + width * scale;
+                                let fudge = 40.0;
+                                let tt = TOOLTIP_POS.load(SeqCst);
+                                if tt == 0 {
+                                    xpos = (bounds.x + bounds.width) - box_width - fudge;
+                                    ypos = 0.0;
+                                } else if tt == 1 {
+                                    xpos = (bounds.x + bounds.width) - box_width - fudge;
+                                    ypos = bounds.height - box_height;
+                                } else if tt == 2 {
+                                    xpos = 0.0;
+                                    ypos = bounds.height - box_height;
+                                } else {
+                                    xpos = 0.0;
+                                    ypos = 0.0;
+                                }
                             } else {
                                 let fudge = 40.0;
                                 xpos = CURRENT_WIDTH.load(SeqCst) as f32 - box_width - fudge;
                             }
-                            frame.translate(Vector { x: xpos, y: 0.0 });
+                            frame.translate(Vector { x: xpos, y: ypos });
 
                             TOOLTIP_TEXT.lock().unwrap().clear();
                             TOOLTIP_TEXT.lock().unwrap().push(log.clone());
@@ -630,7 +662,7 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             };
                             frame.fill_text(text);
 
-                            frame.translate(Vector { x: -xpos, y: -10.0 });
+                            frame.translate(Vector { x: -xpos, y: -ypos });
                             break;
                         }
                     }
