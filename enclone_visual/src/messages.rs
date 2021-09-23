@@ -79,6 +79,8 @@ pub enum Message {
     CompleteCopySelectedMetrics(Result<(), String>),
     Snapshot,
     CompleteSnapshot(Result<(), String>),
+    GraphicSnapshot,
+    CompleteGraphicSnapshot(Result<(), String>),
     Recompute,
     CopyLastNarrative,
     Sleep(u64),

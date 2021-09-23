@@ -97,6 +97,7 @@ pub struct EncloneVisual {
     pub compute_state: ComputeState,
     pub copy_image_button_color: Color,
     pub snapshot_button_color: Color,
+    pub graphic_snapshot_button_color: Color,
     pub sanity_button_color: Color,
     pub clonotypes_copy_button_color: Color,
     pub canvas_view: CanvasView,
@@ -119,6 +120,7 @@ pub struct EncloneVisual {
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
     pub snapshot_start: Option<Instant>,
+    pub graphic_snapshot_start: Option<Instant>,
     pub sanity_check_start: Option<Instant>,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
@@ -171,6 +173,7 @@ pub struct EncloneVisual {
     pub copy_selected_metrics_button: button::State,
     pub copy_selected_metrics_button_color: Color,
     pub snapshot_button: button::State,
+    pub graphic_snapshot_button: button::State,
     pub recompute_button: button::State,
     pub sanity_button: button::State,
     pub clonotypes_open_button: button::State,
