@@ -678,7 +678,7 @@ impl Application for EncloneVisual {
             .push(save_on_exit_button);
         let tooltip_button = Button::new(
             &mut self.tooltip_toggle_button,
-            Text::new("Tooltip").color(self.tooltip_toggle_button_color)
+            Text::new("Tooltip").color(self.tooltip_toggle_button_color),
         )
         .on_press(Message::TooltipToggle);
         let archive_button = Button::new(

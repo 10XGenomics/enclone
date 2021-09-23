@@ -9,7 +9,7 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_title = Text::new(&format!("Graphic")).size(30);
     let tooltip_button = Button::new(
         &mut slf.tooltip_toggle_button,
-        Text::new("Tooltip").color(slf.tooltip_toggle_button_color)
+        Text::new("Tooltip").color(slf.tooltip_toggle_button_color),
     )
     .on_press(Message::TooltipToggle);
     let graphic_snapshot_button = Button::new(
