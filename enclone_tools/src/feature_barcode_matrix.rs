@@ -36,7 +36,7 @@ pub struct SequencingDef {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
+pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
     println!("getting feature barcode matrix for {}", id);
 
     // Get configuration.
@@ -158,9 +158,9 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
             si[i] = si[i].between("\"", "\"").to_string();
         }
         if read_path.len() == 0 {
-            eprintln!("\nfailed to find read path\n");
-            println!("\nsample_def = $$${}$$$", sample_def);
-            std::process::exit(1);
+            println!("\nfailed to find read path, presumably because there's no antibody data\n");
+            println!("(this is probably ok)\n");
+            return None;
         }
         if !path_exists(&read_path) {
             eprintln!("\nread path does not exist");
@@ -182,7 +182,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
         sample_indices: si,
         lanes: lanes,
     };
-    seq_def
+    Some(seq_def)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

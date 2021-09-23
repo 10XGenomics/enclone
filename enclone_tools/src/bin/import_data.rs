@@ -136,7 +136,7 @@ fn main() {
 
         let mut seq_def = None;
         if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
-            seq_def = Some(feature_barcode_matrix_seq_def(id.force_usize()));
+            seq_def = feature_barcode_matrix_seq_def(id.force_usize());
         } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
             let mut sample_indices = Vec::<String>::new();
             let mut lanes = Vec::<usize>::new();
