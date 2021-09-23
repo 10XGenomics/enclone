@@ -101,11 +101,40 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
         }
         let mut sample_def = stringme(&sample_def);
         sample_def = sample_def.replace(",\n        }", "\n        }");
-        let sample_def = format!(
+        let mut sample_def = format!(
             "{}{}",
             sample_def.rev_before(","),
             sample_def.rev_after(",")
         );
+
+        // Remove some trailing commas to get proper json.
+
+        let mut chars = Vec::<char>::new();
+        for char in sample_def.chars() {
+            chars.push(char);
+        }
+        let mut to_delete = vec![false; chars.len()];
+        for i in 0..chars.len() {
+            if chars[i] == ',' {
+                for j in i + 1..chars.len() {
+                    if chars[j] == ' ' || chars[j] == '\n' {
+                    } else if chars[j] == ']' {
+                        to_delete[i] = true;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        sample_def.clear();
+        for i in 0..chars.len() {
+            if !to_delete[i] {
+                sample_def.push(chars[i]);
+            }
+        }
+
+        // Convert string to json.
+
         let v: Result<Value, _> = serde_json::from_str(&sample_def);
         if v.is_err() {
             println!("\nsample_def = $$${}$$$", sample_def);
