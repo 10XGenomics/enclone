@@ -8,7 +8,8 @@
 # class:    lvar or cvar
 #
 # inputs:   data structures needed as input
-#           x: TigData1 -- this is the data for one chain
+#           ex: ExactClonotype = exact subclonotype structure
+#           mid: usize = chain id in clonotype
 #
 # level:    scope of the variable, one of
 #           cell, cell-exact, exact, clono, dataset
@@ -26,7 +27,7 @@
 #
 # avail:    availability, public or private or ? (temp)
 #
-# code:     not in use yet, would be the code for computing the variable value
+# code:     code for computing the variable value
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains_present
@@ -42,6 +43,7 @@ brief:    number of chains present in an exact subclonotype
 ref:      enclone help lvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_id
 inputs:   ?
@@ -54,6 +56,7 @@ brief:    identifier of clonotype within clonotype group
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_u
 inputs:   ?
@@ -69,6 +72,7 @@ brief:    percent of feature UMIs in cells, for a given dataset
 ref:      enclone help display
 avail:    ?
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_r
 inputs:   ?
@@ -83,9 +87,10 @@ doc:      For a given feature, the percent of reads that are identified by the
 ref:      enclone help display
 avail:    ?
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa
-inputs:   x: TigData1
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -97,6 +102,7 @@ brief:    CDR* amino acid sequence
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdiff
 inputs:   ?
@@ -111,6 +117,7 @@ brief:    differences of const region with universal reference
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     aa%
 inputs:   ?
@@ -124,6 +131,7 @@ brief:    amino acid identity with donor reference
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?
@@ -138,6 +146,7 @@ brief:    barcode of the cell
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
 inputs:   ?
@@ -151,6 +160,7 @@ brief:    nucleotide start of CDR3 sequence on full sequence
 ref:      enclone help parseable
 avail:    public
 notes:    Check if type is really positive integer.
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   ?
@@ -164,6 +174,7 @@ brief:    length of observed constant region
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const_id
 inputs:   ?
@@ -177,6 +188,7 @@ brief:    numerical identifier of constant region (or null)
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_<REG>
 inputs:   ?
@@ -190,6 +202,7 @@ brief:    count amino acid motifs
 ref:      enclone help lvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
 inputs:   ?
@@ -203,6 +216,7 @@ brief:    amino acid distance to donor reference
 ref:      enclone help lvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
 inputs:   ?
@@ -216,6 +230,7 @@ brief:    optimal D segment name
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_ncells
 inputs:   ?
@@ -229,6 +244,7 @@ brief:    number of cells in the clonotype
 ref:      enclone hep parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa_north
 inputs:   ?
@@ -242,6 +258,7 @@ brief:    North version of CDR* amino acid sequence
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr(1,2,3}_aa_ref
 inputs:   ?
@@ -255,6 +272,7 @@ brief:    CDR* amino acid sequence for universal reference
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr*_aa_{0,...}_{0,...}_ext
 inputs:   ?
@@ -268,6 +286,7 @@ brief:    CDR* region with specified extension length
 ref:      enclone help cvars
 avail:    public
 notes:    Check if args are really nonnegative integers.
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
 inputs:   ?
@@ -281,6 +300,7 @@ brief:    donor names
 ref:      enclone help lvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
 inputs:   ?
@@ -294,6 +314,7 @@ brief:    second best D segment name
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_dna
 inputs:   ?
@@ -306,6 +327,7 @@ brief:    CDR* nucleotide sequence
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vjlen
 inputs:   ?
@@ -318,6 +340,7 @@ brief:    length in bases of V..J
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vj_seq_nl
 inputs:   ?
@@ -330,6 +353,7 @@ brief:    nucleotide sequence of V..J, excluding leader
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vj_seq
 inputs:   ?
@@ -342,6 +366,7 @@ brief:    nucleotide sequence of V..J
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vj_aa_nl
 inputs:   ?
@@ -354,6 +379,7 @@ brief:    amino acid sequence of V..J, excluding leader
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vj_aa
 inputs:   ?
@@ -366,6 +392,7 @@ brief:    amino acid sequence of V..J
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_indices_dna
 inputs:   ?
@@ -378,6 +405,7 @@ brief:    variable nucleotide positions
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_indices_aa
 inputs:   ?
@@ -390,6 +418,7 @@ brief:    variable amino acid positions
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_aa
 inputs:   ?
@@ -402,6 +431,7 @@ brief:    variant residue indices in clonotype (including synonymous)
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
 inputs:   ?
@@ -414,6 +444,7 @@ brief:    bases at position in chain that vary across the clonotype
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
 inputs:   ?
@@ -426,6 +457,7 @@ brief:    start of V on full nucleotide sequence
 ref:      enclone help parseable
 avail:    public
 notes:    Positive integer, or nonnegative integer?
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_name
 inputs:   ?
@@ -438,6 +470,7 @@ brief:    V region name
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_id
 inputs:   ?
@@ -450,6 +483,7 @@ brief:    V region id
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_name
 inputs:   ?
@@ -462,6 +496,7 @@ brief:    name of 5'-UTR region (or null)
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_id
 inputs:   ?
@@ -474,6 +509,7 @@ brief:    numerical identifier of 5'-UTR region (or null)
 ref:      enclone help parseable
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ulen
 inputs:   ?
@@ -486,6 +522,7 @@ brief:    length of observed 5'-UTR sequence
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     udiff
 inputs:   ?
@@ -498,6 +535,7 @@ brief:    differences of 5'-UTR region with universal reference
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_μ
 inputs:   ?
@@ -510,6 +548,7 @@ brief:    mean chain UMIs for exact subclonotype (= <code>u_mean</code>)
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_Σ
 inputs:   ?
@@ -522,6 +561,7 @@ brief:    sum of chain UMIs across exact subclonotype (= <code>u_sum</code>)
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_sum
 inputs:   ?
@@ -534,6 +574,7 @@ brief:    sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_min
 inputs:   ?
@@ -546,6 +587,7 @@ brief:    minimum chain UMIs across exact subclonotype
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_mean
 inputs:   ?
@@ -558,6 +600,7 @@ brief:    mean chain UMIs across exact subclonotype (= <code>u_μ</code>)
 ref:      enclone help cvars
 avail:    public
 notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
 inputs:   ?
@@ -570,6 +613,38 @@ brief:    maximum chain UMIs across exact subclonotype
 ref:      enclone help cvars
 avail:    public
 notes:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          format!("{}", numis.iter().max().unwrap())
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    cell-exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    number of UMIs supporting chain
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     share_indices_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    shared nucleotide positions
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
@@ -1336,23 +1411,6 @@ notes:
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
                                                                                         </td>
     <td> shared amino acid positions                                                    </td></tr>
-
-<tr><td> <code> share_indices_dna </code>                                               </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> shared nucleotide positions                                                    </td></tr>
-
-<tr><td> <code> u </code>                                                               </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> number of UMIs supporting chain                                                </td></tr>
 
 <p>
 <table>
