@@ -961,6 +961,90 @@ avail:    public
 notes: 
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   65
+name:     gex_max
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    maximum number of GEX UMIs across exact subclonotype
+ref:      enclone help lvars
+avail:    public
+notes: 
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   66
+name:     cdr{1,2,3}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     positive_integer
+doc:      TBD
+brief:    length of CDR* amino acid sequence 
+ref:      enclone help cvars
+avail:    public
+notes: 
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   67
+name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    CDR* region with specified extension length
+ref:      enclone help cvars
+avail:    public
+notes:    Do extension lengths start at zero?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   68
+name:     d_inconsistent_%
+inputs:   ?
+limits:
+class:    lvar
+level:    global
+type:     float[0,100].precision(1)
+doc:      TBD
+brief:    inconsistency percent for D gene assignment
+ref:      d_genes.html
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   69
+name:     fwr{1,2,3,4}_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    FWR* nucleotide sequence
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   70
+name:     gex
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     string
+doc:      nonnegative_integer
+brief:    number of GEX UMIs
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1128,14 +1212,6 @@ code:
 </thead>
 <tbody>
 
-<tr><td> <code> cdr*_aa_L_R_ext </code>                                                 </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR* region with specified extension length                                    </td></tr>
-
 <tr><td> <code> cdr*_dna_ref </code>                                                    </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -1143,14 +1219,6 @@ code:
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR* nucleotide sequence for universal reference                               </td></tr>
-
-<tr><td> <code> cdr*_len </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> length of CDR* amino acid sequence                                             </td></tr>
 
 <tr><td> <code> cdr3_aa_conp </code>                                                    </td>
     <td>                                                                                </td>
@@ -1269,14 +1337,6 @@ code:
                                                                                         </td>
     <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
 
-<tr><td> <code> d_inconsistent_% </code>                                                </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> global                                                                         </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
-    <td> inconsistency percent for D gene assignment                                    </td></tr>
-
 <tr><td> <code> d_inconsistent_n </code>                                                </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -1366,14 +1426,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> FWR* amino acid seq for universal reference                                    </td></tr>
 
-<tr><td> <code> fwr*_dna </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* nucleotide sequence                                                       </td></tr>
-
 <tr><td> <code> fwr*_dna_ref </code>                                                    </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -1420,22 +1472,6 @@ code:
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> exact subclonotype group, by Hamming distance                                  </td></tr>
-
-<tr><td> <code> gex </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of GEX UMIs                                                             </td></tr>
-
-<tr><td> <code> gex_max </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> maximum number of GEX UMIs across exact subclonotype                           </td></tr>
 
 <tr><td> <code> gex_mean </code>                                                        </td>
     <td>                                                                                </td>
