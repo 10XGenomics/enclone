@@ -806,6 +806,104 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   54
+name:     r
+inputs:   ?
+limits:
+class:    cvar
+level:    cell-exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    number of reads supporting chain
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   55
+name:     q<0,...>_
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    read quality scores at position <code>n</code>
+ref:      enclone help parseable
+avail:    public
+notes:    Should position start at 0 or 1?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   56
+name:     origins
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     string
+doc:      TBD
+brief:    origin names
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   57
+name:     notes
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    notes for exact subclonotype
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   58
+name:     near
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    Hamming distance to nearest neighbor 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   59
+name:     mait
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    evidence for MAIT cell 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   60
+name:     d_id
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     positive_integer
+doc:      TBD
+brief:    D region id
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1114,15 +1212,6 @@ code:
                                                                                         </td>
     <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
 
-<tr><td> <code> d_id </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> D region id                                                                    </td></tr>
-
 <tr><td> <code> d_inconsistent_% </code>                                                </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -1375,14 +1464,6 @@ code:
                                                                                         </td>
     <td> J region name                                                                  </td></tr>
 
-<tr><td> <code> mait </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> evidence for MAIT cell                                                         </td></tr>
-
 </tbody>
 </table>
 </p>
@@ -1452,46 +1533,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> number of base differences with exact subclonotype n                           </td></tr>
 
-<tr><td> <code> near </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> Hamming distance to nearest neighbor                                           </td></tr>
-
-<tr><td> <code> notes </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> notes for exact subclonotype                                                   </td></tr>
-
-<tr><td> <code> origins </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> origin names                                                                   </td></tr>
-
-<tr><td> <code> q&ltn>_ </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> read quality scores at position <code>n</code>                                 </td></tr>
-
-<tr><td> <code> r </code>                                                               </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> number of reads supporting chain                                               </td></tr>
 
 
 <p>
