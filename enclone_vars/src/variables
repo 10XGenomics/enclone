@@ -2,6 +2,8 @@
 #
 # This is the start of a variable registry for enclone.
 #
+# number:   number of the variable (unstable -- changed whenever one runs the sorter)
+#
 # name:     name of the variable, which may include special strings so as to represent
 #           variable classes; this excludes the chain number suffix (1,...) for cvars.
 #
@@ -30,6 +32,7 @@
 # code:     code for computing the variable value
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   1
 name:     nchains_present
 inputs:   ?
 limits:
@@ -45,6 +48,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   2
 name:     clonotype_id
 inputs:   ?
 limits:   only implemented for parseable output
@@ -58,6 +62,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   3
 name:     <FeatureName>_cellular_u
 inputs:   ?
 limits:
@@ -74,6 +79,7 @@ avail:    ?
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   4
 name:     <FeatureName>_cellular_r
 inputs:   ?
 limits:
@@ -89,6 +95,7 @@ avail:    ?
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   5
 name:     cdr{1,2,3}_aa
 inputs:   ex, mid
 limits:
@@ -104,6 +111,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   6
 name:     cdiff
 inputs:   ?
 limits:
@@ -119,6 +127,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   7
 name:     aa%
 inputs:   ?
 limits:
@@ -133,6 +142,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   8
 name:     barcode
 inputs:   ?
 limits:   only implemented for parseable output, and as an automatic field for clonotype tables in 
@@ -148,6 +158,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   9
 name:     cdr3_start
 inputs:   ?
 limits:
@@ -162,6 +173,7 @@ avail:    public
 notes:    Check if type is really positive integer.
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   10
 name:     clen
 inputs:   ?
 limits:
@@ -176,6 +188,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   11
 name:     const_id
 inputs:   ?
 limits:
@@ -190,6 +203,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   12
 name:     count_<REG>
 inputs:   ?
 limits:
@@ -204,6 +218,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   13
 name:     dref_aa
 inputs:   ?
 limits:
@@ -218,6 +233,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   14
 name:     d1_name
 inputs:   ?
 limits:
@@ -232,6 +248,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   15
 name:     clonotype_ncells
 inputs:   ?
 limits:
@@ -246,6 +263,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   16
 name:     cdr{1,2,3}_aa_north
 inputs:   ?
 limits:
@@ -260,6 +278,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   17
 name:     cdr(1,2,3}_aa_ref
 inputs:   ?
 limits:
@@ -274,6 +293,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   18
 name:     cdr*_aa_{0,...}_{0,...}_ext
 inputs:   ?
 limits:
@@ -288,6 +308,7 @@ avail:    public
 notes:    Check if args are really nonnegative integers.
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   19
 name:     donors
 inputs:   ?
 limits:
@@ -302,6 +323,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   20
 name:     d2_name
 inputs:   ?
 limits:
@@ -316,6 +338,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   21
 name:     cdr{1,2,3}_dna
 inputs:   ?
 limits:
@@ -329,6 +352,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   22
 name:     vjlen
 inputs:   ?
 limits:
@@ -342,6 +366,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   23
 name:     vj_seq_nl
 inputs:   ?
 limits:   only implemented for parseable output
@@ -355,6 +380,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   24
 name:     vj_seq
 inputs:   ?
 limits:   only implemented for parseable output
@@ -368,6 +394,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   25
 name:     vj_aa_nl
 inputs:   ?
 limits:   only implemented for parseable output
@@ -381,6 +408,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   26
 name:     vj_aa
 inputs:   ?
 limits:   only implemented for parseable output
@@ -394,6 +422,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   27
 name:     var_indices_dna
 inputs:   ?
 limits:   only implemented for parseable output
@@ -407,6 +436,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   28
 name:     var_indices_aa
 inputs:   ?
 limits:   only implemented for parseable output
@@ -420,6 +450,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   29
 name:     var_aa
 inputs:   ?
 limits:   only implemented for parseable output
@@ -433,6 +464,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   30
 name:     var
 inputs:   ?
 limits:
@@ -446,6 +478,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   31
 name:     v_start
 inputs:   ?
 limits:
@@ -459,6 +492,7 @@ avail:    public
 notes:    Positive integer, or nonnegative integer?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   32
 name:     v_name
 inputs:   ?
 limits:
@@ -472,6 +506,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   33
 name:     v_id
 inputs:   ?
 limits:
@@ -485,6 +520,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   34
 name:     utr_name
 inputs:   ?
 limits:
@@ -498,6 +534,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   35
 name:     utr_id
 inputs:   ?
 limits:
@@ -511,6 +548,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   36
 name:     ulen
 inputs:   ?
 limits:
@@ -524,6 +562,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   37
 name:     udiff
 inputs:   ?
 limits:
@@ -537,6 +576,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   38
 name:     u_μ
 inputs:   ?
 limits:
@@ -550,6 +590,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   39
 name:     u_Σ
 inputs:   ?
 limits:
@@ -563,6 +604,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   40
 name:     u_sum
 inputs:   ?
 limits:
@@ -576,6 +618,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   41
 name:     u_min
 inputs:   ?
 limits:
@@ -589,6 +632,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   42
 name:     u_mean
 inputs:   ?
 limits:
@@ -602,6 +646,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   43
 name:     u_max
 inputs:   ex, mid
 limits:
@@ -621,6 +666,7 @@ code:     let mut numis = Vec::<usize>::new();
           numis.sort();
           format!("{}", numis.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   44
 name:     u
 inputs:   ex, mid
 limits:
@@ -634,6 +680,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   45
 name:     share_indices_dna
 inputs:   ?
 limits:
@@ -647,6 +694,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   46
 name:     share_indices_aa
 inputs:   ?
 limits:
@@ -660,6 +708,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   47
 name:     seq
 inputs:   ?
 limits:   only implemented for parseable output
@@ -673,6 +722,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   48
 name:     r_μ
 inputs:   ?
 limits:
@@ -686,6 +736,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   49
 name:     r_Σ
 inputs:   ?
 limits:
@@ -699,6 +750,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   50
 name:     r_sum
 inputs:   ?
 limits:
@@ -712,6 +764,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   51
 name:     r_min
 inputs:   ?
 limits:
@@ -725,6 +778,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   52
 name:     r_max
 inputs:   ?
 limits:
@@ -738,6 +792,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   53
 name:     r_mean
 inputs:   ?
 limits:
