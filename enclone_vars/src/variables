@@ -1115,6 +1115,76 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   76
+name:     comp
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    CDR3 complexity number
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   77
+name:     fwr{1,2,3,4}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    length of FWR* nucleotide sequence
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   78
+name:     fwr{1,2,3,4}_aa
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    FWR* amino acid sequence
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   79
+name:     fwr{1,2,3,4}_aa_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    FWR* amino acid seq for universal reference
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   80
+name:     fwr{1,2,3,4}_dna_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    FWR* nucleotide seq for universal reference
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1306,14 +1376,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
 
-<tr><td> <code> comp </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 complexity number                                                         </td></tr>
-
 <tr><td> <code> const </code>                                                           </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -1448,60 +1510,11 @@ code:
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> name of filter that would be applied (if filters off)                          </td></tr>
 
-<tr><td> <code> fwr*_aa </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* amino acid sequence                                                       </td></tr>
-
-<tr><td> <code> fwr*_aa_ref </code>                                                     </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* amino acid seq for universal reference                                    </td></tr>
-
-<tr><td> <code> fwr*_dna_ref </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* nucleotide seq for universal reference                                    </td></tr>
-
-<tr><td> <code> fwr*_len </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> length of FWR* amino acid sequence                                             </td></tr>
-
 </tbody>
 </table>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<hr>
-<h2>G-M</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
 
 <tr><td> <code> g&ltd> </code>                                                          </td>
     <td>                                                                                </td>
