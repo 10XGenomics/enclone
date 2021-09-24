@@ -1185,6 +1185,76 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   81
+name:     d_delta
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    score delta between top two D gene assignments
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   82
+name:     d_donor
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    distance from donor reference
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   83
+name:     d_frame
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    reading frame of D segment (0, 1, 2 or null)
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   84
+name:     cdr3_aa_conp
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    CDR3 amino acid consensus, symbols at variants
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   85
+name:     cdr3_aa_conx
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    CDR3 amino acid clonotype consensus, Xs at variants
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1360,22 +1430,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR* nucleotide sequence for universal reference                               </td></tr>
 
-<tr><td> <code> cdr3_aa_conp </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid consensus, symbols at variants                                 </td></tr>
-
-<tr><td> <code> cdr3_aa_conx </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
-
 <tr><td> <code> const </code>                                                           </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -1411,31 +1465,6 @@ code:
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> dataset names                                                                  </td></tr>
-
-<tr><td> <code> d_delta </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score delta between top two D gene assignments                                 </td></tr>
-
-<tr><td> <code> d_donor </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> distance from donor reference                                                  </td></tr>
-
-<tr><td> <code> d_frame </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
 
 <tr><td> <code> d_inconsistent_n </code>                                                </td>
     <td>                                                                                </td>
