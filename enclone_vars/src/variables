@@ -523,6 +523,54 @@ ref:      enclone help cvars
 avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_sum
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_min
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    minimum chain UMIs across exact subclonotype
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_mean
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    mean chain UMIs across exact subclonotype (= <code>u_μ</code>) 
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_max
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    maximum chain UMIs across exact subclonotype
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1271,23 +1319,6 @@ notes:
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<hr>
-<h2>S-U</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
-
 <tr><td> <code> seq </code>                                                             </td>
     <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
@@ -1322,38 +1353,6 @@ notes:
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> number of UMIs supporting chain                                                </td></tr>
-
-<tr><td> <code> u_max </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> maximum chain UMIs across exact subclonotype                                   </td></tr>
-
-<tr><td> <code> u_mean </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> mean chain UMIs across exact subclonotype (= <code>u_μ</code>)                 </td></tr>
-
-<tr><td> <code> u_min </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> minimum chain UMIs across exact subclonotype                                   </td></tr>
-
-<tr><td> <code> u_sum </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)                  </td></tr>
 
 <p>
 <table>
