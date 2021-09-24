@@ -3,9 +3,15 @@
 # This is the start of a variable registry for enclone.
 #
 # name:     name of the variable, which may include special strings so as to represent
-#           variable classes
+#           variable classes; this excludes the chain number suffix (1,...) for cvars.
+#
+# codename: a version of the name that could be used in code e.g. as part of a function name
+#           (not clear that this is needed)
 #
 # class:    lvar or cvar
+#
+# inputs:   data structures needed as input
+#           x: TigData1 -- this is the data for one chain
 #
 # level:    scope of the variable, one of
 #           cell, cell-exact, exact, clono, dataset
@@ -15,8 +21,6 @@
 # type:     the type of the value, one of
 #           positive_integer, float[0,100].precision(1)
 #
-# function: where computed
-#
 # doc:      documentation
 #
 # brief:    brief documentation
@@ -24,9 +28,13 @@
 # ref:      reference page
 #
 # avail:    availability, public or private or ? (temp)
+#
+# code:     not in use yet, would be the code for computing the variable value
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains_present
+codename: nchains_present
+inputs:   ?
 limits:
 class:    lvar
 level:    exact
@@ -40,6 +48,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_id
+codename: clonotype_id
+inputs:   ?
 limits:   only implemented for parseable output
 class:    clono
 type:     positive_integer
@@ -51,6 +61,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_u
+codename: cellular_u
+inputs:   ?
 limits:
 class:    lvar
 level:    dataset
@@ -65,6 +77,8 @@ avail:    ?
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_r
+codename: cellular_r
+inputs:   ?
 limits:
 class:    lvar
 level:    dataset
@@ -78,6 +92,8 @@ avail:    ?
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa
+codename: cdr_aa
+inputs:   x: TigData1
 limits:
 class:    cvar
 level:    exact
@@ -91,6 +107,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdiff
+codename: cdiff
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -104,6 +122,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     aa%
+codename: aa
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -116,6 +136,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
+codename: barcode
+inputs:   ?
 limits:   only implemented for parseable output, and as an automatic field for clonotype tables in 
           PER_CELL mode
 class:    lvar
@@ -129,6 +151,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
+codename: cdr3_start
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -141,6 +165,8 @@ avail:    public
 notes:    Check if type is really positive integer.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
+codename: clen
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -153,6 +179,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const_id
+codename: const_id
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -165,6 +193,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_<REG>
+codename: count
+inputs:   ?
 limits:
 class:    lvar
 level:    exact
@@ -177,6 +207,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
+codename: dref_aa
+inputs:   ?
 limits:
 class:    lvar
 level:    exact
@@ -189,6 +221,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
+codename: d1_name
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -201,6 +235,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_ncells
+codename: clonotype_ncells
+inputs:   ?
 limits:
 class:    lvar
 level:    clono
@@ -213,6 +249,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa_north
+codename: cdr_aa_north
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -225,6 +263,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr(1,2,3}_aa_ref
+codename: cdr_aa_ref
+inputs:   ?
 limits:
 class:    cvar
 level:    clono
@@ -237,6 +277,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr*_aa_{0,...}_{0,...}_ext
+codename: cdr_aa_ext
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -249,6 +291,8 @@ avail:    public
 notes:    Check if args are really nonnegative integers.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
+codename: donors
+inputs:   ?
 limits:
 class:    lvar
 level:    cell-exact
@@ -261,6 +305,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
+codename: d2_name
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -273,6 +319,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_dna
+codename: cdr_dna
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -284,6 +332,8 @@ avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vjlen
+codename: vjlen
+inputs:   ?
 limits:
 class:    cvar
 level:    exact
@@ -294,7 +344,97 @@ ref:      enclone help cvars
 avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+name:     vj_seq_nl
+codename: vj_seq_nl
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    nucleotide sequence of V..J, excluding leader
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_seq
+codename: vj_seq
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    nucleotide sequence of V..J
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_aa_nl
+codename: vj_aa_nl
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    amino acid sequence of V..J, excluding leader
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_aa
+codename: vj_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    amino acid sequence of V..J
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_indices_dna
+codename: var_indices_dna
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    variable nucleotide positions
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_indices_aa
+codename: var_indices_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    variable amino acid positions
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_aa
+codename: var_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    variant residue indices in clonotype (including synonymous)
+ref:      enclone help parseable
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 
@@ -1250,60 +1390,6 @@ notes:
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
                                                                                         </td>
     <td> variant residue indices in clonotype (including synonymous)                    </td></tr>
-
-<tr><td> <code> var_indices_aa </code>                                                  </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> variable amino acid positions                                                  </td></tr>
-
-<tr><td> <code> var_indices_dna </code>                                                 </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>
-                                                                                        </td>
-    <td> variable nucleotide positions                                                  </td></tr>
-
-<tr><td> <code> vj_aa </code>                                                           </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> amino acid sequence of V..J                                                    </td></tr>
-
-<tr><td> <code> vj_aa_nl </code>                                                        </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> amino acid sequence of V..J, excluding leader                                  </td></tr>
-
-<tr><td> <code> vj_seq </code>                                                         </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> nucleotide sequence of V..J                                                    </td></tr>
-
-<tr><td> <code> vj_seq_nl </code>                                                       </td>
-    <td> 1                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> nucleotide sequence of V..J, excluding leader                                  </td></tr>
 
 <p>
 <table>
