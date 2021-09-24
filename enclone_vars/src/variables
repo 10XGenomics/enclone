@@ -904,6 +904,63 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   61
+name:     ndiff<1,...>vj
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    number of base differences with exact subclonotype of that number
+ref:      enclone help cvars
+avail:    public
+notes:    Start at 1 or 0?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   62
+name:     nchains
+inputs:   ?
+limits:
+class:    lvar
+level:    clono
+type:     positive_integer
+doc:      TBD
+brief:    number of chains in the clonotype
+ref:      enclone help lvars
+avail:    public
+notes: 
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   63
+name:     n_gex
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     positive_integer
+doc:      TBD
+brief:    number of cells seen by GEX pipeline
+ref:      enclone help lvars
+avail:    public
+notes: 
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   64
+name:     n
+inputs:   ?
+limits:   <code>PER_CELL</code> values are not displayed because they are all <code>1</code>, 
+          which would be distracting; also there is no <code>_cell</code> version
+class:    lvar
+level:    cell-exact
+type:     positive_integer
+doc:      TBD
+brief:    number of cells
+ref:      enclone help lvars
+avail:    public
+notes: 
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1493,14 +1550,6 @@ code:
 </thead>
 <tbody>
 
-<tr><td> <code> n </code>                                                               </td>
-    <td> 3                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of cells                                                                </td></tr>
-
 <tr><td> <code> n_&ltname> </code>                                                      </td>
     <td> 3                                                                              </td>
     <td> lvar                                                                           </td>
@@ -1508,30 +1557,6 @@ code:
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
-
-<tr><td> <code> n_gex </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of cells seen by GEX pipeline                                           </td></tr>
-
-<tr><td> <code> nchains </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of chains in the clonotype                                              </td></tr>
-
-<tr><td> <code> ndiff&ltn>vj </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> number of base differences with exact subclonotype n                           </td></tr>
 
 
 
