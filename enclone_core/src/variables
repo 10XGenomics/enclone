@@ -236,7 +236,7 @@ ref:      enclone help cvars
 avail:    public
 notes:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr*_aa_<NN>_<NN>_ext
+name:     cdr*_aa_{0,...}_{0,...}_ext
 limits:
 class:    cvar
 level:    exact
@@ -246,7 +246,7 @@ doc:      TBD
 brief:    CDR* region with specified extension length
 ref:      enclone help cvars
 avail:    public
-notes:    Check if NN is really nonnegative integer.
+notes:    Check if args are really nonnegative integers.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
 limits:
@@ -268,6 +268,28 @@ type:     string
 function: in ***.rs
 doc:      TBD
 brief:    second best D segment name
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_dna
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    CDR* nucleotide sequence
+ref:      enclone help cvars
+avail:    public
+notes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vjlen
+limits:
+class:    cvar
+level:    exact
+type:     positive_integer
+doc:      TBD
+brief:    length in bases of V..J
 ref:      enclone help cvars
 avail:    public
 notes:
@@ -448,14 +470,6 @@ notes:
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR* region with specified extension length                                    </td></tr>
-
-<tr><td> <code> cdr*_dna </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR* nucleotide sequence                                                       </td></tr>
 
 <tr><td> <code> cdr*_dna_ref </code>                                                    </td>
     <td>                                                                                </td>
@@ -1291,25 +1305,8 @@ notes:
                                                                                         </td>
     <td> nucleotide sequence of V..J, excluding leader                                  </td></tr>
 
-<tr><td> <code> vjlen </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> length in bases of V..J                                                        </td></tr>
-
-</tbody>
-</table>
-</p>
-
 <p>
 <table>
 <tr><td>1: only implemented for parseable output</td></tr>
 </table>
 </p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-</body>
-</html>
