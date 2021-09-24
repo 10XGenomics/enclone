@@ -603,12 +603,13 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
 type:     nonnegative_integer
-doc:      TBD
+doc:      For a chain in an exact subclonotype, the maximum number of UMIs, ranging across the 
+          cells.
 brief:    maximum chain UMIs across exact subclonotype
 ref:      enclone help cvars
 avail:    public
