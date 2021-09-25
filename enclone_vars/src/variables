@@ -58,7 +58,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FeatureName>_cellular_u
+name:     <FEATURE>_cellular_u
 inputs:   fm
 limits:
 class:    lvar
@@ -72,7 +72,7 @@ avail:    ?
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FeatureName>_cellular_r
+name:     <FEATURE>_cellular_r
 inputs:   fm
 limits:
 class:    lvar
