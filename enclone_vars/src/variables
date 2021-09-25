@@ -1521,7 +1521,91 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+number:   105
+name:     d_inconsistent_n
+inputs:   ?
+limits:
+class:    lvar
+level:    global
+type:     positive_integer
+doc:      TBD
+brief:    sample size for computation of <code>d_inconsistent_%</code> 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   106
+name:     d_univ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    distance from universal reference
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   107
+name:     d_Δ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    score delta between top two D gene assignments
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   108
+name:     n_<NAME>
+inputs:   ?
+limits:   <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
+          which would be distracting; also there is no <code>_cell</code> version</td></tr>
+class:    lvar
+level:    cell-exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    number of cells associated to the given name
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   109
+name:     g<0,...>
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     positive_integer
+doc:      TBD
+brief:    exact subclonotype group, by Hamming distance
+ref:      enclone help lvars
+avail:    public
+notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   110
+name:     <DATASET>_barcodes
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    barcodes from the given dataset
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1640,15 +1724,6 @@ code:
                                                                                         </td>
     <td> barcode from the given dataset (or null)                                       </td></tr>
 
-<tr><td> <code> &ltdataset>_barcodes </code>                                            </td>
-    <td> 1                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> barcodes from the given dataset                                                </td></tr>
-
 </tbody>
 </table>
 </p>
@@ -1663,83 +1738,3 @@ code:
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<tr><td> <code> d_inconsistent_n </code>                                                </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> global                                                                         </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
-                                                                                        </td>
-    <td> sample size for computation of <code>d_inconsistent_%</code>                   </td></tr>
-
-<tr><td> <code> d_univ </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> distance from universal reference                                              </td></tr>
-
-<tr><td> <code> d_Δ </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score delta between top two D gene assignments                                 </td></tr>
-
-<tr><td> <code> g&ltd> </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> exact subclonotype group, by Hamming distance                                  </td></tr>
-
-</tbody>
-</table>
-</p>
-
-<p>
-<table>
-<tr><td>1: only implemented for parseable output</td></tr>
-</table>
-</p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<hr>
-<h2>N-R</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
-
-<tr><td> <code> n_&ltname> </code>                                                      </td>
-    <td> 3                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of cells associated to the given name                                   </td></tr>
-
-
-
-<p>
-<table>
-<tr><td>3: <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
-           which would be distracting; also there is no <code>_cell</code> version</td></tr>
-</table>
-</p>
