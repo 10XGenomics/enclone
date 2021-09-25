@@ -3,6 +3,7 @@
 #![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
+use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
@@ -484,4 +485,19 @@ fn test_yaml() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
         std::process::exit(1);
     }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 37. Test to see if vars file is sorted.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_vars_sorted() {
+    let old = std::fs::read_to_string("../enclone_vars/src/vars").unwrap();
+    let new = sort_vars(&old);
+    assert_eq!(new, old);
 }

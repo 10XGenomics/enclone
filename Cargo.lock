@@ -1350,6 +1350,7 @@ dependencies = [
  "enclone_main",
  "enclone_proto",
  "enclone_tools",
+ "enclone_vars",
  "enclone_visual",
  "failure",
  "flate2",
