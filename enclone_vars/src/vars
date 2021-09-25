@@ -269,7 +269,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr(1,2,3}_aa_ref
+name:     cdr{1,2,3}_aa_ref
 inputs:   ?
 limits:
 class:    cvar
