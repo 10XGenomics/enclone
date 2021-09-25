@@ -1542,6 +1542,7 @@ dependencies = [
 name = "enclone_vars"
 version = "0.5.108"
 dependencies = [
+ "pretty_trace",
  "string_utils",
  "vector_utils",
 ]
