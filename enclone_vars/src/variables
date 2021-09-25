@@ -1704,76 +1704,59 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-
-
-===================================================================================================
-
-<hr>
-<h2>user defined, A-B</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
-
-<tr><td> (from BC or META/bc)                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
-    <td> sometimes                                                                      </td>
-    <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
-    <td> user defined variable                                                          </td></tr>
-
-<tr><td> (from INFO)                                                                    </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> sometimes                                                                      </td>
-    <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
-    <td> user defined variable                                                          </td></tr>
-
-<tr><td> <code> &ltfeature> </code>                                                     </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> count for a gene expression or antibody feature                                </td></tr>
-
-<tr><td> <code> &ltfeature>_% </code>                                                   </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> percent of total expression for a particular gene                              </td></tr>
-
-<tr><td> <code> &ltfeature>_cellular_r </code>                                          </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> dataset                                                                        </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> </td>
-    <td> percent of feature reads in cells, for a given dataset                         </td></tr>
-
-</tbody>
-</table>
-</p>
-
-<p>
-<table>
-<tr><td>1: only implemented for parseable output</td></tr>
-<tr><td>2: only implemented for parseable output, and as an automatic field for clonotype tables
-           in <code>PER_CELL</code> mode</td></tr>
-</table>
-</p>
+number:   118
+name:     <FEATURE>_%
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     float[0,100].precision(1)
+doc:      TBD
+brief:    percent of total expression for a particular gene
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   119
+name:     <FEATURE>
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    count for a gene expression or antibody feature
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   120
+name:     <BC>
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+type:     string
+doc:      TBD
+brief:    user defined variable from BC or META/bc
+ref:      enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   121
+name:     <INFO>
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    user defined variable from INFO
+ref:      enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
