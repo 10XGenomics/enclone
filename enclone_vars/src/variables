@@ -14,8 +14,6 @@
 # level:    scope of the variable, one of
 #           cell, cell-exact, exact, clono, dataset
 #
-# prereqs:  data and computational prerequisites, unformed at present
-#
 # type:     the type of the value, one of
 #           positive_integer, float[0,100].precision(1)
 #
@@ -35,7 +33,6 @@ inputs:   ?
 limits:
 class:    lvar
 level:    exact
-prereqs:  TBD
 type:     positive_integer
 function: in ***.rs
 doc:      The number of chains that are present in a given exact subclonotype.
@@ -59,11 +56,10 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_u
-inputs:   ?
+inputs:   gex_info.feature_metrics
 limits:
 class:    lvar
 level:    dataset
-prereqs:  per_feature_metrics.csv
 type:     float[0,100].precision(1)
 function: in ***.rs
 doc:      For a given feature, the percent of UMIs that are identified by the
@@ -75,11 +71,10 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_r
-inputs:   ?
+inputs:   gex_info.feature_metrics
 limits:
 class:    lvar
 level:    dataset
-prereqs:  per_feature_metrics.csv
 type:     float[0,100].precision(1)
 function: in ***.rs
 doc:      For a given feature, the percent of reads that are identified by the
@@ -94,7 +89,6 @@ inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
-prereqs:  TBD
 type:     string
 function: in ***.rs
 doc:      TBD
@@ -109,7 +103,6 @@ inputs:   ?
 limits:
 class:    cvar
 level:    exact
-prereqs:  TBD
 type:     nonnegative_integer
 function: in ***.rs
 doc:      TBD
