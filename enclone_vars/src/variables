@@ -1606,6 +1606,105 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   111
+name:     <DATASET>_barcode
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    cell
+type:     string
+doc:      TBD
+brief:    barcode from the given dataset (or null)
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   112
+name:     <FEATURE>_max
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    maximum count for a feature
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   113
+name:     <FEATURE>_mean
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    mean count for a feature (same as <code>μ</code> for <code>mean</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   114
+name:     <FEATURE>_min
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    minimum count for a feature 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   115
+name:     <FEATURE>_sum
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    sum of counts for a feature (same as <code>Σ</code> for <code>sum</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   116
+name:     <FEATURE>_Σ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    sum of counts for a feature (same as <code>sum</code> for <code>Σ</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   117
+name:     <FEATURE>_μ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    mean count for a feature (same with <code>mean</code> for <code>μ</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 
 ===================================================================================================
@@ -1667,63 +1766,6 @@ code:
     <td> <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> </td>
     <td> percent of feature reads in cells, for a given dataset                         </td></tr>
 
-<tr><td> <code> &ltfeature>_max </code>                                                 </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> maximum count for a feature                                                    </td></tr>
-
-<tr><td> <code> &ltfeature>_mean </code>                                                </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean count for a feature (same with <code>μ</code> for <code>mean</code>)      </td></tr>
-
-<tr><td> <code> &ltfeature>_min </code>                                                 </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> minimum count for a feature                                                    </td></tr>
-
-<tr><td> <code> &ltfeature>_sum </code>                                                 </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of counts for a feature (same with <code>Σ</code> for <code>sum</code>)    </td></tr>
-
-<tr><td> <code> &ltfeature>_Σ </code>                                                   </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of counts for a feature (same with <code>sum</code> for <code>Σ</code>)    </td></tr>
-
-<tr><td> <code> &ltfeature>_μ </code>                                                   </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean count for a feature (same with <code>mean</code> for <code>μ</code>)      </td></tr>
-
-<tr><td> <code> &ltdataset>_barcode </code>                                             </td>
-    <td> 1                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> barcode from the given dataset (or null)                                       </td></tr>
-
 </tbody>
 </table>
 </p>
@@ -1735,6 +1777,3 @@ code:
            in <code>PER_CELL</code> mode</td></tr>
 </table>
 </p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
