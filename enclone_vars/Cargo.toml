@@ -21,3 +21,4 @@ publish = false
 
 [dependencies]
 string_utils = "0.1"
+vector_utils = "0.1"

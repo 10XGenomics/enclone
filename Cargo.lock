@@ -1539,6 +1539,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_vars"
+version = "0.5.108"
+dependencies = [
+ "string_utils",
+ "vector_utils",
+]
+
+[[package]]
 name = "enclone_version"
 version = "0.5.108"
 dependencies = [
