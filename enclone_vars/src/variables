@@ -5,11 +5,14 @@
 # name:     name of the variable, which may include special strings so as to represent
 #           variable classes; this excludes the chain number suffix (1,...) for cvars.
 #
-# class:    lvar or cvar
-#
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
+#           fm: gex_info.feature_metrics = feature values by barcode
+#
+# limits:   limitations on availability of the variable
+#
+# class:    lvar or cvar
 #
 # level:    scope of the variable, one of
 #           cell, cell-exact, exact, clono, dataset
@@ -25,6 +28,8 @@
 #
 # avail:    availability, public or private or ? (temp)
 #
+# notes:    things to clarify
+#
 # code:     code for computing the variable value
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -34,7 +39,6 @@ limits:
 class:    lvar
 level:    exact
 type:     positive_integer
-function: in ***.rs
 doc:      The number of chains that are present in a given exact subclonotype.
 brief:    number of chains present in an exact subclonotype
 ref:      enclone help lvars
@@ -47,7 +51,6 @@ inputs:   ?
 limits:   only implemented for parseable output
 class:    clono
 type:     positive_integer
-function: in ***.rs
 doc:      TBD
 brief:    identifier of clonotype within clonotype group 
 ref:      enclone help parseable
@@ -56,12 +59,11 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_u
-inputs:   gex_info.feature_metrics
+inputs:   fm
 limits:
 class:    lvar
 level:    dataset
 type:     float[0,100].precision(1)
-function: in ***.rs
 doc:      For a given feature, the percent of UMIs that are identified by the
           cellranger pipeline as lying in a cell.
 brief:    percent of feature UMIs in cells, for a given dataset
@@ -71,12 +73,11 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     <FeatureName>_cellular_r
-inputs:   gex_info.feature_metrics
+inputs:   fm
 limits:
 class:    lvar
 level:    dataset
 type:     float[0,100].precision(1)
-function: in ***.rs
 doc:      For a given feature, the percent of reads that are identified by the
           cellranger pipeline as lying in a cell.
 ref:      enclone help display
@@ -90,7 +91,6 @@ limits:
 class:    cvar
 level:    exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    CDR* amino acid sequence
 ref:      enclone help cvars
@@ -104,7 +104,6 @@ limits:
 class:    cvar
 level:    exact
 type:     nonnegative_integer
-function: in ***.rs
 doc:      TBD
 brief:    differences of const region with universal reference
 ref:      enclone help cvars
@@ -118,7 +117,6 @@ limits:
 class:    cvar
 level:    exact
 type:     float[0,100].precision(1)
-function: in ***.rs
 doc:      TBD
 brief:    amino acid identity with donor reference
 ref:      enclone help cvars
@@ -133,7 +131,6 @@ limits:   only implemented for parseable output, and as an automatic field for c
 class:    lvar
 level:    cell
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    barcode of the cell
 ref:      enclone help parseable
@@ -147,7 +144,6 @@ limits:
 class:    cvar
 level:    exact
 type:     positive_integer
-function: in ***.rs
 doc:      TBD
 brief:    nucleotide start of CDR3 sequence on full sequence
 ref:      enclone help parseable
@@ -161,7 +157,6 @@ limits:
 class:    cvar
 level:    exact
 type:     nonnegative_integer
-function: in ***.rs
 doc:      TBD
 brief:    length of observed constant region
 ref:      enclone help cvars
@@ -175,7 +170,6 @@ limits:
 class:    cvar
 level:    exact
 type:     positive_integer_or_null
-function: in ***.rs
 doc:      TBD
 brief:    numerical identifier of constant region (or null)
 ref:      enclone help parseable
@@ -189,7 +183,6 @@ limits:
 class:    lvar
 level:    exact
 type:     nonnegative_integer
-function: in ***.rs
 doc:      TBD
 brief:    count amino acid motifs
 ref:      enclone help lvars
@@ -203,7 +196,6 @@ limits:
 class:    lvar
 level:    exact
 type:     nonnegative_integer
-function: in ***.rs
 doc:      TBD
 brief:    amino acid distance to donor reference
 ref:      enclone help lvars
@@ -217,7 +209,6 @@ limits:
 class:    cvar
 level:    exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    optimal D segment name
 ref:      enclone help cvars
@@ -231,7 +222,6 @@ limits:
 class:    lvar
 level:    clono
 type:     positive_integer
-function: in ***.rs
 doc:      TBD
 brief:    number of cells in the clonotype
 ref:      enclone hep parseable
@@ -245,7 +235,6 @@ limits:
 class:    cvar
 level:    exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    North version of CDR* amino acid sequence
 ref:      enclone help cvars
@@ -259,7 +248,6 @@ limits:
 class:    cvar
 level:    clono
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    CDR* amino acid sequence for universal reference
 ref:      enclone help cvars
@@ -273,7 +261,6 @@ limits:
 class:    cvar
 level:    exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    CDR* region with specified extension length
 ref:      enclone help cvars
@@ -287,7 +274,6 @@ limits:
 class:    lvar
 level:    cell-exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    donor names
 ref:      enclone help lvars
@@ -301,7 +287,6 @@ limits:
 class:    cvar
 level:    exact
 type:     string
-function: in ***.rs
 doc:      TBD
 brief:    second best D segment name
 ref:      enclone help cvars
