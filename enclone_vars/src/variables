@@ -1325,6 +1325,203 @@ avail:    public
 notes:    Starts at 0 or 1?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   91
+name:     gex_mean
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   92
+name:     gex_min
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    minimum number of GEX UMIs across exact subclonotype 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   93
+name:     gex_sum
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>) 
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   94
+name:     gex_Σ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   95
+name:     gex_μ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     float
+doc:      TBD
+brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   96
+name:     edit
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    edit versus reference CDR3
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   97
+name:     exact_subclonotype_id
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+type:     positive_integer
+doc:      TBD
+brief:    identifier of exact subclonotype
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   98
+name:     filter
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+type:     string
+doc:      TBD
+brief:    name of filter that would be applied (if filters off)
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   99
+name:     group_id
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    group
+type:     positive_integer
+doc:      TBD
+brief:    identifier of clonotype group
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   100
+name:     group_ncells
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    group
+type:     positive_integer
+doc:      TBD
+brief:    number of cells in clonotype group
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   101
+name:     j_id
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     positive_integer
+doc:      TBD
+brief:    J region id
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   102
+name:     j_name
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    J region name
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   103
+name:     cdr{1,2,3}_dna_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    CDR* nucleotide sequence for universal reference
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   104
+name:     cred
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     float
+doc:      TBD
+brief:    credibility assessed using GEX data
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 
 ===================================================================================================
@@ -1466,49 +1663,6 @@ code:
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<hr>
-<h2>C</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
-
-<tr><td> <code> cdr*_dna_ref </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR* nucleotide sequence for universal reference                               </td></tr>
-
-<tr><td> <code> cred </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> credibility assessed using GEX data                                            </td></tr>
-
-</tbody>
-</table>
-</p>
-
-<p>
-<table>
-<tr><td>1: only implemented for parseable output</td></tr>
-</table>
-</p>
-
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <tr><td> <code> d_inconsistent_n </code>                                                </td>
@@ -1536,42 +1690,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> score delta between top two D gene assignments                                 </td></tr>
 
-</tbody>
-</table>
-</p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<tr><td> <code> edit </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> edit to get from reference CDR3                                                </td></tr>
-
-<tr><td> <code> exact_subclonotype_id </code>                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> identifier of exact subclonotype                                               </td></tr>
-
-<tr><td> <code> filter </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> name of filter that would be applied (if filters off)                          </td></tr>
-
-</tbody>
-</table>
-</p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
 <tr><td> <code> g&ltd> </code>                                                          </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -1579,82 +1697,6 @@ code:
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> exact subclonotype group, by Hamming distance                                  </td></tr>
-
-<tr><td> <code> gex_mean </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)              </td></tr>
-
-<tr><td> <code> gex_min </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> minimum number of GEX UMIs across exact subclonotype                           </td></tr>
-
-<tr><td> <code> gex_sum </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>)               </td></tr>
-
-<tr><td> <code> gex_Σ </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)             </td></tr>
-
-<tr><td> <code> gex_μ </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)           </td></tr>
-
-<tr><td> <code> group_id </code>                                                        </td>
-    <td> 1                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> group                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> identifier of clonotype group                                                  </td></tr>
-
-<tr><td> <code> group_ncells </code>                                                    </td>
-    <td> 1                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> group                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> number of cells in clonotype group                                             </td></tr>
-
-<tr><td> <code> j_id </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> J region id                                                                    </td></tr>
-
-<tr><td> <code> j_name </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> J region name                                                                  </td></tr>
 
 </tbody>
 </table>
