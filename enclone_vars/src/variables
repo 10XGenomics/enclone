@@ -1255,6 +1255,76 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   86
+name:     barcodes
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    barcodes for the exact subclonotype
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   87
+name:     datasets
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+type:     string
+doc:      TBD
+brief:    dataset names
+ref:      enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   88
+name:     const
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     string
+doc:      TBD
+brief:    constant region name
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   89
+name:     d_name
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    D region name
+ref:      enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+number:   90
+name:     d_start
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+type:     nonnegative_integer
+doc:      TBD
+brief:    start of D on full nucleotide sequence (or null)
+ref:      enclone help parseable
+avail:    public
+notes:    Starts at 0 or 1?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 ===================================================================================================
@@ -1382,15 +1452,6 @@ code:
                                                                                         </td>
     <td> barcodes from the given dataset                                                </td></tr>
 
-<tr><td> <code> barcodes </code>                                                        </td>
-    <td> 1                                                                              </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> barcodes for the exact subclonotype                                            </td></tr>
-
 </tbody>
 </table>
 </p>
@@ -1430,14 +1491,6 @@ code:
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR* nucleotide sequence for universal reference                               </td></tr>
 
-<tr><td> <code> const </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> constant region name                                                           </td></tr>
-
 <tr><td> <code> cred </code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -1458,14 +1511,6 @@ code:
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<tr><td> <code> datasets </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> dataset names                                                                  </td></tr>
-
 <tr><td> <code> d_inconsistent_n </code>                                                </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -1474,24 +1519,6 @@ code:
     <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
                                                                                         </td>
     <td> sample size for computation of <code>d_inconsistent_%</code>                   </td></tr>
-
-<tr><td> <code> d_name </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> D region name                                                                  </td></tr>
-
-<tr><td> <code> d_start </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> start of D on full nucleotide sequence (or null)                               </td></tr>
 
 <tr><td> <code> d_univ </code>                                                          </td>
     <td>                                                                                </td>
