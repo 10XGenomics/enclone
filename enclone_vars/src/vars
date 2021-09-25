@@ -5,6 +5,15 @@
 # name:     name of the variable, which may include special strings so as to represent
 #           variable classes; this excludes the chain number suffix (1,...) for cvars.
 #
+#           Upper case characters always define variable class strings.  The following are
+#           recognized:
+#           BC         user-defined variable from BC or META/bc
+#           DATASET    name of a dataset
+#           FEATURE    name of a feature
+#           INFO       user-defined variable from INFO
+#           NAME       name, see n_<name> at enclone help lvars
+#           REG        regular expression.
+#
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
@@ -40,7 +49,7 @@ class:    lvar
 level:    cell
 type:     string
 doc:      TBD
-brief:    user defined variable from BC or META/bc
+brief:    user-defined variable from BC or META/bc
 ref:      enclone help input
 avail:    public
 notes:
@@ -210,7 +219,7 @@ class:    lvar
 level:    exact
 type:     string
 doc:      TBD
-brief:    user defined variable from INFO
+brief:    user-defined variable from INFO
 ref:      enclone help input
 avail:    public
 notes:
