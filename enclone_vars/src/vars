@@ -33,7 +33,7 @@
 # code:     code for computing the variable value
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <BC>
+name:     BC
 inputs:   ?
 limits:
 class:    lvar
@@ -46,7 +46,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <DATASET>_barcode
+name:     DATASET_barcode
 inputs:   ?
 limits:   only implemented for parseable output
 class:    lvar
@@ -59,7 +59,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <DATASET>_barcodes
+name:     DATASET_barcodes
 inputs:   ?
 limits:   only implemented for parseable output
 class:    lvar
@@ -72,7 +72,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>
+name:     FEATURE
 inputs:   ?
 limits:
 class:    lvar
@@ -85,7 +85,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_%
+name:     FEATURE_%
 inputs:   ?
 limits:
 class:    lvar
@@ -98,7 +98,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_cellular_r
+name:     FEATURE_cellular_r
 inputs:   fm
 limits:
 class:    lvar
@@ -111,7 +111,7 @@ avail:    ?
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_cellular_u
+name:     FEATURE_cellular_u
 inputs:   fm
 limits:
 class:    lvar
@@ -125,7 +125,7 @@ avail:    ?
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_max
+name:     FEATURE_max
 inputs:   ?
 limits:
 class:    lvar
@@ -138,7 +138,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_mean
+name:     FEATURE_mean
 inputs:   ?
 limits:
 class:    lvar
@@ -151,7 +151,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_min
+name:     FEATURE_min
 inputs:   ?
 limits:
 class:    lvar
@@ -164,7 +164,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_sum
+name:     FEATURE_sum
 inputs:   ?
 limits:
 class:    lvar
@@ -177,7 +177,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_Σ
+name:     FEATURE_Σ
 inputs:   ?
 limits:
 class:    lvar
@@ -190,7 +190,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <FEATURE>_μ
+name:     FEATURE_μ
 inputs:   ?
 limits:
 class:    lvar
@@ -203,7 +203,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     <INFO>
+name:     INFO
 inputs:   ?
 limits:
 class:    lvar
@@ -264,19 +264,6 @@ level:    exact
 type:     nonnegative_integer
 doc:      TBD
 brief:    differences of const region with universal reference
-ref:      enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_ref
-inputs:   ?
-limits:
-class:    cvar
-level:    clono
-type:     string
-doc:      TBD
-brief:    CDR* amino acid sequence for universal reference
 ref:      enclone help cvars
 avail:    public
 notes:
@@ -355,6 +342,19 @@ level:    exact
 type:     string
 doc:      TBD
 brief:    North version of CDR* amino acid sequence
+ref:      enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_aa_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+type:     string
+doc:      TBD
+brief:    CDR* amino acid sequence for universal reference
 ref:      enclone help cvars
 avail:    public
 notes:
@@ -489,7 +489,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_<REG>
+name:     count_REG
 inputs:   ?
 limits:
 class:    lvar
@@ -1062,7 +1062,7 @@ avail:    public
 notes: 
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     n_<NAME>
+name:     n_NAME
 inputs:   ?
 limits:   <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
           which would be distracting; also there is no <code>_cell</code> version</td></tr>
