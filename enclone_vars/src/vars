@@ -115,6 +115,7 @@ level:    dataset
 type:     float[0,100].precision(1)
 doc:      For a given feature, the percent of reads that are identified by the
           cellranger pipeline as lying in a cell.
+brief:    percent of feature reads in cells, for a given dataset
 ref:      enclone help display
 avail:    ?
 notes:
