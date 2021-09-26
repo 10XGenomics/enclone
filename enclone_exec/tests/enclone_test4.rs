@@ -489,15 +489,19 @@ fn test_yaml() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 37. Test to see if vars file is sorted.
+// 37. Test to see if vars file is sorted and formatted correctly.
 
 // NOT BASIC
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
-fn test_vars_sorted() {
+fn test_vars() {
     let old = std::fs::read_to_string("../enclone_vars/src/vars").unwrap();
     let new = sort_vars(&old);
-    assert_eq!(new, old);
+    if new != old {
+        eprintln!("\nPlease run var_sort to sort the variables file.\n");
+        std::process::exit(1);
+    }
+    let _ = parse_variables(&old);
 }
