@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod var;
+
 use string_utils::*;
 use vector_utils::*;
 
