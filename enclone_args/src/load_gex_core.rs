@@ -814,11 +814,11 @@ pub fn load_gex(
         ),
         (
             "GRCh38_raw_rpc_20000_subsampled_filtered_bcs_median_unique_genes_detected",
-            "Antibody Capture,GRCh38 Median genes per cell (20k raw reads per cell",
+            "Gene Expression,GRCh38 Median genes per cell (20k raw reads per cell)",
         ),
         (
             "GRCh38_raw_rpc_20000_subsampled_filtered_bcs_median_counts",
-            "Antibody Capture,GRCh38 Median UMI counts per cell (20k raw reads per cell",
+            "Gene Expression,GRCh38 Median UMI counts per cell (20k raw reads per cell)",
         ),
     ];
     for x in extras.iter() {
