@@ -26,7 +26,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{remove_dir_all, rename, File};
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 use std::process::Command;
 use string_utils::*;
 
@@ -222,12 +222,12 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if seq_def.is_some() {
-            let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info);
+            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info);
             if fb_info {
                 std::process::exit(0);
             }
-            if m.is_ok() {
-                let m = m.unwrap();
+            if x.is_ok() {
+                let (m, total) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -235,6 +235,9 @@ fn main() {
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
+                    let mut f = File::create(
+                        &format!("{}/outs/feature_barcode_matrix_top.total", target)).unwrap();
+                    f.write_all(&total.to_ne_bytes()).unwrap();
                 }
             }
         }

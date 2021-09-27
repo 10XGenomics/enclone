@@ -191,7 +191,7 @@ pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
     verbose: bool,
-) -> Result<MirrorSparseMatrix, String> {
+) -> Result<(MirrorSparseMatrix, u64), String> {
     let t = Instant::now();
 
     // Find the read files.
@@ -359,7 +359,7 @@ pub fn feature_barcode_matrix(
     }
     let mut total = 0;
     for i in 0..bfn.len() {
-        total += bfn[i].2;
+        total += bfn[i].2 as u64;
     }
     if verbose {
         println!("total UMIs = {}\n", total);
@@ -428,5 +428,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok(m)
+    Ok((m, total))
 }
