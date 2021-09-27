@@ -3,6 +3,7 @@
 #![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
+use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
