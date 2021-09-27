@@ -222,7 +222,7 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if seq_def.is_some() {
-            let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), false);
+            let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info);
             if fb_info {
                 std::process::exit(0);
             }
