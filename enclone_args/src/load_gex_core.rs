@@ -805,23 +805,39 @@ pub fn load_gex(
         h5_paths.push(results[i].12.clone());
     }
 
-    // Add some metrics (just one for now).
+    // Add some metrics.
 
-    let metric_name = "ANTIBODY_G_perfect_homopolymer_frac".to_string();
-    let metric_display_name = "Antibody Capture,G Homopolymer Frac".to_string();
-    let mut have = false;
-    for i in 0..results.len() {
-        if results[i].17.contains_key(&metric_name) {
-            have = true;
-        }
-    }
-    if have {
+    let extras = [
+        (
+            "ANTIBODY_G_perfect_homopolymer_frac",
+            "Antibody Capture,G Homopolymer Frac",
+        ),
+        (
+            "GRCh38_raw_rpc_20000_subsampled_filtered_bcs_median_unique_genes_detected",
+            "GRCh38 Median genes per cell (20k raw reads per cell",
+        ),
+        (
+            "GRCh38_raw_rpc_20000_subsampled_filtered_bcs_median_counts",
+            "GRCh38 Median UMI counts per cell (20k raw reads per cell",
+        ),
+    ];
+    for x in extras.iter() {
+        let metric_name = x.0.to_string();
+        let metric_display_name = x.1.to_string();
+        let mut have = false;
         for i in 0..results.len() {
-            let mut value = String::new();
             if results[i].17.contains_key(&metric_name) {
-                value = format!("{:.3}", results[i].17[&metric_name]);
+                have = true;
             }
-            results[i].18 += &mut format!("{},{}\n", metric_display_name, value);
+        }
+        if have {
+            for i in 0..results.len() {
+                let mut value = String::new();
+                if results[i].17.contains_key(&metric_name) {
+                    value = format!("{:.3}", results[i].17[&metric_name]);
+                }
+                results[i].18 += &mut format!("{},{}\n", metric_display_name, value);
+            }
         }
     }
 
