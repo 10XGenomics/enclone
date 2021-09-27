@@ -109,6 +109,18 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
         });
     }
 
+    // Test for duplicated entries.
+
+    for i in 1..vars.len() {
+        if vars[i].name == vars[i - 1].name {
+            eprintln!(
+                "\nThe variable name {} appears more than once.\n",
+                vars[i].name
+            );
+            std::process::exit(1);
+        }
+    }
+
     // Test upper-case rule.
 
     let classes = ["BC", "DATASET", "FEATURE", "INFO", "NAME", "REG"];
