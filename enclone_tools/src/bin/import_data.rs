@@ -34,9 +34,9 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let mut fb_info = false;
-    if args.len() >= 2 {
-        if args[1] == "FB_INFO" {
-            fb_info = false;
+    for i in 2..args.len() {
+        if args[i] == "FB_INFO" {
+            fb_info = true;
         } else {
             eprintln!("\nIllegal arg.\n");
             std::process::exit(1);
