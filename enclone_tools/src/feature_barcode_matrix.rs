@@ -357,12 +357,19 @@ pub fn feature_barcode_matrix(
         println!("there are {} uniques", bfu.len());
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
+    let mut total = 0;
+    for i in 0..bfn.len() {
+        total += bfn[i].2;
+    }
+    if verbose {
+        println!("total UMIs = {}\n", total);
+    }
 
     // Report common feature barcodes.
 
     const TOP_FEATURE_BARCODES: usize = 100;
     if verbose {
-        println!("common feature barcodes\n");
+        println!("common feature barcodes and their total UMI counts\n");
     }
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
