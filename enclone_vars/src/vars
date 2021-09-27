@@ -90,6 +90,19 @@ inputs:   ?
 limits:
 class:    lvar
 level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median count for a gene expression or antibody feature
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    count for a gene expression or antibody feature
@@ -103,6 +116,19 @@ inputs:   ?
 limits:
 class:    lvar
 level:    cell-exact
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    median percent of total expression for a particular gene
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_%_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
 val:      float[0,100].precision(1)
 doc:      TBD
 brief:    percent of total expression for a particular gene
@@ -524,6 +550,19 @@ class:    lvar
 level:    cell-exact
 val:      float
 doc:      TBD
+brief:    median credibility assessed using GEX data
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cred_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      float
+doc:      TBD
 brief:    credibility assessed using GEX data
 page:     enclone help lvars
 avail:    public
@@ -725,6 +764,19 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     datasets_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    dataset name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
 inputs:   ?
 limits:
@@ -746,6 +798,19 @@ level:    cell-exact
 val:      string
 doc:      TBD
 brief:    donor names
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     donors_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    donor name
 page:     enclone help lvars
 avail:    public
 notes:
@@ -899,6 +964,19 @@ inputs:   ?
 limits:
 class:    lvar
 level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of GEX UMIs
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of GEX UMIs
@@ -1096,6 +1174,19 @@ inputs:   ?
 limits:
 class:    lvar
 level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of cells seen by GEX pipeline
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_gex_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
 val:      positive_integer
 doc:      TBD
 brief:    number of cells seen by GEX pipeline
@@ -1182,6 +1273,19 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     origins_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    origin name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     q<0,...>_
 inputs:   ?
 limits:
@@ -1200,6 +1304,19 @@ inputs:   ?
 limits:
 class:    cvar
 level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of reads supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_cell
+inputs:   ?
+limits:
+class:    cvar
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of reads supporting chain
@@ -1330,6 +1447,19 @@ inputs:   ex, mid
 limits:
 class:    cvar
 level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    median number of UMIs supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_cell
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of UMIs supporting chain
