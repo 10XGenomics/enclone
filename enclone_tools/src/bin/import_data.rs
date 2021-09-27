@@ -10,6 +10,9 @@
 //
 // Run make_enclone_testlist_all after this to update the catalog.
 //
+// Optional second argument: FB_INFO: do nothing except attempt to create the 
+// feature barcode matrix.
+//
 // For use at 10x Genomics.
 
 use enclone_core::defs::*;
@@ -29,6 +32,16 @@ use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
+    let args: Vec<String> = env::args().collect();
+    let mut fb_info = false;
+    if args.len() >= 2 {
+        if args[1] == "FB_INFO" {
+            fb_info = false;
+        } else {
+            eprintln!("\nIllegal arg.\n");
+            std::process::exit(1);
+        }
+    }
     let mut config = HashMap::<String, String>::new();
     let mut config_file = String::new();
     for (key, value) in env::vars() {
@@ -43,7 +56,6 @@ fn main() {
     let mut dests = Vec::<String>::new();
     dests.push(format!("{}/current{}", config["earth"], TEST_FILES_VERSION));
     dests.push(format!("{}/current{}", config["cloud"], TEST_FILES_VERSION));
-    let args: Vec<String> = env::args().collect();
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<String>::new();
     for id in ids0.iter() {
@@ -103,32 +115,36 @@ fn main() {
         // Move directories if they exist.
 
         let mut moved = false;
-        for dest in dests.iter() {
-            if path_exists(&format!("{}/{}", dest, id)) {
-                if path_exists(&format!("{}/{}.aside", dest, id)) {
-                    eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
-                    std::process::exit(1);
+        if !fb_info {
+            for dest in dests.iter() {
+                if path_exists(&format!("{}/{}", dest, id)) {
+                    if path_exists(&format!("{}/{}.aside", dest, id)) {
+                        eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
+                        std::process::exit(1);
+                    }
+                    rename(
+                        &format!("{}/{}", dest, id),
+                        &format!("{}/{}.aside", dest, id),
+                    )
+                    .unwrap();
+                    moved = true;
                 }
-                rename(
-                    &format!("{}/{}", dest, id),
-                    &format!("{}/{}.aside", dest, id),
-                )
-                .unwrap();
-                moved = true;
             }
         }
 
         // Start copy.
 
-        println!("copying {} using path = {}", id, p);
-        for i in (0..dests.len()).rev() {
-            let dest = &dests[i];
-            let target = format!("{}/{}", dest, id);
-            if path_exists(&target) {
-                eprintln!("\nPlease delete {}.\n", target);
-                std::process::exit(1);
+        if !fb_info {
+            println!("copying {} using path = {}", id, p);
+            for i in (0..dests.len()).rev() {
+                let dest = &dests[i];
+                let target = format!("{}/{}", dest, id);
+                if path_exists(&target) {
+                    eprintln!("\nPlease delete {}.\n", target);
+                    std::process::exit(1);
+                }
+                copy_for_enclone(&format!("{}/..", p), &target);
             }
-            copy_for_enclone(&format!("{}/..", p), &target);
         }
 
         // Determine if the feature barcode matrix for the top feature barcodes should be
@@ -207,6 +223,9 @@ fn main() {
 
         if seq_def.is_some() {
             let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), false);
+            if fb_info {
+                std::process::exit(0);
+            }
             if m.is_ok() {
                 let m = m.unwrap();
                 for i in (0..dests.len()).rev() {
