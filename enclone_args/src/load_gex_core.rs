@@ -13,7 +13,7 @@ use serde_json::Value;
 use std::{
     collections::HashMap,
     convert::TryInto,
-    fs::{remove_file, File},
+    fs::{read_to_string, remove_file, File},
     io::{BufRead, BufReader, Read},
     time::Instant,
 };
@@ -65,6 +65,7 @@ pub fn load_gex(
     fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_total_umis: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
+    feature_refs: &mut Vec<String>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
     cell_type_specified: &mut Vec<bool>,
@@ -102,6 +103,7 @@ pub fn load_gex(
         String,
         u64,
         Vec<(String, u32, u32)>,
+        String,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -126,6 +128,7 @@ pub fn load_gex(
             String::new(),
             0,
             Vec::new(),
+            String::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -773,6 +776,14 @@ pub fn load_gex(
                 }
             }
 
+            // Read the feature reference file.
+
+            let fref_file = format!("{}/feature_reference.csv", outs);
+            if path_exists(&fref_file) {
+                pathlist.push(fref_file.clone());
+                r.21 = read_to_string(&fref_file).unwrap();
+            }
+
             // Read the binary matrix file if appropriate.
 
             if bin_file_state == 2 {
@@ -881,7 +892,7 @@ pub fn load_gex(
     let n = results.len();
     for (
         _i,
-        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18, x19, x20),
+        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18, x19, x20, x21),
     ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -909,6 +920,7 @@ pub fn load_gex(
         metrics.push(x18);
         fb_total_umis.push(x19);
         fb_brn.push(x20);
+        feature_refs.push(x21);
     }
 
     // Done.

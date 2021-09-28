@@ -737,6 +737,7 @@ pub struct GexInfo {
     pub fb_top_barcodes: Vec<Vec<String>>,
     pub fb_total_umis: Vec<u64>,
     pub fb_brn: Vec<Vec<(String, u32, u32)>>,
+    pub feature_refs: Vec<String>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
