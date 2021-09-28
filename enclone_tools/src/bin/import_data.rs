@@ -20,12 +20,12 @@ use enclone_core::testlist::*;
 use enclone_tools::copy_for_enclone::*;
 use enclone_tools::feature_barcode_matrix::*;
 use io_utils::*;
-// use mirror_sparse_matrix::write_to_file;
+use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
-use std::fs::{remove_dir_all, rename, File};
+use std::fs::{copy, remove_dir_all, rename, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
@@ -237,6 +237,11 @@ fn main() {
                         }
                     }
                 }
+                for i in (0..dests.len()).rev() {
+                    let dest = &dests[i];
+                    let target = format!("{}/{}", dest, id);
+                    copy(&f, &format!("{}/feature_reference.csv", target)).unwrap();
+                }
                 let f = open_for_read![&f];
                 let mut seq_pos = 0;
                 for (i, line) in f.lines().enumerate() {
@@ -262,7 +267,7 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (_m, total, brn) = x.unwrap();
+                let (m, total, brn) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
