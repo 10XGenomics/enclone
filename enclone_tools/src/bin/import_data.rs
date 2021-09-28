@@ -20,7 +20,7 @@ use enclone_core::testlist::*;
 use enclone_tools::copy_for_enclone::*;
 use enclone_tools::feature_barcode_matrix::*;
 use io_utils::*;
-use mirror_sparse_matrix::write_to_file;
+// use mirror_sparse_matrix::write_to_file;
 use pretty_trace::*;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -262,14 +262,16 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn) = x.unwrap();
+                let (_m, total, brn) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
+                    /*
                     write_to_file(
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
+                    */
                     let mut f = File::create(
                         &format!("{}/outs/feature_barcode_matrix_top.total", target)).unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
