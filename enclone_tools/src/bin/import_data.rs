@@ -227,7 +227,16 @@ fn main() {
 
             let mut ref_fb = Vec::<String>::new();
             {
-                let f = format!("{}/multi/count/feature_reference.csv", p);
+                let mut f = format!("{}/multi/count/feature_reference.csv", p);
+                if !path_exists(&f) {
+                    let g = open_for_read![&format!("{}/../_invocation", p)];
+                    for line in g.lines() {
+                        let s = line.unwrap();
+                        if s.contains("feature_reference") {
+                            f = s.between("\"", "\"").to_string();
+                        }
+                    }
+                }
                 let f = open_for_read![&f];
                 let mut seq_pos = 0;
                 for (i, line) in f.lines().enumerate() {
