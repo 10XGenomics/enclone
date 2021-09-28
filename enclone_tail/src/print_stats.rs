@@ -879,4 +879,20 @@ pub fn print_stats(
         println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,n_twothreesie");
         println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
     }
+
+    // Make alluvial tables for feature barcode data.
+
+    /*
+    for li in 0..ctl.origin_info.n() {
+        let m = &gex_info.fb_top_matrices[li];
+        let bc = &gex_info.fb_top_barcodes[li];
+        if m.initialized() {
+            let total = gex_info.fb_total_umis;
+            let ncols = m.ncols();
+
+            m.col_label(n) = column label n
+            m.row_label(n) = row label n
+            can binary search for cell barcode in bc
+            let x = m.value(p as usize, n); // if p = cell barcode index, n = fb index in top
+    */
 }
