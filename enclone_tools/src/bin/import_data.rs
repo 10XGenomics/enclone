@@ -266,12 +266,10 @@ fn main() {
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
-                    /*
                     write_to_file(
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
-                    */
                     let mut f = File::create(
                         &format!("{}/outs/feature_barcode_matrix_top.total", target)).unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
