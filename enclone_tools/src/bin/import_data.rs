@@ -26,7 +26,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{remove_dir_all, rename, File};
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
 
@@ -222,12 +222,38 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if seq_def.is_some() {
-            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info);
+
+            // Get list of antibody reference feature barcodes.
+
+            let mut ref_fb = Vec::<String>::new();
+            {
+                let f = format!("{}/multi/count/feature_reference.csv", p);
+                let f = open_for_read![&f];
+                let mut seq_pos = 0;
+                for (i, line) in f.lines().enumerate() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    if i == 0 {
+                        for j in 0..fields.len() {
+                            if fields[j] == "sequence" {
+                                seq_pos = j;
+                            }
+                        }
+                    } else {
+                        ref_fb.push(fields[seq_pos].to_string());
+                    }
+                }
+            }
+            ref_fb.sort();
+
+            // Keep going.
+
+            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info, &ref_fb);
             if fb_info {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total) = x.unwrap();
+                let (m, total, brn) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -238,6 +264,12 @@ fn main() {
                     let mut f = File::create(
                         &format!("{}/outs/feature_barcode_matrix_top.total", target)).unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
+                    let mut f = open_for_write_new![
+                        &format!("{}/outs/feature_barcode_matrix_top.brn", target)
+                    ];
+                    for j in 0..brn.len() {
+                        fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
+                    }
                 }
             }
         }

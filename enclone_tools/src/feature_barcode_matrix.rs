@@ -191,7 +191,8 @@ pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
     verbose: bool,
-) -> Result<(MirrorSparseMatrix, u64), String> {
+    ref_fb: &Vec<String>,
+) -> Result<(MirrorSparseMatrix, u64, Vec<(String, u32, u32)>), String> {
     let t = Instant::now();
 
     // Find the read files.
@@ -336,6 +337,28 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     bfu.par_sort();
+
+    // Make table of all barcodes, and for each, the number of reference and nonreference UMIs.
+
+    let mut brn = Vec::<(String, u32, u32)>::new();
+    let mut i = 0;
+    while i < bfu.len() {
+        let j = next_diff1_3(&bfu, i as i32) as usize;
+        let mut refx = 0;
+        let mut nrefx = 0;
+        for k in i..j {
+            if bin_member(&ref_fb, &stringme(&bfu[k].1)) {
+                refx += 1;
+            } else {
+                nrefx += 1;
+            }
+        }
+        brn.push((stringme(&bfu[i].0.clone()), refx, nrefx));
+        i = j;
+    }
+
+    // Proceed.
+
     if verbose {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
@@ -436,5 +459,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total))
+    Ok((m, total, brn))
 }
