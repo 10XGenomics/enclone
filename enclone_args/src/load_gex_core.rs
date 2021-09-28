@@ -762,9 +762,7 @@ pub fn load_gex(
             // Read the barcode-ref-nonref UMI count file.
 
             let brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
-            printme!(brn_file); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             if path_exists(&brn_file) {
-                println!("found brn file"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 pathlist.push(brn_file.clone());
                 let f = open_for_read![&brn_file];
                 for line in f.lines() {
