@@ -880,15 +880,30 @@ pub fn print_stats(
         println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
     }
 
-    // Make alluvial tables for feature barcode data.
+    // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
+    // which is not the only way of doing it.
 
     /*
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
-        let bc = &gex_info.fb_top_barcodes[li];
         if m.initialized() {
+            let bc = &gex_info.fb_top_barcodes[li];
+            let brn = &gex_info.fb_brn[li];
             let total = gex_info.fb_total_umis;
             let ncols = m.ncols();
+            let (mut cellular_ref, cellular_nref) = (0, 0);
+            let (mut ncellular_ref, ncellular_nref) = (0, 0);
+            let i in 0..brn.len() {
+                if bin_member(&vdj_cells[li], brn[i].0) {
+                    cellular_ref += brn[i].1 as usize;
+                    cellular_nref += brn[i].2 as usize;
+                } else {
+                    ncellular_ref += brn[i].1 as usize;
+                    ncellular_nref += brn[i].2 as usize;
+                }
+            }
+
+            ...
 
             m.col_label(n) = column label n
             m.row_label(n) = row label n
