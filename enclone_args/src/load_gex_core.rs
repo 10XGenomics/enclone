@@ -12,8 +12,9 @@ use rayon::prelude::*;
 use serde_json::Value;
 use std::{
     collections::HashMap,
+    convert::TryInto,
     fs::{remove_file, File},
-    io::{BufRead, BufReader},
+    io::{BufRead, BufReader, Read},
     time::Instant,
 };
 use string_utils::*;
@@ -62,6 +63,7 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_top_barcodes: &mut Vec<Vec<String>>,
     fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
+    fb_total_umis: &mut Vec<u64>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
     cell_type_specified: &mut Vec<bool>,
@@ -97,6 +99,7 @@ pub fn load_gex(
         HashMap<(String, String), String>,
         HashMap<String, f64>,
         String,
+        u64,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -119,6 +122,7 @@ pub fn load_gex(
             HashMap::<(String, String), String>::new(),
             HashMap::<String, f64>::new(),
             String::new(),
+            0,
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -738,6 +742,17 @@ pub fn load_gex(
                 }
             }
 
+            // Read the total UMIs.
+
+            let top_file = format!("{}/feature_barcode_matrix_top.total", outs);
+            if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
+                let mut f = open_for_read![&top_file];
+                let mut bytes = Vec::<u8>::new();
+                f.read_to_end(&mut bytes).unwrap();
+                r.19 = u64::from_ne_bytes(bytes.try_into().unwrap());
+            }
+
             // Read the binary matrix file if appropriate.
 
             if bin_file_state == 2 {
@@ -846,7 +861,7 @@ pub fn load_gex(
     let n = results.len();
     for (
         _i,
-        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18),
+        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18, x19),
     ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);
@@ -872,6 +887,7 @@ pub fn load_gex(
         feature_metrics.push(x16);
         json_metrics.push(x17);
         metrics.push(x18);
+        fb_total_umis.push(x19);
     }
 
     // Done.

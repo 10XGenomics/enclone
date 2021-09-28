@@ -21,6 +21,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut fb_top_barcodes = Vec::<Vec<String>>::new();
     let mut fb_top_matrices = Vec::<MirrorSparseMatrix>::new();
+    let mut fb_total_umis = Vec::<u64>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
     let mut cell_type_specified = Vec::<bool>::new();
@@ -41,6 +42,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_matrices,
         &mut fb_top_barcodes,
         &mut fb_top_matrices,
+        &mut fb_total_umis,
         &mut cluster,
         &mut cell_type,
         &mut cell_type_specified,
@@ -146,6 +148,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         gex_matrices: gex_matrices,
         fb_top_barcodes: fb_top_barcodes,
         fb_top_matrices: fb_top_matrices,
+        fb_total_umis: fb_total_umis,
         cluster: cluster,
         cell_type: cell_type,
         cell_type_specified: cell_type_specified,
