@@ -889,7 +889,35 @@ pub fn print_stats(
         if m.initialized() {
             let bc = &gex_info.fb_top_barcodes[li];
             let brn = &gex_info.fb_brn[li];
-            let total = gex_info.fb_total_umis;
+            let total = gex_info.fb_total_umis[li];
+            let mut seq_to_id = HashMap::<String, String>::new();
+            {
+                let fref = &gex_info.feature_refs[li];
+                let (mut id_pos, mut seq_pos, mut type_pos) = (0, 0, 0);
+                for (i, line) in fref.lines().enumerate() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    if i == 0 {
+                        for j in 0..fields.len() {
+                            if fields[j] == "id" {
+                                id_pos = j;
+                            } else if fields[j] == "sequence" {
+                                seq_pos = j;
+                            } else if fields[j] == "feature_type" {
+                                type_pos = j;
+                            }
+                        }
+                    } else {
+                        if fields[type_pos] == "Antibody Capture" {
+                            seq_to_id.insert(
+                                fields[seq_pos].to_string(), 
+                                fields[id_pos].to_string()
+                            );
+                        }
+                    }
+                }
+            }
+
             let ncols = m.ncols();
             let (mut cellular_ref, cellular_nref) = (0, 0);
             let (mut ncellular_ref, ncellular_nref) = (0, 0);
