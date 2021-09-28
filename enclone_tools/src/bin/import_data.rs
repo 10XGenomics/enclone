@@ -240,7 +240,7 @@ fn main() {
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
-                    copy(&f, &format!("{}/feature_reference.csv", target)).unwrap();
+                    copy(&f, &format!("{}/outs/feature_reference.csv", target)).unwrap();
                 }
                 let f = open_for_read![&f];
                 let mut seq_pos = 0;
