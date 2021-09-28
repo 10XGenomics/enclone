@@ -883,9 +883,12 @@ pub fn print_stats(
     // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
     // which is not the only way of doing it.
 
-    /*
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
+        let mut cells = Vec::<String>::new();
+        for i in 0..vdj_cells[li].len() {
+            cells.push(vdj_cells[li][i].before("-").to_string());
+        }
         if m.initialized() {
             let bc = &gex_info.fb_top_barcodes[li];
             let brn = &gex_info.fb_brn[li];
@@ -895,8 +898,7 @@ pub fn print_stats(
                 let fref = &gex_info.feature_refs[li];
                 let (mut id_pos, mut seq_pos, mut type_pos) = (0, 0, 0);
                 for (i, line) in fref.lines().enumerate() {
-                    let s = line.unwrap();
-                    let fields = parse_csv(&s);
+                    let fields = parse_csv(&line);
                     if i == 0 {
                         for j in 0..fields.len() {
                             if fields[j] == "id" {
@@ -917,19 +919,26 @@ pub fn print_stats(
                     }
                 }
             }
-
-            let ncols = m.ncols();
-            let (mut cellular_ref, cellular_nref) = (0, 0);
-            let (mut ncellular_ref, ncellular_nref) = (0, 0);
-            let i in 0..brn.len() {
-                if bin_member(&vdj_cells[li], brn[i].0) {
-                    cellular_ref += brn[i].1 as usize;
-                    cellular_nref += brn[i].2 as usize;
-                } else {
-                    ncellular_ref += brn[i].1 as usize;
-                    ncellular_nref += brn[i].2 as usize;
+            let (mut cellular_ref, mut cellular_nref) = (0, 0);
+            let (mut ncellular_ref, mut ncellular_nref) = (0, 0);
+            {
+                for i in 0..brn.len() {
+                    if bin_member(&cells, &brn[i].0) {
+                        cellular_ref += brn[i].1 as usize;
+                        cellular_nref += brn[i].2 as usize;
+                    } else {
+                        ncellular_ref += brn[i].1 as usize;
+                        ncellular_nref += brn[i].2 as usize;
+                    }
                 }
             }
+            printme!(total); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            printme!(cellular_ref, cellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            printme!(ncellular_ref, ncellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+            /*
+
+            let ncols = m.ncols();
 
             ...
 
@@ -937,5 +946,8 @@ pub fn print_stats(
             m.row_label(n) = row label n
             can binary search for cell barcode in bc
             let x = m.value(p as usize, n); // if p = cell barcode index, n = fb index in top
-    */
+
+            */
+        }
+    }
 }
