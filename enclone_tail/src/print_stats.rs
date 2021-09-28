@@ -7,7 +7,7 @@ use enclone_core::median::*;
 use io_utils::*;
 use perf_stats::*;
 use stats_utils::*;
-use std::cmp::max;
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
@@ -890,9 +890,8 @@ pub fn print_stats(
             cells.push(vdj_cells[li][i].before("-").to_string());
         }
         if m.initialized() {
-            let bc = &gex_info.fb_top_barcodes[li];
             let brn = &gex_info.fb_brn[li];
-            let total = gex_info.fb_total_umis[li];
+            let total = gex_info.fb_total_umis[li] as usize;
             let mut seq_to_id = HashMap::<String, String>::new();
             {
                 let fref = &gex_info.feature_refs[li];
@@ -932,22 +931,85 @@ pub fn print_stats(
                     }
                 }
             }
+            let mut top_ref = Vec::<usize>::new();
+            let mut top_nref = Vec::<usize>::new();
+            const KEEP: usize = 4;
+            for i in 0..m.ncols() {
+                let bc = m.col_label(i);
+                if seq_to_id.contains_key(&bc) {
+                    if top_ref.len() < KEEP {
+                        top_ref.push(i);
+                    }
+                } else {
+                    if top_nref.len() < KEEP {
+                        top_nref.push(i);
+                    }
+                }
+            }
+            for i in 0..top_ref.len() {
+                let c = top_ref[i];
+                let seq = m.col_label(c);
+                let label = format!("{} = {}", seq, seq_to_id[&seq]);
+                let (mut cell, mut ncell) = (0, 0);
+                for j in 0..m.nrows() {
+                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                        cell += m.value(j, c);
+                    } else {
+                        ncell += m.value(j, c);
+                    }
+                }
+                println!("{} has cell count {} and ncell count {}", 
+                    label, cell, ncell
+                );
+            }
+            for i in 0..top_nref.len() {
+                let c = top_nref[i];
+                let seq = m.col_label(c);
+                let (mut cell, mut ncell) = (0, 0);
+                for j in 0..m.nrows() {
+                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                        cell += m.value(j, c);
+                    } else {
+                        ncell += m.value(j, c);
+                    }
+                }
+                println!("{} has cell count {} and ncell count {}", 
+                    seq, cell, ncell
+                );
+            }
+
+            let xr = min(top_ref.len(), 1);
+            let xnr = min(top_nref.len(), 1);
+            let nrows = 4 * (xr + xnr) - 1;
+            let ncols = 4;
+            let mut rows = vec![vec![String::new(); ncols]; nrows];
+            rows[xr + xnr][0] = "100.0".to_string();
+            for j in 1..ncols {
+                rows[xr + xnr][j] = "\\hline".to_string();
+            }
+            for i in 0..top_ref.len() {
+                let c = top_ref[i];
+                let seq = m.col_label(c);
+                let (mut cell, mut ncell) = (0, 0);
+                let label = format!("{} = {}", seq, seq_to_id[&seq]);
+                for j in 0..m.nrows() {
+                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                        cell += m.value(j, c);
+                    } else {
+                        ncell += m.value(j, c);
+                    }
+                }
+                rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 1, &b"l|l|l|l".to_vec(), false, false);
+            println!("\n{}", log);
+
             printme!(total); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             printme!(cellular_ref, cellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             printme!(ncellular_ref, ncellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            std::process::exit(0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-            /*
-
-            let ncols = m.ncols();
-
-            ...
-
-            m.col_label(n) = column label n
-            m.row_label(n) = row label n
-            can binary search for cell barcode in bc
-            let x = m.value(p as usize, n); // if p = cell barcode index, n = fb index in top
-
-            */
         }
     }
 }
