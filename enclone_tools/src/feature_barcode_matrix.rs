@@ -339,6 +339,14 @@ pub fn feature_barcode_matrix(
     if verbose {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
+        let mut bc = 0;
+        let mut i = 0;
+        while i < bfu.len() {
+            let j = next_diff1_3(&bfu, i as i32) as usize;
+            bc += 1;
+            i = j;
+        }
+        println!("total barcodes = {}", bc);
     }
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
