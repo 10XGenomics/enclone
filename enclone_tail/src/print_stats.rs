@@ -1002,8 +1002,10 @@ pub fn print_stats(
                 rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 1, &b"l|l|l|l".to_vec(), false, false);
-            println!("\n{}", log);
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
+            println!("\nfeature barcode UMI count distribution for {}\n{}", 
+                ctl.origin_info.dataset_id[li], log
+            );
 
             printme!(total); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             printme!(cellular_ref, cellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
