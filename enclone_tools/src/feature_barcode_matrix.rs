@@ -277,9 +277,8 @@ pub fn feature_barcode_matrix(
                     total_reads += 1;
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
-                    } else {
-                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
                     }
+                    buf.push((barcode.clone(), umi.clone(), fb.clone()));
                 }
             }
         }
