@@ -769,7 +769,7 @@ pub fn load_gex(
                     let s = line.unwrap();
                     let fields = parse_csv(&s);
                     r.20.push((
-                        fields[0].to_string(), 
+                        fields[0].to_string(),
                         fields[1].parse::<u32>().unwrap(),
                         fields[2].parse::<u32>().unwrap(),
                     ));
@@ -892,7 +892,30 @@ pub fn load_gex(
     let n = results.len();
     for (
         _i,
-        (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, _x11, _x12, x13, x14, _x15, x16, x17, x18, x19, x20, x21),
+        (
+            _x0,
+            x1,
+            x2,
+            x3,
+            x4,
+            x5,
+            x6,
+            x7,
+            x8,
+            x9,
+            x10,
+            _x11,
+            _x12,
+            x13,
+            x14,
+            _x15,
+            x16,
+            x17,
+            x18,
+            x19,
+            x20,
+            x21,
+        ),
     ) in results.into_iter().take(n).enumerate()
     {
         gex_features.push(x1);

@@ -10,7 +10,7 @@
 //
 // Run make_enclone_testlist_all after this to update the catalog.
 //
-// Optional second argument: FB_INFO: do nothing except attempt to create the 
+// Optional second argument: FB_INFO: do nothing except attempt to create the
 // feature barcode matrix.
 //
 // For use at 10x Genomics.
@@ -222,7 +222,6 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if seq_def.is_some() {
-
             // Get list of antibody reference feature barcodes.
 
             let mut ref_fb = Vec::<String>::new();
@@ -275,12 +274,14 @@ fn main() {
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
-                    let mut f = File::create(
-                        &format!("{}/outs/feature_barcode_matrix_top.total", target)).unwrap();
+                    let mut f =
+                        File::create(&format!("{}/outs/feature_barcode_matrix_top.total", target))
+                            .unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
-                    let mut f = open_for_write_new![
-                        &format!("{}/outs/feature_barcode_matrix_top.brn", target)
-                    ];
+                    let mut f = open_for_write_new![&format!(
+                        "{}/outs/feature_barcode_matrix_top.brn",
+                        target
+                    )];
                     for j in 0..brn.len() {
                         fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
                     }

@@ -910,10 +910,8 @@ pub fn print_stats(
                         }
                     } else {
                         if fields[type_pos] == "Antibody Capture" {
-                            seq_to_id.insert(
-                                fields[seq_pos].to_string(), 
-                                fields[id_pos].to_string()
-                            );
+                            seq_to_id
+                                .insert(fields[seq_pos].to_string(), fields[id_pos].to_string());
                         }
                     }
                 }
@@ -958,7 +956,8 @@ pub fn print_stats(
                         ncell += m.value(j, c);
                     }
                 }
-                println!("{} has cell count {} and ncell count {}", 
+                println!(
+                    "{} has cell count {} and ncell count {}",
                     label, cell, ncell
                 );
             }
@@ -973,9 +972,7 @@ pub fn print_stats(
                         ncell += m.value(j, c);
                     }
                 }
-                println!("{} has cell count {} and ncell count {}", 
-                    seq, cell, ncell
-                );
+                println!("{} has cell count {} and ncell count {}", seq, cell, ncell);
             }
             let xr = max(top_ref.len(), 1);
             let xnr = max(top_nref.len(), 1);
@@ -1023,8 +1020,7 @@ pub fn print_stats(
                     if pass == 0 {
                         rows[2 * i][3] = format!("{} {}", pr(cell, total), label);
                     } else {
-                        rows[2 * (xr + xnr) + 2 * i][3] 
-                            = format!("{} {}", pr(ncell, total), label);
+                        rows[2 * (xr + xnr) + 2 * i][3] = format!("{} {}", pr(ncell, total), label);
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -1041,27 +1037,27 @@ pub fn print_stats(
                     if pass == 0 {
                         rows[2 * (i + xr)][3] = format!("{} {}", pr(cell, total), seq);
                     } else {
-                        rows[2 * (xr + xnr) + 2 * (i + xr)][3] 
-                            = format!("{} {}", pr(ncell, total), seq);
+                        rows[2 * (xr + xnr) + 2 * (i + xr)][3] =
+                            format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
             rows[xr - 1][2] = format!("{} reference", pr(cellular_ref, total));
             rows[2 * (xr + xnr) + xr - 1][2] = format!("{} reference", pr(ncellular_ref, total));
             rows[2 * xr + xnr - 1][2] = format!("{} nonreference", pr(cellular_nref, total));
-            rows[2 * xr + 2 * (xr + xnr) + xnr - 1][2] 
-                = format!("{} nonreference", pr(ncellular_nref, total));
+            rows[2 * xr + 2 * (xr + xnr) + xnr - 1][2] =
+                format!("{} nonreference", pr(ncellular_nref, total));
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
-            rows[2 * (xr + xnr) + xr + xnr - 1][1] 
-                = format!("{} cellular", pr(ncellular_ref + ncellular_nref, total));
+            rows[2 * (xr + xnr) + xr + xnr - 1][1] =
+                format!("{} cellular", pr(ncellular_ref + ncellular_nref, total));
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            println!("\nfeature barcode UMI distribution for {}\n{}", 
+            println!(
+                "\nfeature barcode UMI distribution for {}\n{}",
                 ctl.origin_info.dataset_id[li], log
             );
 
             std::process::exit(0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
         }
     }
 }
