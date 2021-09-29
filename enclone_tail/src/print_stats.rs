@@ -888,12 +888,14 @@ pub fn print_stats(
         if m.initialized() {
             let mut keep = 4;
             let mut specials = Vec::<String>::new();
-            let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
-            for x in fb_show.iter() {
-                if x.parse::<usize>().is_ok() {
-                    keep = x.force_usize();
-                } else {
-                    specials.push(x.to_string());
+            if ctl.gen_opt.fb_show.len() > 0 {
+                let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
+                for x in fb_show.iter() {
+                    if x.parse::<usize>().is_ok() {
+                        keep = x.force_usize();
+                    } else {
+                        specials.push(x.to_string());
+                    }
                 }
             }
             let mut cells = Vec::<String>::new();
@@ -1058,9 +1060,11 @@ pub fn print_stats(
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            fwriteln!(logx,
+            fwrite!(
+                logx,
                 "\nfeature barcode UMI distribution for {}\n{}",
-                ctl.origin_info.dataset_id[li], log
+                ctl.origin_info.dataset_id[li],
+                log
             );
         }
     }
