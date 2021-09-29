@@ -1004,20 +1004,47 @@ pub fn print_stats(
                 }
             }
     
-            for i in 0..top_ref.len() {
-                let c = top_ref[i];
-                let seq = m.col_label(c);
-                let (mut cell, mut ncell) = (0, 0);
-                let label = format!("{} = {}", seq, seq_to_id[&seq]);
-                for j in 0..m.nrows() {
-                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
-                        cell += m.value(j, c);
+            for pass in 0..2 {
+                for i in 0..top_ref.len() {
+                    let c = top_ref[i];
+                    let seq = m.col_label(c);
+                    let (mut cell, mut ncell) = (0, 0);
+                    let label = format!("{} = {}", seq, seq_to_id[&seq]);
+                    for j in 0..m.nrows() {
+                        if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            cell += m.value(j, c);
+                        } else {
+                            ncell += m.value(j, c);
+                        }
+                    }
+                    if pass == 0 {
+                        rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
                     } else {
-                        ncell += m.value(j, c);
+                        rows[2 * (xr + xnr) + 2 * i][3] 
+                            = format!("{:.1} {}", percent_ratio(ncell, total), label);
                     }
                 }
-                rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
+                for i in 0..top_nref.len() {
+                    let c = top_nref[i];
+                    let seq = m.col_label(c);
+                    let (mut cell, mut ncell) = (0, 0);
+                    for j in 0..m.nrows() {
+                        if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            cell += m.value(j, c);
+                        } else {
+                            ncell += m.value(j, c);
+                        }
+                    }
+                    if pass == 0 {
+                        rows[2 * (i + xr)][3] 
+                            = format!("{:.1} {}", percent_ratio(cell, total), seq);
+                    } else {
+                        rows[2 * (xr + xnr) + 2 * (i + xr)][3] 
+                            = format!("{:.1} {}", percent_ratio(ncell, total), seq);
+                    }
+                }
             }
+
             rows[xr - 1][2] = format!("{:.1} reference", percent_ratio(cellular_ref, total));
             // rows[xr - 1][3] = "\\hline".to_string();
             rows[xr + xnr - 1][1] = format!("{:.1} cellular", 
