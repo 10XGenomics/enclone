@@ -1049,7 +1049,7 @@ pub fn print_stats(
                 format!("{} nonreference", pr(ncellular_nref, total));
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
-                format!("{} cellular", pr(ncellular_ref + ncellular_nref, total));
+                format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
             println!(
