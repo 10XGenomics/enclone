@@ -7,7 +7,7 @@ use enclone_core::median::*;
 use io_utils::*;
 use perf_stats::*;
 use stats_utils::*;
-use std::cmp::{max, min};
+use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
@@ -977,7 +977,6 @@ pub fn print_stats(
                     seq, cell, ncell
                 );
             }
-
             let xr = max(top_ref.len(), 1);
             let xnr = max(top_nref.len(), 1);
             let nrows = 4 * (xr + xnr) - 1;
@@ -987,7 +986,6 @@ pub fn print_stats(
             for j in 1..ncols {
                 rows[2 * (xr + xnr) - 1][j] = "\\hline".to_string();
             }
-
             let mut count = 0;
             for pass in 0..2 {
                 for i in 0..xr {
@@ -1006,11 +1004,9 @@ pub fn print_stats(
                     count += 1;
                 }
             }
-    
             fn pr(x: usize, y: usize) -> String {
                 format!("{:>4.1}", percent_ratio(x, y))
             }
-
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i];
@@ -1050,31 +1046,20 @@ pub fn print_stats(
                     }
                 }
             }
-
             rows[xr - 1][2] = format!("{} reference", pr(cellular_ref, total));
             rows[2 * (xr + xnr) + xr - 1][2] = format!("{} reference", pr(ncellular_ref, total));
-
             rows[2 * xr + xnr - 1][2] = format!("{} nonreference", pr(cellular_nref, total));
             rows[2 * xr + 2 * (xr + xnr) + xnr - 1][2] 
                 = format!("{} nonreference", pr(ncellular_nref, total));
-
-            // rows[xr - 1][3] = "\\hline".to_string();
-
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
-
             rows[2 * (xr + xnr) + xr + xnr - 1][1] 
                 = format!("{} cellular", pr(ncellular_ref + ncellular_nref, total));
-
-            // rows[xr + xnr - 1][2] = "\\hline".to_string();
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
             println!("\nfeature barcode UMI count distribution for {}\n{}", 
                 ctl.origin_info.dataset_id[li], log
             );
 
-            printme!(total); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            printme!(cellular_ref, cellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            printme!(ncellular_ref, ncellular_nref); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             std::process::exit(0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         }
