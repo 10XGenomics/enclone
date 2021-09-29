@@ -993,6 +993,9 @@ pub fn print_stats(
                 for i in 0..xr {
                     count += 1;
                     rows[count][3] = "\\hline".to_string();
+                    if i == xr - 1 {
+                        rows[count][2] = "\\hline".to_string();
+                    }
                     count += 1
                 }
                 for i in 0..xnr {
