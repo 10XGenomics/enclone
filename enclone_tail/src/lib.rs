@@ -3,6 +3,7 @@
 extern crate enclone_core;
 
 pub mod align_n;
+pub mod alluvial_fb;
 pub mod assign_cell_color;
 pub mod circles_to_svg;
 pub mod clustal;
