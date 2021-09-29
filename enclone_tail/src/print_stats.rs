@@ -1053,6 +1053,11 @@ pub fn print_stats(
 
             rows[xr - 1][2] = format!("{} reference", pr(cellular_ref, total));
             rows[2 * (xr + xnr) + xr - 1][2] = format!("{} reference", pr(ncellular_ref, total));
+
+            rows[2 * xr + xnr - 1][2] = format!("{} nonreference", pr(cellular_nref, total));
+            rows[2 * xr + 2 * (xr + xnr) + xnr - 1][2] 
+                = format!("{} nonreference", pr(ncellular_nref, total));
+
             // rows[xr - 1][3] = "\\hline".to_string();
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             // rows[xr + xnr - 1][2] = "\\hline".to_string();
