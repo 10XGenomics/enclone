@@ -944,23 +944,6 @@ pub fn print_stats(
                     }
                 }
             }
-            for i in 0..top_ref.len() {
-                let c = top_ref[i];
-                let seq = m.col_label(c);
-                let label = format!("{} = {}", seq, seq_to_id[&seq]);
-                let (mut cell, mut ncell) = (0, 0);
-                for j in 0..m.nrows() {
-                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
-                        cell += m.value(j, c);
-                    } else {
-                        ncell += m.value(j, c);
-                    }
-                }
-                println!(
-                    "{} has cell count {} and ncell count {}",
-                    label, cell, ncell
-                );
-            }
             for i in 0..top_nref.len() {
                 let c = top_nref[i];
                 let seq = m.col_label(c);
@@ -1052,12 +1035,10 @@ pub fn print_stats(
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            println!(
+            fwriteln!(logx,
                 "\nfeature barcode UMI distribution for {}\n{}",
                 ctl.origin_info.dataset_id[li], log
             );
-
-            std::process::exit(0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         }
     }
 }
