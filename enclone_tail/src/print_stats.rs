@@ -1056,7 +1056,7 @@ pub fn print_stats(
                 = format!("{} cellular", pr(ncellular_ref + ncellular_nref, total));
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            println!("\nfeature barcode UMI count distribution for {}\n{}", 
+            println!("\nfeature barcode UMI distribution for {}\n{}", 
                 ctl.origin_info.dataset_id[li], log
             );
 
