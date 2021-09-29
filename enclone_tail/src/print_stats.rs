@@ -978,14 +978,14 @@ pub fn print_stats(
                 );
             }
 
-            let xr = min(top_ref.len(), 1);
-            let xnr = min(top_nref.len(), 1);
+            let xr = max(top_ref.len(), 1);
+            let xnr = max(top_nref.len(), 1);
             let nrows = 4 * (xr + xnr) - 1;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows];
-            rows[xr + xnr][0] = "100.0".to_string();
+            rows[2 * (xr + xnr)][0] = "100.0".to_string();
             for j in 1..ncols {
-                rows[xr + xnr][j] = "\\hline".to_string();
+                rows[2 * (xr + xnr)][j] = "\\hline".to_string();
             }
             for i in 0..top_ref.len() {
                 let c = top_ref[i];
@@ -1000,6 +1000,12 @@ pub fn print_stats(
                     }
                 }
                 rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
+            }
+            rows[xr - 1][2] = "**.* reference".to_string();
+            // rows[xr - 1][3] = "\\hline".to_string();
+            rows[xr + xnr - 1][1] = "**.* cellular".to_string();
+            for j in 2..=3 {
+                rows[xr + xnr - 1][j] = "\\hline".to_string();
             }
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
