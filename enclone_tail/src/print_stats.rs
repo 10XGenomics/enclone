@@ -983,10 +983,27 @@ pub fn print_stats(
             let nrows = 4 * (xr + xnr) - 1;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows];
-            rows[2 * (xr + xnr)][0] = "100.0".to_string();
+            rows[2 * (xr + xnr) - 1][0] = "100.0".to_string();
             for j in 1..ncols {
-                rows[2 * (xr + xnr)][j] = "\\hline".to_string();
+                rows[2 * (xr + xnr) - 1][j] = "\\hline".to_string();
             }
+
+            let mut count = 0;
+            for pass in 0..2 {
+                for i in 0..xr {
+                    count += 1;
+                    rows[count][3] = "\\hline".to_string();
+                    count += 1
+                }
+                for i in 0..xnr {
+                    count += 1;
+                    if pass == 0 || i < xnr - 1 {
+                        rows[count][3] = "\\hline".to_string();
+                    }
+                    count += 1;
+                }
+            }
+    
             for i in 0..top_ref.len() {
                 let c = top_ref[i];
                 let seq = m.col_label(c);
@@ -1001,12 +1018,12 @@ pub fn print_stats(
                 }
                 rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
             }
-            rows[xr - 1][2] = "**.* reference".to_string();
+            rows[xr - 1][2] = format!("{:.1} reference", percent_ratio(cellular_ref, total));
             // rows[xr - 1][3] = "\\hline".to_string();
-            rows[xr + xnr - 1][1] = "**.* cellular".to_string();
-            for j in 2..=3 {
-                rows[xr + xnr - 1][j] = "\\hline".to_string();
-            }
+            rows[xr + xnr - 1][1] = format!("{:.1} cellular", 
+                percent_ratio(cellular_ref + cellular_nref, total)
+            );
+            // rows[xr + xnr - 1][2] = "\\hline".to_string();
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
             println!("\nfeature barcode UMI count distribution for {}\n{}", 
