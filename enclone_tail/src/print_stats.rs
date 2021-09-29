@@ -939,33 +939,43 @@ pub fn print_stats(
                     }
                 }
             }
-            let mut top_ref = Vec::<usize>::new();
-            let mut top_nref = Vec::<usize>::new();
+            let mut top_ref = Vec::<(usize, String)>::new();
+            let mut top_nref = Vec::<(usize, String)>::new();
             for i in 0..m.ncols() {
                 let bc = m.col_label(i);
                 if seq_to_id.contains_key(&bc) {
                     if top_ref.len() < keep {
-                        top_ref.push(i);
+                        top_ref.push((i, m.col_label(i)));
                     }
                 } else {
                     if top_nref.len() < keep {
-                        top_nref.push(i);
+                        top_nref.push((i, m.col_label(i)));
                     }
                 }
             }
-            for i in 0..top_nref.len() {
-                let c = top_nref[i];
-                let seq = m.col_label(c);
-                let (mut cell, mut ncell) = (0, 0);
-                for j in 0..m.nrows() {
-                    if bin_member(&vdj_cells[li], &m.row_label(j)) {
-                        cell += m.value(j, c);
+            for i in 0..specials.len() {
+                let mut found = false;
+                for j in 0..m.ncols() {
+                    let bc = m.col_label(j);
+                    if specials[i] == bc {
+                        if seq_to_id.contains_key(&bc) {
+                            top_ref.push((j, m.col_label(j)));
+                        } else {
+                            top_nref.push((j, m.col_label(j)));
+                        }
+                        found = true;
+                    }
+                }
+                if !found {
+                    if seq_to_id.contains_key(&specials[i]) {
+                        top_ref.push((1000000, specials[i].clone()));
                     } else {
-                        ncell += m.value(j, c);
+                        top_nref.push((1000000, specials[i].clone()));
                     }
                 }
-                println!("{} has cell count {} and ncell count {}", seq, cell, ncell);
             }
+            unique_sort(&mut top_ref);
+            unique_sort(&mut top_nref);
             let xr = max(top_ref.len(), 1);
             let xnr = max(top_nref.len(), 1);
             let nrows = 4 * (xr + xnr) - 1;
@@ -998,15 +1008,17 @@ pub fn print_stats(
             }
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
-                    let c = top_ref[i];
-                    let seq = m.col_label(c);
+                    let c = top_ref[i].0;
+                    let seq = &top_ref[i].1;
                     let (mut cell, mut ncell) = (0, 0);
-                    let label = format!("{} = {}", seq, seq_to_id[&seq]);
-                    for j in 0..m.nrows() {
-                        if bin_member(&vdj_cells[li], &m.row_label(j)) {
-                            cell += m.value(j, c);
-                        } else {
-                            ncell += m.value(j, c);
+                    let label = format!("{} = {}", seq, seq_to_id[seq]);
+                    if c < 1000000 {
+                        for j in 0..m.nrows() {
+                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                                cell += m.value(j, c as usize);
+                            } else {
+                                ncell += m.value(j, c as usize);
+                            }
                         }
                     }
                     if pass == 0 {
@@ -1016,14 +1028,16 @@ pub fn print_stats(
                     }
                 }
                 for i in 0..top_nref.len() {
-                    let c = top_nref[i];
-                    let seq = m.col_label(c);
+                    let c = top_nref[i].0;
+                    let seq = &top_nref[i].1;
                     let (mut cell, mut ncell) = (0, 0);
-                    for j in 0..m.nrows() {
-                        if bin_member(&vdj_cells[li], &m.row_label(j)) {
-                            cell += m.value(j, c);
-                        } else {
-                            ncell += m.value(j, c);
+                    if c < 1000000 {
+                        for j in 0..m.nrows() {
+                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                                cell += m.value(j, c as usize);
+                            } else {
+                                ncell += m.value(j, c as usize);
+                            }
                         }
                     }
                     if pass == 0 {
