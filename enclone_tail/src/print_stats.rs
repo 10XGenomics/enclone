@@ -1018,10 +1018,10 @@ pub fn print_stats(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * i][3] = format!("{:.1} {}", percent_ratio(cell, total), label);
+                        rows[2 * i][3] = format!("{:>4.1} {}", percent_ratio(cell, total), label);
                     } else {
                         rows[2 * (xr + xnr) + 2 * i][3] 
-                            = format!("{:.1} {}", percent_ratio(ncell, total), label);
+                            = format!("{:>4.1} {}", percent_ratio(ncell, total), label);
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -1037,17 +1037,17 @@ pub fn print_stats(
                     }
                     if pass == 0 {
                         rows[2 * (i + xr)][3] 
-                            = format!("{:.1} {}", percent_ratio(cell, total), seq);
+                            = format!("{:>4.1} {}", percent_ratio(cell, total), seq);
                     } else {
                         rows[2 * (xr + xnr) + 2 * (i + xr)][3] 
-                            = format!("{:.1} {}", percent_ratio(ncell, total), seq);
+                            = format!("{:>4.1} {}", percent_ratio(ncell, total), seq);
                     }
                 }
             }
 
-            rows[xr - 1][2] = format!("{:.1} reference", percent_ratio(cellular_ref, total));
+            rows[xr - 1][2] = format!("{:>4.1} reference", percent_ratio(cellular_ref, total));
             // rows[xr - 1][3] = "\\hline".to_string();
-            rows[xr + xnr - 1][1] = format!("{:.1} cellular", 
+            rows[xr + xnr - 1][1] = format!("{:>4.1} cellular", 
                 percent_ratio(cellular_ref + cellular_nref, total)
             );
             // rows[xr + xnr - 1][2] = "\\hline".to_string();
