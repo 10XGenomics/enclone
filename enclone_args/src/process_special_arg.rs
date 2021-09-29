@@ -200,6 +200,33 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
+    } else if arg.starts_with("FB_SHOW=") {
+        let fields = arg.after("FB_SHOW=").split(',').collect::<Vec<&str>>();
+        let mut found_k = false;
+        let mut ok = true;
+        for i in 0..fields.len() {
+            if fields[i].parse::<usize>().is_ok() {
+                if found_k {
+                    return Err(format!("\nFB_SHOW argument contains more than one integer.\n"));
+                }
+                found_k = true;
+            } else {
+                if fields[i].len() != 15 {
+                    ok = false;
+                }
+                for c in fields[i].chars() {
+                    if c != 'A' && c != 'C' && c != 'G' && c != 'T' {
+                        ok = false;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return Err(format!("\nFB_SHOW argument must be a comma-separated list \
+                containing at most one nonnegative integer and zero or more DNA \
+                sequences of length 15 (in the alphabet A,C,G,T).\n"));
+        }
+        ctl.gen_opt.fb_show = arg.after("FB_SHOW=").to_string();
     } else if arg.starts_with("SIM_MAT_PLOT=") {
         let fields = arg.after("SIM_MAT_PLOT=").split(',').collect::<Vec<&str>>();
         if fields.len() < 2 {

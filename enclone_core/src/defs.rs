@@ -232,6 +232,7 @@ pub struct GeneralOpt {
     pub toy: bool,      // toy with phylogeny
     pub group_post_filter: Option<Vec<usize>>,
     pub no_newline: bool,
+    pub fb_show: String,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.

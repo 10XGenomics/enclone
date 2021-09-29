@@ -885,11 +885,21 @@ pub fn print_stats(
 
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
-        let mut cells = Vec::<String>::new();
-        for i in 0..vdj_cells[li].len() {
-            cells.push(vdj_cells[li][i].before("-").to_string());
-        }
         if m.initialized() {
+            let mut keep = 4;
+            let mut specials = Vec::<String>::new();
+            let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
+            for x in fb_show.iter() {
+                if x.parse::<usize>().is_ok() {
+                    keep = x.force_usize();
+                } else {
+                    specials.push(x.to_string());
+                }
+            }
+            let mut cells = Vec::<String>::new();
+            for i in 0..vdj_cells[li].len() {
+                cells.push(vdj_cells[li][i].before("-").to_string());
+            }
             let brn = &gex_info.fb_brn[li];
             let total = gex_info.fb_total_umis[li] as usize;
             let mut seq_to_id = HashMap::<String, String>::new();
@@ -931,15 +941,14 @@ pub fn print_stats(
             }
             let mut top_ref = Vec::<usize>::new();
             let mut top_nref = Vec::<usize>::new();
-            const KEEP: usize = 4;
             for i in 0..m.ncols() {
                 let bc = m.col_label(i);
                 if seq_to_id.contains_key(&bc) {
-                    if top_ref.len() < KEEP {
+                    if top_ref.len() < keep {
                         top_ref.push(i);
                     }
                 } else {
-                    if top_nref.len() < KEEP {
+                    if top_nref.len() < keep {
                         top_nref.push(i);
                     }
                 }
