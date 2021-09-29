@@ -1004,6 +1004,10 @@ pub fn print_stats(
                 }
             }
     
+            fn pr(x: usize, y: usize) -> String {
+                format!("{:>4.1}", percent_ratio(x, y))
+            }
+
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i];
@@ -1018,10 +1022,10 @@ pub fn print_stats(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * i][3] = format!("{:>4.1} {}", percent_ratio(cell, total), label);
+                        rows[2 * i][3] = format!("{} {}", pr(cell, total), label);
                     } else {
                         rows[2 * (xr + xnr) + 2 * i][3] 
-                            = format!("{:>4.1} {}", percent_ratio(ncell, total), label);
+                            = format!("{} {}", pr(ncell, total), label);
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -1036,20 +1040,17 @@ pub fn print_stats(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * (i + xr)][3] 
-                            = format!("{:>4.1} {}", percent_ratio(cell, total), seq);
+                        rows[2 * (i + xr)][3] = format!("{} {}", pr(cell, total), seq);
                     } else {
                         rows[2 * (xr + xnr) + 2 * (i + xr)][3] 
-                            = format!("{:>4.1} {}", percent_ratio(ncell, total), seq);
+                            = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
 
-            rows[xr - 1][2] = format!("{:>4.1} reference", percent_ratio(cellular_ref, total));
+            rows[xr - 1][2] = format!("{} reference", pr(cellular_ref, total));
             // rows[xr - 1][3] = "\\hline".to_string();
-            rows[xr + xnr - 1][1] = format!("{:>4.1} cellular", 
-                percent_ratio(cellular_ref + cellular_nref, total)
-            );
+            rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             // rows[xr + xnr - 1][2] = "\\hline".to_string();
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
