@@ -658,7 +658,7 @@ pub fn print_stats(
                 for x in cluster.iter() {
                     ncells[x.1 - 1] += 1;
                     let bc = &x.0;
-                    let typex = &cell_type[bc.clone()];
+                    let typex = &cell_type[*bc];
                     if ctl.gen_opt.bcr && typex.starts_with('B') {
                         ncells_type[x.1 - 1] += 1;
                     } else if ctl.gen_opt.tcr && typex.starts_with('T') {
@@ -764,10 +764,8 @@ pub fn print_stats(
                         } else if typex == "r" {
                             if !gex_info.feature_metrics[i]
                                 .contains_key(&(feature.clone(), "num_reads".to_string()))
-                            {
-                                value = "undefined".to_string();
-                            } else if !gex_info.feature_metrics[i]
-                                .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
+                                || !gex_info.feature_metrics[i]
+                                    .contains_key(&(feature.clone(), "num_reads_cells".to_string()))
                             {
                                 value = "undefined".to_string();
                             } else {

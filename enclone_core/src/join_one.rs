@@ -223,9 +223,7 @@ pub fn join_one(
                         } else {
                             share_pos_j[m].push(p);
                         }
-                    } else if t1 == r && t2 != r {
-                        indeps[u] += 1;
-                    } else if t2 == r && t1 != r {
+                    } else if (t1 == r && t2 != r) || (t2 == r && t1 != r) {
                         indeps[u] += 1;
                     } else if t1 != r && t2 != r {
                         indeps[u] += 2;

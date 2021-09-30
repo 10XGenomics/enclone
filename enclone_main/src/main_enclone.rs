@@ -176,14 +176,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     ctl.gen_opt.cpu_this_start = 0;
     if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
-        for line in f.lines() {
+        if let Some(line) = f.lines().next() {
             let s = line.unwrap();
             let mut t = s.after("cpu");
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
             ctl.gen_opt.cpu_all_start = t.before(" ").force_usize();
-            break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {
@@ -366,7 +365,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                     test2.push(var.to_string());
                 }
             }
-            for _ in con.iter_function_identifiers() {
+            if let Some(_) = con.iter_function_identifiers().next() {
                 return Err("\nSomething is wrong with your FCELL value.\n".to_string());
             }
         }

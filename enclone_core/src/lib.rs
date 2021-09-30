@@ -79,7 +79,7 @@ pub fn parse_bsv(x: &str) -> Vec<String> {
 
 pub fn fetch_url(url: &str) -> Result<String, String> {
     const TIMEOUT: u64 = 120; // timeout in seconds
-    let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
+    let req = attohttpc::get(url).read_timeout(Duration::new(TIMEOUT, 0));
     let response = req.send();
     if response.is_err() {
         panic!("Failed to access URL {}.", url);
@@ -115,7 +115,7 @@ pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
         ));
     }
     let y = std::io::BufReader::new(x.unwrap());
-    for line in y.lines() {
+    if let Some(line) = y.lines().next() {
         if line.is_err() {
             let mut err = line.err().unwrap().to_string();
             if err.starts_with("Is a directory") {
@@ -127,7 +127,6 @@ pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
                 f, err, arg,
             ));
         }
-        break;
     }
     Ok(())
 }

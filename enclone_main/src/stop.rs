@@ -307,14 +307,13 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
-        for line in f.lines() {
+        if let Some(line) = f.lines().next() {
             let s = line.unwrap();
             let mut t = s.after("cpu");
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
             cpu_all_stop = t.before(" ").force_usize();
-            break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {

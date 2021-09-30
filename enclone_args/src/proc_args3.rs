@@ -620,10 +620,7 @@ pub fn proc_xcr(
     // multithreading.
 
     let t = Instant::now();
-    let mut source = f.clone();
-    if f.contains('=') {
-        source = f.before("=");
-    }
+    let source = if f.contains('=') { f.before("=") } else { f };
     let mut results = Vec::<(String, String, bool, String)>::new();
     for (id, d) in donor_groups.iter().enumerate() {
         let origin_groups = (*d).split(':').collect::<Vec<&str>>();
