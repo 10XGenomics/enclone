@@ -1309,12 +1309,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dna"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e220f5e47bfabbe719e9686c7cce86785d79378777c7502f1dd1b481139d495f"
-
-[[package]]
 name = "doc-comment"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1465,21 +1459,14 @@ dependencies = [
  "binary_vec_io",
  "bio",
  "debruijn",
- "dna",
- "edit-distance",
- "enclone",
- "enclone_core",
  "equiv",
  "failure",
  "fasta_tools",
- "fs_extra",
  "graph_simple",
  "hyperbase",
  "io_utils",
  "itertools",
  "kmer_lookup",
- "mirror_sparse_matrix",
- "pager",
  "perf_stats",
  "permutation",
  "petgraph 0.5.1",
