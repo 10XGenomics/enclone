@@ -98,19 +98,6 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     FEATURE_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    count for a gene expression or antibody feature
-page:     enclone help lvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     FEATURE_%
 inputs:   ?
 limits:
@@ -132,6 +119,19 @@ level:    cell
 val:      float[0,100].precision(1)
 doc:      TBD
 brief:    percent of total expression for a particular gene
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    count for a gene expression or antibody feature
 page:     enclone help lvars
 avail:    public
 notes:
