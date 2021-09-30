@@ -269,7 +269,11 @@ fn test_dependency_structure() {
 
     let top = dir_list("..");
     for d in top.iter() {
-        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_tools" && d != "enclone_denovo" {
+        if d.starts_with("enclone")
+            && d != "enclone_main"
+            && d != "enclone_tools"
+            && d != "enclone_denovo"
+        {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
                 let f = open_for_read![&toml];
