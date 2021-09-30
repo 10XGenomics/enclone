@@ -82,7 +82,7 @@ pub fn row_fill(
             if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
                 && (ctl.parseable_opt.pchains == "max"
-                    || $col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || $col < ctl.parseable_opt.pchains.force_usize())
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");

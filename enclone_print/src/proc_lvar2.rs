@@ -509,11 +509,12 @@ pub fn proc_lvar2(
         let ncols = gex_info.fb_top_matrices[0].ncols();
         if !x.ends_with("_n") {
             let n = x.after("fb").force_usize() - 1;
-            let mut fb = String::new();
-            if n < ncols {
-                fb = gex_info.fb_top_matrices[0].col_label(n).clone();
-            }
-            lvar![i, x, fb.clone()];
+            let fb = if n < ncols {
+                gex_info.fb_top_matrices[0].col_label(n)
+            } else {
+                String::new()
+            };
+            lvar![i, x, (*fb).to_string()];
         } else {
             let n = x.after("fb").rev_before("_n").force_usize() - 1;
             if n >= ncols {

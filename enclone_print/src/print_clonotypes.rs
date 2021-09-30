@@ -111,7 +111,7 @@ pub fn print_clonotypes(
 
     // Identify certain extra parseable variables.  These arise from parameterizable cvars.
 
-    let extra_parseables = get_extra_parseables(&ctl, &pcols_sort);
+    let mut extra_parseables = get_extra_parseables(ctl, pcols_sort);
 
     // Compute all_vars.
 
@@ -129,7 +129,7 @@ pub fn print_clonotypes(
             all_vars.push(var.to_string());
         }
     }
-    all_vars.append(&mut extra_parseables.clone());
+    all_vars.append(&mut extra_parseables);
     for x in extra_args.iter() {
         if !rsi_vars.contains(&x) {
             all_vars.push(x.clone());
