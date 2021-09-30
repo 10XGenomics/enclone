@@ -22,7 +22,6 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
-assert_cmd = "1"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1"
@@ -45,6 +44,9 @@ stats_utils = "0.1"
 string_utils = "0.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
+
+[dev-dependencies]
+assert_cmd = "1"
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.16"
