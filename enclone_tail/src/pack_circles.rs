@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::polygon::*;
+use crate::polygon::{Point, Polygon};
 use rayon::prelude::*;
 
 // Pack circles of given radii, which should be in descending order.  Return centers for the

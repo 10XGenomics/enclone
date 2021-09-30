@@ -3,11 +3,13 @@
 // Load gene expression and feature barcoding (antibody, antigen) data from
 // Cell Ranger outputs.
 
-use enclone_core::defs::*;
-use enclone_core::slurp::*;
-use io_utils::*;
+use enclone_core::defs::EncloneControl;
+use enclone_core::slurp::slurp_h5;
+use io_utils::{dir_list, open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
-use mirror_sparse_matrix::*;
+use mirror_sparse_matrix::{
+    get_code_version_from_file, read_from_file, write_to_file, MirrorSparseMatrix,
+};
 use rayon::prelude::*;
 use serde_json::Value;
 use std::{
@@ -17,8 +19,8 @@ use std::{
     io::{BufRead, BufReader, Read},
     time::Instant,
 };
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{parse_csv, TextUtils};
+use vector_utils::{unique_sort, VecUtils};
 
 // parse_csv_pure: same as parse_csv, but don't strip out quotes
 

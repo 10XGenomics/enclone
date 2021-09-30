@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::defs::*;
-use ansi_escape::*;
-use io_utils::*;
+use crate::defs::justification;
+use ansi_escape::{emit_eight_bit_color_escape, emit_end_escape};
+use io_utils::{fwrite, fwriteln};
 use std::io::Write;
-use string_utils::*;
-use tables::*;
+use string_utils::{stringme, strme};
+use tables::print_tabular;
 
 pub fn combine_group_pics(
     group_pics: &Vec<String>,

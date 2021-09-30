@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use enclone_core::join_one::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use enclone_core::join_one::join_one;
 use equiv::EquivRel;
 use std::cmp::max;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{bin_position, next_diff12_3, next_diff1_3, unique_sort};
 
 // Define an equivalence relation on the chains, introducing connections defined by the
 // raw joins.  Also join where there are identical V..J sequences.

@@ -2,12 +2,12 @@
 
 // Generate experimental tree output (options NEWICK0 and TREE).
 
-use crate::display_tree::*;
-use crate::neighbor::*;
-use crate::newick::*;
-use enclone_core::defs::*;
+use crate::display_tree::display_tree;
+use crate::neighbor::neighbor_joining;
+use crate::newick::newick;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
-use io_utils::*;
+use io_utils::{fwrite, fwriteln};
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;

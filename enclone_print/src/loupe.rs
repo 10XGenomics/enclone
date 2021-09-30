@@ -5,17 +5,21 @@
 
 use enclone_proto::proto_io::write_proto;
 use enclone_proto::PROTO_VERSION;
-use vdj_ann::*;
+use vdj_ann::refx;
 
-use self::refx::*;
-use amino::*;
-use bio_edit::alignment::pairwise::*;
+use self::refx::RefData;
+use amino::codon_to_aa;
+use bio_edit::alignment::pairwise::Aligner;
 
-use debruijn::dna_string::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
-use io_utils::*;
-use vector_utils::*;
+use debruijn::dna_string::DnaString;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::{
+    Alignment, Clonotype, ClonotypeChain, DonorReference, DonorReferenceItem, EncloneOutputs,
+    ExactSubClonotype, ExactSubClonotypeChain, ExactSubClonotypeChainInfo,
+    InvariantTCellAnnotation, Metadata, Region, UniversalReference, UniversalReferenceItem,
+};
+use io_utils::write_obj;
+use vector_utils::next_diff12_3;
 
 // Export donor reference/inferred alt allele sequences
 pub fn make_donor_refs(

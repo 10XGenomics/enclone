@@ -3,21 +3,21 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::proc_cvar1::*;
-use crate::proc_cvar2::*;
-use crate::proc_lvar1::*;
-use crate::proc_lvar2::*;
-use amino::*;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use crate::proc_cvar1::proc_cvar1;
+use crate::proc_cvar2::proc_cvar2;
+use crate::proc_lvar1::proc_lvar1;
+use crate::proc_lvar2::proc_lvar2;
+use amino::{aa_seq, codon_to_aa};
+use enclone_core::allowed_vars::LVARS_ALLOWED;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::median::{median_f64, rounded_median};
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use ndarray::s;
 use std::collections::{HashMap, HashSet};
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, unique_sort};
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described

@@ -21,7 +21,7 @@ pub mod testlist;
 pub mod var_reg;
 pub mod vdj_features;
 
-use lazy_static::*;
+use lazy_static::lazy_static;
 use std::env;
 use std::io::BufRead;
 use std::sync::Mutex;

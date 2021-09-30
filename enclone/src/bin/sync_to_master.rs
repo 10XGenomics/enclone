@@ -3,13 +3,13 @@
 // Sync all the crate versions in the workspace to the versions defined in the file master.toml
 // in the top-level of the workspace.
 
-use io_utils::*;
+use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use string_utils::*;
+use string_utils::TextUtils;
 
 fn main() {
     PrettyTrace::new().on();

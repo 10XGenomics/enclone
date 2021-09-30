@@ -2,12 +2,12 @@
 
 // Find duplicated crates.
 
-use io_utils::*;
-use pretty_trace::*;
+use io_utils::open_for_read;
+use pretty_trace::PrettyTrace;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::next_diff;
 
 fn main() {
     PrettyTrace::new().on();

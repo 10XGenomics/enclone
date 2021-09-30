@@ -1,12 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use ansi_escape::ansi_to_html::*;
-use ansi_escape::*;
-use enclone_core::print_tools::*;
-use io_utils::*;
+use ansi_escape::ansi_to_html::convert_text_with_ansi_escapes_to_html;
+use ansi_escape::{
+    emit_blue_escape, emit_bold_escape, emit_end_escape, emit_green_escape, emit_red_escape,
+    print_color,
+};
+use enclone_core::print_tools::{emit_codon_color_escape, font_face_in_css};
+use io_utils::fwrite;
 use std::io::Write;
-use string_utils::*;
-use tables::*;
+use string_utils::{stringme, strme};
+use tables::print_tabular_vbox;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

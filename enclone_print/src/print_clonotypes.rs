@@ -5,29 +5,29 @@
 //
 // Problem: stack traces from this file consistently do not go back to the main program.
 
-use crate::define_mat::*;
-use crate::filter::*;
-use crate::finish_table::*;
-use crate::gene_scan::*;
-use crate::loupe::*;
-use crate::print_utils1::*;
-use crate::print_utils2::*;
-use crate::print_utils3::*;
-use crate::print_utils4::*;
-use crate::print_utils5::*;
+use crate::define_mat::define_mat;
+use crate::filter::survives_filter;
+use crate::finish_table::finish_table;
+use crate::gene_scan::gene_scan_test;
+use crate::loupe::{loupe_out, make_loupe_clonotype};
+use crate::print_utils1::{compute_field_types, extra_args, start_gen};
+use crate::print_utils2::row_fill;
+use crate::print_utils3::{define_column_info, get_extra_parseables, process_complete};
+use crate::print_utils4::{build_show_aa, compute_bu, compute_some_stats};
+use crate::print_utils5::{delete_weaks, vars_and_shares};
 use enclone_args::proc_args_check::involves_gex_fb;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_core::mammalian_fixed_len::*;
-use enclone_core::set_speakers::*;
-use enclone_proto::types::*;
+use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL, LVARS_ALLOWED};
+use enclone_core::defs::{CloneInfo, ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
+use enclone_core::set_speakers::set_speakers;
+use enclone_proto::types::{Clonotype, DonorReferenceItem};
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, erase_if, next_diff12_3, unique_sort};
 
 // Print clonotypes.  A key challenge here is to define the columns that represent shared
 // chains.  This is given below by the code that forms an equivalence relation on the CDR3_AAs.

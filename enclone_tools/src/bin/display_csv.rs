@@ -4,12 +4,12 @@
 //
 // This can be used to examine the output of POUT.
 
-use io_utils::*;
-use pretty_trace::*;
+use io_utils::open_for_read;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use string_utils::*;
+use string_utils::parse_csv;
 
 fn main() {
     PrettyTrace::new().on();

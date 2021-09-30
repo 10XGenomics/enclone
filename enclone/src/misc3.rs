@@ -2,14 +2,14 @@
 
 // Miscellaneous functions.
 
-use enclone_core::defs::*;
-use io_utils::*;
-use itertools::*;
+use enclone_core::defs::{EncloneControl, ExactClonotype, TigData, TigData0, TigData1};
+use io_utils::{fwrite, fwriteln};
+use itertools::Itertools;
 use std::cmp::{max, min, Ordering};
 use std::io::Write;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::strme;
+use vdj_ann::refx::RefData;
+use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

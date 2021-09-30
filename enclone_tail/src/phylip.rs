@@ -7,12 +7,12 @@
 // code left in place in case it turns out that folding is needed.  This will involve
 // a bit more than lowering W.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use io_utils::{fwrite, fwriteln};
 use std::fs::File;
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
-use string_utils::*;
+use string_utils::strme;
 use tar::{Builder, Header};
 
 pub fn print_phylip(

@@ -21,11 +21,11 @@
 // "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
 // want to worsen the placement of indels.  Also run the above big test.
 
-use crate::defs::*;
-use bio_edit::alignment::pairwise::*;
+use crate::defs::EncloneControl;
+use bio_edit::alignment::pairwise::{Aligner, Scoring, MIN_SCORE};
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
-use string_utils::*;
+use string_utils::strme;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

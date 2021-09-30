@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::EncloneControl;
+use io_utils::{open_userfile_for_read, path_exists};
 use rayon::prelude::*;
 use std::{io::BufRead, time::Instant};
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::next_diff;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -11,8 +11,8 @@
 // modified to add a fake leader sequence on the left (we use MXXXXXXXXXXXXXXXXXXXX), and to
 // truncate on the right to trim a bit beyond the start of the CDR3.
 
-use string_utils::*;
-use vector_utils::*;
+use string_utils::strme;
+use vector_utils::{reverse_sort, sort_sync3};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

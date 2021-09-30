@@ -2,14 +2,17 @@
 
 // Check lvars, cvars, and pcols.
 
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
+use enclone_core::allowed_vars::{
+    CVARS_ALLOWED, CVARS_ALLOWED_PCELL, GVARS_ALLOWED, LVARS_ALLOWED, PCVARS_ALLOWED,
+    PLVARS_ALLOWED,
+};
+use enclone_core::defs::{EncloneControl, GexInfo};
 use itertools::Itertools;
 use rayon::prelude::*;
 use regex::Regex;
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::{bin_member, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

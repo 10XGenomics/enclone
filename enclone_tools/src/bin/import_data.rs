@@ -15,20 +15,22 @@
 //
 // For use at 10x Genomics.
 
-use enclone_core::defs::*;
-use enclone_core::testlist::*;
-use enclone_tools::copy_for_enclone::*;
-use enclone_tools::feature_barcode_matrix::*;
-use io_utils::*;
+use enclone_core::defs::get_config;
+use enclone_core::testlist::TEST_FILES_VERSION;
+use enclone_tools::copy_for_enclone::copy_for_enclone;
+use enclone_tools::feature_barcode_matrix::{
+    feature_barcode_matrix, feature_barcode_matrix_seq_def, SequencingDef,
+};
+use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
 use mirror_sparse_matrix::write_to_file;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{copy, remove_dir_all, rename, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
-use string_utils::*;
+use string_utils::{parse_csv, TextUtils};
 
 fn main() {
     PrettyTrace::new().on();

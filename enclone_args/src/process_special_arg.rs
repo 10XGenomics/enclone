@@ -2,18 +2,18 @@
 
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
-use crate::proc_args2::*;
-use enclone_core::cell_color::*;
-use enclone_core::defs::*;
-use enclone_core::linear_condition::*;
-use evalexpr::*;
-use io_utils::*;
+use crate::proc_args2::{is_f64_arg, is_simple_arg, is_usize_arg};
+use enclone_core::cell_color::{CellColor, ColorByVariableValue};
+use enclone_core::defs::EncloneControl;
+use enclone_core::linear_condition::LinearCondition;
+use evalexpr::build_operator_tree;
+use io_utils::path_exists;
 use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
-use string_utils::*;
-use tilde_expand::*;
-use vector_utils::*;
+use string_utils::{parse_csv, stringme, TextUtils};
+use tilde_expand::tilde_expand;
+use vector_utils::{unique_sort, VecUtils};
 
 pub fn process_special_arg(
     arg: &str,

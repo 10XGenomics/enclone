@@ -8,7 +8,7 @@
 
 use itertools::Itertools;
 use std::cmp::max;
-use vector_utils::*;
+use vector_utils::sort_sync2;
 
 // vnames: vertex names
 // directed edges: {(v, w, weight)}

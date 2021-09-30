@@ -1,16 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::doublets::*;
-use crate::merge_onesies::*;
-use crate::split_orbits::*;
-use crate::weak_chains::*;
-use enclone_core::defs::*;
-use enclone_print::define_mat::*;
+use crate::doublets::delete_doublets;
+use crate::merge_onesies::merge_onesies;
+use crate::split_orbits::split_orbits;
+use crate::weak_chains::weak_chains;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
+use enclone_print::define_mat::define_mat;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
-use vector_utils::*;
+use vector_utils::{erase_if, next_diff12_3, next_diff1_2};
 
 pub fn some_filters(
     orbits: &mut Vec<Vec<i32>>,

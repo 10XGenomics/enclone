@@ -139,21 +139,23 @@ and fails GT|GC test after exon 1; note that the leader that's shown is short to
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-use amino::*;
-use binary_vec_io::*;
-use bio::alignment::pairwise::banded::*;
+use amino::{aa_seq, codon_to_aa};
+use binary_vec_io::binary_read_vec_vec;
+use bio::alignment::pairwise::banded::Aligner;
 use bio::alignment::AlignmentOperation::Del;
 use bio::alignment::AlignmentOperation::Ins;
-use debruijn::dna_string::*;
-use enclone_denovo::const_ighd::*;
-use enclone_denovo::make_fwr3_freqs::*;
-use enclone_denovo::mammalian_fixed_len::*;
-use enclone_denovo::mammalian_pwms::*;
-use enclone_denovo::vdj_features::*;
-use fasta_tools::*;
-use io_utils::*;
+use debruijn::dna_string::DnaString;
+use enclone_denovo::const_ighd::ighd_score2;
+use enclone_denovo::make_fwr3_freqs::make_fwr3_freqs;
+use enclone_denovo::mammalian_fixed_len::mammalian_fixed_len;
+use enclone_denovo::mammalian_pwms::mammalian_pwms;
+use enclone_denovo::vdj_features::{
+    cdr1, cdr2, cdr3_start, fr1_start, fwr1, fwr2, fwr3, score_fwr3_at_end,
+};
+use fasta_tools::read_fasta_contents_into_vec_dna_string_plus_headers;
+use io_utils::{fwrite, fwriteln, open_for_write_new};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
@@ -161,10 +163,10 @@ use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::process::Command;
-use string_utils::*;
+use string_utils::{add_commas, stringme, strme, TextUtils};
 use superslice::Ext;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use vdj_ann::refx::{human_ref, mouse_ref};
+use vector_utils::{bin_member, bin_position, erase_if, reverse_sort, sort_sync2, unique_sort};
 
 // copied from tenkit2/pack_dna.rs:
 
@@ -2270,7 +2272,7 @@ fn main() {
     min_p *= 0.1;
     const D_LOW: usize = 10;
     const D_HIGH: usize = 37;
-    use perf_stats::*;
+    use perf_stats::elapsed;
     use std::time::Instant;
     let t = Instant::now();
     const MAX_TIG: usize = 10_000_000;

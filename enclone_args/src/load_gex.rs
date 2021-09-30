@@ -3,13 +3,13 @@
 // Load gene expression and feature barcoding (antibody, antigen) data from
 // Cell Ranger outputs.
 
-use crate::load_gex_core::*;
-use enclone_core::defs::*;
+use crate::load_gex_core::load_gex;
+use enclone_core::defs::{EncloneControl, GexInfo};
 use hdf5::Dataset;
-use mirror_sparse_matrix::*;
+use mirror_sparse_matrix::MirrorSparseMatrix;
 use rayon::prelude::*;
 use std::{collections::HashMap, time::Instant};
-use vector_utils::*;
+use vector_utils::{bin_position, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

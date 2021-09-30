@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::*;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
-use io_utils::*;
+use crate::print_utils1::color_codon;
+use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::DonorReferenceItem;
+use io_utils::fwriteln;
 use itertools::Itertools;
 use std::io::Write;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::strme;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, erase_if, make_freq, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

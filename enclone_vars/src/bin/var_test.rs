@@ -2,8 +2,8 @@
 
 // Parse the vars file to test if it's valid.
 
-use enclone_vars::var::*;
-use pretty_trace::*;
+use enclone_vars::var::parse_variables;
+use pretty_trace::PrettyTrace;
 
 fn main() {
     PrettyTrace::new().on();

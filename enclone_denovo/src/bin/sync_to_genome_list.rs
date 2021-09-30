@@ -7,11 +7,11 @@
 //
 // This provides a vehicle for managing the names of the genome files.
 
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::fs::{read_dir, rename};
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::{bin_member, sort_sync2};
 
 fn main() {
     PrettyTrace::new().on();

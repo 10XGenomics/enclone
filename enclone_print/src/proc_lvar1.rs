@@ -3,14 +3,14 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::median::median_f64;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{abbrev_list, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, unique_sort};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,

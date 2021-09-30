@@ -9,13 +9,13 @@
 //
 // This should put the temp fasta file in /mnt/assembly or better yet not create a file at all.
 
-use binary_vec_io::*;
-use fasta_tools::*;
-use pretty_trace::*;
+use binary_vec_io::binary_write_vec_vec;
+use fasta_tools::read_fasta_to_vec_vec_u8;
+use pretty_trace::PrettyTrace;
 use std::fs::{read_dir, File};
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::bin_member;
 
 fn main() {
     PrettyTrace::new().on();

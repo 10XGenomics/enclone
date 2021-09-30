@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use enclone_core::opt_d::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
 use rayon::prelude::*;
 use std::time::Instant;

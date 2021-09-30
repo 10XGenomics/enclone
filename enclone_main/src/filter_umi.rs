@@ -2,12 +2,12 @@
 
 // Filter B cells based on UMI counts.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
-use stats_utils::*;
+use stats_utils::binomial_sum;
 use std::cmp::max;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{erase_if, next_diff1_5, reverse_sort, VecUtils};
 
 pub fn filter_umi(
     eq: &EquivRel,

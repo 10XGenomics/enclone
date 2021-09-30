@@ -1,9 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::EncloneControl;
+use io_utils::path_exists;
 use std::process::Command;
-use vector_utils::*;
+use vector_utils::{bin_member, unique_sort};
 
 pub fn test_sec_mem(ctl: &mut EncloneControl) -> Result<(), String> {
     let is_bcr = !ctl.gen_opt.tcr;

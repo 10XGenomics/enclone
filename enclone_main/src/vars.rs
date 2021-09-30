@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{EncloneControl, GexInfo};
 use regex::Regex;
 use std::collections::HashMap;
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::unique_sort;
 
 pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), String> {
     // Find matching features for <regular expression>_g etc.

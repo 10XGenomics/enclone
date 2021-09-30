@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::*;
-use amino::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
+use crate::print_utils1::get_gex_matrix_entry;
+use amino::codon_to_aa;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, bin_position1_2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

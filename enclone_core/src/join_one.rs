@@ -1,11 +1,14 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::defs::*;
-use debruijn::{dna_string::*, Mer};
-use stats_utils::*;
+use crate::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use debruijn::{
+    dna_string::{ndiffs, DnaString},
+    Mer,
+};
+use stats_utils::abs_diff;
 use std::collections::HashMap;
-use stirling_numbers::*;
-use vector_utils::*;
+use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
+use vector_utils::{meet, unique_sort};
 
 // partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
 //

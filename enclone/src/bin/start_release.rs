@@ -4,18 +4,18 @@
 //
 // See enclone/release_instructions.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::get_config;
+use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::os::unix::fs::PermissionsExt;
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::unique_sort;
 
 fn main() {
     PrettyTrace::new().on();

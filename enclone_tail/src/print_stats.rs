@@ -2,19 +2,19 @@
 
 // Print statistics.
 
-use crate::alluvial_fb::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use io_utils::*;
-use perf_stats::*;
-use stats_utils::*;
+use crate::alluvial_fb::alluvial_fb;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::median::median;
+use io_utils::{fwrite, fwriteln};
+use perf_stats::{elapsed, peak_mem_usage_gb};
+use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
-use string_utils::*;
-use tables::*;
-use vector_utils::*;
+use string_utils::{add_commas, TextUtils};
+use tables::print_tabular_vbox;
+use vector_utils::{make_freq, next_diff, next_diff1_2};
 
 pub fn print_stats(
     tall: &Instant,

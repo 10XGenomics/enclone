@@ -2,8 +2,8 @@
 
 pub mod var;
 
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::sort_sync2;
 
 pub fn sort_vars(input: &str) -> String {
     let mut preamble = String::new();

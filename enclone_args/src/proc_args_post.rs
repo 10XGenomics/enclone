@@ -1,16 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::proc_args2::*;
-use crate::proc_args3::*;
-use crate::proc_args_check::*;
-use enclone_core::defs::*;
-use io_utils::*;
+use crate::proc_args2::proc_args_tail;
+use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
+use crate::proc_args_check::check_cvars;
+use enclone_core::defs::EncloneControl;
+use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::time::Instant;
-use string_utils::*;
-use tilde_expand::*;
-use vector_utils::*;
+use string_utils::{parse_csv, stringme, TextUtils};
+use tilde_expand::tilde_expand;
+use vector_utils::{next_diff, unique_sort};
 
 pub fn proc_args_post(
     mut ctl: &mut EncloneControl,

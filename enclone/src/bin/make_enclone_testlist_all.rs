@@ -4,15 +4,15 @@
 //
 // This records the id and cellranger version.
 
-use enclone_core::defs::*;
-use enclone_core::testlist::*;
-use io_utils::*;
-use pretty_trace::*;
+use enclone_core::defs::get_config;
+use enclone_core::testlist::TEST_FILES_VERSION;
+use io_utils::{dir_list, fwriteln, open_for_read, open_for_write_new, path_exists};
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use string_utils::*;
+use string_utils::TextUtils;
 
 fn main() {
     PrettyTrace::new().on();

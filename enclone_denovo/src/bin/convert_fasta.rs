@@ -4,9 +4,9 @@
 //
 // Usage convert_fasta in-file out-file
 
-use binary_vec_io::*;
-use fasta_tools::*;
-use pretty_trace::*;
+use binary_vec_io::binary_write_vec_vec;
+use fasta_tools::read_fasta_to_vec_vec_u8;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::fs::File;
 

@@ -9,15 +9,15 @@
 // * Updates crates even if they have changed very recently.
 // * Should check that results are unchanged.
 
-use io_utils::*;
-use perf_stats::*;
-use pretty_trace::*;
+use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
+use perf_stats::elapsed;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use std::time::Instant;
-use string_utils::*;
+use string_utils::{strme, TextUtils};
 
 fn print_dot(dots: &mut usize) {
     if *dots > 0 && *dots % 10 == 0 {

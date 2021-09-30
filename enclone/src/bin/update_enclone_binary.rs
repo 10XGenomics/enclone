@@ -3,9 +3,9 @@
 // Update the internally public enclone binary.  This is also done by start_release, but sometimes
 // one wants to update the binary without making a release.
 
-use enclone_core::defs::*;
-use io_utils::*;
-use pretty_trace::*;
+use enclone_core::defs::get_config;
+use io_utils::path_exists;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::os::unix::fs::PermissionsExt;

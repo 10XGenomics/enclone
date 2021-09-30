@@ -4,16 +4,16 @@
 //
 // This will break when we change denovo.rs to not just run IGHD.
 
-use io_utils::*;
+use io_utils::fwriteln;
 use itertools::Itertools;
-use perf_stats::*;
-use pretty_trace::*;
+use perf_stats::elapsed;
+use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 use std::io::Write;
 use std::process::Command;
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::unique_sort;
 
 fn main() {
     PrettyTrace::new().on();

@@ -2,21 +2,23 @@
 
 // Miscellaneous functions.
 
-use crate::innate::*;
-use crate::misc3::*;
-use amino::*;
-use debruijn::dna_string::*;
-use enclone_core::defs::*;
-use io_utils::*;
+use crate::innate::mark_innate;
+use crate::misc3::study_consensus;
+use amino::aa_seq;
+use debruijn::dna_string::DnaString;
+use enclone_core::defs::{EncloneControl, ExactClonotype, TigData, TigData0, TigData1};
+use io_utils::{fwriteln, open_for_write_new};
 use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::time::Instant;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::strme;
+use vdj_ann::refx::RefData;
+use vector_utils::{
+    erase_if, next_diff, next_diff12_4, next_diff1_2, next_diff1_3, reverse_sort, unique_sort,
+};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
