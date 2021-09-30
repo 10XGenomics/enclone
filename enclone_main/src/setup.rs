@@ -3,30 +3,30 @@
 // See README for documentation.
 
 use crate::USING_PAGER;
-use enclone::misc1::*;
-use enclone_args::proc_args::*;
-use enclone_args::proc_args2::*;
-use enclone_core::defs::*;
-use enclone_core::prepare_for_apocalypse::*;
+use enclone::misc1::setup_pager;
+use enclone_args::proc_args::proc_args;
+use enclone_args::proc_args2::is_simple_arg;
+use enclone_core::defs::{get_config, EncloneControl};
+use enclone_core::prepare_for_apocalypse::prepare_for_apocalypse;
 use enclone_core::testlist::TEST_FILES_VERSION;
-use enclone_core::*;
-use enclone_help::help1::*;
-use enclone_help::help2::*;
-use enclone_help::help3::*;
-use enclone_help::help4::*;
-use enclone_help::help5::*;
-use enclone_help::help_utils::*;
-use io_utils::*;
+use enclone_core::{require_readable_file, REMOTE_HOST};
+use enclone_help::help1::help1;
+use enclone_help::help2::help2;
+use enclone_help::help3::help3;
+use enclone_help::help4::help4;
+use enclone_help::help5::help5;
+use enclone_help::help_utils::{HelpDesk, HELP_ALL, PLAIN};
+use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::{new_thread_message, PrettyTrace};
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
-use string_utils::*;
+use string_utils::{stringme, TextUtils};
 use tilde_expand::tilde_expand;
-use vector_utils::*;
+use vector_utils::erase_if;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

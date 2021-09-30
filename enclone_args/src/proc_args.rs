@@ -1,16 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::proc_args2::*;
-use crate::proc_args_post::*;
-use crate::process_special_arg::*;
-use enclone_core::defs::*;
-use enclone_core::*;
-use io_utils::*;
+use crate::proc_args2::{is_f64_arg, is_i32_arg, is_simple_arg, is_string_arg, is_usize_arg};
+use crate::proc_args_post::proc_args_post;
+use crate::process_special_arg::process_special_arg;
+use enclone_core::defs::{ClonotypeHeuristics, EncloneControl};
+use enclone_core::require_readable_file;
+use io_utils::path_exists;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
 use std::{process::Command, time::Instant};
-use string_utils::*;
-use tilde_expand::*;
+use string_utils::{stringme, strme, TextUtils};
+use tilde_expand::tilde_expand;
 
 // Process arguments.
 

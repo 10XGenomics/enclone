@@ -3,14 +3,14 @@
 // Compute FWR3 for all IMGT mammalian reference sequences, and report out a per-chain
 // amino acid frequency table.
 
-use crate::vdj_features::*;
-use amino::*;
-use debruijn::dna_string::*;
-use fasta_tools::*;
+use crate::vdj_features::{cdr3_score, cdr3_start, fr3_start};
+use amino::aa_seq;
+use debruijn::dna_string::DnaString;
+use fasta_tools::read_fasta_into_vec_dna_string_plus_headers;
 use std::fs::read_dir;
-use string_utils::*;
+use string_utils::TextUtils;
 // use vdj_ann::refx::*;
-use vector_utils::*;
+use vector_utils::make_freq;
 
 pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
     // Define constants.

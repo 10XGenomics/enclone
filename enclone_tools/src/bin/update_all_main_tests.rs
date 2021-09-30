@@ -7,10 +7,10 @@
 //
 // NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
-use enclone_core::main_testlist::*;
-use enclone_tools::run_test::*;
-use io_utils::*;
-use pretty_trace::*;
+use enclone_core::main_testlist::TESTS;
+use enclone_tools::run_test::run_test;
+use io_utils::{fwrite, open_for_write_new};
+use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{BufWriter, Write};

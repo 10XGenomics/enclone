@@ -8,7 +8,7 @@
 //
 // Searching the internet for tick marks algorithm yields some other methods.
 
-use string_utils::*;
+use string_utils::strme;
 
 // Given x ≠ 0, find r and s such that x = r * 10^s, and 1.0 <= |r| < 10.
 
@@ -148,7 +148,7 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pretty_trace::*;
+    use pretty_trace::PrettyTrace;
     #[test]
     fn test_ticks() {
         PrettyTrace::new().on();

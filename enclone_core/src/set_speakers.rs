@@ -1,9 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::allowed_vars::*;
-use crate::defs::*;
-use string_utils::*;
-use vector_utils::*;
+use crate::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL, LVARS_ALLOWED};
+use crate::defs::EncloneControl;
+use string_utils::TextUtils;
+use vector_utils::bin_member;
 
 // Define the set "parseable_fields" of fields that could occur in parseable output.
 //

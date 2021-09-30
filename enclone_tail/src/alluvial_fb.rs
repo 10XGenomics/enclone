@@ -3,15 +3,15 @@
 // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
 // which is not the only way of doing it.
 
-use enclone_core::defs::*;
-use io_utils::*;
-use stats_utils::*;
+use enclone_core::defs::{EncloneControl, GexInfo};
+use io_utils::fwrite;
+use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::*;
-use tables::*;
-use vector_utils::*;
+use string_utils::{parse_csv, TextUtils};
+use tables::print_tabular_vbox;
+use vector_utils::{bin_member, unique_sort};
 
 pub fn alluvial_fb(
     ctl: &EncloneControl,

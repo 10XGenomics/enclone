@@ -2,20 +2,20 @@
 
 // This file contains the single function proc_cvar.
 
-use crate::print_utils1::*;
-use amino::*;
-use bio_edit::alignment::pairwise::*;
+use crate::print_utils1::{cdr3_aa_con, color_codon};
+use amino::{aa_seq, codon_to_aa};
+use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
-use enclone_core::align_to_vdj_ref::*;
-use enclone_core::defs::*;
-use enclone_core::opt_d::*;
-use enclone_proto::types::*;
-use itertools::*;
-use stats_utils::*;
+use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_core::opt_d::opt_d;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
+use stats_utils::percent_ratio;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, next_diff, sort_sync2};
 
 pub fn proc_cvar1(
     var: &String,

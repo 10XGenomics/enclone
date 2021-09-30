@@ -2,15 +2,15 @@
 
 // Assign the color to a cell in a honeycomb plot.
 
-use crate::*;
-use ansi_escape::*;
-use enclone_core::cell_color::*;
-use enclone_core::defs::*;
+use crate::TextUtils;
+use ansi_escape::print_color13;
+use enclone_core::cell_color::CellColor;
+use enclone_core::defs::{EncloneControl, ExactClonotype, PlotOpt, POUT_SEP};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::sync::Mutex;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_position, unique_sort, VecUtils};
 
 // The use of these global variables is horrible.  It already lead to one bug that was very
 // difficult to track down.

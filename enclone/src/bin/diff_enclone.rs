@@ -16,15 +16,15 @@
 //
 // Do not use any of the grouping arguments.
 
-use enclone::misc1::*;
+use enclone::misc1::setup_pager;
 use equiv::EquivRel;
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::{bin_member, bin_position, next_diff1_2, unique_sort};
 
 fn main() {
     PrettyTrace::new().on();

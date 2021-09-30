@@ -13,8 +13,8 @@
 
 // THIS IS A COPY FROM THE ENCLONE REPO TO FACILITATE EXPERIMENTATION!
 
-use string_utils::*;
-use vector_utils::*;
+use string_utils::strme;
+use vector_utils::reverse_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -4,16 +4,16 @@
 // See also enclone_core src for a list of these filters and
 // the related struct.
 
-use vdj_ann::*;
+use vdj_ann::refx;
 
-use self::refx::*;
+use self::refx::RefData;
 use edit_distance::edit_distance;
-use enclone_core::defs::*;
-use enclone_core::opt_d::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
-use std::cmp::*;
-use string_utils::*;
-use vector_utils::*;
+use std::cmp::{max, min};
+use string_utils::TextUtils;
+use vector_utils::{make_freq, next_diff, unique_sort};
 
 pub fn survives_filter(
     exacts: &Vec<usize>,

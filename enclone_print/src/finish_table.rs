@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::build_table_stuff::*;
-use crate::print_utils1::*;
-use crate::print_utils3::*;
-use crate::print_utils5::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
+use crate::build_table_stuff::build_table_stuff;
+use crate::print_utils1::make_table;
+use crate::print_utils3::{add_header_text, insert_reference_rows};
+use crate::print_utils5::{build_diff_row, insert_consensus_row};
+use enclone_core::defs::{justification, ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::DonorReferenceItem;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::bin_member;
 
 pub fn finish_table(
     n: usize,

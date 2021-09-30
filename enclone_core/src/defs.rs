@@ -1,13 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::cell_color::*;
-use crate::linear_condition::*;
-use debruijn::dna_string::*;
-use evalexpr::*;
+use crate::cell_color::CellColor;
+use crate::linear_condition::LinearCondition;
+use debruijn::dna_string::DnaString;
+use evalexpr::Node;
 use hdf5::Dataset;
-use io_utils::*;
-use mirror_sparse_matrix::*;
-use perf_stats::*;
+use io_utils::{open_for_read, path_exists};
+use mirror_sparse_matrix::MirrorSparseMatrix;
+use perf_stats::{elapsed, peak_mem_usage_gb};
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -15,8 +15,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::sync::atomic::AtomicBool;
 use std::time::{Instant, SystemTime};
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::unique_sort;
 
 pub static FAILED: AtomicBool = AtomicBool::new(false);
 

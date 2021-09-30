@@ -3,13 +3,13 @@
 // From IMGT mammalian reference sequences, find the
 // (per chain, per feature, per length, per position) amino acid distribution.
 
-use crate::vdj_features::*;
-use amino::*;
-use debruijn::dna_string::*;
-use fasta_tools::*;
+use crate::vdj_features::{cdr1, cdr2, cdr3_score, fwr1, fwr2, fwr3};
+use amino::aa_seq;
+use debruijn::dna_string::DnaString;
+use fasta_tools::read_fasta_into_vec_dna_string_plus_headers;
 use std::fs::read_dir;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::make_freq;
 
 pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)> {
     // Set up to track calls.

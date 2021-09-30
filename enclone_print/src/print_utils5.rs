@@ -1,17 +1,17 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::*;
-use amino::*;
-use ansi_escape::*;
-use enclone_core::defs::*;
-use enclone_core::print_tools::*;
-use enclone_proto::types::*;
-use itertools::*;
+use crate::print_utils1::aa_classes;
+use amino::codon_to_aa;
+use ansi_escape::emit_end_escape;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_core::print_tools::emit_codon_color_escape;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, meet_size, unique_sort, VecUtils};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

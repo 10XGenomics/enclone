@@ -3,11 +3,11 @@
 // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
 // clonotypes.  This requires editing of exact_clonotypes, info, eq, join_info and raw_joins.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
 use std::collections::HashMap;
 use std::time::Instant;
-use vector_utils::*;
+use vector_utils::unique_sort;
 
 pub fn disintegrate_onesies(
     ctl: &EncloneControl,

@@ -1,10 +1,10 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use enclone_print::define_mat::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
+use enclone_print::define_mat::define_mat;
 use equiv::EquivRel;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{bin_position, next_diff12_3, unique_sort, VecUtils};
 
 // Check for disjoint orbits.
 

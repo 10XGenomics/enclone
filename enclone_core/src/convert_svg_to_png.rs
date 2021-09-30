@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use crc::*;
-use string_utils::*;
+use crc::{Crc, CRC_32_ISO_HDLC};
+use string_utils::stringme;
 
 // Modify a given PNG file by changing the pixels per meter to the given value.  This adds or
 // replaces a preexisting pHYs chunk in the file.  Note that presence of an iDOT chunk might

@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use string_utils::*;
+use string_utils::TextUtils;
 
 pub fn mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)> {
     let mut p = Vec::<(String, String, usize, Vec<Vec<(u32, u8)>>)>::new();

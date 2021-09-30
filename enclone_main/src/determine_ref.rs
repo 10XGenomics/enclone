@@ -2,15 +2,17 @@
 
 // Start of code to determine the reference sequence that is to be used.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::EncloneControl;
+use io_utils::{open_for_read, open_maybe_compressed, path_exists, read_vector_entry_from_json};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vdj_ann::refx::{
+    human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, mouse_ref, mouse_ref_3_1, mouse_ref_4_0,
+};
+use vector_utils::{erase_if, unique_sort, VecUtils};
 
 pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), String> {
     // First check for the existence of a json file.

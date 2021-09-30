@@ -5,7 +5,7 @@
 use chrono::prelude::*;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;
-use string_utils::*;
+use string_utils::TextUtils;
 
 #[cfg(debug_assertions)]
 const BUILD_TYPE: &str = "debug";

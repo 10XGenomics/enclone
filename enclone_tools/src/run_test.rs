@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use ansi_escape::*;
+use ansi_escape::{emit_bold_escape, emit_end_escape};
 use enclone_core::parse_bsv;
-use enclone_core::testlist::*;
-use io_utils::*;
+use enclone_core::testlist::TEST_FILES_VERSION;
+use io_utils::{fwrite, fwriteln, path_exists};
 use itertools::Itertools;
 use std::cmp::min;
 use std::fs::read_to_string;
 use std::io::Write;
 use std::process::Command;
-use string_utils::*;
+use string_utils::{stringme, strme};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -11,8 +11,8 @@
 //
 // If symmetric = true, produce a square plot having the same range and tic marks on both axes.
 
-use crate::string_width::*;
-use crate::ticks::*;
+use crate::string_width::arial_width;
+use crate::ticks::ticks;
 use plotters::prelude::*;
 use std::cmp::max;
 

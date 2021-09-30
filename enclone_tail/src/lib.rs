@@ -29,7 +29,7 @@ pub mod tail;
 pub mod ticks;
 pub mod tree;
 
-use string_utils::*;
+use string_utils::TextUtils;
 
 const BOUNDARY: usize = 10;
 

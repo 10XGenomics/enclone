@@ -5,28 +5,30 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
-use crate::assign_cell_color::*;
-use crate::circles_to_svg::*;
-use crate::colors::*;
-use crate::group_colors::*;
-use crate::legend::*;
-use crate::pack_circles::*;
-use crate::plot_utils::*;
-use crate::polygon::*;
-use crate::string_width::*;
-use crate::*;
-use ansi_escape::*;
-use enclone_core::cell_color::*;
-use enclone_core::convert_svg_to_png::*;
-use enclone_core::defs::*;
-use io_utils::*;
+use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
+use crate::circles_to_svg::circles_to_svg;
+use crate::colors::{turbo_color_names, TURBO_SRGB_BYTES};
+use crate::group_colors::make_group_colors;
+use crate::legend::add_legend_for_color_by_variable;
+use crate::pack_circles::pack_circles;
+use crate::plot_utils::build_clusters;
+use crate::polygon::{enclosing_polygon, Polygon};
+use crate::string_width::arial_width;
+use crate::{get_svg_height, set_svg_height, set_svg_width, substitute_enclone_color, BOUNDARY};
+use ansi_escape::print_color13;
+use enclone_core::cell_color::CellColor;
+use enclone_core::convert_svg_to_png::convert_svg_to_png;
+use enclone_core::defs::{EncloneControl, ExactClonotype, PlotOpt, POUT_SEP};
+use io_utils::{fwriteln, open_for_read, open_for_write_new};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::time::Instant;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::{
+    bin_position, next_diff1_2, next_diff1_3, position, reverse_sort, unique_sort, VecUtils,
+};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

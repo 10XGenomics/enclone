@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::defs::EncloneControl;
-use string_utils::*;
+use string_utils::{stringme, TextUtils};
 
 #[derive(Clone, PartialEq)]
 pub struct LinearCondition {

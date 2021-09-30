@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use enclone_core::join_one::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use enclone_core::join_one::join_one;
 use equiv::EquivRel;
 use std::collections::HashMap;
 

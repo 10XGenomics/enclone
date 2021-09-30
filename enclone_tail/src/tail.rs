@@ -2,21 +2,21 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
-use crate::group::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use io_utils::*;
+use crate::group::group_and_print_clonotypes;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::median::median_f64;
+use enclone_proto::types::DonorReferenceItem;
+use io_utils::fwrite;
 use ndarray::s;
 use rayon::prelude::*;
 use std::cmp::min;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
-use string_utils::*;
-use tables::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use tables::print_tabular;
+use vdj_ann::refx::RefData;
+use vector_utils::bin_position;
 
 pub fn tail_code(
     tall: &Instant,

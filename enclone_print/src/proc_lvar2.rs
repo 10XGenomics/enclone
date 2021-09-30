@@ -3,17 +3,17 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use amino::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use amino::{aa_seq, codon_to_aa};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::median::rounded_median;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use regex::Regex;
 use std::cmp::{max, min};
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, next_diff};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,

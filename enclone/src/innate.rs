@@ -6,10 +6,10 @@
 // the TRAC sequence in the provided reference sequences, and the internally provided reference
 // sequences for human and mouse.
 
-use enclone_core::defs::*;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use enclone_core::defs::ExactClonotype;
+use string_utils::TextUtils;
+use vdj_ann::refx::{human_ref, mouse_ref, RefData};
+use vector_utils::{bin_member, reverse_sort, unique_sort};
 
 pub fn species(refdata: &RefData) -> String {
     let mut my_trac = Vec::<Vec<u8>>::new();

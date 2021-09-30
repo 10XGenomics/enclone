@@ -3,10 +3,10 @@
 // Extract the entries in a given all_contig_annotations.json file that corrrespond to barcodes
 // in a given sorted vector.
 
-use io_utils::*;
+use io_utils::open_userfile_for_read;
 use std::io::BufRead;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::bin_member;
 
 pub fn subset_all_contig_annotations_json(filename: &str, barcodes: &Vec<String>) -> String {
     let mut x = "[\n".to_string();

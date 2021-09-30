@@ -2,10 +2,10 @@
 //
 // Download one isoseq dataset.
 
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::process::Command;
-use string_utils::*;
+use string_utils::strme;
 
 fn main() {
     PrettyTrace::new().on();

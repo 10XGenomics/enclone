@@ -2,18 +2,18 @@
 
 // Filter using constraints imposed by FCELL.
 
-use enclone_core::defs::*;
-use enclone_print::proc_lvar1::*;
-use evalexpr::*;
-use io_utils::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_print::proc_lvar1::get_gex_matrix_entry;
+use evalexpr::{ContextWithMutableVariables, HashMapContext};
+use io_utils::{dir_list, path_exists};
 use ndarray::s;
 use rayon::prelude::*;
 use std::env;
 use std::thread;
 use std::time;
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vector_utils::{bin_position, erase_if};
 
 pub fn filter_by_fcell(
     ctl: &EncloneControl,

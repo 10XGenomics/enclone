@@ -17,19 +17,19 @@
 // 3. Other reference sequences are aligned to the smallest length that is at least that length,
 // and then the PWM is updated.  We ignore sequences that have insertions.
 
-use crate::vdj_features::*;
-use amino::*;
-use bio::alignment::pairwise::banded::*;
+use crate::vdj_features::{cdr1, cdr2, cdr3_score, fwr1, fwr2, fwr3};
+use amino::aa_seq;
+use bio::alignment::pairwise::banded::Aligner;
 use bio::alignment::AlignmentOperation::Del;
 use bio::alignment::AlignmentOperation::Ins;
-use debruijn::dna_string::*;
-use fasta_tools::*;
+use debruijn::dna_string::DnaString;
+use fasta_tools::read_fasta_into_vec_dna_string_plus_headers;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::fs::read_dir;
-use string_utils::*;
+use string_utils::TextUtils;
 use superslice::Ext;
-use vector_utils::*;
+use vector_utils::make_freq;
 
 pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)> {
     // Define reference sequence data.

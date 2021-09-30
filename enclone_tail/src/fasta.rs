@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use amino::*;
-use enclone_core::defs::*;
-use io_utils::*;
+use amino::aa_seq;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use io_utils::fwriteln;
 use std::io::Write;
-use string_utils::*;
-use vdj_ann::refx::*;
+use string_utils::strme;
+use vdj_ann::refx::RefData;
 
 pub fn generate_fasta(
     i: usize,

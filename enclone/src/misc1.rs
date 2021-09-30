@@ -2,16 +2,18 @@
 
 // Miscellaneous functions.
 
-use enclone_core::defs::*;
-use equiv::*;
-use itertools::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, TigData};
+use equiv::EquivRel;
+use itertools::Itertools;
 #[cfg(not(target_os = "windows"))]
 use pager::Pager;
-use perf_stats::*;
+use perf_stats::elapsed;
 use std::collections::HashMap;
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::stringme;
+use vector_utils::{
+    bin_member, bin_position, erase_if, next_diff, next_diff1_3, unique_sort, VecUtils,
+};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -5,14 +5,14 @@
 // 2. https://www.ebi.ac.uk/seqdb/confluence/display/THD/Help+-+Clustal+Omega+FAQ
 //    at "What do the consensus symbols mean in the alignment?".
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use io_utils::{fwrite, fwriteln};
 use std::fs::File;
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
-use string_utils::*;
+use string_utils::strme;
 use tar::{Builder, Header};
-use vector_utils::*;
+use vector_utils::{unique_sort, VecUtils};
 
 pub fn print_clustal(
     i: usize,

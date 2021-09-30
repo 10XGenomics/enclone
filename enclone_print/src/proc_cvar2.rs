@@ -2,15 +2,15 @@
 
 // This file contains the single function proc_cvar.
 
-use enclone_core::defs::*;
-use enclone_proto::types::*;
-use itertools::*;
-use stats_utils::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
+use stats_utils::percent_ratio;
 use std::cmp::min;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, next_diff12_4, unique_sort};
 
 pub fn proc_cvar2(
     var: &String,
