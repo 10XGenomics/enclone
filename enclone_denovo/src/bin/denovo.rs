@@ -278,13 +278,11 @@ pub fn lscore1(x: &[u8]) -> usize {
             if good[j] {
                 j += 1;
                 count += 1;
+            } else if j + 2 < good.len() && good[j + 1] && good[j + 2] {
+                j += 3;
+                count += 2;
             } else {
-                if j + 2 < good.len() && good[j + 1] && good[j + 2] {
-                    j += 3;
-                    count += 2;
-                } else {
-                    break;
-                }
+                break;
             }
         }
         m = max(m, count);
@@ -297,33 +295,33 @@ pub fn lscore1(x: &[u8]) -> usize {
 pub fn lscore2(x: &[u8]) -> usize {
     let n = x.len();
     if n == 19 {
-        return 1256;
+        1256
     } else if n == 20 {
-        return 321;
+        321
     } else if n == 22 {
-        return 142;
+        142
     } else if n == 18 {
-        return 48;
+        48
     } else if n == 17 {
-        return 14;
+        14
     } else if n == 21 {
-        return 9;
+        9
     } else if n == 23 {
-        return 6;
+        6
     } else if n == 26 {
-        return 4;
+        4
     } else if n == 24 {
-        return 3;
+        3
     } else if n == 28 {
-        return 2;
+        2
     } else if n == 25 {
-        return 1;
+        1
     } else if n == 14 {
-        return 1;
+        1
     } else if n == 13 {
-        return 1;
+        1
     } else {
-        return 0;
+        0
     }
 }
 
@@ -379,7 +377,7 @@ fn main() {
                 names.push(genomes[i].rev_after("/").to_string());
             }
         }
-        println!("");
+        println!();
         for i in 0..todo.len() {
             println!("running denovo {}", names[i]);
             let o = Command::new("denovo")
@@ -424,14 +422,14 @@ fn main() {
             for i in 0..fns.len() {
                 eprintln!("{}", fns[i]);
             }
-            eprintln!("");
+            eprintln!();
             std::process::exit(1);
         }
         fasta_file = fns[0].clone();
         order = fasta_file.after(":").between(":", ":").to_string();
     }
     let id_name;
-    if fasta_file.len() == 0 {
+    if fasta_file.is_empty() {
         id_name = species.clone();
     } else {
         id_name = fasta_file.rev_after("/").rev_before(".").to_string();
@@ -537,7 +535,7 @@ fn main() {
         for i in (0..refx.len()).step_by(2) {
             lens.push((refx[i + 1].len(), i));
         }
-        lens.sort();
+        lens.sort_unstable();
         for i in 0..lens.len() {
             refx2.push(refx[lens[i].1].clone());
             refx2.push(refx[lens[i].1 + 1].clone());
@@ -682,7 +680,7 @@ fn main() {
             }
         }
         for i in 0..chains.len() {
-            if chain_motifs[i].len() > 0 {
+            if !chain_motifs[i].is_empty() {
                 let mut sep = 0;
                 for j in 0..chain_motifs[i][0].len() {
                     if chain_motifs[i][0][j] == b'|' {
@@ -702,7 +700,7 @@ fn main() {
     // the chain motif.  It has a "one" for "wrong" bases.
 
     let n = pwmx[0].len();
-    let mut chain_motifs_penalty = vec![vec![vec![1 as u8; 4]; n]; chains.len()];
+    let mut chain_motifs_penalty = vec![vec![vec![1_u8; 4]; n]; chains.len()];
     for i in 0..chains.len() {
         for k in 0..chain_motifs[i][0].len() {
             if chain_motifs[i][0][k] == b' ' {
@@ -831,7 +829,7 @@ fn main() {
                                 let bb = &s[start - ins_start[chain]..start + width];
                                 let (mut ins_pos, mut ins_len) = (0, 0);
                                 let score = ighd_score2(
-                                    &bb,
+                                    bb,
                                     &pwmx[chain],
                                     MAX_DEL_LEN,
                                     ins_start[chain],
@@ -904,15 +902,15 @@ fn main() {
                     let ins_pos = finds[m].4;
                     let ins_len = finds[m].5;
                     res.1.push(Chit {
-                        tig: tig,
-                        pass: pass,
-                        start: start,
+                        tig,
+                        pass,
+                        start,
                         score: finds[m].0,
-                        log: log,
+                        log,
                         bases: r[rstart - 14..rstart + 120].to_vec(),
-                        ins_pos: ins_pos,
-                        ins_len: ins_len,
-                        chain: chain,
+                        ins_pos,
+                        ins_len,
+                        chain,
                         region: chains[chain].to_string(),
                     });
                 }
@@ -930,16 +928,17 @@ fn main() {
     const MAX_IGHM_IGHD_DIFF: usize = 15_000;
     if order == "Artiodactyla" {
         for i in 1..chits.len() {
-            if chits[i].region == "IGHM" && chits[i - 1].region == "IGHM" {
-                if chits[i].tig == chits[i - 1].tig && chits[i].pass == chits[i - 1].pass {
-                    if chits[i].start - chits[i - 1].start < MAX_IGHM_IGHD_DIFF {
-                        chits[i].region = "IGHD".to_string();
-                        chits[i].log = stringme(&chits[i].log)
-                            .replace(" IGHM", " IGHD")
-                            .as_bytes()
-                            .to_vec();
-                    }
-                }
+            if chits[i].region == "IGHM"
+                && chits[i - 1].region == "IGHM"
+                && chits[i].tig == chits[i - 1].tig
+                && chits[i].pass == chits[i - 1].pass
+                && chits[i].start - chits[i - 1].start < MAX_IGHM_IGHD_DIFF
+            {
+                chits[i].region = "IGHD".to_string();
+                chits[i].log = stringme(&chits[i].log)
+                    .replace(" IGHM", " IGHD")
+                    .as_bytes()
+                    .to_vec();
             }
         }
     }
@@ -1127,7 +1126,7 @@ fn main() {
                 continue;
             }
 
-            let cdr3 = cdr3_start(&aa, &chain_type, false);
+            let cdr3 = cdr3_start(&aa, chain_type, false);
             to_ref.insert(aa[0..cdr3].to_vec(), zheaders[i].before(" ").to_string());
         }
     }
@@ -1780,7 +1779,7 @@ fn main() {
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut r = refy[i].clone();
-        let mut rr = vec![0 as u8; r.len()];
+        let mut rr = vec![0_u8; r.len()];
         for j in 0..r.len() {
             if r[j] == b'A' {
                 rr[j] = 0;
@@ -1850,14 +1849,14 @@ fn main() {
 
                         res.1.push(Jhit {
                             tig: i,
-                            pass: pass,
+                            pass,
                             stop: pos,
                             rtype: js[u].to_string(),
                             jmatch: r[pos - ig.len()..pos].to_vec(),
                             seq: r[jstart..jstop].to_vec(),
                             lscore1: top[0].0,
                             lscore2: top[1].0,
-                            errs: errs,
+                            errs,
                         });
                     }
                 }
@@ -2003,10 +2002,10 @@ fn main() {
                 } else if print_aa {
                     println!(">{}", gene);
                     let n = (seq.len() - 1) % 3;
-                    println!("{}", strme(&aa_seq(&seq, n)));
+                    println!("{}", strme(&aa_seq(seq, n)));
                 }
                 if print_fasta {
-                    fwriteln!(fasta_log, "{}", strme(&seq));
+                    fwriteln!(fasta_log, "{}", strme(seq));
                 }
             }
         } else {
@@ -2057,9 +2056,9 @@ fn main() {
                 if p < 0 {
                     print!(" NOT FOUND");
                 }
-                println!("");
+                println!();
             }
-            println!("");
+            println!();
             if species == "human" {
                 for i in 0..true_j_human.len() {
                     if !found[i] {
@@ -2235,7 +2234,7 @@ fn main() {
         total_d += dright[0][i];
     }
     fn to0123(x: &[u8]) -> Vec<u8> {
-        let mut y = vec![0 as u8; x.len()];
+        let mut y = vec![0_u8; x.len()];
         for i in 0..x.len() {
             if x[i] == b'A' {
                 y[i] = 0;
@@ -2268,7 +2267,7 @@ fn main() {
         &dright_use,
         total_d,
     ));
-    min_p = 0.1 * min_p;
+    min_p *= 0.1;
     const D_LOW: usize = 10;
     const D_HIGH: usize = 37;
     use perf_stats::*;
@@ -2285,7 +2284,7 @@ fn main() {
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut r = refy[i].clone();
-        let mut rr = vec![0 as u8; r.len()];
+        let mut rr = vec![0_u8; r.len()];
         for j in 0..r.len() {
             if r[j] == b'A' {
                 rr[j] = 0;
@@ -2326,7 +2325,7 @@ fn main() {
             rr[j] = 3 - rr[j];
         }
         reverse_complement(&mut r);
-        matches.sort();
+        matches.sort_unstable();
         for z in 0..matches.len() {
             // not sure if we're forcing orientation here
             if matches[z].1 == 0 {
@@ -2370,7 +2369,7 @@ fn main() {
                             if good {
                                 print!(" GOOD");
                             }
-                            println!("");
+                            println!();
                         }
                         res.1.push(r[start..stop].to_vec());
                     }
@@ -2436,7 +2435,7 @@ fn main() {
                 }
             }
             erase_if(&mut all, &to_delete);
-            println!("");
+            println!();
             let mut hits = 0;
             let mut phits = 0;
             let mut true_d = Vec::<Vec<u8>>::new();
@@ -2446,7 +2445,7 @@ fn main() {
                 true_d_pseudo = true_d_human_pseudo.clone();
             } else if species == "mouse" {
                 true_d = true_d_mouse.clone();
-                true_d_pseudo = true_d_mouse_pseudo.clone();
+                true_d_pseudo = true_d_mouse_pseudo;
             }
             for i in 0..true_d.len() {
                 let mut x = true_d[i].clone();
@@ -2619,7 +2618,7 @@ fn main() {
                 for z in 0..k2s.len() {
                     let k2 = k2s[z];
                     let x = &aa[j..k2];
-                    let score = score_fwr3_at_end(&x, 0, &freqs);
+                    let score = score_fwr3_at_end(x, 0, &freqs);
                     if score > max_score {
                         max_score = score;
                         best_k2 = k2;
@@ -2793,10 +2792,10 @@ fn main() {
                             if ldr.len() < MIN_LEADER || ldr.len() > MAX_LEADER {
                                 continue;
                             }
-                            if lscore1(&ldr) < 4 {
+                            if lscore1(ldr) < 4 {
                                 continue;
                             }
-                            if post == b'C' && lscore1(&ldr) < 6 {
+                            if post == b'C' && lscore1(ldr) < 6 {
                                 continue;
                             }
                             if *ct == "IGL" && ldr.len() < 17 {
@@ -2917,7 +2916,7 @@ fn main() {
                                                     // the column number in the position weight
                                                     // matrix.
 
-                                                    let mut n = 0 as i32;
+                                                    let mut n = 0_i32;
                                                     for i in 0..pwm[0].len() {
                                                         n += pwm[0][i].0 as i32;
                                                     }
@@ -2958,7 +2957,7 @@ fn main() {
                                                     // Align.
 
                                                     let align = aligner.custom_with_match_path(
-                                                        &x1, &x2, &corners, &path,
+                                                        x1, &x2, &corners, &path,
                                                     );
                                                     let ops = &align.operations;
 
@@ -3069,12 +3068,12 @@ fn main() {
                                         }
                                         chain_datas.push(ChainData {
                                             score: nlogp2,
-                                            start_score: start_score,
-                                            flen: flen,
-                                            f1_start: f1_start,
+                                            start_score,
+                                            flen,
+                                            f1_start,
                                             ldrx: ldr.to_vec(),
                                             ct: ct.to_string(),
-                                            s: s,
+                                            s,
                                         });
                                     }
                                 }
@@ -3180,7 +3179,7 @@ fn main() {
                         let utr_tag = r[start1 - 80..start1].to_vec();
                         if print_bases {
                             logp += " ";
-                            logp += &strme(&bases);
+                            logp += strme(&bases);
                         }
                         logp += "\n";
                         info.push((
@@ -3212,17 +3211,17 @@ fn main() {
                     for i2 in 0..info.len() {
                         let ldr1 = &info[i1].0;
                         let ldr2 = &info[i2].0;
-                        if !ldr2.ends_with(&ldr1) {
+                        if !ldr2.ends_with(ldr1) {
                             let post1 = info[i1].2;
                             let post2 = info[i2].2;
-                            if lscore2(&ldr1) >= 10 * lscore2(ldr2)
-                                && lscore1(&ldr1) >= lscore1(&ldr2)
+                            if lscore2(ldr1) >= 10 * lscore2(ldr2)
+                                && lscore1(ldr1) >= lscore1(ldr2)
                                 && post1 != b'C'
                             {
                                 to_delete[i2] = true;
                             }
-                            if lscore2(&ldr1) >= lscore2(ldr2)
-                                && lscore1(&ldr1) >= lscore1(&ldr2)
+                            if lscore2(ldr1) >= lscore2(ldr2)
+                                && lscore1(ldr1) >= lscore1(ldr2)
                                 && post1 == b'T'
                                 && post2 == b'C'
                             {
@@ -3243,7 +3242,7 @@ fn main() {
                         let start_score1 = info[i1].7;
                         let start_score2 = info[i2].7;
                         if info[i2].3 >= 150 + info[i1].3
-                            && lscore2(&ldr1) * 10 > lscore2(&ldr2)
+                            && lscore2(ldr1) * 10 > lscore2(ldr2)
                             && start_score1 >= start_score2
                         {
                             to_delete[i2] = true;
@@ -3261,7 +3260,7 @@ fn main() {
                         let ldr2 = &info[i2].0;
                         let p1 = ldr1[ldr1.len() - 5] == b'P' || ldr1[ldr1.len() - 6] == b'P';
                         let p2 = ldr2[ldr2.len() - 5] == b'P' || ldr2[ldr2.len() - 6] == b'P';
-                        if p1 && !p2 && lscore2(&ldr2) < 100 * lscore2(&ldr1) {
+                        if p1 && !p2 && lscore2(ldr2) < 100 * lscore2(ldr1) {
                             to_delete[i2] = true;
                         }
                     }
@@ -3315,10 +3314,8 @@ fn main() {
                 let mut to_delete = vec![false; info.len()];
                 for i1 in 0..info.len() {
                     for i2 in 0..info.len() {
-                        if info[i1].6 == info[i2].6 {
-                            if info[i1].8 == b'G' && info[i2].8 != b'G' {
-                                to_delete[i2] = true;
-                            }
+                        if info[i1].6 == info[i2].6 && info[i1].8 == b'G' && info[i2].8 != b'G' {
+                            to_delete[i2] = true;
                         }
                     }
                 }
@@ -3338,12 +3335,11 @@ fn main() {
                             let ref2 = to_ref.contains_key(full2);
                             let ldr1 = &info[i1].0;
                             let ldr2 = &info[i2].0;
-                            if full1.ends_with(&full2) || full2.ends_with(&full1) {
-                                if (ref1 && !ref2)
-                                    || (!ref1 && !ref2 && lscore2(&ldr1) > lscore2(&ldr2))
-                                {
-                                    to_delete[i2] = true;
-                                }
+                            if (full1.ends_with(full2) || full2.ends_with(full1))
+                                && ((ref1 && !ref2)
+                                    || (!ref1 && !ref2 && lscore2(ldr1) > lscore2(ldr2)))
+                            {
+                                to_delete[i2] = true;
                             }
                         }
                     }
@@ -3355,7 +3351,7 @@ fn main() {
                             let mut ext = true;
                             for i2 in 0..info.len() {
                                 let full2 = &info[i2].4;
-                                if !full1.ends_with(&full2) && !full2.ends_with(&full1) {
+                                if !full1.ends_with(full2) && !full2.ends_with(full1) {
                                     ext = false;
                                 }
                             }
@@ -3549,7 +3545,7 @@ fn main() {
             if !good {
                 print!(" JUNK");
             }
-            println!("");
+            println!();
         }
     }
     erase_if(&mut all, &to_delete);
@@ -3657,16 +3653,16 @@ fn main() {
         for k in 0..all.len() {
             let mut m = all[k].clone();
             let n = m.matches("==").count();
-            let annotated = m.contains("🔴");
+            let annotated = m.contains('🔴');
             let wrong = m.contains("WRONG CHAIN");
             if wrong {
                 wrongs += 1;
             }
-            let amb = m.matches("🌸").count() > n;
+            let amb = m.matches('🌸').count() > n;
             if amb {
                 ambs += 1;
             }
-            let goods = m.matches("🔴").count()
+            let goods = m.matches('🔴').count()
                 + m.matches(" MATCH").count()
                 + m.matches(" PSEUDO").count();
             if goods == n && !wrong && (!annotated || !print_all) && !amb {
@@ -3677,7 +3673,7 @@ fn main() {
                 m = m.replace("[", &format!("[{}.", mcount));
                 print!("\n{}", m);
                 // print!(" upstream={}", strme(&upstream[k]));
-                println!("");
+                println!();
             } else if n == 1 && annotated && !print_all {
             } else if n > 0 {
                 nonsimples += n;
@@ -3688,7 +3684,7 @@ fn main() {
                 m = m.replace("[", &format!("[{}.", mcount));
                 print!("\n{}", m);
                 // print!(" upstream={}", strme(&upstream[k]));
-                println!("");
+                println!();
                 if !annotated {
                     unannotated += 1;
                 }
@@ -3698,22 +3694,21 @@ fn main() {
         // Find missing genes.
 
         unique_sort(&mut finds);
-        println!("");
+        println!();
         let mut missing = 0;
         let mut found = 0;
         for x in to_ref.iter() {
-            if !bin_member(&finds, &x.1) {
+            if !bin_member(&finds, x.1) {
                 // Exceptions because not seen in BI=6-12.
 
-                if species == "human" {
-                    if *x.1 == "251|IGKV1D-37".to_string()
+                if species == "human"
+                    && (*x.1 == "251|IGKV1D-37".to_string()
                         || *x.1 == "285|IGKV3-7".to_string()
                         || *x.1 == "367|IGLV3-32".to_string()
                         || *x.1 == "382|IGLV5-48".to_string()
-                        || x.1.ends_with("IGLV11-55")
-                    {
-                        continue;
-                    }
+                        || x.1.ends_with("IGLV11-55"))
+                {
+                    continue;
                 }
 
                 // Mouse exceptions because not seen in BCR="1022446-1022449,1022518-1022521;77990;70838;1022418,1022419-1022421,1022434-1022437,1022506-1022509,1022490-1022493;1022426-1022428,1022442-1022445,1022498-1022501,1022514-1022516;1022414-1022417,1022430-1022433,1022502-1022505,1022486-1022489;1022422-1022425,1022438-1022441,1022494-1022497,1022510,1022512,1022513;1032106,1032107,1032110,1032111,1032098,1032099,1032102,1032103,1033023,1033024,1033027,1033028;1023684-1023691,1022722-1022729".
@@ -3732,10 +3727,8 @@ fn main() {
 
                 // Exceptions because not in the reference.
 
-                if species == "human" {
-                    if *x.1 == "736|IGHV1-8".to_string() {
-                        continue;
-                    }
+                if species == "human" && *x.1 == "736|IGHV1-8".to_string() {
+                    continue;
                 }
                 if species == "mouse" {
                     if (*x.1).ends_with("IGHV1-unknown1") {
@@ -3751,10 +3744,8 @@ fn main() {
 
                 // Exception.  The FWR3 ends with G instead of C, but data show C.
 
-                if species == "mouse" {
-                    if (*x.1).ends_with("IGHV8-2") {
-                        continue;
-                    }
+                if species == "mouse" && (*x.1).ends_with("IGHV8-2") {
+                    continue;
                 }
 
                 // Declare missing.
@@ -3804,17 +3795,13 @@ fn main() {
 
         // Test for regression.
 
-        if species == "human" {
-            if missing > 0 || nonsimples > 0 || wrongs > 0 || ambs > 0 {
-                println!("REGRESSED!\n");
-                std::process::exit(1);
-            }
+        if species == "human" && (missing > 0 || nonsimples > 0 || wrongs > 0 || ambs > 0) {
+            println!("REGRESSED!\n");
+            std::process::exit(1);
         }
-        if species == "mouse" {
-            if missing > 0 || nonsimples > 9 || wrongs > 0 || ambs > 0 {
-                println!("REGRESSED!\n");
-                std::process::exit(1);
-            }
+        if species == "mouse" && (missing > 0 || nonsimples > 9 || wrongs > 0 || ambs > 0) {
+            println!("REGRESSED!\n");
+            std::process::exit(1);
         }
     }
 

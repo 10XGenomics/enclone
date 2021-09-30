@@ -27,7 +27,7 @@ fn print_dot(dots: &mut usize) {
     std::io::stdout().flush().unwrap();
     *dots += 1;
     if *dots == 90 {
-        println!("");
+        println!();
         std::io::stdout().flush().unwrap();
         *dots = 0;
     }
@@ -38,7 +38,7 @@ fn reset() {
         .arg("reset")
         .arg("--hard")
         .output()
-        .expect(&format!("\n\nfailed to execute git reset"));
+        .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute git reset".to_string()));
     if o.status.code() != Some(0) {
         eprintln!("\ngit reset failed\n");
         std::process::exit(1);
@@ -48,7 +48,7 @@ fn reset() {
 fn main() {
     let t = Instant::now();
     PrettyTrace::new().on();
-    println!("");
+    println!();
 
     // Test for synced to master.  This code is essentially identical to code in an enclone test.
 
@@ -56,7 +56,7 @@ fn main() {
     let f = open_for_read!["master.toml"];
     for line in f.lines() {
         let s = line.unwrap();
-        if !s.starts_with('#') && s.contains("=") {
+        if !s.starts_with('#') && s.contains('=') {
             version.insert(s.before(" = ").to_string(), s.after(" = ").to_string());
         }
     }
@@ -95,7 +95,7 @@ fn main() {
         let f = open_for_read!["master.toml"];
         for line in f.lines() {
             let s = line.unwrap();
-            if !s.starts_with('#') && s.contains("=") {
+            if !s.starts_with('#') && s.contains('=') {
                 let cratex = s.before(" = ").to_string();
                 let version = s.after(" = ").to_string();
                 if version.starts_with('"') && version.ends_with('"') {
@@ -103,7 +103,7 @@ fn main() {
                     let fields = version.split('.').collect::<Vec<&str>>();
                     let mut ok = true;
                     for i in 0..fields.len() {
-                        if !fields[i].parse::<usize>().is_ok() {
+                        if fields[i].parse::<usize>().is_err() {
                             ok = false;
                         }
                     }
@@ -125,7 +125,7 @@ fn main() {
                 .arg("1")
                 .arg(&cratex)
                 .output()
-                .expect(&format!("\n\nfailed to execute cargo search"));
+                .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute cargo search".to_string()));
             if o.status.code() != Some(0) {
                 eprintln!("\ncargo search failed\n");
                 std::process::exit(1);
@@ -161,7 +161,7 @@ fn main() {
                 for line in f.lines() {
                     let s = line.unwrap();
                     let mut saved = false;
-                    if !s.starts_with('#') && s.contains("=") {
+                    if !s.starts_with('#') && s.contains('=') {
                         let cratey = s.before(" = ").to_string();
                         if cratey == *cratex {
                             new_lines.push(format!("{} = \"{}\"", cratex, new));
@@ -178,17 +178,16 @@ fn main() {
                         fwriteln!(f, "{}", line);
                     }
                 }
-                let o = Command::new("sync_to_master")
-                    .output()
-                    .expect(&format!("\n\nfailed to execute sync_to_master"));
+                let o = Command::new("sync_to_master").output().unwrap_or_else(|_| {
+                    panic!("{}", "\n\nfailed to execute sync_to_master".to_string())
+                });
                 if o.status.code() != Some(0) {
                     eprintln!("\nsync_to_master failed");
                     std::process::exit(1);
                 }
-                let o = Command::new("cargo")
-                    .arg("b")
-                    .output()
-                    .expect(&format!("\n\nfailed to execute cargo b 0"));
+                let o = Command::new("cargo").arg("b").output().unwrap_or_else(|_| {
+                    panic!("{}", "\n\nfailed to execute cargo b 0".to_string())
+                });
                 if o.status.code() != Some(0) {
                     reset();
                     continue;
@@ -201,7 +200,9 @@ fn main() {
                     .arg("-m")
                     .arg(&format!("raise version of crate {}", cratex))
                     .output()
-                    .expect(&format!("\n\nfailed to execute git commit"));
+                    .unwrap_or_else(|_| {
+                        panic!("{}", "\n\nfailed to execute git commit".to_string())
+                    });
                 if new.status.code() != Some(0) {
                     println!("\n\ngit commit failed, something is wrong");
                     std::process::exit(1);
@@ -239,7 +240,7 @@ fn main() {
         // Attempt to update each crate.
 
         let mut dots = 0;
-        println!("");
+        println!();
         for i in 0..crates.len() {
             let cratex = &crates[i];
             let version = &versions[i];
@@ -251,7 +252,7 @@ fn main() {
                 .arg("-p")
                 .arg(&format!("{}:{}", cratex, version))
                 .output()
-                .expect(&format!("\n\nfailed to execute cargo update"));
+                .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute cargo update".to_string()));
             if new.status.code() != Some(0) {
                 print_dot(&mut dots);
                 continue;
@@ -264,7 +265,7 @@ fn main() {
             let new = Command::new("git")
                 .arg("diff")
                 .output()
-                .expect(&format!("\n\nfailed to execute git diff"));
+                .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute git diff".to_string()));
             if new.status.code() != Some(0) {
                 println!("\n\ngit diff failed, something is wrong");
                 std::process::exit(1);
@@ -275,7 +276,9 @@ fn main() {
                     .arg("checkout")
                     .arg("Cargo.lock")
                     .output()
-                    .expect(&format!("\n\nfailed to execute git checkout"));
+                    .unwrap_or_else(|_| {
+                        panic!("{}", "\n\nfailed to execute git checkout".to_string())
+                    });
                 if new.status.code() != Some(0) {
                     println!("\n\ngit checkout failed, something is wrong");
                     println!("\ntry checking for disk quota exceeded\n");
@@ -290,13 +293,15 @@ fn main() {
             let new = Command::new("cargo")
                 .arg("b")
                 .output()
-                .expect(&format!("\n\nfailed to execute cargo b"));
+                .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute cargo b".to_string()));
             if new.status.code() != Some(0) {
                 let new = Command::new("git")
                     .arg("checkout")
                     .arg("Cargo.lock")
                     .output()
-                    .expect(&format!("\n\nfailed to execute git checkout"));
+                    .unwrap_or_else(|_| {
+                        panic!("{}", "\n\nfailed to execute git checkout".to_string())
+                    });
                 if new.status.code() != Some(0) {
                     println!("\n\ngit checkout failed, something is wrong");
                     println!("err =\n{}", strme(&new.stderr));
@@ -309,7 +314,7 @@ fn main() {
             // Finally, commit the change.
 
             if dots > 0 {
-                println!("");
+                println!();
                 dots = 0;
             }
             println!("committing change to {}", cratex);
@@ -320,16 +325,16 @@ fn main() {
                 .arg("-m")
                 .arg(&format!("update crate {}", cratex))
                 .output()
-                .expect(&format!("\n\nfailed to execute git commit"));
+                .unwrap_or_else(|_| panic!("{}", "\n\nfailed to execute git commit".to_string()));
             if new.status.code() != Some(0) {
                 println!("\n\ngit commit failed, something is wrong");
                 std::process::exit(1);
             }
         }
         if dots > 0 {
-            println!("");
+            println!();
         }
-        println!("");
+        println!();
         if !changed {
             break;
         }

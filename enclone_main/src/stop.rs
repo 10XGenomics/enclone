@@ -75,7 +75,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     for li in 0..ctl.origin_info.n() {
-        if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+        if !ctl.origin_info.gex_path[li].is_empty() && !gex_info.gex_matrices[li].initialized() {
             let x = gex_info.h5_data[li].as_ref();
             if x.is_none() {
                 // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
@@ -124,7 +124,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                 } else {
                     println!("Path exists.");
                 }
-                println!("");
+                println!();
             }
             d_readers.push(Some(x.unwrap().as_reader()));
             ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
@@ -139,7 +139,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     }
     h5_data.par_iter_mut().for_each(|res| {
         let li = res.0;
-        if ctl.origin_info.gex_path[li].len() > 0
+        if !ctl.origin_info.gex_path[li].is_empty()
             && !gex_info.gex_matrices[li].initialized()
             && ctl.gen_opt.h5_pre
         {
@@ -161,17 +161,17 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut controls = Vec::<usize>::new();
     print_clonotypes(
         is_bcr,
-        &to_bc,
-        &sr,
-        &refdata,
-        &drefs,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &orbits,
-        &raw_joins,
-        &gex_info,
-        &vdj_cells,
+        to_bc,
+        sr,
+        refdata,
+        drefs,
+        ctl,
+        exact_clonotypes,
+        info,
+        orbits,
+        raw_joins,
+        gex_info,
+        vdj_cells,
         &d_readers,
         &ind_readers,
         &h5_data,
@@ -195,7 +195,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Process the SUBSET_JSON option.
 
-    subset_json(&ctl, &exact_clonotypes, &exacts, &ann);
+    subset_json(ctl, exact_clonotypes, &exacts, ann);
     ctl.perf_stats(&torb, "making orbits");
 
     // Assign a D segment to each "left" column in a clonotype (if we need this information).
@@ -205,23 +205,23 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
     make_opt_d_val(
-        &ctl,
-        &exact_clonotypes,
+        ctl,
+        exact_clonotypes,
         &exacts,
         &rsi,
-        &refdata,
-        &drefs,
+        refdata,
+        drefs,
         &mut opt_d_val,
     );
 
     // Group clonotypes.
     let t = Instant::now();
     let groups = grouper(
-        &refdata,
+        refdata,
         &exacts,
         &in_center,
-        &exact_clonotypes,
-        &ctl,
+        exact_clonotypes,
+        ctl,
         &rsi,
         &opt_d_val,
     );
@@ -249,26 +249,26 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut last_widths = Vec::<u32>::new();
     let mut summary = String::new();
     tail_code(
-        &tall,
-        &refdata,
+        tall,
+        refdata,
         &pics,
         &mut group_pics,
         &mut last_widths,
         &exacts,
         &rsi,
-        &exact_clonotypes,
-        &ctl,
+        exact_clonotypes,
+        ctl,
         &mut out_datas,
-        &join_info,
-        &gex_info,
-        &vdj_cells,
-        &fate,
+        join_info,
+        gex_info,
+        vdj_cells,
+        fate,
         &tests,
         &controls,
         &h5_data,
         &d_readers,
         &ind_readers,
-        &drefs,
+        drefs,
         &groups,
         &opt_d_val,
         &mut svgs,
@@ -287,24 +287,22 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     let delta;
     unsafe {
-        delta = elapsed(&tall) - WALLCLOCK;
+        delta = elapsed(tall) - WALLCLOCK;
     }
     let deltas = format!("{:.2}", delta);
-    ctl.perf_stats(&tall, "total");
+    ctl.perf_stats(tall, "total");
     if ctl.perf_opt.comp {
         println!("used {} seconds unaccounted for", deltas);
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
-    if ctl.perf_opt.comp_enforce {
-        if deltas.force_f64() > 0.03 {
-            return Err(format!(
-                "\nUnaccounted time = {} seconds, but COMPE option required that it \
-                be at most 0.03.\n\n\
-                Note that this may fail for a small fraction of runs, even though \
-                nothing is wrong.\n",
-                deltas
-            ));
-        }
+    if ctl.perf_opt.comp_enforce && deltas.force_f64() > 0.03 {
+        return Err(format!(
+            "\nUnaccounted time = {} seconds, but COMPE option required that it \
+            be at most 0.03.\n\n\
+            Note that this may fail for a small fraction of runs, even though \
+            nothing is wrong.\n",
+            deltas
+        ));
     }
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
@@ -340,13 +338,13 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     }
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") && !ctl.gen_opt.no_newline {
-        println!("");
+        println!();
     }
     let outs = MainEncloneOutput {
         pics: group_pics,
-        last_widths: last_widths,
-        svgs: svgs,
-        summary: summary,
+        last_widths,
+        svgs,
+        summary,
         metrics: gex_info.metrics.clone(),
         dataset_names: ctl.origin_info.dataset_id.clone(),
         parseable_stdouth: ctl.parseable_opt.pout == "stdouth",
@@ -356,8 +354,5 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         ngroup: ctl.clono_group_opt.ngroup,
         pretty: ctl.pretty,
     };
-    Ok(EncloneState {
-        inter: inter,
-        outs: outs,
-    })
+    Ok(EncloneState { inter, outs })
 }

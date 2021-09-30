@@ -39,7 +39,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
                 }
                 x.push(s[l]);
             }
-            h.print_plain(&format!("{}", strme(&x)))?;
+            h.print_plain(&strme(&x).to_string())?;
         }
         h.print(
             "This shows an invocation of enclone that takes one dataset as input \
@@ -121,7 +121,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
                 }
                 x.push(s[l]);
             }
-            h.print_plain_unchecked(&format!("{}", strme(&x)));
+            h.print_plain_unchecked(&strme(&x).to_string());
         }
         h.print(
             "This shows an invocation of enclone that takes VDJ, and gene expression \

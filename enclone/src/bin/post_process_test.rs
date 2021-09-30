@@ -23,7 +23,7 @@ fn main() {
                 rejected = true;
             }
         }
-        if !rejected && line.len() > 0 {
+        if !rejected && !line.is_empty() {
             println!("{}", line);
         }
     }

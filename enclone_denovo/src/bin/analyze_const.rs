@@ -62,10 +62,8 @@ fn main() {
         lines.push(line.to_string());
         let x = line.before(" ").as_bytes().to_vec();
         let name = line.after("  ").to_string();
-        if !names.is_empty() {
-            if name == names[names.len() - 1] {
-                continue;
-            }
+        if !names.is_empty() && name == names[names.len() - 1] {
+            continue;
         }
         xs.push(x);
         names.push(name);
@@ -95,7 +93,7 @@ fn main() {
         let k = calls[i].len();
         let mut m = Vec::<u8>::new();
         if k > 0 {
-            calls[i].sort();
+            calls[i].sort_unstable();
             let mut freqs = Vec::<(u32, u8)>::new();
             make_freq(&calls[i], &mut freqs);
             if i > 0 {
@@ -117,13 +115,11 @@ fn main() {
                 m.push(freqs[0].1);
                 bits += 2;
                 nmotifs += 1;
-            } else {
-                if (freqs[0].0 + freqs[1].0) as f64 / k as f64 >= MIN_FRAC {
-                    m.push(freqs[0].1);
-                    m.push(freqs[1].1);
-                    bits += 1;
-                    nmotifs += 1;
-                }
+            } else if (freqs[0].0 + freqs[1].0) as f64 / k as f64 >= MIN_FRAC {
+                m.push(freqs[0].1);
+                m.push(freqs[1].1);
+                bits += 1;
+                nmotifs += 1;
             }
         }
         motifs.push(m);
@@ -142,7 +138,7 @@ fn main() {
             print!(" ");
         }
     }
-    println!("");
+    println!();
     for i in 0..n {
         if (i + 1) % 10 == 0 {
             print!("{}", ((i + 1) / 10) % 10);
@@ -150,11 +146,11 @@ fn main() {
             print!(" ");
         }
     }
-    println!("");
+    println!();
     for i in 0..n {
         print!("{}", (i + 1) % 10);
     }
-    println!("");
+    println!();
     for pass in 0..2 {
         for i in 0..n {
             if motifs[i].len() > pass {
@@ -165,7 +161,7 @@ fn main() {
                 print!(" ");
             }
         }
-        println!("");
+        println!();
     }
 
     // Find errors relative to motifs.
@@ -185,14 +181,13 @@ fn main() {
         let mut errs = 0;
         let mut p = 0;
         for j in 0..n {
-            if !motifs[j].is_empty() {
-                if xs[i][j] != motifs[j][0] {
-                    if motifs[j].len() == 1 || xs[i][j] != motifs[j][1] {
-                        errs += 1;
-                        if j < pre {
-                            p += 1;
-                        }
-                    }
+            if !motifs[j].is_empty()
+                && xs[i][j] != motifs[j][0]
+                && (motifs[j].len() == 1 || xs[i][j] != motifs[j][1])
+            {
+                errs += 1;
+                if j < pre {
+                    p += 1;
                 }
             }
         }

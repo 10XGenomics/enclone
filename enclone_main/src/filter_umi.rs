@@ -62,7 +62,7 @@ pub fn filter_umi(
         let mut nu = vec![0; ctl.origin_info.n()];
         let mut umin = vec![0.0; ctl.origin_info.n()];
         for l in 0..ctl.origin_info.n() {
-            umis[l].sort();
+            umis[l].sort_unstable();
             nu[l] = umis[l].len();
             if ctl.gen_opt.baseline {
                 println!(
@@ -160,15 +160,14 @@ pub fn filter_umi(
                                                 ex.clones[k][0].marked = true;
                                             }
                                         }
-                                    } else if pass == 3 {
-                                        if !baselined
+                                    } else if pass == 3
+                                        && (!baselined
                                             || (best_ex, best_cell) != (j, k)
-                                            || ex.share.len() == 1
-                                        {
-                                            to_delete[k] = true;
-                                            if ctl.clono_filt_opt_def.umi_filt_mark {
-                                                ex.clones[k][0].marked = true;
-                                            }
+                                            || ex.share.len() == 1)
+                                    {
+                                        to_delete[k] = true;
+                                        if ctl.clono_filt_opt_def.umi_filt_mark {
+                                            ex.clones[k][0].marked = true;
                                         }
                                     }
                                 }

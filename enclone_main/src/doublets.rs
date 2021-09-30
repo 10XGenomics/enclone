@@ -49,14 +49,14 @@ pub fn delete_doublets(
             }
             let mat = define_mat(
                 is_bcr,
-                &to_bc,
-                &sr,
-                &ctl,
-                &exact_clonotypes,
+                to_bc,
+                sr,
+                ctl,
+                exact_clonotypes,
                 &exacts,
                 &od,
-                &info,
-                &raw_joins,
+                info,
+                raw_joins,
             );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();

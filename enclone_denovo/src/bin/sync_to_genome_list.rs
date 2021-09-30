@@ -20,7 +20,7 @@ fn main() {
     let listx = include_str!("../genome_list");
     let (mut acc1, mut fns1) = (Vec::<String>::new(), Vec::<String>::new());
     for line in listx.lines() {
-        if line.contains(":") && !line.starts_with("#") {
+        if line.contains(':') && !line.starts_with('#') {
             acc1.push(line.before(":").to_string());
             fns1.push(line.to_string());
         }

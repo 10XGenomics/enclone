@@ -67,7 +67,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
 
         // Skip broken references: Canus_lupus_familiaris and a bunch of others.
 
-        if headers.len() == 0 {
+        if headers.is_empty() {
             continue;
         }
         refs_all.push(refs);
@@ -134,7 +134,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
             if aa.len() >= 30 {
                 let mut aap = aa.clone();
                 aap.push(b'C');
-                if cdr3_score(&aap, &chain_type, false) > 4 + cdr3_score(&aa, &chain_type, false) {
+                if cdr3_score(&aap, chain_type, false) > 4 + cdr3_score(&aa, chain_type, false) {
                     continue;
                 }
             }
@@ -163,11 +163,11 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
             if aa.len() >= 31 {
                 // Pretty crappy frameshift test.  One should see high aa and dna similarity
                 // to other seqs if shifted.  Or use more aas.
-                let score = cdr3_score(&aa, &chain_type, false);
+                let score = cdr3_score(&aa, chain_type, false);
                 let mut frameshift = false;
                 for del in 1..=2 {
                     let aad = aa_seq(&seq, del);
-                    if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
+                    if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
                         // println!("frameshift = {} = {}", species, headers[i].before(" "));
                         // use io_utils::*;
                         // printme!(cdr3_score(&aa, &chain_type, false));
@@ -181,15 +181,15 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
 
             // Gather calls.
 
-            let cdr1 = cdr1(&aa, &chain_type, false);
-            let cdr2 = cdr2(&aa, &chain_type, false);
-            let fwr1 = fwr1(&aa, &chain_type, false);
-            let fwr2 = fwr2(&aa, &chain_type, false);
-            let fwr3 = fwr3(&aa, &chain_type, false);
-            if !cdr1.is_some() || !cdr2.is_some() {
+            let cdr1 = cdr1(&aa, chain_type, false);
+            let cdr2 = cdr2(&aa, chain_type, false);
+            let fwr1 = fwr1(&aa, chain_type, false);
+            let fwr2 = fwr2(&aa, chain_type, false);
+            let fwr3 = fwr3(&aa, chain_type, false);
+            if cdr1.is_none() || cdr2.is_none() {
                 continue;
             }
-            if !fwr1.is_some() || !fwr2.is_some() || !fwr3.is_some() {
+            if fwr1.is_none() || fwr2.is_none() || fwr3.is_none() {
                 continue;
             }
             let cdr1 = cdr1.unwrap();
@@ -256,7 +256,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                 for m in m1..m2 {
                     c.push(calls[m].3[j]);
                 }
-                c.sort();
+                c.sort_unstable();
                 let mut freq = Vec::<(u32, u8)>::new();
                 make_freq(&c, &mut freq);
                 pwm.push(freq);
@@ -282,7 +282,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                 // Define scoring scheme.  This is very ugly, because the second argument b is
                 // treated as the column number in the position weight matrix.
 
-                let mut n = 0 as i32;
+                let mut n = 0_i32;
                 for i in 0..pwm[0].len() {
                     n += pwm[0][i].0 as i32;
                 }
@@ -317,7 +317,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
 
                 // Align.
 
-                let align = aligner.custom_with_match_path(&x1, &x2, &corners, &path);
+                let align = aligner.custom_with_match_path(x1, &x2, &corners, &path);
                 let ops = &align.operations;
 
                 // Punt if there was an insertion.
@@ -349,7 +349,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                         }
                     }
                     if !found {
-                        pwm[i].push((1 as u32, c));
+                        pwm[i].push((1_u32, c));
                     }
                 }
             }

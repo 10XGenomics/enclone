@@ -27,10 +27,9 @@ fn json_error(
     // printed multiple times.
     let mut msgx = String::new();
     if !exiting.swap(true, Ordering::Relaxed) {
-        msgx = format!(
-            "\nThere is something wrong with the contig annotations in the cellranger output \
+        msgx = "\nThere is something wrong with the contig annotations in the cellranger output \
              file"
-        );
+            .to_string();
         if json.is_some() {
             msgx += &mut format!("\n{}.", json.unwrap());
         } else {
@@ -40,17 +39,15 @@ fn json_error(
             msgx += &mut format!("\n\npossibly relevant internal data: {}\n", msg);
         }
         if ctl.gen_opt.internal_run {
-            msgx += &mut format!(
-                "\n\nATTENTION INTERNAL 10X USERS!\n\
+            msgx += &mut "\n\nATTENTION INTERNAL 10X USERS!\n\
                 Quite possibly you are using data from a cellranger run carried out using a \
                 version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
                 argument CURRENT_REF to your command line.  If that doesn't work, \
                 please see below.\n"
-            );
+                .to_string();
         }
-        msgx += &mut format!(
-            "\n\nHere is what you should do:\n\n\
+        msgx += &mut "\n\nHere is what you should do:\n\n\
              1. If you used cellranger version ≥ 4.0, the problem is very likely\n\
                 that the directory outs/vdj_reference was not retained, so enclone\n\
                 didn't see it, and had to guess what the reference sequence was.\n\
@@ -67,7 +64,7 @@ fn json_error(
              Note that one way to get the error is to specify TCR when you meant BCR, or the\n\
              other way.\n\n\
              If you're stuck, please write to us at enclone@10xgenomics.com.\n"
-        );
+            .to_string();
     }
     Err(msgx)
 }
@@ -91,11 +88,11 @@ fn parse_vector_entry_from_json(
     tigs: &mut Vec<TigData>,
     exiting: &AtomicBool,
 ) -> Result<(), String> {
-    let v: Result<Value, _> = serde_json::from_str(strme(&x));
+    let v: Result<Value, _> = serde_json::from_str(strme(x));
     if v.is_err() {
         return Err(format!(
             "\nInternal error, failed to parse a value from a string.  The string is:\n{}\n",
-            strme(&x)
+            strme(x)
         ));
     }
     let v = v.unwrap();
@@ -129,15 +126,12 @@ fn parse_vector_entry_from_json(
 
     // Proceed.
 
-    if !ctl.gen_opt.reprod {
-        if !v["productive"].as_bool().unwrap_or(false) {
-            return Ok(());
-        }
+    if !ctl.gen_opt.reprod && !v["productive"].as_bool().unwrap_or(false) {
+        return Ok(());
     }
-    if !ctl.gen_opt.reprod {
-        if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
-            return Ok(());
-        }
+    if !ctl.gen_opt.reprod && !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false)
+    {
+        return Ok(());
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
     let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
@@ -147,7 +141,7 @@ fn parse_vector_entry_from_json(
     let mut c_ref_id = None;
     let mut chain_type = String::new();
     let mut u_ref_id = None;
-    let (mut tig_start, mut tig_stop) = (-1 as isize, -1 as isize);
+    let (mut tig_start, mut tig_stop) = (-1_isize, -1_isize);
     let mut v_stop = 0;
     let mut v_stop_ref = 0;
     let mut d_start = None;
@@ -206,9 +200,9 @@ fn parse_vector_entry_from_json(
     // Reannotate.
 
     if reannotate || ctl.gen_opt.reprod {
-        let x = DnaString::from_dna_string(&full_seq);
+        let x = DnaString::from_dna_string(full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
-        annotate_seq(&x, &refdata, &mut ann, true, false, true);
+        annotate_seq(&x, refdata, &mut ann, true, false, true);
 
         // If there are multiple V segment alignments, possibly reduce to just one.
 
@@ -223,22 +217,22 @@ fn parse_vector_entry_from_json(
                 }
                 k += 1;
             }
-            if refdata.segtype[t] == "V".to_string() && k - j > 1 {
+            if refdata.segtype[t] == *"V" && k - j > 1 {
                 let mut entries = 1;
-                if j < ann.len() - 1 && ann[j + 1].2 as usize == t {
-                    if (ann[j].0 + ann[j].1 == ann[j + 1].0 && ann[j].3 + ann[j].1 < ann[j + 1].3)
+                if j < ann.len() - 1
+                    && ann[j + 1].2 as usize == t
+                    && ((ann[j].0 + ann[j].1 == ann[j + 1].0 && ann[j].3 + ann[j].1 < ann[j + 1].3)
                         || (ann[j].0 + ann[j].1 < ann[j + 1].0
-                            && ann[j].3 + ann[j].1 == ann[j + 1].3)
-                    {
-                        entries = 2;
-                    }
+                            && ann[j].3 + ann[j].1 == ann[j + 1].3))
+                {
+                    entries = 2;
                 }
                 for l in j..j + entries {
-                    ann2.push(ann[l].clone());
+                    ann2.push(ann[l]);
                 }
             } else {
                 for l in j..k {
-                    ann2.push(ann[l].clone());
+                    ann2.push(ann[l]);
                 }
             }
             j = k;
@@ -247,23 +241,23 @@ fn parse_vector_entry_from_json(
 
         // Proceed.
 
-        if ctl.gen_opt.trace_barcode == barcode.to_string() {
+        if ctl.gen_opt.trace_barcode == *barcode {
             let mut log = Vec::<u8>::new();
-            print_some_annotations(&refdata, &ann, &mut log, false);
+            print_some_annotations(refdata, &ann, &mut log, false);
             print!("\n{}", strme(&log));
         }
         let mut log = Vec::<u8>::new();
-        if ctl.gen_opt.trace_barcode == barcode.to_string() {
-            if !is_valid(&x, &refdata, &ann, true, &mut log) {
+        if ctl.gen_opt.trace_barcode == *barcode {
+            if !is_valid(&x, refdata, &ann, true, &mut log) {
                 print!("{}", strme(&log));
                 println!("invalid");
                 return Ok(());
             }
-        } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
+        } else if !is_valid(&x, refdata, &ann, false, &mut log) {
             return Ok(());
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
+        get_cdr3_using_ann(&x, refdata, &ann, &mut cdr3);
         cdr3_aa = stringme(&cdr3[0].1);
         cdr3_start = cdr3[0].0;
         cdr3_dna = x
@@ -276,9 +270,9 @@ fn parse_vector_entry_from_json(
                 u_ref_id = Some(t);
             } else if refdata.is_v(t) && !seen_j {
                 v_ref_id = t;
-                annv.push(ann[i].clone());
+                annv.push(ann[i]);
                 chain_type = refdata.name[t][0..3].to_string();
-                if chain_type == "IGH".to_string() || chain_type == "TRB".to_string() {
+                if chain_type == *"IGH" || chain_type == *"TRB" {
                     left = true;
                 }
                 if ann[i].3 == 0 {
@@ -335,29 +329,30 @@ fn parse_vector_entry_from_json(
                 .to_string()
                 .between("\"", "\"")
                 .to_string();
-            if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
-                if !exiting.swap(true, Ordering::Relaxed) {
-                    return Err(format!(
-                        "\nThere is an inconsistency between the reference \
-                         file used to create the Cell Ranger output files in\n{}\nand the \
-                         reference that enclone is using.\n\nFor example, the feature \
-                         numbered {} is\nthe gene {} in one and the gene {} in the other.\n\n\
-                         As far as we know, this type of error can only occur with Cell Ranger \
-                         versions before 4.0.\n\n\
-                         If this is mouse data, please use the argument MOUSE, and that may \
-                         solve the problem.\n\n\
-                         If this is human or mouse data, and you are OK with using the current \
-                         built-in reference that\nenclone has, \
-                         you can instead add the argument BUILT_IN to the command line.  This \
-                         forces\nrecomputation of annotations and may be somewhat slower.\n\n\
-                         A solution that should always work is to supply\n\
-                         REF=vdj_reference_fasta_filename as an argument to enclone.\n",
-                        json.rev_before("/"),
-                        feature_id,
-                        gene_name,
-                        refdata.name[feature_idx]
-                    ));
-                }
+            if refdata.name[feature_idx] != gene_name
+                && !accept_inconsistent
+                && !exiting.swap(true, Ordering::Relaxed)
+            {
+                return Err(format!(
+                    "\nThere is an inconsistency between the reference \
+                     file used to create the Cell Ranger output files in\n{}\nand the \
+                     reference that enclone is using.\n\nFor example, the feature \
+                     numbered {} is\nthe gene {} in one and the gene {} in the other.\n\n\
+                     As far as we know, this type of error can only occur with Cell Ranger \
+                     versions before 4.0.\n\n\
+                     If this is mouse data, please use the argument MOUSE, and that may \
+                     solve the problem.\n\n\
+                     If this is human or mouse data, and you are OK with using the current \
+                     built-in reference that\nenclone has, \
+                     you can instead add the argument BUILT_IN to the command line.  This \
+                     forces\nrecomputation of annotations and may be somewhat slower.\n\n\
+                     A solution that should always work is to supply\n\
+                     REF=vdj_reference_fasta_filename as an argument to enclone.\n",
+                    json.rev_before("/"),
+                    feature_id,
+                    gene_name,
+                    refdata.name[feature_idx]
+                ));
             }
             if region_type == "L-REGION+V-REGION" && ref_start == 0 {
                 let chain = a["feature"]["chain"]
@@ -368,7 +363,7 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-                if chain == "IGH".to_string() || chain == "TRB".to_string() {
+                if chain == *"IGH" || chain == *"TRB" {
                     left = true;
                 }
                 v_ref_id = feature_idx;
@@ -435,7 +430,7 @@ fn parse_vector_entry_from_json(
                 del = x;
             }
         }
-        annv.push((0 as i32, len1, t, 0, 0));
+        annv.push((0_i32, len1, t, 0, 0));
         if ins > 0 && ins % 3 == 0 && del == 0 && len2 > 0 {
             let start = (len1 + ins) as i32;
             annv.push((start, len2, t, len1, 0));
@@ -443,11 +438,9 @@ fn parse_vector_entry_from_json(
             annv.push((len1, len2, t, len1 + del, 0));
         }
         let rt = &refdata.refs[v_ref_id as usize];
-        if annv.len() == 2 {
-            if annv[0].1 as usize > rt.len() {
-                let msg = format!("annv[0].1 = {}, rt.len() = {}", annv[0].1, rt.len());
-                json_error(None, &ctl, &exiting, &msg)?;
-            }
+        if annv.len() == 2 && annv[0].1 as usize > rt.len() {
+            let msg = format!("annv[0].1 = {}, rt.len() = {}", annv[0].1, rt.len());
+            json_error(None, ctl, exiting, &msg)?;
         }
 
         // Check to see if the CDR3 sequence has changed.  This could happen if the cellranger
@@ -456,8 +449,8 @@ fn parse_vector_entry_from_json(
         // inconsistencies, leading to an assert somewhere downstream.
 
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-        let x = DnaString::from_dna_string(&full_seq);
-        get_cdr3_using_ann(&x, &refdata, &annv, &mut cdr3);
+        let x = DnaString::from_dna_string(full_seq);
+        get_cdr3_using_ann(&x, refdata, &annv, &mut cdr3);
         if cdr3.is_empty() {
             return Ok(());
         }
@@ -488,7 +481,7 @@ fn parse_vector_entry_from_json(
     // Case 2: seen on 99640, barcode CAGTAACCATGTCGAT-1.
     // It is not known if these correspond to bugs in cellranger that were subsequently fixed.
 
-    if cdr3_aa.contains("*") {
+    if cdr3_aa.contains('*') {
         return Ok(());
     }
     if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
@@ -499,7 +492,7 @@ fn parse_vector_entry_from_json(
 
     if tig_start < 0 || tig_stop < 0 {
         let msg = format!("tig_start = {}, tig_stop = {}", tig_start, tig_stop);
-        json_error(Some(&json), &ctl, exiting, &msg)?;
+        json_error(Some(json), ctl, exiting, &msg)?;
     }
     let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
     let quals0 = v["quals"].to_string();
@@ -519,7 +512,7 @@ fn parse_vector_entry_from_json(
     assert_eq!(full_seq.len(), quals.len());
     let seq = full_seq[tig_start..tig_stop].to_string();
     for i in 0..quals.len() {
-        quals[i] -= 33 as u8;
+        quals[i] -= 33_u8;
     }
     let full_quals = quals.clone();
     let quals = quals[tig_start..tig_stop].to_vec();
@@ -532,9 +525,8 @@ fn parse_vector_entry_from_json(
         origin = Some(origin_info.origin_for_bc[li][&barcode.clone()].clone());
     } else {
         // the way we use s1 here is flaky
-        if origin_info.origin_id[li].len() > 0
-            && (origin_info.origin_id[li] != "s1".to_string()
-                || origin_info.origin_for_bc[li].len() == 0)
+        if !origin_info.origin_id[li].is_empty()
+            && (origin_info.origin_id[li] != *"s1" || origin_info.origin_for_bc[li].is_empty())
         {
             origin = Some(origin_info.origin_id[li].clone());
         }
@@ -543,9 +535,8 @@ fn parse_vector_entry_from_json(
         donor = Some(origin_info.donor_for_bc[li][&barcode.clone()].clone());
     } else {
         // the way we use d1 here is flaky
-        if origin_info.origin_id[li].len() > 0
-            && (origin_info.donor_id[li] != "d1".to_string()
-                || origin_info.donor_for_bc[li].len() == 0)
+        if !origin_info.origin_id[li].is_empty()
+            && (origin_info.donor_id[li] != *"d1" || origin_info.donor_for_bc[li].is_empty())
         {
             donor = Some(origin_info.donor_id[li].clone());
         }
@@ -580,46 +571,46 @@ fn parse_vector_entry_from_json(
         invalu = Some(invalidated_umis);
     }
     tigs.push(TigData {
-        cdr3_dna: cdr3_dna.to_string(),
+        cdr3_dna,
         len: seq.len(),
         v_start: tig_start,
-        v_stop: v_stop,
-        v_stop_ref: v_stop_ref,
-        d_start: d_start,
-        j_start: j_start,
-        j_start_ref: j_start_ref,
+        v_stop,
+        v_stop_ref,
+        d_start,
+        j_start,
+        j_start_ref,
         j_stop: tig_stop,
-        c_start: c_start,
+        c_start,
         full_seq: full_seq.as_bytes().to_vec(),
-        v_ref_id: v_ref_id,
-        d_ref_id: d_ref_id,
-        j_ref_id: j_ref_id,
-        c_ref_id: c_ref_id,
-        u_ref_id: u_ref_id,
+        v_ref_id,
+        d_ref_id,
+        j_ref_id,
+        c_ref_id,
+        u_ref_id,
         fr1_start: 0,
         cdr1_start: None,
         fr2_start: None,
         cdr2_start: None,
         fr3_start: None,
-        cdr3_aa: cdr3_aa.to_string(),
-        cdr3_start: cdr3_start,
-        quals: quals,
-        full_quals: full_quals,
+        cdr3_aa,
+        cdr3_start,
+        quals,
+        full_quals,
         barcode: barcode.to_string(),
         tigname: tigname.to_string(),
-        left: left,
+        left,
         dataset_index: li,
-        origin_index: origin_index,
-        donor_index: donor_index,
-        tag_index: tag_index,
-        umi_count: umi_count,
-        read_count: read_count,
-        chain_type: chain_type.clone(),
+        origin_index,
+        donor_index,
+        tag_index,
+        umi_count,
+        read_count,
+        chain_type,
         annv: annv.clone(),
         validated_umis: valu,
         non_validated_umis: non_valu,
         invalidated_umis: invalu,
-        frac_reads_used: frac_reads_used,
+        frac_reads_used,
     });
     Ok(())
 }
@@ -666,12 +657,12 @@ pub fn read_json(
     *gex_cells_specified = false;
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
-    if !path_exists(&json) {
+    if !path_exists(json) {
         jsonx = format!("{}.lz4", json);
     }
     if jsonx.contains('/') {
         let p = jsonx.rev_before("/");
-        if !path_exists(&p) {
+        if !path_exists(p) {
             return Err(format!(
                 "\nThere should be a directory\n\
                  \"{}\"\n\
@@ -726,14 +717,14 @@ pub fn read_json(
         let i = res.0;
         let resx = parse_vector_entry_from_json(
             &xs[i],
-            &json,
+            json,
             accept_inconsistent,
-            &origin_info,
+            origin_info,
             li,
-            &refdata,
-            &to_ref_index,
+            refdata,
+            to_ref_index,
             reannotate,
-            &ctl,
+            ctl,
             &mut res.1,
             &mut res.2,
             &mut res.3,
@@ -746,7 +737,7 @@ pub fn read_json(
         }
     });
     for i in 0..results.len() {
-        if results[i].6.len() > 0 {
+        if !results[i].6.is_empty() {
             return Err(results[i].6.clone());
         }
     }
@@ -756,7 +747,7 @@ pub fn read_json(
         if results[i].3 {
             *gex_cells_specified = true;
         }
-        if results[i].4.len() > 0 {
+        if !results[i].4.is_empty() {
             *cr_version = results[i].4.clone();
         }
         tigs.append(&mut results[i].5);
@@ -847,11 +838,11 @@ pub fn parse_json_annotations_files(
             &ctl.origin_info,
             li,
             &json,
-            &refdata,
-            &to_ref_index,
+            refdata,
+            to_ref_index,
             ctl.gen_opt.reannotate,
             &mut res.4,
-            &ctl,
+            ctl,
             &mut res.5,
             &mut res.6,
             &mut res.7,
@@ -861,12 +852,11 @@ pub fn parse_json_annotations_files(
             res.5.sort();
             res.2 = tig_bc;
         } else {
-            res.8 = format!("{}", resx.err().unwrap());
-            return;
+            res.8 = resx.err().unwrap();
         }
     });
     for i in 0..results.len() {
-        if results[i].8.len() > 0 {
+        if !results[i].8.is_empty() {
             return Err(results[i].8.clone());
         }
     }
@@ -874,14 +864,14 @@ pub fn parse_json_annotations_files(
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
         // ctl.gen_opt.cr_version = results[i].4.clone();
-        if results[i].4.len() == 0 {
+        if results[i].4.is_empty() {
             versions.push("≤3.1".to_string());
         } else {
             versions.push(results[i].4.clone());
         }
         vdj_cells.push(results[i].5.clone());
         gex_cells.push(results[i].6.clone());
-        gex_cells_specified.push(results[i].7.clone());
+        gex_cells_specified.push(results[i].7);
     }
     /*
     if !ctl.gen_opt.internal_run {

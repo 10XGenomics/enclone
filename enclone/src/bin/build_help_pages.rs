@@ -16,7 +16,7 @@ fn main() {
         .arg("HTML")
         .arg("STABLE_DOC")
         .output()
-        .expect(&format!("failed to execute enclone"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
     if new.status.code() != Some(0) {
         panic!();
     }
@@ -27,7 +27,7 @@ fn main() {
         .arg("HTML")
         .arg("STABLE_DOC")
         .output()
-        .expect(&format!("failed to execute enclone"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\nbuild_help_pages failed");
         eprintln!("stdout = {}", strme(&new.stdout));
@@ -44,7 +44,7 @@ fn main() {
                 .arg("HTML")
                 .arg("STABLE_DOC")
                 .output()
-                .expect(&format!("failed to execute enclone"));
+                .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
         } else {
             new = Command::new("target/debug/enclone")
                 .arg("help")
@@ -52,7 +52,7 @@ fn main() {
                 .arg("HTML")
                 .arg("STABLE_DOC")
                 .output()
-                .expect(&format!("failed to execute enclone"));
+                .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
         }
         if new.status.code() != Some(0) {
             eprintln!("\nbuild_help_pages failed on {}", x);

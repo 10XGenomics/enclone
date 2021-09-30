@@ -31,12 +31,12 @@ pub fn some_filters(
     delete_doublets(
         orbits,
         is_bcr,
-        &to_bc,
-        &sr,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &raw_joins,
+        to_bc,
+        sr,
+        ctl,
+        exact_clonotypes,
+        info,
+        raw_joins,
     );
     ctl.perf_stats(&tdoublet, "doublet filtering");
 
@@ -70,14 +70,14 @@ pub fn some_filters(
         }
         let mat = define_mat(
             is_bcr,
-            &to_bc,
-            &sr,
-            &ctl,
-            &exact_clonotypes,
+            to_bc,
+            sr,
+            ctl,
+            exact_clonotypes,
             &exacts,
             &od,
-            &info,
-            &raw_joins,
+            info,
+            raw_joins,
         );
 
         // Find all the signatures and cell counts associated to each.
@@ -151,17 +151,15 @@ pub fn some_filters(
                     t.push(col);
                 }
             }
-            if dels.contains(&t) {
-                if ctl.clono_filt_opt_def.signature {
-                    res.2.push(exacts[u]);
-                    let ex = &exact_clonotypes[exacts[u]];
-                    for i in 0..ex.ncells() {
-                        res.1.push((
-                            ex.clones[i][0].dataset_index,
-                            ex.clones[i][0].barcode.clone(),
-                            "failed SIGNATURE filter".to_string(),
-                        ));
-                    }
+            if dels.contains(&t) && ctl.clono_filt_opt_def.signature {
+                res.2.push(exacts[u]);
+                let ex = &exact_clonotypes[exacts[u]];
+                for i in 0..ex.ncells() {
+                    res.1.push((
+                        ex.clones[i][0].dataset_index,
+                        ex.clones[i][0].barcode.clone(),
+                        "failed SIGNATURE filter".to_string(),
+                    ));
                 }
             }
         }
@@ -194,7 +192,7 @@ pub fn some_filters(
     // Merge onesies where totally unambiguous.
 
     let tmerge = Instant::now();
-    merge_onesies(orbits, &ctl, &exact_clonotypes, &info, &eq, &disintegrated);
+    merge_onesies(orbits, ctl, exact_clonotypes, info, eq, disintegrated);
     ctl.perf_stats(&tmerge, "merging onesies");
 
     // Check for disjoint orbits.
@@ -203,12 +201,12 @@ pub fn some_filters(
     split_orbits(
         orbits,
         is_bcr,
-        &to_bc,
-        &sr,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &raw_joins,
+        to_bc,
+        sr,
+        ctl,
+        exact_clonotypes,
+        info,
+        raw_joins,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 1");
 
@@ -218,12 +216,12 @@ pub fn some_filters(
     weak_chains(
         orbits,
         is_bcr,
-        &to_bc,
-        &sr,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &raw_joins,
+        to_bc,
+        sr,
+        ctl,
+        exact_clonotypes,
+        info,
+        raw_joins,
         fate,
     );
     ctl.perf_stats(&tweak, "weak chain filtering");
@@ -234,12 +232,12 @@ pub fn some_filters(
     split_orbits(
         orbits,
         is_bcr,
-        &to_bc,
-        &sr,
-        &ctl,
-        &exact_clonotypes,
-        &info,
-        &raw_joins,
+        to_bc,
+        sr,
+        ctl,
+        exact_clonotypes,
+        info,
+        raw_joins,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 2");
 }

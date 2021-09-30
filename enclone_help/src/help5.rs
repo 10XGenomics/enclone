@@ -663,7 +663,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.print("\\boldblue{16. How can I cite enclone?}\n\n")?;
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
-        h.print(&format!("{}", strme(&log)))?;
+        h.print(&strme(&log).to_string())?;
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\nversion {}.\n",
@@ -677,7 +677,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         }
         let mut log = Vec::<u8>::new();
         emit_end_escape(&mut log);
-        h.print(&format!("{}", strme(&log)))?;
+        h.print(&strme(&log).to_string())?;
         h.print(
             "At some point in the future, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
@@ -737,10 +737,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         let mut x = args[1].clone();
         x.make_ascii_lowercase();
         if x.contains("help") {
-            return Err(format!(
-                "\nYour help request doesn't match one known to enclone.\n\
+            return Err("\nYour help request doesn't match one known to enclone.\n\
                 Please type \"enclone\" to see the help options.\n"
-            ));
+                .to_string());
         }
     }
     Ok(())

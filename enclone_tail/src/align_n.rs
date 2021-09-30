@@ -46,11 +46,11 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let (ops, _score) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, left, &ctl);
+    let (ops, _score) = align_to_vdj_ref(seq, vref, dref, d2ref, jref, drefname, left, ctl);
 
     // Make visual alignment.
 
-    let mut vis = vis_align(&seq, &concat, &ops, width);
+    let mut vis = vis_align(seq, concat, &ops, width);
 
     // Colorize it.
 
@@ -70,7 +70,7 @@ fn print_vis_align(
             print_color(DCOLOR, &mut vdj_bytes);
             vdj_bytes.push(b'D');
         }
-        if d2ref.len() > 0 {
+        if !d2ref.is_empty() {
             print_color(D2COLOR, &mut vdj_bytes);
             vdj_bytes.push(b'D');
         }
@@ -80,14 +80,14 @@ fn print_vis_align(
         vdj = stringme(&vdj_bytes);
         for (i, line) in vis.lines().enumerate() {
             if i % 4 != 2 {
-                vis_new += &line.clone();
+                vis_new += line.clone();
                 vis_new += "\n";
             } else {
                 let mut log = Vec::<u8>::new();
                 let line = line.as_bytes();
                 if pos < vref.len() {
                     print_color(VCOLOR, &mut log);
-                } else if d2ref.len() > 0
+                } else if !d2ref.is_empty()
                     && pos >= vref.len() + dref.len()
                     && pos < vref.len() + dref.len() + d2ref.len()
                 {
@@ -103,24 +103,22 @@ fn print_vis_align(
                         pos += 1;
                         if j != line.len() - 1 {
                             if left {
-                                if d2ref.len() > 0 && pos == vref.len() + dref.len() {
+                                if !d2ref.is_empty() && pos == vref.len() + dref.len() {
                                     print_color(D2COLOR, &mut log);
                                 } else if pos == vref.len() + dref.len() + d2ref.len() {
                                     print_color(JCOLOR, &mut log);
                                 } else if pos == vref.len() {
                                     print_color(DCOLOR, &mut log);
                                 }
-                            } else {
-                                if pos == vref.len() {
-                                    print_color(JCOLOR, &mut log);
-                                }
+                            } else if pos == vref.len() {
+                                print_color(JCOLOR, &mut log);
                             }
                         }
                     }
                 }
                 emit_end_escape(&mut log);
                 log.push(b'\n');
-                vis_new += &strme(&log);
+                vis_new += strme(&log);
             }
         }
         vis = vis_new;
@@ -234,19 +232,9 @@ pub fn align_n(
                             if ex.share[r].left {
                                 let mut scores = Vec::<f64>::new();
                                 let mut ds = Vec::<Vec<usize>>::new();
-                                opt_d(
-                                    &ex,
-                                    m,
-                                    k,
-                                    &rsi[oo],
-                                    &refdata,
-                                    &dref,
-                                    &mut scores,
-                                    &mut ds,
-                                    &ctl,
-                                );
+                                opt_d(ex, m, k, &rsi[oo], refdata, dref, &mut scores, &mut ds, ctl);
                                 let mut opt = Vec::new();
-                                if ds.len() > 0 {
+                                if !ds.is_empty() {
                                     opt = ds[0].clone();
                                 }
                                 let mut opt2 = Vec::new();
@@ -271,13 +259,13 @@ pub fn align_n(
                                         } else {
                                             print_color(D2COLOR, &mut log);
                                         }
-                                        drefname += &strme(&log);
+                                        drefname += strme(&log);
                                     }
                                     drefname += &mut refdata.name[d].clone();
                                     if ctl.pretty {
                                         let mut log = Vec::<u8>::new();
                                         emit_end_escape(&mut log);
-                                        drefname += &strme(&log);
+                                        drefname += strme(&log);
                                     }
                                 }
                                 concat.append(&mut drefx.clone());
@@ -315,7 +303,7 @@ pub fn align_n(
                             let mut add = String::new();
                             if ex.share[r].left {
                                 let mut drefname = drefname.clone();
-                                if drefname == "".to_string() {
+                                if drefname == *"" {
                                     drefname = "none".to_string();
                                 }
                                 let rank;
@@ -343,7 +331,7 @@ pub fn align_n(
                                 &jref,
                                 &drefname,
                                 ex.share[r].left,
-                                &ctl,
+                                ctl,
                                 &mut logx,
                                 widthx,
                                 &add,

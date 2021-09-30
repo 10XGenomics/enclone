@@ -48,7 +48,7 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), St
                     p = p.after(":");
                 }
                 let pp = format!("{}{}", p, endsz[iy]);
-                if !p.is_empty() && Regex::new(&p).is_ok() {
+                if !p.is_empty() && Regex::new(p).is_ok() {
                     let mut ok = true;
                     let mut px = false;
                     let b = p.as_bytes();
@@ -89,13 +89,13 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), St
                                     ok = true;
                                 }
                                 if ok
-                                    && (reg.as_ref().unwrap().is_match(&ff[0])
-                                        || reg.as_ref().unwrap().is_match(&ff[1]))
+                                    && (reg.as_ref().unwrap().is_match(ff[0])
+                                        || reg.as_ref().unwrap().is_match(ff[1]))
                                 {
                                     js.push(j);
                                 }
                             }
-                            if js.len() > 0 {
+                            if !js.is_empty() {
                                 ctl.clono_print_opt.regex_match[li].insert(pp.clone(), js);
                             }
                         }

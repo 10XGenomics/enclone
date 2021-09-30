@@ -28,7 +28,7 @@ pub fn sim_mat_plot(
     out_datas: &Vec<Vec<HashMap<String, String>>>,
     svgs: &mut Vec<String>,
 ) {
-    if ctl.plot_opt.sim_mat_plot_file.len() > 0 {
+    if !ctl.plot_opt.sim_mat_plot_file.is_empty() {
         let filename = &ctl.plot_opt.sim_mat_plot_file;
         let vars = &ctl.plot_opt.sim_mat_plot_vars;
         let n = vars.len();
@@ -119,7 +119,7 @@ pub fn sim_mat_plot(
 
         // Define row titles.
 
-        let mut max_title_width = 0.0 as f64;
+        let mut max_title_width = 0.0_f64;
         for i in 0..n {
             max_title_width = max_title_width
                 .max(lines[i].len() as f64 * font_size * DEJA_SANS_MONO_WIDTH_HEIGHT_RATIO);
@@ -196,7 +196,7 @@ pub fn sim_mat_plot(
             for i2 in 0..n {
                 let x = x0 + (i1 as f64) * dimn;
                 let y = sep + (i2 as f64) * dimn;
-                let gray = (255 as f64 * (1.0 - cos[i1][i2])).round() as u8;
+                let gray = (255_f64 * (1.0 - cos[i1][i2])).round() as u8;
                 svg += &mut format!(
                     "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
                     style=\"fill:{};stroke:black;stroke-width:1\" />\n",

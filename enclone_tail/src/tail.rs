@@ -47,23 +47,23 @@ pub fn tail_code(
     // Print clonotypes.
 
     group_and_print_clonotypes(
-        &tall,
-        &refdata,
-        &pics,
+        tall,
+        refdata,
+        pics,
         group_pics,
         last_widths,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
+        exacts,
+        rsi,
+        exact_clonotypes,
+        ctl,
         &mut out_datas,
-        &join_info,
-        &gex_info,
-        &vdj_cells,
-        &fate,
-        &dref,
-        &groups,
-        &opt_d_val,
+        join_info,
+        gex_info,
+        vdj_cells,
+        fate,
+        dref,
+        groups,
+        opt_d_val,
         svgs,
         summary,
     )?;
@@ -117,20 +117,18 @@ pub fn tail_code(
                 control_cells
             );
         }
-        if tests.len() == 0 {
+        if tests.is_empty() {
             if !ctl.gen_opt.gene_scan_exact {
-                return Err(format!("Gene scan failed, no test clonotypes.\n"));
+                return Err("Gene scan failed, no test clonotypes.\n".to_string());
             } else {
-                return Err(format!("Gene scan failed, no test exact subclonotypes.\n"));
+                return Err("Gene scan failed, no test exact subclonotypes.\n".to_string());
             }
         }
-        if controls.len() == 0 {
+        if controls.is_empty() {
             if !ctl.gen_opt.gene_scan_exact {
-                return Err(format!("Gene scan failed, no control clonotypes.\n"));
+                return Err("Gene scan failed, no control clonotypes.\n".to_string());
             } else {
-                return Err(format!(
-                    "Gene scan failed, no control exact subclonotypes.\n"
-                ));
+                return Err("Gene scan failed, no control exact subclonotypes.\n".to_string());
             }
         }
         println!("enriched features\n");
@@ -287,7 +285,7 @@ pub fn tail_code(
             let mut vals = Vec::<f64>::new();
             let threshold = ctl.gen_opt.gene_scan_threshold.clone().unwrap();
             for i in 0..threshold.var.len() {
-                if threshold.var[i] == "t".to_string() {
+                if threshold.var[i] == *"t" {
                     vals.push(test_mean);
                 } else {
                     vals.push(control_mean);
@@ -311,7 +309,7 @@ pub fn tail_code(
         ];
         rows.push(row);
         for fid in 0..nf {
-            if results[fid].1.len() > 0 {
+            if !results[fid].1.is_empty() {
                 let stuff = strme(&results[fid].1);
                 let fields = stuff.split('\t').collect::<Vec<&str>>();
                 let mut row = Vec::<String>::new();
@@ -347,12 +345,9 @@ pub fn tail_code(
                         let li = ex.clones[l][0].dataset_index;
                         let bc = ex.clones[l][0].barcode.clone();
                         let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            if gex_info.gex_matrices[li].initialized() {
-                                let raw_count =
-                                    gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                vals.push(raw_count);
-                            }
+                        if p >= 0 && gex_info.gex_matrices[li].initialized() {
+                            let raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                            vals.push(raw_count);
                         }
                     }
                 }

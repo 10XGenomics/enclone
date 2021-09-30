@@ -60,7 +60,7 @@ pub fn evaluate_d(
     // Start to build reference concatenation.  First append the V segment.
 
     let mut concat = Vec::<u8>::new();
-    let vstart = vref.len() - vflank(&tig, &vref);
+    let vstart = vref.len() - vflank(tig, vref);
     let vref = vref[vstart..vref.len()].to_vec();
     concat.append(&mut vref.clone());
 
@@ -86,7 +86,7 @@ pub fn evaluate_d(
 
     // Append the J segment.
 
-    let jend = jflank(&tig, &jref);
+    let jend = jflank(tig, jref);
 
     // Align the V..J sequence on the contig to the reference concatenation.
 
@@ -97,7 +97,7 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true, &ctl);
+    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true, ctl);
     (ops, count)
 }
 
@@ -133,7 +133,7 @@ pub fn opt_d(
     } else {
         vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
     }
-    let vstart = vref.len() - vflank(&tig, &vref);
+    let vstart = vref.len() - vflank(tig, &vref);
     let mut seq_start = vstart as isize;
     // probably not exactly right
     if ex.share[mid].annv.len() > 1 {
@@ -146,18 +146,18 @@ pub fn opt_d(
     const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
         let (ops, count) = evaluate_d(
-            &tig,
+            tig,
             &vref,
             seq_start as usize,
             &todo[di],
             &jref,
-            &refdata,
-            &ctl,
+            refdata,
+            ctl,
         );
         counts.push(count);
         if !todo[di].is_empty() {
             let drefx = refdata.refs[todo[di][0]].to_ascii_vec();
-            let vstart = vref.len() - vflank(&tig, &vref);
+            let vstart = vref.len() - vflank(tig, &vref);
             let vref = vref[vstart..vref.len()].to_vec();
             let zos = zero_one(&ops, vref.len(), vref.len() + drefx.len());
             let bits = match_bit_score(&zos);
@@ -179,13 +179,13 @@ pub fn opt_d(
         }
         for di in 0..todo.len() {
             let (_ops, count) = evaluate_d(
-                &tig,
+                tig,
                 &vref,
                 seq_start as usize,
                 &todo[di],
                 &jref,
-                &refdata,
-                &ctl,
+                refdata,
+                ctl,
             );
             counts.push(count);
             ds.push(todo[di].clone());

@@ -152,7 +152,7 @@ pub fn flag_defective(
             if aa.len() >= 30 {
                 let mut aap = aa.clone();
                 aap.push(b'C');
-                if cdr3_score(&aap, &chain_type, false) > 4 + cdr3_score(&aa, &chain_type, false) {
+                if cdr3_score(&aap, chain_type, false) > 4 + cdr3_score(&aa, chain_type, false) {
                     reasons.push("appears to need a C to be appended to its right end".to_string());
                 }
             }
@@ -178,17 +178,16 @@ pub fn flag_defective(
             if aa.len() >= 31 {
                 for del in 1..=2 {
                     let aad = aa_seq(&seq, del);
-                    if cdr3_score(&aad, &chain_type, false)
-                        > 4 + cdr3_score(&aa, &chain_type, false)
+                    if cdr3_score(&aad, chain_type, false) > 4 + cdr3_score(&aa, chain_type, false)
                     {
                         reasons.push("appears to be frameshifted".to_string());
                     }
                 }
             }
             if reasons.is_empty() {
-                let cs2 = cdr2_start(&aa, &chain_type, false);
+                let cs2 = cdr2_start(&aa, chain_type, false);
                 if cs2.is_some() {
-                    let fr3 = fr3_start(&aa, &chain_type, false).unwrap();
+                    let fr3 = fr3_start(&aa, chain_type, false).unwrap();
                     if cs2.unwrap() > fr3 {
                         reasons.push(
                             "appears to be defective, because our computed \
@@ -198,21 +197,19 @@ pub fn flag_defective(
                     }
                 }
             }
-            if reasons.is_empty() {
-                if aa.len() >= 31 {
-                    // Pretty crappy frameshift test.  One should see high aa and dna similarity
-                    // to other seqs if shifted.  Or use more aas.
-                    let score = cdr3_score(&aa, &chain_type, false);
-                    let mut frameshift = false;
-                    for del in 1..=2 {
-                        let aad = aa_seq(&seq, del);
-                        if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
-                            frameshift = true;
-                        }
+            if reasons.is_empty() && aa.len() >= 31 {
+                // Pretty crappy frameshift test.  One should see high aa and dna similarity
+                // to other seqs if shifted.  Or use more aas.
+                let score = cdr3_score(&aa, chain_type, false);
+                let mut frameshift = false;
+                for del in 1..=2 {
+                    let aad = aa_seq(&seq, del);
+                    if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
+                        frameshift = true;
                     }
-                    if frameshift {
-                        reasons.push("appears to be frameshifted".to_string());
-                    }
+                }
+                if frameshift {
+                    reasons.push("appears to be frameshifted".to_string());
                 }
             }
             if reasons.is_empty() {

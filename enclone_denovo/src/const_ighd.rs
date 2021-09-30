@@ -72,8 +72,8 @@ unsafe fn hsum256_ps_avx(vin: __m256) -> f32 {
     let mut sums = _mm_add_ps(v, shuf);
     shuf = _mm_movehl_ps(shuf, sums); // high half -> low half
     sums = _mm_add_ss(sums, shuf);
-    let res = _mm_cvtss_f32(sums);
-    return res;
+
+    _mm_cvtss_f32(sums)
 }
 
 pub fn ighd_score2(
@@ -86,8 +86,8 @@ pub fn ighd_score2(
 ) -> f32 {
     let sub_vec_size = 5;
     let n = ighd_pwm.len() / sub_vec_size;
-    let mut best_score = ighd_score(&x, &ighd_pwm);
-    let mut y = vec![0 as u8; n];
+    let mut best_score = ighd_score(x, ighd_pwm);
+    let mut y = vec![0_u8; n];
     const GAP_PENALTY: f32 = 0.0_f32; // was 0.25
     for ins in (3..=3 * max_ins_len).step_by(3) {
         for i in 0..ins_start + 3 {
@@ -101,7 +101,7 @@ pub fn ighd_score2(
         }
         for m in 0..n - ins - 3 - ins_start {
             if m % 3 == 0 {
-                let score2 = ighd_score(&y, &ighd_pwm) + (ins as f32 * GAP_PENALTY);
+                let score2 = ighd_score(&y, ighd_pwm) + (ins as f32 * GAP_PENALTY);
                 if score2 < best_score {
                     *ins_pos = ins_start + m + 3;
                     *ins_len = ins;

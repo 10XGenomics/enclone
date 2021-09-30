@@ -57,7 +57,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
 
         // Skip broken references: Canus_lupus_familiaris and a bunch of others.
 
-        if headers.len() == 0 {
+        if headers.is_empty() {
             continue;
         }
         refs_all.push(refs);
@@ -131,8 +131,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
                 if aa.len() >= MOTIF {
                     let mut aap = aa.clone();
                     aap.push(b'C');
-                    if cdr3_score(&aap, &chain_type, false)
-                        > 4 + cdr3_score(&aa, &chain_type, false)
+                    if cdr3_score(&aap, chain_type, false) > 4 + cdr3_score(&aa, chain_type, false)
                     {
                         continue;
                     }
@@ -162,11 +161,11 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
                 if aa.len() >= 31 {
                     // Pretty crappy frameshift test.  One should see high aa and dna similarity
                     // to other seqs if shifted.  Or use more aas.
-                    let score = cdr3_score(&aa, &chain_type, false);
+                    let score = cdr3_score(&aa, chain_type, false);
                     let mut frameshift = false;
                     for del in 1..=2 {
                         let aad = aa_seq(&seq, del);
-                        if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
+                        if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
                             // println!("frameshift = {} = {}", species, headers[i].before(" "));
                             // use io_utils::*;
                             // printme!(cdr3_score(&aa, &chain_type, false));
@@ -181,8 +180,8 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
 
             // Gather calls.
 
-            let fr3_start = fr3_start(&aa, &chain_type, false).unwrap();
-            let cdr3_start = cdr3_start(&aa, &chain_type, false);
+            let fr3_start = fr3_start(&aa, chain_type, false).unwrap();
+            let cdr3_start = cdr3_start(&aa, chain_type, false);
             let f3 = &aa[fr3_start..cdr3_start];
             let r;
             if chain_type == "IGH" {
@@ -214,7 +213,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
     let mut freqs = vec![vec![Vec::<(u32, u8)>::new(); MOTIF]; 5];
     for r in 0..5 {
         for j in 0..MOTIF {
-            calls[r][j].sort();
+            calls[r][j].sort_unstable();
             make_freq(&calls[r][j], &mut freqs[r][j]);
         }
     }

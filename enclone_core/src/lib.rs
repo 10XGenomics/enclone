@@ -32,7 +32,7 @@ lazy_static! {
     pub static ref REMOTE_HOST: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
+const VERSION_STRING: &str = env!("VERSION_STRING");
 
 // WARNING: the version string will not be up to date unless enclone_core/build.rs is touched
 // before compiling.  Use current_version_string() to always get the current version.
@@ -105,7 +105,7 @@ pub fn fetch_url(url: &str) -> Result<String, String> {
 
 pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
     let x = std::fs::File::open(&f);
-    if !x.is_ok() {
+    if x.is_err() {
         return Err(format!(
             "\nThe file {} could not be opened because {}.  This came from \
             the command line argument {}.\n",

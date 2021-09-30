@@ -157,7 +157,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
         for i in 0..si.len() {
             si[i] = si[i].between("\"", "\"").to_string();
         }
-        if read_path.len() == 0 {
+        if read_path.is_empty() {
             println!("\nfailed to find read path, presumably because there's no antibody data\n");
             println!("(this is probably ok)\n");
             return None;
@@ -167,7 +167,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
             std::process::exit(1);
         }
     }
-    if lanes.len() == 0 {
+    if lanes.is_empty() {
         eprintln!("\nfailed to find lanes\n");
         std::process::exit(1);
     }
@@ -178,9 +178,9 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
     }
 
     let seq_def = SequencingDef {
-        read_path: read_path,
+        read_path,
         sample_indices: si,
-        lanes: lanes,
+        lanes,
     };
     Some(seq_def)
 }
@@ -200,7 +200,7 @@ pub fn feature_barcode_matrix(
     let mut read_files = Vec::<String>::new();
     let x = dir_list(&seq_def.read_path);
     if verbose {
-        println!("");
+        println!();
     }
     for f in x.iter() {
         for sample_index in seq_def.sample_indices.iter() {
@@ -346,7 +346,7 @@ pub fn feature_barcode_matrix(
         let mut refx = 0;
         let mut nrefx = 0;
         for k in i..j {
-            if bin_member(&ref_fb, &stringme(&bfu[k].1)) {
+            if bin_member(ref_fb, &stringme(&bfu[k].1)) {
                 refx += 1;
             } else {
                 nrefx += 1;

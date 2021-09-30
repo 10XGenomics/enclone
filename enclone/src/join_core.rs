@@ -28,17 +28,7 @@ pub fn join_core(
             if !ctl.force && (eq.class_id((k1 - i) as i32) == eq.class_id((k2 - i) as i32)) {
                 continue;
             }
-            if join_one(
-                is_bcr,
-                k1,
-                k2,
-                &ctl,
-                &exact_clonotypes,
-                &info,
-                &to_bc,
-                &sr,
-                pot,
-            ) {
+            if join_one(is_bcr, k1, k2, ctl, exact_clonotypes, info, to_bc, sr, pot) {
                 eq.join((k1 - i) as i32, (k2 - i) as i32);
             }
         }

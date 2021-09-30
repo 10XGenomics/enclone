@@ -28,7 +28,7 @@ fn main() {
         let testname = &TESTS[it];
         let mut out = String::new();
         run_test(
-            "enclone", it, "", &testname, "test", &mut res.1, &mut res.2, &mut out,
+            "enclone", it, "", testname, "test", &mut res.1, &mut res.2, &mut out,
         );
         if !res.1 {
             let out_file = format!("testx/inputs/outputs/enclone_test{}_output", it + 1);

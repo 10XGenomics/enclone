@@ -21,7 +21,7 @@ fn main() {
     let mut id_seq = Vec::<(String, String, String)>::new();
     let f = include_str!("../const_ighd_best_hits");
     for line in f.lines() {
-        if line.starts_with("#") || line.contains("//") {
+        if line.starts_with('#') || line.contains("//") {
             continue;
         }
         if line.ends_with(" old") || line.ends_with(" new/good") || line.ends_with(" correct") {
@@ -31,7 +31,7 @@ fn main() {
             id_seq.push((id, species, seq));
         }
     }
-    println!("");
+    println!();
     let mut results = Vec::<(usize, Vec<u8>, bool)>::new();
     for i in 0..id_seq.len() {
         results.push((i, Vec::<u8>::new(), false));

@@ -224,9 +224,9 @@ fn main() {
                         .between("\"", "\"")
                         .to_string();
                     seq_def = Some(SequencingDef {
-                        read_path: read_path,
-                        sample_indices: sample_indices,
-                        lanes: lanes,
+                        read_path,
+                        sample_indices,
+                        lanes,
                     });
                 }
             }

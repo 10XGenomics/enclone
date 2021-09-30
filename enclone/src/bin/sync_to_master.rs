@@ -17,7 +17,7 @@ fn main() {
     let f = open_for_read!["master.toml"];
     for line in f.lines() {
         let s = line.unwrap();
-        if !s.starts_with('#') && s.contains("=") {
+        if !s.starts_with('#') && s.contains('=') {
             version.insert(s.before(" = ").to_string(), s.after(" = ").to_string());
         }
     }

@@ -71,19 +71,19 @@ pub fn find_alleles(
                         partner.push(x.share[ja].v_ref_id);
                     }
                 }
-                if !partner.is_empty() {
-                    if y.seq_del.len() >= refdata.refs[id].len() - ctl.heur.ref_v_trim {
-                        for l in 0..x.clones.len() {
-                            let donor = x.clones[l][j].donor_index;
-                            if donor.is_some() {
-                                allxy[id].push((
-                                    donor.unwrap(),
-                                    y.seq_del.clone(),
-                                    partner.clone(),
-                                    m,
-                                    x.clones[l][j].dataset_index,
-                                ));
-                            }
+                if !partner.is_empty()
+                    && y.seq_del.len() >= refdata.refs[id].len() - ctl.heur.ref_v_trim
+                {
+                    for l in 0..x.clones.len() {
+                        let donor = x.clones[l][j].donor_index;
+                        if donor.is_some() {
+                            allxy[id].push((
+                                donor.unwrap(),
+                                y.seq_del.clone(),
+                                partner.clone(),
+                                m,
+                                x.clones[l][j].dataset_index,
+                            ));
                         }
                     }
                 }
@@ -180,7 +180,7 @@ pub fn find_alleles(
                         }
                     }
                 }
-                trace.sort();
+                trace.sort_unstable();
                 let mut i = 0;
                 while i < trace.len() {
                     let j = next_diff1_2(&trace, i as i32) as usize;
@@ -248,7 +248,9 @@ pub fn find_alleles(
                 } else {
                     c = b'T';
                 }
-                if (freqs.len() > 0 && freqs[0].0 >= ctl.allele_alg_opt.min_alt && freqs[0].3 != c)
+                if (!freqs.is_empty()
+                    && freqs[0].0 >= ctl.allele_alg_opt.min_alt
+                    && freqs[0].3 != c)
                     || (freqs.len() > 1
                         && ctl.allele_alg_opt.min_mult * freqs[1].0 >= bases.len()
                         && freqs[1].0 >= ctl.allele_alg_opt.min_alt)
@@ -256,7 +258,7 @@ pub fn find_alleles(
                     ps.push(p);
                 }
             }
-            if ps.len() == 0 {
+            if ps.is_empty() {
                 continue;
             }
             if ctl.allele_print_opt.con_trace {
@@ -336,7 +338,7 @@ pub fn find_alleles(
                 }
                 i = j;
             }
-            if keep.len() > 1 || (keep.len() > 0 && !have_ref) {
+            if keep.len() > 1 || (!keep.is_empty() && !have_ref) {
                 // Remove columns that are pure reference.
 
                 let mut to_delete = vec![false; keep[0].0.len()];
@@ -393,7 +395,7 @@ pub fn find_alleles(
                         if x.3 {
                             print!(" (ref)");
                         }
-                        println!("");
+                        println!();
                     }
                 }
 
@@ -507,48 +509,47 @@ pub fn sub_alts(
                     for m in 0..alt_refs.len() {
                         if alt_refs[m].0 == donor
                             && refdata.name[alt_refs[m].1] == refdata.name[info[i].vsids[j]]
+                            && alt_refs[m].2.len() - ctl.heur.ref_v_trim <= info[i].tigs[j].len()
                         {
-                            if alt_refs[m].2.len() - ctl.heur.ref_v_trim <= info[i].tigs[j].len() {
-                                let mut alt_errs = 0;
-                                for l in 0..alt_refs[m].2.len() - ctl.heur.ref_v_trim {
-                                    let x = alt_refs[m].2.get(l);
-                                    let c;
-                                    if x == 0 {
-                                        c = b'A';
-                                    } else if x == 1 {
-                                        c = b'C';
-                                    } else if x == 2 {
-                                        c = b'G';
-                                    } else {
-                                        c = b'T';
-                                    }
-                                    if info[i].tigs[j][l] != c {
-                                        alt_errs += 1;
-                                    }
+                            let mut alt_errs = 0;
+                            for l in 0..alt_refs[m].2.len() - ctl.heur.ref_v_trim {
+                                let x = alt_refs[m].2.get(l);
+                                let c;
+                                if x == 0 {
+                                    c = b'A';
+                                } else if x == 1 {
+                                    c = b'C';
+                                } else if x == 2 {
+                                    c = b'G';
+                                } else {
+                                    c = b'T';
                                 }
-                                if alt_errs < errs {
-                                    info[i].vs[j] = alt_refs[m].2.clone();
-                                    info[i].vsids[j] = alt_refs[m].1;
-                                    info[i].dref[j] = Some(m); // not sure we're actually using this
-                                    let ex = &mut exact_clonotypes[info[i].clonotype_id];
-                                    for z in 0..ex.share.len() {
-                                        if ex.share[z].seq == info[i].tigs[j] {
-                                            ex.share[z].v_ref_id = alt_refs[m].1;
-                                            ex.share[z].v_ref_id_donor = Some(m);
-                                            ex.share[z].v_ref_id_donor_donor = Some(donor);
-                                            let mut alts = 0;
-                                            let mut mm = m;
-                                            while mm >= 1 {
-                                                mm -= 1;
-                                                if alt_refs[mm].0 == donor
-                                                    && alt_refs[mm].1 == alt_refs[m].1
-                                                {
-                                                    alts += 1;
-                                                }
+                                if info[i].tigs[j][l] != c {
+                                    alt_errs += 1;
+                                }
+                            }
+                            if alt_errs < errs {
+                                info[i].vs[j] = alt_refs[m].2.clone();
+                                info[i].vsids[j] = alt_refs[m].1;
+                                info[i].dref[j] = Some(m); // not sure we're actually using this
+                                let ex = &mut exact_clonotypes[info[i].clonotype_id];
+                                for z in 0..ex.share.len() {
+                                    if ex.share[z].seq == info[i].tigs[j] {
+                                        ex.share[z].v_ref_id = alt_refs[m].1;
+                                        ex.share[z].v_ref_id_donor = Some(m);
+                                        ex.share[z].v_ref_id_donor_donor = Some(donor);
+                                        let mut alts = 0;
+                                        let mut mm = m;
+                                        while mm >= 1 {
+                                            mm -= 1;
+                                            if alt_refs[mm].0 == donor
+                                                && alt_refs[mm].1 == alt_refs[m].1
+                                            {
+                                                alts += 1;
                                             }
-                                            ex.share[z].v_ref_id_donor_alt_id = Some(alts);
-                                            break;
                                         }
+                                        ex.share[z].v_ref_id_donor_alt_id = Some(alts);
+                                        break;
                                     }
                                 }
                             }

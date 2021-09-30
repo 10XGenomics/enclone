@@ -88,7 +88,7 @@ pub struct EncloneSetup {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
-    let setup = main_enclone_setup(&args)?;
+    let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
@@ -96,7 +96,7 @@ pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
     if inter.setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
-    Ok(main_enclone_stop(inter)?)
+    main_enclone_stop(inter)
 }
 
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
@@ -109,13 +109,12 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         let version_file = format!("{}/enclone/version", home);
         if !path_exists(&version_file) {
-            return Err(format!(
-                "\nError: the file ~/enclone/version does not exist.\n\
+            return Err("\nError: the file ~/enclone/version does not exist.\n\
                 Please visit bit.ly/enclone_install_issues.\n"
-            ));
+                .to_string());
         }
         let mut version2 = read_to_string(&version_file).unwrap();
-        if !version2.starts_with("v") || !version2.ends_with("\n") {
+        if !version2.starts_with('v') || !version2.ends_with('\n') {
             return Err(format!(
                 "\nThe file ~/enclone/version appears to be damaged.\n\
                 Its content is \"{}\".\n\
@@ -141,8 +140,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let args_orig = args.clone();
     let mut ctl = EncloneControl::default();
-    let args = critical_args(&args, &mut ctl)?;
-    ctl.start_time = Some(tall.clone());
+    let args = critical_args(args, &mut ctl)?;
+    ctl.start_time = Some(tall);
     for i in 0..args.len() {
         let arg = &args[i];
         if arg == "PROFILE" {
@@ -171,7 +170,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
     }
     if comp && !comp2 {
-        println!("");
+        println!();
     }
     ctl.gen_opt.cpu_all_start = 0;
     ctl.gen_opt.cpu_this_start = 0;
@@ -231,7 +230,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             for y in ctl.origin_info.dataset_id.iter() {
                 x.push(y.force_usize());
             }
-            x.sort();
+            x.sort_unstable();
             println!("\n{}\n", x.iter().format(","));
             return Ok(EncloneSetup::default());
         }
@@ -239,7 +238,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Read external data.
 
-    if ctl.gen_opt.ext.len() > 0 {
+    if !ctl.gen_opt.ext.is_empty() {
         let f = open_userfile_for_read(&ctl.gen_opt.ext);
         let mut exts = Vec::<String>::new();
         for line in f.lines() {
@@ -281,7 +280,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         &ctl.gen_opt.tree,
         ctl.parseable_opt.pbarcode,
     )?;
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+    if !ctl.plot_opt.plot_xy_filename.is_empty() {
         check_pcols(
             &ctl,
             &gex_info,
@@ -318,11 +317,11 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Check DVARS.
 
     let tfcell = Instant::now();
-    if ctl.gen_opt.dvars.len() > 0 {
+    if !ctl.gen_opt.dvars.is_empty() {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
             let mut var = ctl.gen_opt.dvars[j].clone();
-            if var.contains(":") {
+            if var.contains(':') {
                 var = var.after(":").to_string();
             }
             let mut found = false;
@@ -368,13 +367,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                 }
             }
             for _ in con.iter_function_identifiers() {
-                return Err(format!("\nSomething is wrong with your FCELL value.\n"));
+                return Err("\nSomething is wrong with your FCELL value.\n".to_string());
             }
         }
         if !test2.is_empty() {
             let known_features = get_known_features(&gex_info)?; // note duplicated computation
             for var in test2.iter() {
-                if !bin_member(&known_features, &var) {
+                if !bin_member(&known_features, var) {
                     return Err(format!(
                         "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
                         var
@@ -402,10 +401,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         ann = "contig_annotations.json";
     }
     determine_ref(&mut ctl, &mut refx)?;
-    if refx.len() == 0 && ctl.origin_info.n() == 0 {
-        return Err(format!(
-            "\nNo data and no TCR or BCR data have been specified.\n"
-        ));
+    if refx.is_empty() && ctl.origin_info.n() == 0 {
+        return Err("\nNo data and no TCR or BCR data have been specified.\n".to_string());
     }
     ctl.perf_stats(&tr, "starting reference");
 
@@ -422,7 +419,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.bcr {
         is_tcr = false;
     }
-    make_vdj_ref_data_core(&mut refdata, &refx2, &ext_refx, is_tcr, is_bcr, None);
+    make_vdj_ref_data_core(&mut refdata, refx2, &ext_refx, is_tcr, is_bcr, None);
     let mut to_ref_index = HashMap::<usize, usize>::new();
     for i in 0..refdata.refs.len() {
         to_ref_index.insert(refdata.id[i] as usize, i);
@@ -447,12 +444,10 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
             return Err(format!("\ncan't find {} or {}\n", json, json_lz4));
+        } else if path_exists(&json) {
+            ctl.pathlist.push(json);
         } else {
-            if path_exists(&json) {
-                ctl.pathlist.push(json);
-            } else {
-                ctl.pathlist.push(json_lz4);
-            }
+            ctl.pathlist.push(json_lz4);
         }
     }
 
@@ -480,13 +475,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Return.
 
     Ok(EncloneSetup {
-        ctl: ctl,
-        refdata: refdata,
+        ctl,
+        refdata,
         ann: ann.to_string(),
-        gex_info: gex_info,
+        gex_info,
         tall: Some(tall),
-        is_bcr: is_bcr,
-        to_ref_index: to_ref_index,
+        is_bcr,
+        to_ref_index,
     })
 }
 
@@ -504,7 +499,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     let mut log = Vec::<u8>::new();
     let mut broken = Vec::<bool>::new();
-    flag_defective(&ctl, &refdata, &mut log, &mut broken);
+    flag_defective(ctl, refdata, &mut log, &mut broken);
     ctl.perf_stats(&tr, "flagging defective references");
 
     // Parse the json annotations file.
@@ -515,10 +510,10 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let mut gex_cells = Vec::<Vec<String>>::new();
     let mut gex_cells_specified = Vec::<bool>::new();
     parse_json_annotations_files(
-        &ctl,
+        ctl,
         &mut tig_bc,
-        &refdata,
-        &to_ref_index,
+        refdata,
+        to_ref_index,
         &mut vdj_cells,
         &mut gex_cells,
         &mut gex_cells_specified,
@@ -534,8 +529,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let mut cdr1_starts = Vec::<Option<usize>>::new();
     let mut cdr2_starts = Vec::<Option<usize>>::new();
     populate_features(
-        &ctl,
-        &refdata,
+        ctl,
+        refdata,
         &broken,
         &mut fr1_starts,
         &mut fr2_starts,
@@ -563,12 +558,12 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
-        return Err(format!("\nNo TCR or BCR data have been specified.\n"));
+        return Err("\nNo TCR or BCR data have been specified.\n".to_string());
     }
 
     // Search for SHM indels.
 
-    search_for_shm_indels(&ctl, &tig_bc);
+    search_for_shm_indels(ctl, &tig_bc);
     if ctl.gen_opt.indels {
         return Ok(EncloneIntermediates::default());
     }
@@ -588,31 +583,31 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Filter using light --> heavy graph.
 
-    graph_filter(&ctl, &mut tig_bc, ctl.gen_opt.graph, &mut fate);
+    graph_filter(ctl, &mut tig_bc, ctl.gen_opt.graph, &mut fate);
 
     // Sort tig_bc.
 
-    sort_tig_bc(&ctl, &mut tig_bc, &refdata);
+    sort_tig_bc(ctl, &mut tig_bc, refdata);
 
     // Cross filter.
 
-    cross_filter(&ctl, &mut tig_bc, &mut fate);
+    cross_filter(ctl, &mut tig_bc, &mut fate);
 
     // Look for barcode reuse.
 
-    check_for_barcode_reuse(&ctl, &tig_bc)?;
+    check_for_barcode_reuse(ctl, &tig_bc)?;
     ctl.perf_stats(&tproto, "in proto stuff");
 
     // Find exact subclonotypes.
 
-    let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
+    let mut exact_clonotypes = find_exact_subclonotypes(ctl, &tig_bc, refdata, &mut fate);
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         return Ok(EncloneIntermediates::default());
     }
 
     // Test for consistency between VDJ cells and GEX cells.
 
-    test_vdj_gex_inconsistent(&ctl, &tig_bc, &exact_clonotypes, &vdj_cells, &gex_info)?;
+    test_vdj_gex_inconsistent(ctl, &tig_bc, &exact_clonotypes, &vdj_cells, gex_info)?;
 
     // Filter out some foursie artifacts.
 
@@ -675,7 +670,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // an indel in some cases.
 
     let tinfo = Instant::now();
-    let mut info: Vec<CloneInfo> = build_info(&refdata, &ctl, &mut exact_clonotypes, &mut fate);
+    let mut info: Vec<CloneInfo> = build_info(refdata, ctl, &mut exact_clonotypes, &mut fate);
     ctl.perf_stats(&tinfo, "building info");
 
     // Derive consensus sequences for alternate alleles of V segments.  Then create donor
@@ -683,9 +678,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     let talt = Instant::now();
     let alt_refs : Vec<(usize,usize,DnaString)>  // {(donor, ref id, alt seq)}
-        = find_alleles( &refdata, &ctl, &exact_clonotypes );
+        = find_alleles( refdata, ctl, &exact_clonotypes );
     ctl.perf_stats(&talt, "finding alt alleles");
-    if ctl.gen_opt.dref_file.len() > 0 {
+    if !ctl.gen_opt.dref_file.is_empty() {
         let f = File::create(&ctl.gen_opt.dref_file);
         if f.is_err() {
             eprintln!(
@@ -715,12 +710,12 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
     }
     let tdonor = Instant::now();
-    let drefs = make_donor_refs(&alt_refs, &refdata);
+    let drefs = make_donor_refs(&alt_refs, refdata);
     ctl.perf_stats(&tdonor, "making donor refs");
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 
-    sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
+    sub_alts(refdata, ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
     // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
     // This is intended as a replacement for some old code below.
@@ -730,8 +725,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
             let x = &exact_clonotypes[i].clones[j][0];
-            if !to_bc.contains_key(&(x.dataset_index, i)) {
-                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
+            if let std::collections::hash_map::Entry::Vacant(e) = to_bc.entry((x.dataset_index, i))
+            {
+                e.insert(vec![x.barcode.clone()]);
             } else {
                 to_bc
                     .get_mut(&(x.dataset_index, i))
@@ -756,8 +752,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let mut eq: EquivRel = join_exacts(
         is_bcr,
         &to_bc,
-        &refdata,
-        &ctl,
+        refdata,
+        ctl,
         &exact_clonotypes,
         &info,
         &mut join_info,
@@ -770,7 +766,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     let mut disintegrated = Vec::<bool>::new();
     disintegrate_onesies(
-        &ctl,
+        ctl,
         &mut disintegrated,
         &mut eq,
         &mut exact_clonotypes,
@@ -786,8 +782,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
             let x = &exact_clonotypes[i].clones[j][0];
-            if !to_bc.contains_key(&(x.dataset_index, i)) {
-                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
+            if let std::collections::hash_map::Entry::Vacant(e) = to_bc.entry((x.dataset_index, i))
+            {
+                e.insert(vec![x.barcode.clone()]);
             } else {
                 to_bc
                     .get_mut(&(x.dataset_index, i))
@@ -799,7 +796,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Restructure raw joins.
 
-    raw_joins.sort();
+    raw_joins.sort_unstable();
     let mut raw_joins2 = vec![Vec::<usize>::new(); info.len()];
     for i in 0..raw_joins.len() {
         raw_joins2[raw_joins[i].0 as usize].push(raw_joins[i].1 as usize);
@@ -813,7 +810,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
-    lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
+    lookup_heavy_chain_reuse(ctl, &exact_clonotypes, info, &eq);
     if ctl.gen_opt.heavy_chain_reuse {
         return Ok(EncloneIntermediates::default());
     }
@@ -826,9 +823,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     filter_umi(
         &eq,
         &mut orbits,
-        &ctl,
+        ctl,
         &mut exact_clonotypes,
-        &info,
+        info,
         &mut fate,
     );
 
@@ -846,13 +843,13 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 let li = ex.clones[k][0].dataset_index;
                 let bc = &ex.clones[k][0].barcode;
                 if ctl.gen_opt.cellranger {
-                    if gex_cells_specified[li] && !bin_member(&gex_cells[li], &bc) {
+                    if gex_cells_specified[li] && !bin_member(&gex_cells[li], bc) {
                         to_delete[k] = true;
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
                     }
-                } else if ctl.origin_info.gex_path[li].len() > 0 {
+                } else if !ctl.origin_info.gex_path[li].is_empty() {
                     let gbc = &gex_info.gex_cell_barcodes[li];
-                    if !bin_member(&gbc, &bc) {
+                    if !bin_member(gbc, bc) {
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
                         if !ctl.clono_filt_opt_def.ngex {
                             to_delete[k] = true;
@@ -874,7 +871,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Filter using constraints imposed by FCELL.
 
-    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes, &gex_info)?;
+    filter_by_fcell(ctl, &mut orbits, info, &mut exact_clonotypes, gex_info)?;
     ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Run some filters.
@@ -884,9 +881,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         is_bcr,
         &to_bc,
         &sr,
-        &ctl,
+        ctl,
         &exact_clonotypes,
-        &info,
+        info,
         &raw_joins,
         &eq,
         &disintegrated,
@@ -909,19 +906,19 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     }
     ctl.perf_stats(&tmark, "marking vdj noncells");
     Ok(EncloneIntermediates {
-        setup: setup,
+        setup,
         ex: EncloneExacts {
-            to_bc: to_bc,
-            exact_clonotypes: exact_clonotypes,
-            raw_joins: raw_joins,
+            to_bc,
+            exact_clonotypes,
+            raw_joins,
             info: info.to_vec(),
-            orbits: orbits,
-            vdj_cells: vdj_cells,
-            join_info: join_info,
-            drefs: drefs,
-            sr: sr,
-            fate: fate,
-            is_bcr: is_bcr,
+            orbits,
+            vdj_cells,
+            join_info,
+            drefs,
+            sr,
+            fate,
+            is_bcr,
         },
     })
 }

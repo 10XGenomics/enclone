@@ -29,25 +29,25 @@ fn main() {
         let f = f.to_str().unwrap();
         let mut g = f.rev_after("/").rev_before(".fasta").to_string();
         if g.contains(&required) {
-            if g.contains(":") {
+            if g.contains(':') {
                 g = format!("{}:{}", g.before(":"), g.rev_after(":"));
             }
-            let x = read_fasta_to_vec_vec_u8(&f);
+            let x = read_fasta_to_vec_vec_u8(f);
             for i in (0..x.len()).step_by(2) {
                 let chain_type = strme(&x[i]).before("V");
                 if chain_type == "IGH" {
                     let aa = aa_seq(&x[i + 1], 0);
                     let bb;
                     if feature == "FWR1" {
-                        bb = fwr1(&aa, &chain_type, false).unwrap();
+                        bb = fwr1(&aa, chain_type, false).unwrap();
                     } else if feature == "FWR2" {
-                        bb = fwr2(&aa, &chain_type, false).unwrap();
+                        bb = fwr2(&aa, chain_type, false).unwrap();
                     } else if feature == "FWR3" {
-                        bb = fwr3(&aa, &chain_type, false).unwrap();
+                        bb = fwr3(&aa, chain_type, false).unwrap();
                     } else if feature == "CDR1" {
-                        bb = cdr1(&aa, &chain_type, false).unwrap();
+                        bb = cdr1(&aa, chain_type, false).unwrap();
                     } else if feature == "CDR2" {
-                        bb = cdr2(&aa, &chain_type, false).unwrap();
+                        bb = cdr2(&aa, chain_type, false).unwrap();
                     } else {
                         eprintln!("\nUnrecognized feature.\n");
                         std::process::exit(1);

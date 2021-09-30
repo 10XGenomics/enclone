@@ -95,7 +95,7 @@ pub fn graph_filter(
     for i in 0..results.len() {
         edges0.append(&mut results[i].1.clone());
     }
-    edges0.sort();
+    edges0.sort_unstable();
     let mut edges1 = Vec::<(usize, usize, (usize, usize))>::new();
     let mut i = 0;
     while i < edges0.len() {
@@ -342,7 +342,7 @@ pub fn graph_filter(
         kills.append(&mut results[i].1.clone());
         log.append(&mut results[i].2.clone());
     }
-    kills.sort();
+    kills.sort_unstable();
     // presumably badly inefficient
     let mut to_delete = vec![false; tig_bc.len()];
     let mut results = Vec::<(usize, bool)>::new();

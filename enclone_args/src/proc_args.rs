@@ -77,7 +77,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 .expect("failed to execute enclone");
             print!("{}{}", strme(&o.stdout), strme(&o.stderr));
             if o.status.code() != Some(0) {
-                return Err(format!("\nFAILED!\n"));
+                return Err("\nFAILED!\n".to_string());
             }
         }
         return Ok(());
@@ -185,15 +185,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             ctl.clono_filt_opt_def.marked_b = true;
         }
     }
-    if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
-        return Err(format!(
+    if have_meta && (have_tcr || have_bcr || have_gex || !bc.is_empty()) {
+        return Err(
             "\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n"
-        ));
+                .to_string(),
+        );
     }
     if have_tcr && have_bcr {
-        return Err(format!(
-            "\nKindly please do not specify both TCR and BCR.\n"
-        ));
+        return Err("\nKindly please do not specify both TCR and BCR.\n".to_string());
     }
     let mut using_plot = false;
 
@@ -209,11 +208,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             for j in 0..x.len() {
                 if x[j].contains('-') {
                     let (start, stop) = (x[j].before("-"), x[j].after("-"));
-                    if !start.parse::<usize>().is_ok()
-                        || !stop.parse::<usize>().is_ok()
+                    if start.parse::<usize>().is_err()
+                        || stop.parse::<usize>().is_err()
                         || start.force_usize() > stop.force_usize()
                     {
-                        return Err(format!("\nIllegal range in BI argument.\n"));
+                        return Err("\nIllegal range in BI argument.\n".to_string());
                     }
                     let (start, stop) = (start.force_usize(), stop.force_usize());
                     for j in start..=stop {
@@ -231,15 +230,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
             for n in y.iter() {
                 if *n != "m1" {
-                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 12 {
-                        return Err(format!(
+                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 12 {
+                        return Err(
                             "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
-                        ));
+                                .to_string(),
+                        );
                     }
                 } else if y.len() > 1 {
-                    return Err(format!(
-                        "\nFor BI, if you specify m1, you can only specify m1.\n"
-                    ));
+                    return Err(
+                        "\nFor BI, if you specify m1, you can only specify m1.\n".to_string()
+                    );
                 }
                 let mut found = false;
                 for s in f.lines() {
@@ -275,7 +275,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Preprocess NALL and NALL_GEX.
 
     for i in 1..args.len() {
-        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" || args[i] == "NALL_GEX" {
+        if args[i] == *"NALL" || args[i] == "NALL_CELL" || args[i] == "NALL_GEX" {
             let f = [
                 "NCELL",
                 "NGEX",
@@ -593,13 +593,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         // Replace deprecated option.
 
-        if arg == "KEEP_IMPROPER".to_string() {
+        if arg == *"KEEP_IMPROPER" {
             arg = "NIMPROPER".to_string();
         }
 
         // Strip out certain quoted expressions.
 
-        if arg.contains("=\"") && arg.ends_with("\"") {
+        if arg.contains("=\"") && arg.ends_with('\"') {
             let mut quotes = 0;
             for c in arg.chars() {
                 if c == '\"' {
@@ -615,17 +615,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
         // Check for weird case that might arise if testing code is screwed up.
 
-        if arg.len() == 0 {
-            return Err(format!(
+        if arg.is_empty() {
+            return Err(
                 "\nYou've passed a null argument to enclone.  Normally that isn't \
                  possible.\nPlease take a detailed look at how you're invoking enclone.\n"
-            ));
+                    .to_string(),
+            );
         }
 
         // Process set_true arguments.
 
         for j in 0..set_true.len() {
-            if arg == set_true[j].0.to_string() {
+            if arg == *set_true[j].0 {
                 *(set_true[j].1) = true;
                 continue 'args_loop;
             }
@@ -634,7 +635,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_false arguments.
 
         for j in 0..set_false.len() {
-            if arg == set_false[j].0.to_string() {
+            if arg == *set_false[j].0 {
                 *(set_false[j].1) = false;
                 continue 'args_loop;
             }
@@ -643,7 +644,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_usize args.
 
         for j in 0..set_usize.len() {
-            if is_usize_arg(&arg, &set_usize[j].0)? {
+            if is_usize_arg(&arg, set_usize[j].0)? {
                 *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
                 continue 'args_loop;
             }
@@ -652,7 +653,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_i32 args.
 
         for j in 0..set_i32.len() {
-            if is_i32_arg(&arg, &set_i32[j].0)? {
+            if is_i32_arg(&arg, set_i32[j].0)? {
                 *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
                 continue 'args_loop;
             }
@@ -661,7 +662,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_f64 args.
 
         for j in 0..set_f64.len() {
-            if is_f64_arg(&arg, &set_f64[j].0)? {
+            if is_f64_arg(&arg, set_f64[j].0)? {
                 *(set_f64[j].1) = arg.after(&format!("{}=", set_f64[j].0)).force_f64();
                 continue 'args_loop;
             }
@@ -670,7 +671,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_string args.
 
         for j in 0..set_string.len() {
-            if is_string_arg(&arg, &set_string[j].0)? {
+            if is_string_arg(&arg, set_string[j].0)? {
                 *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
                 continue 'args_loop;
             }
@@ -694,10 +695,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                         val
                     );
-                    if val.contains("/") {
+                    if val.contains('/') {
                         let dir = val.rev_before("/");
                         let msg;
-                        if path_exists(&dir) {
+                        if path_exists(dir) {
                             msg = "exists";
                         } else {
                             msg = "does not exist";
@@ -709,7 +710,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if ctl.gen_opt.evil_eye {
                     println!("removing file {}", val);
                 }
-                remove_file(&val).expect(&format!("could not remove file {}", val));
+                remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
                 if ctl.gen_opt.evil_eye {
                     println!("removal of file {} complete", val);
                 }
@@ -725,7 +726,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
                 *(set_string_writeable_or_stdout[j].1) = stringme(&tilde_expand(
-                    &set_string_writeable_or_stdout[j].1.as_bytes(),
+                    set_string_writeable_or_stdout[j].1.as_bytes(),
                 ));
                 let val = &(set_string_writeable_or_stdout[j].1);
                 if *val != "stdout" {
@@ -738,10 +739,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                             "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                             val
                         );
-                        if val.contains("/") {
+                        if val.contains('/') {
                             let dir = val.rev_before("/");
                             let msg;
-                            if path_exists(&dir) {
+                            if path_exists(dir) {
                                 msg = "exists";
                             } else {
                                 msg = "does not exist";
@@ -753,7 +754,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     if ctl.gen_opt.evil_eye {
                         println!("removing file {}", val);
                     }
-                    remove_file(&val).expect(&format!("could not remove file {}", val));
+                    remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
                 }
                 if ctl.gen_opt.evil_eye {
                     println!("removal of file {} complete", val);
@@ -771,7 +772,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(&val.as_bytes()));
+                val = stringme(&tilde_expand(val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
                 if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
@@ -793,7 +794,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(&val.as_bytes()));
+                val = stringme(&tilde_expand(val.as_bytes()));
                 *(set_string_readable_plain[j].1) = val.clone();
                 if ctl.gen_opt.evil_eye {
                     println!("testing ability to open file {}", val);
@@ -815,7 +816,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(&val.as_bytes()));
+                val = stringme(&tilde_expand(val.as_bytes()));
                 if !val.ends_with(".csv") {
                     return Err(format!(
                         "\nFilename input in {} needs to end with .csv.\n",
@@ -831,7 +832,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_nothing_simple args.
 
         for j in 0..set_nothing_simple.len() {
-            if arg == set_nothing_simple[j].to_string() {
+            if arg == *set_nothing_simple[j] {
                 continue 'args_loop;
             }
         }
@@ -839,8 +840,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         // Process set_nothing args.
 
         for j in 0..set_nothing.len() {
-            if arg == set_nothing[j].to_string() || arg.starts_with(&format!("{}=", set_nothing[j]))
-            {
+            if arg == *set_nothing[j] || arg.starts_with(&format!("{}=", set_nothing[j])) {
                 continue 'args_loop;
             }
         }
@@ -875,10 +875,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Do residual argument processing.
 
-    if ctl.gen_opt.internal_run && ctl.gen_opt.config.len() == 0 {
-        return Err(format!(
-            "\nYou need to set up your configuration file, please ask for help.\n"
-        ));
+    if ctl.gen_opt.internal_run && ctl.gen_opt.config.is_empty() {
+        return Err(
+            "\nYou need to set up your configuration file, please ask for help.\n".to_string(),
+        );
     }
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,

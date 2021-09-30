@@ -91,8 +91,8 @@ pub fn display_tree(
         let fwidth = width as f64;
         let mut last_change = "".to_string();
         loop {
-            let mut len = 0.0 as f64;
-            let mut max_w = 1.0 as f64;
+            let mut len = 0.0_f64;
+            let mut max_w = 1.0_f64;
             for i in 0..vpaths.len() {
                 let mut l = clen[i] as f64;
                 for j in 0..vlen[i].len() {
@@ -107,13 +107,13 @@ pub fn display_tree(
             } else if max_w == 1.0 && len >= fwidth {
                 break;
             } else if len > fwidth {
-                mult = 0.95 * mult;
+                mult *= 0.95;
                 last_change = "minus".to_string();
             } else {
-                if last_change == "minus".to_string() {
+                if last_change == *"minus" {
                     break;
                 }
-                mult = 1.05 * mult;
+                mult *= 1.05;
                 last_change = "plus".to_string();
             }
         }
@@ -165,12 +165,10 @@ pub fn display_tree(
                 } else {
                     x += &format!("╚{} ", hedge);
                 }
+            } else if !last_edge {
+                x += &format!("║{} ", hnone);
             } else {
-                if !last_edge {
-                    x += &format!("║{} ", hnone);
-                } else {
-                    x += &format!(" {} ", hnone);
-                }
+                x += &format!(" {} ", hnone);
             }
         }
         x += &format!("{}\n", vnames[vs[i]]);

@@ -60,7 +60,7 @@ impl Point {
             }
             // Determine if the intersection lies on the segment.
             if (x >= s.p1.x && x <= s.p2.x) || (x >= s.p2.x && x <= s.p1.x) {
-                d = d.min(self.dist(Point { x: x, y: y }));
+                d = d.min(self.dist(Point { x, y }));
             }
         }
         d
@@ -161,7 +161,7 @@ impl IntervalVec {
         } else if x > *self.ends.last().unwrap() {
             return &self.locs[0];
         } else if x == *self.ends.last().unwrap() {
-            return &self.locs.last().unwrap();
+            return self.locs.last().unwrap();
         }
         let m = self.ends.upper_bound(&x);
         if m == 0 || self.ends[m - 1] == x {
@@ -235,7 +235,7 @@ impl Polygon {
             if x1 > x2 {
                 swap(&mut x1, &mut x2);
             }
-            self.xranges.is.push(Interval { x1: x1, x2: x2 });
+            self.xranges.is.push(Interval { x1, x2 });
         }
         self.xranges.precompute();
     }
@@ -299,7 +299,7 @@ impl Polygon {
                 c1.x, c1.y, c2.x, c2.y, end.x, end.y
             );
         }
-        return svg;
+        svg
     }
 
     // Generate an svg representation of a smooth path that passes through the vertices of the
@@ -340,10 +340,10 @@ impl Polygon {
                 // effort).
 
                 let mut dp1 = c1.dist_to_segment(Segment { p1: p0, p2: p1 });
-                dp1 = dp1.min(c1.dist_to_segment(Segment { p1: p1, p2: p2 }));
+                dp1 = dp1.min(c1.dist_to_segment(Segment { p1, p2 }));
                 dp1 = dp1.min(c1.dist_to_segment(Segment { p1: p2, p2: p3 }));
                 let mut dp2 = c2.dist_to_segment(Segment { p1: p0, p2: p1 });
-                dp2 = dp2.min(c2.dist_to_segment(Segment { p1: p1, p2: p2 }));
+                dp2 = dp2.min(c2.dist_to_segment(Segment { p1, p2 }));
                 dp2 = dp2.min(c2.dist_to_segment(Segment { p1: p2, p2: p3 }));
                 if dp1 > d || dp2 > d {
                     // Add three points to the polygon and start over.
@@ -397,10 +397,8 @@ impl Polygon {
             let (x1, y1) = (self.v[i1].x, self.v[i1].y);
             let (x2, y2) = (self.v[i2].x, self.v[i2].y);
             if x1 == x2 {
-                if x1 == x {
-                    if (y >= y1 && y <= y2) || (y >= y2 && y <= y1) {
-                        return true; // special case: on a vertical boundary edge
-                    }
+                if x1 == x && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1)) {
+                    return true; // special case: on a vertical boundary edge
                 }
             } else {
                 let m = (y1 - y2) / (x1 - x2);
@@ -410,11 +408,9 @@ impl Polygon {
                     if yy == y && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1)) {
                         return true; // special case: on a non-vertical boundary edge
                     }
-                    if yy >= y {
-                        if d.is_none() || (d.is_some() && d.unwrap() > yy - y) {
-                            d = Some(yy - y);
-                            inside = x2 < x1;
-                        }
+                    if yy >= y && (d.is_none() || (d.is_some() && d.unwrap() > yy - y)) {
+                        d = Some(yy - y);
+                        inside = x2 < x1;
                     }
                 }
             }
@@ -437,10 +433,8 @@ impl Polygon {
             let (x1, y1) = (self.v[i1].x, self.v[i1].y);
             let (x2, y2) = (self.v[i2].x, self.v[i2].y);
             if x1 == x2 {
-                if x1 == x {
-                    if (y >= y1 && y <= y2) || (y >= y2 && y <= y1) {
-                        return true; // special case: on a vertical boundary edge
-                    }
+                if x1 == x && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1)) {
+                    return true; // special case: on a vertical boundary edge
                 }
             } else {
                 let m = (y1 - y2) / (x1 - x2);
@@ -450,11 +444,9 @@ impl Polygon {
                     if yy == y && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1)) {
                         return true; // special case: on a non-vertical boundary edge
                     }
-                    if yy >= y {
-                        if d.is_none() || (d.is_some() && d.unwrap() > yy - y) {
-                            d = Some(yy - y);
-                            inside = x2 < x1;
-                        }
+                    if yy >= y && (d.is_none() || (d.is_some() && d.unwrap() > yy - y)) {
+                        d = Some(yy - y);
+                        inside = x2 < x1;
                     }
                 }
             }
@@ -533,7 +525,7 @@ impl Polygon {
                         swap(&mut x1, &mut x2);
                     }
                     let i1 = Interval { x1: z1, x2: z2 };
-                    let i2 = Interval { x1: x1, x2: x2 };
+                    let i2 = Interval { x1, x2 };
                     if i1.touches_interval(i2) {
                         return true;
                     }

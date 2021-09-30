@@ -51,7 +51,7 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
 
         // Skip broken references: Canus_lupus_familiaris and a bunch of others.
 
-        if headers.len() == 0 {
+        if headers.is_empty() {
             continue;
         }
         refs_all.push(refs);
@@ -94,7 +94,7 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
             if aa.len() >= 30 {
                 let mut aap = aa.clone();
                 aap.push(b'C');
-                if cdr3_score(&aap, &chain_type, false) > 4 + cdr3_score(&aa, &chain_type, false) {
+                if cdr3_score(&aap, chain_type, false) > 4 + cdr3_score(&aa, chain_type, false) {
                     continue;
                 }
             }
@@ -123,11 +123,11 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
             if aa.len() >= 31 {
                 // Pretty crappy frameshift test.  One should see high aa and dna similarity
                 // to other seqs if shifted.  Or use more aas.
-                let score = cdr3_score(&aa, &chain_type, false);
+                let score = cdr3_score(&aa, chain_type, false);
                 let mut frameshift = false;
                 for del in 1..=2 {
                     let aad = aa_seq(&seq, del);
-                    if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
+                    if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
                         // println!("frameshift = {} = {}", species, headers[i].before(" "));
                         // use io_utils::*;
                         // printme!(cdr3_score(&aa, &chain_type, false));
@@ -141,11 +141,11 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
 
             // Gather calls.
 
-            let cdr1 = cdr1(&aa, &chain_type, false);
-            let cdr2 = cdr2(&aa, &chain_type, false);
-            let fwr1 = fwr1(&aa, &chain_type, false);
-            let fwr2 = fwr2(&aa, &chain_type, false);
-            let fwr3 = fwr3(&aa, &chain_type, false);
+            let cdr1 = cdr1(&aa, chain_type, false);
+            let cdr2 = cdr2(&aa, chain_type, false);
+            let fwr1 = fwr1(&aa, chain_type, false);
+            let fwr2 = fwr2(&aa, chain_type, false);
+            let fwr3 = fwr3(&aa, chain_type, false);
             if cdr1.is_some() {
                 let cdr1 = cdr1.unwrap();
                 for i in 0..cdr1.len() {

@@ -43,7 +43,7 @@ pub fn species(refdata: &RefData) -> String {
         let mut trac = Vec::<u8>::new();
         let mut in_trac = false;
         for line in refx.lines() {
-            if line.starts_with(">") && (line.contains("|TRAC") || line.contains("|IGHM")) {
+            if line.starts_with('>') && (line.contains("|TRAC") || line.contains("|IGHM")) {
                 in_trac = true;
                 continue;
             }
@@ -66,9 +66,9 @@ pub fn species(refdata: &RefData) -> String {
     }
     reverse_sort(&mut counts);
     if counts[0].0 == counts[1].0 {
-        return "unknown".to_string();
+        "unknown".to_string()
     } else {
-        return counts[0].1.clone();
+        counts[0].1.clone()
     }
 }
 
@@ -96,7 +96,7 @@ pub fn innate_cdr3(species: &str, class: &str) -> Vec<String> {
 // mark_innate: for each exact subclonotype, fill in iNKT and MAIT fields.
 
 pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
-    let species = species(&refdata);
+    let species = species(refdata);
     let inkt_cdr3 = innate_cdr3(&species, "iNKT");
     let mait_cdr3 = innate_cdr3(&species, "MAIT");
     for i in 0..ex.len() {
@@ -113,7 +113,7 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
             if jname.contains('*') {
                 jname = jname.before("*").to_string();
             }
-            if species == "human".to_string() {
+            if species == *"human" {
                 if vname == "TRAV10" && jname == "TRAJ18" {
                     have_inkt_tra = true;
                 }
@@ -128,7 +128,7 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
                 if vname.starts_with("TRBV20") || vname.starts_with("TRBV6") {
                     have_mait_trb = true;
                 }
-            } else if species == "mouse".to_string() {
+            } else if species == *"mouse" {
                 if vname == "TRAV1" && jname == "TRAJ33" {
                     have_mait_tra = true;
                 }

@@ -12,6 +12,6 @@ fn main() {
     let new = sort_vars(&old);
     if new != old {
         let mut f = std::fs::File::create("enclone_vars/src/vars").unwrap();
-        f.write_all(&new.as_bytes()).unwrap();
+        f.write_all(new.as_bytes()).unwrap();
     }
 }

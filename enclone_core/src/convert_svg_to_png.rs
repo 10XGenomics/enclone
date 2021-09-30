@@ -28,8 +28,8 @@ pub fn set_pixels_per_meter(png: &mut Vec<u8>, pixels_per_meter: u32) {
         let mut data = Vec::<u8>::new();
         data.append(&mut pixels_per_meter.to_be_bytes().to_vec());
         data.append(&mut pixels_per_meter.to_be_bytes().to_vec());
-        data.append(&mut vec![1 as u8]);
-        let len = 9 as u32;
+        data.append(&mut vec![1_u8]);
+        let len = 9_u32;
         bytes.append(&mut len.to_be_bytes().to_vec());
         bytes.append(&mut b"pHYs".to_vec());
         bytes.append(&mut data);
@@ -81,10 +81,10 @@ pub fn convert_svg_to_png(svg: &[u8], width: u32) -> Vec<u8> {
         keep_named_groups: false,
         fontdb: &fontdb,
     };
-    let mut svg = stringme(&svg);
+    let mut svg = stringme(svg);
     svg = svg.replace("arial", "Liberation Sans");
     svg = svg.replace("Arial", "Liberation Sans");
-    let tree = usvg::Tree::from_data(&svg.as_bytes(), &usvg);
+    let tree = usvg::Tree::from_data(svg.as_bytes(), &usvg);
     if tree.is_err() {
         panic!(
             "svg conversion failed with message {} on\n{}\n",

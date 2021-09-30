@@ -46,7 +46,7 @@ fn main() {
     let new = Command::new("git")
         .arg("status")
         .output()
-        .expect(&format!("failed to execute git status"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute git status".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ngit status failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -76,7 +76,7 @@ fn main() {
     let new = Command::new("git")
         .arg("pull")
         .output()
-        .expect(&format!("failed to execute git pull"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute git pull".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ngit pull failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -91,7 +91,7 @@ fn main() {
     let new = Command::new("cargo")
         .arg("b")
         .output()
-        .expect(&format!("failed to execute cargo b"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute cargo b".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo b failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -106,7 +106,7 @@ fn main() {
     let new = Command::new("cargo")
         .arg("t")
         .output()
-        .expect(&format!("failed to execute cargo t"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute cargo t".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo t failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -206,7 +206,7 @@ fn main() {
     let new = Command::new("cargo")
         .arg("b")
         .output()
-        .expect(&format!("failed to execute cargo b"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute cargo b".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo b (2) failed \n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -224,7 +224,7 @@ fn main() {
         .arg("-m")
         .arg("bump version")
         .output()
-        .expect(&format!("failed to execute git commit"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute git commit".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ngit commit failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -234,7 +234,7 @@ fn main() {
     let new = Command::new("git")
         .arg("push")
         .output()
-        .expect(&format!("failed to execute git push"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute git push".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ngit push failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -250,7 +250,7 @@ fn main() {
         .arg("tag")
         .arg(&format!("v{}", version))
         .output()
-        .expect(&format!("failed to execute git tag"));
+        .unwrap_or_else(|_| panic!("{}", "failed to execute git tag".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\ngit tag failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -267,7 +267,7 @@ fn main() {
         .arg("origin")
         .arg("--tags")
         .output()
-        .expect(&format!("failed to trigger release"));
+        .unwrap_or_else(|_| panic!("{}", "failed to trigger release".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\nattempt to trigger release failed\n");
         eprintln!("stderr = {}", strme(&new.stderr));
@@ -287,7 +287,7 @@ fn main() {
     }
     if get_config(&config_file, &mut config) {
         let bin = &config["enclone_linux_bin"];
-        if !path_exists(&bin) {
+        if !path_exists(bin) {
             std::fs::create_dir_all(&bin).unwrap();
         }
         let current = format!("{}/enclone", bin);

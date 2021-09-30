@@ -58,7 +58,7 @@ pub fn get_known_features(gex_info: &GexInfo) -> Result<Vec<String>, String> {
         }
     });
     for i in 0..results.len() {
-        if results[i].2.len() > 0 {
+        if !results[i].2.is_empty() {
             return Err(results[i].2.clone());
         }
     }
@@ -95,14 +95,14 @@ pub fn involves_gex_fb(x: &String) -> bool {
             return true;
         }
     }
-    return x == "gex"
+    x == "gex"
         || x.starts_with("gex_")
         || x == "n_gex"
         || x == "clust"
         || x == "type"
         || x == "entropy"
         || x == "cred"
-        || x == "cred_cell";
+        || x == "cred_cell"
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -129,7 +129,7 @@ pub fn is_pattern(x: &String, parseable: bool) -> bool {
     for y in ends.iter() {
         if x.ends_with(y) {
             let p = x.rev_before(y);
-            if !p.is_empty() && Regex::new(&p).is_ok() {
+            if !p.is_empty() && Regex::new(p).is_ok() {
                 let mut ok = true;
                 let mut special = false;
                 let p = p.as_bytes();
@@ -180,21 +180,22 @@ fn check_gene_fb(
         }
     }
     for x in to_check.iter() {
-        if !gex_info.have_gex && !gex_info.have_fb {
-            if *x == "n_gex".to_string() || *x == "n_gex_cell".to_string() {
-                if category == "parseable" {
-                    return Err(format!(
-                        "\nParseable field {} does not make sense because neither gene expression \
-                         nor feature barcode data\nwere provided as input.\n",
-                        x
-                    ));
-                } else {
-                    return Err(format!(
-                        "\nLead variable {} does not make sense because neither gene expression \
-                         not feature barcode data\nwere provided as input.\n",
-                        x
-                    ));
-                }
+        if !gex_info.have_gex
+            && !gex_info.have_fb
+            && (*x == "n_gex".to_string() || *x == "n_gex_cell".to_string())
+        {
+            if category == "parseable" {
+                return Err(format!(
+                    "\nParseable field {} does not make sense because neither gene expression \
+                     nor feature barcode data\nwere provided as input.\n",
+                    x
+                ));
+            } else {
+                return Err(format!(
+                    "\nLead variable {} does not make sense because neither gene expression \
+                     not feature barcode data\nwere provided as input.\n",
+                    x
+                ));
             }
         }
         if !gex_info.have_gex {
@@ -251,7 +252,7 @@ fn check_gene_fb(
 
     // Get known features.  This code is inefficient.
 
-    let known_features = get_known_features(&gex_info)?;
+    let known_features = get_known_features(gex_info)?;
 
     // Do the check.
 
@@ -365,7 +366,7 @@ fn check_gene_fb(
                     }
                 }
                 if category == "lead" {
-                    if x == "" {
+                    if x.is_empty() {
                         continue;
                     }
                     if !alts.is_empty() {
@@ -429,7 +430,7 @@ pub fn check_pcols(
     for x in cols.iter() {
         let mut ok = false;
         // Note that the following test is probably redundant with some of the testing below.
-        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, false)? {
+        if check_one_lvar(&*x, ctl, gex_info, &mut nd_used, &ends, false)? {
             ok = true;
         }
         for i in 0..ctl.gen_opt.info_fields.len() {
@@ -441,7 +442,7 @@ pub fn check_pcols(
             ok = true;
         }
         for y in ctl.clono_print_opt.lvars.iter() {
-            if y.contains(":") {
+            if y.contains(':') {
                 let y = y.before(":");
                 if x == y {
                     ok = true;
@@ -486,7 +487,7 @@ pub fn check_pcols(
         }
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
-        } else if is_pattern(&x, true) {
+        } else if is_pattern(x, true) {
             ok = true;
         } else {
             let mut y = Vec::<u8>::new();
@@ -499,33 +500,30 @@ pub fn check_pcols(
             }
             y.reverse();
             let ps = strme(&y);
-            if !ps.is_empty() {
-                if pchains == "max"
-                    || (ps.force_usize() > 0 && ps.force_usize() <= pchains.force_usize())
+            if !ps.is_empty()
+                && (pchains == "max"
+                    || (ps.force_usize() > 0 && ps.force_usize() <= pchains.force_usize()))
+            {
+                let y = x.rev_before(ps);
+                if CVARS_ALLOWED.contains(&y) || (allow_cell && CVARS_ALLOWED_PCELL.contains(&y)) {
+                    ok = true;
+                } else if PCVARS_ALLOWED.contains(&y) {
+                    ok = true;
+                } else if y.starts_with("ndiff")
+                    && y.ends_with("vj")
+                    && y.between("ndiff", "vj").parse::<usize>().is_ok()
+                    && y.between("ndiff", "vj").force_usize() >= 1
                 {
-                    let y = x.rev_before(&ps);
-                    if CVARS_ALLOWED.contains(&y)
-                        || (allow_cell && CVARS_ALLOWED_PCELL.contains(&y))
-                    {
-                        ok = true;
-                    } else if PCVARS_ALLOWED.contains(&y) {
-                        ok = true;
-                    } else if y.starts_with("ndiff")
-                        && y.ends_with("vj")
-                        && y.between("ndiff", "vj").parse::<usize>().is_ok()
-                        && y.between("ndiff", "vj").force_usize() >= 1
-                    {
-                        ok = true;
-                    } else if (y.starts_with("cdr1_aa_")
-                        || y.starts_with("cdr2_aa_")
-                        || y.starts_with("cdr3_aa_"))
-                        && y.after("aa_").contains("_")
-                        && y.between("aa_", "_").parse::<isize>().is_ok()
-                        && y.after("aa_").after("_").ends_with("_ext")
-                        && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
-                    {
-                        ok = true;
-                    }
+                    ok = true;
+                } else if (y.starts_with("cdr1_aa_")
+                    || y.starts_with("cdr2_aa_")
+                    || y.starts_with("cdr3_aa_"))
+                    && y.after("aa_").contains('_')
+                    && y.between("aa_", "_").parse::<isize>().is_ok()
+                    && y.after("aa_").after("_").ends_with("_ext")
+                    && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
+                {
+                    ok = true;
                 }
             }
         }
@@ -534,7 +532,7 @@ pub fn check_pcols(
         }
     }
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_info, &to_check, "parseable")?;
+        check_gene_fb(ctl, gex_info, &to_check, "parseable")?;
     }
     Ok(())
 }
@@ -554,7 +552,7 @@ pub fn check_cvars(ctl: &EncloneControl) -> Result<(), String> {
             ok = true;
         }
         if (x.starts_with("cdr1_aa_") || x.starts_with("cdr2_aa_") || x.starts_with("cdr3_aa_"))
-            && x.after("aa_").contains("_")
+            && x.after("aa_").contains('_')
             && x.between("aa_", "_").parse::<usize>().is_ok()
             && x.after("aa_").after("_").ends_with("_ext")
             && x.after("aa_").between("_", "_ext").parse::<usize>().is_ok()
@@ -602,7 +600,7 @@ pub fn check_one_lvar(
                 specified = true;
             }
         }
-        if !ctl.gen_opt.internal_run && x != "" {
+        if !ctl.gen_opt.internal_run && !x.is_empty() {
             return Err(format!(
                 "\nUnrecognized variable {} for LVARS or PCOLS.  Please type \
                  \"enclone help lvars\".\n",
@@ -610,7 +608,7 @@ pub fn check_one_lvar(
             ));
         }
         if !specified {
-            return Err(format!(
+            return Err(
                 "\nYou've used the lead or parseable variable \"type\", but the file \
                 cell_types.csv was not found.\n\
                 This could be because you're using a GEX pipestance that was \
@@ -618,7 +616,8 @@ pub fn check_one_lvar(
                 Or it might have been generated using the CS pipeline.\n\
                 Or you might have copied the pipestance outs but not included \
                 that file.\n"
-            ));
+                    .to_string(),
+            );
         }
     }
 
@@ -644,16 +643,18 @@ pub fn check_one_lvar(
         }
         if y.parse::<usize>().is_ok() && y.force_usize() >= 1 {
             if ctl.origin_info.n() != 1 {
-                return Err(format!(
+                return Err(
                     "\nThe variables fb<n> and fb<n>_n can only be used if there is just one \
                         dataset.\n"
-                ));
+                        .to_string(),
+                );
             }
             if !gex_info.fb_top_matrices[0].initialized() {
-                return Err(format!(
+                return Err(
                     "\nThe variables fb<n> and fb<n>_n can only be used if the file \
                         feature_barcode_matrix_top.bin was generated.\n"
-                ));
+                        .to_string(),
+                );
             }
             return Ok(true);
         }
@@ -666,9 +667,7 @@ pub fn check_one_lvar(
         && x.after("nd").force_usize() >= 1
     {
         if *nd_used {
-            return Err(format!(
-                "\nOnly one instance of the lead variable nd<k> is allowed.\n"
-            ));
+            return Err("\nOnly one instance of the lead variable nd<k> is allowed.\n".to_string());
         }
         *nd_used = true;
         return Ok(true);
@@ -691,8 +690,8 @@ pub fn check_one_lvar(
             class = format!("count_{}_", x.between("_", "_"));
         }
         let y = x.after(&class);
-        let reg = Regex::new(&y);
-        if !reg.is_ok() {
+        let reg = Regex::new(y);
+        if reg.is_err() {
             return Err(format!(
                 "\nThe string after {} in your lead or parseable variable {} is not a valid \
                 regular expression.\n",
@@ -750,7 +749,7 @@ pub fn check_one_lvar(
         if end_ok {
             return Ok(false);
         }
-        if is_lvar && !x.starts_with("n_") && x != "" {
+        if is_lvar && !x.starts_with("n_") && !x.is_empty() {
             return Err(format!(
                 "\nUnrecognized variable {} for LVARS.  Please type \
                  \"enclone help lvars\".\n",
@@ -790,18 +789,18 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) -> Result<(), Strin
     let mut nd_used = false;
     for x in ctl.clono_print_opt.lvars.iter() {
         if x.ends_with("_cell") {
-            return Err(format!(
-                "\nFields ending with _cell cannot be used in LVARS or LVARSP.\n"
-            ));
+            return Err(
+                "\nFields ending with _cell cannot be used in LVARS or LVARSP.\n".to_string(),
+            );
         }
-        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, true)? {
+        if !check_one_lvar(&*x, ctl, gex_info, &mut nd_used, &ends, true)? {
             to_check.push(x.clone());
         }
     }
     ctl.perf_stats(&t, "checking lvars top");
     let t = Instant::now();
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_info, &to_check, "lead")?;
+        check_gene_fb(ctl, gex_info, &to_check, "lead")?;
     }
     ctl.perf_stats(&t, "checking gene");
     Ok(())

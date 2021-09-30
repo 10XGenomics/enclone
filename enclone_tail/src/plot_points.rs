@@ -158,9 +158,7 @@ pub fn plot_points(
             points.clone(),
             point_size,
             &point_color,
-            &|c, s, st| {
-                return EmptyElement::at(c) + Circle::new((0, 0), s, st.filled());
-            },
+            &|c, s, st| EmptyElement::at(c) + Circle::new((0, 0), s, st.filled()),
         ))
         .unwrap();
     Ok(())

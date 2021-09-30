@@ -29,7 +29,7 @@ pub fn grouper(
 
     // Case 0: no grouping.
 
-    if ctl.clono_group_opt.style == "" {
+    if ctl.clono_group_opt.style.is_empty() {
         let mut groups = Vec::<Vec<(i32, String)>>::new();
         let mut grepsn = Vec::<usize>::new();
         for i in 0..exacts.len() {
@@ -42,7 +42,7 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
-        return groups;
+        groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -227,7 +227,7 @@ pub fn grouper(
                     for j in 0..ex.share.len() {
                         s.push((ex.share[j].left, ex.share[j].seq_del.len()));
                     }
-                    s.sort();
+                    s.sort_unstable();
                     all.push((s, *i));
                 }
                 all.sort();
@@ -257,7 +257,7 @@ pub fn grouper(
                     for j in 0..ex.share.len() {
                         s.push((ex.share[j].left, ex.share[j].cdr3_aa.len()));
                     }
-                    s.sort();
+                    s.sort_unstable();
                     all.push((s, *i));
                 }
                 all.sort();
@@ -301,8 +301,8 @@ pub fn grouper(
                                             continue;
                                         }
                                         let dna2 = &ex2.share[p2].seq;
-                                        let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
-                                        let d = edit_distance(&strme(&aa1), &strme(&aa2));
+                                        let (aa1, aa2) = (aa_seq(dna1, 0), aa_seq(dna2, 0));
+                                        let d = edit_distance(strme(&aa1), strme(&aa2));
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
@@ -358,8 +358,8 @@ pub fn grouper(
                                             continue;
                                         }
                                         let dna2 = &ex2.share[p2].seq;
-                                        let (aa1, aa2) = (aa_seq(&dna1, 0), aa_seq(&dna2, 0));
-                                        let d = edit_distance(&strme(&aa1), &strme(&aa2));
+                                        let (aa1, aa2) = (aa_seq(dna1, 0), aa_seq(dna2, 0));
+                                        let d = edit_distance(strme(&aa1), strme(&aa2));
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
@@ -415,7 +415,7 @@ pub fn grouper(
                                             continue;
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa;
-                                        let d = edit_distance(&aa1, &aa2);
+                                        let d = edit_distance(aa1, aa2);
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
@@ -471,7 +471,7 @@ pub fn grouper(
                                             continue;
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa;
-                                        let d = edit_distance(&aa1, &aa2);
+                                        let d = edit_distance(aa1, aa2);
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
@@ -541,7 +541,7 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
-        return groups;
+        groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -591,11 +591,11 @@ pub fn grouper(
                             for m2 in 0..ex2.share.len() {
                                 let cdr3_aa2 = &ex2.share[m2].cdr3_aa;
                                 if ex1.share[m1].left && ex2.share[m2].left {
-                                    let x = edit_distance(&cdr3_aa1, &cdr3_aa2) as f64;
+                                    let x = edit_distance(cdr3_aa1, cdr3_aa2) as f64;
                                     heavy = heavy.min(x);
                                 }
                                 if !ex1.share[m1].left && !ex2.share[m2].left {
-                                    let x = edit_distance(&cdr3_aa1, &cdr3_aa2) as f64;
+                                    let x = edit_distance(cdr3_aa1, cdr3_aa2) as f64;
                                     light = light.min(x);
                                 }
                             }

@@ -26,8 +26,8 @@ pub fn print_clustal(
     clustal_aa: &mut Option<Builder<File>>,
     clustal_dna: &mut Option<Builder<File>>,
 ) {
-    if ctl.gen_opt.clustal_aa.len() > 0 {
-        let stdout = ctl.gen_opt.clustal_aa == "stdout".to_string();
+    if !ctl.gen_opt.clustal_aa.is_empty() {
+        let stdout = ctl.gen_opt.clustal_aa == *"stdout";
         let mut data = Vec::<u8>::new();
         if stdout {
             fwriteln!(logx, "");
@@ -175,8 +175,8 @@ pub fn print_clustal(
                 .unwrap();
         }
     }
-    if ctl.gen_opt.clustal_dna.len() > 0 {
-        let stdout = ctl.gen_opt.clustal_dna == "stdout".to_string();
+    if !ctl.gen_opt.clustal_dna.is_empty() {
+        let stdout = ctl.gen_opt.clustal_dna == *"stdout";
         let mut data = Vec::<u8>::new();
         if stdout {
             fwriteln!(logx, "");
@@ -252,12 +252,10 @@ pub fn print_clustal(
                     } else {
                         fwrite!(data, "*");
                     }
+                } else if stdout {
+                    fwrite!(logx, " ");
                 } else {
-                    if stdout {
-                        fwrite!(logx, " ");
-                    } else {
-                        fwrite!(data, " ");
-                    }
+                    fwrite!(data, " ");
                 }
             }
             if stdout {

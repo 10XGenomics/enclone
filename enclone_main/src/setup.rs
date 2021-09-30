@@ -78,7 +78,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         }
     }
     for i in 1..args.len() {
-        if args[i] == "FORCE_EXTERNAL".to_string() {
+        if args[i] == *"FORCE_EXTERNAL" {
             ctl.gen_opt.internal_run = false;
         }
     }
@@ -102,7 +102,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             ctl.gen_opt.internal_data_dir = cloud_path;
         }
     }
-    if ctl.gen_opt.config_file.contains(":") {
+    if ctl.gen_opt.config_file.contains(':') {
         let remote_host = ctl.gen_opt.config_file.before(":").to_string();
         REMOTE_HOST.lock().unwrap().clear();
         REMOTE_HOST.lock().unwrap().push(remote_host);
@@ -113,8 +113,8 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     if ctl.gen_opt.internal_run {
         ctl.gen_opt.pre = vec![
             ctl.gen_opt.internal_data_dir.clone(),
-            format!("enclone/test/inputs"),
-            format!("enclone_exec"),
+            "enclone/test/inputs".to_string(),
+            "enclone_exec".to_string(),
         ];
     } else if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
@@ -145,23 +145,23 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     for i in 1..args.len() {
         if args[i].starts_with("SOURCE=") {
             let f = args[i].after("SOURCE=");
-            let f2 = stringme(&tilde_expand(&f.as_bytes()));
+            let f2 = stringme(&tilde_expand(f.as_bytes()));
             let mut f2s = vec![f2.clone()];
             for pre in ctl.gen_opt.pre.iter() {
                 f2s.push(format!("{}/{}", pre, f2));
             }
             let mut found = false;
             for f2 in f2s.iter() {
-                if path_exists(&f2) {
+                if path_exists(f2) {
                     found = true;
-                    require_readable_file(&f2, "SOURCE")?;
+                    require_readable_file(f2, "SOURCE")?;
                     let f = open_for_read![&f2];
                     for line in f.lines() {
                         let s = line.unwrap();
                         if !s.starts_with('#') {
                             let fields = s.split(' ').collect::<Vec<&str>>();
                             for j in 0..fields.len() {
-                                if fields[j].len() > 0 {
+                                if !fields[j].is_empty() {
                                     args2.insert(1, fields[j].to_string());
                                 }
                             }
@@ -199,10 +199,9 @@ pub fn setup(
     {
         for i in 2..args.len() {
             if args[i] == "help" {
-                return Err(format!(
-                    "\nThe help argument, if used, must be the first argument \
+                return Err("\nThe help argument, if used, must be the first argument \
                     to enclone.\n"
-                ));
+                    .to_string());
             }
         }
         let mut args = args.clone();
@@ -226,7 +225,7 @@ pub fn setup(
             } else if args[i].starts_with("HTML=") {
                 ctl.gen_opt.html = true;
                 let mut title = args[i].after("HTML=").to_string();
-                if title.starts_with("\"") && title.ends_with("\"") {
+                if title.starts_with('\"') && title.ends_with('\"') {
                     title = title.between("\"", "\"").to_string();
                 }
                 ctl.gen_opt.html_title = title;
@@ -267,18 +266,14 @@ pub fn setup(
                 bug_reports = value.to_string();
             }
         }
-        if ctl.gen_opt.internal_run {
-            if ctl.gen_opt.config.contains_key("bug_reports") {
-                bug_reports = ctl.gen_opt.config["bug_reports"].clone();
-            }
+        if ctl.gen_opt.internal_run && ctl.gen_opt.config.contains_key("bug_reports") {
+            bug_reports = ctl.gen_opt.config["bug_reports"].clone();
         }
 
         // Proceed.
 
         if ctl.gen_opt.html && ctl.gen_opt.svg {
-            return Err(format!(
-                "\nBoth HTML and SVG cannot be used at the same time.\n"
-            ));
+            return Err("\nBoth HTML and SVG cannot be used at the same time.\n".to_string());
         }
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
@@ -312,10 +307,10 @@ pub fn setup(
         }
         let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
         help1(&argsx, &mut h)?;
-        help2(&argsx, &ctl, &mut h)?;
+        help2(&argsx, ctl, &mut h)?;
         help3(&argsx, &mut h)?;
         help4(&argsx, &mut h)?;
-        help5(&argsx, &ctl, &mut h)?;
+        help5(&argsx, ctl, &mut h)?;
         if argsx.len() == 1 || (argsx.len() > 1 && argsx[1] == "help") {
             return Ok(());
         }
@@ -359,12 +354,12 @@ pub fn setup(
         }
         let thread_message = new_thread_message();
         if ctrlc {
-            PrettyTrace::new().message(&thread_message).ctrlc().on();
+            PrettyTrace::new().message(thread_message).ctrlc().on();
         } else {
             prepare_for_apocalypse(
-                &args_orig,
+                args_orig,
                 (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
-                    && bug_reports.len() > 0,
+                    && !bug_reports.is_empty(),
                 &bug_reports,
             );
             let mut nopager = false;
@@ -384,7 +379,7 @@ pub fn setup(
 
     // Process args (and set defaults for them).
 
-    proc_args(&mut ctl, &args)?;
+    proc_args(&mut ctl, args)?;
     if ctl.gen_opt.split {
         return Ok(());
     }

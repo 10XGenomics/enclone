@@ -50,7 +50,7 @@ pub fn emit_codon_color_escape(c: &[u8], log: &mut Vec<u8>) {
             } else if c[i] == b'T' {
                 s += 3;
             } else {
-                panic!("Illegal codon: \"{}\".", strme(&c));
+                panic!("Illegal codon: \"{}\".", strme(c));
             }
         }
     }

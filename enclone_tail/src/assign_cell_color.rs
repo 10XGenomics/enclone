@@ -146,7 +146,7 @@ pub fn assign_cell_color(
             // to happen if a heavy chain V gene is on the same contig as a light
             // chain C gene (which may be an artifact).  There is an example in
             // enclone_main/testx/inputs/flaky.
-            let p = bin_position(&const_names, &c);
+            let p = bin_position(const_names, c);
             color_id = (1 + p) as usize;
         }
         if plot_opt.plot_by_isotype_color.is_empty() {
@@ -166,12 +166,10 @@ pub fn assign_cell_color(
             } else {
                 color = "rgb(255,200,200)".to_string();
             }
+        } else if !marked {
+            color = "blue".to_string();
         } else {
-            if !marked {
-                color = "blue".to_string();
-            } else {
-                color = "rgb(200,200,255)".to_string();
-            }
+            color = "rgb(200,200,255)".to_string();
         }
 
     // Determine color in other cases.

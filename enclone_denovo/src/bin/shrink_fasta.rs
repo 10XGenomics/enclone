@@ -18,7 +18,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let (in_file, out_file) = (&args[1], &args[2]);
     let n = 1000;
-    let mut x = read_fasta_to_vec_vec_u8(&in_file);
+    let mut x = read_fasta_to_vec_vec_u8(in_file);
     if n > 0 {
         for i in 0..x.len() {
             let mut j = 0;

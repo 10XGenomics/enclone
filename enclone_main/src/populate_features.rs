@@ -49,73 +49,68 @@ pub fn populate_features(
             } else {
                 continue;
             }
-            let fs1 = fr1_start(&aa, &chain_type);
+            let fs1 = fr1_start(&aa, chain_type);
             fr1_starts[i] = 3 * fs1;
-            let fs2 = fr2_start(&aa, &chain_type, false);
+            let fs2 = fr2_start(&aa, chain_type, false);
             if fs2.is_some() {
                 fr2_starts[i] = Some(3 * fs2.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
                     could not be computed\nfor this reference sequence:"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
-            let fs3 = fr3_start(&aa, &chain_type, false);
+            let fs3 = fr3_start(&aa, chain_type, false);
             if fs3.is_some() {
                 fr3_starts[i] = Some(3 * fs3.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
                     could not be computed\nfor this reference sequence:"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
-            let cs1 = cdr1_start(&aa, &chain_type, false);
+            let cs1 = cdr1_start(&aa, chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
                 if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                    msg += &mut format!(
-                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                    msg +=
+                        &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
                         exceeds the FWR2 start for this reference sequence:"
-                    );
+                            .to_string();
                     let seq = refdata.refs[i].to_ascii_vec();
                     msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
                     could not be computed\nfor this reference sequence:\n"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
-            let cs2 = cdr2_start(&aa, &chain_type, false);
+            let cs2 = cdr2_start(&aa, chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
                 if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
-                    msg += &mut format!(
-                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                    msg +=
+                        &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
                         exceeds the FWR3 start for this reference sequence:"
-                    );
+                            .to_string();
                     let seq = refdata.refs[i].to_ascii_vec();
                     msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
                     could not be computed\nfor this reference sequence:"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
             if cs1.is_some() && fs1 > cs1.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
                     exceeds the CDR1 start for this reference sequence:\n"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
@@ -124,16 +119,15 @@ pub fn populate_features(
                 && fs2.unwrap() > cs2.unwrap()
                 && ctl.gen_opt.require_unbroken_ok
             {
-                msg += &mut format!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
+                msg += &mut "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
                     exceeds the CDR2 start for this reference sequence:"
-                );
+                    .to_string();
                 let seq = refdata.refs[i].to_ascii_vec();
                 msg += &mut format!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
         }
     }
-    if msg.len() > 0 {
+    if !msg.is_empty() {
         return Err(msg);
     }
 

@@ -76,7 +76,7 @@ pub fn group_and_print_clonotypes(
     for i in 0..rsi.len() {
         max_chains = max(max_chains, rsi[i].mat.len());
     }
-    set_speakers(&ctl, &mut parseable_fields, max_chains);
+    set_speakers(ctl, &mut parseable_fields, max_chains);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
         "" => (Box::new(stdout()) as Box<Write>),
@@ -97,7 +97,7 @@ pub fn group_and_print_clonotypes(
     }
     let mut pcols2 = Vec::<String>::new();
     for i in 0..pcols.len() {
-        if pcols[i].contains(":") {
+        if pcols[i].contains(':') {
             pcols2.push(pcols[i].before(":").to_string());
         } else {
             pcols2.push(pcols[i].clone());
@@ -105,8 +105,8 @@ pub fn group_and_print_clonotypes(
     }
     pcols = pcols2;
     if !ctl.parseable_opt.pout.is_empty()
-        && ctl.parseable_opt.pout != "stdout".to_string()
-        && ctl.parseable_opt.pout != "stdouth".to_string()
+        && ctl.parseable_opt.pout != *"stdout"
+        && ctl.parseable_opt.pout != *"stdouth"
     {
         fwriteln!(pout, "{}", pcols.iter().format(","));
     }
@@ -135,11 +135,11 @@ pub fn group_and_print_clonotypes(
     // Set up for clustal output.
 
     let (mut clustal_aa, mut clustal_dna) = (None, None);
-    if ctl.gen_opt.clustal_aa.len() > 0 && ctl.gen_opt.clustal_aa != "stdout".to_string() {
+    if !ctl.gen_opt.clustal_aa.is_empty() && ctl.gen_opt.clustal_aa != *"stdout" {
         let file = File::create(&ctl.gen_opt.clustal_aa).unwrap();
         clustal_aa = Some(Builder::new(file));
     }
-    if ctl.gen_opt.clustal_dna.len() > 0 && ctl.gen_opt.clustal_dna != "stdout".to_string() {
+    if !ctl.gen_opt.clustal_dna.is_empty() && ctl.gen_opt.clustal_dna != *"stdout" {
         let file = File::create(&ctl.gen_opt.clustal_dna).unwrap();
         clustal_dna = Some(Builder::new(file));
     }
@@ -147,11 +147,11 @@ pub fn group_and_print_clonotypes(
     // Set up for phylip output.
 
     let (mut phylip_aa, mut phylip_dna) = (None, None);
-    if ctl.gen_opt.phylip_aa.len() > 0 && ctl.gen_opt.phylip_aa != "stdout".to_string() {
+    if !ctl.gen_opt.phylip_aa.is_empty() && ctl.gen_opt.phylip_aa != *"stdout" {
         let file = File::create(&ctl.gen_opt.phylip_aa).unwrap();
         phylip_aa = Some(Builder::new(file));
     }
-    if ctl.gen_opt.phylip_dna.len() > 0 && ctl.gen_opt.phylip_dna != "stdout".to_string() {
+    if !ctl.gen_opt.phylip_dna.is_empty() && ctl.gen_opt.phylip_dna != *"stdout" {
         let file = File::create(&ctl.gen_opt.phylip_dna).unwrap();
         phylip_dna = Some(Builder::new(file));
     }
@@ -167,13 +167,11 @@ pub fn group_and_print_clonotypes(
             Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
-    if ctl.gen_opt.peer_group_filename.len() > 0 {
-        if ctl.gen_opt.peer_group_filename != "stdout".to_string() {
-            if !ctl.gen_opt.peer_group_readable {
-                fwriteln!(pgout, "group,clonotype,chain,pos,amino_acid,count");
-            } else {
-                fwriteln!(pgout, "group,clonotype,chain,pos,distribution");
-            }
+    if !ctl.gen_opt.peer_group_filename.is_empty() && ctl.gen_opt.peer_group_filename != *"stdout" {
+        if !ctl.gen_opt.peer_group_readable {
+            fwriteln!(pgout, "group,clonotype,chain,pos,amino_acid,count");
+        } else {
+            fwriteln!(pgout, "group,clonotype,chain,pos,distribution");
         }
     }
     ctl.perf_stats(&t, "in group code 1");
@@ -195,24 +193,24 @@ pub fn group_and_print_clonotypes(
 
     let width = 100;
     let align_out = align_n(
-        &refdata,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &dref,
-        &groups,
+        refdata,
+        exacts,
+        rsi,
+        exact_clonotypes,
+        ctl,
+        dref,
+        groups,
         width,
         false,
     );
     let jun_align_out = align_n(
-        &refdata,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &dref,
-        &groups,
+        refdata,
+        exacts,
+        rsi,
+        exact_clonotypes,
+        ctl,
+        dref,
+        groups,
         width,
         true,
     );
@@ -224,24 +222,24 @@ pub fn group_and_print_clonotypes(
     if ctl.gen_opt.align_jun_align_consistency {
         let width = 1000;
         align_out_test = align_n(
-            &refdata,
-            &exacts,
-            &rsi,
-            &exact_clonotypes,
-            &ctl,
-            &dref,
-            &groups,
+            refdata,
+            exacts,
+            rsi,
+            exact_clonotypes,
+            ctl,
+            dref,
+            groups,
             width,
             false,
         );
         jun_align_out_test = align_n(
-            &refdata,
-            &exacts,
-            &rsi,
-            &exact_clonotypes,
-            &ctl,
-            &dref,
-            &groups,
+            refdata,
+            exacts,
+            rsi,
+            exact_clonotypes,
+            ctl,
+            dref,
+            groups,
             width,
             true,
         );
@@ -305,7 +303,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate data for PLOT_XY.
 
-            if ctl.plot_opt.plot_xy_filename.len() > 0 {
+            if !ctl.plot_opt.plot_xy_filename.is_empty() {
                 let xvar = &ctl.plot_opt.plot_xy_xvar;
                 let yvar = &ctl.plot_opt.plot_xy_yvar;
                 for i in 0..out_datas[oo].len() {
@@ -353,7 +351,7 @@ pub fn group_and_print_clonotypes(
                     fwrite!(glog, "\n"); // NEWLINE 6
                 }
                 let mut s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);
-                if groups[i][j].1.len() > 0 {
+                if !groups[i][j].1.is_empty() {
                     s = format!("{}\n{}\n{}", s.before("\n"), groups[i][j].1, s.after("\n"));
                 }
                 if ctl.gen_opt.svg {
@@ -433,7 +431,7 @@ pub fn group_and_print_clonotypes(
                 }
                 if !ok {
                     glog.append(&mut b"consistency test failed\n".to_vec());
-                    return Err(format!("{}", strme(&glog)));
+                    return Err(strme(&glog).to_string());
                 }
             }
 
@@ -443,10 +441,10 @@ pub fn group_and_print_clonotypes(
                 i,
                 j,
                 oo,
-                &exacts,
-                &rsi,
-                &exact_clonotypes,
-                &ctl,
+                exacts,
+                rsi,
+                exact_clonotypes,
+                ctl,
                 &mut glog,
                 &mut clustal_aa,
                 &mut clustal_dna,
@@ -455,10 +453,10 @@ pub fn group_and_print_clonotypes(
                 i,
                 j,
                 oo,
-                &exacts,
-                &rsi,
-                &exact_clonotypes,
-                &ctl,
+                exacts,
+                rsi,
+                exact_clonotypes,
+                ctl,
                 &mut glog,
                 &mut phylip_aa,
                 &mut phylip_dna,
@@ -468,33 +466,31 @@ pub fn group_and_print_clonotypes(
 
             print_tree(
                 oo,
-                &exacts,
-                &rsi,
-                &exact_clonotypes,
-                &ctl,
-                &refdata,
-                &dref,
-                &out_datas,
+                exacts,
+                rsi,
+                exact_clonotypes,
+                ctl,
+                refdata,
+                dref,
+                out_datas,
                 &mut glog,
             );
 
             // Generate peer group output.
 
-            if ctl.gen_opt.peer_group_filename.len() > 0 {
-                let pg = mammalian_fixed_len_peer_groups(&refdata);
+            if !ctl.gen_opt.peer_group_filename.is_empty() {
+                let pg = mammalian_fixed_len_peer_groups(refdata);
                 if !ctl.gen_opt.peer_group_readable {
-                    if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
+                    if ctl.gen_opt.peer_group_filename == *"stdout" {
                         fwriteln!(glog, "group,clonotype,chain,pos,amino_acid,count");
                     }
-                } else {
-                    if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
-                        fwriteln!(glog, "group,clonotype,chain,pos,distribution");
-                    }
+                } else if ctl.gen_opt.peer_group_filename == *"stdout" {
+                    fwriteln!(glog, "group,clonotype,chain,pos,distribution");
                 }
                 let chain_types = ["IGH", "IGK", "IGL", "TRA", "TRB"];
                 for q in 0..rsi[oo].mat.len() {
                     let id = rsi[oo].vids[q];
-                    if ctl.gen_opt.peer_group_filename != "stdout".to_string() {
+                    if ctl.gen_opt.peer_group_filename != *"stdout" {
                         if !ctl.gen_opt.peer_group_readable {
                             for y in pg[id].iter() {
                                 fwriteln!(
@@ -530,41 +526,39 @@ pub fn group_and_print_clonotypes(
                                 k = l;
                             }
                         }
+                    } else if !ctl.gen_opt.peer_group_readable {
+                        for y in pg[id].iter() {
+                            fwriteln!(
+                                glog,
+                                "{},{},{},{},{},{},{}",
+                                i + 1,
+                                j + 1,
+                                q + 1,
+                                chain_types[refdata.rtype[id] as usize],
+                                y.0,
+                                y.1 as char,
+                                y.2
+                            );
+                        }
                     } else {
-                        if !ctl.gen_opt.peer_group_readable {
-                            for y in pg[id].iter() {
-                                fwriteln!(
-                                    glog,
-                                    "{},{},{},{},{},{},{}",
-                                    i + 1,
-                                    j + 1,
-                                    q + 1,
-                                    chain_types[refdata.rtype[id] as usize],
-                                    y.0,
-                                    y.1 as char,
-                                    y.2
-                                );
+                        let mut k = 0;
+                        while k < pg[id].len() {
+                            let l = next_diff1_3(&pg[id], k as i32) as usize;
+                            let mut s = Vec::<String>::new();
+                            for m in k..l {
+                                s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
                             }
-                        } else {
-                            let mut k = 0;
-                            while k < pg[id].len() {
-                                let l = next_diff1_3(&pg[id], k as i32) as usize;
-                                let mut s = Vec::<String>::new();
-                                for m in k..l {
-                                    s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
-                                }
-                                fwriteln!(
-                                    glog,
-                                    "{},{},{},{},{},{}",
-                                    i + 1,
-                                    j + 1,
-                                    q + 1,
-                                    chain_types[refdata.rtype[id] as usize],
-                                    pg[id][k].0,
-                                    s.iter().format(":")
-                                );
-                                k = l;
-                            }
+                            fwriteln!(
+                                glog,
+                                "{},{},{},{},{},{}",
+                                i + 1,
+                                j + 1,
+                                q + 1,
+                                chain_types[refdata.rtype[id] as usize],
+                                pg[id][k].0,
+                                s.iter().format(":")
+                            );
+                            k = l;
                         }
                     }
                 }
@@ -576,11 +570,11 @@ pub fn group_and_print_clonotypes(
                 i,
                 j,
                 oo,
-                &exacts,
-                &rsi,
-                &exact_clonotypes,
-                &ctl,
-                &refdata,
+                exacts,
+                rsi,
+                exact_clonotypes,
+                ctl,
+                refdata,
                 &mut glog,
                 &mut fout,
                 &mut faaout,
@@ -588,7 +582,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate parseable output.
 
-            if ctl.parseable_opt.pout.len() > 0 {
+            if !ctl.parseable_opt.pout.is_empty() {
                 let mut rows = Vec::<Vec<String>>::new();
                 for m in 0..out_datas[oo].len() {
                     out_datas[oo][m].insert("group_id".to_string(), format!("{}", i + 1));
@@ -596,21 +590,21 @@ pub fn group_and_print_clonotypes(
                         .insert("group_ncells".to_string(), format!("{}", group_ncells));
                     out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
                 }
-                if ctl.parseable_opt.pout == "stdout".to_string() {
-                    if !ctl.gen_opt.noprint || (i == 0 && j == 0) {
-                        fwriteln!(glog, "{}", pcols.iter().format(","));
-                    }
+                if ctl.parseable_opt.pout == *"stdout"
+                    && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
+                {
+                    fwriteln!(glog, "{}", pcols.iter().format(","));
                 }
-                if ctl.parseable_opt.pout == "stdouth".to_string() {
+                if ctl.parseable_opt.pout == *"stdouth" {
                     rows.push(pcols.clone());
                 }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {
                     if !ctl.parseable_opt.pbarcode {
-                        if ctl.parseable_opt.pout != "stdouth".to_string() {
+                        if ctl.parseable_opt.pout != *"stdouth" {
                             for (i, c) in pcols.iter().enumerate() {
                                 if i > 0 {
-                                    if ctl.parseable_opt.pout != "stdout".to_string() {
+                                    if ctl.parseable_opt.pout != *"stdout" {
                                         fwrite!(pout, ",");
                                     } else {
                                         fwrite!(glog, ",");
@@ -620,27 +614,23 @@ pub fn group_and_print_clonotypes(
                                     let val = &y[c];
                                     let val = val.replace(POUT_SEP, ",");
                                     if !val.contains(',') {
-                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                        if ctl.parseable_opt.pout != *"stdout" {
                                             fwrite!(pout, "{}", val);
                                         } else {
                                             fwrite!(glog, "{}", val);
                                         }
+                                    } else if ctl.parseable_opt.pout != *"stdout" {
+                                        fwrite!(pout, "\"{}\"", val);
                                     } else {
-                                        if ctl.parseable_opt.pout != "stdout".to_string() {
-                                            fwrite!(pout, "\"{}\"", val);
-                                        } else {
-                                            fwrite!(glog, "\"{}\"", val);
-                                        }
+                                        fwrite!(glog, "\"{}\"", val);
                                     }
+                                } else if ctl.parseable_opt.pout != *"stdout" {
+                                    fwrite!(pout, "");
                                 } else {
-                                    if ctl.parseable_opt.pout != "stdout".to_string() {
-                                        fwrite!(pout, "");
-                                    } else {
-                                        fwrite!(glog, "");
-                                    }
+                                    fwrite!(glog, "");
                                 }
                             }
-                            if ctl.parseable_opt.pout != "stdout".to_string() {
+                            if ctl.parseable_opt.pout != *"stdout" {
                                 fwriteln!(pout, "");
                             } else {
                                 fwriteln!(glog, "");
@@ -660,13 +650,13 @@ pub fn group_and_print_clonotypes(
                     } else {
                         let ex = &exact_clonotypes[exacts[oo][u]];
                         let n = ex.ncells();
-                        if ctl.parseable_opt.pout != "stdouth".to_string() {
+                        if ctl.parseable_opt.pout != *"stdouth" {
                             // Traverse the cells in the exact subclonotype.
                             for m in 0..n {
                                 // Traverse the parseable fields to be displayed.
                                 for (i, c) in pcols.iter().enumerate() {
                                     if i > 0 {
-                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                        if ctl.parseable_opt.pout != *"stdout" {
                                             fwrite!(pout, ",");
                                         } else {
                                             fwrite!(glog, ",");
@@ -694,27 +684,23 @@ pub fn group_and_print_clonotypes(
                                         }
                                         let val = vals[id];
                                         if !val.contains(',') {
-                                            if ctl.parseable_opt.pout != "stdout".to_string() {
+                                            if ctl.parseable_opt.pout != *"stdout" {
                                                 fwrite!(pout, "{}", val);
                                             } else {
                                                 fwrite!(glog, "{}", val);
                                             }
+                                        } else if ctl.parseable_opt.pout != *"stdout" {
+                                            fwrite!(pout, "\"{}\"", val);
                                         } else {
-                                            if ctl.parseable_opt.pout != "stdout".to_string() {
-                                                fwrite!(pout, "\"{}\"", val);
-                                            } else {
-                                                fwrite!(glog, "\"{}\"", val);
-                                            }
+                                            fwrite!(glog, "\"{}\"", val);
                                         }
+                                    } else if ctl.parseable_opt.pout != *"stdout" {
+                                        fwrite!(pout, "");
                                     } else {
-                                        if ctl.parseable_opt.pout != "stdout".to_string() {
-                                            fwrite!(pout, "");
-                                        } else {
-                                            fwrite!(glog, "");
-                                        }
+                                        fwrite!(glog, "");
                                     }
                                 }
-                                if ctl.parseable_opt.pout != "stdout".to_string() {
+                                if ctl.parseable_opt.pout != *"stdout" {
                                     fwriteln!(pout, "");
                                 } else {
                                     fwriteln!(glog, "");
@@ -741,7 +727,7 @@ pub fn group_and_print_clonotypes(
                         }
                     }
                 }
-                if ctl.parseable_opt.pout == "stdouth".to_string() {
+                if ctl.parseable_opt.pout == *"stdouth" {
                     if ctl.gen_opt.noprint {
                         for (k, r) in rows.iter().enumerate() {
                             if k > 0 || (i == 0 && j == 0) {
@@ -753,7 +739,7 @@ pub fn group_and_print_clonotypes(
                         let mut log = Vec::<u8>::new();
                         let mut justify = Vec::<u8>::new();
                         for x in rows[0].iter() {
-                            justify.push(justification(&x));
+                            justify.push(justification(x));
                         }
                         print_tabular(&mut log, &rows, 2, Some(justify));
                         if ctl.gen_opt.noprint && (i > 0 || j > 0) {
@@ -775,11 +761,12 @@ pub fn group_and_print_clonotypes(
     }
     if ctl.gen_opt.group_post_filter.as_ref().is_some() {
         let x = &ctl.gen_opt.group_post_filter.as_ref().unwrap();
-        if x.len() > 0 {
-            if x.len() > 0 && x[x.len() - 1] > group_pics.len() {
-                return Err(format!(
+        if !x.is_empty() {
+            if !x.is_empty() && x[x.len() - 1] > group_pics.len() {
+                return Err(
                     "\nArgument to G= references a group id that exceeds the number of groups.\n"
-                ));
+                        .to_string(),
+                );
             }
             let mut group_pics2 = Vec::<String>::new();
             let mut last_widths2 = Vec::<u32>::new();
@@ -794,8 +781,8 @@ pub fn group_and_print_clonotypes(
     if !ctl.gen_opt.noprintx {
         logx.append(
             &mut combine_group_pics(
-                &group_pics,
-                &last_widths,
+                group_pics,
+                last_widths,
                 ctl.parseable_opt.pout == "stdouth",
                 ctl.gen_opt.noprint,
                 ctl.gen_opt.noprintx,
@@ -810,11 +797,11 @@ pub fn group_and_print_clonotypes(
 
     // Execute SIM_MAT_PLOT.
 
-    sim_mat_plot(&ctl, &groups, &out_datas, svgs);
+    sim_mat_plot(ctl, groups, out_datas, svgs);
 
     // Execute PLOT_XY.
 
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+    if !ctl.plot_opt.plot_xy_filename.is_empty() {
         let mut xvar = ctl.plot_opt.plot_xy_xvar.clone();
         if ctl.plot_opt.plot_xy_x_log10 {
             xvar = format!("log10({})", xvar);
@@ -874,18 +861,18 @@ pub fn group_and_print_clonotypes(
     let mut two_chain = 0;
     let mut slog = Vec::<u8>::new();
     print_stats(
-        &tall,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &gex_info,
-        &vdj_cells,
-        &fate,
+        tall,
+        exacts,
+        rsi,
+        exact_clonotypes,
+        ctl,
+        gex_info,
+        vdj_cells,
+        fate,
         &mut slog,
         &mut nclono2,
         &mut two_chain,
-        &opt_d_val,
+        opt_d_val,
     );
     *summary = stringme(&slog);
     logx.append(&mut slog);
@@ -893,11 +880,11 @@ pub fn group_and_print_clonotypes(
     // Print to stdout.
 
     if !ctl.gen_opt.html {
-        print!("{}", compress_ansi_escapes(&strme(&logx)));
+        print!("{}", compress_ansi_escapes(strme(&logx)));
     } else {
         // Remove initial newline if present.
         loop {
-            if logx.len() > 0 && logx[0] == b'\n' {
+            if !logx.is_empty() && logx[0] == b'\n' {
                 logx = logx[1..].to_vec();
             } else {
                 break;
@@ -925,13 +912,13 @@ pub fn group_and_print_clonotypes(
     let mut svg = String::new();
     let plot_opt = ctl.plot_opt.clone();
     plot_clonotypes(
-        &ctl,
+        ctl,
         &plot_opt,
-        &refdata,
-        &exacts,
-        &exact_clonotypes,
-        &out_datas,
-        &groups,
+        refdata,
+        exacts,
+        exact_clonotypes,
+        out_datas,
+        groups,
         &mut svg,
     )?;
 
@@ -941,7 +928,7 @@ pub fn group_and_print_clonotypes(
     if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
-            println!("");
+            println!();
         }
     } else if ctl.plot_opt.plot_file == "gui" {
         svgs.push(svg);
@@ -949,7 +936,7 @@ pub fn group_and_print_clonotypes(
 
     // Test requirements.
 
-    test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain)?;
+    test_requirements(pics, exacts, exact_clonotypes, ctl, nclono2, two_chain)?;
     ctl.perf_stats(&t, "in group code 2");
     Ok(())
 }

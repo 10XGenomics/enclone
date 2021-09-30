@@ -24,8 +24,8 @@ pub fn add_legend_for_color_by_variable(
         CellColor::ByVariableValue(ref x) => {
             var = x.var.clone();
             display_var = x.display_var.clone();
-            xmin = x.min.clone();
-            xmax = x.max.clone();
+            xmin = x.min;
+            xmax = x.max;
         }
         _ => {}
     };
@@ -79,7 +79,7 @@ pub fn add_legend_for_color_by_variable(
             fail_text,
         );
         let mut max_text_width = arial_width(&display_var, font_size as f64);
-        max_text_width = max_text_width.max(arial_width(&fail_text, font_size as f64));
+        max_text_width = max_text_width.max(arial_width(fail_text, font_size as f64));
         let width = legend_xstart + max_text_width + BOUNDARY as f64;
         set_svg_width(svg, width);
         *svg += "</svg>";

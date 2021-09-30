@@ -11,7 +11,7 @@ use vector_utils::*;
 pub fn subset_all_contig_annotations_json(filename: &str, barcodes: &Vec<String>) -> String {
     let mut x = "[\n".to_string();
     let mut lines = Vec::<String>::new();
-    let f = open_userfile_for_read(&filename);
+    let f = open_userfile_for_read(filename);
     let mut keep = false;
     for line in f.lines() {
         let s = line.unwrap();
@@ -29,7 +29,7 @@ pub fn subset_all_contig_annotations_json(filename: &str, barcodes: &Vec<String>
         lines.push(s.clone());
         if s.starts_with("        \"barcode\": \"") {
             let t = s.between("        \"barcode\": \"", "\"");
-            keep = bin_member(&barcodes, &t.to_string());
+            keep = bin_member(barcodes, &t.to_string());
         } else if s.starts_with("    }") {
             if keep {
                 for i in 0..lines.len() {

@@ -55,7 +55,7 @@ pub fn build_clusters(
                         ds.push(ex.clones[j][0].dataset_index);
                     }
                 }
-                ds.sort();
+                ds.sort_unstable();
                 let mut freq = Vec::<(u32, usize)>::new();
                 make_freq(&ds, &mut freq);
                 dsx = freq[0].1;
@@ -84,14 +84,14 @@ pub fn build_clusters(
                         ex.clones[k][0].barcode.clone(),
                     ));
                     let mut color = assign_cell_color(
-                        &ctl,
-                        &plot_opt,
-                        &refdata,
-                        &const_names,
+                        ctl,
+                        plot_opt,
+                        refdata,
+                        const_names,
                         dsx,
-                        &exacts,
-                        &exact_clonotypes,
-                        &out_datas,
+                        exacts,
+                        exact_clonotypes,
+                        out_datas,
                         i,
                         j,
                         k,
@@ -134,11 +134,11 @@ pub fn build_clusters(
                 }
                 radius += SEP;
                 clusters.push(PlotCluster {
-                    colors: colors,
-                    coords: coords,
+                    colors,
+                    coords,
                     clonotype_index: i,
-                    barcodes: barcodes,
-                    radius: radius,
+                    barcodes,
+                    radius,
                 });
             }
         }

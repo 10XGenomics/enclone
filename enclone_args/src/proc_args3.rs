@@ -26,7 +26,7 @@ fn expand_integer_ranges(x: &str) -> String {
     let mut token = String::new();
     for c in x.chars() {
         if c == ',' || c == ':' || c == ';' {
-            if token.len() > 0 {
+            if !token.is_empty() {
                 tokens.push(token.clone());
                 token.clear();
             }
@@ -35,12 +35,12 @@ fn expand_integer_ranges(x: &str) -> String {
             token.push(c);
         }
     }
-    if token.len() > 0 {
+    if !token.is_empty() {
         tokens.push(token);
     }
     let mut tokens2 = Vec::<String>::new();
     for i in 0..tokens.len() {
-        if tokens[i].contains("-")
+        if tokens[i].contains('-')
             && tokens[i].before("-").parse::<usize>().is_ok()
             && tokens[i].after("-").parse::<usize>().is_ok()
         {
@@ -70,7 +70,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
     let mut token = String::new();
     for c in x.chars() {
         if c == ',' || c == ':' || c == ';' {
-            if token.len() > 0 {
+            if !token.is_empty() {
                 tokens.push(token.clone());
                 token.clear();
             }
@@ -79,7 +79,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
             token.push(c);
         }
     }
-    if token.len() > 0 {
+    if !token.is_empty() {
         tokens.push(token);
     }
     let mut tokens2 = Vec::<String>::new();
@@ -147,7 +147,7 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> Result<Stri
             return Ok(pp);
         }
     }
-    if !path_exists(&p) {
+    if !path_exists(p) {
         if ctl.gen_opt.pre.is_empty() {
             let path = std::env::current_dir().unwrap();
             return Err(format!(
@@ -176,8 +176,8 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     *ok = false;
     for x in ctl.gen_opt.pre.iter() {
         let mut pp = format!("{}/{}", x, p);
-        if pp.starts_with("~") {
-            pp = stringme(&tilde_expand(&pp.as_bytes()));
+        if pp.starts_with('~') {
+            pp = stringme(&tilde_expand(pp.as_bytes()));
         }
         if path_exists(&pp) {
             *ok = true;
@@ -185,8 +185,8 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
         }
     }
     let mut pp = p.to_string();
-    if pp.starts_with("~") {
-        pp = stringme(&tilde_expand(&pp.as_bytes()));
+    if pp.starts_with('~') {
+        pp = stringme(&tilde_expand(pp.as_bytes()));
     }
     *ok = path_exists(&pp);
     pp
@@ -199,10 +199,10 @@ fn get_path_or_internal_id(
     spinlock: &Arc<AtomicUsize>,
 ) -> Result<String, String> {
     let mut ok = false;
-    let mut pp = get_path(&p, &ctl, &mut ok);
+    let mut pp = get_path(p, ctl, &mut ok);
     if !ok {
         if !ctl.gen_opt.internal_run {
-            get_path_fail(&pp, &ctl, source)?;
+            get_path_fail(&pp, ctl, source)?;
         } else {
             // For internal runs, try much harder.  This is so that internal users can
             // just type an internal numerical id for a dataset and have it always
@@ -214,11 +214,10 @@ fn get_path_or_internal_id(
             }
             if q.parse::<usize>().is_ok() {
                 if !ctl.gen_opt.config.contains_key("ones") {
-                    let mut msg = format!(
-                        "\nSomething is wrong.  This is an internal run, but \
+                    let mut msg = "\nSomething is wrong.  This is an internal run, but \
                         the configuration\nvariable \"ones\" is undefined.\n"
-                    );
-                    if ctl.gen_opt.config.len() == 0 {
+                        .to_string();
+                    if ctl.gen_opt.config.is_empty() {
                         msg += "In fact, there are no configuration variables.\n";
                     } else {
                         msg += "Here are the configuration variables that are defined:\n\n";
@@ -321,8 +320,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) -> Result
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
     let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
-    if bc != "".to_string() {
-        bc = get_path_or_internal_id(&bc, &ctl, call_type, &spinlock)?;
+    if bc != *"" {
+        bc = get_path_or_internal_id(&bc, ctl, call_type, &spinlock)?;
         let f = open_userfile_for_read(&bc);
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -333,7 +332,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) -> Result
             let s = line.unwrap();
             if first {
                 let fields = s.split(delimiter).collect::<Vec<&str>>();
-                to_alt = vec![-1 as isize; fields.len()];
+                to_alt = vec![-1_isize; fields.len()];
                 if !fields.contains(&"barcode") {
                     let mut origin = "from the bc field used in META";
                     if call_type == "BC" {
@@ -449,7 +448,7 @@ pub fn proc_xcr(
 ) -> Result<(), String> {
     ctl.origin_info = OriginInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
-        return Err(format!("\nOnly one of TCR or BCR can be specified.\n"));
+        return Err("\nOnly one of TCR or BCR can be specified.\n".to_string());
     }
     let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
@@ -462,7 +461,7 @@ pub fn proc_xcr(
     } else {
         val = f.to_string();
     }
-    if val == "".to_string() {
+    if val == *"" {
         return Err(format!(
             "\nYou can't write {} with no value on the right hand side.\n\
             Perhaps you need to remove some white space from your command line.\n",
@@ -471,7 +470,7 @@ pub fn proc_xcr(
     }
     val = expand_integer_ranges(&val);
     if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val, &ctl)?;
+        val = expand_analysis_sets(&val, ctl)?;
     }
     let donor_groups;
     if ctl.gen_opt.cellranger {
@@ -479,9 +478,9 @@ pub fn proc_xcr(
     } else {
         donor_groups = val.split(';').collect::<Vec<&str>>();
     }
-    let mut gex2 = expand_integer_ranges(&gex);
+    let mut gex2 = expand_integer_ranges(gex);
     if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2, &ctl)?;
+        gex2 = expand_analysis_sets(&gex2, ctl)?;
     }
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {
@@ -524,7 +523,7 @@ pub fn proc_xcr(
         let mut origin_groups_gex = Vec::<&str>::new();
         if have_gex {
             if ctl.gen_opt.cellranger {
-                origin_groups_gex = vec![&donor_groups_gex[id][..]];
+                origin_groups_gex = vec![donor_groups_gex[id]];
             } else {
                 origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
             }
@@ -563,7 +562,7 @@ pub fn proc_xcr(
             let mut datasets_bc = Vec::<&str>::new();
             if have_gex {
                 if ctl.gen_opt.cellranger {
-                    datasets_gex = vec![&origin_groups_gex[is][..]];
+                    datasets_gex = vec![origin_groups_gex[is]];
                 } else {
                     datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
                 }
@@ -653,7 +652,7 @@ pub fn proc_xcr(
     let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
-        let resx = get_path_or_internal_id(&p, &ctl, source, &spinlock);
+        let resx = get_path_or_internal_id(p, ctl, source, &spinlock);
         if resx.is_err() {
             res.3 = resx.unwrap_err();
         } else {
@@ -671,7 +670,7 @@ pub fn proc_xcr(
                 *p = format!("{}/multi/vdj_t", p);
             }
             if have_gex {
-                let resx = get_path_or_internal_id(&pg, &ctl, "GEX", &spinlock);
+                let resx = get_path_or_internal_id(pg, ctl, "GEX", &spinlock);
                 if resx.is_err() {
                     res.3 = resx.unwrap_err();
                 } else {
@@ -687,7 +686,7 @@ pub fn proc_xcr(
         }
     });
     for i in 0..results.len() {
-        if results[i].3.len() > 0 {
+        if !results[i].3.is_empty() {
             return Err(results[i].3.clone());
         }
         ctl.origin_info.dataset_path.push(results[i].0.clone());
@@ -711,10 +710,11 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
             let mut fields_sorted = fields.clone();
             unique_sort(&mut fields_sorted);
             if fields_sorted.len() < fields.len() {
-                return Err(format!(
+                return Err(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has duplicate field names\nin its first line.\n"
-                ));
+                        .to_string(),
+                );
             }
             let allowed_fields = vec![
                 "bc".to_string(),
@@ -726,7 +726,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 "color".to_string(),
             ];
             for x in fields.iter() {
-                if !allowed_fields.contains(&x) {
+                if !allowed_fields.contains(x) {
                     return Err(format!(
                         "\nThe CSV file that you specified using the META or METAX argument \
                          has an illegal field name ({}) in its first line.\n",
@@ -737,16 +737,18 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
             ctl.gen_opt.tcr = fields.contains(&"tcr".to_string());
             ctl.gen_opt.bcr = fields.contains(&"bcr".to_string());
             if !ctl.gen_opt.tcr && !ctl.gen_opt.bcr {
-                return Err(format!(
+                return Err(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has neither the field tcr or bcr in its first line.\n"
-                ));
+                        .to_string(),
+                );
             }
             if ctl.gen_opt.tcr && ctl.gen_opt.bcr {
-                return Err(format!(
+                return Err(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has both the fields tcr and bcr in its first line.\n"
-                ));
+                        .to_string(),
+                );
             }
         } else if !s.starts_with('#') {
             let val = s.split(',').collect::<Vec<&str>>();
@@ -776,7 +778,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                         abbr = y.before(":").to_string();
                     } else {
                         path = y.to_string();
-                        if path.contains("/") {
+                        if path.contains('/') {
                             abbr = path.rev_after("/").to_string();
                         } else {
                             abbr = path.clone();
@@ -790,7 +792,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                     donor = y.to_string();
                 } else if *x == "color" {
                     color = y.to_string();
-                } else if *x == "bc" && y.len() > 0 {
+                } else if *x == "bc" && !y.is_empty() {
                     bc = y.to_string();
                 }
             }
@@ -800,7 +802,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
             parse_bc(bc.clone(), &mut ctl, "META")?;
             let current_ref = false;
             let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
-            path = get_path_or_internal_id(&path, &ctl, "META", &spinlock)?;
+            path = get_path_or_internal_id(&path, ctl, "META", &spinlock)?;
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
@@ -813,7 +815,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
             if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", path)) {
                 path = format!("{}/multi/vdj_t", path);
             }
-            if gpath.len() > 0 {
+            if !gpath.is_empty() {
                 gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock)?;
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
@@ -848,10 +850,8 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
 }
 
 pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) -> Result<(), String> {
-    if !path_exists(&f) {
-        return Err(format!(
-            "\nCan't find the file referenced by your META argument.\n"
-        ));
+    if !path_exists(f) {
+        return Err("\nCan't find the file referenced by your META argument.\n".to_string());
     }
     let fx = File::open(&f);
     if fx.is_err() {

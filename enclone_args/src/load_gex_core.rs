@@ -48,7 +48,7 @@ pub fn parse_csv_pure(x: &str) -> Vec<String> {
         y.push(s);
         i = j + 1;
     }
-    if w.len() > 0 && *w.last().unwrap() == ',' {
+    if !w.is_empty() && *w.last().unwrap() == ',' {
         y.push(String::new());
     }
     y
@@ -143,14 +143,14 @@ pub fn load_gex(
     results.par_iter_mut().for_each(|r| {
         let pathlist = &mut r.15;
         let i = r.0;
-        if gex_outs[i].len() > 0 {
+        if !gex_outs[i].is_empty() {
             // First define the path where the GEX files should live, and make sure that the path
             // exists.
 
             let root = gex_outs[i].clone();
             let mut outs = root.clone();
             if root.ends_with("/outs") && path_exists(&root) {
-                outs = root.clone();
+                outs = root;
             } else if root.ends_with("/outs") {
                 outs = root.before("/outs").to_string();
                 if !path_exists(&outs) {
@@ -179,7 +179,7 @@ pub fn load_gex(
                     break;
                 }
             }
-            if h5_path.len() == 0 {
+            if h5_path.is_empty() {
                 r.11 = format!(
                     "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
                     and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
@@ -194,7 +194,7 @@ pub fn load_gex(
             // Define possible places for the analysis directory.
 
             let mut analysis = Vec::<String>::new();
-            analysis.push(format!("{}", outs));
+            analysis.push(outs.to_string());
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
             analysis.push(format!("{}/count/analysis", outs));
@@ -284,7 +284,7 @@ pub fn load_gex(
 
             let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
             for f in [pca_file.clone(), cluster_file.clone()].iter() {
-                if !path_exists(&f) {
+                if !path_exists(f) {
                     r.11 = format!(
                         "\nThe file\n{}\ndoes not exist.  \
                         Perhaps one of your directories is missing some stuff.\n\n\
@@ -323,13 +323,13 @@ pub fn load_gex(
             }
             for i in 0..csvs.len() {
                 let c = &csvs[i];
-                if path_exists(&c) {
+                if path_exists(c) {
                     csv = c.clone();
                     pathlist.push(c.to_string());
                     break;
                 }
             }
-            if csv.len() == 0 {
+            if csv.is_empty() {
                 r.11 = format!(
                     "\nSomething wrong with GEX or META argument:\ncan't find the file \
                         metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
@@ -376,7 +376,7 @@ pub fn load_gex(
 
             if bin_file_state == 3 {
                 let f = File::create(&bin_file);
-                if !f.is_ok() {
+                if f.is_err() {
                     r.11 = format!(
                         "\nenclone is trying to create the path\n{}\n\
                         but that path cannot be created.  This path is for the binary GEX \
@@ -426,7 +426,7 @@ pub fn load_gex(
             // pipelines, and a customer would have to rerun with --vdrmode=disable to avoid
             // deleting the file, and then move it to outs so enclone could find it.
 
-            if json_metrics_file.len() > 0 {
+            if !json_metrics_file.is_empty() {
                 let m = std::fs::read_to_string(&json_metrics_file).unwrap();
                 let v: Value = serde_json::from_str(&m).unwrap();
                 let z = v.as_object().unwrap();
@@ -440,9 +440,9 @@ pub fn load_gex(
 
             // Read and parse metrics file.  Rewrite as metrics class, metric name, metric value.
 
-            if metrics_file.len() > 0 {
+            if !metrics_file.is_empty() {
                 let m = std::fs::read_to_string(&metrics_file).unwrap();
-                let fields = parse_csv_pure(&m.before("\n"));
+                let fields = parse_csv_pure(m.before("\n"));
                 let (mut class, mut name, mut value) = (None, None, None);
                 for i in 0..fields.len() {
                     if fields[i] == "Library Type" {
@@ -460,7 +460,7 @@ pub fn load_gex(
                     if first {
                         first = false;
                     } else {
-                        let fields = parse_csv_pure(&line);
+                        let fields = parse_csv_pure(line);
                         lines.push(format!(
                             "{},{},{}",
                             fields[class], fields[name], fields[value]
@@ -473,7 +473,7 @@ pub fn load_gex(
             // Read feature metrics file.  Note that we do not enforce the requirement of this
             // file, so it may not be present.
 
-            if feature_metrics_file.len() > 0 {
+            if !feature_metrics_file.is_empty() {
                 let mut count = 0;
                 let f = open_for_read![&feature_metrics_file];
                 let mut feature_pos = HashMap::<String, usize>::new();
@@ -613,7 +613,7 @@ pub fn load_gex(
                         let mut rpcx = fields[value_field].to_string();
                         rpcx = rpcx.replace(",", "");
                         rpcx = rpcx.replace("\"", "");
-                        if !rpcx.parse::<usize>().is_ok() {
+                        if rpcx.parse::<usize>().is_err() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Gene Expression Mean Reads per Cell value isn't an integer.\n",
@@ -630,7 +630,7 @@ pub fn load_gex(
                         let mut fbrpcx = fields[value_field].to_string();
                         fbrpcx = fbrpcx.replace(",", "");
                         fbrpcx = fbrpcx.replace("\"", "");
-                        if !fbrpcx.parse::<usize>().is_ok() {
+                        if fbrpcx.parse::<usize>().is_err() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
                                 the Antibody Capture Mean Reads per Cell value isn't an integer.\n",
@@ -657,7 +657,7 @@ pub fn load_gex(
                 let mut fbrpc_field = None;
                 for line_no in 0..lines.len() {
                     let s = &lines[line_no];
-                    let fields = parse_csv(&s);
+                    let fields = parse_csv(s);
                     if line_no == 0 {
                         for i in 0..fields.len() {
                             if fields[i] == "Mean Reads per Cell" {
@@ -678,7 +678,7 @@ pub fn load_gex(
                             let mut rpcx = fields[rpc_field.unwrap()].to_string();
                             rpcx = rpcx.replace(",", "");
                             rpcx = rpcx.replace("\"", "");
-                            if !rpcx.parse::<usize>().is_ok() {
+                            if rpcx.parse::<usize>().is_err() {
                                 r.11 = format!(
                                     "\nSomething appears to be wrong with the file\n{}:\n\
                                     the Mean Reads per Cell field isn't an integer.\n",
@@ -699,7 +699,7 @@ pub fn load_gex(
                             let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
                             fbrpcx = fbrpcx.replace(",", "");
                             fbrpcx = fbrpcx.replace("\"", "");
-                            if !fbrpcx.parse::<usize>().is_ok() {
+                            if fbrpcx.parse::<usize>().is_err() {
                                 r.11 = format!(
                                     "\nSomething appears to be wrong with the file\n{}:\n\
                                     the Antibody: Mean Reads per Cell field isn't an integer.\n",
@@ -844,7 +844,7 @@ pub fn load_gex(
 
     let t = Instant::now();
     for i in 0..results.len() {
-        if results[i].11.len() > 0 {
+        if !results[i].11.is_empty() {
             return Err(results[i].11.clone());
         }
     }

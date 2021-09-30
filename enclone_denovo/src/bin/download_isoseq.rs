@@ -34,7 +34,7 @@ fn main() {
     let f = include_str!("../isoseq_list");
     let _ = std::env::set_current_dir(&dir);
     for line in f.lines() {
-        if line.starts_with('#') || line.len() == 0 {
+        if line.starts_with('#') || line.is_empty() {
             continue;
         }
         let line = line.replace(" ", "");

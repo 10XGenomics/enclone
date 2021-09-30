@@ -24,7 +24,7 @@ pub fn alluvial_fb(
         if m.initialized() {
             let mut keep = 4;
             let mut specials = Vec::<String>::new();
-            if ctl.gen_opt.fb_show.len() > 0 {
+            if !ctl.gen_opt.fb_show.is_empty() {
                 let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
                 for x in fb_show.iter() {
                     if x.parse::<usize>().is_ok() {
@@ -45,7 +45,7 @@ pub fn alluvial_fb(
                 let fref = &gex_info.feature_refs[li];
                 let (mut id_pos, mut seq_pos, mut type_pos) = (0, 0, 0);
                 for (i, line) in fref.lines().enumerate() {
-                    let fields = parse_csv(&line);
+                    let fields = parse_csv(line);
                     if i == 0 {
                         for j in 0..fields.len() {
                             if fields[j] == "id" {
@@ -56,11 +56,8 @@ pub fn alluvial_fb(
                                 type_pos = j;
                             }
                         }
-                    } else {
-                        if fields[type_pos] == "Antibody Capture" {
-                            seq_to_id
-                                .insert(fields[seq_pos].to_string(), fields[id_pos].to_string());
-                        }
+                    } else if fields[type_pos] == "Antibody Capture" {
+                        seq_to_id.insert(fields[seq_pos].to_string(), fields[id_pos].to_string());
                     }
                 }
             }
@@ -85,10 +82,8 @@ pub fn alluvial_fb(
                     if top_ref.len() < keep {
                         top_ref.push((i, m.col_label(i)));
                     }
-                } else {
-                    if top_nref.len() < keep {
-                        top_nref.push((i, m.col_label(i)));
-                    }
+                } else if top_nref.len() < keep {
+                    top_nref.push((i, m.col_label(i)));
                 }
             }
             for i in 0..specials.len() {

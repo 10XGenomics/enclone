@@ -62,7 +62,7 @@ pub fn finish_join(
         let x: &CloneInfo = &info[i];
         ox.push((x.clonotype_id, eq.class_id(i as i32)));
     }
-    ox.sort();
+    ox.sort_unstable();
     let mut i = 0;
     while i < ox.len() {
         let j = next_diff1_2(&ox, i as i32) as usize;

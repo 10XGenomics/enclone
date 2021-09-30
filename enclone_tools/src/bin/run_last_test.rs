@@ -21,7 +21,7 @@ fn main() {
         "enclone",
         TESTS.len() - 1,
         "",
-        &TESTS[TESTS.len() - 1],
+        TESTS[TESTS.len() - 1],
         "test",
         &mut ok,
         &mut logx,

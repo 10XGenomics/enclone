@@ -42,7 +42,7 @@ pub fn join_one(
     let (clono1, clono2) = (info[k1].clonotype_id, info[k2].clonotype_id);
     let chains1 = exact_clonotypes[clono1].share.len();
     let chains2 = exact_clonotypes[clono2].share.len();
-    if chains1 < 2 || chains1 > 3 || chains2 < 2 || chains2 > 3 {
+    if !(2..=3).contains(&chains1) || chains2 < 2 || chains2 > 3 {
         return false;
     }
     // NEED FOR THIS SEEMS LIKE A BUG:
@@ -68,7 +68,7 @@ pub fn join_one(
 
     // Compute number of differences.
 
-    let mut diffs = 0 as usize;
+    let mut diffs = 0_usize;
     for x in 0..info[k1].lens.len() {
         if !info[k1].has_del[x] && !info[k2].has_del[x] {
             // A great deal of time is spent in the call to ndiffs.  Notes on this:
@@ -123,10 +123,12 @@ pub fn join_one(
     }
     unique_sort(&mut donors1);
     unique_sort(&mut donors2);
-    if !ctl.clono_filt_opt_def.donor {
-        if donors1.len() > 0 && donors2.len() > 0 && donors1 != donors2 {
-            return false;
-        }
+    if !ctl.clono_filt_opt_def.donor
+        && !donors1.is_empty()
+        && !donors2.is_empty()
+        && donors1 != donors2
+    {
+        return false;
     }
     let err = donors1 != donors2 || donors1.len() != 1 || donors2.len() != 1;
 
@@ -249,7 +251,7 @@ pub fn join_one(
 
     // Compute junction diffs.  Ugly.
 
-    let mut cd = 0 as isize;
+    let mut cd = 0_isize;
     for l in 0..x1.len() {
         for m in 0..x1[l].len() {
             if x1[l].as_bytes()[m] != x2[l].as_bytes()[m] {
@@ -291,7 +293,7 @@ pub fn join_one(
     let n = 3 * (info[k1].tigs[0].len() + info[k1].tigs[1].len());
     let k = *min_indeps + 2 * *min_shares;
     let d = *min_shares;
-    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, &sr);
+    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, sr);
     assert!(!p1.is_infinite()); // TODO: IS THIS SAFE?
 
     // Multiply by the number of DNA sequences that differ from the given CDR3
@@ -320,22 +322,22 @@ pub fn join_one(
         bcs2.clear();
     }
     pot.push(PotentialJoin {
-        k1: k1,
-        k2: k2,
-        nrefs: nrefs,
-        cd: cd,
-        diffs: diffs,
-        bcs1: bcs1,
-        bcs2: bcs2,
-        shares: shares,
-        indeps: indeps,
-        shares_details: shares_details,
-        share_pos_v: share_pos_v,
-        share_pos_j: share_pos_j,
-        score: score,
-        err: err,
-        p1: p1,
-        mult: mult,
+        k1,
+        k2,
+        nrefs,
+        cd,
+        diffs,
+        bcs1,
+        bcs2,
+        shares,
+        indeps,
+        shares_details,
+        share_pos_v,
+        share_pos_j,
+        score,
+        err,
+        p1,
+        mult,
     });
-    return true;
+    true
 }
