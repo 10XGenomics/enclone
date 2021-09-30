@@ -6,9 +6,6 @@
 
 // This code is nearly identical to the code in enclone_version/src/lib.rs.
 
-extern crate chrono;
-extern crate string_utils;
-
 use chrono::prelude::*;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;

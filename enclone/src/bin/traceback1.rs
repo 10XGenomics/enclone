@@ -20,7 +20,7 @@ fn main() {
 
 #[test]
 fn test_traceback1() {
-    extern crate assert_cmd;
+    use assert_cmd;
     use assert_cmd::prelude::*;
     use enclone_core::*;
     use std::{env, process::Command};

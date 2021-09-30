@@ -101,10 +101,10 @@ pub fn survives_filter(
                 if ex.clones[i][0].marked {
                     let li = ex.clones[i][0].dataset_index;
                     let bc = &ex.clones[i][0].barcode;
-                    if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                        if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                            marked_b = true;
-                        }
+                    if gex_info.cell_type[li].contains_key(&bc.clone())
+                        && gex_info.cell_type[li][&bc.clone()].starts_with('B')
+                    {
+                        marked_b = true;
                     }
                 }
             }
@@ -117,7 +117,7 @@ pub fn survives_filter(
 
     // Barcode required
 
-    if ctl.clono_filt_opt.barcode.len() > 0 {
+    if !ctl.clono_filt_opt.barcode.is_empty() {
         let mut ok = false;
         for s in exacts.iter() {
             let ex = &exact_clonotypes[*s];
@@ -156,7 +156,7 @@ pub fn survives_filter(
     if ctl.clono_filt_opt.vdup {
         let mut dup = false;
         let mut x = rsi.vids.clone();
-        x.sort();
+        x.sort_unstable();
         let mut i = 0;
         while i < x.len() {
             let j = next_diff(&x, i);
@@ -262,10 +262,10 @@ pub fn survives_filter(
                 if refdata.name[rsi.jids[cx]] == ctl.clono_filt_opt.seg[i][j] {
                     hit = true;
                 }
-                if rsi.cids[cx].is_some() {
-                    if refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.seg[i][j] {
-                        hit = true;
-                    }
+                if rsi.cids[cx].is_some()
+                    && refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.seg[i][j]
+                {
+                    hit = true;
                 }
             }
         }
@@ -293,12 +293,11 @@ pub fn survives_filter(
                 if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.segn[i][j].force_i32() {
                     hit = true;
                 }
-                if rsi.cids[cx].is_some() {
-                    if refdata.id[rsi.cids[cx].unwrap()]
+                if rsi.cids[cx].is_some()
+                    && refdata.id[rsi.cids[cx].unwrap()]
                         == ctl.clono_filt_opt.segn[i][j].force_i32()
-                    {
-                        hit = true;
-                    }
+                {
+                    hit = true;
                 }
             }
         }
@@ -352,7 +351,7 @@ pub fn survives_filter(
                 datasets.push(ex.clones[j][0].dataset_index);
             }
         }
-        datasets.sort();
+        datasets.sort_unstable();
         let mut freq = Vec::<(u32, usize)>::new();
         make_freq(&datasets, &mut freq);
         if freq.len() == 1
@@ -393,7 +392,7 @@ pub fn survives_filter(
 
     // Clonotypes having given CDR3 (given by Levenshtein distance pattern).
 
-    if ctl.clono_filt_opt.cdr3_lev.len() > 0 {
+    if !ctl.clono_filt_opt.cdr3_lev.is_empty() {
         let fields = ctl
             .clono_filt_opt
             .cdr3_lev
@@ -452,19 +451,9 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(
-                            &ex,
-                            col,
-                            u,
-                            &rsi,
-                            &refdata,
-                            &dref,
-                            &mut scores,
-                            &mut ds,
-                            &ctl,
-                        );
+                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
                         let mut opt = Vec::new();
-                        if ds.len() > 0 {
+                        if !ds.is_empty() {
                             opt = ds[0].clone();
                         }
                         dvotes.push(opt);
@@ -494,19 +483,9 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(
-                            &ex,
-                            col,
-                            u,
-                            &rsi,
-                            &refdata,
-                            &dref,
-                            &mut scores,
-                            &mut ds,
-                            &ctl,
-                        );
+                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
                         let mut opt = Vec::new();
-                        if ds.len() > 0 {
+                        if !ds.is_empty() {
                             opt = ds[0].clone();
                         }
                         if opt.is_empty() {
@@ -534,19 +513,9 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(
-                            &ex,
-                            col,
-                            u,
-                            &rsi,
-                            &refdata,
-                            &dref,
-                            &mut scores,
-                            &mut ds,
-                            &ctl,
-                        );
+                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
                         let mut opt = Vec::new();
-                        if ds.len() > 0 {
+                        if !ds.is_empty() {
                             opt = ds[0].clone();
                         }
                         if opt.len() == 2 {
@@ -563,5 +532,5 @@ pub fn survives_filter(
 
     // Done.
 
-    return true;
+    true
 }

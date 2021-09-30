@@ -54,7 +54,7 @@ pub fn proc_cvar2(
             if pass == 2
                 && ((ctl.parseable_opt.pout.len() > 0
                     && (ctl.parseable_opt.pchains == "max"
-                        || $col + 1 <= ctl.parseable_opt.pchains.force_usize()))
+                        || col < ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
                 let mut v = $var.clone();
@@ -126,15 +126,15 @@ pub fn proc_cvar2(
     if var == "nval" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 let mut valsx = Vec::<String>::new();
@@ -149,22 +149,22 @@ pub fn proc_cvar2(
                     vals += &format!("{}", n);
                     valsx.push(format!("{}", n));
                 }
-                out_data[u].insert(varc.clone(), format!("{}", vals));
+                out_data[u].insert(varc.clone(), vals.to_string());
                 stats.push((varc, valsx));
             }
         }
     } else if var == "nnval" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut nvals = String::new();
                 let mut nvalsx = Vec::<String>::new();
@@ -179,22 +179,22 @@ pub fn proc_cvar2(
                     nvals += &format!("{}", n);
                     nvalsx.push(format!("{}", n));
                 }
-                out_data[u].insert(varc.clone(), format!("{}", nvals));
+                out_data[u].insert(varc.clone(), nvals.to_string());
                 stats.push((varc, nvalsx));
             }
         }
     } else if var == "nival" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut nvals = String::new();
                 let mut nvalsx = Vec::<String>::new();
@@ -209,22 +209,22 @@ pub fn proc_cvar2(
                     nvals += &format!("{}", n);
                     nvalsx.push(format!("{}", n));
                 }
-                out_data[u].insert(varc.clone(), format!("{}", nvals));
+                out_data[u].insert(varc.clone(), nvals.to_string());
                 stats.push((varc, nvalsx));
             }
         }
     } else if var == "valumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -243,23 +243,23 @@ pub fn proc_cvar2(
                                 .format(",")
                         );
                     }
-                    vals += &format!("{}", n);
+                    vals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if var == "valbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -275,23 +275,23 @@ pub fn proc_cvar2(
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
-                    vals += &format!("{}", n);
+                    vals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if var == "nvalumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -310,23 +310,23 @@ pub fn proc_cvar2(
                                 .format(",")
                         );
                     }
-                    nvals += &format!("{}", n);
+                    nvals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", nvals));
+                out_data[u].insert(varc, nvals.to_string());
             }
         }
     } else if var == "nvalbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -342,23 +342,23 @@ pub fn proc_cvar2(
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
-                    vals += &format!("{}", n);
+                    vals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if var == "ivalumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -377,23 +377,23 @@ pub fn proc_cvar2(
                                 .format(",")
                         );
                     }
-                    nvals += &format!("{}", n);
+                    nvals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", nvals));
+                out_data[u].insert(varc, nvals.to_string());
             }
         }
     } else if var == "ivalbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
-            && ((ctl.parseable_opt.pout.len() > 0
+            && ((!ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize()))
-                || extra_args.len() > 0)
+                    || col < ctl.parseable_opt.pchains.force_usize()))
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -409,9 +409,9 @@ pub fn proc_cvar2(
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
-                    vals += &format!("{}", n);
+                    vals += &n.to_string();
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if *var == "cdiff" {
@@ -565,11 +565,11 @@ pub fn proc_cvar2(
         let var = var.clone();
         if pass == 2
             && ((ctl.parseable_opt.pchains == "max"
-                || col + 1 <= ctl.parseable_opt.pchains.force_usize())
-                || extra_args.len() > 0)
+                || col < ctl.parseable_opt.pchains.force_usize())
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -577,7 +577,7 @@ pub fn proc_cvar2(
                     }
                     vals += &format!("{}", ex.clones[k][mid].umi_count);
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if *var == "u_min" {
@@ -606,13 +606,13 @@ pub fn proc_cvar2(
         let var = var.clone();
         if pass == 2
             && ((ctl.parseable_opt.pchains == "max"
-                || col + 1 <= ctl.parseable_opt.pchains.force_usize())
-                || extra_args.len() > 0)
+                || col < ctl.parseable_opt.pchains.force_usize())
+                || !extra_args.is_empty())
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
-                || bin_member(&pcols_sort, &varc)
-                || bin_member(&extra_args, &varc)
+                || bin_member(pcols_sort, &varc)
+                || bin_member(extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -621,7 +621,7 @@ pub fn proc_cvar2(
                     }
                     vals += &format!("{}", ex.clones[k][mid].read_count);
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc, vals.to_string());
             }
         }
     } else if *var == "d_frame" {
@@ -714,5 +714,5 @@ pub fn proc_cvar2(
     } else {
         return false;
     }
-    return true;
+    true
 }

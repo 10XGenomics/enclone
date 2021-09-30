@@ -1,7 +1,5 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-extern crate enclone_core;
-
 pub mod allele;
 pub mod graph_filter;
 pub mod info;

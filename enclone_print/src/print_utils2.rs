@@ -123,7 +123,7 @@ pub fn row_fill(
 
     let cols = varmat[0].len();
     if ctl.gen_opt.row_fill_verbose {
-        eprintln!("");
+        eprintln!();
     }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
@@ -282,13 +282,13 @@ pub fn row_fill(
             }
         }
         count_unsorted = counts.clone();
-        counts.sort();
+        counts.sort_unstable();
         for n in counts.iter() {
             if *n < 100 {
                 *gex_low += 1;
             }
         }
-        if counts.len() > 0 {
+        if !counts.is_empty() {
             gex_median = rounded_median(&counts);
             gex_min = counts[0];
             gex_max = counts[counts.len() - 1];
@@ -299,7 +299,7 @@ pub fn row_fill(
     let entropies_unsorted = entropies.clone();
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
-    if entropies.len() > 0 {
+    if !entropies.is_empty() {
         entropy = median_f64(&entropies);
     }
 
@@ -308,7 +308,7 @@ pub fn row_fill(
     // LinearCondition::require_valid_variables.
 
     let mut all_lvars = lvars.clone();
-    if ctl.parseable_opt.pout.len() == 0 {
+    if ctl.parseable_opt.pout.is_empty() {
     } else if ctl.parseable_opt.pcols.is_empty() {
         for i in 0..LVARS_ALLOWED.len() {
             if !lvarsh.contains(&LVARS_ALLOWED[i].to_string()) {
@@ -338,28 +338,28 @@ pub fn row_fill(
         let x = &all_lvars[i];
         if !proc_lvar1(
             i,
-            &x,
+            x,
             pass,
             u,
-            &ctl,
-            &exacts,
-            &mults,
-            &exact_clonotypes,
-            &gex_info,
-            &refdata,
-            &varmat,
-            &fp,
+            ctl,
+            exacts,
+            mults,
+            exact_clonotypes,
+            gex_info,
+            refdata,
+            varmat,
+            fp,
             row,
             out_data,
             d_all,
             ind_all,
-            &rsi,
-            &dref,
-            &groups,
+            rsi,
+            dref,
+            groups,
             stats,
-            &vdj_cells,
-            &n_vdj_gex,
-            &nd_fields,
+            vdj_cells,
+            n_vdj_gex,
+            nd_fields,
             &lvars,
             &lenas,
             &alt_bcs,
@@ -374,33 +374,33 @@ pub fn row_fill(
             entropy,
             &entropies_unsorted,
             &fcounts,
-            &extra_args,
-            &fate,
+            extra_args,
+            fate,
         ) {
             let _ = proc_lvar2(
                 i,
-                &x,
+                x,
                 pass,
                 u,
-                &ctl,
-                &exacts,
-                &mults,
-                &exact_clonotypes,
-                &gex_info,
-                &refdata,
-                &varmat,
-                &fp,
+                ctl,
+                exacts,
+                mults,
+                exact_clonotypes,
+                gex_info,
+                refdata,
+                varmat,
+                fp,
                 row,
                 out_data,
                 d_all,
                 ind_all,
-                &rsi,
-                &dref,
-                &groups,
+                rsi,
+                dref,
+                groups,
                 stats,
-                &vdj_cells,
-                &n_vdj_gex,
-                &nd_fields,
+                vdj_cells,
+                n_vdj_gex,
+                nd_fields,
                 &lvars,
                 &lenas,
                 &alt_bcs,
@@ -415,8 +415,8 @@ pub fn row_fill(
                 entropy,
                 &entropies_unsorted,
                 &fcounts,
-                &extra_args,
-                &fate,
+                extra_args,
+                fate,
             );
         }
     }
@@ -508,12 +508,12 @@ pub fn row_fill(
             let mut needed = false;
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(var) {
                 needed = true;
             } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
+                && !ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || col < ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
@@ -525,7 +525,7 @@ pub fn row_fill(
                 continue;
             }
             let col_var = jj < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
 
@@ -588,13 +588,13 @@ pub fn row_fill(
             numis.push(ex.clones[j][mid].umi_count);
             nreads.push(ex.clones[j][mid].read_count);
         }
-        numis.sort();
+        numis.sort_unstable();
         let median_numis = rounded_median(&numis);
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
         let u_min = *numis.iter().min().unwrap();
         let u_max = *numis.iter().max().unwrap();
-        nreads.sort();
+        nreads.sort_unstable();
         let rtot: usize = nreads.iter().sum();
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
         let r_min = *nreads.iter().min().unwrap();
@@ -663,12 +663,12 @@ pub fn row_fill(
                 continue;
             }
             let varc = format!("{}{}", var, col + 1);
-            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(var) {
                 needed = true;
             } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
+                && !ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || col < ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
@@ -686,31 +686,31 @@ pub fn row_fill(
                 continue;
             }
             let col_var = jj < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
 
             // Compute.
 
             if !proc_cvar1(
-                &var,
+                var,
                 jj,
                 col,
                 mid,
                 pass,
                 u,
-                &ex,
-                &ctl,
-                &exacts,
-                &exact_clonotypes,
-                &refdata,
-                &varmat,
+                ex,
+                ctl,
+                exacts,
+                exact_clonotypes,
+                refdata,
+                varmat,
                 out_data,
-                &rsi,
-                &dref,
-                &peer_groups,
-                &show_aa,
-                &field_types,
+                rsi,
+                dref,
+                peer_groups,
+                show_aa,
+                field_types,
                 col_var,
                 &pcols_sort,
                 bads,
@@ -725,28 +725,28 @@ pub fn row_fill(
                 r_max,
                 r_mean,
                 rtot,
-                &extra_args,
+                extra_args,
                 stats,
             )? {
                 let _ = proc_cvar2(
-                    &var,
+                    var,
                     jj,
                     col,
                     mid,
                     pass,
                     u,
-                    &ex,
-                    &ctl,
-                    &exacts,
-                    &exact_clonotypes,
-                    &refdata,
-                    &varmat,
+                    ex,
+                    ctl,
+                    exacts,
+                    exact_clonotypes,
+                    refdata,
+                    varmat,
                     out_data,
-                    &rsi,
-                    &dref,
-                    &peer_groups,
-                    &show_aa,
-                    &field_types,
+                    rsi,
+                    dref,
+                    peer_groups,
+                    show_aa,
+                    field_types,
                     col_var,
                     &pcols_sort,
                     bads,
@@ -761,7 +761,7 @@ pub fn row_fill(
                     r_max,
                     r_mean,
                     rtot,
-                    &extra_args,
+                    extra_args,
                     stats,
                 );
             }
