@@ -82,7 +82,7 @@ fn main() {
         }
         print!("{}", strme(&results[i].1));
     }
-    println!("used {:.2} minutes\n", elapsed(&t)/60.0);
+    println!("used {:.2} minutes\n", elapsed(&t) / 60.0);
     if fail {
         println!("\nFAILED!\n");
         std::process::exit(1);

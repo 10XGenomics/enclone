@@ -89,14 +89,14 @@ fn main() {
     let mut motifs = Vec::<Vec<u8>>::new();
     let mut bits = 0;
     let mut nmotifs = 0;
-    const MIN_FRAC : f64 = 0.9;
+    const MIN_FRAC: f64 = 0.9;
     let mut pwm = String::new();
     for i in 0..n {
         let k = calls[i].len();
         let mut m = Vec::<u8>::new();
         if k > 0 {
             calls[i].sort();
-            let mut freqs = Vec::<(u32,u8)>::new();
+            let mut freqs = Vec::<(u32, u8)>::new();
             make_freq(&calls[i], &mut freqs);
             if i > 0 {
                 pwm += ":";
@@ -137,7 +137,7 @@ fn main() {
 
     for i in 0..n {
         if (i + 1) % 10 == 0 && i + 1 >= 100 {
-            print!("{}", (i+1) / 100);
+            print!("{}", (i + 1) / 100);
         } else {
             print!(" ");
         }
@@ -145,14 +145,14 @@ fn main() {
     println!("");
     for i in 0..n {
         if (i + 1) % 10 == 0 {
-            print!("{}", ((i+1) / 10) % 10);
+            print!("{}", ((i + 1) / 10) % 10);
         } else {
             print!(" ");
         }
     }
     println!("");
     for i in 0..n {
-        print!("{}", (i+1) % 10);
+        print!("{}", (i + 1) % 10);
     }
     println!("");
     for pass in 0..2 {
@@ -178,7 +178,7 @@ fn main() {
         }
     }
     println!("\npre = {}", pre);
-    const ALLOWED_PRE_ERRS : usize = 3;
+    const ALLOWED_PRE_ERRS: usize = 3;
     println!("pre errs exceeding {}:", ALLOWED_PRE_ERRS);
     let mut all_errs = Vec::<usize>::new();
     for i in 0..xs.len() {
@@ -205,19 +205,23 @@ fn main() {
     println!("\nnerrs = {}", abbrev_list(&all_errs));
     println!("top errs:");
     for j in 1..=5 {
-        println!("* genome = {}, errs = {}", names[names.len()-j], all_errs[names.len()-j]);
+        println!(
+            "* genome = {}, errs = {}",
+            names[names.len() - j],
+            all_errs[names.len() - j]
+        );
     }
 
     // Assess power.
 
-    const MIN_THRESH : f64 = 13.5;
+    const MIN_THRESH: f64 = 13.5;
     for e in (1..=20).rev() {
         // let z = log10( 2^bits / (nmotifs choose e) ).
         let mut z = bits as f64 * 2.0_f64.log10();
         for j in 1..=e {
             z += (j as f64).log10();
         }
-        for j in nmotifs-e+1..=nmotifs {
+        for j in nmotifs - e + 1..=nmotifs {
             z -= (j as f64).log10();
         }
 

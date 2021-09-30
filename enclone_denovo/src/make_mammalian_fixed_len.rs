@@ -3,8 +3,8 @@
 // From IMGT mammalian reference sequences, find the
 // (per chain, per feature, per length, per position) amino acid distribution.
 
-use amino::*;
 use crate::vdj_features::*;
+use amino::*;
 use debruijn::dna_string::*;
 use fasta_tools::*;
 use std::fs::read_dir;

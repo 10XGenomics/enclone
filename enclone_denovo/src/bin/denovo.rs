@@ -72,7 +72,6 @@
 // 25. 0  31     exon one same start test
 // 26. 0   5     recombination site filtering
 
-
 /*
 PREBUILD: ran this:
 % cd ensembl/release-94/fasta/mus_musculus/dna
@@ -115,17 +114,17 @@ and fails GT|GC test after exon 1; note that the leader that's shown is short to
 // Notes on human pseudogenes.
 //
 // [1] IMGT >546|IGKV1/OR2-0*01 googles nonfunctional, but we find
-// MRAPTQLLGLLVLWLPGARC 
+// MRAPTQLLGLLVLWLPGARC
 // 🌸 DIQMTQSPSSLSASVGDRVTITCRASQGISNNLNWYQQKPGKTPKLLIYAASSLQSGIPSRFSDSGSGADYTLTIRSLQPEDFATYYC
 // which differs from that at two bases (and one amino acid).
 //
 // The IMGT sequence probably does not occur in any 10x data.  The command
-// enclone BI=1-12 IMGT RE SEGN=546 ACCEPT_BROKEN ALLOW_INCONSISTENT 
+// enclone BI=1-12 IMGT RE SEGN=546 ACCEPT_BROKEN ALLOW_INCONSISTENT
 // yields four cells but the sequences are very mutated, suggesting misalignment.
 //
 // Evidence that the gene might be defective is scant:
 // 1. Its FWR3 has some rare amino acids
-// (a) D in position 8 occurs only once in all IMGT mammalian data 
+// (a) D in position 8 occurs only once in all IMGT mammalian data
 // (b) R in position 20 occurs only twice.
 // 2. Its initial base sequence ATGAGGGCCCCC seems like it might hairpin.  Yet it does initiate 16
 // of the 5795 mammalian reference sequences.  (Possibly these are all pseudogenes; hard to know.)
@@ -133,7 +132,7 @@ and fails GT|GC test after exon 1; note that the leader that's shown is short to
 // The gene blasts to about the right place on chr12 (and elsewhere).
 //
 // [2] IMGT 278|IGHV1/OR15-9*01 is
-// MGWTWRILFLVVIAAGAQS 🌸 
+// MGWTWRILFLVVIAAGAQS 🌸
 // QVQLMQSGAEVKKPGASVRISCKASGYTFTSYCMHWVCQAHAQGLEWMGLVCPSDGSTSYAQKFQGRVTITRDTSMGTAYMELSSLRSEDTAMYYC
 // and the feature lengths are totally standard.  Haven't looked deeper than that.
 // Doesn't appear in BI=6-12.
@@ -160,7 +159,7 @@ use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
-use std::io::{BufWriter,Write};
+use std::io::{BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
 use superslice::Ext;
@@ -218,7 +217,7 @@ fn _make_upper_acgt(x: &mut u8) {
 // score exon 2 start by base frequency in human and mouse data
 
 fn exon2_start_score(x: &[u8]) -> f64 {
-    let counts = [ 
+    let counts = [
         [41, 16, 342, 29],
         [33, 54, 56, 285],
         [84, 1, 255, 88],
@@ -232,7 +231,7 @@ fn exon2_start_score(x: &[u8]) -> f64 {
     ];
     let mut p = 1.0;
     for i in 0..counts.len() {
-        let total : usize = counts[i].iter().sum();
+        let total: usize = counts[i].iter().sum();
         let n;
         if x[i] == b'A' {
             n = counts[i][0];
@@ -270,7 +269,7 @@ pub fn lscore1(x: &[u8]) -> usize {
     }
     let mut m = 0;
     for i in 0..x.len() - 1 {
-        if !good[i] || !good[i+1] {
+        if !good[i] || !good[i + 1] {
             continue;
         }
         let mut j = i + 2;
@@ -280,7 +279,7 @@ pub fn lscore1(x: &[u8]) -> usize {
                 j += 1;
                 count += 1;
             } else {
-                if j + 2 < good.len() && good[j+1] && good[j+2] {
+                if j + 2 < good.len() && good[j + 1] && good[j + 2] {
                     j += 3;
                     count += 2;
                 } else {
@@ -331,7 +330,7 @@ pub fn lscore2(x: &[u8]) -> usize {
 fn main() {
     PrettyTrace::new().on();
 
-    // Get the species and load the genome reference.  We read the entire fasta file into a 
+    // Get the species and load the genome reference.  We read the entire fasta file into a
     // Vec<Vec<u8>>, with records alternating between headers and bases.  This may not be
     // correctly handled in subsequent code.
 
@@ -449,10 +448,14 @@ fn main() {
         let xref;
         if species == "human" {
             xref = format!(
-                "{}/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.toplevel.trunc_1000.fa.binary", root);
+                "{}/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.toplevel.trunc_1000.fa.binary",
+                root
+            );
         } else {
             xref = format!(
-                "{}/mus_musculus/dna/Mus_musculus.GRCm38.dna.toplevel.trunc_1000.fa.binary", root);
+                "{}/mus_musculus/dna/Mus_musculus.GRCm38.dna.toplevel.trunc_1000.fa.binary",
+                root
+            );
         }
         let mut f = std::fs::File::open(&xref).unwrap();
         binary_read_vec_vec(&mut f, &mut refx).unwrap();
@@ -479,7 +482,7 @@ fn main() {
     let mut tenx = false;
     for i in 3..args.len() {
         if args[i] == "trans" {
-        show_transition = true;
+            show_transition = true;
         } else if args[i] == "dna" {
             print_bases = true;
         } else if args[i] == "all" {
@@ -505,22 +508,22 @@ fn main() {
 
     // Empirical constants.
 
-    const WALK_BACK : usize = 520; // distance to walk back from ORF start to find start codon
-    // LOW1 could probably be quite a bit higher
-    const LOW1 : usize = 19; // minimum length of exon 1 in bases (from start codon)
-    const HIGH1 : usize = 73; // maximum length of exon 1 in bases (from start codon)
-    const LOW_INTRON : usize = 76; // minimum length of intron in bases
-    const HIGH_INTRON : usize = 443; // maximum length of intron in bases
-    const MIN_LEN : usize = 102; // minimum length from start codon to end of FWR3
-    const MAX_LEN : usize = 125; // maximum length from start codon to end of FWR3
-    const MIN_SCORE : f64 = 6.75; // minimum CDR3 score
-    const MIN_FWR1 : usize = 20; // minimum FWR1 length
-    const MAX_FWR1 : usize = 26; // maximum FWR1 length
-    const MIN_LEADER : usize = 17; // minimum leader length
-    const MAX_LEADER : usize = 28; // maximum leader length
-    const TAG_LEN : usize = 40; // length of upstream region used as tag
-    const MOTIF1 : &[u8; 7] = b"CACAGTG"; // start motif for initial upstream tags
-    const MOTIF2 : &[u8; 9] = b"ACAAAAACC"; // mid motif for upstream tags
+    const WALK_BACK: usize = 520; // distance to walk back from ORF start to find start codon
+                                  // LOW1 could probably be quite a bit higher
+    const LOW1: usize = 19; // minimum length of exon 1 in bases (from start codon)
+    const HIGH1: usize = 73; // maximum length of exon 1 in bases (from start codon)
+    const LOW_INTRON: usize = 76; // minimum length of intron in bases
+    const HIGH_INTRON: usize = 443; // maximum length of intron in bases
+    const MIN_LEN: usize = 102; // minimum length from start codon to end of FWR3
+    const MAX_LEN: usize = 125; // maximum length from start codon to end of FWR3
+    const MIN_SCORE: f64 = 6.75; // minimum CDR3 score
+    const MIN_FWR1: usize = 20; // minimum FWR1 length
+    const MAX_FWR1: usize = 26; // maximum FWR1 length
+    const MIN_LEADER: usize = 17; // minimum leader length
+    const MAX_LEADER: usize = 28; // maximum leader length
+    const TAG_LEN: usize = 40; // length of upstream region used as tag
+    const MOTIF1: &[u8; 7] = b"CACAGTG"; // start motif for initial upstream tags
+    const MOTIF2: &[u8; 9] = b"ACAAAAACC"; // mid motif for upstream tags
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -532,7 +535,7 @@ fn main() {
         let mut refx2 = Vec::<Vec<u8>>::new();
         let mut lens = Vec::<(usize, usize)>::new();
         for i in (0..refx.len()).step_by(2) {
-            lens.push((refx[i+1].len(), i));
+            lens.push((refx[i + 1].len(), i));
         }
         lens.sort();
         for i in 0..lens.len() {
@@ -574,7 +577,7 @@ fn main() {
             for j in (0..refx[i].len()).step_by(MAX_TIG) {
                 let mut start = 0;
                 if j > 0 {
-                    start = stops[j/MAX_TIG-1] - TIG_OVERLAP;
+                    start = stops[j / MAX_TIG - 1] - TIG_OVERLAP;
                 }
                 let stop = min(start + MAX_TIG, refx[i].len());
                 stops.push(stop);
@@ -592,7 +595,7 @@ fn main() {
 
     // Constant region analysis limitations.
     // 1. There is no regression testing in place, either to prior or published results.
-    // 2. Gene naming (e.g. IGHM versus IGHD) is entirely theoretical, based on consistency 
+    // 2. Gene naming (e.g. IGHM versus IGHD) is entirely theoretical, based on consistency
     //    with genomes for which the answer is known, and might be wrong.
     // 3. We only report the first part of CH1, so we don't see the biology of what comes
     //    after, and for species having functional genes missing CH1 (e.g. camelid IGHD), we
@@ -608,9 +611,9 @@ fn main() {
     // 6. For the PWMs, we change zero counts to two (which is arbitrary), and don't change one
     //    counts.
     // 7. There is likely more power to be gotten by having motifs/PWMs clade by clade.
-    // 8. For Artiodactyla, if IGHM and IGHD are not on the same reference contig, we call them 
+    // 8. For Artiodactyla, if IGHM and IGHD are not on the same reference contig, we call them
     //    both IGHM.  Probable Examples include chevrotain and reindeer.  Possible approaches
-    //    include looking at a longer pre sequence and seeing if there's a signal that 
+    //    include looking at a longer pre sequence and seeing if there's a signal that
     //    distinguishes the two cases, perhaps in conjunction with clade-specific information.
     //    See also point 4.
     // 9. Many bats appear to be missing IGKC.  To reexamine using isoseq data.
@@ -627,7 +630,7 @@ fn main() {
     let mut max_errs = vec![0; chains.len()];
     let mut pwmx = vec![Vec::<f32>::new(); chains.len()];
     let mut ins_start = vec![0; chains.len()];
-    const IGH_CONST_DEL_PENALTY : f32 = 1.0;
+    const IGH_CONST_DEL_PENALTY: f32 = 1.0;
     {
         let motifs = include_str!("../const_motifs");
         for line in motifs.lines() {
@@ -662,16 +665,16 @@ fn main() {
                         let mut c = Vec::<usize>::new();
                         let counts = fields[i].split(',').collect::<Vec<&str>>();
                         for j in 0..counts.len() {
-                            c.push( counts[j].force_usize() );
+                            c.push(counts[j].force_usize());
                         }
                         for j in 0..c.len() {
                             if c[j] == 0 {
                                 c[j] = 2;
                             }
                         }
-                        let s : usize = c.iter().sum();
+                        let s: usize = c.iter().sum();
                         for j in 0..c.len() {
-                            pwmx[chain].push( -(c[j] as f32 / s as f32).log10() );
+                            pwmx[chain].push(-(c[j] as f32 / s as f32).log10());
                         }
                         pwmx[chain].push(IGH_CONST_DEL_PENALTY);
                     }
@@ -724,33 +727,30 @@ fn main() {
         }
     }
 
-    // Define the maximum allowed deletion, relative to the PWM, measured in amino acids.  Note 
+    // Define the maximum allowed deletion, relative to the PWM, measured in amino acids.  Note
     // confusing deletion/insertion language.
 
-    const MAX_DEL_LEN : usize = 6;
+    const MAX_DEL_LEN: usize = 6;
 
     // Score.
 
     #[derive(Clone, PartialOrd, PartialEq)]
     struct Chit {
-        pub tig : usize,
-        pub pass : usize,
-        pub start : usize,
-        pub score : f32,
-        pub log : Vec<u8>,
-        pub bases : Vec<u8>,
-        pub ins_pos : usize,
-        pub ins_len : usize,
+        pub tig: usize,
+        pub pass: usize,
+        pub start: usize,
+        pub score: f32,
+        pub log: Vec<u8>,
+        pub bases: Vec<u8>,
+        pub ins_pos: usize,
+        pub ins_len: usize,
         pub chain: usize,
         pub region: String,
     }
-    let mut results = Vec::<(usize,Vec<Chit>)>::new();
+    let mut results = Vec::<(usize, Vec<Chit>)>::new();
     if use_c {
         for i in 0..refy.len() {
-            results.push((
-                i, 
-                Vec::<Chit>::new(),
-            ));
+            results.push((i, Vec::<Chit>::new()));
         }
     }
     results.par_iter_mut().for_each(|res| {
@@ -781,8 +781,8 @@ fn main() {
                     s[j] = 3;
                 }
             }
-            const MIN_AA_IGH : usize = 60;
-            const MAX_MIS : i32 = 2;
+            const MIN_AA_IGH: usize = 60;
+            const MAX_MIS: i32 = 2;
             for frame in 0..3 {
                 let aa = aa_seq_safe(&r, frame);
                 let mut finds = Vec::<(f32, usize, Vec<u8>, usize, usize, usize)>::new();
@@ -801,7 +801,7 @@ fn main() {
                     }
                     if k - j >= MIN_AA_IGH {
                         for m in j..=k - MIN_AA_IGH {
-                            let start = 3*m + frame;
+                            let start = 3 * m + frame;
 
                             // Traverse each of the chain types.
 
@@ -814,7 +814,8 @@ fn main() {
 
                                 let mut mis = 0;
                                 for u in 0..12 {
-                                    mis += chain_motifs_penalty[chain][u][s[start-14+u] as usize] 
+                                    mis += chain_motifs_penalty[chain][u]
+                                        [s[start - 14 + u] as usize]
                                         as i32;
                                     if mis > MAX_MIS {
                                         break;
@@ -824,44 +825,66 @@ fn main() {
                                     continue;
                                 }
 
-
                                 // Now score the position.
 
                                 let width = pwmx[0].len() / 5;
-                                let bb = &s[start-ins_start[chain]..start+width];
+                                let bb = &s[start - ins_start[chain]..start + width];
                                 let (mut ins_pos, mut ins_len) = (0, 0);
-                                let score = ighd_score2(&bb, &pwmx[chain], MAX_DEL_LEN,
-                                    ins_start[chain], &mut ins_pos, &mut ins_len);
+                                let score = ighd_score2(
+                                    &bb,
+                                    &pwmx[chain],
+                                    MAX_DEL_LEN,
+                                    ins_start[chain],
+                                    &mut ins_pos,
+                                    &mut ins_len,
+                                );
                                 if score <= 70.0 {
-                                    let pre = strme(&r[start-ins_start[chain]..start-2]);
-                                    let mid = strme(&r[start-2..start]);
-                                    let mut beast = r[start..start+120].to_vec();
+                                    let pre = strme(&r[start - ins_start[chain]..start - 2]);
+                                    let mid = strme(&r[start - 2..start]);
+                                    let mut beast = r[start..start + 120].to_vec();
                                     for _ in 0..ins_len {
                                         beast.insert(ins_pos - ins_start[chain], b'.');
                                     }
                                     beast.truncate(beast.len() - ins_len);
                                     let acc;
                                     let mut name;
-                                    if species == "human" || species == "mouse" 
-                                        || species == "dog" {
+                                    if species == "human" || species == "mouse" || species == "dog"
+                                    {
                                         acc = "           ".to_string();
                                         name = species.clone();
                                     } else {
                                         let f = fasta_file.rev_after("/");
                                         acc = f.between("_", ":").to_string();
-                                        name = f.after(":").after(":").after(":").between(":", ".")
+                                        name = f
+                                            .after(":")
+                                            .after(":")
+                                            .after(":")
+                                            .between(":", ".")
                                             .to_string();
                                     }
                                     name = name.replace("_", " ");
                                     let tig = originy[i].0;
-                                    let best = format!("{}{}.{}  {}  {}|{}|{}  {:.1}  {}  {}",
-                                        or as char, tig, add_commas(start),
+                                    let best = format!(
+                                        "{}{}.{}  {}  {}|{}|{}  {:.1}  {}  {}",
+                                        or as char,
+                                        tig,
+                                        add_commas(start),
                                         chains[chain],
-                                        pre, mid,
+                                        pre,
+                                        mid,
                                         strme(&beast),
-                                        score, acc, name);
-                                    finds.push((score, m, best.as_bytes().to_vec(), chain,
-                                        ins_pos, ins_len));
+                                        score,
+                                        acc,
+                                        name
+                                    );
+                                    finds.push((
+                                        score,
+                                        m,
+                                        best.as_bytes().to_vec(),
+                                        chain,
+                                        ins_pos,
+                                        ins_len,
+                                    ));
                                 }
                             }
                         }
@@ -870,23 +893,23 @@ fn main() {
                 }
 
                 // Save results.
-                
+
                 for m in 0..finds.len() {
                     let mut log = Vec::<u8>::new();
                     let tig = originy[i].0;
                     let start = originy[i].1 + frame + 3 * finds[m].1;
                     fwriteln!(log, "{}", strme(&finds[m].2));
-                    let rstart = frame + 3*finds[m].1;
+                    let rstart = frame + 3 * finds[m].1;
                     let chain = finds[m].3;
                     let ins_pos = finds[m].4;
                     let ins_len = finds[m].5;
-                    res.1.push( Chit {
+                    res.1.push(Chit {
                         tig: tig,
                         pass: pass,
                         start: start,
                         score: finds[m].0,
                         log: log,
-                        bases: r[rstart-14..rstart+120].to_vec(),
+                        bases: r[rstart - 14..rstart + 120].to_vec(),
                         ins_pos: ins_pos,
                         ins_len: ins_len,
                         chain: chain,
@@ -904,15 +927,17 @@ fn main() {
 
     // For Artiodactyla, correct the "second" IGHM to be IGHD.
 
-    const MAX_IGHM_IGHD_DIFF : usize = 15_000;
+    const MAX_IGHM_IGHD_DIFF: usize = 15_000;
     if order == "Artiodactyla" {
         for i in 1..chits.len() {
-            if chits[i].region == "IGHM" && chits[i-1].region == "IGHM" {
-                if chits[i].tig == chits[i-1].tig && chits[i].pass == chits[i-1].pass {
-                    if chits[i].start - chits[i-1].start < MAX_IGHM_IGHD_DIFF {
+            if chits[i].region == "IGHM" && chits[i - 1].region == "IGHM" {
+                if chits[i].tig == chits[i - 1].tig && chits[i].pass == chits[i - 1].pass {
+                    if chits[i].start - chits[i - 1].start < MAX_IGHM_IGHD_DIFF {
                         chits[i].region = "IGHD".to_string();
-                        chits[i].log = stringme(&chits[i].log).replace(" IGHM", " IGHD")
-                            .as_bytes().to_vec();
+                        chits[i].log = stringme(&chits[i].log)
+                            .replace(" IGHM", " IGHD")
+                            .as_bytes()
+                            .to_vec();
                     }
                 }
             }
@@ -923,14 +948,16 @@ fn main() {
     // (a) have nearly the same start position or
     // (b) have the same gene and differ signifantly in their last eight pre bases.
 
-    const MIN_IGH_DIFF : f32 = 5.0;
+    const MIN_IGH_DIFF: f32 = 5.0;
     let mut to_delete = vec![false; chits.len()];
     for i1 in 0..chits.len() {
         for i2 in 0..chits.len() {
             if chits[i2].score >= MIN_IGH_DIFF + chits[i1].score {
-                if i2 > i1 && chits[i2].tig == chits[i1].tig
+                if i2 > i1
+                    && chits[i2].tig == chits[i1].tig
                     && chits[i2].pass == chits[i1].pass
-                    && chits[i2].start - chits[i1].start <= 3 * MAX_DEL_LEN {
+                    && chits[i2].start - chits[i1].start <= 3 * MAX_DEL_LEN
+                {
                     to_delete[i2] = true;
                 }
                 if chits[i2].region == chits[i1].region {
@@ -978,8 +1005,12 @@ fn main() {
                     } else {
                         fasta_count += 1;
                         let gene = format!("{}{}", chits[i].region, count[j]);
-                        fwriteln!(fasta_log, ">{}|{} enclone|{}|C-REGION|IG|{}|{}|00",
-                            fasta_count, gene, gene,
+                        fwriteln!(
+                            fasta_log,
+                            ">{}|{} enclone|{}|C-REGION|IG|{}|{}|00",
+                            fasta_count,
+                            gene,
+                            gene,
                             strme(&gene.as_bytes()[0..3]),
                             strme(&gene.as_bytes()[3..]),
                         );
@@ -1000,7 +1031,7 @@ fn main() {
             for j in (start..x.len() - 3 + 1).step_by(3) {
                 if x[j] == b'-' && x[j + 1] == b'-' && x[j + 2] == b'-' {
                     a.push(b'-');
-                } else if x[j] == b'N' || x[j+1] == b'N' || x[j+2] == b'N' {
+                } else if x[j] == b'N' || x[j + 1] == b'N' || x[j + 2] == b'N' {
                     a.push(b'*');
                 } else {
                     a.push(codon_to_aa(&x[j..j + 3]));
@@ -1010,43 +1041,46 @@ fn main() {
         a
     }
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // PWM for start codon.
 
     let start_pwm = [
-    [66, 20, 36, 18],
-    [22, 33, 67, 18],
-    [22, 10, 57, 51],
-    [47, 66, 13, 14],
-    [27, 73, 9, 31],
-    [30, 38, 19, 53],
-    [17, 107, 12, 4],
-    [126, 1, 12, 1],
-    [14, 92, 25, 9],
-    [6, 121, 6, 7],
-    [140, 0, 0, 0],
-    [0, 0, 0, 140],
-    [0, 0, 140, 0],
-    [20, 2, 115, 3],
-    [85, 38, 13, 4],
-    [22, 73, 41, 4],
-    [29, 23, 10, 78],
-    [9, 18, 49, 64],
-    [9, 35, 73, 23],
-    [55, 34, 36, 15],
-    [4, 62, 43, 31],
-    [11, 34, 58, 37],
-    [4, 61, 41, 34],
+        [66, 20, 36, 18],
+        [22, 33, 67, 18],
+        [22, 10, 57, 51],
+        [47, 66, 13, 14],
+        [27, 73, 9, 31],
+        [30, 38, 19, 53],
+        [17, 107, 12, 4],
+        [126, 1, 12, 1],
+        [14, 92, 25, 9],
+        [6, 121, 6, 7],
+        [140, 0, 0, 0],
+        [0, 0, 0, 140],
+        [0, 0, 140, 0],
+        [20, 2, 115, 3],
+        [85, 38, 13, 4],
+        [22, 73, 41, 4],
+        [29, 23, 10, 78],
+        [9, 18, 49, 64],
+        [9, 35, 73, 23],
+        [55, 34, 36, 15],
+        [4, 62, 43, 31],
+        [11, 34, 58, 37],
+        [4, 61, 41, 34],
     ];
 
     // Define some pseudogenes.  Truncated after FWR3.
 
     let mut pseudos = Vec::new();
-    pseudos.push(("human", "IGKV1/OR2-0*01", 
+    pseudos.push((
+        "human",
+        "IGKV1/OR2-0*01",
         b"MRAPTQLLGLLVLWLPGARC\
         DIQMTQSPSSLSASVGDRVTITCRASQGISNNLNWYQQKPGKTPKLLIYAAPSLQSGIPSRFSDSGSGADYTLTIRSLQPEDFATYYC"
-        .to_vec()));
+            .to_vec(),
+    ));
     pseudos.push(("human", "GHV1/OR15-9*01",
         b"MGWTWRILFLVVIAAGAQS\
         QVQLMQSGAEVKKPGASVRISCKASGYTFTSYCMHWVCQAHAQGLEWMGLVCPSDGSTSYAQKFQGRVTITRDTSMGTAYMELSSLRSEDTAMYYC"
@@ -1069,8 +1103,10 @@ fn main() {
             if !zheaders[i].contains("V-REGION") {
                 continue;
             }
-            if !zheaders[i].contains("|IGH") 
-                && !zheaders[i].contains("|IGK") && !zheaders[i].contains("|IGL") {
+            if !zheaders[i].contains("|IGH")
+                && !zheaders[i].contains("|IGK")
+                && !zheaders[i].contains("|IGL")
+            {
                 continue;
             }
             let chain_type;
@@ -1108,377 +1144,377 @@ fn main() {
     #[allow(dead_code)]
     let mut freq1 = Vec::<Vec<(usize, u8)>>::new();
     freq1.push(vec![
-    (817, b'Q'),
-    (494, b'E'),
-    (308, b'D'),
-    (93, b'S'),
-    (51, b'A'),
-    (15, b'N'),
-    (7, b'R'),
-    (5, b'V'),
-    (5, b'G'),
-    (4, b'T'),
-    (4, b'L'),
-    (3, b'H'),
-    (1, b'W'),
-    (1, b'P'),
-    (1, b'K'),
+        (817, b'Q'),
+        (494, b'E'),
+        (308, b'D'),
+        (93, b'S'),
+        (51, b'A'),
+        (15, b'N'),
+        (7, b'R'),
+        (5, b'V'),
+        (5, b'G'),
+        (4, b'T'),
+        (4, b'L'),
+        (3, b'H'),
+        (1, b'W'),
+        (1, b'P'),
+        (1, b'K'),
     ]);
     freq1.push(vec![
-    (881, b'V'),
-    (415, b'I'),
-    (144, b'S'),
-    (113, b'A'),
-    (58, b'Y'),
-    (47, b'P'),
-    (33, b'E'),
-    (30, b'T'),
-    (19, b'L'),
-    (16, b'Q'),
-    (14, b'M'),
-    (13, b'N'),
-    (13, b'F'),
-    (5, b'G'),
-    (3, b'R'),
-    (2, b'H'),
-    (2, b'D'),
-    (1, b'K'),
+        (881, b'V'),
+        (415, b'I'),
+        (144, b'S'),
+        (113, b'A'),
+        (58, b'Y'),
+        (47, b'P'),
+        (33, b'E'),
+        (30, b'T'),
+        (19, b'L'),
+        (16, b'Q'),
+        (14, b'M'),
+        (13, b'N'),
+        (13, b'F'),
+        (5, b'G'),
+        (3, b'R'),
+        (2, b'H'),
+        (2, b'D'),
+        (1, b'K'),
     ]);
     freq1.push(vec![
-    (884, b'Q'),
-    (553, b'V'),
-    (98, b'K'),
-    (81, b'T'),
-    (53, b'E'),
-    (35, b'A'),
-    (27, b'L'),
-    (19, b'G'),
-    (18, b'M'),
-    (10, b'R'),
-    (6, b'N'),
-    (5, b'W'),
-    (5, b'H'),
-    (4, b'S'),
-    (4, b'I'),
-    (2, b'Y'),
-    (2, b'P'),
-    (2, b'D'),
-    (1, b'C'),
+        (884, b'Q'),
+        (553, b'V'),
+        (98, b'K'),
+        (81, b'T'),
+        (53, b'E'),
+        (35, b'A'),
+        (27, b'L'),
+        (19, b'G'),
+        (18, b'M'),
+        (10, b'R'),
+        (6, b'N'),
+        (5, b'W'),
+        (5, b'H'),
+        (4, b'S'),
+        (4, b'I'),
+        (2, b'Y'),
+        (2, b'P'),
+        (2, b'D'),
+        (1, b'C'),
     ]);
     freq1.push(vec![
-    (1395, b'L'),
-    (283, b'M'),
-    (78, b'V'),
-    (16, b'K'),
-    (10, b'I'),
-    (8, b'E'),
-    (6, b'Q'),
-    (5, b'P'),
-    (4, b'F'),
-    (2, b'T'),
-    (1, b'W'),
-    (1, b'G'),
+        (1395, b'L'),
+        (283, b'M'),
+        (78, b'V'),
+        (16, b'K'),
+        (10, b'I'),
+        (8, b'E'),
+        (6, b'Q'),
+        (5, b'P'),
+        (4, b'F'),
+        (2, b'T'),
+        (1, b'W'),
+        (1, b'G'),
     ]);
     freq1.push(vec![
-    (813, b'T'),
-    (417, b'V'),
-    (274, b'Q'),
-    (157, b'K'),
-    (46, b'E'),
-    (22, b'L'),
-    (20, b'R'),
-    (17, b'I'),
-    (14, b'N'),
-    (8, b'S'),
-    (8, b'M'),
-    (6, b'A'),
-    (3, b'Y'),
-    (3, b'D'),
-    (1, b'H'),
+        (813, b'T'),
+        (417, b'V'),
+        (274, b'Q'),
+        (157, b'K'),
+        (46, b'E'),
+        (22, b'L'),
+        (20, b'R'),
+        (17, b'I'),
+        (14, b'N'),
+        (8, b'S'),
+        (8, b'M'),
+        (6, b'A'),
+        (3, b'Y'),
+        (3, b'D'),
+        (1, b'H'),
     ]);
     freq1.push(vec![
-    (1142, b'Q'),
-    (622, b'E'),
-    (26, b'S'),
-    (7, b'K'),
-    (6, b'V'),
-    (3, b'P'),
-    (1, b'R'),
-    (1, b'I'),
-    (1, b'F'),
+        (1142, b'Q'),
+        (622, b'E'),
+        (26, b'S'),
+        (7, b'K'),
+        (6, b'V'),
+        (3, b'P'),
+        (1, b'R'),
+        (1, b'I'),
+        (1, b'F'),
     ]);
     freq1.push(vec![
-    (1199, b'S'),
-    (325, b'P'),
-    (151, b'T'),
-    (53, b'E'),
-    (21, b'L'),
-    (14, b'A'),
-    (10, b'W'),
-    (6, b'G'),
-    (6, b'D'),
-    (4, b'V'),
-    (4, b'R'),
-    (4, b'C'),
-    (3, b'K'),
-    (3, b'F'),
-    (2, b'Y'),
-    (1, b'Q'),
-    (1, b'N'),
-    (1, b'M'),
-    (1, b'H'),
+        (1199, b'S'),
+        (325, b'P'),
+        (151, b'T'),
+        (53, b'E'),
+        (21, b'L'),
+        (14, b'A'),
+        (10, b'W'),
+        (6, b'G'),
+        (6, b'D'),
+        (4, b'V'),
+        (4, b'R'),
+        (4, b'C'),
+        (3, b'K'),
+        (3, b'F'),
+        (2, b'Y'),
+        (1, b'Q'),
+        (1, b'N'),
+        (1, b'M'),
+        (1, b'H'),
     ]);
     freq1.push(vec![
-    (932, b'G'),
-    (621, b'P'),
-    (85, b'S'),
-    (70, b'A'),
-    (28, b'T'),
-    (15, b'E'),
-    (12, b'H'),
-    (10, b'Q'),
-    (7, b'D'),
-    (5, b'R'),
-    (4, b'V'),
-    (4, b'N'),
-    (4, b'L'),
-    (4, b'F'),
-    (3, b'I'),
-    (2, b'W'),
-    (2, b'K'),
-    (1, b'C'),
+        (932, b'G'),
+        (621, b'P'),
+        (85, b'S'),
+        (70, b'A'),
+        (28, b'T'),
+        (15, b'E'),
+        (12, b'H'),
+        (10, b'Q'),
+        (7, b'D'),
+        (5, b'R'),
+        (4, b'V'),
+        (4, b'N'),
+        (4, b'L'),
+        (4, b'F'),
+        (3, b'I'),
+        (2, b'W'),
+        (2, b'K'),
+        (1, b'C'),
     ]);
     freq1.push(vec![
-    (490, b'S'),
-    (406, b'G'),
-    (358, b'P'),
-    (357, b'A'),
-    (98, b'L'),
-    (21, b'K'),
-    (18, b'E'),
-    (17, b'D'),
-    (16, b'T'),
-    (12, b'F'),
-    (6, b'R'),
-    (5, b'V'),
-    (2, b'H'),
-    (1, b'Y'),
-    (1, b'Q'),
+        (490, b'S'),
+        (406, b'G'),
+        (358, b'P'),
+        (357, b'A'),
+        (98, b'L'),
+        (21, b'K'),
+        (18, b'E'),
+        (17, b'D'),
+        (16, b'T'),
+        (12, b'F'),
+        (6, b'R'),
+        (5, b'V'),
+        (2, b'H'),
+        (1, b'Y'),
+        (1, b'Q'),
     ]);
     freq1.push(vec![
-    (527, b'G'),
-    (334, b'S'),
-    (285, b'V'),
-    (257, b'E'),
-    (106, b'L'),
-    (58, b'T'),
-    (55, b'A'),
-    (49, b'I'),
-    (44, b'D'),
-    (41, b'F'),
-    (12, b'M'),
-    (8, b'Y'),
-    (8, b'R'),
-    (6, b'P'),
-    (6, b'N'),
-    (5, b'K'),
-    (5, b'H'),
-    (1, b'Q'),
-    (1, b'C'),
+        (527, b'G'),
+        (334, b'S'),
+        (285, b'V'),
+        (257, b'E'),
+        (106, b'L'),
+        (58, b'T'),
+        (55, b'A'),
+        (49, b'I'),
+        (44, b'D'),
+        (41, b'F'),
+        (12, b'M'),
+        (8, b'Y'),
+        (8, b'R'),
+        (6, b'P'),
+        (6, b'N'),
+        (5, b'K'),
+        (5, b'H'),
+        (1, b'Q'),
+        (1, b'C'),
     ]);
 
     // Add reverse leader frequencies.
 
     let mut ldrf = Vec::<Vec<(usize, u8)>>::new();
     ldrf.push(vec![
-    (602, b'S'),
-    (484, b'C'),
-    (326, b'G'),
-    (325, b'A'),
-    (17, b'V'),
-    (14, b'T'),
-    (10, b'F'),
-    (6, b'I'),
-    (6, b'D'),
-    (5, b'Y'),
-    (5, b'R'),
-    (5, b'E'),
-    (2, b'P'),
-    (1, b'L'),
-    (1, b'H'),
+        (602, b'S'),
+        (484, b'C'),
+        (326, b'G'),
+        (325, b'A'),
+        (17, b'V'),
+        (14, b'T'),
+        (10, b'F'),
+        (6, b'I'),
+        (6, b'D'),
+        (5, b'Y'),
+        (5, b'R'),
+        (5, b'E'),
+        (2, b'P'),
+        (1, b'L'),
+        (1, b'H'),
     ]);
     ldrf.push(vec![
-    (426, b'Q'),
-    (343, b'L'),
-    (206, b'R'),
-    (191, b'W'),
-    (183, b'H'),
-    (111, b'S'),
-    (71, b'V'),
-    (64, b'T'),
-    (52, b'C'),
-    (33, b'N'),
-    (32, b'D'),
-    (19, b'Y'),
-    (17, b'K'),
-    (16, b'I'),
-    (11, b'F'),
-    (11, b'E'),
-    (8, b'G'),
-    (6, b'A'),
-    (5, b'M'),
-    (4, b'P'),
+        (426, b'Q'),
+        (343, b'L'),
+        (206, b'R'),
+        (191, b'W'),
+        (183, b'H'),
+        (111, b'S'),
+        (71, b'V'),
+        (64, b'T'),
+        (52, b'C'),
+        (33, b'N'),
+        (32, b'D'),
+        (19, b'Y'),
+        (17, b'K'),
+        (16, b'I'),
+        (11, b'F'),
+        (11, b'E'),
+        (8, b'G'),
+        (6, b'A'),
+        (5, b'M'),
+        (4, b'P'),
     ]);
     ldrf.push(vec![
-    (829, b'V'),
-    (518, b'S'),
-    (244, b'A'),
-    (86, b'T'),
-    (74, b'I'),
-    (16, b'G'),
-    (14, b'F'),
-    (7, b'M'),
-    (7, b'C'),
-    (4, b'Y'),
-    (4, b'L'),
-    (4, b'H'),
-    (1, b'R'),
-    (1, b'Q'),
+        (829, b'V'),
+        (518, b'S'),
+        (244, b'A'),
+        (86, b'T'),
+        (74, b'I'),
+        (16, b'G'),
+        (14, b'F'),
+        (7, b'M'),
+        (7, b'C'),
+        (4, b'Y'),
+        (4, b'L'),
+        (4, b'H'),
+        (1, b'R'),
+        (1, b'Q'),
     ]);
     ldrf.push(vec![
-    (1310, b'G'),
-    (109, b'W'),
-    (92, b'C'),
-    (69, b'D'),
-    (49, b'S'),
-    (49, b'A'),
-    (33, b'M'),
-    (31, b'Y'),
-    (24, b'V'),
-    (15, b'L'),
-    (11, b'E'),
-    (6, b'T'),
-    (6, b'R'),
-    (2, b'N'),
-    (2, b'I'),
-    (1, b'Q'),
+        (1310, b'G'),
+        (109, b'W'),
+        (92, b'C'),
+        (69, b'D'),
+        (49, b'S'),
+        (49, b'A'),
+        (33, b'M'),
+        (31, b'Y'),
+        (24, b'V'),
+        (15, b'L'),
+        (11, b'E'),
+        (6, b'T'),
+        (6, b'R'),
+        (2, b'N'),
+        (2, b'I'),
+        (1, b'Q'),
     ]);
     ldrf.push(vec![
-    (442, b'T'),
-    (301, b'K'),
-    (283, b'P'),
-    (251, b'S'),
-    (130, b'A'),
-    (114, b'Q'),
-    (108, b'R'),
-    (57, b'I'),
-    (33, b'E'),
-    (19, b'N'),
-    (14, b'G'),
-    (13, b'V'),
-    (13, b'H'),
-    (11, b'L'),
-    (6, b'W'),
-    (4, b'Y'),
-    (4, b'F'),
-    (3, b'C'),
-    (2, b'D'),
-    (1, b'M'),
+        (442, b'T'),
+        (301, b'K'),
+        (283, b'P'),
+        (251, b'S'),
+        (130, b'A'),
+        (114, b'Q'),
+        (108, b'R'),
+        (57, b'I'),
+        (33, b'E'),
+        (19, b'N'),
+        (14, b'G'),
+        (13, b'V'),
+        (13, b'H'),
+        (11, b'L'),
+        (6, b'W'),
+        (4, b'Y'),
+        (4, b'F'),
+        (3, b'C'),
+        (2, b'D'),
+        (1, b'M'),
     ]);
     ldrf.push(vec![
-    (512, b'L'),
-    (273, b'C'),
-    (249, b'P'),
-    (196, b'V'),
-    (136, b'A'),
-    (119, b'I'),
-    (111, b'T'),
-    (97, b'F'),
-    (48, b'G'),
-    (21, b'Y'),
-    (20, b'S'),
-    (13, b'D'),
-    (4, b'W'),
-    (4, b'M'),
-    (2, b'Q'),
-    (1, b'R'),
-    (1, b'K'),
-    (1, b'H'),
-    (1, b'E'),
+        (512, b'L'),
+        (273, b'C'),
+        (249, b'P'),
+        (196, b'V'),
+        (136, b'A'),
+        (119, b'I'),
+        (111, b'T'),
+        (97, b'F'),
+        (48, b'G'),
+        (21, b'Y'),
+        (20, b'S'),
+        (13, b'D'),
+        (4, b'W'),
+        (4, b'M'),
+        (2, b'Q'),
+        (1, b'R'),
+        (1, b'K'),
+        (1, b'H'),
+        (1, b'E'),
     ]);
     ldrf.push(vec![
-    (359, b'W'),
-    (280, b'L'),
-    (215, b'I'),
-    (215, b'A'),
-    (213, b'V'),
-    (143, b'H'),
-    (105, b'F'),
-    (55, b'T'),
-    (51, b'S'),
-    (42, b'C'),
-    (40, b'G'),
-    (38, b'Q'),
-    (25, b'Y'),
-    (10, b'P'),
-    (7, b'R'),
-    (4, b'M'),
-    (4, b'E'),
-    (2, b'N'),
-    (1, b'K'),
+        (359, b'W'),
+        (280, b'L'),
+        (215, b'I'),
+        (215, b'A'),
+        (213, b'V'),
+        (143, b'H'),
+        (105, b'F'),
+        (55, b'T'),
+        (51, b'S'),
+        (42, b'C'),
+        (40, b'G'),
+        (38, b'Q'),
+        (25, b'Y'),
+        (10, b'P'),
+        (7, b'R'),
+        (4, b'M'),
+        (4, b'E'),
+        (2, b'N'),
+        (1, b'K'),
     ]);
     ldrf.push(vec![
-    (691, b'A'),
-    (458, b'L'),
-    (268, b'T'),
-    (181, b'S'),
-    (57, b'V'),
-    (52, b'F'),
-    (45, b'I'),
-    (16, b'G'),
-    (12, b'C'),
-    (10, b'M'),
-    (5, b'W'),
-    (4, b'P'),
-    (3, b'R'),
-    (2, b'N'),
-    (2, b'H'),
-    (1, b'Y'),
-    (1, b'K'),
-    (1, b'E'),
+        (691, b'A'),
+        (458, b'L'),
+        (268, b'T'),
+        (181, b'S'),
+        (57, b'V'),
+        (52, b'F'),
+        (45, b'I'),
+        (16, b'G'),
+        (12, b'C'),
+        (10, b'M'),
+        (5, b'W'),
+        (4, b'P'),
+        (3, b'R'),
+        (2, b'N'),
+        (2, b'H'),
+        (1, b'Y'),
+        (1, b'K'),
+        (1, b'E'),
     ]);
     ldrf.push(vec![
-    (842, b'L'),
-    (645, b'V'),
-    (109, b'M'),
-    (60, b'F'),
-    (52, b'S'),
-    (42, b'A'),
-    (24, b'I'),
-    (24, b'G'),
-    (3, b'T'),
-    (3, b'C'),
-    (2, b'R'),
-    (1, b'W'),
-    (1, b'Q'),
-    (1, b'P'),
+        (842, b'L'),
+        (645, b'V'),
+        (109, b'M'),
+        (60, b'F'),
+        (52, b'S'),
+        (42, b'A'),
+        (24, b'I'),
+        (24, b'G'),
+        (3, b'T'),
+        (3, b'C'),
+        (2, b'R'),
+        (1, b'W'),
+        (1, b'Q'),
+        (1, b'P'),
     ]);
     ldrf.push(vec![
-    (1518, b'L'),
-    (120, b'I'),
-    (63, b'V'),
-    (50, b'F'),
-    (15, b'T'),
-    (12, b'M'),
-    (9, b'G'),
-    (8, b'P'),
-    (3, b'S'),
-    (3, b'Q'),
-    (3, b'C'),
-    (2, b'R'),
-    (1, b'Y'),
-    (1, b'W'),
-    (1, b'A'),
+        (1518, b'L'),
+        (120, b'I'),
+        (63, b'V'),
+        (50, b'F'),
+        (15, b'T'),
+        (12, b'M'),
+        (9, b'G'),
+        (8, b'P'),
+        (3, b'S'),
+        (3, b'Q'),
+        (3, b'C'),
+        (2, b'R'),
+        (1, b'Y'),
+        (1, b'W'),
+        (1, b'A'),
     ]);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -1498,36 +1534,36 @@ fn main() {
     // site                 amino acids
     //                      constrained
 
-    // We tested many primate assemblies for presence of IGHJ4 (numbering as in human), as shown 
+    // We tested many primate assemblies for presence of IGHJ4 (numbering as in human), as shown
     // in the table below.  The table suggests that presence of this gene depends on the technology
     // (wetware plus software) used to generate the assemblies, and that for this specific purpose,
     // some technologies are better than others.
 
-/*
----------------------------------------------------------------------------------------------------
-SEQUENCE                                         ACCESSION        SAMPLE         TECHNOLOGY
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GRCh38           human (IGHJ4)  finished BACs
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCF_008122165.1  gorilla        PB RSII, Ill
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_000306695.2  CHM1           Illumina
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_009914755.1  CHM13          ONT, PB RSII, Ill
-ACTACTTTGAATACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_004024825.1  douc           Ill 2x250 PCR-free
-ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004024785.1  spider monkey  Ill 2x250 PCR-free
-ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004027835.1  howler monkey  Ill 2x250 PCR-free
-ACTACTTTGACTACTGGGGCCAGGGAGTCCTGGTCACCGTCTCCTCAG GCA_004027335.1  Patas monkey   Ill 2x250 PCR-free
-ACTACTTTGAGTACTGGGGCAAAGGGACCCTGGTCACCGTCTCCTCAG GCA_004027275.1  brown lemur    Ill 2x250 PCR-free
-ACTACTTTGAATACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004024885.1  tamarin        Ill 2x250 PCR-free
-ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACTGTCTCCTCAG GCA_004026645.1  saki           Ill 2x250 PCR-free
-ACTACTTTGAATACTGGGGCCAGGGGACCCAGGTCACCGTCTCCTCAG GCA_004027715.1  titi           Ill 2x250 PCR-free
-ACTACTTTGAATACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004027755.1  capuchin       Ill 2x250 PCR-free
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_000325845.1  chimp          Sanger (2003)
-                                       (missing) GCF_002880755.1  chimp          Sanger+kitchen sink
-ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878        Ill 2x250 PCR-free
-                                       (missing) GCA_002077035.3  NA12878        PB RSII
-                                       (missing) GCA_002022845.1  NA12878        10x
-                                       (missing) GCA_001524155.4  NA19240        PB
-                                       (missing) GCA_002022975.1  NA19240        10x
----------------------------------------------------------------------------------------------------
-*/
+    /*
+    ---------------------------------------------------------------------------------------------------
+    SEQUENCE                                         ACCESSION        SAMPLE         TECHNOLOGY
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GRCh38           human (IGHJ4)  finished BACs
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCF_008122165.1  gorilla        PB RSII, Ill
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_000306695.2  CHM1           Illumina
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_009914755.1  CHM13          ONT, PB RSII, Ill
+    ACTACTTTGAATACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_004024825.1  douc           Ill 2x250 PCR-free
+    ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004024785.1  spider monkey  Ill 2x250 PCR-free
+    ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004027835.1  howler monkey  Ill 2x250 PCR-free
+    ACTACTTTGACTACTGGGGCCAGGGAGTCCTGGTCACCGTCTCCTCAG GCA_004027335.1  Patas monkey   Ill 2x250 PCR-free
+    ACTACTTTGAGTACTGGGGCAAAGGGACCCTGGTCACCGTCTCCTCAG GCA_004027275.1  brown lemur    Ill 2x250 PCR-free
+    ACTACTTTGAATACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004024885.1  tamarin        Ill 2x250 PCR-free
+    ACTACTTTGATTACTGGGGCCAGGGGACCCTGGTCACTGTCTCCTCAG GCA_004026645.1  saki           Ill 2x250 PCR-free
+    ACTACTTTGAATACTGGGGCCAGGGGACCCAGGTCACCGTCTCCTCAG GCA_004027715.1  titi           Ill 2x250 PCR-free
+    ACTACTTTGAATACTGGGGCCAGGGGACCCTGGTCACCGTCTCCTCAG GCA_004027755.1  capuchin       Ill 2x250 PCR-free
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG GCA_000325845.1  chimp          Sanger (2003)
+                                           (missing) GCF_002880755.1  chimp          Sanger+kitchen sink
+    ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878        Ill 2x250 PCR-free
+                                           (missing) GCA_002077035.3  NA12878        PB RSII
+                                           (missing) GCA_002022845.1  NA12878        10x
+                                           (missing) GCA_001524155.4  NA19240        PB
+                                           (missing) GCA_002022975.1  NA19240        10x
+    ---------------------------------------------------------------------------------------------------
+    */
 
     // Shown below is the motif for the first five genome bases after a IG J gene, based on human
     // and mouse data.
@@ -1541,7 +1577,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
     ];
 
     // Shown below are motifs for the 3' end of J genes, by chain type.  These are based on
-    // human and mouse genes in the 10x reference sequences, after removing the following 
+    // human and mouse genes in the 10x reference sequences, after removing the following
     // sequences, which are not present in 10x data (or at least in the large set that was checked):
     //
     // >human-310|IGLJ2 ENST00000390322|IGLJ2|5'UTR|IG|IGL|None|00
@@ -1559,117 +1595,117 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
     // on, adding more positions.
 
     let iglj_rev_motif = [
-        [b'G'].to_vec(),                    // 1
-        [b'A', b'C'].to_vec(),              // 2
-        [b'T'].to_vec(),                    // 3
-        [b'C'].to_vec(),                    // 4
-        [b'C'].to_vec(),                    // 5
-        [b'T'].to_vec(),                    // 6
-        [b'G'].to_vec(),                    // 7
-        [b'C', b'T'].to_vec(),              // 8
-        [b'C'].to_vec(),                    // 9
-        [b'A'].to_vec(),                    // 10
-        [b'C', b'G'].to_vec(),              // 11
-        [b'T'].to_vec(),                    // 12
-        [b'C', b'G'].to_vec(),              // 13
-        [b'A', b'G'].to_vec(),              // 14
-        [b'A'].to_vec(),                    // 15
-        [b'A', b'C'].to_vec(),              // 16
-        [b'C'].to_vec(),                    // 17
-        [b'C'].to_vec(),                    // 18
-        [b'A'].to_vec(),                    // 19  
-        [b'A', b'C', b'G'].to_vec(),        // 20
-        [b'G'].to_vec(),                    // 21
-        [b'G'].to_vec(),                    // 22
-        [b'A', b'T'].to_vec(),              // 23
-        [b'C', b'G'].to_vec(),              // 24
-        [b'A', b'G'].to_vec(),              // 25
-        [b'A', b'C', b'T'].to_vec(),        // 26
-        [b'G'].to_vec(),                    // 27
-        [b'G'].to_vec(),                    // 28
-        [b'C'].to_vec(),                    // 29
-        [b'T'].to_vec(),                    // 30
-        [b'T'].to_vec(),                    // 31
-        [b'A', b'C', b'G', b'T'].to_vec(),  // 32
-        [b'T'].to_vec(),                    // 33
-        [b'A', b'G'].to_vec(),              // 34
-        [b'T', b'G'].to_vec(),              // 35
+        [b'G'].to_vec(),                   // 1
+        [b'A', b'C'].to_vec(),             // 2
+        [b'T'].to_vec(),                   // 3
+        [b'C'].to_vec(),                   // 4
+        [b'C'].to_vec(),                   // 5
+        [b'T'].to_vec(),                   // 6
+        [b'G'].to_vec(),                   // 7
+        [b'C', b'T'].to_vec(),             // 8
+        [b'C'].to_vec(),                   // 9
+        [b'A'].to_vec(),                   // 10
+        [b'C', b'G'].to_vec(),             // 11
+        [b'T'].to_vec(),                   // 12
+        [b'C', b'G'].to_vec(),             // 13
+        [b'A', b'G'].to_vec(),             // 14
+        [b'A'].to_vec(),                   // 15
+        [b'A', b'C'].to_vec(),             // 16
+        [b'C'].to_vec(),                   // 17
+        [b'C'].to_vec(),                   // 18
+        [b'A'].to_vec(),                   // 19
+        [b'A', b'C', b'G'].to_vec(),       // 20
+        [b'G'].to_vec(),                   // 21
+        [b'G'].to_vec(),                   // 22
+        [b'A', b'T'].to_vec(),             // 23
+        [b'C', b'G'].to_vec(),             // 24
+        [b'A', b'G'].to_vec(),             // 25
+        [b'A', b'C', b'T'].to_vec(),       // 26
+        [b'G'].to_vec(),                   // 27
+        [b'G'].to_vec(),                   // 28
+        [b'C'].to_vec(),                   // 29
+        [b'T'].to_vec(),                   // 30
+        [b'T'].to_vec(),                   // 31
+        [b'A', b'C', b'G', b'T'].to_vec(), // 32
+        [b'T'].to_vec(),                   // 33
+        [b'A', b'G'].to_vec(),             // 34
+        [b'T', b'G'].to_vec(),             // 35
     ];
 
     let igkj_rev_motif = [
-        [b'C'].to_vec(),                    // 1
-        [b'A'].to_vec(),                    // 2
-        [b'A'].to_vec(),                    // 3
-        [b'A'].to_vec(),                    // 4
-        [b'A', b'C', b'G', b'T'].to_vec(),  // 5
-        [b'T'].to_vec(),                    // 6
-        [b'A', b'C'].to_vec(),              // 7
-        [b'A', b'G', b'T'].to_vec(),        // 8
-        [b'A'].to_vec(),                    // 9
-        [b'G'].to_vec(),                    // 10
-        [b'G'].to_vec(),                    // 11
-        [b'T'].to_vec(),                    // 12
-        [b'C', b'G', b'T'].to_vec(),        // 13
-        [b'A', b'G'].to_vec(),              // 14
-        [b'A', b'G'].to_vec(),              // 15
-        [b'A', b'C'].to_vec(),              // 16
-        [b'A', b'C'].to_vec(),              // 17
-        [b'C'].to_vec(),                    // 18
-        [b'A'].to_vec(),                    // 19
-        [b'C', b'G'].to_vec(),              // 20
-        [b'G'].to_vec(),                    // 21
-        [b'G'].to_vec(),                    // 22
-        [b'A', b'G', b'T'].to_vec(),        // 23
-        [b'A', b'C', b'G'].to_vec(),        // 24
-        [b'C', b'G', b'T'].to_vec(),        // 25
-        [b'A', b'C', b'T'].to_vec(),        // 26
-        [b'G'].to_vec(),                    // 27
-        [b'A', b'G'].to_vec(),              // 28
-        [b'C', b'T'].to_vec(),              // 29
-        [b'T'].to_vec(),                    // 30
-        [b'T'].to_vec(),                    // 31
-        [b'A', b'C', b'G', b'T'].to_vec(),  // 32
-        [b'C', b'G'].to_vec(),              // 33
-        [b'A'].to_vec(),                    // 34
-        [b'C', b'G'].to_vec(),              // 35
+        [b'C'].to_vec(),                   // 1
+        [b'A'].to_vec(),                   // 2
+        [b'A'].to_vec(),                   // 3
+        [b'A'].to_vec(),                   // 4
+        [b'A', b'C', b'G', b'T'].to_vec(), // 5
+        [b'T'].to_vec(),                   // 6
+        [b'A', b'C'].to_vec(),             // 7
+        [b'A', b'G', b'T'].to_vec(),       // 8
+        [b'A'].to_vec(),                   // 9
+        [b'G'].to_vec(),                   // 10
+        [b'G'].to_vec(),                   // 11
+        [b'T'].to_vec(),                   // 12
+        [b'C', b'G', b'T'].to_vec(),       // 13
+        [b'A', b'G'].to_vec(),             // 14
+        [b'A', b'G'].to_vec(),             // 15
+        [b'A', b'C'].to_vec(),             // 16
+        [b'A', b'C'].to_vec(),             // 17
+        [b'C'].to_vec(),                   // 18
+        [b'A'].to_vec(),                   // 19
+        [b'C', b'G'].to_vec(),             // 20
+        [b'G'].to_vec(),                   // 21
+        [b'G'].to_vec(),                   // 22
+        [b'A', b'G', b'T'].to_vec(),       // 23
+        [b'A', b'C', b'G'].to_vec(),       // 24
+        [b'C', b'G', b'T'].to_vec(),       // 25
+        [b'A', b'C', b'T'].to_vec(),       // 26
+        [b'G'].to_vec(),                   // 27
+        [b'A', b'G'].to_vec(),             // 28
+        [b'C', b'T'].to_vec(),             // 29
+        [b'T'].to_vec(),                   // 30
+        [b'T'].to_vec(),                   // 31
+        [b'A', b'C', b'G', b'T'].to_vec(), // 32
+        [b'C', b'G'].to_vec(),             // 33
+        [b'A'].to_vec(),                   // 34
+        [b'C', b'G'].to_vec(),             // 35
     ];
 
     let ighj_rev_motif = [
-        [b'G'].to_vec(),                    // 1
-        [b'A'].to_vec(),                    // 2
-        [b'C'].to_vec(),                    // 3
-        [b'G', b'T'].to_vec(),              // 4
-        [b'C', b'T'].to_vec(),              // 5
-        [b'C'].to_vec(),                    // 6
-        [b'T'].to_vec(),                    // 7
-        [b'C'].to_vec(),                    // 8
-        [b'T'].to_vec(),                    // 9
-        [b'G'].to_vec(),                    // 10
-        [b'A', b'C', b'T'].to_vec(),        // 11
-        [b'C'].to_vec(),                    // 12
-        [b'A'].to_vec(),                    // 13
-        [b'C'].to_vec(),                    // 14
-        [b'T'].to_vec(),                    // 15
-        [b'C', b'G'].to_vec(),              // 16
-        [b'A', b'G', b'T'].to_vec(),        // 17
-        [b'C', b'T'].to_vec(),              // 18
-        [b'A', b'C', b'T'].to_vec(),        // 19
-        [b'A', b'C', b'T'].to_vec(),        // 20
-        [b'C'].to_vec(),                    // 21
-        [b'A'].to_vec(),                    // 22
-        [b'A', b'C', b'G'].to_vec(),        // 23
-        [b'G'].to_vec(),                    // 24
-        [b'G'].to_vec(),                    // 25
-        [b'A', b'G', b'T'].to_vec(),        // 26
-        [b'A', b'C', b'G'].to_vec(),        // 27
-        [b'A', b'C'].to_vec(),              // 28
-        [b'C', b'T'].to_vec(),              // 29
-        [b'G'].to_vec(),                    // 30
-        [b'G'].to_vec(),                    // 31
-        [b'G'].to_vec(),                    // 32
-        [b'G'].to_vec(),                    // 33
-        [b'T'].to_vec(),                    // 34
-        [b'C'].to_vec(),                    // 35
+        [b'G'].to_vec(),             // 1
+        [b'A'].to_vec(),             // 2
+        [b'C'].to_vec(),             // 3
+        [b'G', b'T'].to_vec(),       // 4
+        [b'C', b'T'].to_vec(),       // 5
+        [b'C'].to_vec(),             // 6
+        [b'T'].to_vec(),             // 7
+        [b'C'].to_vec(),             // 8
+        [b'T'].to_vec(),             // 9
+        [b'G'].to_vec(),             // 10
+        [b'A', b'C', b'T'].to_vec(), // 11
+        [b'C'].to_vec(),             // 12
+        [b'A'].to_vec(),             // 13
+        [b'C'].to_vec(),             // 14
+        [b'T'].to_vec(),             // 15
+        [b'C', b'G'].to_vec(),       // 16
+        [b'A', b'G', b'T'].to_vec(), // 17
+        [b'C', b'T'].to_vec(),       // 18
+        [b'A', b'C', b'T'].to_vec(), // 19
+        [b'A', b'C', b'T'].to_vec(), // 20
+        [b'C'].to_vec(),             // 21
+        [b'A'].to_vec(),             // 22
+        [b'A', b'C', b'G'].to_vec(), // 23
+        [b'G'].to_vec(),             // 24
+        [b'G'].to_vec(),             // 25
+        [b'A', b'G', b'T'].to_vec(), // 26
+        [b'A', b'C', b'G'].to_vec(), // 27
+        [b'A', b'C'].to_vec(),       // 28
+        [b'C', b'T'].to_vec(),       // 29
+        [b'G'].to_vec(),             // 30
+        [b'G'].to_vec(),             // 31
+        [b'G'].to_vec(),             // 32
+        [b'G'].to_vec(),             // 33
+        [b'T'].to_vec(),             // 34
+        [b'C'].to_vec(),             // 35
     ];
 
     // Define patterns that extend these motifs and are set up for fast computation.
@@ -1713,34 +1749,31 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
 
     // Heuristics for J gene detection.
 
-    const MAX_J_DIFFS : usize = 2;
-    const MIN_J : isize = 38;
-    const MAX_J : isize = 75;
+    const MAX_J_DIFFS: usize = 2;
+    const MIN_J: isize = 38;
+    const MAX_J: isize = 75;
 
-    // Search for J region matches.  For mouse and human, by design, 0 works.  
+    // Search for J region matches.  For mouse and human, by design, 0 works.
 
     let mut j_pat_len = igkj_rev.len();
     j_pat_len = max(j_pat_len, iglj_rev.len());
     j_pat_len = max(j_pat_len, ighj_rev.len());
     #[derive(Clone)]
     struct Jhit {
-        pub tig : usize,
-        pub pass : usize,
-        pub stop : usize,
-        pub rtype : String,
+        pub tig: usize,
+        pub pass: usize,
+        pub stop: usize,
+        pub rtype: String,
         pub jmatch: Vec<u8>,
         pub seq: Vec<u8>,
         pub lscore1: usize,
         pub lscore2: usize,
         pub errs: usize,
     }
-    let mut results = Vec::<(usize,Vec<Jhit>)>::new();
+    let mut results = Vec::<(usize, Vec<Jhit>)>::new();
     if use_j {
         for i in 0..refy.len() {
-            results.push((
-                i, 
-                Vec::<Jhit>::new(),
-            ));
+            results.push((i, Vec::<Jhit>::new()));
         }
     }
     let t = Instant::now();
@@ -1778,7 +1811,6 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         }
                     }
                     if errs <= MAX_J_DIFFS {
-
                         // Look for the 5' end, which is a recombination site.
 
                         let jstop = pos - post_j.len();
@@ -1788,15 +1820,17 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                 continue;
                             }
                             let motif;
-                            if u == 0 || u == 2 { // IGKJ or IGHJ
+                            if u == 0 || u == 2 {
+                                // IGKJ or IGHJ
                                 motif = b"GGTTTTTGT.......................CACTGTG".to_vec();
-                            } else { // IGLJ
+                            } else {
+                                // IGLJ
                                 motif = b"GGTTTTTGT............CACTGTG".to_vec();
                             }
                             let mut score = 0;
                             if jstart as usize >= motif.len() {
                                 for m in 0..motif.len() {
-                                    if motif[motif.len()-m-1] == r[jstart as usize - 1 - m] {
+                                    if motif[motif.len() - m - 1] == r[jstart as usize - 1 - m] {
                                         score += 1;
                                     }
                                 }
@@ -1814,12 +1848,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
 
                         // Record the J gene.
 
-                        res.1.push( Jhit {
+                        res.1.push(Jhit {
                             tig: i,
                             pass: pass,
                             stop: pos,
                             rtype: js[u].to_string(),
-                            jmatch: r[pos-ig.len()..pos].to_vec(),
+                            jmatch: r[pos - ig.len()..pos].to_vec(),
                             seq: r[jstart..jstop].to_vec(),
                             lscore1: top[0].0,
                             lscore2: top[1].0,
@@ -1838,71 +1872,101 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
     // Define J region truth data.
 
     let true_j_human = [
-    ["49|IGJH1", "GCTGAATACTTCCAGCACTGGGGCCAGGGCACCCTGGTCACCGTCTCCTCAG"],
-    // 1. commented out because adding C at the beginning causes a slightly better match on the RSS,
-    // and then it equals 51:
-    // adding a C at the beginning because it results in a slightly better match on the RSS,
-    // this is sort of in a gray area
-    // ["50|IGHJ2", "TACTGGTACTTCGATCTCTGGGGCCGTGGCACCCTGGTCACTGTCTCCTCAG"],
-    ["51|IGHJ2", "CTACTGGTACTTCGATCTCTGGGGCCGTGGCACCCTGGTCACTGTCTCCTCAG"],
-    // 2. commented out because adding T at the beginning causes a much better match on the RSS,
-    // and then it equals 53:
-    // ["52|IGHJ3", "GATGCTTTTGATATCTGGGGCCAAGGGACAATGGTCACCGTCTCTTCAG"],
-    ["53|IGHJ3", "TGATGCTTTTGATATCTGGGGCCAAGGGACAATGGTCACCGTCTCTTCAG"],
-    // 3. commented out because adding AC at the beginning causes a much better match on the RSS,
-    // and then it equals 55:
-    // ["54|IGHJ4", "TACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
-    ["55|IGHJ4", "ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
-    // 4. commented out because adding AC at the beginning causes a much better match on the RSS,
-    // and then it equals 57:
-    // ["56|IGHJ5", "AACTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
-    ["57|IGHJ5", "ACAACTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
-    // 5. commented out because adding AT at the beginning causes a much better match on the RSS,
-    // and then it equals 59:
-    // ["58|IGHJ6", "TACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG"],
-    ["59|IGHJ6", "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG"],
-    ["213|IGKJ1", "GTGGACGTTCGGCCAAGGGACCAAGGTGGAAATCAAAC"],
-    ["214|IGKJ2", "TGTGCAGTTTTGGCCAGGGGACCAAGCTGGAGATCAAAC"],
-    ["215|IGKJ3", "ATTCACTTTCGGCCCTGGGACCAAAGTGGATATCAAAC"],
-    // 6. added G at beginning because then there's a much better match on the RSS:
-    ["216|IGKJ4", "GCTCACTTTCGGCGGAGGGACCAAGGTGGAGATCAAAC"],
-    ["217|IGKJ5", "GATCACCTTCGGCCAAGGGACACGACTGGAGATTAAAC"],
-    ["309|IGLJ1", "TTATGTCTTCGGAACTGGGACCAAGGTCACCGTCCTAG"],
-    // 7. not found in data so excluded but should check for possible correction:
-    // ["310|IGLJ2", "GTGTGGGGGCCATGTGGACTCCCTCATGAGCAG"],
-    ["311|IGLJ2", "TGTGGTATTCGGCGGAGGGACCAAGCTGACCGTCCTAG"],
-    // 8. not found in data so excluded but should check for possible correction:
-    // ["312|IGLJ3", "GTGTGGGGGCCATGTGGACTCCCTC"],
-    ["313|IGLJ3", "TTGGGTGTTCGGCGGAGGGACCAAGCTGACCGTCCTAG"],
-    // 9. not found in data so excluded but should check for possible correction:
-    // ["314|IGLJ4", "GTATTTGGTGGAGGAACCCAGCTGATCATTTTA"],
-    // 10. not found in data so excluded but should check for possible correction:
-    // ["315|IGLJ5", "CAGAGAGGGTTTTTGTATGAGCCTGTGTCACAGCACTGGGTGTTTGGTGAGGGGACCGAGCTGACCGTCCTA"],
-    // 11. deleted 32 bases at the beginning because then there a much better match on the RSS:
-    ["316|IGLJ6", "TAATGTGTTCGGCAGTGGCACCAAGGTGACCGTCCTCG"],
-    // 12. deleted 8 bases at the beginning because then there's a much better match on RSS:
-    ["317|IGLJ7", "TGCTGTGTTCGGAGGAGGCACCCAGCTGACCGTCCTCG"],
-    // may be OK but excluded from analysis because not present in GRCh38:
-    // ["737|IGHJ6", "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCAG"],
+        [
+            "49|IGJH1",
+            "GCTGAATACTTCCAGCACTGGGGCCAGGGCACCCTGGTCACCGTCTCCTCAG",
+        ],
+        // 1. commented out because adding C at the beginning causes a slightly better match on the RSS,
+        // and then it equals 51:
+        // adding a C at the beginning because it results in a slightly better match on the RSS,
+        // this is sort of in a gray area
+        // ["50|IGHJ2", "TACTGGTACTTCGATCTCTGGGGCCGTGGCACCCTGGTCACTGTCTCCTCAG"],
+        [
+            "51|IGHJ2",
+            "CTACTGGTACTTCGATCTCTGGGGCCGTGGCACCCTGGTCACTGTCTCCTCAG",
+        ],
+        // 2. commented out because adding T at the beginning causes a much better match on the RSS,
+        // and then it equals 53:
+        // ["52|IGHJ3", "GATGCTTTTGATATCTGGGGCCAAGGGACAATGGTCACCGTCTCTTCAG"],
+        [
+            "53|IGHJ3",
+            "TGATGCTTTTGATATCTGGGGCCAAGGGACAATGGTCACCGTCTCTTCAG",
+        ],
+        // 3. commented out because adding AC at the beginning causes a much better match on the RSS,
+        // and then it equals 55:
+        // ["54|IGHJ4", "TACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
+        [
+            "55|IGHJ4",
+            "ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG",
+        ],
+        // 4. commented out because adding AC at the beginning causes a much better match on the RSS,
+        // and then it equals 57:
+        // ["56|IGHJ5", "AACTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG"],
+        [
+            "57|IGHJ5",
+            "ACAACTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG",
+        ],
+        // 5. commented out because adding AT at the beginning causes a much better match on the RSS,
+        // and then it equals 59:
+        // ["58|IGHJ6", "TACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG"],
+        [
+            "59|IGHJ6",
+            "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG",
+        ],
+        ["213|IGKJ1", "GTGGACGTTCGGCCAAGGGACCAAGGTGGAAATCAAAC"],
+        ["214|IGKJ2", "TGTGCAGTTTTGGCCAGGGGACCAAGCTGGAGATCAAAC"],
+        ["215|IGKJ3", "ATTCACTTTCGGCCCTGGGACCAAAGTGGATATCAAAC"],
+        // 6. added G at beginning because then there's a much better match on the RSS:
+        ["216|IGKJ4", "GCTCACTTTCGGCGGAGGGACCAAGGTGGAGATCAAAC"],
+        ["217|IGKJ5", "GATCACCTTCGGCCAAGGGACACGACTGGAGATTAAAC"],
+        ["309|IGLJ1", "TTATGTCTTCGGAACTGGGACCAAGGTCACCGTCCTAG"],
+        // 7. not found in data so excluded but should check for possible correction:
+        // ["310|IGLJ2", "GTGTGGGGGCCATGTGGACTCCCTCATGAGCAG"],
+        ["311|IGLJ2", "TGTGGTATTCGGCGGAGGGACCAAGCTGACCGTCCTAG"],
+        // 8. not found in data so excluded but should check for possible correction:
+        // ["312|IGLJ3", "GTGTGGGGGCCATGTGGACTCCCTC"],
+        ["313|IGLJ3", "TTGGGTGTTCGGCGGAGGGACCAAGCTGACCGTCCTAG"],
+        // 9. not found in data so excluded but should check for possible correction:
+        // ["314|IGLJ4", "GTATTTGGTGGAGGAACCCAGCTGATCATTTTA"],
+        // 10. not found in data so excluded but should check for possible correction:
+        // ["315|IGLJ5", "CAGAGAGGGTTTTTGTATGAGCCTGTGTCACAGCACTGGGTGTTTGGTGAGGGGACCGAGCTGACCGTCCTA"],
+        // 11. deleted 32 bases at the beginning because then there a much better match on the RSS:
+        ["316|IGLJ6", "TAATGTGTTCGGCAGTGGCACCAAGGTGACCGTCCTCG"],
+        // 12. deleted 8 bases at the beginning because then there's a much better match on RSS:
+        ["317|IGLJ7", "TGCTGTGTTCGGAGGAGGCACCCAGCTGACCGTCCTCG"],
+        // may be OK but excluded from analysis because not present in GRCh38:
+        // ["737|IGHJ6", "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCAG"],
     ];
 
     let true_j_mouse = [
-    ["28|IGHJ1", "CTACTGGTACTTCGATGTCTGGGGCACAGGGACCACGGTCACCGTCTCCTCAG"],
-    ["29|IGHJ2", "ACTACTTTGACTACTGGGGCCAAGGCACCACTCTCACAGTCTCCTCAG"],
-    ["30|IGHJ3", "CCTGGTTTGCTTACTGGGGCCAAGGGACTCTGGTCACTGTCTCTGCAG"],
-    ["31|IGHJ4", "ATTACTATGCTATGGACTACTGGGGTCAAGGAACCTCAGTCACCGTCTCCTCAG"],
-    ["181|IGKJ1", "GTGGACGTTCGGTGGAGGCACCAAGCTGGAAATCAAAC"],
-    ["182|IGKJ2", "TGTACACGTTCGGAGGGGGGACCAAGCTGGAAATAAAAC"],
-    ["183|IGKJ3", "AATCACATTCAGTGATGGGACCAGACTGGAAATAAAAC"],
-    ["184|IGKJ4", "ATTCACGTTCGGCTCGGGGACAAAGTTGGAAATAAAAC"],
-    ["185|IGKJ5", "GCTCACGTTCGGTGCTGGGACCAAGCTGGAGCTGAAAC"],
-    ["338|IGLJ1", "CTGGGTGTTCGGTGGAGGAACCAAACTGACTGTCCTAG"],
-    ["339|IGLJ2", "TTATGTTTTCGGCGGTGGAACCAAGGTCACTGTCCTAG"],
-    ["340|IGLJ3", "GTTTATTTTCGGCAGTGGAACCAAGGTCACTGTCCTAG"],
-    // excluded because labeled a pseudogene
-    // ["341|IGLJ3PSEUDOGENE", "AGGTTCTTTTTCCTCAAATGGCCTATTGTATGCAGGAG"],
-    // excluded because not found in 10x data:
-    // ["342|IGLJ4", "TTGGGTGTTCGGAGGTGGAACCAGATTGACTGTCCTAGATGA"],
+        [
+            "28|IGHJ1",
+            "CTACTGGTACTTCGATGTCTGGGGCACAGGGACCACGGTCACCGTCTCCTCAG",
+        ],
+        [
+            "29|IGHJ2",
+            "ACTACTTTGACTACTGGGGCCAAGGCACCACTCTCACAGTCTCCTCAG",
+        ],
+        [
+            "30|IGHJ3",
+            "CCTGGTTTGCTTACTGGGGCCAAGGGACTCTGGTCACTGTCTCTGCAG",
+        ],
+        [
+            "31|IGHJ4",
+            "ATTACTATGCTATGGACTACTGGGGTCAAGGAACCTCAGTCACCGTCTCCTCAG",
+        ],
+        ["181|IGKJ1", "GTGGACGTTCGGTGGAGGCACCAAGCTGGAAATCAAAC"],
+        ["182|IGKJ2", "TGTACACGTTCGGAGGGGGGACCAAGCTGGAAATAAAAC"],
+        ["183|IGKJ3", "AATCACATTCAGTGATGGGACCAGACTGGAAATAAAAC"],
+        ["184|IGKJ4", "ATTCACGTTCGGCTCGGGGACAAAGTTGGAAATAAAAC"],
+        ["185|IGKJ5", "GCTCACGTTCGGTGCTGGGACCAAGCTGGAGCTGAAAC"],
+        ["338|IGLJ1", "CTGGGTGTTCGGTGGAGGAACCAAACTGACTGTCCTAG"],
+        ["339|IGLJ2", "TTATGTTTTCGGCGGTGGAACCAAGGTCACTGTCCTAG"],
+        ["340|IGLJ3", "GTTTATTTTCGGCAGTGGAACCAAGGTCACTGTCCTAG"],
+        // excluded because labeled a pseudogene
+        // ["341|IGLJ3PSEUDOGENE", "AGGTTCTTTTTCCTCAAATGGCCTATTGTATGCAGGAG"],
+        // excluded because not found in 10x data:
+        // ["342|IGLJ4", "TTGGGTGTTCGGAGGTGGAACCAGATTGACTGTCCTAGATGA"],
     ];
 
     // Analyze J results.
@@ -1928,8 +1992,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     fwriteln!(fasta_log, ">{}{}", jhits[i].rtype, count);
                 } else if print_fasta {
                     fasta_count += 1;
-                    fwriteln!(fasta_log, ">{}|{} enclone|{}|J-REGION|IG|{}|None|00",
-                        fasta_count, gene, gene,
+                    fwriteln!(
+                        fasta_log,
+                        ">{}|{} enclone|{}|J-REGION|IG|{}|None|00",
+                        fasta_count,
+                        gene,
+                        gene,
                         strme(&gene.as_bytes()[0..3]),
                     );
                 } else if print_aa {
@@ -1973,11 +2041,19 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 if p >= 0 {
                     found[ids[p as usize]] = true;
                 }
-                print!("{} {}{}.{} {} {} {}, {} jseq = {} errs = {}", 
+                print!(
+                    "{} {}{}.{} {} {} {}, {} jseq = {} errs = {}",
                     jhits[i].rtype,
-                    or as char, jhits[i].tig, jhits[i].stop,
-                    strme(&x[0..5]), strme(&x[5..40]), jhits[i].lscore1, 
-                    jhits[i].lscore2, strme(&jhits[i].seq), jhits[i].errs);
+                    or as char,
+                    jhits[i].tig,
+                    jhits[i].stop,
+                    strme(&x[0..5]),
+                    strme(&x[5..40]),
+                    jhits[i].lscore1,
+                    jhits[i].lscore2,
+                    strme(&jhits[i].seq),
+                    jhits[i].errs
+                );
                 if p < 0 {
                     print!(" NOT FOUND");
                 }
@@ -2000,7 +2076,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             println!("\nused {:.2} seconds\n", elapsed(&t));
         }
     }
-  
+
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     //
     // BEGIN ANALYSIS OF D REGIONS
@@ -2035,14 +2111,16 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         b"GTATTACTATGATAGTAGTGGTTATTACTAC".to_vec(),
         b"GTATTACTATGGTTCGGGGAGTTATTATAAC".to_vec(),
         b"GTATTATGATTACGTTTGGGGGAGTTATCGTTATACC".to_vec(),
-    ].to_vec();
+    ]
+    .to_vec();
     let mut true_d_human_pseudo = [
         b"GGTATAACTGGAACAAC".to_vec(),
         b"TGACTATGGTGCTAACTAC".to_vec(),
         b"GTGGATATAGTGTCTACGATTAC".to_vec(),
         b"AGAATATTGTAATAGTACTACTTTCTATGCC".to_vec(),
         b"GTATTATGATTTTTGGACTGGTTATTATACC".to_vec(),
-    ].to_vec();
+    ]
+    .to_vec();
     unique_sort(&mut true_d_human);
     unique_sort(&mut true_d_human_pseudo);
     let mut to_delete = vec![false; true_d_human.len()];
@@ -2073,7 +2151,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         b"TCTACTATGGTTACGAC".to_vec(),
         b"TCTATGATGGTTACTAC".to_vec(),
         b"TTTATTACTACGGTAGTAGCTAC".to_vec(),
-    ].to_vec();
+    ]
+    .to_vec();
     unique_sort(&mut true_d_mouse);
     let mut to_delete = vec![false; true_d_mouse.len()];
     for i in 0..true_d_mouse.len() {
@@ -2133,9 +2212,13 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         }
         dright_use.push(sum > 0);
     }
-    pub fn d_right_flank_score(x: &[u8], dright: &[[usize; 4]], dright_use: &Vec<bool>, 
-        total: usize) -> f64 {
-        const MIN_FRAC : f64 = 0.02;
+    pub fn d_right_flank_score(
+        x: &[u8],
+        dright: &[[usize; 4]],
+        dright_use: &Vec<bool>,
+        total: usize,
+    ) -> f64 {
+        const MIN_FRAC: f64 = 0.02;
         let mut p = 1.0;
         for i in 0..dright.len() {
             if dright_use[i] {
@@ -2166,28 +2249,37 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         }
         y
     }
-    let mut min_p = d_right_flank_score(&to0123(b"CACGGCCTGGCACCCCCTGACAATAACCACACCTGGAACT"), 
-        &dright, &dright_use, total_d);
+    let mut min_p = d_right_flank_score(
+        &to0123(b"CACGGCCTGGCACCCCCTGACAATAACCACACCTGGAACT"),
+        &dright,
+        &dright_use,
+        total_d,
+    );
     // the following two from IGHD3-16, which is real
-    min_p = min_p.min(d_right_flank_score(&to0123(b"CACAGCATCACACGGTCCATCAGAAACCCATGCCACAGCC"), 
-        &dright, &dright_use, total_d));
-    min_p = min_p.min( d_right_flank_score(&to0123(b"CACAGTGACACAGACCTCACTTCAAACCTACCATCTGGCC"), 
-        &dright, &dright_use, total_d));
+    min_p = min_p.min(d_right_flank_score(
+        &to0123(b"CACAGCATCACACGGTCCATCAGAAACCCATGCCACAGCC"),
+        &dright,
+        &dright_use,
+        total_d,
+    ));
+    min_p = min_p.min(d_right_flank_score(
+        &to0123(b"CACAGTGACACAGACCTCACTTCAAACCTACCATCTGGCC"),
+        &dright,
+        &dright_use,
+        total_d,
+    ));
     min_p = 0.1 * min_p;
-    const D_LOW : usize = 10;
-    const D_HIGH : usize = 37;
-    use std::time::Instant;
+    const D_LOW: usize = 10;
+    const D_HIGH: usize = 37;
     use perf_stats::*;
+    use std::time::Instant;
     let t = Instant::now();
-    const MAX_TIG : usize = 10_000_000;
-    const TIG_OVERLAP : usize = 100_000;
-    let mut results = Vec::<(usize,Vec<Vec<u8>>)>::new();
+    const MAX_TIG: usize = 10_000_000;
+    const TIG_OVERLAP: usize = 100_000;
+    let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
     if use_d {
         for i in 0..refy.len() {
-            results.push((
-                i, 
-                Vec::<Vec<u8>>::new(),
-            ));
+            results.push((i, Vec::<Vec<u8>>::new()));
         }
     }
     results.par_iter_mut().for_each(|res| {
@@ -2238,7 +2330,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         for z in 0..matches.len() {
             // not sure if we're forcing orientation here
             if matches[z].1 == 0 {
-                for j in z+1..matches.len() {
+                for j in z + 1..matches.len() {
                     let start = matches[z].0;
                     let stop = matches[j].0;
                     let dlen = stop - start;
@@ -2249,20 +2341,27 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         if !print_fasta && !store_fasta {
                             let mut s = r[start..stop].to_vec();
                             reverse_complement(&mut s);
-                            print!("{} = {}', {}.{}-{} of {}", 
-                            strme(&r[start..stop]), strme(&s), i, start, stop, r.len());
+                            print!(
+                                "{} = {}', {}.{}-{} of {}",
+                                strme(&r[start..stop]),
+                                strme(&s),
+                                i,
+                                start,
+                                stop,
+                                r.len()
+                            );
                         }
                         let mut x = r[start..stop].to_vec();
                         if !print_fasta && !store_fasta {
                             let mut good = false;
-                            if species == "human" { 
+                            if species == "human" {
                                 good = bin_member(&true_d_human, &x);
                             } else if species == "mouse" {
                                 good = bin_member(&true_d_mouse, &x);
                             }
                             if !good {
                                 reverse_complement(&mut x);
-                                if species == "human" { 
+                                if species == "human" {
                                     good = bin_member(&true_d_human, &x);
                                 } else if species == "mouse" {
                                     good = bin_member(&true_d_mouse, &x);
@@ -2291,8 +2390,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     } else {
                         fasta_count += 1;
                         let gene = format!("IGHD{}_FW", count);
-                        fwriteln!(fasta_log, ">{}|{} enclone|{}|D-REGION|IG|{}|None|00",
-                            fasta_count, gene, gene,
+                        fwriteln!(
+                            fasta_log,
+                            ">{}|{} enclone|{}|D-REGION|IG|{}|None|00",
+                            fasta_count,
+                            gene,
+                            gene,
                             strme(&gene.as_bytes()[0..3]),
                         );
                     }
@@ -2303,8 +2406,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     } else {
                         fasta_count += 1;
                         let gene = format!("IGHD{}_RC", count);
-                        fwriteln!(fasta_log, ">{}|{} enclone|{}|D-REGION|IG|{}|None|00",
-                            fasta_count, gene, gene,
+                        fwriteln!(
+                            fasta_log,
+                            ">{}|{} enclone|{}|D-REGION|IG|{}|None|00",
+                            fasta_count,
+                            gene,
+                            gene,
                             strme(&gene.as_bytes()[0..3]),
                         );
                     }
@@ -2367,8 +2474,14 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     }
                 }
             }
-            println!("found {}; {} of {} trues; {} of {} pseudos", all.len(), hits, true_d.len(),
-                phits, true_d_pseudo.len());
+            println!(
+                "found {}; {} of {} trues; {} of {} pseudos",
+                all.len(),
+                hits,
+                true_d.len(),
+                phits,
+                true_d_pseudo.len()
+            );
             println!("used {:.2} seconds\n", elapsed(&t));
             std::process::exit(0);
         }
@@ -2410,27 +2523,27 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
     //
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // We parallelize over refy, which has overlapping segments.  Haven't checked to see if 
+    // We parallelize over refy, which has overlapping segments.  Haven't checked to see if
     // this might result in artifacts.
 
     let mut results = Vec::<(
-        usize,                      // 0: index
-        Vec<String>,                // 1: log
-        Vec<String>,                // 2: defunct
-        Vec<(String, Vec<u8>)>,     // 3: special for pwm option
-        Vec<Vec<u8>>,               // 4: upstream tag (synced to log)
-        Vec<String>,                // 5: reference matches (synced to log)
-        Vec<Vec<Vec<u8>>>,          // 6: bases through end of FWR3 (synced to log)
-        Vec<Vec<String>>,           // 7: chain type (synced to log)
-        Vec<Vec<Vec<u8>>>,          // 8: utr bases tag (synced to log)
+        usize,                  // 0: index
+        Vec<String>,            // 1: log
+        Vec<String>,            // 2: defunct
+        Vec<(String, Vec<u8>)>, // 3: special for pwm option
+        Vec<Vec<u8>>,           // 4: upstream tag (synced to log)
+        Vec<String>,            // 5: reference matches (synced to log)
+        Vec<Vec<Vec<u8>>>,      // 6: bases through end of FWR3 (synced to log)
+        Vec<Vec<String>>,       // 7: chain type (synced to log)
+        Vec<Vec<Vec<u8>>>,      // 8: utr bases tag (synced to log)
     )>::new();
     if use_v {
         for i in 0..2 * refy.len() {
             results.push((
-                i, 
-                Vec::<String>::new(), 
-                Vec::<String>::new(), 
-                Vec::<(String, Vec<u8>)>::new(), 
+                i,
+                Vec::<String>::new(),
+                Vec::<String>::new(),
+                Vec::<(String, Vec<u8>)>::new(),
                 Vec::<Vec<u8>>::new(),
                 Vec::<String>::new(),
                 Vec::<Vec<Vec<u8>>>::new(),
@@ -2463,9 +2576,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 let mut k = j;
                 let mut good = false;
                 while k < aa.len() && aa[k] != b'*' {
-                    if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
-                        || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC") 
-                        || aa[k..].starts_with(b"YIC") {
+                    if aa[k..].starts_with(b"YYC")
+                        || aa[k..].starts_with(b"YFC")
+                        || aa[k..].starts_with(b"YHC")
+                        || aa[k..].starts_with(b"FYC")
+                        || aa[k..].starts_with(b"YIC")
+                    {
                         good = true;
                     }
                     k += 1;
@@ -2481,9 +2597,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 let mut k2s = Vec::<usize>::new();
                 let mut k2 = k;
                 while k2 >= j + 3 {
-                    if aa[j..k2].ends_with(b"YYC") || aa[j..k2].ends_with(b"YFC")
-                        || aa[j..k2].ends_with(b"YHC") || aa[j..k2].ends_with(b"FYC") 
-                        || aa[j..k2].ends_with(b"YIC") {
+                    if aa[j..k2].ends_with(b"YYC")
+                        || aa[j..k2].ends_with(b"YFC")
+                        || aa[j..k2].ends_with(b"YHC")
+                        || aa[j..k2].ends_with(b"FYC")
+                        || aa[j..k2].ends_with(b"YIC")
+                    {
                         k2s.push(k2);
                     }
                     k2 -= 1;
@@ -2511,14 +2630,14 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
 
                 // Test for RAG site.
 
-                const MAX_CDR3_PART : usize = 44;
-                let first = 3*k2 + frame;
-                const UPSTREAM : usize = TAG_LEN + MAX_CDR3_PART;
-                if first+UPSTREAM > r.len() {
+                const MAX_CDR3_PART: usize = 44;
+                let first = 3 * k2 + frame;
+                const UPSTREAM: usize = TAG_LEN + MAX_CDR3_PART;
+                if first + UPSTREAM > r.len() {
                     j = k;
                     continue;
                 }
-                let upstream = r[first..first+UPSTREAM].to_vec();
+                let upstream = r[first..first + UPSTREAM].to_vec();
 
                 // Proceed.
 
@@ -2530,11 +2649,22 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
 
                 // Set up to gather info: a leader sequence plus a message plus a bunch of stuff.
 
-                let mut info = Vec::<
-                    (Vec<u8>, String, u8, usize, Vec<u8>, 
-                    usize, usize, f64, u8, Vec<u8>, 
-                    Vec<u8>, String, Vec<u8>)>::new();
-                        
+                let mut info = Vec::<(
+                    Vec<u8>,
+                    String,
+                    u8,
+                    usize,
+                    Vec<u8>,
+                    usize,
+                    usize,
+                    f64,
+                    u8,
+                    Vec<u8>,
+                    Vec<u8>,
+                    String,
+                    Vec<u8>,
+                )>::new();
+
                 // Look for possible exon 1 sequences.
 
                 let mut scount = 0;
@@ -2542,10 +2672,10 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 let mut mlp = Vec::<(isize, usize, u8)>::new();
                 for m in -175..WALK_BACK as isize {
                     // start = start of exon 1 in bases
-                    if m > 3*j as isize + frame as isize {
+                    if m > 3 * j as isize + frame as isize {
                         continue;
                     }
-                    let start = (3*j as isize + frame as isize - m) as usize;
+                    let start = (3 * j as isize + frame as isize - m) as usize;
                     if start >= r.len() {
                         continue;
                     }
@@ -2554,27 +2684,27 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     }
                     // l = length of exon 1 in bases (from start codon)
                     for l in (LOW1..=HIGH1).step_by(3) {
-                        if start+l+1 >= r.len() {
+                        if start + l + 1 >= r.len() {
                             break;
                         }
-                        let bb = aa_seq(&r[start..start+l].to_vec(), 0);
+                        let bb = aa_seq(&r[start..start + l].to_vec(), 0);
                         if bb.contains(&b'*') {
                             continue;
                         }
 
-                        // Check that the sequence after exon 1 is GT or 
+                        // Check that the sequence after exon 1 is GT or
                         // GC.  In human and mouse we observe GT, and rarely GC.
 
-                        if r[start+l] != b'G' {
+                        if r[start + l] != b'G' {
                             continue;
                         }
-                        if r[start+l+1] != b'T' && r[start+l+1] != b'C' {
+                        if r[start + l + 1] != b'T' && r[start + l + 1] != b'C' {
                             continue;
                         }
 
                         // Save.
 
-                        mlp.push((m, l, r[start+l+1]));
+                        mlp.push((m, l, r[start + l + 1]));
                     }
                 }
 
@@ -2584,12 +2714,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     let m = mlp[pp].0;
                     let l = mlp[pp].1; // length of exon 1 in bases
                     let post = mlp[pp].2; // T and rarely C
-                    // start = start of exon 1 in bases
-                    let start = (3*j as isize + frame as isize - m) as usize;
+                                          // start = start of exon 1 in bases
+                    let start = (3 * j as isize + frame as isize - m) as usize;
                     if start < 10 {
                         continue;
                     }
-                    let bb = aa_seq(&r[start..start+l].to_vec(), 0);
+                    let bb = aa_seq(&r[start..start + l].to_vec(), 0);
                     for mx in LOW_INTRON..=HIGH_INTRON {
                         let start2 = start + l + mx;
                         if start2 > r.len() || r.len() - start2 < 10 {
@@ -2603,9 +2733,10 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         // In human and mouse, we observe that the sequence preceeding exon 2 is
                         // CAG, with TAG and AAG as rare exceptions (and very rare other cases).
 
-                        if !r[start2-3..].starts_with(b"CAG") 
-                            && !r[start2-3..].starts_with(b"TAG")
-                            && !r[start2-3..].starts_with(b"AAG") {
+                        if !r[start2 - 3..].starts_with(b"CAG")
+                            && !r[start2 - 3..].starts_with(b"TAG")
+                            && !r[start2 - 3..].starts_with(b"AAG")
+                        {
                             continue;
                         }
                         let stop2 = 3 * k2 + frame;
@@ -2616,22 +2747,23 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         // Don't allow last base of exon 1 to be C, because it does not happen
                         // in the human and mouse reference sequences.
 
-                        if r[start+l-1] == b'C' {
+                        if r[start + l - 1] == b'C' {
                             continue;
                         }
 
                         // Keep going.
 
                         let cc = aa_seq(&r[start2 + 2..stop2].to_vec(), 0);
-                        let mid = vec![r[start+l-1], r[start2], r[start2+1]];
+                        let mid = vec![r[start + l - 1], r[start2], r[start2 + 1]];
                         let mut s = String::new();
                         if show_transition {
-                            s = format!("{}({}) ..{}.. <{}>({}){}", 
-                                strme(&bb), 
-                                r[start+l-1] as char,
+                            s = format!(
+                                "{}({}) ..{}.. <{}>({}){}",
+                                strme(&bb),
+                                r[start + l - 1] as char,
                                 codon_to_aa(&mid) as char,
-                                strme(&r[start2-10..start2]),
-                                strme(&r[start2..start2+2]),
+                                strme(&r[start2 - 10..start2]),
+                                strme(&r[start2..start2 + 2]),
                                 strme(&cc),
                             );
                         }
@@ -2643,13 +2775,13 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         }
                         #[derive(Clone, PartialOrd, PartialEq)]
                         struct ChainData {
-                            pub score : f64,
-                            pub flen : usize,
-                            pub f1_start : usize,
-                            pub ldrx : Vec<u8>,
-                            pub ct : String,
-                            pub start_score : f64,
-                            pub s : String,
+                            pub score: f64,
+                            pub flen: usize,
+                            pub f1_start: usize,
+                            pub ldrx: Vec<u8>,
+                            pub ct: String,
+                            pub start_score: f64,
+                            pub s: String,
                         }
                         let mut chain_datas = Vec::<ChainData>::new();
                         for ct in ["IGH", "IGK", "IGL"].iter() {
@@ -2677,17 +2809,22 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             // And just M.
 
                             fn is_stop(x: &[u8], j: usize) -> bool {
-                                x[j..j+3].to_vec() == b"TAA".to_vec()
-                                || x[j..j+3].to_vec() == b"TAG".to_vec()
-                                || x[j..j+3].to_vec() == b"TGA".to_vec()
+                                x[j..j + 3].to_vec() == b"TAA".to_vec()
+                                    || x[j..j + 3].to_vec() == b"TAG".to_vec()
+                                    || x[j..j + 3].to_vec() == b"TGA".to_vec()
                             }
-                            if f1_start == 19 && start >= 9
-                                && r[start-9..start-6].to_vec() == b"ATG".to_vec()
-                                && !is_stop(&r, start-6) && !is_stop(&r, start-3) {
+                            if f1_start == 19
+                                && start >= 9
+                                && r[start - 9..start - 6].to_vec() == b"ATG".to_vec()
+                                && !is_stop(&r, start - 6)
+                                && !is_stop(&r, start - 3)
+                            {
                                 continue;
                             }
-                            if f1_start == 19 && start >= 3
-                                && r[start-3..start].to_vec() == b"ATG".to_vec() {
+                            if f1_start == 19
+                                && start >= 3
+                                && r[start - 3..start].to_vec() == b"ATG".to_vec()
+                            {
                                 continue;
                             }
 
@@ -2710,11 +2847,13 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             if f1.is_some() {
                                 let f1 = f1.unwrap();
                                 let c1 = cdr1(&full, ct, false);
-                                if f1.len() >= MIN_FWR1 && f1.len() <= MAX_FWR1
-                                   && c1.is_some() 
-                                   && fwr2(&full, ct, false).is_some() 
-                                   && cdr2(&full, ct, false).is_some() 
-                                   && fwr3(&full, ct, false).is_some() {
+                                if f1.len() >= MIN_FWR1
+                                    && f1.len() <= MAX_FWR1
+                                    && c1.is_some()
+                                    && fwr2(&full, ct, false).is_some()
+                                    && cdr2(&full, ct, false).is_some()
+                                    && fwr3(&full, ct, false).is_some()
+                                {
                                     let f2 = fwr2(&full, ct, false).unwrap();
                                     let f3 = fwr3(&full, ct, false).unwrap();
                                     if *ct == "IGL" && f1.len() < 20 {
@@ -2739,11 +2878,10 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                     }
 
                                     if score1 >= 1.8 {
-
                                         // Compute peer group negative log probability two.
                                         // We exclude cdr1 and cdr2 because for human IGLV9-49,
                                         // we observe that the CDR2 sequence appears totally novel,
-                                        // relative to other CDR2 sequences.  It also has length 
+                                        // relative to other CDR2 sequences.  It also has length
                                         // 12, which is one longer than expected.  The gene
                                         // is probably functional because we seem to observe
                                         // class switching and SHM in our data.
@@ -2765,7 +2903,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                 z = &c2;
                                             }
                                             let len = z.len();
-                                            if mmp[x2-1].2 < len {
+                                            if mmp[x2 - 1].2 < len {
                                                 nlogp2 += 20.0;
                                                 continue;
                                             }
@@ -2774,9 +2912,9 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                     let x1 = &z;
                                                     let pwm = &mmp[x].3;
 
-                                                    // Define scoring scheme.  This is very ugly, 
-                                                    // because the second argument b is treated as 
-                                                    // the column number in the position weight 
+                                                    // Define scoring scheme.  This is very ugly,
+                                                    // because the second argument b is treated as
+                                                    // the column number in the position weight
                                                     // matrix.
 
                                                     let mut n = 0 as i32;
@@ -2797,8 +2935,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                         }
                                                         -n
                                                     };
-                                                    let (gap_open, gap_extend) 
-                                                        = (-1 * n as i32, -n as i32);
+                                                    let (gap_open, gap_extend) =
+                                                        (-1 * n as i32, -n as i32);
 
                                                     // Set up the aligner.
 
@@ -2806,20 +2944,22 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                     for i in 0..pwm.len() {
                                                         x2.push(i as u8);
                                                     }
-                                                    let (n1, n2) 
-                                                        = (x1.len() as u32, x2.len() as u32);
+                                                    let (n1, n2) =
+                                                        (x1.len() as u32, x2.len() as u32);
                                                     assert!(n1 <= n2);
                                                     let l = max(1, (n2 - n1) / 2);
-                                                    let corners 
-                                                        = vec![(0, l), (n1 - 1, n1 - 1 + l)];
+                                                    let corners =
+                                                        vec![(0, l), (n1 - 1, n1 - 1 + l)];
                                                     let path = vec![0, 1];
-                                                    let mut aligner = Aligner::new( gap_open, 
-                                                        gap_extend, &score, 1, l as usize);
+                                                    let mut aligner = Aligner::new(
+                                                        gap_open, gap_extend, &score, 1, l as usize,
+                                                    );
 
                                                     // Align.
-                                    
+
                                                     let align = aligner.custom_with_match_path(
-                                                        &x1, &x2, &corners, &path);
+                                                        &x1, &x2, &corners, &path,
+                                                    );
                                                     let ops = &align.operations;
 
                                                     // Evaluate.  It's not totally clear that
@@ -2849,8 +2989,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                                 total += r.0;
                                                             }
                                                             hit = max(1, hit);
-                                                            nlogp2 -= (hit as f64 / total as f64)
-                                                                .log10();
+                                                            nlogp2 -=
+                                                                (hit as f64 / total as f64).log10();
                                                             pwm_pos += 1;
                                                         } else {
                                                             let mut hit = 0;
@@ -2862,8 +3002,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                                 total += r.0;
                                                             }
                                                             hit = max(1, hit);
-                                                            nlogp2 -= (hit as f64 / total as f64)
-                                                                .log10();
+                                                            nlogp2 -=
+                                                                (hit as f64 / total as f64).log10();
                                                             tig_pos += 1;
                                                             pwm_pos += 1;
                                                         }
@@ -2889,8 +3029,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                         }
                                         let mut start_score = 1.0;
                                         for m in 0..23 {
-                                            let pos = start-10+m;
-                                            let total : usize = start_pwm[m].iter().sum();
+                                            let pos = start - 10 + m;
+                                            let total: usize = start_pwm[m].iter().sum();
                                             let mut hit = 0;
                                             if r[pos] == b'A' {
                                                 hit += start_pwm[m][0];
@@ -2912,8 +3052,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                         }
                                         let mut s = String::new();
                                         if !show_transition {
-                                            s =
-                                                format!("%{}% {} 🌸 {}, rev_ldr_score={:.2}, \
+                                            s = format!(
+                                                "%{}% {} 🌸 {}, rev_ldr_score={:.2}, \
                                                 start_score={:.2} \
                                                 muscore={:.2} e2ss={:.2} nlogp2={:.2}, ct = {}",
                                                 post as char,
@@ -2923,10 +3063,11 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                                 start_score.log10(),
                                                 muscore,
                                                 e2ss,
-                                                nlogp2, ct
+                                                nlogp2,
+                                                ct
                                             );
                                         }
-                                        chain_datas.push( ChainData {
+                                        chain_datas.push(ChainData {
                                             score: nlogp2,
                                             start_score: start_score,
                                             flen: flen,
@@ -2934,7 +3075,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                                             ldrx: ldr.to_vec(),
                                             ct: ct.to_string(),
                                             s: s,
-                                        } );
+                                        });
                                     }
                                 }
                             }
@@ -2943,7 +3084,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             continue;
                         }
                         chain_datas.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                        const MAX_SCORE_DIFF : f64 = 0.0; // ONLY KEEPING TOP ENTRY!
+                        const MAX_SCORE_DIFF: f64 = 0.0; // ONLY KEEPING TOP ENTRY!
                         let mut to_delete = vec![false; chain_datas.len()];
                         for m in 1..chain_datas.len() {
                             if chain_datas[m].score >= chain_datas[0].score + MAX_SCORE_DIFF {
@@ -2957,7 +3098,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             s += &chain_datas[m].s.clone();
                         }
                         let ldrx = chain_datas[0].ldrx.clone();
-                        if max_score >= 40.0 { // flag high scores
+                        if max_score >= 40.0 {
+                            // flag high scores
                             s += " HIGH";
                         }
                         let mut flens = Vec::<usize>::new();
@@ -2971,7 +3113,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         unique_sort(&mut flens);
                         unique_sort(&mut f1_starts);
                         let mut msg = format!(" ({})", flens.iter().format(","));
-                        const MAX_MIS : usize = 3;
+                        const MAX_MIS: usize = 3;
                         let mut is_match = false;
                         if to_ref.contains_key(&full) {
                             msg += &format!(" 🔴 {}", to_ref[&full].clone());
@@ -2981,7 +3123,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             }
                             if pwm {
                                 let mut x = Vec::<u8>::new();
-                                x.append(&mut r[start-10..start+13].to_vec());
+                                x.append(&mut r[start - 10..start + 13].to_vec());
                                 res.3.push((to_ref[&full].clone(), x));
                             }
                         } else {
@@ -3000,8 +3142,14 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             }
                         }
                         scount += 1;
-                        let mut logp = format!("[{}] {} ==> ({}) {}{}", 
-                            scount, mx, f1_starts.iter().format(","), s, msg);
+                        let mut logp = format!(
+                            "[{}] {} ==> ({}) {}{}",
+                            scount,
+                            mx,
+                            f1_starts.iter().format(","),
+                            s,
+                            msg
+                        );
                         logp += &format!(" {}", cts.iter().format(","));
                         let mut pseudo = false;
                         for p in pseudos.iter() {
@@ -3029,14 +3177,27 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         if start1 < 80 {
                             continue;
                         }
-                        let utr_tag = r[start1-80..start1].to_vec();
+                        let utr_tag = r[start1 - 80..start1].to_vec();
                         if print_bases {
                             logp += " ";
                             logp += &strme(&bases);
                         }
                         logp += "\n";
-                        info.push((ldrx, logp, post, mx, full.clone(), start2, start, start_score, 
-                            r[start+l-1], upstream.clone(), bases, cts[0].clone(), utr_tag));
+                        info.push((
+                            ldrx,
+                            logp,
+                            post,
+                            mx,
+                            full.clone(),
+                            start2,
+                            start,
+                            start_score,
+                            r[start + l - 1],
+                            upstream.clone(),
+                            bases,
+                            cts[0].clone(),
+                            utr_tag,
+                        ));
                     }
                 }
 
@@ -3056,12 +3217,15 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             let post2 = info[i2].2;
                             if lscore2(&ldr1) >= 10 * lscore2(ldr2)
                                 && lscore1(&ldr1) >= lscore1(&ldr2)
-                                && post1 != b'C' {
+                                && post1 != b'C'
+                            {
                                 to_delete[i2] = true;
                             }
                             if lscore2(&ldr1) >= lscore2(ldr2)
                                 && lscore1(&ldr1) >= lscore1(&ldr2)
-                                && post1 == b'T' && post2 == b'C' {
+                                && post1 == b'T'
+                                && post2 == b'C'
+                            {
                                 to_delete[i2] = true;
                             }
                         }
@@ -3078,8 +3242,10 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         let ldr2 = &info[i2].0;
                         let start_score1 = info[i1].7;
                         let start_score2 = info[i2].7;
-                        if info[i2].3 >= 150 + info[i1].3 && lscore2(&ldr1) * 10 > lscore2(&ldr2) 
-                            && start_score1 >= start_score2 {
+                        if info[i2].3 >= 150 + info[i1].3
+                            && lscore2(&ldr1) * 10 > lscore2(&ldr2)
+                            && start_score1 >= start_score2
+                        {
                             to_delete[i2] = true;
                         }
                     }
@@ -3173,8 +3339,9 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                             let ldr1 = &info[i1].0;
                             let ldr2 = &info[i2].0;
                             if full1.ends_with(&full2) || full2.ends_with(&full1) {
-                                if (ref1 && !ref2) 
-                                    || (!ref1 && !ref2 && lscore2(&ldr1) > lscore2(&ldr2)) {
+                                if (ref1 && !ref2)
+                                    || (!ref1 && !ref2 && lscore2(&ldr1) > lscore2(&ldr2))
+                                {
                                     to_delete[i2] = true;
                                 }
                             }
@@ -3208,7 +3375,6 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 // Save.
 
                 if !info.is_empty() {
-
                     // Record true positives.
 
                     let mut refs = Vec::<String>::new();
@@ -3220,9 +3386,9 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                     }
                     unique_sort(&mut refs);
                     res.5.push(format!("{}", refs.iter().format(",")));
-    
+
                     // Record upstream and bases and chain types.
-    
+
                     res.4.push(info[0].9.clone());
                     let mut bases = Vec::<Vec<u8>>::new();
                     let mut utr_tag = Vec::<Vec<u8>>::new();
@@ -3237,9 +3403,9 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         cts.push(info[m].11.clone());
                     }
                     res.7.push(cts);
-    
+
                     // Save and advance.
-    
+
                     for m in 0..info.len() {
                         log += &info[m].1;
                     }
@@ -3280,7 +3446,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
 
     // Analyze upstream.  Here we are looking for recombination signal sequences, see
     // https://en.wikipedia.org/wiki/Recombination_signal_sequences.  However, these sequences
-    // are not as conserved as the literature might suggest.  To locate them, we score using a 
+    // are not as conserved as the literature might suggest.  To locate them, we score using a
     // combination of proximity to the known sequences, and proximity to sequences similar to
     // a given one.
 
@@ -3294,7 +3460,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         for j in 0..=upstream[i].len() - TAG_LEN {
             if upstream[i][j..].starts_with(&MOTIF1.to_vec()) {
                 tag_origin.push((i, j));
-                tags.push(upstream[i][j..j+TAG_LEN].to_vec());
+                tags.push(upstream[i][j..j + TAG_LEN].to_vec());
             }
         }
     }
@@ -3309,7 +3475,7 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
     fn cmp_tags(t1: &[u8], t2: &[u8]) -> usize {
         let mut x = 0;
         for k in 0..t1.len() - 1 {
-            if t1[k] == t2[k] && t1[k+1] == t2[k+1] {
+            if t1[k] == t2[k] && t1[k + 1] == t2[k + 1] {
                 x += 1;
             }
         }
@@ -3321,14 +3487,14 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
         for j in 0..=upstream[i].len() - TAG_LEN {
             let mut score = 0;
             for k in 0..tags.len() {
-                score += cmp_tags(&upstream[i][j..j+TAG_LEN], &tags[k]);
+                score += cmp_tags(&upstream[i][j..j + TAG_LEN], &tags[k]);
             }
             if score > best_score {
                 best = j;
                 best_score = score;
             }
         }
-        tags2.push(upstream[i][best..best+TAG_LEN].to_vec());
+        tags2.push(upstream[i][best..best + TAG_LEN].to_vec());
         extra.push(upstream[i][0..best].to_vec());
         tag_origin2.push((i, best));
     }
@@ -3351,13 +3517,13 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             }
             let mut s1 = s;
             for u in 0..MOTIF2.len() {
-                if t1[MOTIF1.len()+12+u] == MOTIF2[u] {
+                if t1[MOTIF1.len() + 12 + u] == MOTIF2[u] {
                     s1 += 1;
                 }
             }
             let mut s2 = s;
             for u in 0..MOTIF2.len() {
-                if t1[MOTIF1.len()+23+u] == MOTIF2[u] {
+                if t1[MOTIF1.len() + 23 + u] == MOTIF2[u] {
                     s2 += 1;
                 }
             }
@@ -3374,7 +3540,12 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             to_delete[i] = true;
         }
         if show_tags {
-            print!("{}  {}  {}", strme(&tags2[i]), friends[i][0..10].iter().format(", "), refs[i]);
+            print!(
+                "{}  {}  {}",
+                strme(&tags2[i]),
+                friends[i][0..10].iter().format(", "),
+                refs[i]
+            );
             if !good {
                 print!(" JUNK");
             }
@@ -3445,15 +3616,21 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         fasta_count += 1;
                         let gene = format!("{}V{}", ct, count);
                         if pass == 1 {
-                            fwriteln!(fasta_log, 
+                            fwriteln!(
+                                fasta_log,
                                 ">{}|{} enclone|{}|L-REGION+V-REGION|IG|{}|None|00",
-                                fasta_count, gene, gene,
+                                fasta_count,
+                                gene,
+                                gene,
                                 strme(&gene.as_bytes()[0..3]),
                             );
                         } else {
-                            fwriteln!(fasta_log, 
+                            fwriteln!(
+                                fasta_log,
                                 ">{}|{} enclone|{}|5'UTR|IG|{}|None|00",
-                                fasta_count, gene, gene,
+                                fasta_count,
+                                gene,
+                                gene,
                                 strme(&gene.as_bytes()[0..3]),
                             );
                         }
@@ -3470,9 +3647,8 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             }
         }
     } else {
-
         // Print in other cases.
-    
+
         let mut mcount = 0;
         let mut nonsimples = 0;
         let mut unannotated = 0;
@@ -3490,9 +3666,10 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             if amb {
                 ambs += 1;
             }
-            let goods = m.matches("🔴").count() 
-                + m.matches(" MATCH").count() + m.matches(" PSEUDO").count();
-            if goods == n && !wrong && ( !annotated || !print_all ) && !amb {
+            let goods = m.matches("🔴").count()
+                + m.matches(" MATCH").count()
+                + m.matches(" PSEUDO").count();
+            if goods == n && !wrong && (!annotated || !print_all) && !amb {
                 continue;
             }
             if wrong || amb {
@@ -3517,30 +3694,30 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                 }
             }
         }
-    
+
         // Find missing genes.
-    
+
         unique_sort(&mut finds);
         println!("");
         let mut missing = 0;
         let mut found = 0;
         for x in to_ref.iter() {
             if !bin_member(&finds, &x.1) {
-    
                 // Exceptions because not seen in BI=6-12.
-    
+
                 if species == "human" {
                     if *x.1 == "251|IGKV1D-37".to_string()
                         || *x.1 == "285|IGKV3-7".to_string()
                         || *x.1 == "367|IGLV3-32".to_string()
                         || *x.1 == "382|IGLV5-48".to_string()
-                        || x.1.ends_with("IGLV11-55") {
-                         continue;
+                        || x.1.ends_with("IGLV11-55")
+                    {
+                        continue;
                     }
                 }
-    
+
                 // Mouse exceptions because not seen in BCR="1022446-1022449,1022518-1022521;77990;70838;1022418,1022419-1022421,1022434-1022437,1022506-1022509,1022490-1022493;1022426-1022428,1022442-1022445,1022498-1022501,1022514-1022516;1022414-1022417,1022430-1022433,1022502-1022505,1022486-1022489;1022422-1022425,1022438-1022441,1022494-1022497,1022510,1022512,1022513;1032106,1032107,1032110,1032111,1032098,1032099,1032102,1032103,1033023,1033024,1033027,1033028;1023684-1023691,1022722-1022729".
-    
+
                 if species == "mouse" {
                     if (*x.1).ends_with("IGHV1-62-1") {
                         continue;
@@ -3552,9 +3729,9 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         continue;
                     }
                 }
-    
+
                 // Exceptions because not in the reference.
-    
+
                 if species == "human" {
                     if *x.1 == "736|IGHV1-8".to_string() {
                         continue;
@@ -3571,26 +3748,26 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
                         continue;
                     }
                 }
-    
+
                 // Exception.  The FWR3 ends with G instead of C, but data show C.
-    
+
                 if species == "mouse" {
                     if (*x.1).ends_with("IGHV8-2") {
                         continue;
                     }
                 }
-    
+
                 // Declare missing.
-    
+
                 println!("failed to find {}", x.1);
                 missing += 1;
             } else {
                 found += 1;
             }
         }
-    
+
         // Tally start motif info.
-    
+
         if pwm {
             println!("let pwm = [");
             unique_sort(&mut start_motifs);
@@ -3615,18 +3792,18 @@ ACTACTTTGACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG unpublished      NA12878       
             }
             println!("];\n");
         }
-    
+
         // Print stats.
-    
+
         println!("total missing genes = {}", missing);
         println!("total found genes = {}", found);
         println!("total unannotated = {}", unannotated);
         println!("total nonsimples = {}", nonsimples);
         println!("total wrongs = {}", wrongs);
         println!("total ambs = {}\n", ambs);
-    
+
         // Test for regression.
-    
+
         if species == "human" {
             if missing > 0 || nonsimples > 0 || wrongs > 0 || ambs > 0 {
                 println!("REGRESSED!\n");

@@ -36,7 +36,7 @@ fn main() {
             for i in (0..x.len()).step_by(2) {
                 let chain_type = strme(&x[i]).before("V");
                 if chain_type == "IGH" {
-                    let aa = aa_seq(&x[i+1], 0);
+                    let aa = aa_seq(&x[i + 1], 0);
                     let bb;
                     if feature == "FWR1" {
                         bb = fwr1(&aa, &chain_type, false).unwrap();

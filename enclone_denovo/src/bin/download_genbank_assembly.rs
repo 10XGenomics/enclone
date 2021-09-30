@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 //
-// Download a GenBank assembly.  
+// Download a GenBank assembly.
 // usage:
 // download_genbank_assembly GCA_id.n
 // in the directory where you want the file.

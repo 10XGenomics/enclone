@@ -738,7 +738,10 @@ pub fn load_gex(
 
             // Read the top feature barcode matrix.
 
-            let top_file = format!("{}/../feature_barcode_matrix_top.bin", outs);
+            let mut top_file = format!("{}/../feature_barcode_matrix_top.bin", outs);
+            if !path_exists(&top_file) {
+                top_file = format!("{}//feature_barcode_matrix_top.bin", outs);
+            }
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.13, &top_file);
@@ -750,7 +753,10 @@ pub fn load_gex(
 
             // Read the total UMIs.
 
-            let top_file = format!("{}/../feature_barcode_matrix_top.total", outs);
+            let mut top_file = format!("{}/../feature_barcode_matrix_top.total", outs);
+            if !path_exists(&top_file) {
+                top_file = format!("{}/feature_barcode_matrix_top.total", outs);
+            }
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 let mut f = open_for_read![&top_file];
@@ -761,7 +767,10 @@ pub fn load_gex(
 
             // Read the barcode-ref-nonref UMI count file.
 
-            let brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
+            let mut brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
+            if !path_exists(&brn_file) {
+                brn_file = format!("{}//feature_barcode_matrix_top.brn", outs);
+            }
             if path_exists(&brn_file) {
                 pathlist.push(brn_file.clone());
                 let f = open_for_read![&brn_file];
@@ -778,7 +787,10 @@ pub fn load_gex(
 
             // Read the feature reference file.
 
-            let fref_file = format!("{}/../feature_reference.csv", outs);
+            let mut fref_file = format!("{}/../feature_reference.csv", outs);
+            if !path_exists(&fref_file) {
+                fref_file = format!("{}/feature_reference.csv", outs);
+            }
             if path_exists(&fref_file) {
                 pathlist.push(fref_file.clone());
                 r.21 = read_to_string(&fref_file).unwrap();

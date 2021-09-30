@@ -1,7 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 //
 // Download the mammals in the file ../genome_list, that are not already downloaded.
-// 
+//
 // Creates a binary_vec_vec file.
 //
 // This puts the file in two hardcoded locations.  Note that one is on deck, so space needs to
@@ -12,7 +12,7 @@
 use binary_vec_io::*;
 use fasta_tools::*;
 use pretty_trace::*;
-use std::fs::{File, read_dir};
+use std::fs::{read_dir, File};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
@@ -69,7 +69,7 @@ fn main() {
                     }
                     if ps.len() > 1 {
                         for j in 0..ps.len() {
-                            println!("[{}] {}", j+1, ps[j]);
+                            println!("[{}] {}", j + 1, ps[j]);
                         }
                     }
                     assert_eq!(ps.len(), 1);

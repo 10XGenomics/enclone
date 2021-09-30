@@ -3,8 +3,8 @@
 // Compute FWR3 for all IMGT mammalian reference sequences, and report out a per-chain
 // amino acid frequency table.
 
-use amino::*;
 use crate::vdj_features::*;
+use amino::*;
 use debruijn::dna_string::*;
 use fasta_tools::*;
 use std::fs::read_dir;

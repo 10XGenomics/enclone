@@ -4,8 +4,8 @@
 //
 // This process is extremely slow.  It may emit messages like this:
 //
-// 2020-11-12T14:31:01 fastq-dump.2.9.2 sys: timeout exhausted while reading file within network 
-// system module - mbedtls_ssl_read returned -76 ( NET - Reading information from the 
+// 2020-11-12T14:31:01 fastq-dump.2.9.2 sys: timeout exhausted while reading file within network
+// system module - mbedtls_ssl_read returned -76 ( NET - Reading information from the
 // socket failed )
 //
 // which appear to be harmless.
@@ -42,12 +42,14 @@ fn main() {
         for i in 0..acc.len() {
             if !bin_member(&owned, &acc[i].to_string()) {
                 println!("downloading {}", acc[i]);
-                let o = Command::new("/mnt/customer1/swops/03_SOFTWARE/\
-                    SRA/sratoolkit.2.9.2-centos_linux64/bin/fastq-dump")
-                    .arg("--fasta")
-                    .arg(&acc[i])
-                    .output()
-                    .expect("failed to execute fastq-dump");
+                let o = Command::new(
+                    "/mnt/customer1/swops/03_SOFTWARE/\
+                    SRA/sratoolkit.2.9.2-centos_linux64/bin/fastq-dump",
+                )
+                .arg("--fasta")
+                .arg(&acc[i])
+                .output()
+                .expect("failed to execute fastq-dump");
                 if o.status.code().unwrap() != 0 {
                     eprintln!("\nFAILED\n");
                     eprintln!("stderr:\n{}\n", strme(&o.stderr));
