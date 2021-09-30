@@ -2,7 +2,7 @@
 
 // Test for help request.
 
-use crate::help_utils::*;
+use crate::help_utils::HelpDesk;
 
 pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
     // Provide main help.

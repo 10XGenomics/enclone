@@ -4,12 +4,12 @@
 //
 // THIS FILTER DOESN'T PROPERLY TRACK FATE.
 
-use enclone_core::defs::*;
-use enclone_print::define_mat::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
+use enclone_print::define_mat::define_mat;
 use itertools::Itertools;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{bin_member, erase_if, next_diff, next_diff12_3, next_diff1_2, sort_sync2};
 
 pub fn delete_doublets(
     orbits: &mut Vec<Vec<i32>>,

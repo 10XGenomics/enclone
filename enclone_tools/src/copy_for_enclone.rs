@@ -3,12 +3,12 @@
 // Copy a 10x pipestance, retaining only the files used by enclone, or which might otherwise
 // be convenient to keep.
 
-use enclone_core::slurp::*;
-use io_utils::*;
+use enclone_core::slurp::slurp_h5;
+use io_utils::{dir_list, path_exists};
 use lz4::EncoderBuilder;
-use mirror_sparse_matrix::*;
+use mirror_sparse_matrix::{write_to_file, MirrorSparseMatrix};
 use std::fs::{copy, remove_file, File};
-use vector_utils::*;
+use vector_utils::VecUtils;
 
 fn copy_file(f: &str, dir1: &str, dir2: &str) {
     let x = copy(&format!("{}/{}", dir1, f), &format!("{}/{}", dir2, f));

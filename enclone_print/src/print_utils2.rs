@@ -3,21 +3,21 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::proc_cvar1::*;
-use crate::proc_cvar2::*;
-use crate::proc_lvar1::*;
-use crate::proc_lvar2::*;
-use amino::*;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use crate::proc_cvar1::proc_cvar1;
+use crate::proc_cvar2::proc_cvar2;
+use crate::proc_lvar1::proc_lvar1;
+use crate::proc_lvar2::proc_lvar2;
+use amino::{aa_seq, codon_to_aa};
+use enclone_core::allowed_vars::LVARS_ALLOWED;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::median::{median_f64, rounded_median};
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use ndarray::s;
 use std::collections::{HashMap, HashSet};
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, unique_sort};
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described
@@ -82,7 +82,7 @@ pub fn row_fill(
             if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
                 && (ctl.parseable_opt.pchains == "max"
-                    || $col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || $col < ctl.parseable_opt.pchains.force_usize())
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
@@ -123,7 +123,7 @@ pub fn row_fill(
 
     let cols = varmat[0].len();
     if ctl.gen_opt.row_fill_verbose {
-        eprintln!("");
+        eprintln!();
     }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
@@ -282,13 +282,13 @@ pub fn row_fill(
             }
         }
         count_unsorted = counts.clone();
-        counts.sort();
+        counts.sort_unstable();
         for n in counts.iter() {
             if *n < 100 {
                 *gex_low += 1;
             }
         }
-        if counts.len() > 0 {
+        if !counts.is_empty() {
             gex_median = rounded_median(&counts);
             gex_min = counts[0];
             gex_max = counts[counts.len() - 1];
@@ -299,7 +299,7 @@ pub fn row_fill(
     let entropies_unsorted = entropies.clone();
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
-    if entropies.len() > 0 {
+    if !entropies.is_empty() {
         entropy = median_f64(&entropies);
     }
 
@@ -308,7 +308,7 @@ pub fn row_fill(
     // LinearCondition::require_valid_variables.
 
     let mut all_lvars = lvars.clone();
-    if ctl.parseable_opt.pout.len() == 0 {
+    if ctl.parseable_opt.pout.is_empty() {
     } else if ctl.parseable_opt.pcols.is_empty() {
         for i in 0..LVARS_ALLOWED.len() {
             if !lvarsh.contains(&LVARS_ALLOWED[i].to_string()) {
@@ -338,28 +338,28 @@ pub fn row_fill(
         let x = &all_lvars[i];
         if !proc_lvar1(
             i,
-            &x,
+            x,
             pass,
             u,
-            &ctl,
-            &exacts,
-            &mults,
-            &exact_clonotypes,
-            &gex_info,
-            &refdata,
-            &varmat,
-            &fp,
+            ctl,
+            exacts,
+            mults,
+            exact_clonotypes,
+            gex_info,
+            refdata,
+            varmat,
+            fp,
             row,
             out_data,
             d_all,
             ind_all,
-            &rsi,
-            &dref,
-            &groups,
+            rsi,
+            dref,
+            groups,
             stats,
-            &vdj_cells,
-            &n_vdj_gex,
-            &nd_fields,
+            vdj_cells,
+            n_vdj_gex,
+            nd_fields,
             &lvars,
             &lenas,
             &alt_bcs,
@@ -374,33 +374,33 @@ pub fn row_fill(
             entropy,
             &entropies_unsorted,
             &fcounts,
-            &extra_args,
-            &fate,
+            extra_args,
+            fate,
         ) {
             let _ = proc_lvar2(
                 i,
-                &x,
+                x,
                 pass,
                 u,
-                &ctl,
-                &exacts,
-                &mults,
-                &exact_clonotypes,
-                &gex_info,
-                &refdata,
-                &varmat,
-                &fp,
+                ctl,
+                exacts,
+                mults,
+                exact_clonotypes,
+                gex_info,
+                refdata,
+                varmat,
+                fp,
                 row,
                 out_data,
                 d_all,
                 ind_all,
-                &rsi,
-                &dref,
-                &groups,
+                rsi,
+                dref,
+                groups,
                 stats,
-                &vdj_cells,
-                &n_vdj_gex,
-                &nd_fields,
+                vdj_cells,
+                n_vdj_gex,
+                nd_fields,
                 &lvars,
                 &lenas,
                 &alt_bcs,
@@ -415,8 +415,8 @@ pub fn row_fill(
                 entropy,
                 &entropies_unsorted,
                 &fcounts,
-                &extra_args,
-                &fate,
+                extra_args,
+                fate,
             );
         }
     }
@@ -508,12 +508,12 @@ pub fn row_fill(
             let mut needed = false;
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(var) {
                 needed = true;
             } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
+                && !ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || col < ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
@@ -525,7 +525,7 @@ pub fn row_fill(
                 continue;
             }
             let col_var = jj < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
 
@@ -536,36 +536,18 @@ pub fn row_fill(
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
-                let mut dname = String::new();
-                if rsi.dids[col].is_some() {
-                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
-                }
+                let dname = if rsi.dids[col].is_some() {
+                    refdata.name[rsi.dids[col].unwrap()].clone()
+                } else {
+                    String::new()
+                };
                 cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
-                let mut did = String::new();
-                if rsi.dids[col].is_some() {
-                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
-                }
-                cvar_stats1![j, var, did];
-            } else if *var == "j_name" {
-                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
-            } else if *var == "j_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
-            } else if *var == "v_name" {
-                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
-            } else if *var == "v_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
-            } else if *var == "d_name" {
-                let mut dname = String::new();
-                if rsi.dids[col].is_some() {
-                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
-                }
-                cvar_stats1![j, var, dname];
-            } else if *var == "d_id" {
-                let mut did = String::new();
-                if rsi.dids[col].is_some() {
-                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
-                }
+                let did = if rsi.dids[col].is_some() {
+                    format!("{}", refdata.id[rsi.dids[col].unwrap()])
+                } else {
+                    String::new()
+                };
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
                 cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
@@ -588,13 +570,13 @@ pub fn row_fill(
             numis.push(ex.clones[j][mid].umi_count);
             nreads.push(ex.clones[j][mid].read_count);
         }
-        numis.sort();
+        numis.sort_unstable();
         let median_numis = rounded_median(&numis);
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
         let u_min = *numis.iter().min().unwrap();
         let u_max = *numis.iter().max().unwrap();
-        nreads.sort();
+        nreads.sort_unstable();
         let rtot: usize = nreads.iter().sum();
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
         let r_min = *nreads.iter().min().unwrap();
@@ -663,12 +645,12 @@ pub fn row_fill(
                 continue;
             }
             let varc = format!("{}{}", var, col + 1);
-            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(var) {
                 needed = true;
             } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
+                && !ctl.parseable_opt.pout.is_empty()
                 && (ctl.parseable_opt.pchains == "max"
-                    || col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                    || col < ctl.parseable_opt.pchains.force_usize())
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
@@ -686,31 +668,31 @@ pub fn row_fill(
                 continue;
             }
             let col_var = jj < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
 
             // Compute.
 
             if !proc_cvar1(
-                &var,
+                var,
                 jj,
                 col,
                 mid,
                 pass,
                 u,
-                &ex,
-                &ctl,
-                &exacts,
-                &exact_clonotypes,
-                &refdata,
-                &varmat,
+                ex,
+                ctl,
+                exacts,
+                exact_clonotypes,
+                refdata,
+                varmat,
                 out_data,
-                &rsi,
-                &dref,
-                &peer_groups,
-                &show_aa,
-                &field_types,
+                rsi,
+                dref,
+                peer_groups,
+                show_aa,
+                field_types,
                 col_var,
                 &pcols_sort,
                 bads,
@@ -725,28 +707,28 @@ pub fn row_fill(
                 r_max,
                 r_mean,
                 rtot,
-                &extra_args,
+                extra_args,
                 stats,
             )? {
                 let _ = proc_cvar2(
-                    &var,
+                    var,
                     jj,
                     col,
                     mid,
                     pass,
                     u,
-                    &ex,
-                    &ctl,
-                    &exacts,
-                    &exact_clonotypes,
-                    &refdata,
-                    &varmat,
+                    ex,
+                    ctl,
+                    exacts,
+                    exact_clonotypes,
+                    refdata,
+                    varmat,
                     out_data,
-                    &rsi,
-                    &dref,
-                    &peer_groups,
-                    &show_aa,
-                    &field_types,
+                    rsi,
+                    dref,
+                    peer_groups,
+                    show_aa,
+                    field_types,
                     col_var,
                     &pcols_sort,
                     bads,
@@ -761,7 +743,7 @@ pub fn row_fill(
                     r_max,
                     r_mean,
                     rtot,
-                    &extra_args,
+                    extra_args,
                     stats,
                 );
             }

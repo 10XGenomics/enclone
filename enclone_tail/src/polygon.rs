@@ -3,10 +3,10 @@
 // Code for working with polygons.  Possibly rename to planar_objects.rs.
 
 use core::mem::swap;
-use float_ord::*;
+use float_ord::FloatOrd;
 use std::f64::consts::PI;
 use superslice::Ext;
-use vector_utils::*;
+use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
@@ -175,7 +175,7 @@ impl IntervalVec {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pretty_trace::*;
+    use pretty_trace::PrettyTrace;
     #[test]
     fn test_interval_vec() {
         PrettyTrace::new().on();

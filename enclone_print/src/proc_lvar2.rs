@@ -3,17 +3,17 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use amino::*;
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use amino::{aa_seq, codon_to_aa};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::median::rounded_median;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use regex::Regex;
 use std::cmp::{max, min};
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, next_diff};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -274,12 +274,12 @@ pub fn proc_lvar2(
             lvar_stats1![i, x, format!("{}", dist)];
         }
     } else if x == "far" {
-        let mut dist = -1 as isize;
+        let mut dist = -1_isize;
         for i2 in 0..varmat.len() {
             if i2 == u || fp[i2] != fp[u] {
                 continue;
             }
-            let mut d = 0 as isize;
+            let mut d = 0_isize;
             for c in fp[u].iter() {
                 for j in 0..varmat[u][*c].len() {
                     if varmat[u][*c][j] != varmat[i2][*c][j] {
@@ -289,7 +289,7 @@ pub fn proc_lvar2(
             }
             dist = max(dist, d);
         }
-        if dist == -1 as isize {
+        if dist == -1_isize {
             lvar_stats1![i, x, "".to_string()];
         } else {
             lvar_stats1![i, x, format!("{}", dist)];
@@ -308,7 +308,7 @@ pub fn proc_lvar2(
                 let fwr2 = ex.share[j].fr2_start.unwrap();
                 if cdr1 < fwr2 {
                     let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
         }
@@ -327,7 +327,7 @@ pub fn proc_lvar2(
                 let fwr3 = ex.share[j].fr3_start.unwrap();
                 if cdr2 < fwr3 {
                     let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
         }
@@ -344,7 +344,7 @@ pub fn proc_lvar2(
             let cdr3 = ex.share[j].cdr3_start;
             let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
-            n += reg.find_iter(&strme(&aa)).count();
+            n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr1_") || x.contains(":count_fwr1_") {
@@ -361,7 +361,7 @@ pub fn proc_lvar2(
                 let cdr1 = ex.share[j].cdr1_start.unwrap();
                 if fwr1 < cdr1 {
                     let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
         }
@@ -380,7 +380,7 @@ pub fn proc_lvar2(
                 let cdr2 = ex.share[j].cdr2_start.unwrap();
                 if fwr2 < cdr2 {
                     let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
         }
@@ -399,7 +399,7 @@ pub fn proc_lvar2(
                 let cdr3 = ex.share[j].cdr3_start;
                 if fwr3 < cdr3 {
                     let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
         }
@@ -415,7 +415,7 @@ pub fn proc_lvar2(
         for j in 0..ex.share.len() {
             let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
-            n += reg.find_iter(&strme(&aa)).count();
+            n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_cdr_") || x.contains(":count_cdr_") {
@@ -432,7 +432,7 @@ pub fn proc_lvar2(
                 let fwr2 = ex.share[j].fr2_start.unwrap();
                 if cdr1 < fwr2 {
                     let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
             if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
@@ -440,13 +440,13 @@ pub fn proc_lvar2(
                 let fwr3 = ex.share[j].fr3_start.unwrap();
                 if cdr2 < fwr3 {
                     let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
             let cdr3 = ex.share[j].cdr3_start;
             let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
-            n += reg.find_iter(&strme(&aa)).count();
+            n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr_") || x.contains(":count_fwr_") {
@@ -463,7 +463,7 @@ pub fn proc_lvar2(
                 let cdr1 = ex.share[j].cdr1_start.unwrap();
                 if fwr1 < cdr1 {
                     let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
             if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
@@ -471,7 +471,7 @@ pub fn proc_lvar2(
                 let cdr2 = ex.share[j].cdr2_start.unwrap();
                 if fwr2 < cdr2 {
                     let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
             if ex.share[j].fr3_start.is_some() {
@@ -479,12 +479,12 @@ pub fn proc_lvar2(
                 let cdr3 = ex.share[j].cdr3_start;
                 if fwr3 < cdr3 {
                     let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
-                    n += reg.find_iter(&strme(&aa)).count();
+                    n += reg.find_iter(strme(&aa)).count();
                 }
             }
             let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
-            n += reg.find_iter(&strme(&aa)).count();
+            n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_") || x.contains(":count_") {
@@ -497,7 +497,7 @@ pub fn proc_lvar2(
         let mut n = 0;
         for j in 0..ex.share.len() {
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
-            n += reg.find_iter(&strme(&aa)).count();
+            n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("fb")
@@ -509,11 +509,12 @@ pub fn proc_lvar2(
         let ncols = gex_info.fb_top_matrices[0].ncols();
         if !x.ends_with("_n") {
             let n = x.after("fb").force_usize() - 1;
-            let mut fb = String::new();
-            if n < ncols {
-                fb = gex_info.fb_top_matrices[0].col_label(n).clone();
-            }
-            lvar![i, x, fb.clone()];
+            let fb = if n < ncols {
+                gex_info.fb_top_matrices[0].col_label(n)
+            } else {
+                String::new()
+            };
+            lvar![i, x, (*fb).to_string()];
         } else {
             let n = x.after("fb").rev_before("_n").force_usize() - 1;
             if n >= ncols {
@@ -533,7 +534,7 @@ pub fn proc_lvar2(
                         counts_sorted.push(x);
                     }
                 }
-                counts_sorted.sort();
+                counts_sorted.sort_unstable();
                 let median = rounded_median(&counts_sorted);
                 lvar_stats![i, x, format!("{}", median), counts];
             }
@@ -652,7 +653,7 @@ pub fn proc_lvar2(
             let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
             for s in suffixes.iter() {
                 if y.ends_with(s) {
-                    y = y.rev_before(&s).to_string();
+                    y = y.rev_before(s).to_string();
                     break;
                 }
             }
@@ -665,32 +666,30 @@ pub fn proc_lvar2(
             if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
                 ux = ctl.clono_print_opt.regex_match[li][&y].clone();
             }
-            if ux.len() > 0 {
+            if !ux.is_empty() {
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
                     computed = true;
                     let mut raw_count = 0.0;
                     for fid in ux.iter() {
                         let raw_counti = get_gex_matrix_entry(
-                            &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize, &y,
+                            ctl, gex_info, *fid, d_all, ind_all, li, l, p as usize, &y,
                         );
                         raw_count += raw_counti;
                     }
                     counts_sub.push(raw_count.round() as usize);
                     fcounts_sub.push(raw_count);
                 }
-            } else {
-                if gex_info.feature_id[li].contains_key(&y) {
-                    computed = true;
-                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                    if p >= 0 {
-                        let fid = gex_info.feature_id[li][&y];
-                        let raw_count = get_gex_matrix_entry(
-                            &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
-                        );
-                        counts_sub.push(raw_count.round() as usize);
-                        fcounts_sub.push(raw_count);
-                    }
+            } else if gex_info.feature_id[li].contains_key(&y) {
+                computed = true;
+                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                if p >= 0 {
+                    let fid = gex_info.feature_id[li][&y];
+                    let raw_count = get_gex_matrix_entry(
+                        ctl, gex_info, fid, d_all, ind_all, li, l, p as usize, &y,
+                    );
+                    counts_sub.push(raw_count.round() as usize);
+                    fcounts_sub.push(raw_count);
                 }
             }
         }
@@ -713,7 +712,7 @@ pub fn proc_lvar2(
                 stats.push((x.clone(), f));
             }
             let mut counts_sub_sorted = counts_sub.clone();
-            counts_sub_sorted.sort();
+            counts_sub_sorted.sort_unstable();
             let sum = fcounts_sub.iter().sum::<f64>();
             let mean = sum / counts_sub.len() as f64;
 
@@ -731,28 +730,26 @@ pub fn proc_lvar2(
                     let val = format!("{}", counts_sub.iter().format(POUT_SEP));
                     speak!(u, x, val);
                 }
+            } else if y0.ends_with("_min") {
+                lvar![i, x, format!("{}", counts_sub_sorted[0])];
+            } else if y0.ends_with("_max") {
+                lvar![i, x, format!("{}", counts_sub_sorted[counts_sub.len() - 1])];
+            } else if y0.ends_with("_μ") {
+                lvar![i, x, format!("{}", mean.round())];
+            } else if y0.ends_with("_Σ") {
+                lvar![i, x, format!("{}", sum.round())];
+            } else if y0.ends_with("_%") {
+                lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
             } else {
-                if y0.ends_with("_min") {
-                    lvar![i, x, format!("{}", counts_sub_sorted[0])];
-                } else if y0.ends_with("_max") {
-                    lvar![i, x, format!("{}", counts_sub_sorted[counts_sub.len() - 1])];
-                } else if y0.ends_with("_μ") {
-                    lvar![i, x, format!("{}", mean.round())];
-                } else if y0.ends_with("_Σ") {
-                    lvar![i, x, format!("{}", sum.round())];
-                } else if y0.ends_with("_%") {
-                    lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
-                } else {
-                    let mut median = 0;
-                    if counts_sub_sorted.len() > 0 {
-                        median = rounded_median(&counts_sub_sorted);
-                    }
-                    lvar![i, x, format!("{}", median)];
+                let mut median = 0;
+                if !counts_sub_sorted.is_empty() {
+                    median = rounded_median(&counts_sub_sorted);
                 }
+                lvar![i, x, format!("{}", median)];
             }
         } else if i < lvars.len() {
             lvar_stats1![i, x, "".to_string()];
         }
     }
-    return true;
+    true
 }

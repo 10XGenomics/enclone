@@ -2,8 +2,8 @@
 //
 // Test for help request, under development.
 
-use crate::help_utils::*;
-use tables::*;
+use crate::help_utils::{gray_left_bar, print_to, HelpDesk};
+use tables::print_tabular_vbox;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

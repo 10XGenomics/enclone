@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use vector_utils::*;
+use vector_utils::bin_position1_2;
 
 // Estimate the width in pixels of an Arial string at a given font size.
 // This uses a hardcoded table of widths of Arial 1000 point characters.  The table

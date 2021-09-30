@@ -14,11 +14,11 @@
 // This code is inefficient because for every dataset, it searches the entirety of tig_bc, but
 // it doesn't matter much because not much time is spent here.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, TigData};
 use rayon::prelude::*;
-use stats_utils::*;
+use stats_utils::binomial_sum;
 use std::time::Instant;
-use vector_utils::*;
+use vector_utils::{bin_member, bin_position, reverse_sort};
 
 pub fn test_vdj_gex_inconsistent(
     ctl: &EncloneControl,

@@ -4,19 +4,19 @@
 //
 // If supplied the single argument BUILD, also rebuild from source.
 
+use enclone_core::parse_bsv;
 use enclone_core::testlist::SITE_EXAMPLES;
-use enclone_core::*;
-use enclone_tools::html::*;
-use io_utils::*;
+use enclone_tools::html::{edit_html, insert_html};
+use io_utils::{fwrite, open_for_read, open_for_write_new};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 use std::env;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::{bin_member, unique_sort};
 
 fn main() {
     PrettyTrace::new().on();

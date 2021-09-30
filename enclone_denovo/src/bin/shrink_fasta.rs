@@ -5,13 +5,13 @@
 //
 // Usage shrink_fasta in-file out-file
 
-use fasta_tools::*;
-use io_utils::*;
-use pretty_trace::*;
+use fasta_tools::read_fasta_to_vec_vec_u8;
+use io_utils::{fwrite, fwriteln, open_for_write_new};
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use string_utils::*;
+use string_utils::strme;
 
 fn main() {
     PrettyTrace::new().on();

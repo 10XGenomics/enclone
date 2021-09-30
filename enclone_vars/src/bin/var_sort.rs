@@ -2,8 +2,8 @@
 
 // Sort and replace the vars file.
 
-use enclone_vars::*;
-use pretty_trace::*;
+use enclone_vars::sort_vars;
+use pretty_trace::PrettyTrace;
 use std::io::Write;
 
 fn main() {

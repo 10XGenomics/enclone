@@ -2,9 +2,9 @@
 
 // This file contains the two functions proc_xcr and proc_meta.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{EncloneControl, OriginInfo};
 use enclone_core::fetch_url;
-use io_utils::*;
+use io_utils::{open_userfile_for_read, path_exists};
 use itertools::Itertools;
 use rayon::prelude::*;
 use std::collections::HashMap;
@@ -15,9 +15,9 @@ use std::sync::Arc;
 use std::thread;
 use std::time;
 use std::time::Instant;
-use string_utils::*;
-use tilde_expand::*;
-use vector_utils::*;
+use string_utils::{stringme, TextUtils};
+use tilde_expand::tilde_expand;
+use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -620,10 +620,7 @@ pub fn proc_xcr(
     // multithreading.
 
     let t = Instant::now();
-    let mut source = f.clone();
-    if f.contains('=') {
-        source = f.before("=");
-    }
+    let source = if f.contains('=') { f.before("=") } else { f };
     let mut results = Vec::<(String, String, bool, String)>::new();
     for (id, d) in donor_groups.iter().enumerate() {
         let origin_groups = (*d).split(':').collect::<Vec<&str>>();

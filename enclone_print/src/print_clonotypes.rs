@@ -5,29 +5,29 @@
 //
 // Problem: stack traces from this file consistently do not go back to the main program.
 
-use crate::define_mat::*;
-use crate::filter::*;
-use crate::finish_table::*;
-use crate::gene_scan::*;
-use crate::loupe::*;
-use crate::print_utils1::*;
-use crate::print_utils2::*;
-use crate::print_utils3::*;
-use crate::print_utils4::*;
-use crate::print_utils5::*;
+use crate::define_mat::define_mat;
+use crate::filter::survives_filter;
+use crate::finish_table::finish_table;
+use crate::gene_scan::gene_scan_test;
+use crate::loupe::{loupe_out, make_loupe_clonotype};
+use crate::print_utils1::{compute_field_types, extra_args, start_gen};
+use crate::print_utils2::row_fill;
+use crate::print_utils3::{define_column_info, get_extra_parseables, process_complete};
+use crate::print_utils4::{build_show_aa, compute_bu, compute_some_stats};
+use crate::print_utils5::{delete_weaks, vars_and_shares};
 use enclone_args::proc_args_check::involves_gex_fb;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_core::mammalian_fixed_len::*;
-use enclone_core::set_speakers::*;
-use enclone_proto::types::*;
+use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL, LVARS_ALLOWED};
+use enclone_core::defs::{CloneInfo, ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
+use enclone_core::set_speakers::set_speakers;
+use enclone_proto::types::{Clonotype, DonorReferenceItem};
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, erase_if, next_diff12_3, unique_sort};
 
 // Print clonotypes.  A key challenge here is to define the columns that represent shared
 // chains.  This is given below by the code that forms an equivalence relation on the CDR3_AAs.
@@ -71,14 +71,14 @@ pub fn print_clonotypes(
 
     // Compute extra args.
 
-    let extra_args = extra_args(&ctl);
+    let extra_args = extra_args(ctl);
 
     // Determine if any lvars need gex info.
 
     let mut need_gex = false;
     {
         let mut all_lvars = lvars.clone();
-        if ctl.parseable_opt.pout.len() == 0 {
+        if ctl.parseable_opt.pout.is_empty() {
         } else if ctl.parseable_opt.pcols.is_empty() {
             for i in 0..LVARS_ALLOWED.len() {
                 all_lvars.push(LVARS_ALLOWED[i].to_string());
@@ -106,12 +106,12 @@ pub fn print_clonotypes(
     for i in 0..rsi.len() {
         max_chains = max(max_chains, rsi[i].mat.len());
     }
-    set_speakers(&ctl, &mut parseable_fields, max_chains);
+    set_speakers(ctl, &mut parseable_fields, max_chains);
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
 
     // Identify certain extra parseable variables.  These arise from parameterizable cvars.
 
-    let extra_parseables = get_extra_parseables(&ctl, &pcols_sort);
+    let mut extra_parseables = get_extra_parseables(ctl, pcols_sort);
 
     // Compute all_vars.
 
@@ -129,9 +129,9 @@ pub fn print_clonotypes(
             all_vars.push(var.to_string());
         }
     }
-    all_vars.append(&mut extra_parseables.clone());
+    all_vars.append(&mut extra_parseables);
     for x in extra_args.iter() {
-        if !rsi_vars.contains(&x) {
+        if !rsi_vars.contains(x) {
             all_vars.push(x.clone());
         }
     }
@@ -147,7 +147,7 @@ pub fn print_clonotypes(
 
     let mut have_gex = false;
     for i in 0..ctl.origin_info.gex_path.len() {
-        if ctl.origin_info.gex_path[i].len() > 0 {
+        if !ctl.origin_info.gex_path[i].is_empty() {
             have_gex = true;
         }
     }
@@ -168,7 +168,7 @@ pub fn print_clonotypes(
     for li in 0..ctl.origin_info.n() {
         let mut n = 0;
         for y in gex_info.pca[li].iter() {
-            if bin_member(&vdj_cells[li], &y.0) {
+            if bin_member(&vdj_cells[li], y.0) {
                 n += 1;
             }
         }
@@ -177,7 +177,7 @@ pub fn print_clonotypes(
 
     // Compute peer groups.
 
-    let peer_groups = mammalian_fixed_len_peer_groups(&refdata);
+    let peer_groups = mammalian_fixed_len_peer_groups(refdata);
 
     // Traverse the orbits.
 
@@ -244,7 +244,7 @@ pub fn print_clonotypes(
         let loupe_clonotypes = &mut res.6;
         while j < od.len() {
             let k = next_diff12_3(&od, j as i32) as usize;
-            let mut mult = 0 as usize;
+            let mut mult = 0_usize;
             for l in j..k {
                 let x: &CloneInfo = &info[od[l].2 as usize];
                 let m = x.clonotype_index;
@@ -271,14 +271,14 @@ pub fn print_clonotypes(
 
             let mat = define_mat(
                 is_bcr,
-                &to_bc,
-                &sr,
-                &ctl,
-                &exact_clonotypes,
+                to_bc,
+                sr,
+                ctl,
+                exact_clonotypes,
                 &exacts,
                 &od,
-                &info,
-                &raw_joins,
+                info,
+                raw_joins,
             );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
@@ -315,17 +315,17 @@ pub fn print_clonotypes(
             let nexacts = exacts.len();
             let mat = define_mat(
                 is_bcr,
-                &to_bc,
-                &sr,
-                &ctl,
-                &exact_clonotypes,
+                to_bc,
+                sr,
+                ctl,
+                exact_clonotypes,
                 &exacts,
                 &od,
-                &info,
-                &raw_joins,
+                info,
+                raw_joins,
             );
             let cols = mat.len();
-            let mut rsi = define_column_info(&ctl, &exacts, &exact_clonotypes, &mat, &refdata);
+            let mut rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);
             rsi.mat = mat;
             let mat = &rsi.mat;
 
@@ -340,11 +340,11 @@ pub fn print_clonotypes(
                 && !survives_filter(
                     &exacts,
                     &rsi,
-                    &ctl,
-                    &exact_clonotypes,
-                    &refdata,
-                    &gex_info,
-                    &dref,
+                    ctl,
+                    exact_clonotypes,
+                    refdata,
+                    gex_info,
+                    dref,
                 )
             {
                 if ctl.clono_group_opt.asymmetric_center == "from_filters" {
@@ -356,13 +356,13 @@ pub fn print_clonotypes(
 
             // Generate Loupe data.
 
-            if (ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0) && pass == 2 {
+            if (!ctl.gen_opt.binary.is_empty() || !ctl.gen_opt.proto.is_empty()) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
-                    &exact_clonotypes,
+                    exact_clonotypes,
                     &exacts,
                     &rsi,
-                    &refdata,
-                    &dref,
+                    refdata,
+                    dref,
                 ));
             }
 
@@ -384,9 +384,9 @@ pub fn print_clonotypes(
 
                 if pass == 2 {
                     start_gen(
-                        &ctl,
+                        ctl,
                         &exacts,
-                        &exact_clonotypes,
+                        exact_clonotypes,
                         &mut out_data,
                         &mut mlog,
                         &extra_args,
@@ -400,12 +400,12 @@ pub fn print_clonotypes(
                 let mut shares_amino = Vec::<Vec<usize>>::new();
                 vars_and_shares(
                     pass,
-                    &ctl,
+                    ctl,
                     &exacts,
-                    &exact_clonotypes,
+                    exact_clonotypes,
                     &rsi,
-                    &refdata,
-                    &dref,
+                    refdata,
+                    dref,
                     &mut vars,
                     &mut vars_amino,
                     &mut shares_amino,
@@ -416,12 +416,12 @@ pub fn print_clonotypes(
 
                 if pass == 1 {
                     delete_weaks(
-                        &ctl,
+                        ctl,
                         &exacts,
-                        &exact_clonotypes,
+                        exact_clonotypes,
                         total_cells,
-                        &mat,
-                        &refdata,
+                        mat,
+                        refdata,
                         &vars,
                         &mut bads,
                         &mut res.11,
@@ -430,26 +430,26 @@ pub fn print_clonotypes(
 
                 // Done unless on second pass.  Unless there are bounds or COMPLETE specified.
 
-                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 && !ctl.gen_opt.complete {
+                if pass == 1 && ctl.clono_filt_opt.bounds.is_empty() && !ctl.gen_opt.complete {
                     continue;
                 }
 
                 // Define amino acid positions to show.
 
                 let show_aa = build_show_aa(
-                    &ctl,
+                    ctl,
                     &rsi,
                     &vars_amino,
                     &shares_amino,
-                    &refdata,
-                    &dref,
+                    refdata,
+                    dref,
                     &exacts,
-                    &exact_clonotypes,
+                    exact_clonotypes,
                 );
 
                 // Define field types corresponding to the amino acid positions to show.
 
-                let field_types = compute_field_types(&ctl, &rsi, &show_aa);
+                let field_types = compute_field_types(ctl, &rsi, &show_aa);
 
                 // Build varmat.
 
@@ -482,7 +482,7 @@ pub fn print_clonotypes(
                             lvarsc.push(lvars[m].clone());
                         }
                         let k = x.after("nd").force_usize();
-                        let mut n = vec![0 as usize; ctl.origin_info.n()];
+                        let mut n = vec![0_usize; ctl.origin_info.n()];
                         for u in 0..nexacts {
                             let ex = &exact_clonotypes[exacts[u]];
                             for l in 0..ex.ncells() {
@@ -591,12 +591,12 @@ pub fn print_clonotypes(
                 let mut ppe = Vec::<Vec<String>>::new();
                 let mut npe = Vec::<Vec<String>>::new();
                 compute_some_stats(
-                    &ctl,
+                    ctl,
                     &lvars,
                     &exacts,
-                    &exact_clonotypes,
-                    &gex_info,
-                    &vdj_cells,
+                    exact_clonotypes,
+                    gex_info,
+                    vdj_cells,
                     &n_vdj_gex,
                     &mut cred,
                     &mut pe,
@@ -634,12 +634,12 @@ pub fn print_clonotypes(
                     let resx = row_fill(
                         pass,
                         u,
-                        &ctl,
+                        ctl,
                         &exacts,
                         &mults,
-                        &exact_clonotypes,
-                        &gex_info,
-                        &refdata,
+                        exact_clonotypes,
+                        gex_info,
+                        refdata,
                         &varmat,
                         &fp,
                         &vars_amino,
@@ -653,13 +653,13 @@ pub fn print_clonotypes(
                         &mut d_all,
                         &mut ind_all,
                         &rsi,
-                        &dref,
+                        dref,
                         &groups,
-                        &d_readers,
-                        &ind_readers,
-                        &h5_data,
+                        d_readers,
+                        ind_readers,
+                        h5_data,
                         &mut these_stats,
-                        &vdj_cells,
+                        vdj_cells,
                         &n_vdj_gex,
                         &lvars,
                         &lvarsh,
@@ -668,7 +668,7 @@ pub fn print_clonotypes(
                         &extra_args,
                         &all_vars,
                         need_gex,
-                        &fate,
+                        fate,
                     );
                     stats.append(&mut these_stats.clone());
                     these_stats.sort_by(|a, b| a.0.cmp(&b.0));
@@ -706,18 +706,18 @@ pub fn print_clonotypes(
                         cell_count,
                         &exacts,
                         &lvars,
-                        &ctl,
+                        ctl,
                         &bli,
-                        &ex,
-                        &exact_clonotypes,
+                        ex,
+                        exact_clonotypes,
                         &mut row,
                         &mut subrows,
                         &varmat,
                         have_gex,
-                        &gex_info,
+                        gex_info,
                         &rsi,
                         &mut sr,
-                        &fate,
+                        fate,
                         &nd_fields,
                         &alt_bcs,
                         &cred,
@@ -726,7 +726,7 @@ pub fn print_clonotypes(
                         &npe,
                         &d_all,
                         &ind_all,
-                        &mat,
+                        mat,
                         &these_stats,
                     );
                     cell_count += ex.clones.len();
@@ -789,9 +789,9 @@ pub fn print_clonotypes(
                                 break;
                             }
                         }
-                        let mut min = 1000_000_000.0_f64;
+                        let mut min = 1_000_000_000.0_f64;
                         let mut mean = 0.0;
-                        let mut max = -1000_000_000.0_f64;
+                        let mut max = -1_000_000_000.0_f64;
                         let mut count = 0;
                         for j in 0..vals.len() {
                             if !vals[j].is_nan() {
@@ -842,7 +842,7 @@ pub fn print_clonotypes(
 
                 // Process COMPLETE.
 
-                process_complete(&ctl, nexacts, &mut bads, &mat);
+                process_complete(ctl, nexacts, &mut bads, mat);
 
                 // Done unless on second pass.
 
@@ -853,7 +853,7 @@ pub fn print_clonotypes(
                 // See if we're in the test and control sets for gene scan.
 
                 gene_scan_test(
-                    &ctl,
+                    ctl,
                     &stats,
                     &stats_orig,
                     nexacts,
@@ -867,23 +867,23 @@ pub fn print_clonotypes(
                 let mut logz = String::new();
                 finish_table(
                     n,
-                    &ctl,
+                    ctl,
                     &exacts,
-                    &exact_clonotypes,
+                    exact_clonotypes,
                     &rsi,
                     &vars,
                     &show_aa,
                     &field_types,
                     &lvars,
-                    &refdata,
-                    &dref,
+                    refdata,
+                    dref,
                     &peer_groups,
                     &mut mlog,
                     &mut logz,
                     &stats,
                     &mut sr,
                     &extra_args,
-                    &pcols_sort,
+                    pcols_sort,
                     &mut out_data,
                     &rord,
                     pass,
@@ -904,7 +904,7 @@ pub fn print_clonotypes(
         }
     });
     for i in 0..results.len() {
-        if results[i].13.len() > 0 {
+        if !results[i].13.is_empty() {
             return Err(results[i].13.clone());
         }
     }
@@ -925,7 +925,7 @@ pub fn print_clonotypes(
     for i in 0..results.len() {
         all_loupe_clonotypes.append(&mut results[i].6);
     }
-    loupe_out(&ctl, all_loupe_clonotypes, &refdata, &dref);
+    loupe_out(ctl, all_loupe_clonotypes, refdata, dref);
 
     // Set up to group and print clonotypes.
 

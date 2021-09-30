@@ -3,11 +3,11 @@
 // Based on the number of cells in each column, decide which exact subclonotypes
 // look like junk.  Preliminary heuristic.
 
-use enclone_core::defs::*;
-use enclone_print::define_mat::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
+use enclone_print::define_mat::define_mat;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{erase_if, next_diff12_3};
 
 pub fn weak_chains(
     orbits: &mut Vec<Vec<i32>>,

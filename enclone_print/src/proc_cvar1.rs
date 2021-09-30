@@ -2,20 +2,20 @@
 
 // This file contains the single function proc_cvar.
 
-use crate::print_utils1::*;
-use amino::*;
-use bio_edit::alignment::pairwise::*;
+use crate::print_utils1::{cdr3_aa_con, color_codon};
+use amino::{aa_seq, codon_to_aa};
+use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
-use enclone_core::align_to_vdj_ref::*;
-use enclone_core::defs::*;
-use enclone_core::opt_d::*;
-use enclone_proto::types::*;
-use itertools::*;
-use stats_utils::*;
+use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_core::opt_d::opt_d;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
+use stats_utils::percent_ratio;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, next_diff, sort_sync2};
 
 pub fn proc_cvar1(
     var: &String,
@@ -61,7 +61,7 @@ pub fn proc_cvar1(
             if pass == 2
                 && ((ctl.parseable_opt.pout.len() > 0
                     && (ctl.parseable_opt.pchains == "max"
-                        || $col + 1 <= ctl.parseable_opt.pchains.force_usize()))
+                        || col < ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
                 let mut v = $var.clone();
@@ -148,7 +148,7 @@ pub fn proc_cvar1(
             } else {
                 let x = &peer_groups[rsi.vids[col]];
                 let last = k == show_aa[col].len() - 1;
-                let log = color_codon(&ctl, &seq_amino, &x, p, &mut last_color, last);
+                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last);
                 cx[col][j] += strme(&log);
             }
         }
@@ -163,14 +163,14 @@ pub fn proc_cvar1(
         let td = &ex.share[mid];
         let tig = &td.seq;
         let ops = align_to_vdj_ref(
-            &tig,
+            tig,
             &vref,
             &dref,
             &d2ref,
             &jref,
             "", // drefname
             ex.share[mid].left,
-            &ctl,
+            ctl,
         )
         .0;
         let c = cigar(&ops, 0, tig.len(), tig.len());
@@ -222,7 +222,7 @@ pub fn proc_cvar1(
 
             // Align the V..J sequence on the contig to the reference concatenation.
 
-            let al = aligner.semiglobal(&tig, &concat);
+            let al = aligner.semiglobal(tig, &concat);
             let mut m = 0;
             let mut pos = al.xstart;
             let mut rpos = (al.ystart as isize) - (vref.len() as isize);
@@ -282,13 +282,13 @@ pub fn proc_cvar1(
         }
         sort_sync2(&mut counts, &mut ds);
         let mut comp = 0;
-        if counts.len() > 0 {
+        if !counts.is_empty() {
             comp = counts[0];
         }
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
         } else {
-            cvar_stats1![j, var, format!("{}", edit)];
+            cvar_stats1![j, var, edit];
         }
     } else if *var == "d1_name"
         || *var == "d2_name"
@@ -303,19 +303,9 @@ pub fn proc_cvar1(
         }
         let mut scores = Vec::<f64>::new();
         let mut ds = Vec::<Vec<usize>>::new();
-        opt_d(
-            &ex,
-            col,
-            u,
-            &rsi,
-            &refdata,
-            &dref,
-            &mut scores,
-            &mut ds,
-            &ctl,
-        );
+        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
         let mut opt = Vec::new();
-        if ds.len() > 0 {
+        if !ds.is_empty() {
             opt = ds[0].clone();
         }
         let mut opt2 = Vec::new();
@@ -350,7 +340,7 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, opt2_name];
         } else if *var == "d#" {
             let mut score = 0.0;
-            if scores.len() > 0 {
+            if !scores.is_empty() {
                 score = scores[0];
             }
             cvar_stats1![j, var, format!("{:.1}", score)];
@@ -377,11 +367,9 @@ pub fn proc_cvar1(
         if var.ends_with("_ext") {
             left = var.between("aa_", "_").force_i64() * 3;
             right = var.after("aa_").between("_", "_").force_i64() * 3;
-        } else if var.ends_with("_north") {
-            if ex.share[mid].left {
-                left = 3 * 3;
-                right = 3 * 3;
-            }
+        } else if var.ends_with("_north") && ex.share[mid].left {
+            left = 3 * 3;
+            right = 3 * 3;
         }
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -597,9 +585,9 @@ pub fn proc_cvar1(
     } else if *var == "cdr3_aa_conx".to_string() || *var == "cdr3_aa_conp".to_string() {
         let c;
         if *var == "cdr3_aa_conx" {
-            c = cdr3_aa_con("x", col, &exacts, &exact_clonotypes, &rsi);
+            c = cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi);
         } else {
-            c = cdr3_aa_con("p", col, &exacts, &exact_clonotypes, &rsi);
+            c = cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi);
         }
         cvar_stats1![j, var, c];
     } else if *var == "fwr1_dna" || *var == "fwr1_aa" || *var == "fwr1_len" {
@@ -786,7 +774,7 @@ pub fn proc_cvar1(
         let dna = &x.seq_del_amino[start..stop];
         let y;
         if *var == "fwr4_dna".to_string() {
-            y = stringme(&dna);
+            y = stringme(dna);
         } else if *var == "fwr4_aa".to_string() {
             y = stringme(&aa_seq(&dna.to_vec(), 0));
         } else {

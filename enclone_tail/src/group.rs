@@ -5,26 +5,31 @@
 //
 // To keep compilation time down, this crate should not reach into the enclone crate.
 
-use crate::align_n::*;
-use crate::clustal::*;
-use crate::fasta::*;
-use crate::phylip::*;
-use crate::plot::*;
-use crate::plot_points::*;
-use crate::print_stats::*;
-use crate::requirements::*;
-use crate::sim_mat_plot::*;
-use crate::tree::*;
-use ansi_escape::ansi_to_html::*;
-use ansi_escape::*;
-use enclone_core::combine_group_pics::*;
-use enclone_core::defs::*;
-use enclone_core::mammalian_fixed_len::*;
-use enclone_core::print_tools::*;
-use enclone_core::set_speakers::*;
-use enclone_proto::types::*;
-use io_utils::*;
-use itertools::*;
+use crate::align_n::align_n;
+use crate::clustal::print_clustal;
+use crate::fasta::generate_fasta;
+use crate::phylip::print_phylip;
+use crate::plot::plot_clonotypes;
+use crate::plot_points::plot_points;
+use crate::print_stats::print_stats;
+use crate::requirements::test_requirements;
+use crate::sim_mat_plot::sim_mat_plot;
+use crate::tree::print_tree;
+use ansi_escape::ansi_to_html::{
+    compress_ansi_escapes, convert_text_with_ansi_escapes_to_html,
+    convert_text_with_ansi_escapes_to_svg,
+};
+use ansi_escape::{emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape};
+use enclone_core::combine_group_pics::combine_group_pics;
+use enclone_core::defs::{
+    justification, ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP,
+};
+use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
+use enclone_core::print_tools::font_face_in_css;
+use enclone_core::set_speakers::set_speakers;
+use enclone_proto::types::DonorReferenceItem;
+use io_utils::{fwrite, fwriteln, open_for_write_new};
+use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
@@ -33,11 +38,11 @@ use std::io::stdout;
 use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::time::Instant;
-use string_utils::*;
-use tables::*;
+use string_utils::{stringme, strme, TextUtils};
+use tables::print_tabular;
 use tar::Builder;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use vdj_ann::refx::RefData;
+use vector_utils::{next_diff1_3, unique_sort};
 
 pub fn group_and_print_clonotypes(
     tall: &Instant,

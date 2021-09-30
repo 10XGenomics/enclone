@@ -6,10 +6,10 @@
 // in the directory where you want the file.
 // Creates GCA_id.n.fasta.gz.
 
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::process::Command;
-use string_utils::*;
+use string_utils::TextUtils;
 
 fn main() {
     PrettyTrace::new().on();

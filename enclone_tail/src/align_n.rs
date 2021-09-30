@@ -2,20 +2,20 @@
 //
 // Parallelized precompute for ALIGN<n> and JALIGN<n>.
 
-use align_tools::*;
-use amino::*;
-use ansi_escape::*;
-use enclone_core::align_to_vdj_ref::*;
-use enclone_core::defs::*;
-use enclone_core::opt_d::*;
-use enclone_proto::types::*;
-use io_utils::*;
+use align_tools::vis_align;
+use amino::codon_to_aa;
+use ansi_escape::{emit_end_escape, print_color};
+use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_core::opt_d::{jflank, opt_d, vflank};
+use enclone_proto::types::DonorReferenceItem;
+use io_utils::fwrite;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{stringme, strme};
+use vdj_ann::refx::RefData;
+use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -80,7 +80,7 @@ fn print_vis_align(
         vdj = stringme(&vdj_bytes);
         for (i, line) in vis.lines().enumerate() {
             if i % 4 != 2 {
-                vis_new += line.clone();
+                vis_new += line;
                 vis_new += "\n";
             } else {
                 let mut log = Vec::<u8>::new();

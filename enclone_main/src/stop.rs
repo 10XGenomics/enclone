@@ -1,18 +1,18 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::main_enclone::*;
-use crate::opt_d_val::*;
-use crate::subset::*;
-use enclone_core::defs::*;
-use enclone_print::print_clonotypes::*;
+use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
+use crate::opt_d_val::make_opt_d_val;
+use crate::subset::subset_json;
+use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype, WALLCLOCK};
+use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
-use enclone_tail::grouper::*;
+use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
-use io_utils::*;
-use perf_stats::*;
-use pretty_trace::*;
+use io_utils::{dir_list, open_for_read, path_exists};
+use perf_stats::{elapsed, peak_mem_usage_gb};
+use pretty_trace::stop_profiling;
 use rayon::prelude::*;
-use stats_utils::*;
+use stats_utils::percent_ratio;
 use std::{
     collections::HashMap,
     env,
@@ -21,7 +21,7 @@ use std::{
     thread, time,
     time::Instant,
 };
-use string_utils::*;
+use string_utils::TextUtils;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -307,14 +307,13 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
-        for line in f.lines() {
+        if let Some(line) = f.lines().next() {
             let s = line.unwrap();
             let mut t = s.after("cpu");
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
             cpu_all_stop = t.before(" ").force_usize();
-            break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {

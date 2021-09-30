@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::*;
-use amino::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
+use crate::print_utils1::get_gex_matrix_entry;
+use amino::codon_to_aa;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, bin_position, bin_position1_2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -36,24 +36,22 @@ pub fn build_show_aa(
                 }
             }
         }
-        if ctl.clono_print_opt.amino.contains(&"cdr1".to_string()) {
-            if rsi.cdr1_starts[cx].is_some()
-                && rsi.fr2_starts[cx].is_some()
-                && rsi.cdr1_starts[cx].unwrap() <= rsi.fr2_starts[cx].unwrap()
-            {
-                for j in (rsi.cdr1_starts[cx].unwrap()..rsi.fr2_starts[cx].unwrap()).step_by(3) {
-                    show_aa[cx].push(j / 3);
-                }
+        if ctl.clono_print_opt.amino.contains(&"cdr1".to_string())
+            && rsi.cdr1_starts[cx].is_some()
+            && rsi.fr2_starts[cx].is_some()
+            && rsi.cdr1_starts[cx].unwrap() <= rsi.fr2_starts[cx].unwrap()
+        {
+            for j in (rsi.cdr1_starts[cx].unwrap()..rsi.fr2_starts[cx].unwrap()).step_by(3) {
+                show_aa[cx].push(j / 3);
             }
         }
-        if ctl.clono_print_opt.amino.contains(&"cdr2".to_string()) {
-            if rsi.cdr2_starts[cx].is_some()
-                && rsi.fr3_starts[cx].is_some()
-                && rsi.cdr2_starts[cx].unwrap() <= rsi.fr3_starts[cx].unwrap()
-            {
-                for j in (rsi.cdr2_starts[cx].unwrap()..rsi.fr3_starts[cx].unwrap()).step_by(3) {
-                    show_aa[cx].push(j / 3);
-                }
+        if ctl.clono_print_opt.amino.contains(&"cdr2".to_string())
+            && rsi.cdr2_starts[cx].is_some()
+            && rsi.fr3_starts[cx].is_some()
+            && rsi.cdr2_starts[cx].unwrap() <= rsi.fr3_starts[cx].unwrap()
+        {
+            for j in (rsi.cdr2_starts[cx].unwrap()..rsi.fr3_starts[cx].unwrap()).step_by(3) {
+                show_aa[cx].push(j / 3);
             }
         }
         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
@@ -62,28 +60,29 @@ pub fn build_show_aa(
                 show_aa[cx].push(p);
             }
         }
-        if ctl.clono_print_opt.amino.contains(&"fwr1".to_string()) {
-            if rsi.cdr1_starts[cx].is_some() && rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx].unwrap() {
-                for j in (rsi.fr1_starts[cx]..rsi.cdr1_starts[cx].unwrap()).step_by(3) {
-                    show_aa[cx].push(j / 3);
-                }
+        if ctl.clono_print_opt.amino.contains(&"fwr1".to_string())
+            && rsi.cdr1_starts[cx].is_some()
+            && rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx].unwrap()
+        {
+            for j in (rsi.fr1_starts[cx]..rsi.cdr1_starts[cx].unwrap()).step_by(3) {
+                show_aa[cx].push(j / 3);
             }
         }
-        if ctl.clono_print_opt.amino.contains(&"fwr2".to_string()) {
-            if rsi.fr2_starts[cx].is_some()
-                && rsi.cdr2_starts[cx].is_some()
-                && rsi.fr2_starts[cx].unwrap() <= rsi.cdr2_starts[cx].unwrap()
-            {
-                for j in (rsi.fr2_starts[cx].unwrap()..rsi.cdr2_starts[cx].unwrap()).step_by(3) {
-                    show_aa[cx].push(j / 3);
-                }
+        if ctl.clono_print_opt.amino.contains(&"fwr2".to_string())
+            && rsi.fr2_starts[cx].is_some()
+            && rsi.cdr2_starts[cx].is_some()
+            && rsi.fr2_starts[cx].unwrap() <= rsi.cdr2_starts[cx].unwrap()
+        {
+            for j in (rsi.fr2_starts[cx].unwrap()..rsi.cdr2_starts[cx].unwrap()).step_by(3) {
+                show_aa[cx].push(j / 3);
             }
         }
-        if ctl.clono_print_opt.amino.contains(&"fwr3".to_string()) {
-            if rsi.fr3_starts[cx].is_some() && rsi.fr3_starts[cx].unwrap() <= rsi.cdr3_starts[cx] {
-                for j in (rsi.fr3_starts[cx].unwrap()..rsi.cdr3_starts[cx]).step_by(3) {
-                    show_aa[cx].push(j / 3);
-                }
+        if ctl.clono_print_opt.amino.contains(&"fwr3".to_string())
+            && rsi.fr3_starts[cx].is_some()
+            && rsi.fr3_starts[cx].unwrap() <= rsi.cdr3_starts[cx]
+        {
+            for j in (rsi.fr3_starts[cx].unwrap()..rsi.cdr3_starts[cx]).step_by(3) {
+                show_aa[cx].push(j / 3);
             }
         }
         if ctl.clono_print_opt.amino.contains(&"fwr4".to_string()) {
@@ -237,7 +236,7 @@ pub fn compute_some_stats(
 
     *cred = vec![Vec::<String>::new(); lvars.len()];
     for k in 0..lvars.len() {
-        if lvars[k] == "cred".to_string() {
+        if lvars[k] == *"cred" {
             for u in 0..nexacts {
                 let clonotype_id = exacts[u];
                 let ex = &exact_clonotypes[clonotype_id];
@@ -323,7 +322,7 @@ pub fn compute_some_stats(
             unique_sort(&mut ids);
             let mut reps = Vec::<i32>::new();
             e.orbit_reps(&mut reps);
-            reps.sort();
+            reps.sort_unstable();
             for i in 0..bcs.len() {
                 pe[k][to_index[i]] = format!("{}", bin_position(&ids, &e.class_id(i as i32)));
             }
@@ -496,7 +495,7 @@ pub fn compute_bu(
             let ex = &exact_clonotypes[exacts[u]];
             for k in 0..lvars.len() {
                 let var = lvars[k].clone();
-                let p = bin_position1_2(&these_stats, &var);
+                let p = bin_position1_2(these_stats, &var);
                 let nr = row.len();
                 let mut filled = false;
                 for l in 0..ctl.origin_info.n() {
@@ -522,23 +521,23 @@ pub fn compute_bu(
                 {
                     let stats_me = &these_stats[p as usize].1;
                     row.push(stats_me[bcl.2].clone());
-                } else if var == "n_b".to_string() {
+                } else if var == *"n_b" {
                     let mut n = 0;
                     let li = ex.clones[bcl.2][0].dataset_index;
-                    if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                        if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                            n = 1;
-                        }
+                    if gex_info.cell_type[li].contains_key(&bc.clone())
+                        && gex_info.cell_type[li][&bc.clone()].starts_with('B')
+                    {
+                        n = 1;
                     }
                     row.push(format!("{}", n));
-                } else if var == "filter".to_string() {
+                } else if var == *"filter" {
                     let mut f = String::new();
                     if fate[li].contains_key(&bc.clone()) {
                         f = fate[li][&bc.clone()].clone();
                         f = f.between(" ", " ").to_string();
                     }
                     row.push(f);
-                } else if var == "n_other".to_string() {
+                } else if var == *"n_other" {
                     let mut n = 0;
                     let di = ex.clones[bcl.2][0].dataset_index;
                     let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
@@ -552,71 +551,69 @@ pub fn compute_bu(
                         n = 1;
                     }
                     row.push(format!("{}", n));
-                } else if var == "sec".to_string() {
+                } else if var == *"sec" {
                     let mut n = 0;
                     if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
                         n = ctl.origin_info.secmem[li][&bc.clone()].0;
                     }
                     row.push(format!("{}", n));
-                } else if var == "mem".to_string() {
+                } else if var == *"mem" {
                     let mut n = 0;
                     if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
                         n = ctl.origin_info.secmem[li][&bc.clone()].1;
                     }
                     row.push(format!("{}", n));
-                } else if bin_member(&alt_bcs, &var) {
+                } else if bin_member(alt_bcs, &var) {
                     let mut val = String::new();
                     let alt = &ctl.origin_info.alt_bc_fields[li];
                     for j in 0..alt.len() {
-                        if alt[j].0 == lvars[k] {
-                            if alt[j].1.contains_key(&bc.clone()) {
-                                val = alt[j].1[&bc.clone()].clone();
-                            }
+                        if alt[j].0 == lvars[k] && alt[j].1.contains_key(&bc.clone()) {
+                            val = alt[j].1[&bc.clone()].clone();
                         }
                     }
                     row.push(val);
-                } else if var == "datasets".to_string() {
-                    row.push(format!("{}", ctl.origin_info.dataset_id[li].clone()));
-                } else if var == "origins".to_string() {
-                    row.push(format!("{}", ctl.origin_info.origin_id[li].clone()));
-                } else if var == "donors".to_string() {
-                    row.push(format!("{}", ctl.origin_info.donor_id[li].clone()));
-                } else if var == "clust".to_string() && have_gex {
+                } else if var == *"datasets" {
+                    row.push(ctl.origin_info.dataset_id[li].clone().to_string());
+                } else if var == *"origins" {
+                    row.push(ctl.origin_info.origin_id[li].clone().to_string());
+                } else if var == *"donors" {
+                    row.push(ctl.origin_info.donor_id[li].clone().to_string());
+                } else if var == *"clust" && have_gex {
                     let mut cid = 0;
                     if gex_info.cluster[li].contains_key(&bc.clone()) {
                         cid = gex_info.cluster[li][&bc.clone()];
                     }
                     row.push(format!("{}", cid));
                 } else if var.starts_with("pe") && have_gex {
-                    row.push(format!("{}", pe[k][cell_count + bcl.2]));
+                    row.push(pe[k][cell_count + bcl.2].to_string());
                 } else if var.starts_with("npe") && have_gex {
-                    row.push(format!("{}", npe[k][cell_count + bcl.2]));
+                    row.push(npe[k][cell_count + bcl.2].to_string());
                 } else if var.starts_with("ppe") && have_gex {
-                    row.push(format!("{}", ppe[k][cell_count + bcl.2]));
-                } else if var == "cred".to_string() && have_gex {
-                    row.push(format!("{}", cred[k][cell_count + bcl.2]));
-                } else if var == "type".to_string() && have_gex {
+                    row.push(ppe[k][cell_count + bcl.2].to_string());
+                } else if var == *"cred" && have_gex {
+                    row.push(cred[k][cell_count + bcl.2].to_string());
+                } else if var == *"type" && have_gex {
                     let mut cell_type = "".to_string();
                     if gex_info.cell_type[li].contains_key(&bc.clone()) {
                         cell_type = gex_info.cell_type[li][&bc.clone()].clone();
                     }
                     row.push(cell_type);
-                } else if var == "n_gex".to_string() && have_gex {
+                } else if var == *"n_gex" && have_gex {
                     let mut n_gex = 0;
-                    if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                    if bin_member(&gex_info.gex_cell_barcodes[li], bc) {
                         n_gex = 1;
                     }
                     row.push(format!("{}", n_gex));
-                } else if var == "mark".to_string() {
+                } else if var == *"mark" {
                     let mut mark = String::new();
                     if ex.clones[bcl.2][0].marked {
                         mark = "x".to_string();
                     }
                     row.push(mark);
-                } else if var == "entropy".to_string() && have_gex {
+                } else if var == *"entropy" && have_gex {
                     // NOTE DUPLICATION WITH CODE BELOW.
                     let mut gex_count = 0;
-                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                    let p = bin_position(&gex_info.gex_barcodes[li], bc);
                     if p >= 0 {
                         let mut raw_count = 0;
                         if gex_info.gex_matrices[li].initialized() {
@@ -666,7 +663,7 @@ pub fn compute_bu(
                     // this calc isn't needed except in _% case below
                     // TODO: ELIMINATE UNNEEDED CALC
                     let mut gex_count = 0.0;
-                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                    let p = bin_position(&gex_info.gex_barcodes[li], bc);
                     if p >= 0 {
                         let mut raw_count = 0 as f64;
                         if gex_info.gex_matrices[li].initialized() {
@@ -692,7 +689,7 @@ pub fn compute_bu(
                             gex_count = raw_count;
                         }
                     }
-                    if var == "gex".to_string() {
+                    if var == *"gex" {
                         row.push(format!("{}", gex_count.round()));
                     } else {
                         let mut y = var.clone();
@@ -703,11 +700,11 @@ pub fn compute_bu(
                         let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
                         for s in suffixes.iter() {
                             if y.ends_with(s) {
-                                y = y.rev_before(&s).to_string();
+                                y = y.rev_before(s).to_string();
                                 break;
                             }
                         }
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        let p = bin_position(&gex_info.gex_barcodes[li], bc);
                         let mut computed = false;
                         let mut count = 0.0;
                         let l = bcl.2;
@@ -716,12 +713,11 @@ pub fn compute_bu(
                             if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
                                 ux = ctl.clono_print_opt.regex_match[li][&y].clone();
                             }
-                            if ux.len() > 0 {
+                            if !ux.is_empty() {
                                 computed = true;
                                 for fid in ux.iter() {
                                     let counti = get_gex_matrix_entry(
-                                        &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize,
-                                        &y,
+                                        ctl, gex_info, *fid, d_all, ind_all, li, l, p as usize, &y,
                                     );
                                     count += counti;
                                 }
@@ -729,7 +725,7 @@ pub fn compute_bu(
                                 computed = true;
                                 let fid = gex_info.feature_id[li][&y];
                                 count = get_gex_matrix_entry(
-                                    &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
+                                    ctl, gex_info, fid, d_all, ind_all, li, l, p as usize, &y,
                                 );
                             }
                         }
@@ -763,19 +759,19 @@ pub fn compute_bu(
                 if m.is_some() {
                     let m = m.unwrap();
                     for p in 0..rsi.cvars[col].len() {
-                        if rsi.cvars[col][p] == "u".to_string() {
+                        if rsi.cvars[col][p] == *"u" {
                             let numi = ex.clones[bcl.2][m].umi_count;
                             cx[cp + p] = format!("{}", numi);
-                        } else if rsi.cvars[col][p] == "r".to_string() {
+                        } else if rsi.cvars[col][p] == *"r" {
                             let r = ex.clones[bcl.2][m].read_count;
                             cx[cp + p] = format!("{}", r);
-                        } else if rsi.cvars[col][p] == "nval".to_string() {
+                        } else if rsi.cvars[col][p] == *"nval" {
                             let mut n = 0;
                             if ex.clones[bcl.2][m].validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].validated_umis.as_ref().unwrap().len();
                             }
                             cx[cp + p] = format!("{}", n);
-                        } else if rsi.cvars[col][p] == "nnval".to_string() {
+                        } else if rsi.cvars[col][p] == *"nnval" {
                             let mut n = 0;
                             if ex.clones[bcl.2][m].non_validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m]
@@ -785,19 +781,19 @@ pub fn compute_bu(
                                     .len();
                             }
                             cx[cp + p] = format!("{}", n);
-                        } else if rsi.cvars[col][p] == "nival".to_string() {
+                        } else if rsi.cvars[col][p] == *"nival" {
                             let mut n = 0;
                             if ex.clones[bcl.2][m].invalidated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].invalidated_umis.as_ref().unwrap().len();
                             }
                             cx[cp + p] = format!("{}", n);
-                        } else if rsi.cvars[col][p] == "valumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"valumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "valbcumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"valbcumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].validated_umis.clone().unwrap();
@@ -810,13 +806,13 @@ pub fn compute_bu(
                                 }
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "nvalumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"nvalumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].non_validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "nvalbcumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"nvalbcumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].non_validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
@@ -829,13 +825,13 @@ pub fn compute_bu(
                                 }
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "ivalumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"ivalumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].invalidated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].invalidated_umis.clone().unwrap();
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "ivalbcumis".to_string() {
+                        } else if rsi.cvars[col][p] == *"ivalbcumis" {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].invalidated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].invalidated_umis.clone().unwrap();

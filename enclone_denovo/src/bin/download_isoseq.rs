@@ -12,11 +12,11 @@
 //
 // It has also failed on occasion.
 
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::fs::read_dir;
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::bin_member;
 
 fn main() {
     PrettyTrace::new().on();

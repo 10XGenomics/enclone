@@ -4,7 +4,7 @@
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
 // Also shades smoothed polygons.  Also add tooltip notes if requested.
 
-use crate::polygon::*;
+use crate::polygon::Polygon;
 use std::collections::HashMap;
 
 pub fn circles_to_svg(

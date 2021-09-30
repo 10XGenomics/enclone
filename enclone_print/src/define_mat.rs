@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use enclone_core::join_one::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use enclone_core::join_one::join_one;
 use equiv::EquivRel;
 use std::cmp::max;
 use std::collections::HashMap;
-use vector_utils::*;
+use vector_utils::{bin_position, next_diff12_3, next_diff1_3, unique_sort};
 
 // Define an equivalence relation on the chains, introducing connections defined by the
 // raw joins.  Also join where there are identical V..J sequences.
@@ -30,19 +30,19 @@ fn joiner(
             let v2 = to_exacts[&u2];
             let m2s = &info[j2].exact_cols;
             for j in 0..2 {
-                let z1 = bin_position(&chains, &(v1, m1s[j]));
-                let z2 = bin_position(&chains, &(v2, m2s[j]));
+                let z1 = bin_position(chains, &(v1, m1s[j]));
+                let z2 = bin_position(chains, &(v2, m2s[j]));
                 e.join(z1, z2);
             }
         }
     }
     let mut i = 0;
     while i < seq_chains.len() {
-        let j = next_diff1_3(&seq_chains, i as i32) as usize;
+        let j = next_diff1_3(seq_chains, i as i32) as usize;
         for k in i + 1..j {
             let (x1, x2) = (&seq_chains[i], &seq_chains[k]);
-            let z1 = bin_position(&chains, &(x1.1, x1.2));
-            let z2 = bin_position(&chains, &(x2.1, x2.2));
+            let z1 = bin_position(chains, &(x1.1, x1.2));
+            let z2 = bin_position(chains, &(x2.1, x2.2));
             e.join(z1, z2);
         }
         i = j;
@@ -78,7 +78,7 @@ pub fn define_mat(
             infos.push(x);
         }
     }
-    infos.sort();
+    infos.sort_unstable();
 
     // Define map of exacts to infos.
 
@@ -149,11 +149,11 @@ pub fn define_mat(
                                 is_bcr,
                                 l1,
                                 l2,
-                                &ctl,
-                                &exact_clonotypes,
-                                &info,
-                                &to_bc,
-                                &sr,
+                                ctl,
+                                exact_clonotypes,
+                                info,
+                                to_bc,
+                                sr,
                                 &mut pot,
                             ) {
                                 extras.push((k1, k2));
@@ -170,7 +170,7 @@ pub fn define_mat(
 
     // Define an initial equivalence relation on the chains, and get orbit representatives.
 
-    let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
+    let mut e = joiner(&infos, info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
     let mut r = Vec::<i32>::new();
     e.orbit_reps(&mut r);
 
@@ -197,7 +197,7 @@ pub fn define_mat(
         let q2 = bin_position(&r, &p2) as usize;
         rxi.push((q1, q2, i));
     }
-    rxi.sort();
+    rxi.sort_unstable();
     const MAX_USE: usize = 5; // knob set empirically
     let mut rxir = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, info index)
     let mut i = 0;
@@ -227,11 +227,11 @@ pub fn define_mat(
                     is_bcr,
                     i1,
                     i2,
-                    &ctl,
-                    &exact_clonotypes,
-                    &info,
-                    &to_bc,
-                    &sr,
+                    ctl,
+                    exact_clonotypes,
+                    info,
+                    to_bc,
+                    sr,
                     &mut pot,
                 ) {
                     e.join(r[f1.0], r[f2.0]);
@@ -361,11 +361,11 @@ pub fn define_mat(
         chainso.push((chainsp[i].2, chainsp[i].3));
         chainsox.push((chainsp[i].2, chainsp[i].3, i));
     }
-    chainsox.sort();
+    chainsox.sort_unstable();
     for i in 0..r.len() {
         r[i] = chainsox[r[i] as usize].2 as i32;
     }
-    r.sort();
+    r.sort_unstable();
 
     // Create rmap, that sends
     // (index into exact subclonotypes for this clonotype,

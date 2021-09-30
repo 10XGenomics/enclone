@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use enclone_core::defs::*;
-use string_utils::*;
+use enclone_core::defs::EncloneControl;
+use string_utils::TextUtils;
 
 pub fn gene_scan_test(
     ctl: &EncloneControl,

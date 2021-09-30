@@ -7,23 +7,23 @@
 // contigs that represent the sequence of the "other" allele.  This does not look easy to
 // execute.
 
-use vdj_ann::*;
+use vdj_ann::{annotate, refx};
 
-use self::annotate::*;
-use self::refx::*;
-use crate::join2::*;
-use crate::join_core::*;
-use debruijn::dna_string::*;
-use enclone_core::defs::*;
+use self::annotate::print_annotations;
+use self::refx::RefData;
+use crate::join2::finish_join;
+use crate::join_core::join_core;
+use debruijn::dna_string::DnaString;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
 use equiv::EquivRel;
-use io_utils::*;
+use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
 use rayon::prelude::*;
-use std::cmp::*;
+use std::cmp::min;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
-use vector_utils::*;
+use vector_utils::{bin_member, erase_if, next_diff1_2};
 
 pub fn join_exacts(
     is_bcr: bool,

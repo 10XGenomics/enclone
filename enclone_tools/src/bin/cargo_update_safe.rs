@@ -9,15 +9,15 @@
 // * Updates crates even if they have changed very recently.
 // * Should check that results are unchanged.
 
-use io_utils::*;
-use perf_stats::*;
-use pretty_trace::*;
+use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
+use perf_stats::elapsed;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use std::time::Instant;
-use string_utils::*;
+use string_utils::{strme, TextUtils};
 
 fn print_dot(dots: &mut usize) {
     if *dots > 0 && *dots % 10 == 0 {
@@ -132,11 +132,10 @@ fn main() {
             }
             let out = strme(&o.stdout);
             let mut new = String::new();
-            for line in out.lines() {
+            if let Some(line) = out.lines().next() {
                 let c = line.before(" =");
                 assert_eq!(c, cratex);
                 new = line.between("\"", "\"").to_string();
-                break;
             }
             let old_dots = old.matches('.').count();
             let mut new_dots = new.matches('.').count();

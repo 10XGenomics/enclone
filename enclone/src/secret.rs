@@ -11,11 +11,11 @@
 // (A)CH2-(B)CH3-CHS  [secreted]
 // (A)CH2-(B)Mx [membrane].
 
-use enclone_core::defs::*;
+use enclone_core::defs::EncloneControl;
 use std::collections::HashMap;
 use std::process::Command;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vector_utils::next_diff1_3;
 
 // copied from tenkit2/pack_dna.rs:
 

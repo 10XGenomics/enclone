@@ -2,7 +2,7 @@
 
 // Variable specification.  Fields are currently Strings, but could be given more structure.
 
-use string_utils::*;
+use string_utils::{stringme, TextUtils};
 
 pub struct Variable {
     pub name: String,

@@ -2,42 +2,42 @@
 //
 // See README for documentation.
 
-use self::refx::*;
-use crate::blacklist::*;
-use crate::determine_ref::*;
-use crate::disintegrate::*;
-use crate::fcell::*;
-use crate::filter_umi::*;
-use crate::flag_defective::*;
-use crate::inconsistent::*;
-use crate::populate_features::*;
-use crate::sec_mem::*;
-use crate::setup::*;
-use crate::some_filters::*;
-use crate::stop::*;
-use crate::vars::*;
+use self::refx::{make_vdj_ref_data_core, RefData};
+use crate::blacklist::profiling_blacklist;
+use crate::determine_ref::determine_ref;
+use crate::disintegrate::disintegrate_onesies;
+use crate::fcell::filter_by_fcell;
+use crate::filter_umi::filter_umi;
+use crate::flag_defective::flag_defective;
+use crate::inconsistent::test_vdj_gex_inconsistent;
+use crate::populate_features::populate_features;
+use crate::sec_mem::test_sec_mem;
+use crate::setup::{critical_args, setup};
+use crate::some_filters::some_filters;
+use crate::stop::{main_enclone_stop, EncloneExacts, EncloneIntermediates};
+use crate::vars::match_vars;
 use debruijn::dna_string::DnaString;
-use enclone::allele::*;
-use enclone::graph_filter::*;
-use enclone::info::*;
-use enclone::innate::*;
-use enclone::join::*;
-use enclone::misc1::*;
-use enclone::misc2::*;
-use enclone::misc3::*;
-use enclone::secret::*;
-use enclone_args::load_gex::*;
-use enclone_args::proc_args2::*;
-use enclone_args::proc_args_check::*;
-use enclone_args::read_json::*;
-use enclone_core::cell_color::*;
-use enclone_core::defs::*;
-use enclone_core::*;
-use enclone_print::loupe::*;
+use enclone::allele::{find_alleles, sub_alts};
+use enclone::graph_filter::graph_filter;
+use enclone::info::build_info;
+use enclone::innate::species;
+use enclone::join::join_exacts;
+use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
+use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_for_shm_indels};
+use enclone::misc3::sort_tig_bc;
+use enclone::secret::fetch_secmem;
+use enclone_args::load_gex::get_gex_info;
+use enclone_args::proc_args2::is_simple_arg;
+use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
+use enclone_args::read_json::parse_json_annotations_files;
+use enclone_core::cell_color::CellColor;
+use enclone_core::defs::{CloneInfo, EncloneControl, GexInfo, TigData};
+use enclone_core::version_string;
+use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
-use io_utils::*;
+use io_utils::{fwriteln, open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::start_profiling;
 use std::{
     collections::HashMap,
     env, fs,
@@ -45,10 +45,10 @@ use std::{
     io::{BufRead, BufReader, BufWriter, Write},
     time::Instant,
 };
-use stirling_numbers::*;
-use string_utils::*;
-use vdj_ann::*;
-use vector_utils::*;
+use stirling_numbers::stirling2_ratio_table;
+use string_utils::TextUtils;
+use vdj_ann::refx;
+use vector_utils::{bin_member, erase_if, next_diff, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -176,14 +176,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     ctl.gen_opt.cpu_this_start = 0;
     if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
         let f = open_for_read!["/proc/stat"];
-        for line in f.lines() {
+        if let Some(line) = f.lines().next() {
             let s = line.unwrap();
             let mut t = s.after("cpu");
             while t.starts_with(' ') {
                 t = t.after(" ");
             }
             ctl.gen_opt.cpu_all_start = t.before(" ").force_usize();
-            break;
         }
         let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
         for line in f.lines() {
@@ -366,7 +365,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                     test2.push(var.to_string());
                 }
             }
-            for _ in con.iter_function_identifiers() {
+            if let Some(_) = con.iter_function_identifiers().next() {
                 return Err("\nSomething is wrong with your FCELL value.\n".to_string());
             }
         }

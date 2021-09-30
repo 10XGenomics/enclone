@@ -1,19 +1,19 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use self::annotate::*;
-use self::refx::*;
-use self::transcript::*;
-use debruijn::dna_string::*;
-use enclone_core::defs::*;
-use io_utils::*;
+use self::annotate::{annotate_seq, get_cdr3_using_ann, print_some_annotations};
+use self::refx::RefData;
+use self::transcript::is_valid;
+use debruijn::dna_string::DnaString;
+use enclone_core::defs::{EncloneControl, OriginInfo, TigData};
+use io_utils::{open_maybe_compressed, path_exists, read_vector_entry_from_json};
 use rayon::prelude::*;
 use serde_json::Value;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader};
-use string_utils::*;
-use vdj_ann::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vdj_ann::{annotate, refx, transcript};
+use vector_utils::{bin_position, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

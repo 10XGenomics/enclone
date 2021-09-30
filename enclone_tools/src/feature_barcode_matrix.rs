@@ -11,12 +11,12 @@
 // 6. List the barcodes in order by frequency.
 
 use enclone_core::defs::get_config;
-use enclone_core::*;
+use enclone_core::fetch_url;
 use flate2::read::MultiGzDecoder;
-use io_utils::*;
+use io_utils::{dir_list, path_exists};
 use itertools::Itertools;
-use mirror_sparse_matrix::*;
-use perf_stats::*;
+use mirror_sparse_matrix::MirrorSparseMatrix;
+use perf_stats::elapsed;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -25,8 +25,8 @@ use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::time::Instant;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{stringme, strme, TextUtils};
+use vector_utils::{bin_member, bin_position, make_freq, next_diff12_3, next_diff1_3, sort_sync2};
 
 pub struct SequencingDef {
     pub read_path: String,

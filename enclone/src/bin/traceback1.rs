@@ -6,7 +6,7 @@
 // This was originally engineered without PrettyTrace, but the problem with this was that if the
 // test failed, you get a godawful mess that is impossible to distangle.
 
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 
 fn main() {
@@ -20,9 +20,9 @@ fn main() {
 
 #[test]
 fn test_traceback1() {
-    extern crate assert_cmd;
+    use assert_cmd;
     use assert_cmd::prelude::*;
-    use enclone_core::*;
+    use enclone_core::version_string;
     use std::{env, process::Command};
     let mut cmd = Command::cargo_bin("traceback1").expect(
         "\nAttempt to run traceback1 failed.  The most likely explanation for this is that\n\

@@ -1,18 +1,20 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use amino::*;
-use ansi_escape::*;
-use enclone_core::cell_color::*;
-use enclone_core::defs::*;
-use enclone_core::print_tools::*;
-use io_utils::*;
-use itertools::*;
+use amino::codon_to_aa;
+use ansi_escape::{
+    emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape, emit_red_escape,
+};
+use enclone_core::cell_color::CellColor;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::print_tools::{color_by_property, emit_codon_color_escape};
+use io_utils::{fwrite, fwriteln};
+use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::*;
-use tables::*;
-use vector_utils::*;
+use string_utils::stringme;
+use tables::{print_tabular_vbox, visible_width};
+use vector_utils::{bin_member, lower_bound1_3, meet_size, unique_sort, upper_bound1_3, VecUtils};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -24,7 +26,7 @@ pub fn compute_field_types(
     let cols = rsi.mat.len();
     let mut field_types = vec![Vec::new(); cols];
     for cx in 0..cols {
-        let mut ft = vec![0 as u8; show_aa[cx].len()];
+        let mut ft = vec![0_u8; show_aa[cx].len()];
         let cs1 = rsi.cdr1_starts[cx];
         let cs2 = rsi.cdr2_starts[cx];
         let cs3 = rsi.cdr3_starts[cx];
@@ -110,11 +112,11 @@ pub fn make_table(
 
     // Make table.
 
-    let log0 = stringme(&mlog);
+    let log0 = stringme(mlog);
     let mut log = String::new();
     if ctl.debug_table_printing {
         for i in 0..rows.len() {
-            println!("");
+            println!();
             for j in 0..rows[i].len() {
                 println!(
                     "row = {}, col = {}, entry = {}, vis width = {}",
@@ -125,16 +127,9 @@ pub fn make_table(
                 );
             }
         }
-        println!("");
+        println!();
     }
-    print_tabular_vbox(
-        &mut log,
-        &rows,
-        2,
-        &justify,
-        ctl.debug_table_printing,
-        false,
-    );
+    print_tabular_vbox(&mut log, rows, 2, justify, ctl.debug_table_printing, false);
     if ctl.debug_table_printing {
         println!("{}", log);
     }
@@ -215,7 +210,7 @@ pub fn make_table(
         // Do similar things for header line, but bold the line instead.
         } else if c == '#' {
             if ctl.pretty {
-                *logz += &format!("[01m#");
+                *logz += &"[01m#".to_string();
                 header = true;
             } else {
                 logz.push('#');
@@ -229,7 +224,7 @@ pub fn make_table(
         // In a header line, hop around │ symbols, which should not be colorized.
         } else if header && c == '│' && x[j + 1] != '\n' {
             *logz += "[0m│";
-            *logz += &format!("[01m");
+            *logz += &"[01m".to_string();
         } else if header && c == '│' && x[j + 1] == '\n' {
             *logz += "[0m│";
             header = false;
@@ -257,22 +252,20 @@ pub fn print_digit(p: usize, i: usize, digits: usize, ds: &mut String) {
         } else {
             *ds += &format!("{}", p % 10);
         }
-    } else {
-        if i == 0 {
-            if p >= 100 {
-                *ds += &format!("{}", p / 100);
-            } else {
-                ds.push(' ');
-            }
-        } else if i == 1 {
-            if p >= 10 {
-                *ds += &format!("{}", (p % 100) / 10);
-            } else {
-                ds.push(' ');
-            }
+    } else if i == 0 {
+        if p >= 100 {
+            *ds += &format!("{}", p / 100);
         } else {
-            *ds += &format!("{}", p % 10);
+            ds.push(' ');
         }
+    } else if i == 1 {
+        if p >= 10 {
+            *ds += &format!("{}", (p % 100) / 10);
+        } else {
+            ds.push(' ');
+        }
+    } else {
+        *ds += &format!("{}", p % 10);
     }
 }
 
@@ -320,7 +313,7 @@ pub fn start_gen(
     for u in 0..nexacts {
         n += exact_clonotypes[exacts[u]].ncells();
     }
-    if ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0 {
+    if !ctl.parseable_opt.pout.is_empty() || !extra_args.is_empty() {
         *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
     for u in 0..exacts.len() {
@@ -331,7 +324,7 @@ pub fn start_gen(
         bc.sort();
         speak!(u, "barcodes", format!("{}", bc.iter().format(",")));
         for d in ctl.origin_info.dataset_list.iter() {
-            if d.len() > 0 {
+            if !d.is_empty() {
                 let mut bc = Vec::<String>::new();
                 for i in 0..exact_clonotypes[exacts[u]].clones.len() {
                     let q = &exact_clonotypes[exacts[u]].clones[i];
@@ -353,7 +346,7 @@ pub fn start_gen(
             }
             speak!(u, "barcode", format!("{}", bc.iter().format(POUT_SEP)));
             for d in ctl.origin_info.dataset_list.iter() {
-                if d.len() > 0 {
+                if !d.is_empty() {
                     let mut bc = Vec::<String>::new();
                     for i in 0..exact_clonotypes[exacts[u]].clones.len() {
                         let q = &exact_clonotypes[exacts[u]].clones[i];
@@ -381,7 +374,7 @@ pub fn start_gen(
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
                 let d = ex.clones[m][0].donor_index.unwrap();
-                if ctl.origin_info.donor_list[d].len() > 0 {
+                if !ctl.origin_info.donor_list[d].is_empty() {
                     donors.push(d);
                 }
             }
@@ -414,12 +407,12 @@ pub fn start_gen(
             for u in 0..nexacts {
                 let ex = &exact_clonotypes[exacts[u]];
                 for l in 0..ex.clones.len() {
-                    if ex.clones[l][0].donor_index.is_some() {
-                        if ex.clones[l][0].donor_index.unwrap() == donors[i] {
-                            datasets.push(
-                                ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
-                            );
-                        }
+                    if ex.clones[l][0].donor_index.is_some()
+                        && ex.clones[l][0].donor_index.unwrap() == donors[i]
+                    {
+                        datasets.push(
+                            ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
+                        );
                     }
                 }
             }
@@ -468,18 +461,18 @@ pub fn insert_position_rows(
         for cx in 0..cols {
             for m in 0..rsi.cvars[cx].len() {
                 if zpass == 1 {
-                    if rsi.cvars[cx][m] == "amino".to_string() {
+                    if rsi.cvars[cx][m] == *"amino" {
                         for p in show_aa[cx].iter() {
                             digits = max(digits, ndigits(*p));
                         }
-                    } else if rsi.cvars[cx][m] == "var".to_string() {
+                    } else if rsi.cvars[cx][m] == *"var" {
                         for p in vars[cx].iter() {
                             digits = max(digits, ndigits(*p));
                         }
                     }
                 } else {
                     for i in 0..digits {
-                        if rsi.cvars[cx][m] == "amino".to_string() {
+                        if rsi.cvars[cx][m] == *"amino" {
                             let mut ds = String::new();
                             for (j, p) in show_aa[cx].iter().enumerate() {
                                 if j > 0 && field_types[cx][j] != field_types[cx][j - 1] {
@@ -488,7 +481,7 @@ pub fn insert_position_rows(
                                 print_digit(*p, i, digits, &mut ds);
                             }
                             drows[i].push(ds);
-                        } else if rsi.cvars[cx][m] == "var".to_string() {
+                        } else if rsi.cvars[cx][m] == *"var" {
                             let mut ds = String::new();
                             for p in vars[cx].iter() {
                                 print_digit(*p, i, digits, &mut ds);
@@ -517,15 +510,15 @@ pub fn color_codon(
 ) -> Vec<u8> {
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];
-    let aa = codon_to_aa(&codon);
-    if ctl.gen_opt.color == "codon".to_string() {
-        emit_codon_color_escape(&codon, &mut log);
+    let aa = codon_to_aa(codon);
+    if ctl.gen_opt.color == *"codon" {
+        emit_codon_color_escape(codon, &mut log);
         log.push(aa);
         emit_end_escape(&mut log);
-    } else if ctl.gen_opt.color == "property".to_string() {
-        color_by_property(&vec![aa], &mut log);
+    } else if ctl.gen_opt.color == *"property" {
+        color_by_property(&[aa], &mut log);
     } else {
-        let (low, high) = (lower_bound1_3(&x, &p), upper_bound1_3(&x, &p));
+        let (low, high) = (lower_bound1_3(x, &p), upper_bound1_3(x, &p));
         let (mut total, mut this) = (0.0, 0.0);
         for u in low..high {
             total += x[u as usize].2 as f64;
@@ -542,17 +535,17 @@ pub fn color_codon(
             }
         }
         if color != *last_color {
-            if color == "black".to_string() {
+            if color == *"black" {
                 emit_end_escape(&mut log);
             } else {
-                if color == "red".to_string() {
+                if color == *"red" {
                     emit_red_escape(&mut log);
                 } else {
                     emit_eight_bit_color_escape(&mut log, 6);
                 }
                 emit_bold_escape(&mut log);
             }
-            *last_color = color.clone();
+            *last_color = color;
         }
         fwrite!(log, "{}", aa as char);
     }
@@ -606,15 +599,13 @@ pub fn cdr3_aa_con(
         unique_sort(&mut vals);
         if vals.solo() {
             c.push(vals[0] as char);
+        } else if style == "x" {
+            c.push('X');
         } else {
-            if style == "x" {
-                c.push('X');
-            } else {
-                for m in classes.iter() {
-                    if meet_size(&vals, &m.1) == vals.len() {
-                        c.push(m.0);
-                        break;
-                    }
+            for m in classes.iter() {
+                if meet_size(&vals, &m.1) == vals.len() {
+                    c.push(m.0);
+                    break;
                 }
             }
         }
@@ -658,7 +649,7 @@ pub fn get_gex_matrix_entry(
 
 pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
     let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+    if !ctl.plot_opt.plot_xy_filename.is_empty() {
         extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
         extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
     }

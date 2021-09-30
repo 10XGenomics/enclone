@@ -1,11 +1,14 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::defs::*;
-use debruijn::{dna_string::*, Mer};
-use stats_utils::*;
+use crate::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use debruijn::{
+    dna_string::{ndiffs, DnaString},
+    Mer,
+};
+use stats_utils::abs_diff;
 use std::collections::HashMap;
-use stirling_numbers::*;
-use vector_utils::*;
+use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
+use vector_utils::{meet, unique_sort};
 
 // partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
 //
@@ -220,9 +223,7 @@ pub fn join_one(
                         } else {
                             share_pos_j[m].push(p);
                         }
-                    } else if t1 == r && t2 != r {
-                        indeps[u] += 1;
-                    } else if t2 == r && t1 != r {
+                    } else if (t1 == r && t2 != r) || (t2 == r && t1 != r) {
                         indeps[u] += 1;
                     } else if t1 != r && t2 != r {
                         indeps[u] += 2;

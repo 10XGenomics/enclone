@@ -7,14 +7,14 @@
 // group object: a vector of pairs (i, msg) where i is an index into exacts and msg is a message
 //               to be printed
 
-use amino::*;
+use amino::aa_seq;
 use edit_distance::edit_distance;
-use enclone_core::defs::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
 use rayon::prelude::*;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{next_diff1_2, sort_sync2};
 
 pub fn grouper(
     refdata: &RefData,

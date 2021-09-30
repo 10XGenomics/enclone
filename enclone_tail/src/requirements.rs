@@ -2,7 +2,7 @@
 
 // Test requirements.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{EncloneControl, ExactClonotype};
 
 pub fn test_requirements(
     pics: &Vec<String>,

@@ -2,15 +2,15 @@
 
 // Flag defective reference sequences.
 
-use amino::*;
-use enclone_core::defs::*;
-use enclone_core::vdj_features::*;
-use io_utils::*;
+use amino::aa_seq;
+use enclone_core::defs::EncloneControl;
+use enclone_core::vdj_features::{cdr2_start, cdr3_score, fr3_start, score4, score_fwr3};
+use io_utils::fwriteln;
 use itertools::Itertools;
 use std::io::Write;
-use string_utils::*;
+use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::*;
+use vector_utils::unique_sort;
 
 pub fn flag_defective(
     ctl: &EncloneControl,

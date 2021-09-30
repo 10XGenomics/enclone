@@ -2,16 +2,16 @@
 
 // This file provides the single function graph_filter.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{EncloneControl, TigData};
 use graph_simple::GraphSimple;
-use io_utils::*;
+use io_utils::fwriteln;
 use petgraph::prelude::*;
 use rayon::prelude::*;
-use std::cmp::*;
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::strme;
+use vector_utils::{bin_member, bin_position, erase_if, lower_bound, next_diff12_3, reverse_sort};
 
 // Create a digraph which has one vertex for each V..J that appears in a productive
 // pair, and for a given light chain and a given heavy chain vertex, a weighted edge

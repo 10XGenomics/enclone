@@ -4,11 +4,11 @@
 // the donor V and J segments that are assigned to the clonotype.  Note that the optimal D
 // segment may be null.  This is obvious from looking at data.
 
-use crate::align_to_vdj_ref::*;
-use crate::defs::*;
-use enclone_proto::types::*;
+use crate::align_to_vdj_ref::{align_to_vdj_ref, match_bit_score, zero_one};
+use crate::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::DonorReferenceItem;
 use std::cmp::min;
-use vdj_ann::refx::*;
+use vdj_ann::refx::RefData;
 
 pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
     let mut flank = 13;

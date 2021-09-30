@@ -1,13 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::assign_cell_color::*;
-use crate::colors::*;
-use crate::string_width::*;
-use crate::ticks::*;
-use crate::*;
-use enclone_core::cell_color::*;
-use enclone_core::defs::*;
-use string_utils::*;
+use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
+use crate::colors::TURBO_SRGB_BYTES;
+use crate::string_width::arial_width;
+use crate::ticks::ticks;
+use crate::{set_svg_height, set_svg_width, BOUNDARY};
+use enclone_core::cell_color::CellColor;
+use enclone_core::defs::PlotOpt;
+use string_utils::TextUtils;
 
 pub fn add_legend_for_color_by_variable(
     plot_opt: &PlotOpt,

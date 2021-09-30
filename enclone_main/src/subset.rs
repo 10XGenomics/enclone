@@ -2,13 +2,16 @@
 
 // Process the SUBSET_JSON option.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::{EncloneControl, ExactClonotype};
+use io_utils::{
+    fwrite, fwriteln, open_for_write_new, open_maybe_compressed, path_exists,
+    read_vector_entry_from_json,
+};
 use serde_json::Value;
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
-use string_utils::*;
-use vector_utils::*;
+use string_utils::{strme, TextUtils};
+use vector_utils::{bin_member, unique_sort};
 
 pub fn subset_json(
     ctl: &EncloneControl,

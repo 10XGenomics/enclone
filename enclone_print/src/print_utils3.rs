@@ -1,15 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::*;
-use enclone_core::allowed_vars::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
-use io_utils::*;
+use crate::print_utils1::color_codon;
+use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::DonorReferenceItem;
+use io_utils::fwriteln;
 use itertools::Itertools;
 use std::io::Write;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::strme;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, erase_if, make_freq, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -46,7 +46,7 @@ pub fn define_column_info(
                 if ex.left {
                     left = true;
                 }
-                if ex.vs_notesx.len() > 0 {
+                if !ex.vs_notesx.is_empty() {
                     have_notes = true;
                 }
             }
@@ -215,12 +215,12 @@ pub fn define_column_info(
                 }
             }
         }
-        u.sort();
-        v.sort();
+        u.sort_unstable();
+        v.sort_unstable();
         vp.sort();
-        d.sort();
-        j.sort();
-        c.sort();
+        d.sort_unstable();
+        j.sort_unstable();
+        c.sort_unstable();
         let mut uf = Vec::<(u32, usize)>::new();
         make_freq(&u, &mut uf);
         if !uf.is_empty() {
@@ -307,27 +307,27 @@ pub fn define_column_info(
     // Return.
 
     ColInfo {
-        left: left,
-        uids: uids,
-        vids: vids,
-        vpids: vpids,
-        dids: dids,
-        jids: jids,
-        cids: cids,
-        fr1_starts: fr1_starts,
-        fr2_starts: fr2_starts,
-        fr3_starts: fr3_starts,
-        cdr1_starts: cdr1_starts,
-        cdr2_starts: cdr2_starts,
-        cdr3_starts: cdr3_starts,
-        cdr3_lens: cdr3_lens,
-        seq_lens: seq_lens,
-        seq_del_lens: seq_del_lens,
-        seqss: seqss,
-        seqss_amino: seqss_amino,
-        chain_descrip: chain_descrip,
+        left,
+        uids,
+        vids,
+        vpids,
+        dids,
+        jids,
+        cids,
+        fr1_starts,
+        fr2_starts,
+        fr3_starts,
+        cdr1_starts,
+        cdr2_starts,
+        cdr3_starts,
+        cdr3_lens,
+        seq_lens,
+        seq_del_lens,
+        seqss,
+        seqss_amino,
+        chain_descrip,
         mat: Vec::<Vec<Option<usize>>>::new(),
-        cvars: cvars,
+        cvars,
     }
 }
 
@@ -413,7 +413,7 @@ pub fn insert_reference_rows(
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
 ) {
     let cols = rsi.seq_del_lens.len();
-    if drows.len() >= 1 {
+    if !drows.is_empty() {
         for pass in 1..=2 {
             let mut row = Vec::<String>::new();
             if pass == 1 {
@@ -500,7 +500,7 @@ pub fn insert_reference_rows(
                     } else {
                         let x = &peer_groups[rsi.vids[cz]];
                         let last = k == show_aa[cz].len() - 1;
-                        let log = color_codon(&ctl, &refseq, &x, p, &mut last_color, last);
+                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last);
                         refx += strme(&log);
                     }
                 }

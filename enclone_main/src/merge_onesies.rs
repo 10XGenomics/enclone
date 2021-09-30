@@ -2,9 +2,9 @@
 
 // Merge onesies where totally unambiguous.  Possibly inefficient and should optimize.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
-use vector_utils::*;
+use vector_utils::{lower_bound1_2, unique_sort, upper_bound1_2};
 
 pub fn merge_onesies(
     orbits: &mut Vec<Vec<i32>>,

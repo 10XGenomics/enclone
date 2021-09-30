@@ -3,14 +3,14 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use enclone_core::defs::*;
-use enclone_core::median::*;
-use enclone_proto::types::*;
-use itertools::*;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::median::median_f64;
+use enclone_proto::types::DonorReferenceItem;
+use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::*;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use string_utils::{abbrev_list, strme, TextUtils};
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_member, unique_sort};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -168,13 +168,13 @@ pub fn proc_lvar1(
                     let mut tag = String::new();
                     for j in 0..ex.share.len() {
                         if ex.share[j].left {
-                            tag += &strme(&ex.share[j].seq);
+                            tag += strme(&ex.share[j].seq);
                         }
                     }
                     tag += "_";
                     for j in 0..ex.share.len() {
                         if !ex.share[j].left {
-                            tag += &strme(&ex.share[j].seq);
+                            tag += strme(&ex.share[j].seq);
                         }
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
@@ -308,8 +308,8 @@ pub fn proc_lvar1(
         for x in clust.iter() {
             clustf.push(format!("{}", x));
         }
-        clust.sort();
-        lvar_stats![i, x, format!("{}", abbrev_list(&clust)), clustf];
+        clust.sort_unstable();
+        lvar_stats![i, x, abbrev_list(&clust), clustf];
     } else if x == "n_other" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();
@@ -360,7 +360,7 @@ pub fn proc_lvar1(
         }
         */
         cell_types.sort();
-        lvar![i, x, format!("{}", abbrev_list(&cell_types))];
+        lvar![i, x, abbrev_list(&cell_types)];
     } else if x == "filter" {
         let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -492,7 +492,7 @@ pub fn proc_lvar1(
                 speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
             }
         }
-    } else if bin_member(&alt_bcs, x) {
+    } else if bin_member(alt_bcs, x) {
         let mut r = Vec::<String>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -500,10 +500,8 @@ pub fn proc_lvar1(
             let mut val = String::new();
             let alt = &ctl.origin_info.alt_bc_fields[li];
             for j in 0..alt.len() {
-                if alt[j].0 == *x {
-                    if alt[j].1.contains_key(&bc.clone()) {
-                        val = alt[j].1[&bc.clone()].clone();
-                    }
+                if alt[j].0 == *x && alt[j].1.contains_key(&bc.clone()) {
+                    val = alt[j].1[&bc.clone()].clone();
                 }
             }
             r.push(val);
@@ -542,5 +540,5 @@ pub fn proc_lvar1(
     } else {
         return false;
     }
-    return true;
+    true
 }

@@ -2,18 +2,18 @@
 
 // This file provides the single function build_info.
 
-use vdj_ann::*;
+use vdj_ann::refx;
 
-use self::refx::*;
-use amino::*;
-use ansi_escape::*;
-use debruijn::{dna_string::*, Mer};
-use enclone_core::defs::*;
-use enclone_core::print_tools::*;
+use self::refx::RefData;
+use amino::{aa_seq, codon_to_aa};
+use ansi_escape::emit_end_escape;
+use debruijn::{dna_string::DnaString, Mer};
+use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
+use enclone_core::print_tools::emit_codon_color_escape;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use string_utils::*;
-use vector_utils::*;
+use string_utils::strme;
+use vector_utils::unique_sort;
 
 pub fn build_info(
     refdata: &RefData,

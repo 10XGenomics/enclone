@@ -3,13 +3,13 @@
 // Utility for inserting html files.  It also changes all instances of #enclone to
 // a preset format for that.
 
-use enclone_core::defs::*;
-use io_utils::*;
-use stats_utils::*;
+use enclone_core::defs::HELP_PAGES;
+use io_utils::{fwrite, fwriteln, open_for_read, open_for_write_new};
+use stats_utils::percent_ratio;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use string_utils::*;
+use string_utils::{add_commas, TextUtils};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

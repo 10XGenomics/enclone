@@ -2,11 +2,11 @@
 
 // This file provides the tail end code for join.rs, plus a small function used there.
 
-use enclone_core::defs::*;
+use enclone_core::defs::{CloneInfo, EncloneControl};
 use equiv::EquivRel;
-use stats_utils::*;
+use stats_utils::percent_ratio;
 use std::time::Instant;
-use vector_utils::*;
+use vector_utils::next_diff1_2;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

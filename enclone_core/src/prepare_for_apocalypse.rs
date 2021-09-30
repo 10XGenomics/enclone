@@ -7,11 +7,11 @@ use crate::version_string;
 use crate::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use chrono::{TimeZone, Utc};
 use itertools::Itertools;
-use pretty_trace::*;
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::io::{Read, Write};
 use std::process::{Command, Stdio};
-use string_utils::*;
+use string_utils::TextUtils;
 
 pub fn prepare_for_apocalypse(args: &Vec<String>, email: bool, bug_reports: &str) {
     if email {

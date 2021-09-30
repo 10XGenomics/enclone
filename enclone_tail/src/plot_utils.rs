@@ -1,13 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::assign_cell_color::*;
-use crate::colors::*;
-use crate::hex::*;
-use crate::*;
-use enclone_core::defs::*;
+use crate::assign_cell_color::assign_cell_color;
+use crate::colors::turbo_color_names;
+use crate::hex::hex_coord;
+use crate::{substitute_enclone_color, TextUtils};
+use enclone_core::defs::{EncloneControl, ExactClonotype, PlotOpt};
 use std::collections::HashMap;
-use vdj_ann::refx::*;
-use vector_utils::*;
+use vdj_ann::refx::RefData;
+use vector_utils::{bin_position, make_freq, sort_sync2};
 
 #[derive(Clone)]
 pub struct PlotCluster {

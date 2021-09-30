@@ -3,12 +3,12 @@
 // Find master.toml files repos in the given directory (e.g. ~/repos), and identify
 // inconsistencies.
 
-use io_utils::*;
-use pretty_trace::*;
+use io_utils::{dir_list, open_for_read, path_exists};
+use pretty_trace::PrettyTrace;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use string_utils::*;
+use string_utils::TextUtils;
 
 fn main() {
     PrettyTrace::new().on();

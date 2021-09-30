@@ -5,17 +5,21 @@
 
 use enclone_proto::proto_io::write_proto;
 use enclone_proto::PROTO_VERSION;
-use vdj_ann::*;
+use vdj_ann::refx;
 
-use self::refx::*;
-use amino::*;
-use bio_edit::alignment::pairwise::*;
+use self::refx::RefData;
+use amino::codon_to_aa;
+use bio_edit::alignment::pairwise::Aligner;
 
-use debruijn::dna_string::*;
-use enclone_core::defs::*;
-use enclone_proto::types::*;
-use io_utils::*;
-use vector_utils::*;
+use debruijn::dna_string::DnaString;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::{
+    Alignment, Clonotype, ClonotypeChain, DonorReference, DonorReferenceItem, EncloneOutputs,
+    ExactSubClonotype, ExactSubClonotypeChain, ExactSubClonotypeChainInfo,
+    InvariantTCellAnnotation, Metadata, Region, UniversalReference, UniversalReferenceItem,
+};
+use io_utils::write_obj;
+use vector_utils::next_diff12_3;
 
 // Export donor reference/inferred alt allele sequences
 pub fn make_donor_refs(
@@ -25,7 +29,7 @@ pub fn make_donor_refs(
     let mut drefs = Vec::<DonorReferenceItem>::new();
     let mut i = 0;
     while i < alt_refs.len() {
-        let j = next_diff12_3(&alt_refs, i as i32) as usize;
+        let j = next_diff12_3(alt_refs, i as i32) as usize;
         for k in i..j {
             let x = &alt_refs[k];
             let donor_id = x.0;
@@ -62,7 +66,7 @@ pub fn make_donor_refs(
                 nt_sequence: alt,
                 universal_aln: Alignment {
                     ref_start: 0,
-                    cigar: cigar,
+                    cigar,
                 },
             });
         }
@@ -74,7 +78,7 @@ pub fn make_donor_refs(
 fn amino_acid(seq: &[u8], start: usize) -> Vec<u8> {
     seq[start..]
         .chunks_exact(3)
-        .map(|codon| codon_to_aa(&codon))
+        .map(|codon| codon_to_aa(codon))
         .collect()
 }
 
@@ -178,20 +182,20 @@ pub fn make_loupe_clonotype(
         let fwr4_end = Some((ex.share[m0].v_start + ex.share[m0].seq.len()) as u32);
 
         xchains.push(ClonotypeChain {
-            nt_sequence: nt_sequence,
-            aa_sequence: aa_sequence,
+            nt_sequence,
+            aa_sequence,
             u_idx: rsi.uids[cx].map(|idx| idx as u32),
             v_idx: rsi.vids[cx] as u32,
             d_idx: rsi.dids[cx].map(|idx| idx as u32),
             j_idx: rsi.jids[cx] as u32,
             c_idx: rsi.cids[cx].map(|idx| idx as u32),
             donor_v_idx: donor_v_idx.map(|idx| idx as u32),
-            donor_j_idx: donor_j_idx,
-            universal_reference: universal_reference,
-            universal_reference_aln: universal_reference_aln,
+            donor_j_idx,
+            universal_reference,
+            universal_reference_aln,
             aa_sequence_universal,
-            donor_reference: donor_reference,
-            donor_reference_aln: donor_reference_aln,
+            donor_reference,
+            donor_reference_aln,
             aa_sequence_donor,
             v_start: ex.share[m0].v_start as u32,
             v_end: ex.share[m0].v_stop as u32,
@@ -199,16 +203,16 @@ pub fn make_loupe_clonotype(
             j_start: ex.share[m0].j_start as u32,
             j_start_ref: ex.share[m0].j_start_ref as u32,
             j_end: ex.share[m0].j_stop as u32,
-            fwr1_start: fwr1_start,
-            cdr1_start: cdr1_start,
-            fwr2_start: fwr2_start,
-            cdr2_start: cdr2_start,
-            fwr3_start: fwr3_start,
+            fwr1_start,
+            cdr1_start,
+            fwr2_start,
+            cdr2_start,
+            fwr3_start,
             cdr3_start: ex.share[m0].v_start as u32 + ex.share[m0].cdr3_start as u32,
             cdr3_end: ex.share[m0].v_start as u32
                 + (ex.share[m0].cdr3_start + 3 * ex.share[m0].cdr3_aa.len()) as u32,
-            fwr4_end: fwr4_end,
-            chain_type: chain_type,
+            fwr4_end,
+            chain_type,
         });
     }
 
@@ -220,7 +224,7 @@ pub fn make_loupe_clonotype(
         let ex = &exact_clonotypes[exacts[j]];
         for cx in 0..cols {
             let m = mat[cx][j];
-            if !m.is_some() {
+            if m.is_none() {
                 chains.push(None);
                 continue;
             }
@@ -279,25 +283,25 @@ pub fn make_loupe_clonotype(
             // Finally, define the ExactClonotypeChain.
 
             chains.push(Some(ExactSubClonotypeChain {
-                nt_sequence: nt_sequence,
-                aa_sequence: aa_sequence,
+                nt_sequence,
+                aa_sequence,
                 v_start: v_start as u32,
                 j_end: j_end as u32,
                 c_region_idx: c_region_idx.map(|idx| idx as u32),
-                fwr1_start: fwr1_start,
-                cdr1_start: cdr1_start,
-                fwr2_start: fwr2_start,
-                cdr2_start: cdr2_start,
-                fwr3_start: fwr3_start,
+                fwr1_start,
+                cdr1_start,
+                fwr2_start,
+                cdr2_start,
+                fwr3_start,
                 cdr3_start: cdr3_start as u32,
                 cdr3_end: cdr3_end as u32,
-                fwr4_end: fwr4_end,
-                umi_counts: umi_counts,
-                read_counts: read_counts,
-                contig_ids: contig_ids,
-                clonotype_consensus_aln: clonotype_consensus_aln,
-                donor_reference_aln: donor_reference_aln,
-                universal_reference_aln: universal_reference_aln,
+                fwr4_end,
+                umi_counts,
+                read_counts,
+                contig_ids,
+                clonotype_consensus_aln,
+                donor_reference_aln,
+                universal_reference_aln,
             }));
         }
         let mut cell_barcodes = Vec::<String>::new();
@@ -327,9 +331,9 @@ pub fn make_loupe_clonotype(
                     })
                 })
                 .collect(),
-            cell_barcodes: cell_barcodes,
-            inkt_evidence: inkt_evidence,
-            mait_evidence: mait_evidence,
+            cell_barcodes,
+            inkt_evidence,
+            mait_evidence,
         });
     }
 
@@ -352,7 +356,7 @@ pub fn loupe_out(
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
 ) {
-    if ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 {
+    if !ctl.gen_opt.binary.is_empty() || !ctl.gen_opt.proto.is_empty() {
         let mut uref = Vec::new();
         for i in 0..refdata.refs.len() {
             uref.push(UniversalReferenceItem {
@@ -371,9 +375,10 @@ pub fn loupe_out(
         }
         let metadata = match &ctl.gen_opt.proto_metadata {
             Some(fname) => serde_json::from_reader(
-                std::fs::File::open(fname).expect(&format!("Error while reading {}", fname)),
+                std::fs::File::open(fname)
+                    .unwrap_or_else(|_| panic!("Error while reading {}", fname)),
             )
-            .expect(&format!("Unable to deserialize Metadata from {}", fname)),
+            .unwrap_or_else(|_| panic!("Unable to deserialize Metadata from {}", fname)),
             None => Metadata::default(),
         };
         let enclone_outputs = EncloneOutputs {
@@ -386,10 +391,10 @@ pub fn loupe_out(
                 items: dref.to_vec(),
             },
         };
-        if ctl.gen_opt.binary.len() > 0 {
+        if !ctl.gen_opt.binary.is_empty() {
             write_obj(&enclone_outputs, &ctl.gen_opt.binary);
         }
-        if ctl.gen_opt.proto.len() > 0 {
+        if !ctl.gen_opt.proto.is_empty() {
             write_proto(enclone_outputs, &ctl.gen_opt.proto).unwrap();
         }
     }

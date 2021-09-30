@@ -2,13 +2,13 @@
 //
 // Execute SIM_MAT_PLOT.
 
-use enclone_core::defs::*;
-use io_utils::*;
+use enclone_core::defs::EncloneControl;
+use io_utils::{fwrite, open_for_write_new};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use string_utils::*;
-use tables::*;
+use string_utils::{stringme, TextUtils};
+use tables::print_tabular;
 
 fn hex(c: u8) -> String {
     let x1 = c / 16;

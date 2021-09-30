@@ -2,7 +2,12 @@
 
 // Code to help find IGHD constant regions.
 
-use std::arch::x86_64::*;
+use std::arch::x86_64::{
+    __m128, __m128i, __m256, _mm256_add_epi32, _mm256_add_ps, _mm256_castps256_ps128,
+    _mm256_cvtepu8_epi32, _mm256_extractf128_ps, _mm256_i32gather_ps, _mm256_mullo_epi32,
+    _mm256_set1_epi32, _mm256_set1_ps, _mm256_setr_epi32, _mm_add_ps, _mm_add_ss, _mm_cvtss_f32,
+    _mm_loadu_si128, _mm_movehdup_ps, _mm_movehl_ps,
+};
 
 // Score relative to IGHD PWM.
 
