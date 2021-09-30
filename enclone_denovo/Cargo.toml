@@ -19,22 +19,15 @@ publish = false
 amino = "0.1"
 binary_vec_io = "0.1.2"
 bio = ">=0.35"
-dna = "0.1.1"
 debruijn = "0.3"
-edit-distance = "2"
-enclone = { path = "../enclone" }
-enclone_core = { path = "../enclone_core" }
 equiv = "0.1"
 failure = "0.1"
 fasta_tools = "0.1.2"
-fs_extra = "1"
 graph_simple = "0.1"
 hyperbase = "0.1.2"
 io_utils = "0.2"
 itertools = "0.10"
 kmer_lookup = "0.1.1"
-mirror_sparse_matrix = "0.1"
-pager = "0.16"
 # poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
 perf_stats = "0.1"
 permutation = "0.2"
