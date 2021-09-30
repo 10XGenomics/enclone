@@ -80,7 +80,7 @@ fn print_vis_align(
         vdj = stringme(&vdj_bytes);
         for (i, line) in vis.lines().enumerate() {
             if i % 4 != 2 {
-                vis_new += line.clone();
+                vis_new += line;
                 vis_new += "\n";
             } else {
                 let mut log = Vec::<u8>::new();

@@ -221,9 +221,9 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Ins {
                     j += 1;
                 }
-                if rpos == vref.len() + dref.len() + d2ref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
-                } else if rpos == vref.len() || rpos == vref.len() + dref.len() {
+                if (rpos == vref.len() + dref.len() + d2ref.len())
+                    || (rpos == vref.len() || rpos == vref.len() + dref.len())
+                {
                     score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
@@ -309,11 +309,7 @@ pub fn align_to_vdj_ref(
     let b3 = vref.len() + dref.len() + d2ref.len();
     let mut edited = vec![false; ops.len()];
     while i < ops.len() {
-        if ops[i] == Match {
-            pos += 1;
-            rpos += 1;
-            i += 1;
-        } else if ops[i] == Subst {
+        if ops[i] == Match || ops[i] == Subst {
             pos += 1;
             rpos += 1;
             i += 1;

@@ -132,11 +132,10 @@ fn main() {
             }
             let out = strme(&o.stdout);
             let mut new = String::new();
-            for line in out.lines() {
+            if let Some(line) = out.lines().next() {
                 let c = line.before(" =");
                 assert_eq!(c, cratex);
                 new = line.between("\"", "\"").to_string();
-                break;
             }
             let old_dots = old.matches('.').count();
             let mut new_dots = new.matches('.').count();

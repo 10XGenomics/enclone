@@ -536,36 +536,18 @@ pub fn row_fill(
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
-                let mut dname = String::new();
-                if rsi.dids[col].is_some() {
-                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
-                }
+                let dname = if rsi.dids[col].is_some() {
+                    refdata.name[rsi.dids[col].unwrap()].clone()
+                } else {
+                    String::new()
+                };
                 cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
-                let mut did = String::new();
-                if rsi.dids[col].is_some() {
-                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
-                }
-                cvar_stats1![j, var, did];
-            } else if *var == "j_name" {
-                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
-            } else if *var == "j_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
-            } else if *var == "v_name" {
-                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
-            } else if *var == "v_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
-            } else if *var == "d_name" {
-                let mut dname = String::new();
-                if rsi.dids[col].is_some() {
-                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
-                }
-                cvar_stats1![j, var, dname];
-            } else if *var == "d_id" {
-                let mut did = String::new();
-                if rsi.dids[col].is_some() {
-                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
-                }
+                let did = if rsi.dids[col].is_some() {
+                    format!("{}", refdata.id[rsi.dids[col].unwrap()])
+                } else {
+                    String::new()
+                };
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
                 cvar_stats1![j, var, refdata.name[rsi.jids[col]]];

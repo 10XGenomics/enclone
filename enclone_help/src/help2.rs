@@ -93,7 +93,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         let mut ex2_args2 = Vec::<&str>::new();
         for i in 0..ex2_args.len() {
             if ex2_args[i] != "H5" {
-                ex2_args2.push(ex2_args[i].clone());
+                ex2_args2.push(ex2_args[i]);
             }
         }
 
