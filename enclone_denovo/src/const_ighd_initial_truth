@@ -1,0 +1,82 @@
+    //• TCTGTCTTCCAG|GC|SSQSLKVFPILPECKAPKEDDTVFL    South American tapir  o-ungulate  200M   9170
+    //• TCTGTCTTCCAG|GC|NSQPLKVFPILPGCKALKENEPVVL    n. white rhino        o-ungulate  200M   9542
+    //• TCTGTCTTCCAG|GC|NSQPLKVFPILPGCKALEENEPVVL    black rhino           o-ungulate  200M   9538
+    //• TCTGTCTTCCAG|GC|SSQSLKVFPILPGCKAPKEDDTVVL    Malayan tapir         o-ungulate  200M   9155
+    //• TCTGTCTTGCAG|GG|SLEDTAVIPLFSECKAPKEDDVVSL    horse                 o-ungulate  some   9848
+    //• TCTGTCTTGCAG|GG|SLEDTAVIPLFSECKAPKEGDVVSL    ass                   o-ungulate  some   9879
+    //
+    //  dup                                          blue whale            e-ungulate  some
+    //  dup                                          killer whale          e-ungulate  some
+    //  dup                                          sheep                 e-ungulate  some
+    //  dup                                          goat                  e-ungulate  some
+    //  dup                                          pig                   e-ungulate  some
+    //  dup                                          cow                   e-ungulate  some
+    //  dup                                          water buffalo         e-ungulate  some
+    //  dup                                          giraffe               e-ungulate  some
+    //
+    //• TCTGTCTCCTAG|GC|SEEAAHEFPWVSRCHLPEEGDPIGL    meerkat               carnivore   200M  11654
+    //• TCTGTCTTCCAG|AC|TETLHLF.PLVSECKAPKQGDSIGLA   honey badger          carnivore   200M   7448
+    //• TCTGTCTTCCAG|CC|SRESSLLLPLVSGCKVPKNGEDITL    dog                   carnivore   HQ    12174
+    //• CCTGTCTCCCAG|GC|SGEAAHMFPWVSGCQVLKEGDPIGL    S.A. banded mongoose  carnivore   200M   6781
+    //• TCTGTCTCCCAG|GC|SGEAVHVFPWVSGCHLPKEGDPIGL    dwarf mongoose        carnivore   200M   5072
+    //• TCTGTCTCCCAG|GC|SGEAVHVFPWVSGCHIPEEGDPIGL    dwarf mongoose        carnivore   200M   6515
+    //• TCTGTCTTCCAG|CC|SKEPSHVFPLVSGCRTPEDGEPIVL    Asian palm civet      carnivore   200M   6636
+    //• TCTGTCTTCCAG|GC|SGDASHVFPLISGCKVPEEGDSIGL    fossa                 carnivore   200M   6979
+    //• TCTGTCTTCCAG|GC|SGELHMF.PWFSGCQAPRRPHRPGLL   striped hyena         carnivore   200M   6783
+    //• TCTGTCTTCCAG|AC|TETPHLF.PLVSGCEAPNEGDLIGLA   California sea lion   carnivora   200M   6353
+    //• TCTGTCTTCCAG|AC|TKTPHLF.PLVSECKAPKQGDSIGLA   giant otter           carnivore   200M   7507
+    //• TCTGTCTTCCAG|CC|SGEALHVFPLVSECQALKEGDSVVL    leopard               carnivore   some   7265
+    //• TCTGTCTTCCAG|CC|SGEALHVFPLVSECQALKEGDSVVL    lion                  carnivore   some  10305
+    //• TCTGTCTTTCAG|CC|SGEALHVFPLVSGCQAPKEGDPVVL    puma                  carnivore   some   7802
+    //• TCTGTCTTCCAG|CC|SGEALHVFPLVSECQALKEGDSVVL    Amur tiger            carnivore   some   9942
+    //• TCTGTCTTCCAG|AC|PVTPLDLFPLVSRCEAPQEDNHVVL    polar bear            carnivore   some   8338
+    //• TCTGTCTTCCAG|GC|SITLDL.FPLVSRCEAPQEDNHVVLA   giant panda           carnivore   some   8120
+    //
+    //• TCTGTCTTCCAG|TG|STKAPDVFIT.SACELPKDNSPVVLA   Patas monkey          primate     200M   9891
+    //• TCTGTCTTCCAG|GG|SAQSPEVFPVTSECEFLKNESYVVL    emperor tamarin       primate     200M  11194
+    //• TCTGTCTTCCAG|AG|PARSPDVFPITSGCELPKNTSSVFL    white-faced saki      primate     200M  11485
+    //• TCTGTCTTCCAG|AG|SPKAPDVFPIASACELPKDNSPVVL    n.p. gray langur      primate     200M  10266
+    //• TCTGTCTTCCAG|AG|STKAPDVFLIASACELPKDNSPVVL    red-shanked douc      primate     200M   9859
+    //• TCTGTCTTCCAG|TG|STKAPDVFPIISRCEPPKDDSPVVL    orangutan             primate     HQ    10153
+    //• TCTGTCTTCCAG|CA|APKAPDVFPIISGCRHPKDNSPVVL    gorilla               primate     HQ    10209
+    //• TCTGTCTTCCAG|CA|PTKAPDVFPIISGCRHPKDNSSVVL    pygmy chimp           primate     HQ    10370
+    //• TCTGTCTTCCAG|CA|PTKAPDVFPIISGCRHPKDNSPVVL    chimp                 primate     HQ    10411
+    //• TCTGTCTTCCAG|CA|PTKAPDVFPIISGCRHPKDNSPVVL    human                 primate     HQ    10542
+    //• TCTGTCTTCCAG|AG|STKAPEVFPIASACELPKDNSPVVL    proboscis monkey      primate     200M   9885
+    //• TCTGTCTTCCAG|GG|SARSPDVFPITSECELPKNDSFVVL    white-eared titi      primate     200M  11040
+    //
+    //• TCTGTCTTGCAG|GT|NEKGPDMFLL.SECKAPEENEKINLG   mouse                 rodent      HQ     6408
+    //• TCTGTCTTGCAG|CT|PEKEPDLFLS.SECKAPNQNEHVNVS   Norway rat            rodent      HQ     6234
+    //• TCTGTCTTGCAG|CT|PDKEPDMFLS.SECKAPNQNEHVNVS   black rat             rodent      some   6272
+    //• TCTGTCTTGCAG|CT|PDKDPDMFIL.SECQAPEKNKLAHLV   spiny mouse           rodent      200M   6353
+    //• TCTATCTTGCAG|TC|TQEDPHMFIA.SECRAPKKDDQVYLA   dassie rat            rodent      200M   6353
+    //• TCTGTCTTGCAG|GA|NFQHQAVFPIIPRCHVPEKNSHISL    woodland doormouse    rodent      200M   6398
+    //• TCTGTCTTTCAG|AA|PTEISTVYVT.SQCRSPGDGSLVDLA   common gundi          rodent      200M   6734
+    //• TCTGTCTTGCAG|GT|PSQTPDVYPVVSTCKAPEKGSRVSI    meadow jumping mouse  rodent      200M   8484
+    //• TCTGTCTTGCAG|AA|IDKEPKMFLLSTECEDSKEEKSVDL    scorpion mouse        rodent      200M   5683
+    //• TCTGTCTCACAG|AT|NSKEPQMFLLISECEFSKQNKLVGL    muskrat               rodent      200M   6214
+    //• TCTGTCTTGCAG|CT|SDNVPQVFLLISMCKAVNKNVPVDL    hispid cotton rat     rodent      200M   6223
+    //• TCTGTCTTGCAG|AA|TTMAPSVFPMASGCKVPSENVNLAC    Pacific pocket mouse  rodent      200M   7873
+    //• TCTGTTTTTCAG|TC|TVKPPDVFSIISGCKAPKEDSIMDL    American beaver       rodent      some   7202 x
+    //• TCTGTCTTGTAG|CC|TQQDSSVLTTLES.KAPGENGLMDLA   n. crested porcupine  rodent      200M   6772 x
+    //
+    //• TCTGTCTTCCAG|GT|GPPEVTVV...AECTAPEAGRNVTVACL pallid bat            bat         200M  15191
+    //• TCTGTCTTCCAG|GT|GTPEVTVLPMAEGCKAPEAGRNVTL    common pipistrelle    bat         200M  14520
+    //• TCTGTCTTTCAG|AT|GAPEVTVLPMVAECKTPKAGLPVTL    common pipistrelle    bat         200M  14565
+    //• AAGCACCTCCTG|TC|CLPGVTVFPLVSGCKAPKAGESVTL    eastern red bat       bat         200M  10231 x
+    //• AAGCACCACCTC|TC|CLPGVTVFPLVSGCKAPKAGEPVTL    hoary bat             bat         some  10167 x
+    //• AAGCACCACCTG|TC|CLPGVAVLPMVPEFKASREGISVTL    Brandt's bat          bat         some  17234 x
+    //• AAGAACCACCTG|TC|CLPGVAVLPMVPECKAPKEGVSVTL    David's myotis        bat         some  15491 x
+    //• GAGCCCCACTCT|TT|LSSRCSCVPMVLGCKAPNEGNPVTL    greater bulldog bat   bat         200M   8122 x
+    //• AGCCTAGCTCAG|TC|CLPDAAVLPMALGCKAPKEGGLVTL    stripe-hd rd-ear bat  bat         200M   8285 x
+    //• AGCCCAAATCAG|TC|YLPDAAVLPMALGCKAPNEGNPVTL    Calif leaf-nosed bat  bat         200M   8284 x
+    //• TCTGTCTTTCAG|GT|FSDL.TVLPKVANCDAPKANENMILA   Egyp. slit-faced bat  bat         200M  17109
+    //• AGCCCCACTCGG|TC|YLPDVAMVPIVPGCKAPNEGNPRPL    ghost-faced bat       bat         200M   6230 x
+    //• TCCCCCACTTTG|TC|CLPVVDELPVFLMCKALNEGDLGTL    greater false vampire bat         200M   8839 x
+    //• AGCTCAACTTGG|TC|SFPDAAVLPMALGCKAPKESYLTTL    tailed tailless bat   bat         200M   8311 x
+    //• ATCCCAACTTGG|TC|CLPDAAMLPMALGCKVPKEGDLVIL    Sebas short-tail bat  bat         200M   8208 x
+    //
+    //• TGTGTCTTCCAG|GG|TSTAVDVYPIFSGCKAPED.FIALAC   giant anteater        pilosan     200M   9462
+    //• TGTGTCTTCCAG|AG|TTESPDVFPILSGCKATENELIALA    Hoff's 2-fin. sloth   pilosan     some  11050
+    //
+    //• CCTGCCTTGCAG|AG|ASQAQLLLALVPTCKVPGEDEHMTL    tree pangolin         pangolin    200M   7637

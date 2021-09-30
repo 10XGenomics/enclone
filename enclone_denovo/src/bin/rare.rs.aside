@@ -1,0 +1,242 @@
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+
+// Assay for rare amino acids, as defined by zero occurrences in primate references.
+// For now, only heavy chains.
+
+use amino::*;
+use enclone_denovo::vdj_features::*;
+use fasta_tools::*;
+use pretty_trace::*;
+use string_utils::*;
+
+fn main() {
+    PrettyTrace::new().on();
+
+    // Get primate data.
+
+    // let features = ["FWR1", "FWR2", "FWR3", "CDR1", "CDR2"];
+    let features = ["FWR1"];
+    let mut data = vec![vec![Vec::<Vec<u8>>::new(); 50]; features.len()];
+    {
+        let dir = "/mnt/deck5/david.jaffe/denovo_ref";
+        let refs = std::fs::read_dir(&dir).unwrap();
+        let required = "Primates";
+        // let required = "";
+        for f in refs {
+            let f = f.unwrap().path();
+            let f = f.to_str().unwrap();
+            let g = f.rev_after("/").rev_before(".fasta").to_string();
+            if g.contains(&required) {
+                /*
+                if g.contains(":") {
+                    g = format!("{}:{}", g.before(":"), g.rev_after(":"));
+                }
+                */
+                let x = read_fasta_to_vec_vec_u8(&f);
+                for (fi, feature) in features.iter().enumerate() {
+                for i in (0..x.len()).step_by(2) {
+                    let chain_type = strme(&x[i]).before("V");
+                    if chain_type == "IGH" {
+                        let aa = aa_seq(&x[i+1], 0);
+                        let bb;
+                        if *feature == "FWR1" {
+                            bb = fwr1(&aa, &chain_type, false).unwrap();
+                        } else if *feature == "FWR2" {
+                            bb = fwr2(&aa, &chain_type, false).unwrap();
+                        } else if *feature == "FWR3" {
+                            bb = fwr3(&aa, &chain_type, false).unwrap();
+                        } else if *feature == "CDR1" {
+                            bb = cdr1(&aa, &chain_type, false).unwrap();
+                        } else {
+                            bb = cdr2(&aa, &chain_type, false).unwrap();
+                        }
+                        data[fi][bb.len()].push(bb.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Get data from the Abcellera human antibody list.
+
+    let mut ab = Vec::<(String, String)>::new(); // (chain, antibody)
+    let mut thera = Vec::<String>::new();
+    let mut ids = Vec::<usize>::new();
+    let mut species = Vec::<String>::new();
+    let f = include_str!["../../../antibody_data/thera_sabdab.csv"];
+    let mut first = true;
+    for line in f.lines() {
+        if first {
+            first = false;
+            continue;
+        }
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let lchains0 = fields[3].split(';').collect::<Vec<&str>>();
+        let mut lchains = Vec::<String>::new();
+        for i in 0..lchains0.len() {
+            if lchains0[i] == "Kappa" {
+                lchains.push("IGK".to_string());
+        } else if lchains0[i] == "Lambda" {
+                lchains.push("IGL".to_string());
+            }
+        }
+        if lchains.len() == 1 {
+            lchains.push(lchains[0].clone()); // probably wrong
+        }
+        let mut hspecies = fields[6].to_string();
+        let mut lspecies = fields[8].to_string();
+        if lspecies.len() == 0 {
+            lspecies = hspecies.clone();
+        }
+        if hspecies.contains(" ") {
+            hspecies = hspecies.before(" ").to_string();
+        }
+        if lspecies.contains(" ") {
+            lspecies = lspecies.before(" ").to_string();
+        }
+        if hspecies.len() == 0 {
+            hspecies = "unknown".to_string();
+        }
+        if lspecies.len() == 0 {
+            lspecies = "unknown".to_string();
+        }
+        if fields[7] != "na" {
+            thera.push(fields[0].to_string());
+            ab.push((
+                "IGH".to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[7]),
+            ));
+            ids.push(1);
+            species.push(hspecies.clone());
+        }
+        if fields[9] != "na" { // light
+            thera.push(fields[0].to_string());
+            let mut chain = "IGK".to_string(); // dubious
+            if lchains.len() > 0 {
+                chain = lchains[0].to_string();
+            }
+            ab.push((
+                chain,
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[9]),
+            ));
+            ids.push(1);
+            species.push(lspecies.clone());
+        }
+        if fields[10] != "na" {
+            thera.push(fields[0].to_string());
+            ab.push((
+                "IGH".to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[10]),
+            ));
+            ids.push(2);
+            species.push(hspecies.clone());
+        }
+        if fields[11] != "na" { // light
+            thera.push(fields[0].to_string());
+            ab.push((
+                lchains[1].to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[11]),
+            ));
+            ids.push(2);
+            species.push(lspecies.clone());
+        }
+    }
+
+    // Get heavy chains from Abcellera antibodies.
+
+    let mut abc_heavies = Vec::<Vec<u8>>::new();
+    let mut theras = Vec::<String>::new();
+    for i in 0..ab.len() {
+        if ab[i].0 == "IGH" && species[i].starts_with("Homo") {
+            let mut aa = ab[i].1.as_bytes().to_vec();
+            for k in (0..aa.len()).rev() {
+                if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
+                    || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC")
+                    || aa[k..].starts_with(b"YIC") {
+                    aa.truncate(k + 3);
+                    break;
+                }
+            }
+            abc_heavies.push(aa);
+            theras.push(thera[i].clone());
+        }
+    }
+
+    // Get heavy chains from AGBT expanded clonotypes.
+
+    let mut agbt_heavies = Vec::<Vec<u8>>::new();
+    let pout = include_str!["../../../antibody_data/agbt.expanded.pout"];
+    for line in pout.lines() {
+        if !line.starts_with("group") {
+            let fields = line.split(',').collect::<Vec<&str>>();
+            let mut aa = fields[4].as_bytes().to_vec();
+            for k in (0..aa.len()).rev() {
+                if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
+                    || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC")
+                    || aa[k..].starts_with(b"YIC") {
+                    aa.truncate(k + 3);
+                    break;
+                }
+            }
+            agbt_heavies.push(aa);
+        }
+    }
+
+    // Traverse the two sets.
+
+    let chain_type = "IGH";
+    let names = ["Abcellera", "AGBT"];
+    for (pass, heavies) in [abc_heavies, agbt_heavies].iter().enumerate() {
+        let mut rare_count = 0;
+        for i in 0..heavies.len() {
+            let mut rares = 0;
+            let aa = &heavies[i];
+            for (fi, feature) in features.iter().enumerate() {
+                let bb;
+                if *feature == "FWR1" {
+                    bb = fwr1(&aa, &chain_type, false).unwrap();
+                } else if *feature == "FWR2" {
+                    bb = fwr2(&aa, &chain_type, false).unwrap();
+                } else if *feature == "FWR3" {
+                    bb = fwr3(&aa, &chain_type, false).unwrap();
+                } else if *feature == "CDR1" {
+                    bb = cdr1(&aa, &chain_type, false).unwrap();
+                } else {
+                    bb = cdr2(&aa, &chain_type, false).unwrap();
+                }
+                let n = bb.len();
+                let refset = &data[fi][n];
+                for j in 0..n {
+                    let mut freq = 0;
+                    for k in 0..refset.len() {
+                        if refset[k][j] == bb[j] {
+                            freq += 1;
+                        }
+                    }
+                    if freq == 0 {
+                        rares += 1;
+                        /*
+                        if pass == 0 {
+                            println!("in {}, found rare amino acid at pos {} of {} for {}",
+                                theras[i], j+1, n, feature
+                            );
+                        }
+                        if pass == 1 {
+                            println!("in {}, found rare amino acid at pos {} of {} for {}",
+                                strme(&aa), j+1, n, feature
+                            );
+                        }
+                        */
+                    }
+                }
+            }
+            if rares >= 1 {
+                rare_count += 1;
+            }
+        }
+        println!("in {} set, found {} of {} antibodies with rare amino acids",
+            names[pass], rare_count, heavies.len(),
+        );
+    }
+}

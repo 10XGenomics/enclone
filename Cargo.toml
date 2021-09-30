@@ -4,6 +4,7 @@ members = [
     "enclone",
     "enclone_args",
     "enclone_core",
+    "enclone_denovo",
     "enclone_exec",
     "enclone_help",
     "enclone_main",

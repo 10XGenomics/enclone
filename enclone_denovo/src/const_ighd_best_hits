@@ -1,0 +1,148 @@
+# This file shows, for various assemblies, the best scoring IGHD hit, represented by the
+# twenty-five amino acids that start the putative IGHD sequence, ignoring the two bases before the
+# first full codon, and allowing for gaps, shown as dots.  
+#
+# These values are assumed correct for purposes of testing.  There may be multiple hits with 
+# identical amino acid signature, having the same score, and other hits with higher score, but no 
+# hits with the same score but different amino acid signature (which is unlikely anyway).
+
+# -------------------------------------------------------------------------------------------------
+
+# odd-toed ungulates
+
+GCF_001305755.1:ass                              SLEDTAVIPLFSECKAPKEGDVVSL old
+GCF_002863925.1:horse                            SLEDTAVIPLFSECKAPKEDDVVSL old
+GCA_004024905.1:Malayan_tapir                    SSQSLKVFPILPGCKAPKEDDTVVL old
+GCA_004025025.1:South_American_tapir             SSQSLKVFPILPECKAPKEDDTVFL old
+GCA_004027315.1:Black_rhinocerous                NSQPLKVFPILPGCKALEENEPVVL old
+GCA_004027795.1:Northern_white_rhino             NSQPLKVFPILPGCKALKENEPVVL old
+
+# -------------------------------------------------------------------------------------------------
+
+# even-toed ungulates
+
+    //  dup                                          blue whale            e-ungulate  some
+    //  dup                                          killer whale          e-ungulate  some
+    //  dup                                          sheep                 e-ungulate  some
+    //  dup                                          goat                  e-ungulate  some
+    //  dup                                          pig                   e-ungulate  some
+    //  dup                                          cow                   e-ungulate  some
+    //  dup                                          water buffalo         e-ungulate  some
+    //  dup                                          giraffe               e-ungulate  some
+
+# -------------------------------------------------------------------------------------------------
+
+# carnivores
+
+GCF_001857705.1:leopard                          SGEALHVFPLVSECQALKEGDSVVL old
+GCF_003709585.1:cheetah                          SGEALHVFPLVSGCQAPKEGDPVVL new/good
+GCA_000464555.1:Amur_tiger                       SGEALHVFPLVSECQALKEGDSVVL old
+GCA_004123975.1:puma                             SGEALHVFPLVSGCQAPKEGDPVVL old
+GCA_008795835.1:lion                             SGEALHVFPLVSECQALKEGDSVVL old
+GCA_004023805.1:Jaguar                           SGEALHVFPLVSECQALKEGDSVVL new/good
+GCA_003584765.1:brown_bear                       PVTPLDLFPLVSRCEAPQEDNHVVL new/good
+GCF_000687225.1:polar_bear                       PVTPLDLFPLVSRCEAPQEDNHVVL old
+GCA_004023905.1:Meerkat                          SEEAAHEFPWVSRCHLPEEGDPIGL old
+GCA_004027395.1:Domestic_dog_%village_dog        SRESSLLLPLVSGCKVPKNGEDITL old
+GCA_004023785.1:South_African_banded_mongoose    SGEAAHMFPWVSGCQVLKEGDPIGL old
+GCA_004024585.1:Asian_palm_civet                 SKEPSHVFPLVSGCRTPEDGEPIVL old
+GCA_004023885.1:Fossa                            SGDASHVFPLISGCKVPEEGDSIGL old
+GCA_004023825.1:Arctic_fox                       SRESALLLPLVSGCKVPKNGEDITL new/good
+GCA_004023965.1:Western_spotted_skunk            PD...TLFPLVPSCEAPKEGELINL new/good
+GCA_004024605.1:Giant_otter                      T.KTPHLFPLVSECKAPKQGDSIGL new/good
+GCA_004023865.1:Northern_elephant_seal           S.KMLDLFPLVSGCEAPNEGDLIGL new/good
+GCA_004024625.1:Honey_badger                     T.ETLHLFPLVSECKAPKQGDSIGL correct
+GCA_004024565.1:California_sea_lion              T.ETPHLFPLVSGCEAPNEGDLIGL correct
+GCA_004023845.1:Dwarf_mongoose                   SGEAVHVFPWVSGCHIPEEGDPIGL correct
+GCF_002007445.1:giant_panda                      SIT.LDLFPLVSRCEAPQEDNHVVL correct
+GCA_004023945.1:Striped_hyena                    SGE.LHMFPWFSGCQAPRRPHRPGL new/good
+GCA_003584765.1:brown_bear                       PVTPLDLFPLVSRCEAPQEDNHVVL new/good
+
+# -------------------------------------------------------------------------------------------------
+
+# primates
+
+GCA_004024785.1:Geoffroys_spider_monkey          SVRSPDVFPITSECELPKNNSFAVL new/good
+GCA_004024825.1:Red-shanked_douc                 STKAPDVFLIASACELPKDNSPVVL old
+GCA_004027105.1:Proboscis_monkey                 STKAPEVFPIASACELPKDNSPVVL old
+GCA_004027335.1:Patas_monkey                     STKAPDVF.ITSACELPKDNSPVVL correct
+GCA_004027715.1:White-eared_titi                 SARSPDVFPITSECELPKNDSFVVL old
+GCA_004027755.1:White-fronted_capuchin           STRSPDVFPITSACQLPKNDSSVAL new/good
+GCA_004027835.1:Mexican_howler_monkey            SVQSPDVFPITSECELPKNISFVVL new/good
+GCA_004026645.1:White-faced_saki                 PARSPDVFPITSGCELPKNTSSVFL old
+GCF_002880755.1:chimpanzee                       PTKAPDVFPIISGCRHPKDNSPVVL old
+GCF_002880775.1:sumatran_orangutan               STKAPDVFPIISRCEPPKDDSPVVL old
+GCF_008122165.1:western_lowland_gorilla          APKAPDVFPIISGCRHPKDNSPVVL old
+GCF_013052645.1:pygmy_chimpanzee                 PTKAPDVFPIISGCRHPKDNSSVVL old
+GCA_004025065.1:Northern_Plains_gray_langur      SPKAPDVFPIASACELPKDNSPVVL old
+GCA_004027615.1:De_brazzas_monkey                STKAPEVF.ITSACELPKDNNPVVL new/good
+GCA_004027255.1:Sunda_flying_lemur               STKAPSVFPLAPSCK.STDGSTVTL new
+GCA_004024885.1:Emperor_tamarin                  SAQSPEVFPVTSECEFLKNESYVVL old
+
+    //• TCTGTCTTCCAG|CA|PTKAPDVFPIISGCRHPKDNSPVVL    human                 primate     HQ    10542
+
+# -------------------------------------------------------------------------------------------------
+
+# rodents
+
+GCF_011064425.1:black_rat                        PDKEPDMF.LFSECKAPNQNEHVNL,PDKEPDMFLS.SECKAPNQNEHVNV correct
+GCA_004027185.1:Edible_dormouse                  SLQNQGVFPIISGCKAPDKNSYINL
+GCA_004027575.1:Gambian_pouched_rat              LAKKLDVFLLISECKAPKENIFVSL
+GCA_004026965.1:Dassie_rat                       TQEDPHLF.IASECRAPKKDDQVYL,TQEDPHMF.IASECRAPKKDDQVYL correct
+GCA_004363475.1:Pacific_pocket_mouse             TTMAPSVFPMASGCKVPSEN..VNL,TTMAPSVFPMASGYKAPSEN..VNL correct
+GCA_004027675.1:North_American_beaver            TVKPPDVFSIISGCKAPKEDSIMDL new/good
+GCF_001984765.1:American_beaver                  TVKPPDVFSIISGCKAPKEDSIMDL old
+GCF_000001895.5:Norway_rat                       PEKEPDLFLS.SECKAPNQNEHVNV old
+GCA_004027535.1:Cairo_spiny_mouse                PDKDPDMFIL.SECQAPEKNKLAHL old
+GCA_004025045.1:Hispid_cotton_rat                SDNVPQVFLLISMCKAVNKNVPVDL old
+GCA_004026605.1:Muskrat                          NSKEPQMFLLISECEFSKQNKLVGL old
+
+    //• TCTGTCTTGCAG|GT|NEKGPDMFLL.SECKAPEENEKINLG   mouse                 rodent      HQ     6408
+    //• TCTGTCTTGCAG|GA|NFQHQAVFPIIPRCHVPEKNSHISL    woodland doormouse    rodent      200M   6398
+    //• TCTGTCTTTCAG|AA|PTEISTVYVT.SQCRSPGDGSLVDLA   common gundi          rodent      200M   6734
+    //• TCTGTCTTGCAG|GT|PSQTPDVYPVVSTCKAPEKGSRVSI    meadow jumping mouse  rodent      200M   8484
+    //• TCTGTCTTGCAG|AA|IDKEPKMFLLSTECEDSKEEKSVDL    scorpion mouse        rodent      200M   5683
+    //• TCTGTCTTGTAG|CC|TQQDSSVLTTLES.KAPGENGLMDLA   n. crested porcupine  rodent      200M   6772 x
+
+# -------------------------------------------------------------------------------------------------
+
+# bats
+
+GCA_011751065.1:hoary_bat                        V....TVFPLVSGCKAPKAGEPVTL correct
+GCF_000147115.1:little_brown_bat                 V...PAVLPMVLECKAPKEGGSVTL correct
+GCF_000327345.1:Davids_myotis                    V...PAVLPMALECKAPKEGGSVTL correct
+GCA_004026985.1:Greater_mouse-eared_bat          V...PAVLPMVLECKAPKEGGSVTL correct
+GCA_004027475.1:Tailed_tailless_bat              A....AVLPMALGCKAPKESYLTTL correct
+GCA_004026805.1:Eastern_red_bat                  V....TVFPLVSGCKAPKAGESVTL correct
+GCA_004026625.1:Common_pipistrelle               GAPEVTVLPMVAECKTPKAGLPVTL,GTPEVTVLPMAEGCKAPEAGGNVIL,GTPEVTVLPMAEGCKAPEAGRNVTL correct
+GCA_004026665.1:Ashy-gray_tube-nosed_bat         M....AVLSMVQECKAPKEGVSVTL,V....AVLPMVPECKAPKENVSVTL correct
+GCA_004026545.1:Ghost-faced_bat                  V....AMVPIVPGCKAPNEGNPRPL correct
+GCA_007922775.1:Pallid_bat                       GPPEVTV...VAECTAPEAGRNVTV correct
+GCF_000412655.1:Brandts_bat                      V...PAVLPMVLQCKAPKEGGSVTL correct
+
+# -------------------------------------------------------------------------------------------------
+
+# pilosans
+
+GCA_004027775.1:Brown-throated_sloth             TTERPDVFLILSGCKA.TENELIAL new
+GCA_004027855.1:Linnaeuss_two_toed_sloth         TTESPDVFPILSGCKA.TENELIAL new
+GCA_000164785.2:Hoffmanns_two-fingered_sloth     TTESPDVFPILSGCKA.TENELIAL
+GCA_004026745.1:Giant_anteater                   TSTAVDVYPIFSGCKAPE..DFIAL
+
+    //• TGTGTCTTCCAG|GG|TSTAVDVYPIFSGCKAPED.FIALAC   giant anteater        pilosan     200M   9462
+    //• TGTGTCTTCCAG|AG|TTESPDVFPILSGCKATENELIALA    Hoff's 2-fin. sloth   pilosan     some  11050
+
+# -------------------------------------------------------------------------------------------------
+
+# pangolins
+
+    //• CCTGCCTTGCAG|AG|ASQAQLLLALVPTCKVPGEDEHMTL    tree pangolin         pangolin    200M   7637
+
+# -------------------------------------------------------------------------------------------------
+
+# cingulates
+
+GCA_004025125.1:Southern_three-banded_armadillo  THRVPDVFPILSECKAPKDSEWMAL new
+
+# -------------------------------------------------------------------------------------------------
+

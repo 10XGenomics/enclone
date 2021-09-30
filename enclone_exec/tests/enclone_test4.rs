@@ -126,10 +126,12 @@ fn test_source_code_file_length() {
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
-        for x in ["src", "src/bin", "tests"].iter() {
-            let d = format!("../{}/{}", d, x);
-            if path_exists(&d) {
-                dirs.push(d.clone());
+        if d != "enclone_denovo" {
+            for x in ["src", "src/bin", "tests"].iter() {
+                let d = format!("../{}/{}", d, x);
+                if path_exists(&d) {
+                    dirs.push(d.clone());
+                }
             }
         }
     }

@@ -1,0 +1,268 @@
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+
+// Dump regions in Abcellera antibodies.
+
+use vdj_ann::annotate::*;
+use enclone_denovo::vdj_features::*;
+use io_utils::*;
+use pretty_trace::*;
+use rayon::prelude::*;
+use std::io::Write;
+use string_utils::*;
+
+// Abcellera antibodies with possible issues because FWR4 doesn't match what we expect
+//
+// TFGGGTHLTVL 4 1      mislabeled
+// NFGQGTKLTVL 4 2      mislabeled
+// YPLTFGGGTHL 11 8     missing FWR4
+// SQPKAAPSVTL 10 10    confused anarci
+// WTFGCGTKLEI 9 9      missing or truncated FWR4
+// GGTKLTVLEPK 7 9
+// GGTKLTVLEPK 7 9
+// TFGPGTVVDFR 3 6
+// PTFGGGTVEIK 4 6
+
+// For a given stop position on a amino acid sequence, and a given chain type, count the number 
+// of differences with a motif for the right end of IG*J.  The motif is based on denovo J gene
+// calls for human, jaguar, cow, black rat, black rhino, hoary bat, tamarin, polar bear, David's 
+// bat, blue whale and mouse.  For these, we observed at most one difference with the motif, 
+// except for IGLJ, where we observed two.
+//
+// It might be better to change this into a function that checks differences with an FWR4 motif.
+
+fn _fr4_stop_at_diffs(aa: &[u8], pos: usize, chain_type: &str) -> usize {
+    let igj = [
+        // IGHJ
+        [b"W".to_vec(), 
+         b"G".to_vec(), 
+         b"KQRTP".to_vec(), 
+         b"G".to_vec(), 
+         b"TLIVA".to_vec(), 
+         b"TLMSV".to_vec(), 
+         b"VL".to_vec(), 
+         b"T".to_vec(), 
+         b"VI".to_vec(), 
+         b"S".to_vec(), 
+         b"SA".to_vec()],
+        // IGKJ
+        [b"TS".to_vec(),
+         b"F".to_vec(),
+         b"GS".to_vec(),
+         b"QAGPSD".to_vec(),
+         b"G".to_vec(),
+         b"T".to_vec(),
+         b"KRT".to_vec(),
+         b"LV".to_vec(),
+         b"ED".to_vec(),
+         b"IL".to_vec(),
+         b"K".to_vec()],
+        // IGLJ
+        [b"IV".to_vec(),
+         b"FL".to_vec(),
+         b"G".to_vec(),
+         b"SGT".to_vec(),
+         b"G".to_vec(),
+         b"T".to_vec(),
+         b"KQTH".to_vec(),
+         b"LV".to_vec(),
+         b"T".to_vec(),
+         b"VI".to_vec(),
+         b"L".to_vec()]
+    ];
+    let ind;
+    if chain_type == "IGH" {
+        ind = 0;
+    } else if chain_type == "IGK" {
+        ind = 1;
+    } else {
+        ind = 2;
+    }
+    let n = igj[ind].len();
+    let mut diffs = 0;
+    for i in 0..n {
+        let mut good = false;
+        for j in 0..igj[ind][i].len() {
+            if igj[ind][i][j] == aa[pos-n+i] {
+                good = true;
+            }
+        }
+        if !good {
+            diffs += 1;
+        }
+    }
+    diffs
+}
+
+/*
+IGKJ:  TFGQGTKLEIK
+       S SA  RVDL
+          G  T
+          P  
+          S
+          D
+          
+IGLJ:  IFGSGTKLTVL
+       VL G  QV I
+          T  T
+          S  H
+*/
+
+fn main() {
+    PrettyTrace::new().on();
+
+    // Get data from the abcellera human antibody list.
+
+    let mut ab = Vec::<(String, String, String)>::new();
+    let mut thera = Vec::<String>::new();
+    let f = include_str!["../../../antibody_data/thera_sabdab.csv"];
+    let mut first = true;
+    for line in f.lines() {
+        if first {
+            first = false;
+            continue;
+        }
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let hspecies = fields[6].to_string();
+        if hspecies.starts_with("Vicugna") {
+            continue;
+        }
+        let lchains0 = fields[3].split(';').collect::<Vec<&str>>();
+        let mut lchains = Vec::<String>::new();
+        for i in 0..lchains0.len() {
+            if lchains0[i] == "Kappa" {
+                lchains.push("IGK".to_string());
+        } else if lchains0[i] == "Lambda" {
+                lchains.push("IGL".to_string());
+            }
+        }
+        if lchains.len() == 1 {
+            lchains.push(lchains[0].clone()); // probably wrong
+        }
+        if fields[7] != "na" && fields[9] != "na" {
+            thera.push(fields[0].to_string());
+            let mut chain = "IGK".to_string(); // dubious
+            if lchains.len() > 0 {
+                chain = lchains[0].to_string();
+            }
+            ab.push((
+                chain,
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[7]),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[9])
+            ));
+        }
+        if fields[10] != "na" && fields[11] != "na" {
+            thera.push(fields[0].to_string());
+            let mut chain = "IGK".to_string(); // dubious
+            if lchains.len() > 0 {
+                chain = lchains[1].to_string();
+            }
+            ab.push((
+                chain,
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[10]),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[11])
+            ));
+        }
+    }
+
+
+    /*
+    for i in 0..ab.len() {
+        if ab[i].0 == "IGL" {
+            let x = &ab[i].2.as_bytes();
+            let diffs = fr4_stop_at_diffs(&x, x.len(), &ab[i].0);
+            let diffs2 = fr4_stop_at_diffs(&x, x.len(), "IGK");
+            if diffs > 1 {
+                println!("{} {} {}", strme(&x[x.len()-11..]), diffs, diffs2);
+            }
+        }
+    }
+    std::process::exit(0);
+    */
+
+
+    let mut results = Vec::<(usize, Vec<u8>)>::new();
+    for i in 0..ab.len() {
+        results.push((i, Vec::<u8>::new()));
+    }
+    let cdr3_motif_right = cdr3_motif_right();
+    // let j_ends = [b"HWGQGTLVTVSS", b"WTFGQGTKVEIK", b"YVFGTGTKVTVL"];
+    // .. in test cases, see 7 matches ..
+    println!("therapeutic,fwr1_aa1,cdr1_aa1,fwr2_aa1,cdr2_aa1,fwr3_aa1,cdr3_aa1,fwr4_aa1,\
+        fwr1_aa2,cdr1_aa2,fwr2_aa2,cdr2_aa2,fwr3_aa2,cdr3_aa2,fwr4_aa2");
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        fwrite!(res.1, "{}", thera[i]);
+        for pass in 0..2 {
+            let aa;
+            let chain_type;
+            if pass == 0 {
+                aa = ab[i].1.as_bytes().to_vec();
+                chain_type = "IGH".to_string();
+            } else {
+                aa = ab[i].2.as_bytes().to_vec();
+                chain_type = ab[i].0.clone();
+            }
+            let mut c3_start = None;
+            for k in (0..aa.len()).rev() {
+                if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
+                    || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC")
+                    || aa[k..].starts_with(b"YIC") {
+                    c3_start = Some(k + 3);
+                    break;
+                }
+            }
+
+            // XXX:
+            if c3_start.is_none() { // dubious
+                // println!("{} ==> {}", thera[i], strme(&aa));
+
+                /*
+                Benralizumab ==> MXXXXXXXXXXXXXXXXXXXXEVQLVQSGAEVKKPGASVKVSCKASGYTFTSYVIHWVRQRPGQGLAWMGYINPYNDGTKYNERFKGKVTITSDRSTSTVYMELSSLRSEDTAVYLCGREGIRYYGLLGDYWGQGTLVTVSS
+                Girentuximab ==> MXXXXXXXXXXXXXXXXXXXXDIVMTQSQRFMSTTVGDRVSITCKASQNVVSAVAWYQQKPGQSPKLLIYSASNRYTGVPDRFTGSGSGTDFTLTISNMQSEDLADFFCQQYSNYPWTFGGGTKLEIK
+                Abelacimab ==> MXXXXXXXXXXXXXXXXXXXXQSVLTQPPSASGTPGQRVTISCSGSSSNIGSNDVSWYQQLPGTAPKLLIYKNYNRPSGVPDRFSGSKSGTSASLAISGLQSEDEADYYAWDQRQFDVVFGGGTKLTVL
+                Gremubamab ==> MXXXXXXXXXXXXXXXXXXXXAIQMTQSPSSLSASVGDRVTITCRASQGIRNDLGWYQQKPGKAPKLLIYSASTLQSGVPSRFSGSGSGTDFTLTISSLQPEDFATYCLQDYNYPWTFGQGTKVEIK
+                */
+
+                continue;
+            }
+
+            let c3_start = c3_start.unwrap();
+            let x = &aa[0..c3_start];
+            let f1 = fwr1(&x.to_vec(), &chain_type, false).unwrap();
+            let f2 = fwr2(&x.to_vec(), &chain_type, false).unwrap();
+            let mut f3 = fwr3(&x.to_vec(), &chain_type, false).unwrap();
+            f3 = f3[0..f3.len()-1].to_vec();
+            let c1 = cdr1(&x.to_vec(), &chain_type, false).unwrap();
+            let c2 = cdr2(&x.to_vec(), &chain_type, false).unwrap();
+            let c3_start = cdr3_start(&x.to_vec(), &chain_type, false) - 1;
+            let mut best_score = 0;
+            let mut best_stop = 0;
+            for l in 5-3..=27-3 {
+                if c3_start + l + cdr3_motif_right[0].len() > aa.len() {
+                    break;
+                }
+                let mut score = 0;
+                for j in 0..cdr3_motif_right[0].len() {
+                    for k in 0..2 {
+                        if aa[c3_start + l + j] == cdr3_motif_right[k][j] {
+                            score += 1;
+                        }
+                    }
+                }
+                if score > best_score {
+                    best_score = score;
+                    best_stop = c3_start + l;
+                }
+            }
+            assert!( best_score > 0 );
+            let f4_start = best_stop + 3;
+            let c3 = &aa[c3_start..f4_start];
+            let f4 = aa[f4_start..].to_vec();
+            fwrite!(res.1, ",{},{},{},{},{},{},{}",
+                strme(&f1), strme(&c1), strme(&f2), strme(&c2), strme(&f3), strme(&c3), strme(&f4));
+        }
+    });
+    for i in 0..results.len() {
+        println!("{}", strme(&results[i].1));
+    }
+}

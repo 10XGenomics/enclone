@@ -5,6 +5,7 @@ enclone               most of the code up to "printing"
 enclone_args          argument processing
 enclone_com           inter-processs communication (experimenal)
 enclone_core          core definitions, etc.
+enclone_denovo        experimental code for making VDJ references
 enclone_exec          just the actual main program
 enclone_help          help menus from the command line
 enclone_main          this includes the enclone main program guts
