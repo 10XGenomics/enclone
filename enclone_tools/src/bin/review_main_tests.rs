@@ -24,7 +24,7 @@ fn main() {
             "enclone",
             res.0,
             "",
-            &TESTS[res.0],
+            TESTS[res.0],
             "test",
             &mut res.1,
             &mut res.2,

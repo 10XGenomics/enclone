@@ -67,10 +67,8 @@ pub fn edit_html(html: &str) -> String {
                 r###"<a href="../../pages/auto/help.{}.html"><code>enclone help {}</code></a>"###,
                 x, x
             );
-            if m.contains(&in1) || m.contains(&in2) {
-                if m.ends_with("│") {
-                    m = format!("{}  │", m.rev_before("│"));
-                }
+            if (m.contains(&in1) || m.contains(&in2)) && m.ends_with('│') {
+                m = format!("{}  │", m.rev_before("│"));
             }
             m = m.replace(&in1, &out);
             m = m.replace(&in2, &out);
@@ -164,10 +162,9 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
     let mut title = String::new();
     let mut extra_head = String::new();
     {
-        let f = BufReader::new(File::open(&in_file).expect(&format!(
-            "In directory {}, could not open file \"{}\"",
-            pwd, &in_file
-        )));
+        let f = BufReader::new(File::open(&in_file).unwrap_or_else(|_| {
+            panic!("In directory {}, could not open file \"{}\"", pwd, &in_file)
+        }));
         let mut in_head = false;
         for line in f.lines() {
             let s = line.unwrap();
@@ -218,7 +215,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
         } else if s.starts_with("#include ") {
             let mut f = format!("../{}", s.after("#include "));
             if !up {
-                f = format!("{}", s.after("#include "));
+                f = s.after("#include ").to_string();
             }
             let h = open_for_read![&f];
             let mut started = false;
@@ -270,7 +267,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
                 "#required_two_cell_clonotypes",
                 &add_commas(required_two_cell_clonotypes),
             );
-            s = s.replace("#required_fp_percent", &format!("{}", &required_fp_percent));
+            s = s.replace("#required_fp_percent", &(&required_fp_percent).to_string());
             fwriteln!(g, "{}", s);
         }
     }

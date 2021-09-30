@@ -36,14 +36,14 @@ pub fn split_orbits(
         }
         let mat = define_mat(
             is_bcr,
-            &to_bc,
-            &sr,
-            &ctl,
-            &exact_clonotypes,
+            to_bc,
+            sr,
+            ctl,
+            exact_clonotypes,
             &exacts,
             &od,
-            &info,
-            &raw_joins,
+            info,
+            raw_joins,
         );
         let cols = mat.len();
 

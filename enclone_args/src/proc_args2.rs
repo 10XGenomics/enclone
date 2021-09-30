@@ -121,11 +121,12 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
     if !ctl.clono_print_opt.amino.is_empty() {
         ctl.clono_print_opt.cvars.insert(0, "amino".to_string());
     }
-    if ctl.gen_opt.mouse && ctl.gen_opt.refname.len() > 0 {
-        return Err(format!(
+    if ctl.gen_opt.mouse && !ctl.gen_opt.refname.is_empty() {
+        return Err(
             "\nIf you specify REF, please do not also specify MOUSE.  It is enough to\n\
              set REF to a mouse reference sequence.\n"
-        ));
+                .to_string(),
+        );
     }
 
     // Remove "datasets" from lvars if there is only one dataset and LVARS not specified.
@@ -137,10 +138,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
     // Print command line arguments and dataset summary.
 
     if !ctl.silent {
-        println!("");
+        println!();
         for i in 0..args.len() {
             let mut x = args[i].clone();
-            if i == 0 && x.contains("/") {
+            if i == 0 && x.contains('/') {
                 x = x.rev_after("/").to_string();
             }
             if i > 0 {
@@ -148,7 +149,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
             }
             print!("{}", x);
         }
-        println!("");
+        println!();
         println!(
             "\nThere are {} datasets from {} donors.",
             ctl.origin_info.dataset_path.len(),
@@ -169,7 +170,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
         i = j;
     }
     if !ctl.silent {
-        println!("");
+        println!();
     }
 
     // Get origin descriptions.  Flaky and particularly flaky when internal origin args are paths,
@@ -205,10 +206,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
             ctl.origin_info.descrips.push(results[i].1.clone());
         }
         if ctl.gen_opt.descrip {
-            println!("");
+            println!();
             for i in 0..ctl.origin_info.n() {
                 if i > 0 {
-                    println!("");
+                    println!();
                 }
                 println!(
                     "dataset {} ==> origin {} ==> donor {} ==> dataset descrip = {}",

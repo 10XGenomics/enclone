@@ -69,7 +69,7 @@ pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
         edges[2 * (n0 - n)] = (verts[f], vnew, df);
         edges[2 * (n0 - n) + 1] = (verts[g], vnew, dg);
         verts[f] = vnew;
-        for k in g..n - 1 as usize {
+        for k in g..n - 1_usize {
             verts[k] = verts[k + 1];
         }
         for i in 0..n {

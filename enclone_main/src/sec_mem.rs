@@ -16,52 +16,50 @@ pub fn test_sec_mem(ctl: &mut EncloneControl) -> Result<(), String> {
     ctl.gen_opt.using_secmem =
         bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string());
     if !ctl.gen_opt.using_secmem
-        && ctl.parseable_opt.pout.len() > 0
-        && ctl.parseable_opt.pcols.len() == 0
+        && !ctl.parseable_opt.pout.is_empty()
+        && ctl.parseable_opt.pcols.is_empty()
+        && (ctl.gen_opt.species == "human" || ctl.gen_opt.species == "mouse")
+        && is_bcr
     {
-        if ctl.gen_opt.species == "human" || ctl.gen_opt.species == "mouse" {
-            if is_bcr {
-                let mut have_bam = true;
-                for g in ctl.origin_info.gex_path.iter() {
-                    if g.len() == 0 {
-                        have_bam = false;
-                        break;
-                    }
-                    let bam = format!("{}/possorted_genome_bam.bam", g);
-                    if !path_exists(&bam) {
-                        have_bam = false;
-                        break;
-                    }
-                }
-                if have_bam {
-                    let o = Command::new("samtools")
-                        .arg("--help")
-                        .output()
-                        .expect("failed to execute samtools");
-                    let status = o.status.code().unwrap();
-                    if status == 0 {
-                        ctl.gen_opt.using_secmem = true;
-                    }
-                }
+        let mut have_bam = true;
+        for g in ctl.origin_info.gex_path.iter() {
+            if g.is_empty() {
+                have_bam = false;
+                break;
+            }
+            let bam = format!("{}/possorted_genome_bam.bam", g);
+            if !path_exists(&bam) {
+                have_bam = false;
+                break;
+            }
+        }
+        if have_bam {
+            let o = Command::new("samtools")
+                .arg("--help")
+                .output()
+                .expect("failed to execute samtools");
+            let status = o.status.code().unwrap();
+            if status == 0 {
+                ctl.gen_opt.using_secmem = true;
             }
         }
     }
     if bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string()) {
         if ctl.gen_opt.species != "human" && ctl.gen_opt.species != "mouse" {
-            return Err(format!(
+            return Err(
                 "\nThe lvars sec and mem can only be used for data from human and mouse.\n"
-            ));
+                    .to_string(),
+            );
         }
         if !is_bcr {
-            return Err(format!(
-                "\nThe lvars sec and mem do not make sense for TCR data.\n"
-            ));
+            return Err("\nThe lvars sec and mem do not make sense for TCR data.\n".to_string());
         }
         for g in ctl.origin_info.gex_path.iter() {
-            if g.len() == 0 {
-                return Err(format!(
+            if g.is_empty() {
+                return Err(
                     "\nThe lvars sec and mem can only be used if GEX data are provided.\n"
-                ));
+                        .to_string(),
+                );
             }
             let bam = format!("{}/possorted_genome_bam.bam", g);
             if !path_exists(&bam) {
@@ -79,10 +77,9 @@ pub fn test_sec_mem(ctl: &mut EncloneControl) -> Result<(), String> {
             .expect("failed to execute samtools");
         let status = o.status.code().unwrap();
         if status != 0 {
-            return Err(format!(
-                "\nThe lvars sec and mem can only be used if the samtools\n\
+            return Err("\nThe lvars sec and mem can only be used if the samtools\n\
                 executable is in your path.\n"
-            ));
+                .to_string());
         }
     }
     Ok(())

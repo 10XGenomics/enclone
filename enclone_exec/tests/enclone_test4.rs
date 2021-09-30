@@ -3,6 +3,8 @@
 #![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
+use enclone_vars::var::*;
+use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
@@ -25,7 +27,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 91870304;
+    const ENCLONE_SIZE: usize = 93882464;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -86,7 +88,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.5088;
+    const REQUIRED_GI: f64 = 18.7545;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -124,10 +126,12 @@ fn test_source_code_file_length() {
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
-        for x in ["src", "src/bin", "tests"].iter() {
-            let d = format!("../{}/{}", d, x);
-            if path_exists(&d) {
-                dirs.push(d.clone());
+        if d != "enclone_denovo" {
+            for x in ["src", "src/bin", "tests"].iter() {
+                let d = format!("../{}/{}", d, x);
+                if path_exists(&d) {
+                    dirs.push(d.clone());
+                }
             }
         }
     }
@@ -182,7 +186,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 30;
+    const DUPPED_CRATES: usize = 38;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
@@ -265,7 +269,11 @@ fn test_dependency_structure() {
 
     let top = dir_list("..");
     for d in top.iter() {
-        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_tools" {
+        if d.starts_with("enclone")
+            && d != "enclone_main"
+            && d != "enclone_tools"
+            && d != "enclone_denovo"
+        {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
                 let f = open_for_read![&toml];
@@ -484,4 +492,23 @@ fn test_yaml() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
         std::process::exit(1);
     }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 37. Test to see if vars file is sorted and formatted correctly.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_vars() {
+    let old = std::fs::read_to_string("../enclone_vars/src/vars").unwrap();
+    let new = sort_vars(&old);
+    if new != old {
+        eprintln!("\nPlease run var_sort to sort the variables file.\n");
+        std::process::exit(1);
+    }
+    let _ = parse_variables(&old);
 }

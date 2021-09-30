@@ -41,7 +41,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         }
         if jsonx.contains('/') {
             let p = jsonx.rev_before("/");
-            if !path_exists(&p) {
+            if !path_exists(p) {
                 return Err(format!(
                     "\nThere should be a directory\n\
                      \"{}\"\n\
@@ -89,16 +89,14 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                 let mut s = line.unwrap();
                 if ctl.gen_opt.imgt_fix {
                     // Fix IGHJ6.
-                    if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
-                        .to_string()
-                        || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
-                            .to_string()
+                    if s == *"ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
+                        || s == *"ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
                     {
                         s += "G";
                     }
                 }
                 *refx += &s;
-                *refx += &"\n";
+                *refx += "\n";
             }
         } else {
             let imgt = &ctl.gen_opt.config["imgt_mouse"];
@@ -109,7 +107,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             for line in f.lines() {
                 let s = line.unwrap();
                 *refx += &s;
-                *refx += &"\n";
+                *refx += "\n";
             }
         }
         ctl.gen_opt.reannotate = true;
@@ -117,7 +115,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
 
     // Step 3.  Test to see if REF is specified.
 
-    if refx.len() == 0 && ctl.gen_opt.refname.len() > 0 {
+    if refx.is_empty() && !ctl.gen_opt.refname.is_empty() {
         if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
             return Err(format!(
                 "\nProblem with REF: \"{}\"\nis a directory, not a file.\n",
@@ -146,11 +144,11 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         for line in f.lines() {
             let s = line.unwrap();
             *refx += &s;
-            *refx += &"\n";
+            *refx += "\n";
             if s.starts_with('>') {
                 nheader += 1;
-                let v: Vec<&str> = s.split_terminator('|').collect();
-                if v.len() < 4 {
+
+                if s.split_terminator('|').count() < 4 {
                     return Err(format!(
                         "\nThe header line\n{}\nin the FASTA file specified by\nREF={}\n\
                         does not have the required structure for a cellranger or \
@@ -174,13 +172,13 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             }
         }
         if nheader == 0 || bases == 0 || (na + nc + ng + nt) as f64 / (bases as f64) < 0.95 {
-            return Err(format!("\nProblem with REF: it is not a FASTA file.\n"));
+            return Err("\nProblem with REF: it is not a FASTA file.\n".to_string());
         }
     }
 
     // Step 4.  Test for presence of a reference file in the VDJ directories.
 
-    if refx.len() == 0 && ctl.gen_opt.refname.len() == 0 {
+    if refx.is_empty() && ctl.gen_opt.refname.is_empty() {
         let rpaths = [
             "outs/vdj_reference/fasta/regions.fa",
             "vdj_reference/fasta/regions.fa",
@@ -196,10 +194,10 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                 }
             }
         }
-        if refs.len() > 0 {
+        if !refs.is_empty() {
             unique_sort(&mut refs);
             if refs.len() > 1 {
-                return Err(format!(
+                return Err(
                     "The VDJ reference sequences that were supplied to Cell Ranger are not \
                     identical with each other.\nAs a consequence, the VDJ output files are not \
                     compatible with each other, so enclone can't run.\nYou have some options as \
@@ -208,15 +206,17 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                     2. You can select one of the references, and supply that to enclone using the \
                     REF option.\n   You will also need to supply the argument RE to get enclone to \
                     recompute annotations,\n   and that will make it somewhat slower.\n\n"
-                ));
+                        .to_string(),
+                );
             }
             if ctl.gen_opt.mouse {
-                return Err(format!(
+                return Err(
                     "\nSince the reference sequence is already in the VDJ input directories that\n\
                     you supplied to enclone, it is not necessary to supply the MOUSE argument.\n\
                     Please remove that argument.  Exiting now because of possible unintended\n\
                     consequences.\n"
-                ));
+                        .to_string(),
+                );
             }
             *refx = refs[0].clone();
         }
@@ -225,7 +225,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
     // Step 5.  Attempt to determine the reference that was used by reading far enough into the
     // first json file to find a distinguishing entry.
 
-    if refx.len() == 0 && jsonx.len() > 0 {
+    if refx.is_empty() && !jsonx.is_empty() {
         let cr_ver = ["2.0", "3.1", "4.0", "current"];
         let species = ["human", "mouse"];
         let mut refhash = Vec::<(HashMap<usize, (usize, String)>, String)>::new();
@@ -305,14 +305,15 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             }
         }
     }
-    if refx.len() == 0 && jsonx.len() > 0 {
-        return Err(format!(
+    if refx.is_empty() && !jsonx.is_empty() {
+        return Err(
             "\nenclone was unable to determine the reference sequence that you used.  You \
             have two options:\n\
             1. If you used cellranger version 4.0 or later, copy the vdj_reference directory\n   \
                from there to the outs directory that contains your other enclone input data.\n\
-            2. Use the REF argument to specify the name of the reference fasta file.\n",
-        ));
+            2. Use the REF argument to specify the name of the reference fasta file.\n"
+                .to_string(),
+        );
     }
     Ok(())
 }

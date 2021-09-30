@@ -64,7 +64,7 @@ impl LinearCondition {
         if !rhs.contains('.') && !rhs.contains('e') {
             rhs += ".0";
         }
-        if !rhs.parse::<f64>().is_ok() {
+        if rhs.parse::<f64>().is_err() {
             return Err(format!(
                 "\nImproperly formatted condition, right-hand side invalid: {}.\n\
                 The right-hand side needs to be a constant.  Please type \
@@ -77,7 +77,7 @@ impl LinearCondition {
         let mut parts = Vec::<String>::new();
         let mut last = 0;
         let lhsx = lhs.as_bytes();
-        let mut parens = 0 as isize;
+        let mut parens = 0_isize;
         for i in 0..lhsx.len() {
             if i > 0 && parens == 0 && (lhsx[i] == b'+' || lhsx[i] == b'-') {
                 if lhsx[last] != b'+' {
@@ -109,7 +109,7 @@ impl LinearCondition {
                 if !coeffi.contains('.') && !coeffi.contains('e') {
                     coeffi += ".0";
                 }
-                if !coeffi.parse::<f64>().is_ok() {
+                if coeffi.parse::<f64>().is_err() {
                     return Err(format!(
                         "\nImproperly formatted condition, coefficient {} is invalid: {}.\n\
                         Please type \"enclone help filter\" for more information.\n",
@@ -130,10 +130,10 @@ impl LinearCondition {
             }
         }
         Ok(LinearCondition {
-            coeff: coeff,
-            var: var,
-            rhs: rhs,
-            sense: sense,
+            coeff,
+            var,
+            rhs,
+            sense,
         })
     }
 
@@ -142,14 +142,14 @@ impl LinearCondition {
         for i in 0..self.coeff.len() {
             lhs += self.coeff[i] * val[i];
         }
-        if self.sense == "lt".to_string() {
-            return lhs < self.rhs;
-        } else if self.sense == "gt".to_string() {
-            return lhs > self.rhs;
-        } else if self.sense == "le".to_string() {
-            return lhs <= self.rhs;
+        if self.sense == *"lt" {
+            lhs < self.rhs
+        } else if self.sense == *"gt" {
+            lhs > self.rhs
+        } else if self.sense == *"le" {
+            lhs <= self.rhs
         } else {
-            return lhs >= self.rhs;
+            lhs >= self.rhs
         }
     }
 

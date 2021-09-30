@@ -87,7 +87,7 @@ pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata
         if x.len() < y.len() {
             return Ordering::Less;
         }
-        return Ordering::Equal;
+        Ordering::Equal
     });
 }
 
@@ -190,7 +190,7 @@ pub fn study_consensus(
                 fwriteln!(log, " U = {}", strme(&rutrs[i]));
             }
             for i in 0..lefts.len() {
-                if i + 1 <= 9 {
+                if i < 9 {
                     fwrite!(log, " ");
                 }
                 fwriteln!(log, "{} = {}", i + 1, strme(&lefts[i]));
@@ -201,7 +201,7 @@ pub fn study_consensus(
             }
         }
     }
-    if ctl.gen_opt.con_con && clones.len() > 0 {
+    if ctl.gen_opt.con_con && !clones.is_empty() {
         // ???????????????????????????????????????
         // NOTE TRUNCATED TO 120 BASES!
         const SHOW: usize = 120;
@@ -304,7 +304,7 @@ pub fn study_consensus(
                 }
             }
             for i in 0..rights.len() {
-                if i + 1 <= 9 {
+                if i < 9 {
                     fwrite!(log, " ");
                 }
                 fwriteln!(log, "{} = {} = {}", i + 1, strme(&rights[i]), bcs[i]);

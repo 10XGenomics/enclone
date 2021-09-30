@@ -45,12 +45,6 @@ WAITING ON ICED
 7.  Rotation of text is not yet supported, so xy plots cannot be converted to canvas, so they
     can't have tooltips.
 
-8.  When the tooltip box is placed on top of the control panel, text from the control panel should
-    not bleed through.  In addition, block characters that underlie the actual text in the tooltip
-    box do not fully connect, leaving tiny white spaces in between.  Finally, allowing the tooltip
-    box to escape the canvas may be relying on unstable iced behavior that could disappear in a 
-    future release.  
-
 ---------------------------------------------------------------------------------------------------
 
 NICE TO HAVE
@@ -81,7 +75,10 @@ NICE TO HAVE
 
 10. Clean up hist_uniq vectors after each del operation to avoid wasting memory.
 
-11. Make sure layout is optimal when the enclone visual window is widened.
+11. Make sure layout is optimized for top/bottom balance and efficient space usage, including when 
+    the window is changed in size.  An example where suboptimal space usage can be seen is
+    enclone BCR=123085:123089 HONEY=out=gui,color=var,u_cell2 SPLIT_PLOT_BY_ORIGIN MIN_CELLS=5
+    including as one shrinks the window vertically.
 
 12. Make horizontal rules in scrollables less wide so they don't overlap the scrollbar, which
     seems ugly.

@@ -39,7 +39,7 @@ fn compress(source: &str, destination: &str) {
 }
 
 fn lz4_file(f: &str) {
-    compress(&f, &format!("{}.lz4", f));
+    compress(f, &format!("{}.lz4", f));
     remove_file(&f).unwrap();
 }
 

@@ -27,8 +27,8 @@ pub fn print_phylip(
     phylip_aa: &mut Option<Builder<File>>,
     phylip_dna: &mut Option<Builder<File>>,
 ) {
-    if ctl.gen_opt.phylip_aa.len() > 0 {
-        let stdout = ctl.gen_opt.phylip_aa == "stdout".to_string();
+    if !ctl.gen_opt.phylip_aa.is_empty() {
+        let stdout = ctl.gen_opt.phylip_aa == *"stdout";
         let mut data = Vec::<u8>::new();
         let mut nbases = 0;
         for m in 0..rsi[oo].mat.len() {
@@ -112,8 +112,8 @@ pub fn print_phylip(
                 .unwrap();
         }
     }
-    if ctl.gen_opt.phylip_dna.len() > 0 {
-        let stdout = ctl.gen_opt.phylip_dna == "stdout".to_string();
+    if !ctl.gen_opt.phylip_dna.is_empty() {
+        let stdout = ctl.gen_opt.phylip_dna == *"stdout";
         let mut data = Vec::<u8>::new();
         let mut nbases = 0;
         for m in 0..rsi[oo].mat.len() {

@@ -57,7 +57,7 @@ fn main() {
             ids.push(id);
         }
     }
-    ids.sort();
+    ids.sort_unstable();
     for i in 0..ids.len() {
         let id = ids[i];
         let mut version = "unknown".to_string();
@@ -66,11 +66,11 @@ fn main() {
             let f = open_for_read![&log];
             for line in f.lines() {
                 let s = line.unwrap();
-                if s.contains(" [cmdline] ") && s.after(" [cmdline] ").contains(" ") {
+                if s.contains(" [cmdline] ") && s.after(" [cmdline] ").contains(' ') {
                     let p = s.between(" [cmdline] ", " ");
                     if p.contains("cellranger-") {
                         let q = p.after("cellranger-");
-                        if q.contains("/") {
+                        if q.contains('/') {
                             version = format!("cellranger-{}", q.before("/").to_string());
                             if version.contains(".tar.gz") {
                                 version = version.rev_before(".tar.gz").to_string();

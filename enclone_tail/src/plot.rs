@@ -48,7 +48,7 @@ pub fn plot_clonotypes(
         return Ok(());
     }
     if exacts.is_empty() {
-        return Err(format!("\nThere are no clonotypes to plot, giving up.\n"));
+        return Err("\nThere are no clonotypes to plot, giving up.\n".to_string());
     }
 
     let mut const_names = Vec::<String>::new();
@@ -58,7 +58,7 @@ pub fn plot_clonotypes(
         }
     }
     unique_sort(&mut const_names);
-    if plot_opt.plot_by_isotype_color.len() > 0 {
+    if !plot_opt.plot_by_isotype_color.is_empty() {
         if const_names.len() + 1 > plot_opt.plot_by_isotype_color.len() {
             return Err(format!(
                 "\nUsing the PLOT_BY_ISOTYPE_COLOR argument, you specified {} colors, \
@@ -69,10 +69,11 @@ pub fn plot_clonotypes(
             ));
         }
     } else if plot_opt.plot_by_isotype && const_names.len() > 12 {
-        return Err(format!(
+        return Err(
             "\nCurrently PLOT_BY_ISOTYPE only works if there are at most 12 constant \
             region names.  If this is a problem, please let us know and we will generalize it.\n"
-        ));
+                .to_string(),
+        );
     }
 
     // Get origins.
@@ -94,12 +95,12 @@ pub fn plot_clonotypes(
     // Build one cluster for each clonotype.
 
     let mut clusters = build_clusters(
-        &ctl,
-        &plot_opt,
-        &refdata,
-        &exacts,
-        &exact_clonotypes,
-        &out_datas,
+        ctl,
+        plot_opt,
+        refdata,
+        exacts,
+        exact_clonotypes,
+        out_datas,
         &const_names,
     );
     let mut radii = Vec::<f64>::new();
@@ -123,33 +124,34 @@ pub fn plot_clonotypes(
             let s = line.unwrap();
             for c in s.chars() {
                 if c.is_control() || c == '\u{FEFF}' {
-                    return Err(format!(
+                    return Err(
                         "\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
                         nonprinting character.\n"
-                    ));
+                            .to_string(),
+                    );
                 }
             }
             let fields = s.split(',').collect::<Vec<&str>>();
             if first {
                 let p = position(&fields, &"group_id");
                 if p < 0 {
-                    return Err(format!(
+                    return Err(
                         "\nThe CLONOTYPE_GROUP_NAMES file does not have a group_id field.\n"
-                    ));
+                            .to_string(),
+                    );
                 }
                 group_id_field = p as usize;
                 let p = position(&fields, &"new_group_name");
                 if p < 0 {
-                    return Err(format!(
-                        "\nThe CLONOTYPE_GROUP_NAMES file does not have a \
+                    return Err("\nThe CLONOTYPE_GROUP_NAMES file does not have a \
                          new_group_name field.\n"
-                    ));
+                        .to_string());
                 }
                 new_group_name_field = p as usize;
                 first = false;
             } else {
                 let group_id = &fields[group_id_field];
-                if !group_id.parse::<usize>().is_ok() || group_id.force_usize() == 0 {
+                if group_id.parse::<usize>().is_err() || group_id.force_usize() == 0 {
                     return Err(format!(
                         "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is not a \
                         positive integer.\n",
@@ -216,7 +218,7 @@ pub fn plot_clonotypes(
         group_id.clear();
         for i in 0..new_group_names.len() {
             if new_group_names[i].is_some() {
-                let p = position(&group_name, &new_group_names[i].as_ref().unwrap());
+                let p = position(&group_name, new_group_names[i].as_ref().unwrap());
                 group_id.push(p as usize);
             }
         }
@@ -228,7 +230,7 @@ pub fn plot_clonotypes(
     // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
     let t = Instant::now();
-    let using_shading = ngroups > 1 || group_color[0].len() > 0;
+    let using_shading = ngroups > 1 || !group_color[0].is_empty();
     let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
     let mut shade_colors = Vec::<String>::new();
@@ -483,13 +485,13 @@ pub fn plot_clonotypes(
             let s = line.unwrap();
             let fields = s.split(',').collect::<Vec<&str>>();
             if fields.len() != 4 {
-                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+                return Err("\nHONEY_IN file incorrectly formatted.\n".to_string());
             }
-            if !fields[0].parse::<usize>().is_ok() {
-                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+            if fields[0].parse::<usize>().is_err() {
+                return Err("\nHONEY_IN file incorrectly formatted.\n".to_string());
             }
-            if !fields[2].parse::<f64>().is_ok() || !fields[3].parse::<f64>().is_ok() {
-                return Err(format!("\nHONEY_IN file incorrectly formatted.\n"));
+            if fields[2].parse::<f64>().is_err() || fields[3].parse::<f64>().is_err() {
+                return Err("\nHONEY_IN file incorrectly formatted.\n".to_string());
             }
             honey_map.insert(
                 (fields[0].force_usize(), fields[1].to_string()),
@@ -506,9 +508,9 @@ pub fn plot_clonotypes(
         }
         for i in 0..barcodes.len() {
             if !honey_map.contains_key(&barcodes[i]) {
-                return Err(format!(
-                    "\nHONEY_IN file appears to have come from different data.\n"
-                ));
+                return Err(
+                    "\nHONEY_IN file appears to have come from different data.\n".to_string(),
+                );
             }
             center[i] = honey_map[&barcodes[i]];
         }
@@ -516,7 +518,7 @@ pub fn plot_clonotypes(
 
     // Implement HONEY_OUT.
 
-    if plot_opt.honey_out.len() > 0 {
+    if !plot_opt.honey_out.is_empty() {
         let mut honey_map = Vec::<((usize, String), f64, f64)>::new();
         for i in 0..barcodes.len() {
             honey_map.push((barcodes[i].clone(), center[i].0, center[i].1));
@@ -664,7 +666,7 @@ pub fn plot_clonotypes(
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
         let legend_height_plus = legend_height + vsep + 15.0;
-        let height = get_svg_height(&svg).max(legend_height_plus);
+        let height = get_svg_height(svg).max(legend_height_plus);
         set_svg_height(svg, height + BOUNDARY as f64);
         *svg += "</svg>";
     }
@@ -672,7 +674,7 @@ pub fn plot_clonotypes(
     // Add legend for color by variable.
 
     if by_var && plot_opt.use_legend {
-        add_legend_for_color_by_variable(&plot_opt, svg, &color, actual_width, actual_height);
+        add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
         || plot_opt.plot_by_mark
@@ -712,7 +714,7 @@ pub fn plot_clonotypes(
             colors.push("rgb(200,200,255)".to_string());
             labels.push("not in most common dataset, marked".to_string());
         } else {
-            if plot_opt.legend.len() == 0 {
+            if plot_opt.legend.is_empty() {
                 for s in origins.iter() {
                     let mut color = "black".to_string();
                     if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
@@ -780,7 +782,7 @@ pub fn plot_clonotypes(
             set_svg_height(svg, new_height);
             set_svg_width(svg, new_width);
         } else {
-            if new_height > get_svg_height(&svg) {
+            if new_height > get_svg_height(svg) {
                 set_svg_height(svg, new_height);
             }
             set_svg_width(svg, new_width);
@@ -793,7 +795,7 @@ pub fn plot_clonotypes(
     // Output the svg or png file.
 
     if plot_opt.plot_file == "stdout.png" {
-        let png = convert_svg_to_png(&svg.as_bytes(), 2000);
+        let png = convert_svg_to_png(svg.as_bytes(), 2000);
         std::io::stdout().write_all(&png).unwrap();
     } else if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
@@ -815,7 +817,7 @@ pub fn plot_clonotypes(
             if plot_opt.png_width.is_some() {
                 width = plot_opt.png_width.unwrap();
             }
-            let png = convert_svg_to_png(&svg.as_bytes(), width as u32);
+            let png = convert_svg_to_png(svg.as_bytes(), width as u32);
             f.write_all(&png).unwrap();
         }
     }

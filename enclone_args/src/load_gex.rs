@@ -21,6 +21,9 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut fb_top_barcodes = Vec::<Vec<String>>::new();
     let mut fb_top_matrices = Vec::<MirrorSparseMatrix>::new();
+    let mut fb_total_umis = Vec::<u64>::new();
+    let mut fb_brn = Vec::<Vec<(String, u32, u32)>>::new();
+    let mut feature_refs = Vec::<String>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
     let mut cell_type_specified = Vec::<bool>::new();
@@ -41,6 +44,9 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_matrices,
         &mut fb_top_barcodes,
         &mut fb_top_matrices,
+        &mut fb_total_umis,
+        &mut fb_brn,
+        &mut feature_refs,
         &mut cluster,
         &mut cell_type,
         &mut cell_type_specified,
@@ -68,7 +74,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
                 gex_features.len(),
                 allf.len()
             );
-            msg += &mut format!("Classification of features sets:\n\n");
+            msg += &mut "Classification of features sets:\n\n".to_string();
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
                 msg += &mut format!("{} ==> {}\n", ctl.origin_info.dataset_id[i], p);
@@ -84,7 +90,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         let gex_outs = &ctl.origin_info.gex_path;
         for i in 0..ctl.origin_info.dataset_path.len() {
             // let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
-            if gex_outs[i].len() > 0
+            if !gex_outs[i].is_empty()
             /* && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) */
             {
                 let f = &h5_paths[i];
@@ -141,27 +147,30 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     // Answer.
 
     Ok(GexInfo {
-        gex_features: gex_features,
-        gex_barcodes: gex_barcodes,
-        gex_matrices: gex_matrices,
-        fb_top_barcodes: fb_top_barcodes,
-        fb_top_matrices: fb_top_matrices,
-        cluster: cluster,
-        cell_type: cell_type,
-        cell_type_specified: cell_type_specified,
-        pca: pca,
-        gex_cell_barcodes: gex_cell_barcodes,
-        gex_mults: gex_mults,
-        fb_mults: fb_mults,
-        h5_data: h5_data,
-        h5_indices: h5_indices,
-        h5_indptr: h5_indptr,
-        is_gex: is_gex,
-        feature_id: feature_id,
-        have_gex: have_gex,
-        have_fb: have_fb,
-        feature_metrics: feature_metrics,
-        json_metrics: json_metrics,
-        metrics: metrics,
+        gex_features,
+        gex_barcodes,
+        gex_matrices,
+        fb_top_barcodes,
+        fb_top_matrices,
+        fb_total_umis,
+        fb_brn,
+        feature_refs,
+        cluster,
+        cell_type,
+        cell_type_specified,
+        pca,
+        gex_cell_barcodes,
+        gex_mults,
+        fb_mults,
+        h5_data,
+        h5_indices,
+        h5_indptr,
+        is_gex,
+        feature_id,
+        have_gex,
+        have_fb,
+        feature_metrics,
+        json_metrics,
+        metrics,
     })
 }

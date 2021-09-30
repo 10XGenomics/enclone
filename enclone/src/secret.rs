@@ -121,7 +121,7 @@ pub fn fetch_secmem(ctl: &mut EncloneControl) -> Result<(), String> {
                         umi = fields[j].after("UB:Z:").to_string();
                     }
                 }
-                if barcode.len() == 0 {
+                if barcode.is_empty() {
                     continue;
                 }
 
@@ -155,20 +155,20 @@ pub fn fetch_secmem(ctl: &mut EncloneControl) -> Result<(), String> {
                     let n = strme(&cg[j][0..cg[j].len() - 1]).force_usize();
                     if x == b'M' {
                         if ch3[i].0 == '-' {
-                            if read_pos > 1 && ref_pos < high && ref_pos + n > low {
-                                if read_pos + low > ref_pos + 1 {
-                                    ext = read_pos + low - ref_pos - 1;
-                                    ext_seq = seq.as_bytes()[0..ext].to_vec();
-                                    reverse_complement(&mut ext_seq);
-                                    break;
-                                }
-                            }
-                        } else {
-                            if ref_pos <= high && ref_pos + n > high {
-                                ext = ref_pos + n - high;
-                                ext_seq = seq.as_bytes()[seq.len() - ext..].to_vec();
+                            if read_pos > 1
+                                && ref_pos < high
+                                && ref_pos + n > low
+                                && read_pos + low > ref_pos + 1
+                            {
+                                ext = read_pos + low - ref_pos - 1;
+                                ext_seq = seq.as_bytes()[0..ext].to_vec();
+                                reverse_complement(&mut ext_seq);
                                 break;
                             }
+                        } else if ref_pos <= high && ref_pos + n > high {
+                            ext = ref_pos + n - high;
+                            ext_seq = seq.as_bytes()[seq.len() - ext..].to_vec();
+                            break;
                         }
                         ref_pos += n;
                         read_pos += n;
@@ -181,7 +181,7 @@ pub fn fetch_secmem(ctl: &mut EncloneControl) -> Result<(), String> {
                     } else if x == b'D' {
                         ref_pos += n;
                     } else {
-                        return Err(format!("\nUnexpected character in cigar string.\n"));
+                        return Err("\nUnexpected character in cigar string.\n".to_string());
                     }
                 }
 

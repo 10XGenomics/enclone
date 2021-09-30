@@ -56,14 +56,14 @@ pub fn zero_one(
                     rpos += 1;
                 }
                 Del => {
-                    if zo.len() > 0 {
+                    if !zo.is_empty() {
                         zos.push(zo.clone());
                         zo.clear();
                     }
                     rpos += 1;
                 }
                 Ins => {
-                    if zo.len() > 0 {
+                    if !zo.is_empty() {
                         zos.push(zo.clone());
                         zo.clear();
                     }
@@ -71,7 +71,7 @@ pub fn zero_one(
                 _ => {}
             };
         }
-        if zo.len() > 0 {
+        if !zo.is_empty() {
             zos.push(zo.clone());
         }
     }
@@ -184,9 +184,9 @@ pub fn align_to_vdj_ref(
     let mismatch = ctl.gen_opt.jscore_mismatch;
     let gap_open = ctl.gen_opt.jscore_gap_open;
     let gap_extend = ctl.gen_opt.jscore_gap_extend;
-    let gap_open_at_boundary = -40 as i32;
-    let gap_extend_at_boundary = -10 as i32;
-    let del_gap_extend_at_boundary = -20 as i32;
+    let gap_open_at_boundary = -40_i32;
+    let gap_extend_at_boundary = -10_i32;
+    let del_gap_extend_at_boundary = -20_i32;
     let align_div = 10.0;
     let bits_multiplier = ctl.gen_opt.jscore_bits_multiplier;
     const MIN_BITS_FOR_D2: f64 = 14.0;
@@ -201,7 +201,7 @@ pub fn align_to_vdj_ref(
     // Note handling of deletions that bridge boundaries.
 
     let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> f64 {
-        let mut score = 0 as i32;
+        let mut score = 0_i32;
         let mut i = 0;
         let mut rpos = 0;
         let b1 = vref.len();
@@ -294,7 +294,7 @@ pub fn align_to_vdj_ref(
             gap_extend_fn[j] = gap_extend;
         }
     }
-    let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
+    let mut al = aligner.custom_with_gap_fns(seq, &concat, &gap_open_fn, &gap_extend_fn);
     al.mode = AlignmentMode::Semiglobal;
     let mut ops = al.operations;
 
@@ -383,7 +383,7 @@ pub fn align_to_vdj_ref(
     let bits1 = match_bit_score(&zos1);
     let bits2 = match_bit_score(&zos2);
     let mut bits = bits1.max(bits2);
-    if d2ref.len() > 0 && bits1.min(bits2) < MIN_BITS_FOR_D2 {
+    if !d2ref.is_empty() && bits1.min(bits2) < MIN_BITS_FOR_D2 {
         bits = 0.0;
     }
 
@@ -399,13 +399,13 @@ pub fn align_to_vdj_ref(
             bits,
             full_score,
         );
-        println!("seq = {}", strme(&seq));
+        println!("seq = {}", strme(seq));
         println!("ref = {}", strme(&concat));
         use itertools::Itertools;
         for zo in zos1.iter() {
             print!("{}", zo.iter().format(""));
         }
-        println!("");
+        println!();
         println!("ops = {:?}", ops.iter().format(","));
     }
 
@@ -423,7 +423,7 @@ pub fn align_to_vdj_ref(
         }
     }
     let mut full_score = rescore(&ops) + bits_multiplier * bits;
-    if drefname.contains(":") {
+    if drefname.contains(':') {
         full_score += D2_PENALTY;
     }
 

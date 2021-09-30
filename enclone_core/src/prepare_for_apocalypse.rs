@@ -15,7 +15,7 @@ use string_utils::*;
 
 pub fn prepare_for_apocalypse(args: &Vec<String>, email: bool, bug_reports: &str) {
     if email {
-        assert!(bug_reports.len() > 0);
+        assert!(!bug_reports.is_empty());
     }
     let now = Utc::now().naive_utc().timestamp();
     let build_date = version_string().after(":").between(": ", " :").to_string();

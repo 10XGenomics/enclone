@@ -169,7 +169,7 @@ pub fn print_tree(
                     }
                 }
                 let mut c = String::new();
-                if i > 0 && i <= n && ctl.gen_opt.tree.len() > 0 {
+                if i > 0 && i <= n && !ctl.gen_opt.tree.is_empty() {
                     let x = &out_datas[oo][i - 1];
                     for w in ctl.gen_opt.tree.iter() {
                         if x.contains_key(&*w) {

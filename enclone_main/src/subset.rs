@@ -16,7 +16,7 @@ pub fn subset_json(
     exacts: &Vec<Vec<usize>>,
     ann: &str,
 ) {
-    if ctl.gen_opt.subset_json.len() > 0 {
+    if !ctl.gen_opt.subset_json.is_empty() {
         let mut barcode_li = Vec::<(String, usize)>::new();
         for l in 0..exacts.len() {
             for u in 0..exacts[l].len() {

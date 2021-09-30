@@ -1,0 +1,93 @@
+
+These notes address the general problem of finding validation data for denovo VDJ reference
+generation.
+
+For such, one needs both a whole-genome reference that has a nearly complete set of VDJC Ig genes,
+and Ig transcript data that extends at least from the beginning of the V gene, through the start
+of the C genes.
+
+For the transcripts, we looked for PacBio Iso-Seq data.  This is complicated by the fact that
+most Iso-Seq data in the SRA is incorrectly deposited.  Typically we observe zero quality scores
+and short open reading frames, suggesting that perhaps raw reads rather than circular consensus
+were deposited.
+
+---------------------------------------------------------------------------------------------------
+
+vaquita  (Phocoena sinus)
+
+HOPELESS
+
+The following are available:
+- manuscript https://www.biorxiv.org/content/10.1101/2020.05.27.098582v1.full.pdf
+- assembly = GCF_008692025.1
+  * Annotation of Ig VDJC genes in this assembly suggest it is missing IGLC and IGHJ and IGHV genes.
+    Cetacean assemblies are generally missing IGLC, but missing these other genes is a bad sign.
+  * The harbor porpoise has a 200M assembly GCA_004363495.1.  This assembly is missing only IGLC
+    and the two genomes are roughly 99% identical.
+- Iso-Seq data = SRX7696401
+  * Wrote to phillip.morin@noaa.gov.
+  * These data are from a cell line from mesovarium tissue, so useless.  The tissue should have
+    few B cells and in any case a cell line is useless.  We found no VDJC transcripts.
+
+==> Wrote email to ask if the data are associated to the manuscript, and if there is Iso-Seq
+    data from other tissues.
+
+---------------------------------------------------------------------------------------------------
+
+hybrid cattle (Bos indicus x Bos taurus)
+
+HOPELESS
+
+The following are available:
+- manuscript https://www.biorxiv.org/content/10.1101/720797v3 (and published)
+- assembly = GCF_003369695.1
+  * Annotations of Ig VDJC genes in this assembly suggest it is missing 
+    IGHC, IGHJ, IGKJ and IGHJ genes.  The Bos taurus assembly GCF_002263795.1 is missing
+    IGKJ and IGLJ.  Bos is in the subfamily Bovinae, as are the genuses Bubalus and Syncerus,
+    for which we have 200M assemblies.  There respective omissions are:
+    Bubalus  - IGLJ
+    Syncerus - IGLJ.
+- Iso-Seq data from the paper are available at https://zenodo.org/record/4279692#.X7Vqfy9h0cg.
+  (Do not use the SRA data which have the general problem described easlier.)  However these
+  data are of fetal origin, which we would expect to be deficient in VDJC Ig transcripts.  And
+  we find almost nothing.
+
+---------------------------------------------------------------------------------------------------
+
+bat (six species)
+
+ONE CHANCE
+
+- paper https://www.nature.com/articles/s41586-020-2486-3.pdf
+- Have not been able to find the Iso-Seq data.  Wrote to Emma Teeling.
+- List of IsoSeq samples is in Supplementary Table 23 in 
+  https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2486-3/MediaObjects/
+  41586_2020_2486_MOESM1_ESM.pdf.
+- It says that Iso-Seq libraries were made for all six species, from brain and testes, and in
+  the case of Myotis myotis, also from liver.  Brain and testes would be expected to contain
+  very low populations of B cells.
+SPECIES/ACCESSION            CATEGORY    MISSING
+Rhinolophus ferrumequinum
+- GCA_007922735.1            200M        (none)
+Rousettus aegyptiacus
+- GCA_004024865.1            200M        (none)
+Phyllostomus discolor
+- GCF_004126475.2            chromosome  IGKC and IGKJ
+Myotis myotis
+- GCA_004026985.1            200M        IGKV
+Pipistrellus kuhlii
+Molossus molossus
+==> could look up the rest
+
+---------------------------------------------------------------------------------------------------
+
+pig (Sus scrofa)
+
+HOPELESS
+
+- paper https://academic.oup.com/gigascience/article/9/6/giaa051/5858065
+- Iso-Seq data are in the SRA and appear to be circular consensus in some cases
+  * tested SRR5060320, from spleen, found that transcripts of length between 1000 and 2000
+    have a median ORF length of 17.1% of the full length;
+    alignment to the reference and quality scores seem confirmatory, with some exceptions;
+    some VDJ transcripts are there, but many indels

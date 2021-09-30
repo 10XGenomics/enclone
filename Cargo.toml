@@ -4,6 +4,7 @@ members = [
     "enclone",
     "enclone_args",
     "enclone_core",
+    "enclone_denovo",
     "enclone_exec",
     "enclone_help",
     "enclone_main",
@@ -11,6 +12,7 @@ members = [
     "enclone_proto",
     "enclone_tail",
     "enclone_tools",
+    "enclone_vars",
     "enclone_version",
     "enclone_visual",
 ]

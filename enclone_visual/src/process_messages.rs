@@ -22,6 +22,18 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::TooltipToggle => {
+                self.tooltip_toggle_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                let pos = (TOOLTIP_POS.load(SeqCst) + 1) % 4;
+                TOOLTIP_POS.store(pos, SeqCst);
+                Command::perform(noop1(), Message::CompleteTooltipToggle)
+            }
+
+            Message::CompleteTooltipToggle(_) => {
+                self.tooltip_toggle_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::GraphicSnapshot => {
                 self.graphic_snapshot_start = Some(Instant::now());
                 self.graphic_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);

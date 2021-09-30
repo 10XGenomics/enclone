@@ -29,10 +29,11 @@ pub fn merge_onesies(
         }
         let mut onesies = Vec::<usize>::new();
         for i in 0..info.len() {
-            if to_orbit[i].is_some() && info[i].tigs.len() == 1 {
-                if !ctl.clono_filt_opt_def.weak_onesies || !disintegrated[info[i].clonotype_index] {
-                    onesies.push(i);
-                }
+            if to_orbit[i].is_some()
+                && info[i].tigs.len() == 1
+                && (!ctl.clono_filt_opt_def.weak_onesies || !disintegrated[info[i].clonotype_index])
+            {
+                onesies.push(i);
             }
         }
         let mut alltigs2 = Vec::<(Vec<u8>, usize)>::new();
@@ -53,7 +54,7 @@ pub fn merge_onesies(
                     ms.push(m as usize);
                 }
             }
-            let mut ok = ms.len() > 0;
+            let mut ok = !ms.is_empty();
             let mut exacts = Vec::<usize>::new();
             for j in 0..ms.len() {
                 if eq.class_id(alltigs2[ms[j]].1 as i32) != eq.class_id(alltigs2[ms[0]].1 as i32) {

@@ -65,12 +65,12 @@ pub fn mammalian_fixed_len_peer_groups(refdata: &RefData) -> Vec<Vec<(usize, u8,
             } else {
                 continue;
             }
-            let fs1 = fr1_start(&aa, &chain_type);
-            let cs1 = cdr1_start(&aa, &chain_type, false);
-            let fs2 = fr2_start(&aa, &chain_type, false);
-            let cs2 = cdr2_start(&aa, &chain_type, false);
-            let fs3 = fr3_start(&aa, &chain_type, false);
-            let cs3 = cdr3_start(&aa, &chain_type, false);
+            let fs1 = fr1_start(&aa, chain_type);
+            let cs1 = cdr1_start(&aa, chain_type, false);
+            let fs2 = fr2_start(&aa, chain_type, false);
+            let cs2 = cdr2_start(&aa, chain_type, false);
+            let fs3 = fr3_start(&aa, chain_type, false);
+            let cs3 = cdr3_start(&aa, chain_type, false);
             if cs1.is_some() && fs1 < cs1.unwrap() {
                 let cs1 = cs1.unwrap();
                 let x1 = start[&(chain_type.to_string(), "fwr1".to_string())];

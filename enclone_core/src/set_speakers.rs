@@ -27,15 +27,15 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>, ma
     }
     let mut have_gex = false;
     for i in 0..ctl.origin_info.gex_path.len() {
-        if ctl.origin_info.gex_path[i].len() > 0 {
+        if !ctl.origin_info.gex_path[i].is_empty() {
             have_gex = true;
         }
     }
     let mut all_lvars = lvars.clone();
     for i in 0..LVARS_ALLOWED.len() {
         let x = &LVARS_ALLOWED[i];
-        if !have_gex {
-            if *x == "gex".to_string()
+        if !have_gex
+            && (*x == "gex".to_string()
                 || x.starts_with("gex_")
                 || x.ends_with("_g")
                 || x.ends_with("_g_μ")
@@ -46,10 +46,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>, ma
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()
                 || *x == "cred".to_string()
-                || *x == "cred_cell".to_string()
-            {
-                continue;
-            }
+                || *x == "cred_cell".to_string())
+        {
+            continue;
         }
         if !lvars.contains(&x.to_string()) {
             all_lvars.push(x.to_string());
@@ -119,7 +118,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>, ma
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
     for x in ctl.origin_info.dataset_list.iter() {
-        if x.len() > 0 {
+        if !x.is_empty() {
             speaker!(&format!("{}_barcodes", x));
         }
     }

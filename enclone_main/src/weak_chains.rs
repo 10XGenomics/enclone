@@ -44,14 +44,14 @@ pub fn weak_chains(
         }
         let mat = define_mat(
             is_bcr,
-            &to_bc,
-            &sr,
-            &ctl,
-            &exact_clonotypes,
+            to_bc,
+            sr,
+            ctl,
+            exact_clonotypes,
             &exacts,
             &od,
-            &info,
-            &raw_joins,
+            info,
+            raw_joins,
         );
         let cols = mat.len();
         if cols > 2 {
@@ -101,7 +101,7 @@ pub fn weak_chains(
             to_delete[*x] = true;
         }
     }
-    dels.sort();
+    dels.sort_unstable();
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
         let mut o = orbits[i].clone();

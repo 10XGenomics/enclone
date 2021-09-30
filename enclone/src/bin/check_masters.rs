@@ -14,7 +14,7 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let repos = &args[1];
-    let list = dir_list(&repos);
+    let list = dir_list(repos);
     let mut origins = Vec::<String>::new();
     let mut masters = Vec::<Vec<String>>::new();
     for x in list.iter() {
@@ -30,7 +30,7 @@ fn main() {
             let mut y = Vec::<String>::new();
             for line in f.lines() {
                 let s = line.unwrap();
-                if !s.starts_with("#") && s.contains("=") {
+                if !s.starts_with('#') && s.contains('=') {
                     y.push(s);
                 }
             }
@@ -42,15 +42,15 @@ fn main() {
         for i2 in i1 + 1..origins.len() {
             for m1 in 0..masters[i1].len() {
                 for m2 in 0..masters[i2].len() {
-                    if masters[i1][m1].before("=") == masters[i2][m2].before("=") {
-                        if masters[i1][m1] != masters[i2][m2] {
-                            println!(
-                                "\ninconsistency between {} and {}",
-                                origins[i1], origins[i2],
-                            );
-                            println!("{}\n{}", masters[i1][m1], masters[i2][m2]);
-                            count += 1;
-                        }
+                    if masters[i1][m1].before("=") == masters[i2][m2].before("=")
+                        && masters[i1][m1] != masters[i2][m2]
+                    {
+                        println!(
+                            "\ninconsistency between {} and {}",
+                            origins[i1], origins[i2],
+                        );
+                        println!("{}\n{}", masters[i1][m1], masters[i2][m2]);
+                        count += 1;
                     }
                 }
             }

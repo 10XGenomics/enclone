@@ -232,6 +232,7 @@ pub struct GeneralOpt {
     pub toy: bool,      // toy with phylogeny
     pub group_post_filter: Option<Vec<usize>>,
     pub no_newline: bool,
+    pub fb_show: String,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -469,7 +470,7 @@ pub static mut LAST_IPEAK: f64 = -0.0;
 
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
-        let used = elapsed(&t);
+        let used = elapsed(t);
         let t2 = Instant::now();
         let mut usedx = String::new();
         if self.perf_opt.comp {
@@ -495,10 +496,8 @@ impl EncloneControl {
 
         let used2 = elapsed(&t2);
         let used2x = format!("{:.2}", used2);
-        if self.perf_opt.comp {
-            if used2x != "0.00" {
-                println!("used {} seconds computing perf stats for {}", used2x, msg);
-            }
+        if self.perf_opt.comp && used2x != "0.00" {
+            println!("used {} seconds computing perf stats for {}", used2x, msg);
         }
 
         // Update total time used.
@@ -735,6 +734,9 @@ pub struct GexInfo {
     pub gex_matrices: Vec<MirrorSparseMatrix>,
     pub fb_top_matrices: Vec<MirrorSparseMatrix>,
     pub fb_top_barcodes: Vec<Vec<String>>,
+    pub fb_total_umis: Vec<u64>,
+    pub fb_brn: Vec<Vec<(String, u32, u32)>>,
+    pub feature_refs: Vec<String>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
@@ -806,7 +808,7 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("vj_seq_nl")
         || x.starts_with("vj_aa_nl")
         || x.starts_with("seq")
-        || x.starts_with("q")
+        || x.starts_with('q')
         || x.ends_with("_barcode")
         || x.ends_with("_barcodes")
         || (x.starts_with("cdr") && !x.ends_with("len"))
@@ -816,9 +818,9 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("fb") && !x.ends_with("_n")
         || x == "cigar"
     {
-        return b'l';
+        b'l'
     } else {
-        return b'r';
+        b'r'
     }
 }
 
@@ -853,7 +855,7 @@ pub struct PotentialJoin {
 }
 
 pub fn get_config(config_file: &str, config: &mut HashMap<String, String>) -> bool {
-    if config_file.len() > 0 {
+    if !config_file.is_empty() {
         let mut cf = config_file.to_string();
         if cf.contains(':') {
             cf = cf.after(":").to_string();

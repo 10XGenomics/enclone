@@ -156,7 +156,7 @@ pub fn build_info(
                     let mut y = Vec::<u8>::new();
                     for k in 0..aa_full.len() {
                         if k < j || k >= j + ins_len_aa {
-                            y.push(aa_full[k].clone());
+                            y.push(aa_full[k]);
                         }
                     }
                     let mut m = 0;
@@ -169,7 +169,7 @@ pub fn build_info(
                 }
                 mis.sort();
                 aa_mod_indel.push(mis[0].2.clone());
-                let ins_aa_pos = mis[0].1.clone();
+                let ins_aa_pos = mis[0].1;
                 let mut aax = Vec::<u8>::new();
                 let b = 3 * ins_aa_pos;
                 for p in 0..ins_len_aa {
@@ -252,15 +252,13 @@ pub fn build_info(
             if z.c_start.is_some() {
                 let delta = z.c_start.unwrap() as isize - z.j_stop as isize;
                 if delta != 0 {
-                    if vsnx.len() > 0 {
+                    if !vsnx.is_empty() {
                         vsnx += "; ";
                     }
                     if delta > 0 {
                         vsnx += &mut format!("gap from J stop to C start = {}", delta);
-                    } else {
-                        if delta != -1 || ctl.gen_opt.jc1 {
-                            vsnx += &mut format!("J and C segs overlap by {}", -delta);
-                        }
+                    } else if delta != -1 || ctl.gen_opt.jc1 {
+                        vsnx += &mut format!("J and C segs overlap by {}", -delta);
                     }
                 }
             }
@@ -310,7 +308,7 @@ pub fn build_info(
                             tigsp: tigspx,
                             has_del: has_delx,
                             clonotype_id: i,
-                            exact_cols: exact_cols,
+                            exact_cols,
                             clonotype_index: i, // CLEARLY UNNEEDED
                             origin: origin.clone(),
                             vs: vsx.clone(),
@@ -347,24 +345,24 @@ pub fn build_info(
                 exact_cols.push(i);
             }
             res.1.push(CloneInfo {
-                lens: lens,
-                tigs: tigs,
-                tigs_amino: tigs_amino,
-                tigsp: tigsp,
-                has_del: has_del,
+                lens,
+                tigs,
+                tigs_amino,
+                tigsp,
+                has_del,
                 clonotype_id: i,
-                exact_cols: exact_cols,
+                exact_cols,
                 clonotype_index: i, // CLEARLY UNNEEDED
                 origin: origin.clone(),
                 vs: vs.clone(),
                 dref: vec![None; vs.len()],
-                vs_notesx: vs_notesx,
-                js: js,
-                vsids: vsids,
-                jsids: jsids,
-                cdr3s: cdr3s,
-                cdr3_aa: cdr3_aa,
-                chain_types: chain_types,
+                vs_notesx,
+                js,
+                vsids,
+                jsids,
+                cdr3s,
+                cdr3_aa,
+                chain_types,
             });
         }
     });

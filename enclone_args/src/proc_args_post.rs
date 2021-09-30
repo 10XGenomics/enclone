@@ -120,48 +120,47 @@ pub fn proc_args_post(
         &mut ctl.parseable_opt.pout,
     ];
     for f in files.iter_mut() {
-        **f = stringme(&tilde_expand(&f.as_bytes()));
+        **f = stringme(&tilde_expand(f.as_bytes()));
     }
 
     // Sanity check grouping arguments.
 
-    if ctl.clono_group_opt.style == "asymmetric" {
-        if ctl.clono_group_opt.asymmetric_center.len() == 0
-            || ctl.clono_group_opt.asymmetric_dist_formula.len() == 0
-            || ctl.clono_group_opt.asymmetric_dist_bound.len() == 0
-        {
-            return Err(format!(
-                "\nIf the AGROUP option is used to specify asymmetric grouping, then all\n\
-                of the options AG_CENTER, AG_DIST_FORMULA and AG_DIST_BOUND must also be \
-                specified.\n"
-            ));
-        }
-    }
-    if ctl.clono_group_opt.asymmetric_center.len() > 0
-        || ctl.clono_group_opt.asymmetric_dist_formula.len() > 0
-        || ctl.clono_group_opt.asymmetric_dist_bound.len() > 0
+    if ctl.clono_group_opt.style == "asymmetric"
+        && (ctl.clono_group_opt.asymmetric_center.is_empty()
+            || ctl.clono_group_opt.asymmetric_dist_formula.is_empty()
+            || ctl.clono_group_opt.asymmetric_dist_bound.is_empty())
     {
-        if ctl.clono_group_opt.style == "symmetric" {
-            return Err(format!(
-                "\nIf any of the asymmetric grouping options AG_CENTER or \
-                    AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
-                    must also be specified, to turn on asymmetric grouping.\n"
-            ));
-        }
+        return Err(
+            "\nIf the AGROUP option is used to specify asymmetric grouping, then all\n\
+            of the options AG_CENTER, AG_DIST_FORMULA and AG_DIST_BOUND must also be \
+            specified.\n"
+                .to_string(),
+        );
+    }
+    if (!ctl.clono_group_opt.asymmetric_center.is_empty()
+        || !ctl.clono_group_opt.asymmetric_dist_formula.is_empty()
+        || !ctl.clono_group_opt.asymmetric_dist_bound.is_empty())
+        && ctl.clono_group_opt.style == "symmetric"
+    {
+        return Err("\nIf any of the asymmetric grouping options AG_CENTER or \
+                AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
+                must also be specified, to turn on asymmetric grouping.\n"
+            .to_string());
     }
     if ctl.clono_group_opt.style == "asymmetric" {
         if ctl.clono_group_opt.asymmetric_center != "from_filters"
             && ctl.clono_group_opt.asymmetric_center != "copy_filters"
         {
-            return Err(format!(
+            return Err(
                 "\nThe only allowed forms for AG_CENTER are AG_CENTER=from_filters\n\
                 and AG_CENTER=copy_filters.\n"
-            ));
+                    .to_string(),
+            );
         }
         if ctl.clono_group_opt.asymmetric_dist_formula != "cdr3_edit_distance" {
-            return Err(format!(
-                "\nThe only allowed form for AG_DIST_FORMULA is cdr3_edit_distance.\n"
-            ));
+            return Err(
+                "\nThe only allowed form for AG_DIST_FORMULA is cdr3_edit_distance.\n".to_string(),
+            );
         }
         let ok1 = ctl
             .clono_group_opt
@@ -184,92 +183,100 @@ pub fn proc_args_post(
                 .parse::<f64>()
                 .is_ok();
         if !ok1 && !ok2 {
-            return Err(format!(
+            return Err(
                 "\nThe only allowed forms for AG_DIST_BOUND are top=n, where n is an\n\
                 integer, and max=d, where d is a number.\n"
-            ));
+                    .to_string(),
+            );
         }
     }
 
     // Sanity check other arguments (and more below).
 
-    if !ctl.parseable_opt.pchains.parse::<usize>().is_ok() && ctl.parseable_opt.pchains != "max" {
-        return Err(format!(
-            "\nThe only allowed values for PCHAINS are a positive integer and max.\n"
-        ));
+    if ctl.parseable_opt.pchains.parse::<usize>().is_err() && ctl.parseable_opt.pchains != "max" {
+        return Err(
+            "\nThe only allowed values for PCHAINS are a positive integer and max.\n".to_string(),
+        );
     }
     if ctl.gen_opt.align_jun_align_consistency && ctl.pretty {
-        return Err(format!(
-            "\nIf you use ALIGN_JALIGN_CONSISTENCY, you should also use PLAIN.\n"
-        ));
+        return Err(
+            "\nIf you use ALIGN_JALIGN_CONSISTENCY, you should also use PLAIN.\n".to_string(),
+        );
     }
     if ctl.gen_opt.gene_scan_exact && ctl.gen_opt.gene_scan_test.is_none() {
-        return Err(format!(
+        return Err(
             "\nIt doesn't make sense to specify SCAN_EXIT unless SCAN is also specified.\n"
-        ));
+                .to_string(),
+        );
     }
     if ctl.clono_print_opt.conx && ctl.clono_print_opt.conp {
-        return Err(format!("\nPlease specify at most one of CONX and CONP.\n"));
+        return Err("\nPlease specify at most one of CONX and CONP.\n".to_string());
     }
-    if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
-        return Err(format!(
+    if ctl.clono_filt_opt.cdr3.is_some() && !ctl.clono_filt_opt.cdr3_lev.is_empty() {
+        return Err(
             "\nPlease use the CDR3 argument to specify either a regular expression or a\n\
             Levenshtein distance pattern, but not both.\n"
-        ));
+                .to_string(),
+        );
     }
-    if ctl.gen_opt.clustal_aa != "".to_string() && ctl.gen_opt.clustal_aa != "stdout".to_string() {
-        if !ctl.gen_opt.clustal_aa.ends_with(".tar") {
-            return Err(format!(
-                "\nIf the value of CLUSTAL_AA is not stdout, it must end in .tar.\n"
-            ));
-        }
-    }
-    if ctl.gen_opt.clustal_dna != "".to_string() && ctl.gen_opt.clustal_dna != "stdout".to_string()
+    if ctl.gen_opt.clustal_aa != *""
+        && ctl.gen_opt.clustal_aa != *"stdout"
+        && !ctl.gen_opt.clustal_aa.ends_with(".tar")
     {
-        if !ctl.gen_opt.clustal_dna.ends_with(".tar") {
-            return Err(format!(
-                "\nIf the value of CLUSTAL_DNA is not stdout, it must end in .tar.\n"
-            ));
-        }
+        return Err(
+            "\nIf the value of CLUSTAL_AA is not stdout, it must end in .tar.\n".to_string(),
+        );
     }
-    if ctl.gen_opt.phylip_aa != "".to_string() && ctl.gen_opt.phylip_aa != "stdout".to_string() {
-        if !ctl.gen_opt.phylip_aa.ends_with(".tar") {
-            return Err(format!(
-                "\nIf the value of PHYLIP_AA is not stdout, it must end in .tar.\n"
-            ));
-        }
+    if ctl.gen_opt.clustal_dna != *""
+        && ctl.gen_opt.clustal_dna != *"stdout"
+        && !ctl.gen_opt.clustal_dna.ends_with(".tar")
+    {
+        return Err(
+            "\nIf the value of CLUSTAL_DNA is not stdout, it must end in .tar.\n".to_string(),
+        );
     }
-    if ctl.gen_opt.phylip_dna != "".to_string() && ctl.gen_opt.phylip_dna != "stdout".to_string() {
-        if !ctl.gen_opt.phylip_dna.ends_with(".tar") {
-            return Err(format!(
-                "\nIf the value of PHYLIP_DNA is not stdout, it must end in .tar.\n"
-            ));
-        }
+    if ctl.gen_opt.phylip_aa != *""
+        && ctl.gen_opt.phylip_aa != *"stdout"
+        && !ctl.gen_opt.phylip_aa.ends_with(".tar")
+    {
+        return Err(
+            "\nIf the value of PHYLIP_AA is not stdout, it must end in .tar.\n".to_string(),
+        );
+    }
+    if ctl.gen_opt.phylip_dna != *""
+        && ctl.gen_opt.phylip_dna != *"stdout"
+        && !ctl.gen_opt.phylip_dna.ends_with(".tar")
+    {
+        return Err(
+            "\nIf the value of PHYLIP_DNA is not stdout, it must end in .tar.\n".to_string(),
+        );
     }
     if ctl.clono_filt_opt_def.umi_filt && ctl.clono_filt_opt_def.umi_filt_mark {
-        return Err(format!(
+        return Err(
             "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \
             the filter,\nas otherwise nothing will be marked.\n"
-        ));
+                .to_string(),
+        );
     }
     if ctl.clono_filt_opt_def.umi_ratio_filt && ctl.clono_filt_opt_def.umi_ratio_filt_mark {
-        return Err(format!(
+        return Err(
             "\nIf you use UMI_RATIO_FILT_MARK, you should also use NUMI_RATIO, to turn off \
             the filter,\nas otherwise nothing will be marked.\n"
-        ));
+                .to_string(),
+        );
     }
     ctl.perf_stats(&t, "after main args loop 1");
 
     // Process TCR, BCR and META.
 
     let t = Instant::now();
-    check_cvars(&ctl)?;
-    if metas.len() > 0 {
+    check_cvars(ctl)?;
+    if !metas.is_empty() {
         let f = &metas[metas.len() - 1];
-        let f = get_path_fail(&f, &ctl, "META")?;
+        let f = get_path_fail(f, ctl, "META")?;
         proc_meta(&f, &mut ctl)?;
     }
-    if metaxs.len() > 0 {
+    if !metaxs.is_empty() {
         let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();
         let mut lines = Vec::<String>::new();
         for i in 0..lines0.len() {
@@ -278,9 +285,9 @@ pub fn proc_args_post(
         proc_meta_core(&lines, &mut ctl)?;
     }
     ctl.perf_stats(&t, "in proc_meta");
-    if xcrs.len() > 0 {
+    if !xcrs.is_empty() {
         let arg = &xcrs[xcrs.len() - 1];
-        proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl)?;
+        proc_xcr(arg, gex, bc, have_gex, &mut ctl)?;
     }
 
     // More argument sanity checking.
@@ -333,14 +340,14 @@ pub fn proc_args_post(
                         } else if count == 2 {
                             if Some(i) == cells_field {
                                 let mut n = x.to_string();
-                                if n.contains("\"") {
+                                if n.contains('\"') {
                                     n = n.between("\"", "\"").to_string();
                                 }
                                 n = n.replace(",", "");
                                 cells_cr = Some(n.force_usize());
                             } else if Some(i) == rpc_field {
                                 let mut n = x.to_string();
-                                if n.contains("\"") {
+                                if n.contains('\"') {
                                     n = n.between("\"", "\"").to_string();
                                 }
                                 n = n.replace(",", "");
@@ -358,32 +365,25 @@ pub fn proc_args_post(
     }
     if ctl.plot_opt.plot_by_isotype {
         if using_plot || ctl.plot_opt.use_legend {
-            return Err(format!(
-                "\nPLOT_BY_ISOTYPE cannot be used with PLOT or LEGEND.\n"
-            ));
+            return Err("\nPLOT_BY_ISOTYPE cannot be used with PLOT or LEGEND.\n".to_string());
         }
         if !ctl.gen_opt.bcr {
-            return Err(format!(
-                "\nPLOT_BY_ISOTYPE can only be used with BCR data.\n"
-            ));
+            return Err("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n".to_string());
         }
         if ctl.plot_opt.plot_by_mark {
-            return Err(format!(
-                "\nPLOT_BY_ISOTYPE and PLOT_BY_MARK cannot be used together.\n"
-            ));
+            return Err(
+                "\nPLOT_BY_ISOTYPE and PLOT_BY_MARK cannot be used together.\n".to_string(),
+            );
         }
     }
-    if ctl.plot_opt.plot_by_mark {
-        if using_plot || ctl.plot_opt.use_legend {
-            return Err(format!(
-                "\nPLOT_BY_MARK cannot be used with PLOT or LEGEND.\n"
-            ));
-        }
+    if ctl.plot_opt.plot_by_mark && (using_plot || ctl.plot_opt.use_legend) {
+        return Err("\nPLOT_BY_MARK cannot be used with PLOT or LEGEND.\n".to_string());
     }
-    if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
-        return Err(format!(
+    if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.is_empty() {
+        return Err(
             "\nIt does not make sense to specify PCELL unless POUT is also specified.\n"
-        ));
+                .to_string(),
+        );
     }
     let mut donors = Vec::<String>::new();
     let mut origins = Vec::<String>::new();
@@ -417,12 +417,12 @@ pub fn proc_args_post(
     ctl.origin_info.donor_list = donors.clone();
     ctl.origin_info.tag_list = tags;
     for i in 0..ctl.origin_info.donor_for_bc.len() {
-        if ctl.origin_info.donor_for_bc[i].len() > 0 {
+        if !ctl.origin_info.donor_for_bc[i].is_empty() {
             ctl.clono_filt_opt_def.donor = true;
         }
     }
     ctl.perf_stats(&t, "after main args loop 2");
-    proc_args_tail(&mut ctl, &args)?;
+    proc_args_tail(&mut ctl, args)?;
 
     // Sort chains_to_align.
 
@@ -434,19 +434,19 @@ pub fn proc_args_post(
     // Check for invalid variables in linear conditions.
 
     for i in 0..ctl.clono_filt_opt.bounds.len() {
-        ctl.clono_filt_opt.bounds[i].require_valid_variables(&ctl)?;
+        ctl.clono_filt_opt.bounds[i].require_valid_variables(ctl)?;
     }
     if ctl.gen_opt.gene_scan_test.is_some() {
         ctl.gen_opt
             .gene_scan_test
             .as_ref()
             .unwrap()
-            .require_valid_variables(&ctl)?;
+            .require_valid_variables(ctl)?;
         ctl.gen_opt
             .gene_scan_control
             .as_ref()
             .unwrap()
-            .require_valid_variables(&ctl)?;
+            .require_valid_variables(ctl)?;
     }
     Ok(())
 }

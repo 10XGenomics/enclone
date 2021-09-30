@@ -52,6 +52,7 @@ impl Application for EncloneVisual {
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.tooltip_toggle_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
@@ -675,11 +676,20 @@ impl Application for EncloneVisual {
             .spacing(8)
             .push(save_button)
             .push(save_on_exit_button);
+        let tooltip_button = Button::new(
+            &mut self.tooltip_toggle_button,
+            Text::new("Tooltip").color(self.tooltip_toggle_button_color),
+        )
+        .on_press(Message::TooltipToggle);
         let archive_button = Button::new(
             &mut self.archive_open_button,
             Text::new("Archive").width(Units(66)),
         )
         .on_press(Message::ArchiveOpen(Ok(())));
+        let archive_row = Row::new()
+            .spacing(8)
+            .push(tooltip_button)
+            .push(archive_button);
         let mut top_row = Row::new()
             .align_items(Align::Center)
             .push(left_buttons)
@@ -691,7 +701,7 @@ impl Application for EncloneVisual {
             .spacing(8)
             .push(console_row)
             .push(save_row)
-            .push(archive_button);
+            .push(archive_row);
         top_row = top_row.push(right_col);
         let mut content = Column::new()
             .spacing(SPACING)

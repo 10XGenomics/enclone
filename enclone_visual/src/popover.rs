@@ -7,6 +7,11 @@ use messages::Message;
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_title = Text::new(&format!("Graphic")).size(30);
+    let tooltip_button = Button::new(
+        &mut slf.tooltip_toggle_button,
+        Text::new("Tooltip").color(slf.tooltip_toggle_button_color),
+    )
+    .on_press(Message::TooltipToggle);
     let graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
@@ -17,6 +22,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
+        .push(tooltip_button)
+        .push(Space::with_width(Units(8)))
         .push(graphic_snapshot_button)
         .push(Space::with_width(Units(8)))
         .push(graphic_close_button);

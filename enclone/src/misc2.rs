@@ -104,7 +104,7 @@ pub fn create_exact_subclonotype_core(
         loop {
             let mut calls = Vec::<(u8, u8)>::new(); // (base,qual)
             for t in r..s {
-                if !to_delete[t - r] && tig_bc[t][m].v_start >= pos + 1 {
+                if !to_delete[t - r] && tig_bc[t][m].v_start > pos {
                     let p = tig_bc[t][m].v_start - pos - 1;
                     calls.push((tig_bc[t][m].full_seq[p], tig_bc[t][m].full_quals[p]));
                 }
@@ -113,7 +113,7 @@ pub fn create_exact_subclonotype_core(
                 break;
             }
             last_calls = calls.len();
-            calls.sort();
+            calls.sort_unstable();
             let mut callsx = Vec::<(usize, u8)>::new(); // (qual,base)
             let mut i = 0;
             while i < calls.len() {
@@ -148,7 +148,7 @@ pub fn create_exact_subclonotype_core(
                 break;
             }
             last_calls = calls.len();
-            calls.sort();
+            calls.sort_unstable();
             let mut callsx = Vec::<(usize, u8)>::new(); // (qual,base)
             let mut i = 0;
             while i < calls.len() {
@@ -175,7 +175,7 @@ pub fn create_exact_subclonotype_core(
         // Note that here we are taking the first entry (r), sort of assuming
         // that all the entries are the same, which in principle they should be.
 
-        let aa = aa_seq(&tig_bc[r][m].seq(), 0);
+        let aa = aa_seq(tig_bc[r][m].seq(), 0);
         let mut d_start = None;
         if tig_bc[r][m].d_start.is_some() {
             d_start = Some(tig_bc[r][m].d_start.unwrap() + utr.len() - tig_bc[r][m].v_start);
@@ -191,7 +191,7 @@ pub fn create_exact_subclonotype_core(
             v_start: utr.len(),
             v_stop: tig_bc[r][m].v_stop + utr.len() - tig_bc[r][m].v_start,
             v_stop_ref: tig_bc[r][m].v_stop_ref,
-            d_start: d_start,
+            d_start,
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
@@ -234,8 +234,8 @@ pub fn create_exact_subclonotype_core(
             for m in 0..tig_bc[t].len() {
                 x.push(TigData0 {
                     quals: tig_bc[t][m].quals.clone(),
-                    v_start: tig_bc[t][m].v_start.clone(),
-                    j_stop: tig_bc[t][m].j_stop.clone(),
+                    v_start: tig_bc[t][m].v_start,
+                    j_stop: tig_bc[t][m].j_stop,
                     c_start: tig_bc[t][m].c_start,
                     full_seq: tig_bc[t][m].full_seq.clone(),
                     barcode: tig_bc[t][m].barcode.clone(),
@@ -339,7 +339,7 @@ pub fn find_exact_subclonotypes(
                         for m in 0..tig_bc[t1].len() {
                             print!(" {}", tig_bc[t1][m].umi_count);
                         }
-                        println!("");
+                        println!();
                         print!(
                             "{}: numis =",
                             ctl.origin_info.dataset_id[tig_bc[t2][0].dataset_index]
@@ -386,38 +386,35 @@ pub fn find_exact_subclonotypes(
 
         let mut share = Vec::<TigData1>::new();
         let mut clones = Vec::<Vec<TigData0>>::new();
-        create_exact_subclonotype_core(&tig_bc, r, s, &to_delete, &mut share, &mut clones);
+        create_exact_subclonotype_core(tig_bc, r, s, &to_delete, &mut share, &mut clones);
 
         // Explore consensus.
 
         let mut _count = 0;
         study_consensus(
             &mut _count,
-            &ctl,
+            ctl,
             &share,
             &clones,
             &exact_clonotypes,
-            &refdata,
+            refdata,
         );
 
         // Filter out putative gel bead contamination.
 
-        filter_gelbead_contamination(&ctl, &mut clones, &mut res.2);
+        filter_gelbead_contamination(ctl, &mut clones, &mut res.2);
 
         // Save exact subclonotype.
 
-        if clones.len() > 0 {
-            res.1.push(ExactClonotype {
-                share: share,
-                clones: clones,
-            });
+        if !clones.is_empty() {
+            res.1.push(ExactClonotype { share, clones });
         }
     });
     ctl.perf_stats(&t, "finding exact subclonotypes two");
     let t = Instant::now();
     let mut max_exact = 0;
     for i in 0..results.len() {
-        if results[i].1.len() > 0 {
+        if !results[i].1.is_empty() {
             max_exact = max(max_exact, results[i].1[0].ncells());
             exact_clonotypes.append(&mut results[i].1);
         }
@@ -426,7 +423,7 @@ pub fn find_exact_subclonotypes(
         }
     }
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
-        println!("");
+        println!();
         return Vec::new();
     }
     if !ctl.silent {
@@ -466,11 +463,11 @@ pub fn find_exact_subclonotypes(
 
     // Fill in iNKT and MAIT annotations.
 
-    mark_innate(&refdata, &mut exact_clonotypes);
+    mark_innate(refdata, &mut exact_clonotypes);
 
     // Do other stuff.
 
-    if ctl.gen_opt.fasta.len() > 0 {
+    if !ctl.gen_opt.fasta.is_empty() {
         let mut f = open_for_write_new![&ctl.gen_opt.fasta];
         for i in 0..exact_clonotypes.len() {
             let x = &exact_clonotypes[i];
@@ -508,7 +505,7 @@ pub fn find_exact_subclonotypes(
                 x.barcode
             );
         }
-        println!("");
+        println!();
     }
     ctl.perf_stats(&t, "finding exact subclonotypes three");
     exact_clonotypes
@@ -541,7 +538,7 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
             }
             i = j;
         }
-        println!("");
+        println!();
     }
 }
 
@@ -590,7 +587,7 @@ pub fn check_for_barcode_reuse(
             }
             i = j;
         }
-        reuse.sort();
+        reuse.sort_unstable();
         let mut i = 0;
         let mut found = false;
         let mut msg = String::new();
@@ -603,14 +600,12 @@ pub fn check_for_barcode_reuse(
             if frac >= MIN_REUSE_FRAC_TO_SHOW {
                 if !found {
                     found = true;
-                    msg += &mut format!(
-                        "\nSignificant barcode reuse detected.  If at least 25% of the barcodes \
+                    msg += &mut "\nSignificant barcode reuse detected.  If at least 25% of the barcodes \
                         in one dataset\nare present in another dataset, is is likely that two datasets \
                         arising from the\nsame library were included as input to enclone.  Since this \
                         would normally occur\nonly by accident, enclone exits.  \
                         If you wish to override this behavior,\nplease rerun with the argument \
-                        ACCEPT_REUSE.\n\nHere are the instances of reuse that were observed:\n\n"
-                    );
+                        ACCEPT_REUSE.\n\nHere are the instances of reuse that were observed:\n\n".to_string();
                 }
                 msg += &mut format!(
                     "{}, {} ==> {} of {}, {} barcodes ({:.1}%)\n",

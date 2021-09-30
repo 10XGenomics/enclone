@@ -87,7 +87,9 @@ pub fn circles_to_svg(
     for (g, p) in shades.iter().enumerate() {
         out += "<path d=\"";
         const BOUNDING_CURVE_BOUND: f64 = 15.0; // must be smaller than POLYGON_ENLARGEMENT
-        out += &format!("{}", p.catmull_bezier_bounded_svg(BOUNDING_CURVE_BOUND));
+        out += &p
+            .catmull_bezier_bounded_svg(BOUNDING_CURVE_BOUND)
+            .to_string();
         out += "\" ";
         out += &format!("fill=\"{}\"\n", shade_colors[g]);
         out += " stroke=\"rgb(150,150,150)\"";

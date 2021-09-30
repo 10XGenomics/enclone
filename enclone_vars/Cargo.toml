@@ -1,0 +1,25 @@
+[package]
+name = "enclone_vars"
+version = "0.5.108"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Nigel Delaney <nigel.delaney@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Jessica Hamel <jessica.hamel@10xgenomics.com>,
+              Lance Hepler <lance.hepler@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Alvin Liang <alvin.liang@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+license-file = "../LICENSE.txt"
+publish = false
+
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
+[dependencies]
+pretty_trace = "0.5"
+string_utils = "0.1"
+vector_utils = "0.1"

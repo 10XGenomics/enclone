@@ -118,7 +118,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Column::new()
                         .push(Space::with_height(Units(10)))
                         .push(Text::new(
-                            "Here are five buttons that appear in the upper right \
+                            "Here are six buttons that appear in the upper right \
                              corner of the screen:",
                         ))
                         .push(Space::with_height(Units(20)))
@@ -149,7 +149,17 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         )
                         .push(
                             Text::new(
-                                "5.  Archive.  Opens a page to allow restoration or sharing of a \
+                                "5.  Tooltip, to toggle the position of the tooltip text window.  \
+                                 Clicking causes clockwise rotation of the position amongst the \
+                                 four corners of the graphics window.  One position may yield a \
+                                 better overall view than another.  If you click, you'll see the \
+                                 button flash, but no other change, until you mouse over a cell.",
+                            )
+                            .width(max_width2),
+                        )
+                        .push(
+                            Text::new(
+                                "6.  Archive.  Opens a page to allow restoration or sharing of a \
                                  previous session.",
                             )
                             .width(max_width2),
@@ -267,9 +277,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "If you've displayed a honeycomb plot (see cookbook for examples), \
             then positioning your mouse over a cell will cause a \"tooltip\" box to appear that \
-            provides some information about that cell.  To use space effectively, we allow the \
-            box to appear (in some cases) on top of the buttons on the right.  We are aware that \
-            the text rendering is flawed in such cases.",
+            provides some information about that cell.  See also the Tooltip button, that \
+            controls the position of this box.",
             )
             .width(max_width),
         )

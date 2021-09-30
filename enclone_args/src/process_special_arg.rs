@@ -25,7 +25,7 @@ pub fn process_special_arg(
 ) -> Result<(), String> {
     // Process the argument.
 
-    if is_simple_arg(&arg, "SEQ")? {
+    if is_simple_arg(arg, "SEQ")? {
         ctl.join_print_opt.seq = true;
 
     // Not movable.
@@ -35,9 +35,9 @@ pub fn process_special_arg(
             return Err("\nCurrently the only allowed value for PG_DIST is MFL.\n".to_string());
         }
         ctl.gen_opt.peer_group_dist = dist.to_string();
-    } else if is_simple_arg(&arg, "H5")? {
+    } else if is_simple_arg(arg, "H5")? {
         ctl.gen_opt.force_h5 = true;
-    } else if is_simple_arg(&arg, "NH5")? {
+    } else if is_simple_arg(arg, "NH5")? {
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.plot_opt.use_legend = true;
@@ -45,19 +45,19 @@ pub fn process_special_arg(
         ctl.gen_opt.max_heavies = 1;
     } else if arg.starts_with("ALIGN_2ND") {
         let n = arg.after("ALIGN_2ND");
-        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_align2.push(n.force_usize());
     } else if arg.starts_with("ALIGN") {
         let n = arg.after("ALIGN");
-        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
     } else if arg.starts_with("JALIGN_2ND") {
         let n = arg.after("JALIGN_2ND");
-        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
@@ -65,20 +65,18 @@ pub fn process_special_arg(
         let mut parts = Vec::<Vec<String>>::new();
         {
             let subparts = arg.after("HONEY=").split(',').collect::<Vec<&str>>();
-            if subparts.len() == 0 || !subparts[0].contains("=") {
-                return Err(format!("\nSyntax for HONEY=... is incorrect.\n"));
+            if subparts.is_empty() || !subparts[0].contains('=') {
+                return Err("\nSyntax for HONEY=... is incorrect.\n".to_string());
             }
             let mut part = Vec::<String>::new();
             for i in 0..subparts.len() {
-                if subparts[i].contains("=") {
-                    if part.len() > 0 {
-                        parts.push(part.clone());
-                        part.clear();
-                    }
+                if subparts[i].contains('=') && !part.is_empty() {
+                    parts.push(part.clone());
+                    part.clear();
                 }
                 part.push(subparts[i].to_string());
             }
-            if part.len() > 0 {
+            if !part.is_empty() {
                 parts.push(part);
             }
         }
@@ -105,10 +103,9 @@ pub fn process_special_arg(
                 if p.len() == 2 && p[1].parse::<usize>().is_ok() {
                     ctl.plot_opt.png_width = Some(p[1].force_usize());
                     if !filename.ends_with(".png") {
-                        return Err(format!(
-                            "\nWidth specification for the HONEY argument only \
+                        return Err("\nWidth specification for the HONEY argument only \
                             makes sense if the filename ends with .png.\n"
-                        ));
+                            .to_string());
                     }
                 }
                 if filename != "stdout"
@@ -117,9 +114,9 @@ pub fn process_special_arg(
                     && !filename.ends_with(".svg")
                     && !filename.ends_with(".png")
                 {
-                    return Err(format!(
-                        "\nHONEY out filename needs to end with .svg or .png.\n"
-                    ));
+                    return Err(
+                        "\nHONEY out filename needs to end with .svg or .png.\n".to_string()
+                    );
                 }
                 ctl.plot_opt.plot_file = filename;
                 out_count += 1;
@@ -137,28 +134,26 @@ pub fn process_special_arg(
                 }
                 var = p[1].to_string();
                 display_var = var.clone();
-                if var.contains(":") {
+                if var.contains(':') {
                     display_var = var.before(":").to_string();
                     var = var.after(":").to_string();
                 }
-                if p.len() >= 3 {
-                    if p[2].len() > 0 && p[2] != "turbo" {
-                        return Err(err);
-                    }
+                if p.len() >= 3 && !p[2].is_empty() && p[2] != "turbo" {
+                    return Err(err);
                 }
                 if p.len() >= 4 {
                     let scale = &p[3..];
-                    if scale.len() > 0 && scale[0] != "minmax" {
+                    if !scale.is_empty() && scale[0] != "minmax" {
                         return Err(err);
                     }
                     if scale.len() >= 2 {
-                        if !scale[1].parse::<f64>().is_ok() {
+                        if scale[1].parse::<f64>().is_err() {
                             return Err(err);
                         }
                         min = Some(scale[1].force_f64());
                     }
                     if scale.len() >= 3 {
-                        if !scale[2].parse::<f64>().is_ok() {
+                        if scale[2].parse::<f64>().is_err() {
                             return Err(err);
                         }
                         max = Some(scale[2].force_f64());
@@ -172,43 +167,71 @@ pub fn process_special_arg(
             }
         }
         if out_count == 0 {
-            return Err(format!("\nHONEY=... must specify out=....\n"));
+            return Err("\nHONEY=... must specify out=....\n".to_string());
         }
         if out_count > 1 {
-            return Err(format!("\nHONEY=... must specify out=... only once.\n"));
+            return Err("\nHONEY=... must specify out=... only once.\n".to_string());
         }
         if legend_count > 1 {
-            return Err(format!("\nHONEY=... may specify legend=... only once.\n"));
+            return Err("\nHONEY=... may specify legend=... only once.\n".to_string());
         }
         if color_count == 0 {
-            return Err(format!("\nHONEY=... must specify color=....\n"));
+            return Err("\nHONEY=... must specify color=....\n".to_string());
         }
         if color_count > 1 {
-            return Err(format!("\nHONEY=... must specify color=... only once.\n"));
+            return Err("\nHONEY=... must specify color=... only once.\n".to_string());
         }
         let v = ColorByVariableValue {
-            var: var,
-            display_var: display_var,
-            min: min,
-            max: max,
+            var,
+            display_var,
+            min,
+            max,
         };
         let cc = CellColor::ByVariableValue(v);
         ctl.plot_opt.cell_color = cc;
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
-        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
+    } else if arg.starts_with("FB_SHOW=") {
+        let fields = arg.after("FB_SHOW=").split(',').collect::<Vec<&str>>();
+        let mut found_k = false;
+        let mut ok = true;
+        for i in 0..fields.len() {
+            if fields[i].parse::<usize>().is_ok() {
+                if found_k {
+                    return Err("\nFB_SHOW argument contains more than one integer.\n".to_string());
+                }
+                found_k = true;
+            } else {
+                if fields[i].len() != 15 {
+                    ok = false;
+                }
+                for c in fields[i].chars() {
+                    if c != 'A' && c != 'C' && c != 'G' && c != 'T' {
+                        ok = false;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return Err("\nFB_SHOW argument must be a comma-separated list \
+                containing at most one nonnegative integer and zero or more DNA \
+                sequences of length 15 (in the alphabet A,C,G,T).\n"
+                .to_string());
+        }
+        ctl.gen_opt.fb_show = arg.after("FB_SHOW=").to_string();
     } else if arg.starts_with("SIM_MAT_PLOT=") {
         let fields = arg.after("SIM_MAT_PLOT=").split(',').collect::<Vec<&str>>();
         if fields.len() < 2 {
-            return Err(format!(
-                "\nSIM_MAT_PLOT requires at least two comma-separated arguments.\n"
-            ));
+            return Err(
+                "\nSIM_MAT_PLOT requires at least two comma-separated arguments.\n".to_string(),
+            );
         }
         let mut val = fields[0].to_string();
-        val = stringme(&tilde_expand(&val.as_bytes()));
+        val = stringme(&tilde_expand(val.as_bytes()));
         ctl.plot_opt.sim_mat_plot_file = val.clone();
         if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);
@@ -217,10 +240,10 @@ pub fn process_special_arg(
                     "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                     val
                 );
-                if val.contains("/") {
+                if val.contains('/') {
                     let dir = val.rev_before("/");
                     let msg;
-                    if path_exists(&dir) {
+                    if path_exists(dir) {
                         msg = "exists";
                     } else {
                         msg = "does not exist";
@@ -229,7 +252,7 @@ pub fn process_special_arg(
                 }
                 return Err(emsg);
             }
-            remove_file(&val).expect(&format!("could not remove file {}", val));
+            remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
         }
         ctl.plot_opt.sim_mat_plot_vars.clear();
         for j in 1..fields.len() {
@@ -247,7 +270,7 @@ pub fn process_special_arg(
                         x.push(n);
                         ok = true;
                     }
-                } else if s[i].contains("-") {
+                } else if s[i].contains('-') {
                     let (a, b) = (s[i].before("-"), s[i].after("-"));
                     if a.parse::<usize>().is_ok() && b.parse::<usize>().is_ok() {
                         let (a, b) = (a.force_usize(), b.force_usize());
@@ -260,10 +283,11 @@ pub fn process_special_arg(
                     }
                 }
                 if !ok {
-                    return Err(format!(
+                    return Err(
                         "\nArgument to G= must be a comma separated list of positive integers or \
                             hyphenated rangers of positive integers or all.\n"
-                    ));
+                            .to_string(),
+                    );
                 }
             }
             unique_sort(&mut x);
@@ -272,34 +296,35 @@ pub fn process_special_arg(
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 && fields.len() != 4 {
-            return Err(format!(
-                "\nPLOTXY_EXACT requires three or four comma-separated arguments.\n"
-            ));
+            return Err(
+                "\nPLOTXY_EXACT requires three or four comma-separated arguments.\n".to_string(),
+            );
         }
         if fields.len() == 4 && fields[3] != "sym" {
-            return Err(format!(
+            return Err(
                 "\nIf four arguments are supplied to PLOTXY_EXACT, then the fourth argument \
                     must be sym.\n"
-            ));
+                    .to_string(),
+            );
         }
         ctl.plot_opt.plot_xy_sym = fields.len() == 4;
-        if fields[0].len() == 0 || fields[1].len() == 0 || fields[2].len() == 0 {
-            return Err(format!("\nArguments to PLOTXY_EXACT must be non-null.\n"));
+        if fields[0].is_empty() || fields[1].is_empty() || fields[2].is_empty() {
+            return Err("\nArguments to PLOTXY_EXACT must be non-null.\n".to_string());
         }
         let mut xvar = fields[0].to_string();
         let mut yvar = fields[1].to_string();
-        if xvar.starts_with("log10(") && xvar.ends_with(")") {
+        if xvar.starts_with("log10(") && xvar.ends_with(')') {
             xvar = xvar.between("log10(", ")").to_string();
             ctl.plot_opt.plot_xy_x_log10 = true;
         }
-        if yvar.starts_with("log10(") && yvar.ends_with(")") {
+        if yvar.starts_with("log10(") && yvar.ends_with(')') {
             yvar = yvar.between("log10(", ")").to_string();
             ctl.plot_opt.plot_xy_y_log10 = true;
         }
         ctl.plot_opt.plot_xy_xvar = xvar;
         ctl.plot_opt.plot_xy_yvar = yvar;
         let mut val = fields[2].to_string();
-        val = stringme(&tilde_expand(&val.as_bytes()));
+        val = stringme(&tilde_expand(val.as_bytes()));
         ctl.plot_opt.plot_xy_filename = val.clone();
         if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);
@@ -308,10 +333,10 @@ pub fn process_special_arg(
                     "\nYou've specified an output file\n{}\nthat cannot be written.\n",
                     val
                 );
-                if val.contains("/") {
+                if val.contains('/') {
                     let dir = val.rev_before("/");
                     let msg;
-                    if path_exists(&dir) {
+                    if path_exists(dir) {
                         msg = "exists";
                     } else {
                         msg = "does not exist";
@@ -320,33 +345,33 @@ pub fn process_special_arg(
                 }
                 return Err(emsg);
             }
-            remove_file(&val).expect(&format!("could not remove file {}", val));
+            remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
         }
-    } else if is_usize_arg(&arg, "REQUIRED_FPS")? {
+    } else if is_usize_arg(arg, "REQUIRED_FPS")? {
         ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_CELLS")? {
+    } else if is_usize_arg(arg, "REQUIRED_CELLS")? {
         ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_DONORS")? {
+    } else if is_usize_arg(arg, "REQUIRED_DONORS")? {
         ctl.gen_opt.required_donors = Some(arg.after("REQUIRED_DONORS=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES")? {
+    } else if is_usize_arg(arg, "REQUIRED_CLONOTYPES")? {
         ctl.gen_opt.required_clonotypes = Some(arg.after("REQUIRED_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES")? {
+    } else if is_usize_arg(arg, "REQUIRED_TWO_CELL_CLONOTYPES")? {
         ctl.gen_opt.required_two_cell_clonotypes =
             Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_TWO_CHAIN_CLONOTYPES")? {
+    } else if is_usize_arg(arg, "REQUIRED_TWO_CHAIN_CLONOTYPES")? {
         ctl.gen_opt.required_two_chain_clonotypes =
             Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
-    } else if is_usize_arg(&arg, "REQUIRED_DATASETS")? {
+    } else if is_usize_arg(arg, "REQUIRED_DATASETS")? {
         ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
-    } else if is_usize_arg(&arg, "EXACT")? {
+    } else if is_usize_arg(arg, "EXACT")? {
         ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
-    } else if is_usize_arg(&arg, "MIN_CHAINS")? {
+    } else if is_usize_arg(arg, "MIN_CHAINS")? {
         ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
-    } else if is_usize_arg(&arg, "MAX_CHAINS")? {
+    } else if is_usize_arg(arg, "MAX_CHAINS")? {
         ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
-    } else if is_usize_arg(&arg, "MIN_CELLS")? {
+    } else if is_usize_arg(arg, "MIN_CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
-    } else if is_usize_arg(&arg, "MAX_CELLS")? {
+    } else if is_usize_arg(arg, "MAX_CELLS")? {
         ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
     } else if arg.starts_with("EXFASTA=") {
         ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
@@ -401,75 +426,75 @@ pub fn process_special_arg(
                 ctl.clono_group_opt.vj_len = true;
             } else if x == "cdr3_len" {
                 ctl.clono_group_opt.cdr3_len = true;
-            } else if x.starts_with("≥aa_light") && x.ends_with("%") {
+            } else if x.starts_with("≥aa_light") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("aa_light>=") && x.ends_with("%") {
+            } else if x.starts_with("aa_light>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("aa_light⩾") && x.ends_with("%") {
+            } else if x.starts_with("aa_light⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("aa_heavy≥") && x.ends_with("%") {
+            } else if x.starts_with("aa_heavy≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
-            } else if x.starts_with("aa_heavy>=") && x.ends_with("%") {
+            } else if x.starts_with("aa_heavy>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
-            } else if x.starts_with("aa_heavy⩾") && x.ends_with("%") {
+            } else if x.starts_with("aa_heavy⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_light≥") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_light≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_light>=") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_light>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_light⩾") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_light⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_heavy≥") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_heavy≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_heavy>=") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_heavy>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
-            } else if x.starts_with("cdr3_aa_heavy⩾") && x.ends_with("%") {
+            } else if x.starts_with("cdr3_aa_heavy⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
-                if !val.parse::<f64>().is_ok() {
+                if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
@@ -487,13 +512,13 @@ pub fn process_special_arg(
         }
     } else if arg.starts_with("COLOR=") {
         ctl.gen_opt.color = arg.after("COLOR=").to_string();
-        if ctl.gen_opt.color != "codon".to_string() && ctl.gen_opt.color != "property".to_string() {
+        if ctl.gen_opt.color != *"codon" && ctl.gen_opt.color != *"property" {
             let mut ok = false;
             if arg.starts_with("COLOR=peer.") {
                 let pc = arg.after("COLOR=peer.");
                 if pc.parse::<f64>().is_ok() {
                     let pc = pc.force_f64();
-                    if pc >= 0.0 && pc <= 100.0 {
+                    if (0.0..=100.0).contains(&pc) {
                         ok = true;
                         ctl.gen_opt.color_by_rarity_pc = pc;
                     }
@@ -530,29 +555,32 @@ pub fn process_special_arg(
         }
         let con = condition.as_bytes();
         for i in 0..con.len() {
-            if i > 0 && i < con.len() - 1 && con[i] == b'=' {
-                if con[i - 1] != b'=' && con[i - 1] != b'<' && con[i - 1] != b'>' {
-                    if con[i + 1] != b'=' {
-                        return Err(format!(
-                            "\nConstraints for {} cannot use =.  Please use == instead.\n",
-                            arg.before("="),
-                        ));
-                    }
-                }
+            if i > 0
+                && i < con.len() - 1
+                && con[i] == b'='
+                && con[i - 1] != b'='
+                && con[i - 1] != b'<'
+                && con[i - 1] != b'>'
+                && con[i + 1] != b'='
+            {
+                return Err(format!(
+                    "\nConstraints for {} cannot use =.  Please use == instead.\n",
+                    arg.before("="),
+                ));
             }
         }
         condition = condition.replace("'", "\"");
         let compiled = build_operator_tree(&condition);
-        if !compiled.is_ok() {
+        if compiled.is_err() {
             return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
         ctl.clono_filt_opt_def.fcell.push(compiled.unwrap());
-    } else if is_simple_arg(&arg, "FAIL_ONLY=true")? {
+    } else if is_simple_arg(arg, "FAIL_ONLY=true")? {
         ctl.clono_filt_opt.fail_only = true;
     } else if arg.starts_with("LEGEND=") {
-        let x = parse_csv(&arg.after("LEGEND="));
-        if x.len() == 0 || x.len() % 2 != 0 {
-            return Err(format!("\nValue of LEGEND doesn't make sense.\n"));
+        let x = parse_csv(arg.after("LEGEND="));
+        if x.is_empty() || x.len() % 2 != 0 {
+            return Err("\nValue of LEGEND doesn't make sense.\n".to_string());
         }
         ctl.plot_opt.use_legend = true;
         for i in 0..x.len() / 2 {
@@ -592,16 +620,16 @@ pub fn process_special_arg(
         ctl.clono_filt_opt.bound_type.push("max".to_string());
     } else if arg.starts_with("SCAN=") {
         let mut x = arg.after("SCAN=").to_string();
-        x = x.replace(" ", "").to_string();
+        x = x.replace(" ", "");
         let x = x.split(',').collect::<Vec<&str>>();
         if x.len() != 3 {
             return Err("\nArgument to SCAN must have three components.\n".to_string());
         }
-        ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0])?);
-        ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1])?);
-        let threshold = LinearCondition::new(&x[2])?;
+        ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(x[0])?);
+        ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(x[1])?);
+        let threshold = LinearCondition::new(x[2])?;
         for i in 0..threshold.var.len() {
-            if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
+            if threshold.var[i] != *"t" && threshold.var[i] != *"c" {
                 return Err("\nIllegal variable in threshold for scan.\n".to_string());
             }
         }
@@ -634,7 +662,7 @@ pub fn process_special_arg(
         for j in (1..x.len()).step_by(2) {
             let condition = x[j].to_string();
             let color = x[j + 1].to_string();
-            if !condition.contains("=") {
+            if !condition.contains('=') {
                 return Err("\nArgument to PLOT is invalid.\n".to_string());
             }
             ctl.plot_opt.plot_conditions.push(condition);
@@ -647,7 +675,7 @@ pub fn process_special_arg(
             return Err("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n".to_string());
         }
     } else if arg.starts_with("PLOT_BY_ISOTYPE_COLOR=") {
-        if arg.after("PLOT_BY_ISOTYPE_COLOR=").len() == 0 {
+        if arg.after("PLOT_BY_ISOTYPE_COLOR=").is_empty() {
             return Err(
                 "\nA value needs to be specified for the PLOT_BY_ISOTYPE_COLOR \
                 argument.\n"
@@ -669,9 +697,9 @@ pub fn process_special_arg(
         if ctl.plot_opt.plot_file.is_empty() {
             return Err("\nFilename value needs to be supplied to PLOT_BY_MARK.\n".to_string());
         }
-    } else if is_simple_arg(&arg, "FAIL_ONLY=false")? {
+    } else if is_simple_arg(arg, "FAIL_ONLY=false")? {
         ctl.clono_filt_opt.fail_only = false;
-    } else if is_usize_arg(&arg, "MAX_CORES")? {
+    } else if is_usize_arg(arg, "MAX_CORES")? {
         let nthreads = arg.after("MAX_CORES=").force_usize();
         let _ = rayon::ThreadPoolBuilder::new()
             .num_threads(nthreads)
@@ -687,7 +715,7 @@ pub fn process_special_arg(
             ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
             ctl.parseable_opt.pcols_sortx = ctl.parseable_opt.pcols.clone();
             for j in 0..ctl.parseable_opt.pcols_sortx.len() {
-                if ctl.parseable_opt.pcols_sortx[j].contains(":") {
+                if ctl.parseable_opt.pcols_sortx[j].contains(':') {
                     ctl.parseable_opt.pcols_sortx[j] =
                         ctl.parseable_opt.pcols_sortx[j].before(":").to_string();
                 }
@@ -705,7 +733,7 @@ pub fn process_special_arg(
     } else if arg.starts_with("AMINO=") {
         ctl.clono_print_opt.amino.clear();
         for x in arg.after("AMINO=").split(',').collect::<Vec<&str>>() {
-            if x != "" {
+            if !x.is_empty() {
                 ctl.clono_print_opt.amino.push(x.to_string());
             }
         }
@@ -726,10 +754,11 @@ pub fn process_special_arg(
                 ok = true;
             } else if x.contains('-') {
                 let (start, stop) = (x.before("-"), x.after("-"));
-                if start.parse::<usize>().is_ok() && stop.parse::<usize>().is_ok() {
-                    if start.force_usize() <= stop.force_usize() {
-                        ok = true;
-                    }
+                if start.parse::<usize>().is_ok()
+                    && stop.parse::<usize>().is_ok()
+                    && start.force_usize() <= stop.force_usize()
+                {
+                    ok = true;
                 }
             }
             if !ok {
@@ -743,7 +772,7 @@ pub fn process_special_arg(
     } else if arg.starts_with("CVARS=") {
         ctl.clono_print_opt.cvars.clear();
         for x in arg.after("CVARS=").split(',').collect::<Vec<&str>>() {
-            if x.len() > 0 {
+            if !x.is_empty() {
                 ctl.clono_print_opt.cvars.push(x.to_string());
             }
         }
@@ -753,7 +782,7 @@ pub fn process_special_arg(
         }
     } else if arg.starts_with("CVARSP=") {
         for x in arg.after("CVARSP=").split(',').collect::<Vec<&str>>() {
-            if x.len() > 0 {
+            if !x.is_empty() {
                 ctl.clono_print_opt.cvars.push(x.to_string());
             }
         }
@@ -789,14 +818,14 @@ pub fn process_special_arg(
         for x in arg.after("GVARS=").split(',').collect::<Vec<&str>>() {
             ctl.gen_opt.gvars.push(x.to_string());
         }
-    } else if is_f64_arg(&arg, "MAX_SCORE")? {
+    } else if is_f64_arg(arg, "MAX_SCORE")? {
         ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-    } else if is_f64_arg(&arg, "MAX_LOG_SCORE")? {
+    } else if is_f64_arg(arg, "MAX_LOG_SCORE")? {
         let x = arg.after("MAX_LOG_SCORE=").force_f64();
         ctl.join_alg_opt.max_score = 10.0_f64.powf(x);
     } else if arg.starts_with("CONST_IGH=") {
         let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGH=")));
-        if !reg.is_ok() {
+        if reg.is_err() {
             return Err(format!(
                 "\nYour CONST_IGH value {} could not be parsed as a regular expression.\n",
                 arg.after("CONST_IGH=")
@@ -805,7 +834,7 @@ pub fn process_special_arg(
         ctl.clono_filt_opt.const_igh = Some(reg.unwrap());
     } else if arg.starts_with("CONST_IGKL=") {
         let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGKL=")));
-        if !reg.is_ok() {
+        if reg.is_err() {
             return Err(format!(
                 "\nYour CONST_IGKL value {} could not be parsed as a regular expression.\n",
                 arg.after("CONST_IGKL=")
@@ -828,7 +857,7 @@ pub fn process_special_arg(
             ctl.clono_filt_opt.cdr3_lev = arg.after("=").to_string();
         } else {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
-            if !reg.is_ok() {
+            if reg.is_err() {
                 return Err(format!(
                     "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
                     arg.after("CDR3=")
@@ -836,7 +865,7 @@ pub fn process_special_arg(
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         }
-    } else if is_usize_arg(&arg, "CHAINS")? {
+    } else if is_usize_arg(arg, "CHAINS")? {
         ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
         ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
     } else if arg.starts_with("SEG=") {
@@ -851,26 +880,26 @@ pub fn process_special_arg(
         let fields = arg.after("SEGN=").split('|').collect::<Vec<&str>>();
         let mut y = Vec::<String>::new();
         for x in fields.iter() {
-            if !x.parse::<i32>().is_ok() {
+            if x.parse::<i32>().is_err() {
                 return Err("\nInvalid argument to SEGN.\n".to_string());
             }
             y.push(x.to_string());
         }
         y.sort();
         ctl.clono_filt_opt.segn.push(y);
-    } else if is_usize_arg(&arg, "CELLS")? {
+    } else if is_usize_arg(arg, "CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
     } else if arg.starts_with("META=") {
         let f = arg.after("META=");
-        let f = stringme(&tilde_expand(&f.as_bytes()));
+        let f = stringme(&tilde_expand(f.as_bytes()));
         metas.push(f);
     } else if arg.starts_with("METAX=") {
         let f = arg.after("METAX=");
         metaxs.push(f.to_string());
     } else if arg.starts_with("TCR=")
         || arg.starts_with("BCR=")
-        || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
+        || (!arg.is_empty() && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
     {
         xcrs.push(arg.to_string());
     } else if arg != "--help" {

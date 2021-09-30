@@ -10,6 +10,9 @@
 //
 // Run make_enclone_testlist_all after this to update the catalog.
 //
+// Optional second argument: FB_INFO: do nothing except attempt to create the
+// feature barcode matrix.
+//
 // For use at 10x Genomics.
 
 use enclone_core::defs::*;
@@ -22,13 +25,23 @@ use pretty_trace::*;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
-use std::fs::{remove_dir_all, rename, File};
-use std::io::{BufRead, BufReader};
+use std::fs::{copy, remove_dir_all, rename, File};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
+    let args: Vec<String> = env::args().collect();
+    let mut fb_info = false;
+    for i in 2..args.len() {
+        if args[i] == "FB_INFO" {
+            fb_info = true;
+        } else {
+            eprintln!("\nIllegal arg.\n");
+            std::process::exit(1);
+        }
+    }
     let mut config = HashMap::<String, String>::new();
     let mut config_file = String::new();
     for (key, value) in env::vars() {
@@ -43,7 +56,6 @@ fn main() {
     let mut dests = Vec::<String>::new();
     dests.push(format!("{}/current{}", config["earth"], TEST_FILES_VERSION));
     dests.push(format!("{}/current{}", config["cloud"], TEST_FILES_VERSION));
-    let args: Vec<String> = env::args().collect();
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<String>::new();
     for id in ids0.iter() {
@@ -100,35 +112,52 @@ fn main() {
             std::process::exit(1);
         }
 
+        // Punt if the count pipeline appears to have succeeded but actually failed.
+
+        if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p))
+            && !path_exists(&format!("{}/analysis", p))
+        {
+            println!(
+                "\nNo analysis directory found for\n{}\nso the outs directory is \
+                incomplete, possibly because there were not enough reads.  Giving up.\n",
+                p
+            );
+            continue;
+        }
+
         // Move directories if they exist.
 
         let mut moved = false;
-        for dest in dests.iter() {
-            if path_exists(&format!("{}/{}", dest, id)) {
-                if path_exists(&format!("{}/{}.aside", dest, id)) {
-                    eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
-                    std::process::exit(1);
+        if !fb_info {
+            for dest in dests.iter() {
+                if path_exists(&format!("{}/{}", dest, id)) {
+                    if path_exists(&format!("{}/{}.aside", dest, id)) {
+                        eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
+                        std::process::exit(1);
+                    }
+                    rename(
+                        &format!("{}/{}", dest, id),
+                        &format!("{}/{}.aside", dest, id),
+                    )
+                    .unwrap();
+                    moved = true;
                 }
-                rename(
-                    &format!("{}/{}", dest, id),
-                    &format!("{}/{}.aside", dest, id),
-                )
-                .unwrap();
-                moved = true;
             }
         }
 
         // Start copy.
 
-        println!("copying {} using path = {}", id, p);
-        for i in (0..dests.len()).rev() {
-            let dest = &dests[i];
-            let target = format!("{}/{}", dest, id);
-            if path_exists(&target) {
-                eprintln!("\nPlease delete {}.\n", target);
-                std::process::exit(1);
+        if !fb_info {
+            println!("copying {} using path = {}", id, p);
+            for i in (0..dests.len()).rev() {
+                let dest = &dests[i];
+                let target = format!("{}/{}", dest, id);
+                if path_exists(&target) {
+                    eprintln!("\nPlease delete {}.\n", target);
+                    std::process::exit(1);
+                }
+                copy_for_enclone(&format!("{}/..", p), &target);
             }
-            copy_for_enclone(&format!("{}/..", p), &target);
         }
 
         // Determine if the feature barcode matrix for the top feature barcodes should be
@@ -136,7 +165,7 @@ fn main() {
 
         let mut seq_def = None;
         if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p)) {
-            seq_def = Some(feature_barcode_matrix_seq_def(id.force_usize()));
+            seq_def = feature_barcode_matrix_seq_def(id.force_usize());
         } else if path_exists(&format!("{}/../SC_MULTI_PD", p)) {
             let mut sample_indices = Vec::<String>::new();
             let mut lanes = Vec::<usize>::new();
@@ -195,9 +224,9 @@ fn main() {
                         .between("\"", "\"")
                         .to_string();
                     seq_def = Some(SequencingDef {
-                        read_path: read_path,
-                        sample_indices: sample_indices,
-                        lanes: lanes,
+                        read_path,
+                        sample_indices,
+                        lanes,
                     });
                 }
             }
@@ -206,9 +235,51 @@ fn main() {
         // Build feature barcode matrix for top feature barcodes.
 
         if seq_def.is_some() {
-            let m = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), false);
-            if m.is_ok() {
-                let m = m.unwrap();
+            // Get list of antibody reference feature barcodes.
+
+            let mut ref_fb = Vec::<String>::new();
+            {
+                let mut f = format!("{}/multi/count/feature_reference.csv", p);
+                if !path_exists(&f) {
+                    let g = open_for_read![&format!("{}/../_invocation", p)];
+                    for line in g.lines() {
+                        let s = line.unwrap();
+                        if s.contains("feature_reference") {
+                            f = s.between("\"", "\"").to_string();
+                        }
+                    }
+                }
+                for i in (0..dests.len()).rev() {
+                    let dest = &dests[i];
+                    let target = format!("{}/{}", dest, id);
+                    copy(&f, &format!("{}/outs/feature_reference.csv", target)).unwrap();
+                }
+                let f = open_for_read![&f];
+                let mut seq_pos = 0;
+                for (i, line) in f.lines().enumerate() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    if i == 0 {
+                        for j in 0..fields.len() {
+                            if fields[j] == "sequence" {
+                                seq_pos = j;
+                            }
+                        }
+                    } else {
+                        ref_fb.push(fields[seq_pos].to_string());
+                    }
+                }
+            }
+            ref_fb.sort();
+
+            // Keep going.
+
+            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info, &ref_fb);
+            if fb_info {
+                std::process::exit(0);
+            }
+            if x.is_ok() {
+                let (m, total, brn) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -216,6 +287,17 @@ fn main() {
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
+                    let mut f =
+                        File::create(&format!("{}/outs/feature_barcode_matrix_top.total", target))
+                            .unwrap();
+                    f.write_all(&total.to_ne_bytes()).unwrap();
+                    let mut f = open_for_write_new![&format!(
+                        "{}/outs/feature_barcode_matrix_top.brn",
+                        target
+                    )];
+                    for j in 0..brn.len() {
+                        fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
+                    }
                 }
             }
         }

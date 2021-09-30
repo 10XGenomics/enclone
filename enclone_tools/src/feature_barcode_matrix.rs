@@ -36,7 +36,7 @@ pub struct SequencingDef {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
+pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
     println!("getting feature barcode matrix for {}", id);
 
     // Get configuration.
@@ -101,14 +101,47 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
         }
         let mut sample_def = stringme(&sample_def);
         sample_def = sample_def.replace(",\n        }", "\n        }");
-        let sample_def = format!(
+        let mut sample_def = format!(
             "{}{}",
             sample_def.rev_before(","),
             sample_def.rev_after(",")
         );
-        let v: Value = serde_json::from_str(&sample_def).unwrap();
-        let sample_def = &v.as_array().unwrap();
-        for x in sample_def.iter() {
+
+        // Remove some trailing commas to get proper json.
+
+        let mut chars = Vec::<char>::new();
+        for char in sample_def.chars() {
+            chars.push(char);
+        }
+        let mut to_delete = vec![false; chars.len()];
+        for i in 0..chars.len() {
+            if chars[i] == ',' {
+                for j in i + 1..chars.len() {
+                    if chars[j] == ' ' || chars[j] == '\n' {
+                    } else if chars[j] == ']' {
+                        to_delete[i] = true;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        sample_def.clear();
+        for i in 0..chars.len() {
+            if !to_delete[i] {
+                sample_def.push(chars[i]);
+            }
+        }
+
+        // Convert string to json.
+
+        let v: Result<Value, _> = serde_json::from_str(&sample_def);
+        if v.is_err() {
+            println!("\nsample_def = $$${}$$$", sample_def);
+        }
+        let v = v.unwrap();
+        let sample_defx = &v.as_array().unwrap();
+        for x in sample_defx.iter() {
             if x["library_type"] == "Antibody Capture" {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
                 let y = x["sample_indices"].as_array().unwrap().to_vec();
@@ -124,16 +157,17 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
         for i in 0..si.len() {
             si[i] = si[i].between("\"", "\"").to_string();
         }
-        if read_path.len() == 0 {
-            eprintln!("\nfailed to find read path\n");
-            std::process::exit(1);
+        if read_path.is_empty() {
+            println!("\nfailed to find read path, presumably because there's no antibody data\n");
+            println!("(this is probably ok)\n");
+            return None;
         }
         if !path_exists(&read_path) {
             eprintln!("\nread path does not exist");
             std::process::exit(1);
         }
     }
-    if lanes.len() == 0 {
+    if lanes.is_empty() {
         eprintln!("\nfailed to find lanes\n");
         std::process::exit(1);
     }
@@ -144,11 +178,11 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> SequencingDef {
     }
 
     let seq_def = SequencingDef {
-        read_path: read_path,
+        read_path,
         sample_indices: si,
-        lanes: lanes,
+        lanes,
     };
-    seq_def
+    Some(seq_def)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -157,7 +191,8 @@ pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
     verbose: bool,
-) -> Result<MirrorSparseMatrix, String> {
+    ref_fb: &Vec<String>,
+) -> Result<(MirrorSparseMatrix, u64, Vec<(String, u32, u32)>), String> {
     let t = Instant::now();
 
     // Find the read files.
@@ -165,7 +200,7 @@ pub fn feature_barcode_matrix(
     let mut read_files = Vec::<String>::new();
     let x = dir_list(&seq_def.read_path);
     if verbose {
-        println!("");
+        println!();
     }
     for f in x.iter() {
         for sample_index in seq_def.sample_indices.iter() {
@@ -242,9 +277,8 @@ pub fn feature_barcode_matrix(
                     total_reads += 1;
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
-                    } else {
-                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
                     }
+                    buf.push((barcode.clone(), umi.clone(), fb.clone()));
                 }
             }
         }
@@ -302,9 +336,39 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     bfu.par_sort();
+
+    // Make table of all barcodes, and for each, the number of reference and nonreference UMIs.
+
+    let mut brn = Vec::<(String, u32, u32)>::new();
+    let mut i = 0;
+    while i < bfu.len() {
+        let j = next_diff1_3(&bfu, i as i32) as usize;
+        let mut refx = 0;
+        let mut nrefx = 0;
+        for k in i..j {
+            if bin_member(ref_fb, &stringme(&bfu[k].1)) {
+                refx += 1;
+            } else {
+                nrefx += 1;
+            }
+        }
+        brn.push((stringme(&bfu[i].0.clone()), refx, nrefx));
+        i = j;
+    }
+
+    // Proceed.
+
     if verbose {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
+        let mut bc = 0;
+        let mut i = 0;
+        while i < bfu.len() {
+            let j = next_diff1_3(&bfu, i as i32) as usize;
+            bc += 1;
+            i = j;
+        }
+        println!("total barcodes = {}", bc);
     }
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
@@ -323,12 +387,19 @@ pub fn feature_barcode_matrix(
         println!("there are {} uniques", bfu.len());
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
+    let mut total = 0;
+    for i in 0..bfn.len() {
+        total += bfn[i].2 as u64;
+    }
+    if verbose {
+        println!("total UMIs = {}\n", total);
+    }
 
     // Report common feature barcodes.
 
     const TOP_FEATURE_BARCODES: usize = 100;
     if verbose {
-        println!("common feature barcodes\n");
+        println!("common feature barcodes and their total UMI counts\n");
     }
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
@@ -387,5 +458,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok(m)
+    Ok((m, total, brn))
 }

@@ -165,7 +165,7 @@ pub fn run_test(
         // dubious use of expect:
         let new = new
             .output()
-            .expect(&format!("failed to execute enclone for test{}", it + 1));
+            .unwrap_or_else(|_| panic!("failed to execute enclone for test{}", it + 1));
         let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
         let new2 = stringme(&new.stdout);
         *out = new2.clone();
@@ -201,26 +201,24 @@ pub fn run_test(
                     } else {
                         *ok = true;
                     }
+                } else if status != 0 {
+                    fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                    fwrite!(
+                        log,
+                        "That test was supposed to have succeeded, but instead \
+                         failed, with stderr = {}",
+                        new_err.iter().format("\n")
+                    );
+                    fwriteln!(
+                        log,
+                        "The command was\n\nenclone {} {}\n",
+                        test,
+                        local_pre_arg
+                    );
+                    fwriteln!(log, "stdout = {}", strme(&new.stdout));
+                    fwriteln!(log, "stderr = {}", strme(&new.stderr));
                 } else {
-                    if status != 0 {
-                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
-                        fwrite!(
-                            log,
-                            "That test was supposed to have succeeded, but instead \
-                             failed, with stderr = {}",
-                            new_err.iter().format("\n")
-                        );
-                        fwriteln!(
-                            log,
-                            "The command was\n\nenclone {} {}\n",
-                            test,
-                            local_pre_arg
-                        );
-                        fwriteln!(log, "stdout = {}", strme(&new.stdout));
-                        fwriteln!(log, "stderr = {}", strme(&new.stderr));
-                    } else {
-                        *ok = true;
-                    }
+                    *ok = true;
                 }
             }
             *logx = stringme(&log);
@@ -236,7 +234,7 @@ pub fn run_test(
                     old.len()
                 );
             }
-            if new.stderr.len() > 0 {
+            if !new.stderr.is_empty() {
                 fwriteln!(log, "Command for subtest {} failed.\n", it + 1);
                 fwriteln!(log, "stderr has {} bytes:", new.stderr.len());
                 fwrite!(log, "{}", strme(&new.stderr));
@@ -317,7 +315,7 @@ pub fn run_test(
             }
             fwrite!(log, "old:\n{}", old);
             fwrite!(log, "new:\n{}", new2);
-            if new_err.len() != 1 || new_err[0].len() != 0 {
+            if new_err.len() != 1 || !new_err[0].is_empty() {
                 fwriteln!(log, "stderr has {} lines:", new_err.len());
                 for i in 0..new_err.len() {
                     fwriteln!(log, "{}", new_err[i]);
@@ -332,7 +330,7 @@ pub fn run_test(
             // }
             // println!( "The size of {} is {} bytes.", f, fs::metadata(&f).unwrap().len() );
 
-            if comments.len() > 0 {
+            if !comments.is_empty() {
                 fwriteln!(
                     log,
                     "enclone subtest {} failed.  Here are the comments for that test:\n\n{}\n\n\
@@ -375,7 +373,7 @@ pub fn run_test(
                 "You can then retest using:\n\n\
                  cargo test -p enclone enclone  -- --nocapture"
             );
-            if new2.len() > 0 {
+            if !new2.is_empty() {
                 fwriteln!(log, "");
                 *logx = stringme(&log);
             } else if old != new2 {

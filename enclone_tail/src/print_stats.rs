@@ -2,6 +2,7 @@
 
 // Print statistics.
 
+use crate::alluvial_fb::*;
 use enclone_core::defs::*;
 use enclone_core::median::*;
 use io_utils::*;
@@ -54,9 +55,9 @@ pub fn print_stats(
             }
         }
     }
-    umish.sort();
-    umisl.sort();
-    umis.sort();
+    umish.sort_unstable();
+    umisl.sort_unstable();
+    umis.sort_unstable();
     let (mut middleh, mut denomh) = (0, 0);
     for j in umish.len() / 3..(2 * umish.len()) / 3 {
         middleh += umish[j];
@@ -216,7 +217,7 @@ pub fn print_stats(
                         datasets.push(ex.clones[l][0].dataset_index);
                     }
                 }
-                datasets.sort();
+                datasets.sort_unstable();
                 let mut freq = Vec::<(u32, usize)>::new();
                 make_freq(&datasets, &mut freq);
                 let mut fake = false;
@@ -238,10 +239,10 @@ pub fn print_stats(
                             let mut b = false;
                             let li = ex.clones[l][0].dataset_index;
                             let bc = &ex.clones[l][0].barcode;
-                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                                    b = true;
-                                }
+                            if gex_info.cell_type[li].contains_key(&bc.clone())
+                                && gex_info.cell_type[li][&bc.clone()].starts_with('B')
+                            {
+                                b = true;
                             }
 
                             // Record accordingly.
@@ -279,10 +280,10 @@ pub fn print_stats(
                             let mut b = false;
                             let li = ex.clones[l][0].dataset_index;
                             let bc = &ex.clones[l][0].barcode;
-                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                                    b = true;
-                                }
+                            if gex_info.cell_type[li].contains_key(&bc.clone())
+                                && gex_info.cell_type[li][&bc.clone()].starts_with('B')
+                            {
+                                b = true;
                             }
                             if chains_ok && freq.len() >= 2 && b {
                                 nmarked_good += 1;
@@ -302,7 +303,7 @@ pub fn print_stats(
             fwriteln!(
                 logx,
                 "   • total elapsed time = {:.1} seconds",
-                elapsed(&tall)
+                elapsed(tall)
             );
             #[cfg(not(target_os = "macos"))]
             fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
@@ -372,7 +373,7 @@ pub fn print_stats(
 
         // Print summary table for chains / clonotypes / cells.
 
-        ncc.sort();
+        ncc.sort_unstable();
         let mut i = 0;
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
@@ -524,8 +525,8 @@ pub fn print_stats(
                 for k in 0..ex.clones.len() {
                     if ex.clones[k][0].validated_umis.is_some() && ex.clones[k].len() == 2 {
                         have_both_denom += 1;
-                        if ex.clones[k][0].validated_umis.as_ref().unwrap().len() > 0
-                            && ex.clones[k][1].validated_umis.as_ref().unwrap().len() > 0
+                        if !ex.clones[k][0].validated_umis.as_ref().unwrap().is_empty()
+                            && !ex.clones[k][1].validated_umis.as_ref().unwrap().is_empty()
                         {
                             have_both += 1;
                         }
@@ -533,24 +534,22 @@ pub fn print_stats(
                     for m in 0..ex.clones[k].len() {
                         if ex.clones[k][m].validated_umis.is_none() {
                             missing_valid = true;
+                        } else if ex.share[m].left {
+                            left_valids
+                                .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                            lefts += ex.clones[k][m].umi_count;
                         } else {
-                            if ex.share[m].left {
-                                left_valids
-                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
-                                lefts += ex.clones[k][m].umi_count;
-                            } else {
-                                right_valids
-                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
-                                rights += ex.clones[k][m].umi_count;
-                            }
+                            right_valids
+                                .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                            rights += ex.clones[k][m].umi_count;
                         }
                     }
                 }
             }
         }
-        if !missing_valid && left_valids.len() > 0 && right_valids.len() > 0 {
-            left_valids.sort();
-            right_valids.sort();
+        if !missing_valid && !left_valids.is_empty() && !right_valids.is_empty() {
+            left_valids.sort_unstable();
+            right_valids.sort_unstable();
             let (mut left_sum, mut right_sum) = (0, 0);
             for i in 0..left_valids.len() {
                 left_sum += left_valids[i];
@@ -622,15 +621,12 @@ pub fn print_stats(
         for i in 0..sdx.len() {
             let mut row = Vec::<String>::new();
             if sdx[i].0.is_some() {
-                row.push(format!(
-                    "{}",
-                    ctl.origin_info.origin_list[sdx[i].0.unwrap()]
-                ));
+                row.push(ctl.origin_info.origin_list[sdx[i].0.unwrap()].to_string());
             } else {
                 row.push("?".to_string());
             }
             if sdx[i].1.is_some() {
-                row.push(format!("{}", ctl.origin_info.donor_list[sdx[i].1.unwrap()]));
+                row.push(ctl.origin_info.donor_list[sdx[i].1.unwrap()].to_string());
             } else {
                 row.push("?".to_string());
             }
@@ -650,7 +646,7 @@ pub fn print_stats(
         if ctl.origin_info.n() == 1 && gex_info.cell_type_specified[0] {
             let cell_type = &gex_info.cell_type[0];
             let cluster = &gex_info.cluster[0];
-            if cluster.len() > 0 {
+            if !cluster.is_empty() {
                 let mut nclust = 0;
                 for x in cluster.iter() {
                     nclust = max(*x.1, nclust);
@@ -680,7 +676,7 @@ pub fn print_stats(
                             }
                         }
                     }
-                    cs.sort();
+                    cs.sort_unstable();
                     let mut freq = Vec::<(u32, usize)>::new();
                     make_freq(&cs, &mut freq);
                     for x in freq.iter() {
@@ -725,13 +721,13 @@ pub fn print_stats(
 
         // Print dataset-level variable values.
 
-        if ctl.gen_opt.dvars.len() > 0 {
+        if !ctl.gen_opt.dvars.is_empty() {
             fwriteln!(logx, "\nDATASET-LEVEL METRICS");
             let mut row = vec!["dataset".to_string()];
             for j in 0..ctl.gen_opt.dvars.len() {
                 let var = ctl.gen_opt.dvars[j].clone();
                 let mut display_var = var.clone();
-                if var.contains(":") {
+                if var.contains(':') {
                     display_var = var.before(":").to_string();
                 }
                 row.push(display_var);
@@ -743,14 +739,14 @@ pub fn print_stats(
                 row.push(dataset_name.clone());
                 for j in 0..ctl.gen_opt.dvars.len() {
                     let mut var = ctl.gen_opt.dvars[j].clone();
-                    if var.contains(":") {
+                    if var.contains(':') {
                         var = var.after(":").to_string();
                     }
                     let mut value = String::new();
                     if gex_info.json_metrics[i].contains_key(&var.to_string()) {
                         value = format!("{:.2}", gex_info.json_metrics[i][&var.to_string()]);
                     }
-                    if value.len() == 0 {
+                    if value.is_empty() {
                         let mut feature = String::new();
                         let mut typex = String::new();
                         let mut fail = false;
@@ -787,27 +783,25 @@ pub fn print_stats(
                                     value = format!("{:.1}", 100.0 * num as f64 / den as f64);
                                 }
                             }
+                        } else if !gex_info.feature_metrics[i]
+                            .contains_key(&(feature.clone(), "num_umis".to_string()))
+                        {
+                            value = "undefined".to_string();
+                        } else if !gex_info.feature_metrics[i]
+                            .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
+                        {
+                            value = "undefined".to_string();
                         } else {
-                            if !gex_info.feature_metrics[i]
-                                .contains_key(&(feature.clone(), "num_umis".to_string()))
-                            {
-                                value = "undefined".to_string();
-                            } else if !gex_info.feature_metrics[i]
-                                .contains_key(&(feature.clone(), "num_umis_cells".to_string()))
-                            {
-                                value = "undefined".to_string();
+                            let num = gex_info.feature_metrics[i]
+                                [&(feature.clone(), "num_umis_cells".to_string())]
+                                .force_usize();
+                            let den = gex_info.feature_metrics[i]
+                                [&(feature.clone(), "num_umis".to_string())]
+                                .force_usize();
+                            if den == 0 {
+                                value = "0/0".to_string();
                             } else {
-                                let num = gex_info.feature_metrics[i]
-                                    [&(feature.clone(), "num_umis_cells".to_string())]
-                                    .force_usize();
-                                let den = gex_info.feature_metrics[i]
-                                    [&(feature.clone(), "num_umis".to_string())]
-                                    .force_usize();
-                                if den == 0 {
-                                    value = "0/0".to_string();
-                                } else {
-                                    value = format!("{:.1}", 100.0 * num as f64 / den as f64);
-                                }
+                                value = format!("{:.1}", 100.0 * num as f64 / den as f64);
                             }
                         }
                     }
@@ -828,7 +822,7 @@ pub fn print_stats(
 
         // Print global variable values.
 
-        if ctl.gen_opt.gvars.len() > 0 {
+        if !ctl.gen_opt.gvars.is_empty() {
             fwriteln!(logx, "\nGLOBAL VARIABLES\n");
             let (mut total, mut bads) = (0, 0);
             let mut need_inc = false;
@@ -879,4 +873,9 @@ pub fn print_stats(
         println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,n_twothreesie");
         println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
     }
+
+    // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
+    // which is not the only way of doing it.
+
+    alluvial_fb(ctl, gex_info, vdj_cells, logx);
 }

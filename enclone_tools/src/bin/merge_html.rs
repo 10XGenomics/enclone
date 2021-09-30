@@ -32,12 +32,12 @@ fn main() {
         results.par_iter_mut().for_each(|r| {
             let i = r.0;
             let test = SITE_EXAMPLES[i].1;
-            let args = parse_bsv(&test);
+            let args = parse_bsv(test);
             let new = Command::new("target/debug/enclone")
                 .args(&args)
                 .arg("MAX_CORES=24")
                 .output()
-                .expect(&format!("failed to execute enclone"));
+                .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
             if new.status.code() != Some(0) {
                 eprint!(
                     "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
@@ -46,13 +46,13 @@ fn main() {
                 );
                 std::process::exit(1);
             }
-            r.1 = new.stdout.clone();
+            r.1 = new.stdout;
         });
         for i in 0..SITE_EXAMPLES.len() {
             // Move file to the site location.
 
             let example_name = SITE_EXAMPLES[i].0;
-            let out_file = format!("{}", example_name);
+            let out_file = example_name.to_string();
             let mut file = File::create(&out_file).unwrap();
             file.write_all(&results[i].1).unwrap();
         }
@@ -60,7 +60,7 @@ fn main() {
     let mut site_ex = Vec::<String>::new();
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;
-        let out_file = format!("{}", example_name);
+        let out_file = example_name.to_string();
         site_ex.push(out_file);
     }
     unique_sort(&mut site_ex);
@@ -74,11 +74,11 @@ fn main() {
         if f.ends_with(".html.src") {
             let mut level = 2;
             let mut target = format!("pages/auto/{}.html", f.between("/", "."));
-            if target == "pages/auto/index.html".to_string() {
+            if target == *"pages/auto/index.html" {
                 target = "index.html".to_string();
                 level = 0;
             }
-            insert_html(&f, &target, false, level);
+            insert_html(f, &target, false, level);
         }
     }
 
@@ -97,7 +97,7 @@ fn main() {
         let mut edited = false;
         let mut lines = Vec::<String>::new();
         {
-            let h = open_for_read![&format!("{}", f)];
+            let h = open_for_read![&f.to_string()];
             for line in h.lines() {
                 let s = line.unwrap();
                 lines.push(s.clone());
@@ -108,7 +108,7 @@ fn main() {
         }
         if !edited {
             let x = format!("{}\n", lines.iter().format("\n"));
-            let mut h = open_for_write_new![&format!("{}", f)];
+            let mut h = open_for_write_new![&f.to_string()];
             fwrite!(h, "{}", edit_html(&x));
         }
     }

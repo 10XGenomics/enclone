@@ -25,10 +25,10 @@ pub struct HelpDesk {
 impl HelpDesk {
     pub fn new(plain: bool, help_all: bool, long_help: bool, html: bool) -> HelpDesk {
         HelpDesk {
-            plain: plain,
-            help_all: help_all,
-            long_help: long_help,
-            html: html,
+            plain,
+            help_all,
+            long_help,
+            html,
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
             title: String::new(),
@@ -62,7 +62,7 @@ impl HelpDesk {
                 for j in start..i {
                     s.push(c2[j]);
                 }
-                if s.len() == 0 {
+                if s.is_empty() {
                     return Err(format!(
                         "\nError in docf2, x2 = \n\n{}\n\nThere is probably a string in there that \
                         exceeds your argument {}.\n",
@@ -82,7 +82,7 @@ impl HelpDesk {
         y2.push(s);
         for i in 0..y2.len() {
             if i == 0 {
-                self.doc(&x1, &y2[i]);
+                self.doc(x1, &y2[i]);
             } else {
                 self.doc("", &y2[i]);
             }
@@ -179,20 +179,20 @@ impl HelpDesk {
             print_color(1, &mut log);
             log.push(b'e');
             emit_end_escape(&mut log);
-            self.print(&format!("{}", strme(&log)))?;
+            self.print(&strme(&log).to_string())?;
         }
         Ok(())
     }
     pub fn print_tab2(&mut self) -> Result<(), String> {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
-        self.print_plain(&format!("{}", log))?;
+        self.print_plain(&log.to_string())?;
         Ok(())
     }
     pub fn print_tab3(&mut self) -> Result<(), String> {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
-        self.print_plain(&format!("{}", log))?;
+        self.print_plain(&log.to_string())?;
         Ok(())
     }
     pub fn begin_doc(&mut self, title: &str) -> Result<(), String> {
@@ -203,21 +203,23 @@ impl HelpDesk {
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&format!("{}", strme(&log)))?;
+            self.print_plain(&strme(&log).to_string())?;
             for _ in 1..100 {
                 self.print_plain("▓")?;
             }
-            self.print_plain(&format!("{}", strme(&log)))?;
-            if title == "" {
-                self.print_plain(&format!(
-                    "\nenclone main help page (what you get by typing \
+            self.print_plain(&strme(&log).to_string())?;
+            if title.is_empty() {
+                self.print_plain(
+                    &"\nenclone main help page (what you get by typing \
                     \"enclone\")\n"
-                ))?;
+                        .to_string(),
+                )?;
             } else if title == "setup" {
-                self.print_plain(&format!(
-                    "\nenclone setup page (for one time use, what you get by typing \
+                self.print_plain(
+                    &"\nenclone setup page (for one time use, what you get by typing \
                     \"enclone help\")\n"
-                ))?;
+                        .to_string(),
+                )?;
             } else {
                 self.print_plain(&format!("\nenclone help {}\n", title))?;
             }
@@ -225,7 +227,7 @@ impl HelpDesk {
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&format!("{}", strme(&log)))?;
+            self.print_plain(&strme(&log).to_string())?;
             for _ in 1..100 {
                 self.print_plain("▓")?;
             }
@@ -256,7 +258,7 @@ impl HelpDesk {
         Ok(())
     }
     pub fn print(&mut self, x: &str) -> Result<(), String> {
-        self.print_plain(&format!("{}", print_to(x)))?;
+        self.print_plain(&print_to(x))?;
         Ok(())
     }
     pub fn print_plain_unchecked(&mut self, x: &str) {
@@ -414,7 +416,7 @@ pub fn print_to(x: &str) -> String {
                         emit_bold_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 6..j {
                     s.push(y[k]);
                 }
@@ -424,7 +426,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             }
         } else if y[i..].starts_with(&['\\', 'r', 'e', 'd', '{']) {
@@ -442,7 +444,7 @@ pub fn print_to(x: &str) -> String {
                         emit_red_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 5..j {
                     s.push(y[k]);
                 }
@@ -452,7 +454,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             } else {
                 i += 1;
@@ -472,7 +474,7 @@ pub fn print_to(x: &str) -> String {
                         emit_blue_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 6..j {
                     s.push(y[k]);
                 }
@@ -482,7 +484,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             } else {
                 i += 1;
@@ -502,7 +504,7 @@ pub fn print_to(x: &str) -> String {
                         emit_green_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 7..j {
                     s.push(y[k]);
                 }
@@ -512,7 +514,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             } else {
                 i += 1;
@@ -533,7 +535,7 @@ pub fn print_to(x: &str) -> String {
                         emit_red_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 9..j {
                     s.push(y[k]);
                 }
@@ -543,7 +545,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             } else {
                 i += 1;
@@ -564,7 +566,7 @@ pub fn print_to(x: &str) -> String {
                         emit_blue_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 for k in i + 10..j {
                     s.push(y[k]);
                 }
@@ -574,7 +576,7 @@ pub fn print_to(x: &str) -> String {
                         emit_end_escape(&mut log);
                     }
                 }
-                s += &strme(&log);
+                s += strme(&log);
                 i = j + 1;
             } else {
                 i += 1;
@@ -635,7 +637,7 @@ pub fn print_to(x: &str) -> String {
 
 pub fn print_tab2(rows: &Vec<Vec<String>>) {
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
+    print_tabular_vbox(&mut log, rows, 2, &b"l|l".to_vec(), false, false);
     print!("{}", log);
 }
 

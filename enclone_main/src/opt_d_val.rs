@@ -47,18 +47,18 @@ pub fn make_opt_d_val(
                             let mut scores = Vec::<f64>::new();
                             let mut ds = Vec::<Vec<usize>>::new();
                             opt_d(
-                                &ex,
+                                ex,
                                 col,
                                 u,
                                 &rsi[i],
-                                &refdata,
-                                &drefs,
+                                refdata,
+                                drefs,
                                 &mut scores,
                                 &mut ds,
-                                &ctl,
+                                ctl,
                             );
                             let mut opt = Vec::new();
-                            if ds.len() > 0 {
+                            if !ds.is_empty() {
                                 opt = ds[0].clone();
                             }
                             dvotes.push(opt);

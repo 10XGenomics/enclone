@@ -129,7 +129,7 @@ pub fn cdr1_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     // Score positions.
 
     let mut score_pos = Vec::<(usize, usize)>::new();
-    let fr1 = fr1_start(&aa, &chain_type);
+    let fr1 = fr1_start(aa, chain_type);
     for j in 0..=aa.len() - pwm.len() {
         if j + pwm.len() > fr1 + 27 {
             continue;
@@ -147,7 +147,7 @@ pub fn cdr1_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         }
         if verbose {
             let seq = &aa[j..j + pwm.len()];
-            println!("j = {}, seq = {}, score = {}", j, strme(&seq), score);
+            println!("j = {}, seq = {}, score = {}", j, strme(seq), score);
         }
         score_pos.push((score, j));
     }
@@ -265,12 +265,10 @@ pub fn fr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
 // CDR2 region.  Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
 pub fn cdr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
-    let s2 = fr2_start(&aa, chain_type, false);
-    if s2.is_none() {
-        return None;
-    }
+    let s2 = fr2_start(aa, chain_type, false);
+    s2?;
     let s2 = s2.unwrap();
-    let mut add = 0 as isize;
+    let mut add = 0_isize;
     if chain_type == "IGH" {
         // Six amino acids preceeding the CDR2 start.
 
@@ -382,9 +380,9 @@ pub fn cdr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         }
         reverse_sort(&mut score_pos);
         if score_pos.is_empty() {
-            return None;
+            None
         } else {
-            return Some(score_pos[0].1 + 6);
+            Some(score_pos[0].1 + 6)
         }
     } else {
         if chain_type == "IGK" || chain_type == "IGL" {
@@ -454,7 +452,7 @@ pub fn cdr3_score(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize {
 pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     // First find the start of the CDR3.
 
-    let cdr3_start = cdr3_start(&aa, &chain_type, verbose);
+    let cdr3_start = cdr3_start(aa, chain_type, verbose);
     /*
     use string_utils::*;
     println!(
@@ -523,9 +521,9 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         }
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
-            return Some(score_pos[0].1);
+            Some(score_pos[0].1)
         } else {
-            return None;
+            None
         }
 
     // Do IGH.
@@ -590,12 +588,12 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
             if -score_pos[0].1 >= 1 {
-                return Some((-score_pos[0].1) as usize - 1);
+                Some((-score_pos[0].1) as usize - 1)
             } else {
-                return None;
+                None
             }
         } else {
-            return None;
+            None
         }
 
     // Do TRA.
@@ -670,9 +668,9 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         }
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
-            return Some(score_pos[0].1 + 1);
+            Some(score_pos[0].1 + 1)
         } else {
-            return None;
+            None
         }
 
     // Do TRB.
@@ -727,9 +725,9 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
         }
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
-            return Some(score_pos[0].1);
+            Some(score_pos[0].1)
         } else {
-            return None;
+            None
         }
     }
 }
@@ -740,8 +738,8 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
 // Chain type is one of IGH, IGK, IGL, TRA or TRB, and is not used at the moment.
 
 pub fn cdr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
-    let fr2 = fr2_start(&aa, chain_type, verbose);
-    let cdr1 = cdr1_start(&aa, chain_type, verbose);
+    let fr2 = fr2_start(aa, chain_type, verbose);
+    let cdr1 = cdr1_start(aa, chain_type, verbose);
     if fr2.is_none() || cdr1.is_none() || cdr1.unwrap() > fr2.unwrap() {
         return None;
     }
@@ -754,15 +752,11 @@ pub fn cdr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
 pub fn cdr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
-    let start = cdr2_start(&aa, chain_type, verbose);
-    if start.is_none() {
-        return None;
-    }
+    let start = cdr2_start(aa, chain_type, verbose);
+    start?;
     let start = start.unwrap();
-    let stop = fr3_start(&aa, chain_type, false);
-    if stop.is_none() {
-        return None;
-    }
+    let stop = fr3_start(aa, chain_type, false);
+    stop?;
     let stop = stop.unwrap();
     if start > stop {
         return None;
@@ -773,11 +767,9 @@ pub fn cdr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn fwr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
-    let fr1 = fr1_start(&aa, chain_type);
-    let cdr1 = cdr1_start(&aa, chain_type, verbose);
-    if cdr1.is_none() {
-        return None;
-    }
+    let fr1 = fr1_start(aa, chain_type);
+    let cdr1 = cdr1_start(aa, chain_type, verbose);
+    cdr1?;
     if fr1 > cdr1.unwrap() {
         return None;
     }
@@ -787,14 +779,10 @@ pub fn fwr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn fwr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
-    let fr2 = fr2_start(&aa, chain_type, verbose);
-    if fr2.is_none() {
-        return None;
-    }
-    let cdr2 = cdr2_start(&aa, chain_type, verbose);
-    if cdr2.is_none() {
-        return None;
-    }
+    let fr2 = fr2_start(aa, chain_type, verbose);
+    fr2?;
+    let cdr2 = cdr2_start(aa, chain_type, verbose);
+    cdr2?;
     if fr2.unwrap() > cdr2.unwrap() {
         return None;
     }
@@ -804,11 +792,9 @@ pub fn fwr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn fwr3(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
-    let fr3 = fr3_start(&aa, chain_type, verbose);
-    if fr3.is_none() {
-        return None;
-    }
-    let cdr3 = cdr3_start(&aa, chain_type, verbose);
+    let fr3 = fr3_start(aa, chain_type, verbose);
+    fr3?;
+    let cdr3 = cdr3_start(aa, chain_type, verbose);
     if fr3.unwrap() > cdr3 {
         return None;
     }

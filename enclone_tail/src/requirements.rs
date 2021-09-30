@@ -54,14 +54,14 @@ pub fn test_requirements(
     // Test for required number of clonotypes.
 
     let nclono = exacts.len();
-    if ctl.gen_opt.required_clonotypes.is_some() {
-        if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
-            msg += &mut format!(
-                "\nThe required number of clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_clonotypes.unwrap(),
-                nclono,
-            );
-        }
+    if ctl.gen_opt.required_clonotypes.is_some()
+        && ctl.gen_opt.required_clonotypes.unwrap() != nclono
+    {
+        msg += &mut format!(
+            "\nThe required number of clonotypes is {}, but you actually have {}.\n",
+            ctl.gen_opt.required_clonotypes.unwrap(),
+            nclono,
+        );
     }
 
     // Test for required number of donors
@@ -79,26 +79,26 @@ pub fn test_requirements(
 
     // Test for required number of >=2 cell clonotypes.
 
-    if ctl.gen_opt.required_two_cell_clonotypes.is_some() {
-        if ctl.gen_opt.required_two_cell_clonotypes.unwrap() != nclono2 {
-            msg += &mut format!(
-                "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
-                nclono2,
-            );
-        }
+    if ctl.gen_opt.required_two_cell_clonotypes.is_some()
+        && ctl.gen_opt.required_two_cell_clonotypes.unwrap() != nclono2
+    {
+        msg += &mut format!(
+            "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
+            ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
+            nclono2,
+        );
     }
 
     // Test for required number of two chain clonotypes.
 
-    if ctl.gen_opt.required_two_chain_clonotypes.is_some() {
-        if ctl.gen_opt.required_two_chain_clonotypes.unwrap() != two_chain {
-            msg += &mut format!(
-                "\nThe required number of two-chain clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
-                two_chain,
-            );
-        }
+    if ctl.gen_opt.required_two_chain_clonotypes.is_some()
+        && ctl.gen_opt.required_two_chain_clonotypes.unwrap() != two_chain
+    {
+        msg += &mut format!(
+            "\nThe required number of two-chain clonotypes is {}, but you actually have {}.\n",
+            ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
+            two_chain,
+        );
     }
 
     // Test for required number of datasets
@@ -113,7 +113,7 @@ pub fn test_requirements(
             );
         }
     }
-    if msg.len() > 0 {
+    if !msg.is_empty() {
         return Err(msg);
     }
     Ok(())

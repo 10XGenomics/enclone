@@ -19,7 +19,7 @@ pub fn combine_group_pics(
 ) -> String {
     let mut glog = Vec::<u8>::new();
     let mut done = false;
-    if noprint && parseable_stdouth && group_pics.len() > 0 {
+    if noprint && parseable_stdouth && !group_pics.is_empty() {
         let mut rows = Vec::<Vec<String>>::new();
         for i in 0..group_pics.len() {
             let r: Vec<String> = group_pics[i].split('\n').map(str::to_owned).collect();
@@ -38,7 +38,7 @@ pub fn combine_group_pics(
         if same {
             let mut justify = Vec::<u8>::new();
             for x in rows[0].iter() {
-                justify.push(justification(&x));
+                justify.push(justification(x));
             }
             print_tabular(&mut glog, &rows, 2, Some(justify));
             done = true;

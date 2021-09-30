@@ -118,11 +118,11 @@ pub fn join_exacts(
             is_bcr,
             i,
             j,
-            &ctl,
-            &exact_clonotypes,
-            &info,
-            &to_bc,
-            &sr,
+            ctl,
+            exact_clonotypes,
+            info,
+            to_bc,
+            sr,
             &mut pot,
         );
 
@@ -408,13 +408,13 @@ pub fn join_exacts(
                         // somewhat broken for the moment, because tig1 could have - characters
                         if !info[k1].has_del[m] {
                             fwriteln!(log, "chain {}, tig 1", m + 1);
-                            let t1 = DnaString::from_acgt_bytes(&tig1);
-                            print_annotations(&t1, &refdata, &mut log, false, true, false);
+                            let t1 = DnaString::from_acgt_bytes(tig1);
+                            print_annotations(&t1, refdata, &mut log, false, true, false);
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 1", m + 1);
-                        print_annotations(&otig1, &refdata, &mut log, false, true, false);
+                        print_annotations(&otig1, refdata, &mut log, false, true, false);
                     }
                     if ctl.join_print_opt.seq {
                         fwriteln!(log, "\nchain {}, tig 2 = {}", m + 1, otig2.to_string());
@@ -423,13 +423,13 @@ pub fn join_exacts(
                         // somewhat broken for the moment, because tig2 could have - characters
                         if !info[k2].has_del[m] {
                             fwriteln!(log, "chain {}, tig 2", m + 1);
-                            let t2 = DnaString::from_acgt_bytes(&tig2);
-                            print_annotations(&t2, &refdata, &mut log, false, true, false);
+                            let t2 = DnaString::from_acgt_bytes(tig2);
+                            print_annotations(&t2, refdata, &mut log, false, true, false);
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 2", m + 1);
-                        print_annotations(&otig2, &refdata, &mut log, false, true, false);
+                        print_annotations(&otig2, refdata, &mut log, false, true, false);
                     }
                 }
             }
@@ -457,5 +457,5 @@ pub fn join_exacts(
             raw_joins.push((results[l].5[j].0 as i32, results[l].5[j].1 as i32));
         }
     }
-    finish_join(&ctl, &info, &results, &mut join_info)
+    finish_join(ctl, info, &results, &mut join_info)
 }

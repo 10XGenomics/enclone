@@ -1,0 +1,1762 @@
+# Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+#
+# This is the start of a variable registry for enclone.  Every variable must specify all the
+# following fields, in the same order.  
+#
+# The exact formatting as exhibited by existing variables # must be followed.  This includes
+# indentation.
+#
+# name:     name of the variable, which may include special strings so as to represent
+#           variable classes; this excludes the chain number suffix (1,...) for cvars.
+#
+#           Upper case characters always define variable class strings.  The following are
+#           recognized:
+#           BC         user-defined variable from BC or META/bc
+#           DATASET    name of a dataset
+#           FEATURE    name of a feature
+#           INFO       user-defined variable from INFO
+#           NAME       name, see n_<name> at enclone help lvars
+#           REG        regular expression.
+#
+# inputs:   data structures needed as input
+#           ex: ExactClonotype = exact subclonotype structure
+#           mid: usize = chain id in clonotype
+#           fm: gex_info.feature_metrics = feature values by barcode
+#
+# limits:   limitations on availability of the variable
+#
+# class:    lvar or cvar
+#
+# level:    scope of the variable, one of
+#           cell, cell-exact, exact, clono, dataset, global
+#
+# val:      the type of the value, one of
+#           positive_integer, float[0,100].precision(1)
+#
+# doc:      documentation
+#
+# brief:    brief documentation, for use in compact html tables
+#
+# page:     reference page
+#
+# avail:    availability, public or private or ? (temp)
+#
+# notes:    things to clarify
+#
+# code:     code for computing the variable value
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     BC
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    user-defined variable from BC or META/bc
+page:     enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     DATASET_barcode
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    barcode from the given dataset (or null)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     DATASET_barcodes
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    barcodes from the given dataset
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median count for a gene expression or antibody feature
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_%
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    median percent of total expression for a particular gene
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_%_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    percent of total expression for a particular gene
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    count for a gene expression or antibody feature
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_cellular_r
+inputs:   fm
+limits:
+class:    lvar
+level:    dataset
+val:      float[0,100].precision(1)
+doc:      For a given feature, the percent of reads that are identified by the
+          cellranger pipeline as lying in a cell.
+brief:    percent of feature reads in cells, for a given dataset
+page:     enclone help display
+avail:    ?
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_cellular_u
+inputs:   fm
+limits:
+class:    lvar
+level:    dataset
+val:      float[0,100].precision(1)
+doc:      For a given feature, the percent of UMIs that are identified by the
+          cellranger pipeline as lying in a cell.
+brief:    percent of feature UMIs in cells, for a given dataset
+page:     enclone help display
+avail:    ?
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_max
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    maximum count for a feature
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_mean
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean count for a feature (same as <code>μ</code> for <code>mean</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_min
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    minimum count for a feature 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_sum
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of counts for a feature (same as <code>Σ</code> for <code>sum</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_Σ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of counts for a feature (same as <code>sum</code> for <code>Σ</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     FEATURE_μ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean count for a feature (same with <code>mean</code> for <code>μ</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     INFO
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    user-defined variable from INFO
+page:     enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     aa%
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    amino acid identity with donor reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     barcode
+inputs:   ?
+limits:   only implemented for parseable output, and as an automatic field for clonotype tables in 
+          PER_CELL mode
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    barcode of the cell
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     barcodes
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    barcodes for the exact subclonotype
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdiff
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    differences of const region with universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr*_aa_{0,...}_{0,...}_ext
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* region with specified extension length
+page:     enclone help cvars
+avail:    public
+notes:    Check if args are really nonnegative integers.
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr3_aa_conp
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR3 amino acid consensus, symbols at variants
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr3_aa_conx
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR3 amino acid clonotype consensus, Xs at variants
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr3_start
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    nucleotide start of CDR3 sequence on full sequence
+page:     enclone help parseable
+avail:    public
+notes:    Check if type is really positive integer.
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_aa
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_aa_north
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    North version of CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_aa_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR* amino acid sequence for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* region with specified extension length
+page:     enclone help cvars
+avail:    public
+notes:    Do extension lengths start at zero?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* nucleotide sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_dna_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR* nucleotide sequence for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    length of CDR* amino acid sequence 
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     clen
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    length of observed constant region
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     clonotype_id
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    identifier of clonotype within clonotype group 
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     clonotype_ncells
+inputs:   ?
+limits:
+class:    lvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    number of cells in the clonotype
+page:     enclone hep parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     comp
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    CDR3 complexity number
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     const
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    constant region name
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     const_id
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer_or_null
+doc:      TBD
+brief:    numerical identifier of constant region (or null)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     count_REG
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    count amino acid motifs
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cred
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median credibility assessed using GEX data
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cred_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      float
+doc:      TBD
+brief:    credibility assessed using GEX data
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d1_name
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    optimal D segment name
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d1_score
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    score of optimal D segment
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d2_name
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    second best D segment name
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d2_score
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    score of second best D segment
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_delta
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    score delta between top two D gene assignments
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_donor
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    distance from donor reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_frame
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    reading frame of D segment (0, 1, 2 or null)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_id
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    D region id
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_inconsistent_%
+inputs:   ?
+limits:
+class:    lvar
+level:    global
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    inconsistency percent for D gene assignment
+page:     d_genes.html
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_inconsistent_n
+inputs:   ?
+limits:
+class:    lvar
+level:    global
+val:      positive_integer
+doc:      TBD
+brief:    sample size for computation of <code>d_inconsistent_%</code> 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_name
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    D region name
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_start
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    start of D on full nucleotide sequence (or null)
+page:     enclone help parseable
+avail:    public
+notes:    Starts at 0 or 1?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_univ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    distance from universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     d_Δ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    score delta between top two D gene assignments
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     datasets
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    dataset names
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     datasets_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    dataset name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     dna%
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float[0,100].precision(1)
+doc:      TBD
+brief:    nucleotide identity with donor reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     donors
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    donor names
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     donors_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    donor name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     dref
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    nucleotide distance to donor reference
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     dref_aa
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    amino acid distance to donor reference
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     edit
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    edit versus reference CDR3
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     exact_subclonotype_id
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    identifier of exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     filter
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    name of filter that would be applied (if filters off)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     fwr{1,2,3,4}_aa
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    FWR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     fwr{1,2,3,4}_aa_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    FWR* amino acid seq for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     fwr{1,2,3,4}_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    FWR* nucleotide sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     fwr{1,2,3,4}_dna_ref
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    FWR* nucleotide seq for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     fwr{1,2,3,4}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    length of FWR* nucleotide sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     g<0,...>
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    exact subclonotype group, by Hamming distance
+page:     enclone help lvars
+avail:    public
+notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of GEX UMIs
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of GEX UMIs
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_max
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    maximum number of GEX UMIs across exact subclonotype
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_mean
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_min
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    minimum number of GEX UMIs across exact subclonotype 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_sum
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>) 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_Σ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     gex_μ
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     group_id
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    group
+val:      positive_integer
+doc:      TBD
+brief:    identifier of clonotype group
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     group_ncells
+inputs:   ?
+limits:   only implemented for parseable output
+class:    lvar
+level:    group
+val:      positive_integer
+doc:      TBD
+brief:    number of cells in clonotype group
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     inkt
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    evidence for iNKT cell 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     j_id
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    J region id
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     j_name
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    J region name
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     mait
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    evidence for MAIT cell 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n
+inputs:   ?
+limits:   <code>PER_CELL</code> values are not displayed because they are all <code>1</code>, 
+          which would be distracting; also there is no <code>_cell</code> version
+class:    lvar
+level:    cell-exact
+val:      positive_integer
+doc:      TBD
+brief:    number of cells
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_NAME
+inputs:   ?
+limits:   <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
+          which would be distracting; also there is no <code>_cell</code> version</td></tr>
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of cells associated to the given name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_gex
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of cells seen by GEX pipeline
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_gex_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      positive_integer
+doc:      TBD
+brief:    number of cells seen by GEX pipeline
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nchains
+inputs:   ?
+limits:
+class:    lvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    number of chains in the clonotype
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nchains_present
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      positive_integer
+doc:      The number of chains that are present in a given exact subclonotype.
+brief:    number of chains present in an exact subclonotype
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ndiff<1,...>vj
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of base differences with exact subclonotype of that number
+page:     enclone help cvars
+avail:    public
+notes:    Start at 1 or 0?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     near
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    Hamming distance to nearest neighbor 
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     notes
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    notes for exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     origins
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    origin names
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     origins_cell
+inputs:   ?
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    origin name
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     q<0,...>_
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    read quality scores at position <code>n</code>
+page:     enclone help parseable
+avail:    public
+notes:    Should position start at 0 or 1?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r
+inputs:   ?
+limits:
+class:    cvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    median number of reads supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_cell
+inputs:   ?
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of reads supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_max
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    maximum chain read count across exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_mean
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean chain reads across exact subclonotype (= <code>r_μ</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_min
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    minimum chain read count across exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_sum
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of chain read counts across exact subclonotype (= <code>r_Σ</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_Σ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of chain reads across exact subclonotype (= <code>r_sum</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     r_μ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean chain read count across exact subclonotype (= <code>r_μ</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     seq
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    full nucleotide sequence of exact subclonotype
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     share_indices_aa
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    shared amino acid positions
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     share_indices_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    shared nucleotide positions
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    median number of UMIs supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_cell
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of UMIs supporting chain
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_max
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      For a chain in an exact subclonotype, the maximum number of UMIs, ranging across the 
+          cells.
+brief:    maximum chain UMIs across exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          format!("{}", numis.iter().max().unwrap())
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_mean
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean chain UMIs across exact subclonotype (= <code>u_μ</code>) 
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_min
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    minimum chain UMIs across exact subclonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_sum
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_Σ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    sum of chain UMIs across exact subclonotype (= <code>u_sum</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     u_μ
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    mean chain UMIs for exact subclonotype (= <code>u_mean</code>)
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     udiff
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    differences of 5'-UTR region with universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ulen
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    length of observed 5'-UTR sequence 
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     utr_id
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    numerical identifier of 5'-UTR region (or null)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     utr_name
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    name of 5'-UTR region (or null)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     v_id
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      positive_integer
+doc:      TBD
+brief:    V region id
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     v_name
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    V region name
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     v_start
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer_or_null
+doc:      TBD
+brief:    start of V on full nucleotide sequence
+page:     enclone help parseable
+avail:    public
+notes:    Positive integer, or nonnegative integer?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var
+inputs:   ?
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    bases at position in chain that vary across the clonotype
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    variant residue indices in clonotype (including synonymous)
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_indices_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    variable amino acid positions
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var_indices_dna
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    variable nucleotide positions
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_aa
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    amino acid sequence of V..J
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_aa_nl
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    amino acid sequence of V..J, excluding leader
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_seq
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    nucleotide sequence of V..J
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vj_seq_nl
+inputs:   ?
+limits:   only implemented for parseable output
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    nucleotide sequence of V..J, excluding leader
+page:     enclone help parseable
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     vjlen
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    length in bases of V..J
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

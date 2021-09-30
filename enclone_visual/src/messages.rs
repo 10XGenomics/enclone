@@ -88,4 +88,6 @@ pub enum Message {
     CompleteSanityCheck(Result<(), String>),
     ClonotypesCopy,
     CompleteClonotypesCopy(Result<(), String>),
+    TooltipToggle,
+    CompleteTooltipToggle(Result<(), String>),
 }

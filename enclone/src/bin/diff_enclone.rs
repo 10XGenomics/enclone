@@ -35,7 +35,7 @@ fn main() {
     let blacklist = ["PCELL", "POUT", "PCOLS", "BARCODE", "NOPAGER", "NOPRINT"];
     for i in 1..args.len() {
         let mut a = args[i].clone();
-        if a.contains("=") {
+        if a.contains('=') {
             a = a.before("=").to_string();
         }
         for j in 0..blacklist.len() {
@@ -81,7 +81,7 @@ fn main() {
             .arg("POUT=stdout")
             .arg("NOPRINT")
             .output()
-            .expect(&format!("failed to execute enclone"));
+            .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nenclone call returned nonzero status code, stderr =\n{}",
@@ -125,7 +125,7 @@ fn main() {
         let v2 = (v1 + 1) % 2;
         let (lines1, lines2) = (&outs[v1], &outs[v2]);
         for j in 0..lines1.len() {
-            if !bin_member(&lines2, &lines1[j]) {
+            if !bin_member(lines2, &lines1[j]) {
                 let b = lines1[j].before(",").to_string();
                 bc.push(b.clone());
                 group[v1].push((to_group[v1][&b].clone(), b));
@@ -190,7 +190,7 @@ fn main() {
 
     // For each group of barcodes, run enclone using the group, for both old and new.
 
-    println!("");
+    println!();
     for i in 0..groups.len() {
         let bc_arg = format!("{}", groups[i].iter().format(","));
         for pass in 1..=2 {
@@ -214,7 +214,7 @@ fn main() {
                 .arg(&format!("BARCODE={}", bc_arg))
                 .arg("NOPAGER")
                 .output()
-                .expect(&format!("failed to execute enclone"));
+                .unwrap_or_else(|_| panic!("{}", "failed to execute enclone".to_string()));
             if new.status.code() != Some(0) {
                 eprint!(
                     "\nenclone call returned nonzero status code, stderr =\n{}",

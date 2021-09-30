@@ -22,13 +22,13 @@ pub fn generate_fasta(
 ) {
     // Generate FASTA output.
 
-    if ctl.gen_opt.fasta_filename.len() > 0 {
+    if !ctl.gen_opt.fasta_filename.is_empty() {
         for (k, u) in exacts[oo].iter().enumerate() {
             for m in 0..rsi[oo].mat.len() {
                 if rsi[oo].mat[m][k].is_some() {
                     let r = rsi[oo].mat[m][k].unwrap();
                     let ex = &exact_clonotypes[*u];
-                    if ctl.gen_opt.fasta_filename != "stdout".to_string() {
+                    if ctl.gen_opt.fasta_filename != *"stdout" {
                         fwriteln!(
                             fout,
                             ">group{}.clonotype{}.exact{}.chain{}",
@@ -65,7 +65,7 @@ pub fn generate_fasta(
                     if cid.is_some() {
                         let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
                         seq.append(&mut cseq);
-                        if ctl.gen_opt.fasta_filename != "stdout".to_string() {
+                        if ctl.gen_opt.fasta_filename != *"stdout" {
                             fwriteln!(fout, "{}", strme(&seq));
                         } else {
                             fwriteln!(logx, "{}", strme(&seq));
@@ -78,13 +78,13 @@ pub fn generate_fasta(
 
     // Generate fasta amino acid output.
 
-    if ctl.gen_opt.fasta_aa_filename.len() > 0 {
+    if !ctl.gen_opt.fasta_aa_filename.is_empty() {
         for (k, u) in exacts[oo].iter().enumerate() {
             for m in 0..rsi[oo].mat.len() {
                 if rsi[oo].mat[m][k].is_some() {
                     let r = rsi[oo].mat[m][k].unwrap();
                     let ex = &exact_clonotypes[*u];
-                    if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
+                    if ctl.gen_opt.fasta_aa_filename != *"stdout" {
                         fwriteln!(
                             faaout,
                             ">group{}.clonotype{}.exact{}.chain{}",
@@ -121,7 +121,7 @@ pub fn generate_fasta(
                     if cid.is_some() {
                         let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
                         seq.append(&mut cseq);
-                        if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
+                        if ctl.gen_opt.fasta_aa_filename != *"stdout" {
                             fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
                         } else {
                             fwriteln!(logx, "{}", strme(&aa_seq(&seq, 0)));

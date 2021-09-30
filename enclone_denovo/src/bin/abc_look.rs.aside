@@ -1,0 +1,588 @@
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+
+// Characterize the locations of a given motif in the abcellera set.
+//
+// abc_look <IGH or IGK or IGL> <regular expression, possibly double quoted> <optional args>
+// 
+// Optional arguments:
+//
+// LOCS=n    show the given number of location instances
+// VS        show the V segment names
+// TABLE     print detailed table for Abcellera
+// NREF      consider only non-reference positions
+
+use amino::*;
+use debruijn::dna_string::*;
+use edit_distance::edit_distance;
+use enclone_denovo::vdj_features::*;
+use fasta_tools::*;
+use io_utils::*;
+use itertools::Itertools;
+use pretty_trace::*;
+use rayon::prelude::*;
+use vdj_ann::refx::*;
+use regex::Regex;
+use std::cmp::min;
+use std::env;
+use std::io::Write;
+use string_utils::*;
+use tables::*;
+use vector_utils::*;
+
+// note that "heavies" is misnamed
+
+fn analyze_expanded( dataset: &str, pout: &str, heavies: &mut Vec<Vec<u8>>, 
+    show: usize, reg: &Regex, show_vs: bool, bases: &Vec<DnaString>, nref: bool, chain_type: &str) {
+    let mut vs = Vec::<String>::new();
+    let mut vs_ref_aa = Vec::<Vec<u8>>::new();
+    for line in pout.lines() {
+        if !line.starts_with("group") {
+            let fields = line.split(',').collect::<Vec<&str>>();
+            let ff;
+            if chain_type == "IGH" {
+                ff = 4;
+            } else {
+                ff = 7;
+            }
+            if fields[ff+1].starts_with(&chain_type) {
+                let mut aa = fields[ff].as_bytes().to_vec();
+                let f1 = fr1_start(&aa, &chain_type);
+                aa = aa[f1..].to_vec();
+                heavies.push(aa);
+                vs.push(fields[ff+1].to_string());
+                let v_ref_id = fields[ff+2].force_usize() - 1;
+                let mut aa = aa_seq(&bases[v_ref_id].to_ascii_vec(), 0);
+                let f1 = fr1_start(&aa, &chain_type);
+                let c3 = cdr3_start(&aa, &chain_type, false);
+                aa = aa[f1..c3].to_vec();
+                vs_ref_aa.push(aa);
+            }
+        }
+    }
+    let (total_h, mut hits_h) = (heavies.len(), 0);
+    let mut locs = Vec::<String>::new();
+    let mut locs_vs = Vec::<String>::new();
+    for i in 0..heavies.len() {
+        let y = format!("MXXXXXXXXXXXXXXXXXXX{}", strme(&heavies[i]));
+        let mut ref_starts = Vec::<usize>::new();
+        for x in reg.find_iter(&strme(&vs_ref_aa[i])) {
+            ref_starts.push(x.start() + 20);
+        }
+        for x in reg.find_iter(&y) {
+            let (start, stop) = (x.start(), x.end());
+            if nref && bin_member(&ref_starts, &start) {
+                continue;
+            }
+            hits_h += 1;
+            let loc = location(start, stop, &y.as_bytes().to_vec(), &chain_type);
+            locs.push(stringme(&loc));
+            locs_vs.push(vs[i].clone());
+        }
+    }
+    println!("• {} {} = {:.1}% = {}/{}", 
+        dataset, chain_type, 100.0 * hits_h as f64 / total_h as f64, hits_h, total_h);
+    if !show_vs {
+        locs.sort();
+        print_locs(&locs, show);
+    } else {
+        sort_sync2(&mut locs, &mut locs_vs);
+        let mut freq = Vec::<(usize, String)>::new();
+        let mut i = 0;
+        while i < locs.len() {
+            let mut j = i + 1;
+            while j < locs.len() {
+                if locs[j] != locs[i] {
+                    break;
+                }
+                j += 1;
+            }
+            let mut x = locs_vs[i..j].to_vec();
+            unique_sort(&mut x);
+            let loc = format!("{} # {}", locs[i], x.iter().format(","));
+            freq.push((j-i, loc));
+            i = j;
+        }
+        reverse_sort(&mut freq);
+        let end = min(show, freq.len());
+        for i in 0..end {
+            println!("  - {:>4}  {}", freq[i].0, freq[i].1);
+        }
+        let mut other = 0;
+        for i in end..freq.len() {
+            other += freq[i].0;
+        }
+        println!("  - {:>4}  other", other);
+    }
+}
+
+pub fn print_locs(locs: &Vec<String>, show: usize) {
+    let mut freq = Vec::<(u32, String)>::new();
+    make_freq(&locs, &mut freq);
+    let end = min(show, freq.len());
+    for i in 0..end {
+        println!("  - {:>4}  {}", freq[i].0, freq[i].1);
+    }
+    let mut other = 0;
+    for i in end..freq.len() {
+        other += freq[i].0;
+    }
+    println!("  - {:>4}  other", other);
+}
+
+pub fn location(start: usize, stop: usize, x: &[u8], chain_type: &str) -> Vec<u8> {
+    let mut log = Vec::<u8>::new();
+    let mut y = x.to_vec();
+    for k in (0..y.len()).rev() {
+        if y[k..].starts_with(b"YYC") || y[k..].starts_with(b"YFC")
+            || y[k..].starts_with(b"YHC") || y[k..].starts_with(b"FYC")
+            || y[k..].starts_with(b"YIC") {
+            y.truncate(k + 3);
+            break;
+        }
+    }
+    let f1 = fr1_start(&y.to_vec(), &chain_type);
+    let c1 = cdr1_start(&y.to_vec(), &chain_type, false).unwrap();
+    let f2 = fr2_start(&y.to_vec(), &chain_type, false).unwrap();
+    let c2 = cdr2_start(&y.to_vec(), &chain_type, false).unwrap();
+    let f3 = fr3_start(&y.to_vec(), &chain_type, false).unwrap();
+    let c3 = cdr3_start(&y.to_vec(), &chain_type, false);
+    let f4;
+    if chain_type == "IGH" {
+        f4 = x.len() - 10;
+    } else {
+        f4 = x.len() - 9;
+    }
+    if start <= f1 {
+        fwrite!(log, "FWR1_start - {}", f1-start);
+    } else if start < c1 && stop > c1 {
+        fwrite!(log, "FWR1/CDR1");
+    } else if stop <= c1 {
+        fwrite!(log, "{}-FWR1-{}", start-f1, c1-stop);
+    } else if start < c1 {
+        fwrite!(log, "FWR1_start + {} = CDR1_start - {}", start-f1, c1-start);
+    } else if start < f2 && stop > f2 {
+        fwrite!(log, "CDR1/FWR2");
+    } else if stop <= f2 {
+        fwrite!(log, "{}-CDR1-{}", start-c1, f2-stop);
+    } else if start < f2 {
+        fwrite!(log, "CDR1_start + {} = FWR2_start - {}", start-c1, f2-start);
+    } else if start < c2 && stop > c2 {
+        fwrite!(log, "FWR2/CDR2");
+    } else if stop <= c2 {
+        fwrite!(log, "{}-FWR2-{}", start-f2, c2-stop);
+    } else if start < c2 {
+        fwrite!(log, "FWR2_start + {} = CDR2_start - {}", start-f2, c2-start);
+    } else if stop <= f3 {
+        fwrite!(log, "{}-CDR2-{}", start-c2, f3-stop);
+    } else if start < f3 && stop > f3 {
+        fwrite!(log, "CDR2/FWR3");
+    } else if start < f3 {
+        fwrite!(log, "CDR2_start + {} = FWR3_start - {}", start-c2, f3-start);
+    } else if stop <= c3 {
+        fwrite!(log, "{}-FWR3-{}", start-f3, c3-stop);
+    } else if start < c3 {
+        fwrite!(log, "FWR3_start + {} = CDR3_start - {}", start-f3, c3-start);
+    } else if stop <= f4 {
+        fwrite!(log, "{}-CDR3-{}", start-c3, f4-stop);
+    } else if start < f4 {
+        fwrite!(log, "CDR3_start + {}", start - c3);
+    } else {
+        fwrite!(log, "FWR4_start + {}", start - f4);
+    }
+    log
+}
+
+fn main() {
+    PrettyTrace::new().on();
+    let args: Vec<String> = env::args().collect();
+    let required_type = args[1].to_string();
+    let reg = Regex::new(&args[2]).unwrap();
+    let mut show = 10;
+    let mut show_vs = false;
+    let mut table = false;
+    let mut nref = false;
+    for i in 3..args.len() {
+        if args[i].starts_with("LOCS=") {
+            show = args[i].after("LOCS=").force_usize();
+        } else if args[i] == "VS" {
+            show_vs = true;
+        } else if args[i] == "TABLE" {
+            table = true;
+        } else if args[i] == "NREF" {
+            nref = true;
+        } else {
+            eprintln!("\nUnrecognized argument.\n");
+            std::process::exit(1);
+        }
+    }
+
+    // Compute amino acids sequences for human and mouse V segments (FWR1..FWR3 inclusive).
+
+    let mut vs = vec![Vec::<Vec<u8>>::new(); 2];
+    let mut bases = Vec::<DnaString>::new();
+    for pass in 0..2 {
+        let mut basesp = Vec::<DnaString>::new();
+        let mut headers = Vec::<String>::new();
+        if pass == 0 {
+            read_fasta_contents_into_vec_dna_string_plus_headers(
+                &human_ref(), &mut basesp, &mut headers);
+            bases = basesp.clone();
+        } else {
+            read_fasta_contents_into_vec_dna_string_plus_headers(
+                &mouse_ref(), &mut basesp, &mut headers);
+        }
+        for i in 0..basesp.len() {
+            let h = &headers[i];
+            if h.contains("IGHV") || h.contains("IGKV") || h.contains("IGLV") {
+                if h.contains("V-REGION") {
+                    let chain;
+                    if h.contains("IGHV") {
+                        chain = "IGH";
+                    } else if h.contains("IGKV") {
+                        chain = "IGK";
+                    } else {
+                        chain = "IGL";
+                    }
+                    let mut aa = aa_seq(&basesp[i].to_ascii_vec(), 0);
+                    let f1 = fr1_start(&aa, &chain);
+                    let c3 = cdr3_start(&aa, &chain, false);
+                    aa = aa[f1..c3].to_vec();
+                    vs[pass].push(aa);
+                }
+            }
+        }
+    }
+
+    // Get data from the abcellera human antibody list.
+
+    let mut ab = Vec::<(String, String)>::new();
+    let mut thera = Vec::<String>::new();
+    let mut ids = Vec::<usize>::new();
+    let mut species = Vec::<String>::new();
+    let mut cancer = Vec::<bool>::new();
+    let f = include_str!["../../../antibody_data/thera_sabdab.csv"];
+    let mut first = true;
+    for line in f.lines() {
+        if first {
+            first = false;
+            continue;
+        }
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let lchains0 = fields[3].split(';').collect::<Vec<&str>>();
+        let mut lchains = Vec::<String>::new();
+        for i in 0..lchains0.len() {
+            if lchains0[i] == "Kappa" {
+                lchains.push("IGK".to_string());
+        } else if lchains0[i] == "Lambda" {
+                lchains.push("IGL".to_string());
+            }
+        }
+        if lchains.len() == 1 {
+            lchains.push(lchains[0].clone()); // probably wrong
+        }
+        let mut hspecies = fields[6].to_string();
+        let mut lspecies = fields[8].to_string();
+        if lspecies.len() == 0 {
+            lspecies = hspecies.clone();
+        }
+        if hspecies.contains(" ") {
+            hspecies = hspecies.before(" ").to_string();
+        }
+        if lspecies.contains(" ") {
+            lspecies = lspecies.before(" ").to_string();
+        }
+        if hspecies.len() == 0 {
+            hspecies = "unknown".to_string();
+        }
+        if lspecies.len() == 0 {
+            lspecies = "unknown".to_string();
+        }
+        let can = line.contains("cancer") || line.contains("Cancer")
+            || line.contains("lymphoma") || line.contains("leukemia") || line.contains("sarcoma");
+        if fields[7] != "na" {
+            thera.push(fields[0].to_string());
+            ab.push((
+                "IGH".to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[7]),
+            ));
+            ids.push(1);
+            species.push(hspecies.clone());
+            cancer.push(can);
+        }
+        if fields[9] != "na" { // light
+            thera.push(fields[0].to_string());
+            let mut chain = "IGK".to_string(); // dubious
+            if lchains.len() > 0 {
+                chain = lchains[0].to_string();
+            }
+            ab.push((
+                chain,
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[9]),
+            ));
+            ids.push(1);
+            species.push(lspecies.clone());
+            cancer.push(can);
+        }
+        if fields[10] != "na" {
+            thera.push(fields[0].to_string());
+            ab.push((
+                "IGH".to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[10]),
+            ));
+            ids.push(2);
+            species.push(hspecies.clone());
+            cancer.push(can);
+        }
+        if fields[11] != "na" { // light
+            thera.push(fields[0].to_string());
+            ab.push((
+                lchains[1].to_string(),
+                format!("MXXXXXXXXXXXXXXXXXXXX{}", fields[11]),
+            ));
+            ids.push(2);
+            species.push(lspecies.clone());
+            cancer.push(can);
+        }
+    }
+    let mut results = Vec::<(usize, f64, usize)>::new();
+    for i in 0..ab.len() {
+        results.push((i, 0.0, 0));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let mut aa = ab[i].1.as_bytes().to_vec();
+        for k in (0..aa.len()).rev() {
+            if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
+                || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC")
+                || aa[k..].starts_with(b"YIC") {
+                aa.truncate(k + 3);
+                break;
+            }
+        }
+        let f1 = fr1_start(&aa, &ab[i].0);
+        aa = aa[f1..].to_vec();
+        let pass;
+        if species[i].starts_with("Homo") {
+            pass = 0;
+        } else if species[i].starts_with("Mus") {
+            pass = 1
+        } else {
+            pass = 2;
+        }
+        if pass <= 1 {
+            let mut r = 1000000;
+            for j in 0..vs[pass].len() {
+                let dist = edit_distance(&strme(&aa), &strme(&vs[pass][j]));
+                if dist < r {
+                    r = dist;
+                    res.2 = j;
+                }
+            }
+            res.1 = 100.0 * r as f64 / aa.len() as f64;
+        } else {
+            res.1 = -1.0;
+        }
+    });
+    let mut ref_id = vec![0; ab.len()];
+    let mut rate = Vec::<f64>::new();
+    for i in 0..results.len() {
+        ref_id[i] = results[i].2;
+        rate.push(results[i].1);
+    }
+    let (total, mut hits) = (ab.len(), 0);
+    let (mut total_h, mut hits_h) = (0, 0);
+    let (mut total_h_human, mut hits_h_human) = (0, 0);
+    let mut rows = Vec::<Vec<String>>::new();
+    rows.push(vec![
+        "therapeutic".to_string(),
+        "1 or 2".to_string(),
+        "chain".to_string(),
+        "organism".to_string(),
+        "mutation %".to_string(),
+        "location".to_string(),
+        "ref".to_string(),
+    ]);
+    let cols = rows[0].len();
+    rows.push(vec!["\\hline".to_string(); cols]);
+    let mut anomaly = false;
+    let mut locs0 = Vec::<String>::new();
+    for i in 0..ab.len() {
+        if ab[i].0 == required_type {
+            total_h += 1;
+            if species[i].starts_with("Homo") {
+                total_h_human += 1;
+            }
+        }
+        let mut ref_starts = Vec::<usize>::new();
+        if species[i].starts_with("Homo") {
+            for x in reg.find_iter(&strme(&vs[0][ref_id[i]])) {
+                ref_starts.push(x.start() + 21);
+            }
+        }
+        for x in reg.find_iter(&ab[i].1) {
+            let (start, stop) = (x.start(), x.end());
+            if nref && bin_member(&ref_starts, &start) {
+                continue;
+            }
+            hits += 1;
+            if ab[i].0 == required_type {
+                hits_h += 1;
+                if species[i].starts_with("Homo") {
+                    hits_h_human += 1;
+                }
+            }
+            let y = ab[i].1.as_bytes().to_vec();
+            let mut row = Vec::<String>::new();
+            row.push(thera[i].clone());
+            row.push(format!("{}", ids[i]));
+            let chain = &ab[i].0;
+            row.push(chain.clone());
+            row.push(species[i].clone());
+            /*
+            if cancer[i] {
+                row.push("cancer".to_string());
+            } else {
+                row.push("".to_string());
+            }
+            */
+            let mut r = "".to_string();
+            if rate[i] >= 0.0 {
+                r = format!("{:.1}", rate[i]);
+            }
+            row.push(r);
+            let mut log = Vec::<u8>::new();
+            let mut loc = location(start, stop, &y, &ab[i].0);
+            if ab[i].0 == required_type && species[i].starts_with("Homo") {
+                locs0.push(stringme(&loc));
+            }
+            log.append(&mut loc);
+            let mut z = y.clone();
+            for k in (0..z.len()).rev() {
+                if z[k..].starts_with(b"YYC") || z[k..].starts_with(b"YFC")
+                    || z[k..].starts_with(b"YHC") || z[k..].starts_with(b"FYC")
+                    || z[k..].starts_with(b"YIC") {
+                    z.truncate(k + 3);
+                    break;
+                }
+            }
+            let c2 = cdr2_start(&z, &ab[i].0, false).unwrap();
+            let f3 = fr3_start(&z, &ab[i].0, false).unwrap();
+            row.push(stringme(&log));
+            if species[i].starts_with("Homo") && reg.is_match(&strme(&vs[0][ref_id[i]])) {
+                row.push("✔".to_string());
+            } else if species[i].starts_with("Mus") && reg.is_match(&strme(&vs[1][ref_id[i]])) {
+                row.push("✔".to_string());
+            } else {
+                row.push("".to_string());
+            }
+
+            // Note anomalies.
+
+            if required_type == "IGH" {
+                if species[i].starts_with("Mus") && chain == "IGH" && f3 - c2 > 8 {
+                    row.push(format!("CDR2 has length {}, exceeds mouse IGH max of 8", f3 - c2));
+                    anomaly = true;
+                }
+                if species[i].starts_with("Homo") && chain == "IGH" && f3 - c2 > 8 {
+                    row.push(format!("CDR2 has length {}, exceeds human IGH max of 8", f3 - c2));
+                    anomaly = true;
+                }
+            }
+
+            // Save.
+
+            rows.push(row);
+        }
+    }
+    if table && rows.len() > 0 {
+        if anomaly {
+            for i in 0..rows.len() {
+                if rows[i].len() == cols {
+                    rows[i].push("".to_string());
+                }
+            }
+        }
+        let mut log = String::new();
+        let mut just = b"l|l|l|l|r|l|l".to_vec();
+        if anomaly {
+            just.append(&mut b"|l".to_vec());
+        }
+        print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
+        print!("{}", log);
+        println!("FIELD        MEANING");
+        println!("mutation %   edit distance of FWR1..FWR3 to best matching reference V gene, \
+            as percent");
+        println!( "location     \
+            l-feature-r if inside a feature; l and r are numbers of flanking amino acids");
+        println!(
+            "ref          checked if the best matching reference V gene also matches the motif");
+    }
+    println!("\nMOTIF RATE (SITES PER CHAIN AS PERCENT)");
+    println!("• Abcellera = {:.1}%", 100.0 * hits as f64 / total as f64);
+    println!("• Abcellera {} = {:.1}%", required_type, 100.0 * hits_h as f64 / total_h as f64);
+    println!("• Abcellera human {} = {:.1}% = {}/{}", 
+        required_type, 
+        100.0 * hits_h_human as f64 / total_h_human as f64, hits_h_human, total_h_human);
+    locs0.sort();
+    print_locs(&locs0, show);
+
+    // Get data from expanded clonotypes.
+
+    let f = include_str!["../../../antibody_data/agbt.expanded.pout"];
+    let mut agbt_h = Vec::<Vec<u8>>::new();
+    analyze_expanded("AGBT", &f, &mut agbt_h, show, &reg, show_vs, &bases, nref, &required_type);
+    let f = include_str!["../../../antibody_data/bi1.expanded.pout"];
+    let mut bi1_h = Vec::<Vec<u8>>::new();
+    analyze_expanded("BI=1", &f, &mut bi1_h, show, &reg, show_vs, &bases, nref, &required_type);
+    let f = include_str!["../../../antibody_data/bi3.expanded.pout"];
+    let mut bi3_h = Vec::<Vec<u8>>::new();
+    analyze_expanded("BI=3", &f, &mut bi3_h, show, &reg, show_vs, &bases, nref, &required_type);
+    let f = include_str!["../../../antibody_data/ovarian.expanded.pout"];
+    let mut ovarian_h = Vec::<Vec<u8>>::new();
+    analyze_expanded(
+        "Ovarian", &f, &mut ovarian_h, show, &reg, show_vs, &bases, nref, &required_type);
+
+    // Compute reference match rate.
+
+    for pass in 0..2 {
+        let (mut tot, mut hit) = (0, 0);
+        for i in 0..vs[pass].len() {
+            tot += 1;
+            for _ in reg.find_iter(&strme(&vs[pass][i])) {
+                hit += 1;
+            }
+        }
+        let species;
+        if pass == 0 {
+            species = "human";
+        } else {
+            species = "mouse";
+        }
+        println!("• {} reference = {:.1}% = {}/{}", 
+            species, 100.0 * hit as f64 / tot as f64, hit, tot);
+    }
+
+    // Compute AGBT heavy mutation rates.
+
+    let mut results = Vec::<(usize, f64)>::new();
+    for i in 0..agbt_h.len() {
+        results.push((i, 0.0));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let aa = &agbt_h[i];
+        let mut r = 1000000;
+        for j in 0..vs[0].len() {
+            r = r.min(edit_distance(&strme(&aa), &strme(&vs[0][j])));
+        }
+        res.1 = 100.0 * r as f64 / aa.len() as f64;
+    });
+    let mut rate = Vec::<f64>::new();
+    for i in 0..results.len() {
+        rate.push(results[i].1);
+    }
+    rate.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    println!("\nMUTATION %");
+    println!("• AGBT {} = low = {:.1} .. {:.1} = high; median {:.1}\n", 
+        required_type, rate[0], rate[rate.len()-1], rate[rate.len()/2]);
+}
