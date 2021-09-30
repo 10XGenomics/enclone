@@ -306,6 +306,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let fs = slf.width as f32 / width * (font_size as f32);
         font_size = fs.floor() as usize;
     }
+    let orig_font_size = font_size;
 
     // Suppose we have dataset level metrics.
 
@@ -459,7 +460,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(
             Text::new(&format!("{}", summary))
                 .font(DEJAVU_BOLD)
-                .size(font_size as u16),
+                .size(orig_font_size as u16),
         );
     if n > 0 && n == summaryx.dataset_names.len() {
         summary_scrollable = summary_scrollable
