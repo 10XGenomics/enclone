@@ -112,6 +112,15 @@ fn main() {
             std::process::exit(1);
         }
 
+        // Punt if the count pipeline appears to have succeeded but actually failed.
+
+        if path_exists(&format!("{}/../SC_RNA_COUNTER_PD", p))
+            && !path_exists(&format!("{}/analysis", p)) {
+            println!("\nNo analysis directory found for\n{}\nso the outs directory is \
+                incomplete, possibly because there were not enough reads.  Giving up.\n", p);
+            continue;
+        }
+
         // Move directories if they exist.
 
         let mut moved = false;
