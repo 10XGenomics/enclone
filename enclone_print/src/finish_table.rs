@@ -37,7 +37,7 @@ pub fn finish_table(
     // Fill in exact_subclonotype_id, reorder.
 
     let nexacts = exacts.len();
-    if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
+    if !ctl.parseable_opt.pout.is_empty() || !extra_args.is_empty() {
         for u in 0..nexacts {
             macro_rules! speak {
                 ($u:expr, $var:expr, $val:expr) => {
@@ -63,7 +63,7 @@ pub fn finish_table(
     // Add header text to mlog.
 
     let mat = &rsi.mat;
-    add_header_text(&ctl, &exacts, &exact_clonotypes, &rord, &mat, mlog);
+    add_header_text(ctl, exacts, exact_clonotypes, rord, mat, mlog);
 
     // Build table stuff.
 
@@ -72,45 +72,45 @@ pub fn finish_table(
     let mut rows = Vec::<Vec<String>>::new();
     let mut drows = Vec::<Vec<String>>::new();
     build_table_stuff(
-        &ctl,
-        &exacts,
-        &exact_clonotypes,
-        &rsi,
-        &vars,
-        &show_aa,
-        &field_types,
+        ctl,
+        exacts,
+        exact_clonotypes,
+        rsi,
+        vars,
+        show_aa,
+        field_types,
         &mut row1,
         &mut justify,
         &mut drows,
         &mut rows,
-        &lvars,
+        lvars,
     );
 
     // Insert universal and donor reference rows.
 
     insert_reference_rows(
-        &ctl,
-        &rsi,
-        &show_aa,
-        &field_types,
-        &refdata,
-        &dref,
+        ctl,
+        rsi,
+        show_aa,
+        field_types,
+        refdata,
+        dref,
         &row1,
         &mut drows,
         &mut rows,
-        &exacts,
-        &exact_clonotypes,
-        &peer_groups,
+        exacts,
+        exact_clonotypes,
+        peer_groups,
     );
 
     // Insert consensus row.
 
     insert_consensus_row(
-        &ctl,
-        &rsi,
+        ctl,
+        rsi,
         exacts.len(),
-        &field_types,
-        &show_aa,
+        field_types,
+        show_aa,
         &row1,
         &mut rows,
     );
@@ -129,14 +129,14 @@ pub fn finish_table(
     // Build the diff row.
 
     build_diff_row(
-        &ctl,
-        &rsi,
+        ctl,
+        rsi,
         &mut rows,
         &mut drows,
         &row1,
         exacts.len(),
-        &field_types,
-        &show_aa,
+        field_types,
+        show_aa,
     );
 
     // Finish building table content.
@@ -171,12 +171,10 @@ pub fn finish_table(
             }
             if !found {
                 row.push(String::new());
+            } else if !lvars[i].ends_with("_%") {
+                row.push(format!("{}", total.round() as usize));
             } else {
-                if !lvars[i].ends_with("_%") {
-                    row.push(format!("{}", total.round() as usize));
-                } else {
-                    row.push(format!("{:.2}", total));
-                }
+                row.push(format!("{:.2}", total));
             }
         }
         // This is necessary but should not be:
@@ -210,12 +208,10 @@ pub fn finish_table(
             let mean = total / n as f64;
             if !found {
                 row.push(String::new());
+            } else if !lvars[i].ends_with("_%") {
+                row.push(format!("{:.1}", mean));
             } else {
-                if !lvars[i].ends_with("_%") {
-                    row.push(format!("{:.1}", mean));
-                } else {
-                    row.push(format!("{:.2}", mean));
-                }
+                row.push(format!("{:.2}", mean));
             }
         }
         // This is necessary but should not be:
@@ -241,7 +237,7 @@ pub fn finish_table(
             justify.push(justification(&rsi.cvars[cx][m]));
         }
     }
-    make_table(&ctl, &mut rows, &justify, &mlog, logz);
+    make_table(ctl, &mut rows, &justify, mlog, logz);
 
     // Add phylogeny.
 

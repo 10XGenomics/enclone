@@ -64,18 +64,16 @@ pub fn build_table_stuff(
             if rsi.chain_descrip[j].contains(&"IGH".to_string())
                 || rsi.chain_descrip[j].contains(&"TRB".to_string())
             {
-                row.push(bold(&format!("{}", rsi.chain_descrip[j])));
+                row.push(bold(&rsi.chain_descrip[j].to_string()));
             } else {
-                row.push(format!("{}", rsi.chain_descrip[j]));
+                row.push(rsi.chain_descrip[j].to_string());
             }
+        } else if rsi.chain_descrip[j].contains(&"IGH".to_string())
+            || rsi.chain_descrip[j].contains(&"TRB".to_string())
+        {
+            row.push(bold(&rsi.chain_descrip[j].before(" ◆ ").to_string()));
         } else {
-            if rsi.chain_descrip[j].contains(&"IGH".to_string())
-                || rsi.chain_descrip[j].contains(&"TRB".to_string())
-            {
-                row.push(bold(&format!("{}", rsi.chain_descrip[j].before(" ◆ "))));
-            } else {
-                row.push(format!("{}", rsi.chain_descrip[j].before(" ◆ ")));
-            }
+            row.push(rsi.chain_descrip[j].before(" ◆ ").to_string());
         }
         for _ in 1..rsi.cvars[j].len() {
             row.push("\\ext".to_string());
@@ -114,16 +112,14 @@ pub fn build_table_stuff(
                 if rsi.chain_descrip[j].after(" ◆ ").contains(" ◆ ") {
                     last = rsi.chain_descrip[j].after(" ◆ ").after(" ◆ ").to_string();
                 }
-                if last.len() == 0 {
+                if last.is_empty() {
                     row.push(String::new());
+                } else if rsi.chain_descrip[j].contains(&"IGH".to_string())
+                    || rsi.chain_descrip[j].contains(&"TRB".to_string())
+                {
+                    row.push(bold(&format!("◆ {}", last)));
                 } else {
-                    if rsi.chain_descrip[j].contains(&"IGH".to_string())
-                        || rsi.chain_descrip[j].contains(&"TRB".to_string())
-                    {
-                        row.push(bold(&format!("◆ {}", last)));
-                    } else {
-                        row.push(format!("◆ {}", last));
-                    }
+                    row.push(format!("◆ {}", last));
                 }
                 for _ in 1..rsi.cvars[j].len() {
                     row.push("\\ext".to_string());
@@ -145,7 +141,7 @@ pub fn build_table_stuff(
 
     // Insert position rows.
 
-    *drows = insert_position_rows(&rsi, &show_aa, &field_types, &vars, &row1);
+    *drows = insert_position_rows(rsi, show_aa, field_types, vars, row1);
     let mut drows2 = drows.clone();
     rows.append(&mut drows2);
 
@@ -155,7 +151,7 @@ pub fn build_table_stuff(
     for cx in 0..cols {
         let show = &show_aa[cx];
         for j in 0..rsi.cvars[cx].len() {
-            if rsi.cvars[cx][j] != "amino".to_string() {
+            if rsi.cvars[cx][j] != *"amino" {
                 if drows.is_empty() {
                     row.push(rsi.cvars[cx][j].to_string());
                 } else {
@@ -298,7 +294,7 @@ pub fn build_table_stuff(
                             let left = (q - 3) / 2;
                             let right = q - left - 4;
                             s += &"═".repeat(left);
-                            s += strme(&t);
+                            s += strme(t);
                             s += &"═".repeat(right);
                         } else if q == 3 {
                             s += strme(&t[0..1]);

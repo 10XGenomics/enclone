@@ -20,7 +20,10 @@ pub fn disintegrate_onesies(
 ) {
     if ctl.clono_filt_opt_def.weak_onesies {
         let t = Instant::now();
-        let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
+        let ncells_total = exact_clonotypes
+            .iter()
+            .map(enclone_core::defs::ExactClonotype::ncells)
+            .sum();
         let mut to_info = HashMap::<usize, usize>::new();
         let mut exacts2 = Vec::<ExactClonotype>::new();
         for i in 0..info.len() {

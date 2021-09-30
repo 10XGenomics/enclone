@@ -1,7 +1,5 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-extern crate enclone_core;
-
 pub mod align_n;
 pub mod alluvial_fb;
 pub mod assign_cell_color;

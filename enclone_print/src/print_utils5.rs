@@ -120,7 +120,7 @@ pub fn vars_and_shares(
                 ($u:expr, $col:expr, $var:expr, $val:expr) => {
                     if ctl.parseable_opt.pout.len() > 0
                         && (ctl.parseable_opt.pchains == "max"
-                            || $col + 1 <= ctl.parseable_opt.pchains.force_usize())
+                            || cx < ctl.parseable_opt.pchains.force_usize())
                     {
                         let varc = format!("{}{}", $var, $col + 1);
                         if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
@@ -283,7 +283,7 @@ pub fn delete_weaks(
             }
         }
     }
-    vquals.sort();
+    vquals.sort_unstable();
     let mut j = 0;
     while j < vquals.len() {
         let mut k = j + 1;
@@ -369,7 +369,7 @@ pub fn build_diff_row(
         let mut row = row1.clone();
         for col in 0..cols {
             for m in 0..rsi.cvars[col].len() {
-                if rsi.cvars[col][m] == "amino".to_string() {
+                if rsi.cvars[col][m] == *"amino" {
                     let mut xdots = String::new();
                     for k in 0..show_aa[col].len() {
                         if k > 0 && field_types[col][k] != field_types[col][k - 1] {
@@ -405,9 +405,9 @@ pub fn build_diff_row(
                         unique_sort(&mut codons);
                         if codons.len() > 1 {
                             if cdr {
-                                if ctl.gen_opt.diff_style == "C1".to_string() {
+                                if ctl.gen_opt.diff_style == *"C1" {
                                     xdots.push('C');
-                                } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                } else if ctl.gen_opt.diff_style == *"C2" {
                                     xdots.push('');
                                     xdots.push('[');
                                     xdots.push('0');
@@ -433,21 +433,19 @@ pub fn build_diff_row(
                                     xdots.push('x');
                                 }
                             } else if !leader {
-                                if ctl.gen_opt.diff_style == "C1".to_string() {
+                                if ctl.gen_opt.diff_style == *"C1" {
                                     xdots.push('F');
-                                } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                } else if ctl.gen_opt.diff_style == *"C2" {
                                     xdots.push('▮');
                                 } else {
                                     xdots.push('x');
                                 }
+                            } else if ctl.gen_opt.diff_style == *"C1" {
+                                xdots.push('L');
+                            } else if ctl.gen_opt.diff_style == *"C2" {
+                                xdots.push('▮');
                             } else {
-                                if ctl.gen_opt.diff_style == "C1".to_string() {
-                                    xdots.push('L');
-                                } else if ctl.gen_opt.diff_style == "C2".to_string() {
-                                    xdots.push('▮');
-                                } else {
-                                    xdots.push('x');
-                                }
+                                xdots.push('x');
                             }
                         } else {
                             xdots.push('.');
@@ -497,7 +495,7 @@ pub fn insert_consensus_row(
         let classes = aa_classes();
         for col in 0..rsi.mat.len() {
             for m in 0..rsi.cvars[col].len() {
-                if rsi.cvars[col][m] == "amino".to_string() {
+                if rsi.cvars[col][m] == *"amino" {
                     let mut xdots = String::new();
                     for k in 0..show_aa[col].len() {
                         if k > 0 && field_types[col][k] != field_types[col][k - 1] {
@@ -521,17 +519,17 @@ pub fn insert_consensus_row(
                             }
                         }
                         if codons.solo() && gap {
-                            xdots += &"g";
+                            xdots += "g";
                         } else if codons.solo() {
                             let codon = &codons[0];
-                            let aa = codon_to_aa(&codon);
+                            let aa = codon_to_aa(codon);
                             let mut log = Vec::<u8>::new();
-                            emit_codon_color_escape(&codon, &mut log);
+                            emit_codon_color_escape(codon, &mut log);
                             log.push(aa);
                             emit_end_escape(&mut log);
-                            xdots += &strme(&log);
+                            xdots += strme(&log);
                         } else if gap {
-                            xdots += &"X";
+                            xdots += "X";
                         } else {
                             let mut aas = Vec::<u8>::new();
                             for x in codons.iter() {
@@ -541,7 +539,7 @@ pub fn insert_consensus_row(
                             if aas.solo() {
                                 xdots.push(aas[0] as char);
                             } else if style == "x" {
-                                xdots += &"X";
+                                xdots += "X";
                             } else {
                                 for m in classes.iter() {
                                     if meet_size(&aas, &m.1) == aas.len() {
