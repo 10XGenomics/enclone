@@ -6,12 +6,14 @@
 
 align_tools = "0.1"
 amino = "0.1"
+anyhow = "1"
 ansi_escape = "0.1"
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
+binary_vec_io = "0.1"
 bio_edit = "0.1"
 byteorder = "1"
 bytes = "1"
@@ -37,7 +39,6 @@ enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
 equiv = "0.1"
 evalexpr = "6"
-failure = "0.1"
 file-lock = "1"
 flate2 = "1"
 float-ord = "0.3"
@@ -87,6 +88,7 @@ string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
 tar = "0.4"
+thiserror = "1"
 tilde-expand = "0.1"
 tiny-skia = "0.6"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
@@ -95,6 +97,6 @@ tonic = { version = "0.5", default-features = false, features = ["transport", "c
 tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
 users = "0.11"
 usvg = { version = "0.17", features = ["text"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "19329ad04342061ddb6373cfd435f046dfc4331d" }
 vector_utils = "0.1"
 yaml-rust = "0.4"

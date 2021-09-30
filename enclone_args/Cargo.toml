@@ -36,5 +36,5 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
 string_utils = "0.1"
 tilde-expand = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "19329ad04342061ddb6373cfd435f046dfc4331d" }
 vector_utils = "0.1"
