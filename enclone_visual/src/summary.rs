@@ -292,6 +292,19 @@ pub fn max_line_val(s: &str) -> usize {
     m
 }
 
+pub fn appropriate_font_size(s: &str, w: u32) -> usize {
+    let mut font_size = 20;
+    let max_line = max_line_val(&s);
+    const FUDGE: f32 = 175.0;
+    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+    let iwidth = width.ceil() as u32;
+    if iwidth > w {
+        let fs = w as f32 / width * (font_size as f32);
+        font_size = fs.floor() as usize;
+    }
+    font_size
+}
+
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
 
@@ -308,15 +321,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Determine initial font size.
 
-    let mut font_size = 20;
     let mut max_line = max_line_val(&hets[0].content);
+    let mut font_size = appropriate_font_size(&hets[0].content, slf.width);
     const FUDGE: f32 = 175.0;
-    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
-    let iwidth = width.ceil() as u32;
-    if iwidth > slf.width {
-        let fs = slf.width as f32 / width * (font_size as f32);
-        font_size = fs.floor() as usize;
-    }
     let orig_font_size = font_size;
 
     // Put first part of summary into a scrollable.
