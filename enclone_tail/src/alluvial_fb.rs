@@ -114,6 +114,7 @@ pub fn alluvial_fb(
             let nrows = 4 * (xr + xnr) - 1;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows];
+            let mut csv_rows = vec![vec![String::new(); 5]; nrows];
             rows[2 * (xr + xnr) - 1][0] = "100.0".to_string();
             for j in 1..ncols {
                 rows[2 * (xr + xnr) - 1][j] = "\\hline".to_string();
@@ -155,9 +156,21 @@ pub fn alluvial_fb(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * i][3] = format!("{} {}", pr(cell, total), label);
-                    } else {
-                        rows[2 * (xr + xnr) + 2 * i][3] = format!("{} {}", pr(ncell, total), label);
+                        let r = 2 * i;
+                        rows[r][3] = format!("{} {}", pr(cell, total), label);
+                        csv_rows[r][0] = "cellular".to_string();
+                        csv_rows[r][1] = "reference".to_string();
+                        csv_rows[r][2] = format!("{}", pr(cell, total));
+                        csv_rows[r][3] = seq.clone();
+                        csv_rows[r][4] = seq_to_id[seq];
+                     else {
+                        let r = 2 * (xr + xnr) + 2 * i;
+                        rows[r][3] = format!("{} {}", pr(ncell, total), label);
+                        csv_rows[r][0] = "noncellular".to_string();
+                        csv_rows[r][1] = "reference".to_string();
+                        csv_rows[r][2] = format!("{}", pr(ncell, total));
+                        csv_rows[r][3] = seq.clone();
+                        csv_rows[r][4] = seq_to_id[seq];
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -174,10 +187,19 @@ pub fn alluvial_fb(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * (i + xr)][3] = format!("{} {}", pr(cell, total), seq);
+                        let r = 2 * (i + xr)];
+                        rows[r][3] = format!("{} {}", pr(cell, total), seq);
+                        csv_rows[r][0] = "cellular".to_string();
+                        csv_rows[r][1] = "nonreference".to_string();
+                        csv_rows[r][2] = format!("{}", pr(cell, total));
+                        csv_rows[r][3] = seq.clone();
                     } else {
-                        rows[2 * (xr + xnr) + 2 * (i + xr)][3] =
-                            format!("{} {}", pr(ncell, total), seq);
+                        let r = 2 * (xr + xnr) + 2 * (i + xr);
+                        csv_rows[r][0] = "noncellular".to_string();
+                        csv_rows[r][1] = "nonreference".to_string();
+                        csv_rows[r][2] = format!("{}", pr(ncell, total));
+                        csv_rows[r][3] = seq.clone();
+                        rows[r][3] = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
@@ -189,13 +211,13 @@ pub fn alluvial_fb(
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
-            let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
+            let mut display_text = String::new();
+            print_tabular_vbox(&mut display_text, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
             fwrite!(
                 logx,
                 "\nfeature barcode UMI distribution for {}\n{}",
                 ctl.origin_info.dataset_id[li],
-                log
+                display_text
             );
         }
     }
