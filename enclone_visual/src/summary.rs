@@ -3,6 +3,7 @@
 use crate::gui_structures::*;
 use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
+use enclone_core::stringulate::*;
 use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use itertools::{izip, Itertools};
@@ -288,11 +289,16 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary = summaryx.summary.clone();
     let n = summaryx.metrics.len();
 
+    // Unpack the summary.  For now we are assuming that it consists of one or two objects,
+    // because that's all we have implemented.
+
+    let hets = unpack_to_het_string(&summary);
+
     // Determine initial font size.
 
     let mut font_size = 20;
     let mut max_line = 0;
-    for line in summary.lines() {
+    for line in hets[0].content.lines() {
         let mut nchars = 0;
         for _ in line.chars() {
             nchars += 1;
@@ -307,6 +313,31 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         font_size = fs.floor() as usize;
     }
     let orig_font_size = font_size;
+
+    // Put first part of summary into a scrollable.
+
+    let summary = format!("{}\n \n", hets[0].content);
+    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .scrollbar_width(SCROLLBAR_WIDTH)
+        .scroller_width(12)
+        .style(style::ScrollableStyle)
+        .push(
+            Text::new(&format!("{}", summary))
+                .font(DEJAVU_BOLD)
+                .size(orig_font_size as u16),
+        );
+
+    // If there is a second part, which for now would be a FeatureBarcodeAlluvialTableSet,
+    // add that.
+
+    if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)));
+    }
 
     // Suppose we have dataset level metrics.
 
@@ -437,7 +468,6 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Build final structure.
 
-    let summary = format!("{}\n \n", summary);
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
         Text::new("Copy").color(slf.copy_summary_button_color),
@@ -451,17 +481,6 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(summary_copy_button)
         .push(Space::with_width(Units(8)))
         .push(summary_close_button);
-    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .scrollbar_width(SCROLLBAR_WIDTH)
-        .scroller_width(12)
-        .style(style::ScrollableStyle)
-        .push(
-            Text::new(&format!("{}", summary))
-                .font(DEJAVU_BOLD)
-                .size(orig_font_size as u16),
-        );
     if n > 0 && n == summaryx.dataset_names.len() {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
