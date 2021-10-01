@@ -349,7 +349,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         slf.alluvial_tables_for_spreadsheet.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
-            tables_text += &mut format!("\nfeature barcode UMI distribution for {}\n{}",
+            tables_text += &mut format!(
+                "\nfeature barcode UMI distribution for {}\n{}",
                 tables.s[i].id, tables.s[i].display_text
             );
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
@@ -358,9 +359,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
-            .push(Text::new(
-                "Feature barcode UMI count alluvial tables.",
-            ))
+            .push(Text::new("Feature barcode UMI count alluvial tables."))
             .push(Space::with_height(Units(4)))
             .push(Text::new(
                 "All the tables can be copied at once, in a form suitable for inclusion in \
@@ -372,7 +371,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     &mut slf.alluvial_tables_copy_button,
                     Text::new("Copy").color(slf.alluvial_tables_copy_button_color),
                 )
-                .on_press(Message::CopyAlluvialTables)
+                .on_press(Message::CopyAlluvialTables),
             )
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
