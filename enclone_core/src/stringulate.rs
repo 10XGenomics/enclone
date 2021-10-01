@@ -40,14 +40,14 @@ pub fn unpack_to_het_string(s: &str) -> Vec<HetString> {
     let mut i = 0;
     while i < fields.len() {
         if fields[i].len() > 0 {
-            v.push( HetString {
+            v.push(HetString {
                 name: "String".to_string(),
                 content: fields[i].to_string(),
             });
         }
         if i + 2 < fields.len() {
             let n = fields[i + 2].force_usize();
-            v.push( HetString {
+            v.push(HetString {
                 name: fields[i + 1].to_string(),
                 content: flatten_vec_string(&fields[i + 1..i + 1 + n]),
             });
@@ -85,17 +85,15 @@ impl FeatureBarcodeAlluvialTableSet {
     }
     pub fn from_string(x: &str) -> Self {
         let v = unflatten_string(&x);
-        let n = v[1].force_usize()/3;
+        let n = v[1].force_usize() / 3;
         let mut s = Vec::new();
         for i in 0..n {
-            s.push( FeatureBarcodeAlluvialTable {
+            s.push(FeatureBarcodeAlluvialTable {
                 id: v[2 + 3 * i].clone(),
                 display_text: v[2 + 3 * i + 1].clone(),
                 spreadsheet_text: v[2 + 3 * i + 2].clone(),
             });
         }
-        FeatureBarcodeAlluvialTableSet {
-            s: s
-        }
+        FeatureBarcodeAlluvialTableSet { s: s }
     }
 }
