@@ -6,7 +6,9 @@ use crate::alluvial_fb::alluvial_fb;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
-use perf_stats::{elapsed, peak_mem_usage_gb};
+use perf_stats::elapsed;
+#[cfg(not(target_os = "macos"))]
+use perf_stats::peak_mem_usage_gb;
 use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
