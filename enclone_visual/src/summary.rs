@@ -280,6 +280,18 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn max_line_val(s: &str) -> usize {
+    let mut m = 0;
+    for line in s.lines() {
+        let mut nchars = 0;
+        for _ in line.chars() {
+            nchars += 1;
+        }
+        m = std::cmp::max(m, nchars);
+    }
+    m
+}
+
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
 
@@ -297,14 +309,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Determine initial font size.
 
     let mut font_size = 20;
-    let mut max_line = 0;
-    for line in hets[0].content.lines() {
-        let mut nchars = 0;
-        for _ in line.chars() {
-            nchars += 1;
-        }
-        max_line = std::cmp::max(max_line, nchars);
-    }
+    let mut max_line = max_line_val(&hets[0].content);
     const FUDGE: f32 = 175.0;
     let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
     let iwidth = width.ceil() as u32;
