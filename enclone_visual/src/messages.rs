@@ -90,4 +90,6 @@ pub enum Message {
     CompleteClonotypesCopy(Result<(), String>),
     TooltipToggle,
     CompleteTooltipToggle(Result<(), String>),
+    CopyAlluvialTables,
+    CompleteCopyAlluvialTables(Result<(), String>),
 }
