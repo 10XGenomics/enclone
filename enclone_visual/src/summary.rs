@@ -333,10 +333,22 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // add that.
 
     if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
+        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[1].content);
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!("\nfeature barcode UMI distribution for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+        }
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
-            .push(Space::with_height(Units(8)));
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", tables_text))
+                    .font(DEJAVU_BOLD)
+                    .size(orig_font_size as u16),
+            );
     }
 
     // Suppose we have dataset level metrics.
