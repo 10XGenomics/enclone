@@ -5,7 +5,7 @@ use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
 use enclone_core::stringulate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Button, Color, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use itertools::{izip, Itertools};
 use messages::Message;
 use vector_utils::*;
@@ -361,13 +361,18 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
-            .push(Text::new("Feature barcode UMI count alluvial tables."))
-            .push(Space::with_height(Units(4)))
+            .push(
+                Text::new("Feature barcode UMI count alluvial tables")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
             .push(Text::new(
                 "All the tables can be copied at once, in a form suitable for inclusion in \
-                 a spreadsheet, by pushing the button below.",
+                 a spreadsheet, by pushing the button below.  This copies the numbers in the \
+                 last column, but not the numbers in the earlier columns.",
             ))
-            .push(Space::with_height(Units(4)))
+            .push(Space::with_height(Units(8)))
             .push(
                 Button::new(
                     &mut slf.alluvial_tables_copy_button,
@@ -533,6 +538,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_height(Units(8)));
         if !slf.metrics_condensed {
             summary_scrollable = summary_scrollable
+                .push(
+                    Text::new("Dataset level metrics")
+                        .size(25)
+                        .color(Color::from_rgb(0.9, 0.0, 0.9)),
+                )
+                .push(Space::with_height(Units(8)))
                 .push(Text::new(
                     "Metrics below can be selectively displayed by clicking on boxes, \
                     and then pushing the button below.",
@@ -547,7 +558,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "The copy selected metrics button may be used to copy the selected \
                     metrics to the clipboard, in a form that can be pasted into a spreadsheet.",
                 ))
-                .push(Space::with_height(Units(8)));
+                .push(Space::with_height(Units(12)));
         }
         let text = if slf.metrics_condensed {
             "Show all metrics".to_string()
