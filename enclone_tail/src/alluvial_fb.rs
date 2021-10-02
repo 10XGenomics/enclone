@@ -22,9 +22,11 @@ pub fn alluvial_fb(
     logx: &mut Vec<u8>,
 ) {
     let mut fs = Vec::<FeatureBarcodeAlluvialTable>::new();
+    let mut have_some = false;
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
         if m.initialized() {
+            have_some = true;
             let mut keep = 4;
             let mut specials = Vec::<String>::new();
             if !ctl.gen_opt.fb_show.is_empty() {
@@ -253,6 +255,8 @@ pub fn alluvial_fb(
             }
         }
     }
-    let tables = FeatureBarcodeAlluvialTableSet { s: fs };
-    logx.append(&mut tables.to_string().as_bytes().to_vec());
+    if ctl.visual_mode && have_some {
+        let tables = FeatureBarcodeAlluvialTableSet { s: fs };
+        logx.append(&mut tables.to_string().as_bytes().to_vec());
+    }
 }
