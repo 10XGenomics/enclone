@@ -4,7 +4,9 @@
 // which is not the only way of doing it.
 
 use enclone_core::defs::{EncloneControl, GexInfo};
+use enclone_core::stringulate::*;
 use io_utils::fwrite;
+use itertools::Itertools;
 use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -19,6 +21,7 @@ pub fn alluvial_fb(
     vdj_cells: &Vec<Vec<String>>,
     logx: &mut Vec<u8>,
 ) {
+    let mut fs = Vec::<FeatureBarcodeAlluvialTable>::new();
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
         if m.initialized() {
@@ -162,15 +165,15 @@ pub fn alluvial_fb(
                         csv_rows[r][1] = "reference".to_string();
                         csv_rows[r][2] = format!("{}", pr(cell, total));
                         csv_rows[r][3] = seq.clone();
-                        csv_rows[r][4] = seq_to_id[seq];
-                     else {
+                        csv_rows[r][4] = seq_to_id[seq].clone();
+                    } else {
                         let r = 2 * (xr + xnr) + 2 * i;
                         rows[r][3] = format!("{} {}", pr(ncell, total), label);
                         csv_rows[r][0] = "noncellular".to_string();
                         csv_rows[r][1] = "reference".to_string();
                         csv_rows[r][2] = format!("{}", pr(ncell, total));
                         csv_rows[r][3] = seq.clone();
-                        csv_rows[r][4] = seq_to_id[seq];
+                        csv_rows[r][4] = seq_to_id[seq].clone();
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -187,7 +190,7 @@ pub fn alluvial_fb(
                         }
                     }
                     if pass == 0 {
-                        let r = 2 * (i + xr)];
+                        let r = 2 * (i + xr);
                         rows[r][3] = format!("{} {}", pr(cell, total), seq);
                         csv_rows[r][0] = "cellular".to_string();
                         csv_rows[r][1] = "nonreference".to_string();
@@ -212,13 +215,35 @@ pub fn alluvial_fb(
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
             let mut display_text = String::new();
-            print_tabular_vbox(&mut display_text, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            fwrite!(
-                logx,
-                "\nfeature barcode UMI distribution for {}\n{}",
-                ctl.origin_info.dataset_id[li],
-                display_text
+            print_tabular_vbox(
+                &mut display_text,
+                &rows,
+                0,
+                &b"l|l|l|l".to_vec(),
+                false,
+                false,
             );
+            if ctl.plot_opt.plot_file != "gui" {
+                fwrite!(
+                    logx,
+                    "\nfeature barcode UMI distribution for {}\n{}",
+                    ctl.origin_info.dataset_id[li],
+                    display_text
+                );
+            } else {
+                let mut spreadsheet_text = String::new();
+                for r in csv_rows.iter() {
+                    spreadsheet_text += &mut format!("{}", r.iter().format(","));
+                }
+                let f = FeatureBarcodeAlluvialTable {
+                    id: ctl.origin_info.dataset_id[li].clone(),
+                    display_text: display_text.clone(),
+                    spreadsheet_text: spreadsheet_text.clone(),
+                };
+                fs.push(f);
+            }
         }
     }
+    let tables = FeatureBarcodeAlluvialTableSet { s: fs };
+    logx.append(&mut tables.to_string().as_bytes().to_vec());
 }
