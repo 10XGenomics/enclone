@@ -19,14 +19,22 @@
 use itertools::Itertools;
 use string_utils::*;
 
-const DOUBLE: &str = "^[^[";
+const DOUBLE: &str = "";
 
 pub fn flatten_vec_string(v: &[String]) -> String {
-    format!("^[^[{}^[^[", v.iter().format("^[^["))
+    format!("{}{}{}", DOUBLE, v.iter().format(&DOUBLE), DOUBLE)
 }
 
 pub fn unflatten_string(s: &str) -> Vec<String> {
-    s[2..s.len() - 2].split("^[^[").map(str::to_owned).collect()
+    let mut chars = Vec::new();
+    for c in s.chars() {
+        chars.push(c);
+    }
+    let mut mid = String::new();
+    for i in 2..chars.len() - 2 {
+        mid.push(chars[i]);
+    }
+    mid.split(&DOUBLE).map(str::to_owned).collect()
 }
 
 pub struct HetString {
