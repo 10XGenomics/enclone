@@ -870,6 +870,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         )?;
     }
 
+    // Force visual mode if plot file is gui.
+
+    if ctl.plot_opt.plot_file == "gui" {
+        ctl.visual_mode = true;
+    }
+
     // Record time.
 
     ctl.perf_stats(&targs, "in main args loop");
