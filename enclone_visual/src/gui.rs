@@ -48,6 +48,7 @@ impl Application for EncloneVisual {
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);

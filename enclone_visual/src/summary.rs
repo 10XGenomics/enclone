@@ -519,6 +519,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Build final structure.
 
+    let summary_snapshot_button = Button::new(
+        &mut slf.graphic_snapshot_button,
+        Text::new("Snapshot").color(slf.summary_snapshot_button_color),
+    )
+    .on_press(Message::SummarySnapshot);
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
         Text::new("Copy").color(slf.copy_summary_button_color),
@@ -529,6 +534,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(summary_title)
         .push(Space::with_width(Length::Fill))
+        .push(summary_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(summary_copy_button)
         .push(Space::with_width(Units(8)))
         .push(summary_close_button);
