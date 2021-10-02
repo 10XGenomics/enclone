@@ -241,7 +241,7 @@ pub fn alluvial_fb(
                 let mut spreadsheet_text = String::new();
                 for (i, r) in csv_rows.iter().enumerate() {
                     if i % 2 == 0 {
-                        spreadsheet_text += &mut format!("{}\n", r.iter().format(","));
+                        spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
                     }
                 }
                 let f = FeatureBarcodeAlluvialTable {
