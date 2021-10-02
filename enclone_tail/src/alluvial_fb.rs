@@ -163,7 +163,7 @@ pub fn alluvial_fb(
                     }
                     if pass == 0 {
                         let r = 2 * i;
-                        rows[r][3] = format!("{} {}", pr0(cell, total), label);
+                        rows[r][3] = format!("{} {}", pr(cell, total), label);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "cellular".to_string();
                         csv_rows[r][2] = "reference".to_string();
@@ -172,7 +172,7 @@ pub fn alluvial_fb(
                         csv_rows[r][5] = seq_to_id[seq].clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * i;
-                        rows[r][3] = format!("{} {}", pr0(ncell, total), label);
+                        rows[r][3] = format!("{} {}", pr(ncell, total), label);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "noncellular".to_string();
                         csv_rows[r][2] = "reference".to_string();
@@ -196,7 +196,7 @@ pub fn alluvial_fb(
                     }
                     if pass == 0 {
                         let r = 2 * (i + xr);
-                        rows[r][3] = format!("{} {}", pr0(cell, total), seq);
+                        rows[r][3] = format!("{} {}", pr(cell, total), seq);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "cellular".to_string();
                         csv_rows[r][2] = "nonreference".to_string();
@@ -209,7 +209,7 @@ pub fn alluvial_fb(
                         csv_rows[r][2] = "nonreference".to_string();
                         csv_rows[r][3] = format!("{}", pr0(ncell, total));
                         csv_rows[r][4] = seq.clone();
-                        rows[r][3] = format!("{} {}", pr0(ncell, total), seq);
+                        rows[r][3] = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
