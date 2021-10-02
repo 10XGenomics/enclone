@@ -355,10 +355,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             );
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
+        tables_text += "\n \n";
         let tables_font_size = appropriate_font_size(&tables_text, slf.width);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
             .push(Text::new("Feature barcode UMI count alluvial tables."))
             .push(Space::with_height(Units(4)))
             .push(Text::new(
@@ -373,6 +375,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 )
                 .on_press(Message::CopyAlluvialTables),
             )
+            .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
             .push(

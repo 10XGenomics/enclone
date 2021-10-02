@@ -76,6 +76,7 @@ impl Analyzer for EncloneAnalyzer {
         args.push("NOPRINTX".to_string());
         args.push("NOPAGER".to_string());
         args.push("PLAIN".to_string()); // until colored text can be rendered
+        args.push("VISUAL".to_string());
         if req.server_logfile.is_some() {
             if enclone_core::logging::SERVER_LOGFILE
                 .lock()

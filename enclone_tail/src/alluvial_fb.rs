@@ -143,6 +143,9 @@ pub fn alluvial_fb(
             fn pr(x: usize, y: usize) -> String {
                 format!("{:>4.1}", percent_ratio(x, y))
             }
+            fn pr0(x: usize, y: usize) -> String {
+                format!("{:.1}", percent_ratio(x, y))
+            }
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i].0;
@@ -160,18 +163,18 @@ pub fn alluvial_fb(
                     }
                     if pass == 0 {
                         let r = 2 * i;
-                        rows[r][3] = format!("{} {}", pr(cell, total), label);
+                        rows[r][3] = format!("{} {}", pr0(cell, total), label);
                         csv_rows[r][0] = "cellular".to_string();
                         csv_rows[r][1] = "reference".to_string();
-                        csv_rows[r][2] = format!("{}", pr(cell, total));
+                        csv_rows[r][2] = format!("{}", pr0(cell, total));
                         csv_rows[r][3] = seq.clone();
                         csv_rows[r][4] = seq_to_id[seq].clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * i;
-                        rows[r][3] = format!("{} {}", pr(ncell, total), label);
+                        rows[r][3] = format!("{} {}", pr0(ncell, total), label);
                         csv_rows[r][0] = "noncellular".to_string();
                         csv_rows[r][1] = "reference".to_string();
-                        csv_rows[r][2] = format!("{}", pr(ncell, total));
+                        csv_rows[r][2] = format!("{}", pr0(ncell, total));
                         csv_rows[r][3] = seq.clone();
                         csv_rows[r][4] = seq_to_id[seq].clone();
                     }
@@ -191,18 +194,18 @@ pub fn alluvial_fb(
                     }
                     if pass == 0 {
                         let r = 2 * (i + xr);
-                        rows[r][3] = format!("{} {}", pr(cell, total), seq);
+                        rows[r][3] = format!("{} {}", pr0(cell, total), seq);
                         csv_rows[r][0] = "cellular".to_string();
                         csv_rows[r][1] = "nonreference".to_string();
-                        csv_rows[r][2] = format!("{}", pr(cell, total));
+                        csv_rows[r][2] = format!("{}", pr0(cell, total));
                         csv_rows[r][3] = seq.clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * (i + xr);
                         csv_rows[r][0] = "noncellular".to_string();
                         csv_rows[r][1] = "nonreference".to_string();
-                        csv_rows[r][2] = format!("{}", pr(ncell, total));
+                        csv_rows[r][2] = format!("{}", pr0(ncell, total));
                         csv_rows[r][3] = seq.clone();
-                        rows[r][3] = format!("{} {}", pr(ncell, total), seq);
+                        rows[r][3] = format!("{} {}", pr0(ncell, total), seq);
                     }
                 }
             }
@@ -223,7 +226,7 @@ pub fn alluvial_fb(
                 false,
                 false,
             );
-            if ctl.plot_opt.plot_file != "gui" {
+            if !ctl.visual_mode {
                 fwrite!(
                     logx,
                     "\nfeature barcode UMI distribution for {}\n{}",
@@ -232,8 +235,10 @@ pub fn alluvial_fb(
                 );
             } else {
                 let mut spreadsheet_text = String::new();
-                for r in csv_rows.iter() {
-                    spreadsheet_text += &mut format!("{}", r.iter().format(","));
+                for (i, r) in csv_rows.iter().enumerate() {
+                    if i % 2 == 0 {
+                        spreadsheet_text += &mut format!("{}\n", r.iter().format(","));
+                    }
                 }
                 let f = FeatureBarcodeAlluvialTable {
                     id: ctl.origin_info.dataset_id[li].clone(),
