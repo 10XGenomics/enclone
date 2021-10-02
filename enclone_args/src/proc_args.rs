@@ -872,7 +872,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Force visual mode if plot file is gui.
 
-    if ctl.plot_opt.plot_file == "gui" {
+    if ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout" {
         ctl.visual_mode = true;
     }
 
