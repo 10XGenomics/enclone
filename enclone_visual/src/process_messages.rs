@@ -22,6 +22,43 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::SummarySnapshot => {
+                self.summary_snapshot_start = Some(Instant::now());
+                self.summary_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteSummarySnapshot)
+            }
+
+            Message::CompleteSummarySnapshot(_) => {
+                let filename = "/tmp/enclone_visual_snapshot.png";
+                capture_as_file(&filename, get_window_id());
+                let mut bytes = Vec::<u8>::new();
+                {
+                    let mut f = File::open(&filename).unwrap();
+                    f.read_to_end(&mut bytes).unwrap();
+                }
+                remove_file(&filename).unwrap();
+                copy_png_bytes_to_clipboard(&bytes);
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.summary_snapshot_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                self.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CopyAlluvialTables => {
+                self.alluvial_tables_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.alluvial_tables_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyAlluvialTables)
+            }
+
+            Message::CompleteCopyAlluvialTables(_) => {
+                self.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::TooltipToggle => {
                 self.tooltip_toggle_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let pos = (TOOLTIP_POS.load(SeqCst) + 1) % 4;

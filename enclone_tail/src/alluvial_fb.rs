@@ -4,7 +4,9 @@
 // which is not the only way of doing it.
 
 use enclone_core::defs::{EncloneControl, GexInfo};
+use enclone_core::stringulate::*;
 use io_utils::fwrite;
+use itertools::Itertools;
 use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -19,9 +21,12 @@ pub fn alluvial_fb(
     vdj_cells: &Vec<Vec<String>>,
     logx: &mut Vec<u8>,
 ) {
+    let mut fs = Vec::<FeatureBarcodeAlluvialTable>::new();
+    let mut have_some = false;
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
         if m.initialized() {
+            have_some = true;
             let mut keep = 4;
             let mut specials = Vec::<String>::new();
             if !ctl.gen_opt.fb_show.is_empty() {
@@ -114,6 +119,7 @@ pub fn alluvial_fb(
             let nrows = 4 * (xr + xnr) - 1;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows];
+            let mut csv_rows = vec![vec![String::new(); 6]; nrows];
             rows[2 * (xr + xnr) - 1][0] = "100.0".to_string();
             for j in 1..ncols {
                 rows[2 * (xr + xnr) - 1][j] = "\\hline".to_string();
@@ -139,6 +145,9 @@ pub fn alluvial_fb(
             fn pr(x: usize, y: usize) -> String {
                 format!("{:>4.1}", percent_ratio(x, y))
             }
+            fn pr0(x: usize, y: usize) -> String {
+                format!("{:.1}", percent_ratio(x, y))
+            }
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i].0;
@@ -155,9 +164,23 @@ pub fn alluvial_fb(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * i][3] = format!("{} {}", pr(cell, total), label);
+                        let r = 2 * i;
+                        rows[r][3] = format!("{} {}", pr(cell, total), label);
+                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r][1] = "cellular".to_string();
+                        csv_rows[r][2] = "reference".to_string();
+                        csv_rows[r][3] = format!("{}", pr0(cell, total));
+                        csv_rows[r][4] = seq.clone();
+                        csv_rows[r][5] = seq_to_id[seq].clone();
                     } else {
-                        rows[2 * (xr + xnr) + 2 * i][3] = format!("{} {}", pr(ncell, total), label);
+                        let r = 2 * (xr + xnr) + 2 * i;
+                        rows[r][3] = format!("{} {}", pr(ncell, total), label);
+                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r][1] = "noncellular".to_string();
+                        csv_rows[r][2] = "reference".to_string();
+                        csv_rows[r][3] = format!("{}", pr0(ncell, total));
+                        csv_rows[r][4] = seq.clone();
+                        csv_rows[r][5] = seq_to_id[seq].clone();
                     }
                 }
                 for i in 0..top_nref.len() {
@@ -174,10 +197,21 @@ pub fn alluvial_fb(
                         }
                     }
                     if pass == 0 {
-                        rows[2 * (i + xr)][3] = format!("{} {}", pr(cell, total), seq);
+                        let r = 2 * (i + xr);
+                        rows[r][3] = format!("{} {}", pr(cell, total), seq);
+                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r][1] = "cellular".to_string();
+                        csv_rows[r][2] = "nonreference".to_string();
+                        csv_rows[r][3] = format!("{}", pr0(cell, total));
+                        csv_rows[r][4] = seq.clone();
                     } else {
-                        rows[2 * (xr + xnr) + 2 * (i + xr)][3] =
-                            format!("{} {}", pr(ncell, total), seq);
+                        let r = 2 * (xr + xnr) + 2 * (i + xr);
+                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r][1] = "noncellular".to_string();
+                        csv_rows[r][2] = "nonreference".to_string();
+                        csv_rows[r][3] = format!("{}", pr0(ncell, total));
+                        csv_rows[r][4] = seq.clone();
+                        rows[r][3] = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
@@ -189,14 +223,40 @@ pub fn alluvial_fb(
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
-            let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|l|l|l".to_vec(), false, false);
-            fwrite!(
-                logx,
-                "\nfeature barcode UMI distribution for {}\n{}",
-                ctl.origin_info.dataset_id[li],
-                log
+            let mut display_text = String::new();
+            print_tabular_vbox(
+                &mut display_text,
+                &rows,
+                0,
+                &b"l|l|l|l".to_vec(),
+                false,
+                false,
             );
+            if !ctl.visual_mode {
+                fwrite!(
+                    logx,
+                    "\nfeature barcode UMI distribution for {}\n{}",
+                    ctl.origin_info.dataset_id[li],
+                    display_text
+                );
+            } else {
+                let mut spreadsheet_text = String::new();
+                for (i, r) in csv_rows.iter().enumerate() {
+                    if i % 2 == 0 {
+                        spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
+                    }
+                }
+                let f = FeatureBarcodeAlluvialTable {
+                    id: ctl.origin_info.dataset_id[li].clone(),
+                    display_text: display_text.clone(),
+                    spreadsheet_text: spreadsheet_text.clone(),
+                };
+                fs.push(f);
+            }
         }
+    }
+    if ctl.visual_mode && have_some {
+        let tables = FeatureBarcodeAlluvialTableSet { s: fs };
+        logx.append(&mut tables.to_string().as_bytes().to_vec());
     }
 }

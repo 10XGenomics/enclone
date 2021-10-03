@@ -441,28 +441,29 @@ pub struct PerfOpt {
 
 #[derive(Default)]
 pub struct EncloneControl {
-    pub perf_opt: PerfOpt,                // computational performance options
-    pub start_time: Option<Instant>,      // enclone start time
-    pub gen_opt: GeneralOpt,              // miscellaneous general options
-    pub plot_opt: PlotOpt,                // plot options
-    pub pretty: bool,                     // use escape characters to enhance view
-    pub silent: bool,                     // turn off extra logging
-    pub force: bool,                      // make joins even if redundant
-    pub debug_table_printing: bool,       // turn on debugging for table printing
-    pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
-    pub heur: ClonotypeHeuristics,        // algorithmic heuristics
-    pub origin_info: OriginInfo,          // origin (sample) info
-    pub allele_alg_opt: AlleleAlgOpt,     // algorithmic options for allele finding
-    pub allele_print_opt: AllelePrintOpt, // print options for allele finding
-    pub join_alg_opt: JoinAlgOpt,         // algorithmic options for join
-    pub join_print_opt: JoinPrintOpt,     // printing options for join operations
+    pub visual_mode: bool,                       // running as enclone visual
+    pub perf_opt: PerfOpt,                       // computational performance options
+    pub start_time: Option<Instant>,             // enclone start time
+    pub gen_opt: GeneralOpt,                     // miscellaneous general options
+    pub plot_opt: PlotOpt,                       // plot options
+    pub pretty: bool,                            // use escape characters to enhance view
+    pub silent: bool,                            // turn off extra logging
+    pub force: bool,                             // make joins even if redundant
+    pub debug_table_printing: bool,              // turn on debugging for table printing
+    pub merge_all_impropers: bool,               // merge all improper exact subclonotypes
+    pub heur: ClonotypeHeuristics,               // algorithmic heuristics
+    pub origin_info: OriginInfo,                 // origin (sample) info
+    pub allele_alg_opt: AlleleAlgOpt,            // algorithmic options for allele finding
+    pub allele_print_opt: AllelePrintOpt,        // print options for allele finding
+    pub join_alg_opt: JoinAlgOpt,                // algorithmic options for join
+    pub join_print_opt: JoinPrintOpt,            // printing options for join operations
     pub clono_filt_opt_def: ClonoFiltOptDefault, // default filtering options for clonotypes
-    pub clono_filt_opt: ClonoFiltOpt,     // filtering options for clonotypes
-    pub clono_print_opt: ClonoPrintOpt,   // printing options for clonotypes
-    pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
-    pub parseable_opt: ParseableOpt,      // parseable output options
-    pub pathlist: Vec<String>,            // list of input files
-    pub last_modified: Vec<SystemTime>,   // last modified for pathlist
+    pub clono_filt_opt: ClonoFiltOpt,            // filtering options for clonotypes
+    pub clono_print_opt: ClonoPrintOpt,          // printing options for clonotypes
+    pub clono_group_opt: ClonoGroupOpt,          // grouping options for clonotypes
+    pub parseable_opt: ParseableOpt,             // parseable output options
+    pub pathlist: Vec<String>,                   // list of input files
+    pub last_modified: Vec<SystemTime>,          // last modified for pathlist
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;

@@ -3,8 +3,9 @@
 use crate::gui_structures::*;
 use crate::style::{ButtonBoxStyle1, ButtonBoxStyle2};
 use crate::*;
+use enclone_core::stringulate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Button, Color, Column, Container, Element, Length, Row, Rule, Scrollable, Space, Text};
 use itertools::{izip, Itertools};
 use messages::Message;
 use vector_utils::*;
@@ -279,6 +280,31 @@ pub fn expand_summary_as_csv(summary: &str, show: &Vec<bool>) -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn max_line_val(s: &str) -> usize {
+    let mut m = 0;
+    for line in s.lines() {
+        let mut nchars = 0;
+        for _ in line.chars() {
+            nchars += 1;
+        }
+        m = std::cmp::max(m, nchars);
+    }
+    m
+}
+
+pub fn appropriate_font_size(s: &str, w: u32) -> usize {
+    let mut font_size = 20;
+    let max_line = max_line_val(&s);
+    const FUDGE: f32 = 175.0;
+    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
+    let iwidth = width.ceil() as u32;
+    if iwidth > w {
+        let fs = w as f32 / width * (font_size as f32);
+        font_size = fs.floor() as usize;
+    }
+    font_size
+}
+
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary_title = Text::new(&format!("Summary")).size(30);
 
@@ -288,25 +314,81 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let summary = summaryx.summary.clone();
     let n = summaryx.metrics.len();
 
+    // Unpack the summary.  For now we are assuming that it consists of one or two objects,
+    // because that's all we have implemented.
+
+    let hets = unpack_to_het_string(&summary);
+
     // Determine initial font size.
 
-    let mut font_size = 20;
-    let mut max_line = 0;
-    for line in summary.lines() {
-        let mut nchars = 0;
-        for _ in line.chars() {
-            nchars += 1;
-        }
-        max_line = std::cmp::max(max_line, nchars);
-    }
+    let mut max_line = max_line_val(&hets[0].content);
+    let mut font_size = appropriate_font_size(&hets[0].content, slf.width);
     const FUDGE: f32 = 175.0;
-    let width = (max_line * font_size) as f32 * DEJAVU_WIDTH_OVER_HEIGHT + FUDGE;
-    let iwidth = width.ceil() as u32;
-    if iwidth > slf.width {
-        let fs = slf.width as f32 / width * (font_size as f32);
-        font_size = fs.floor() as usize;
-    }
     let orig_font_size = font_size;
+
+    // Put first part of summary into a scrollable.
+
+    let summary = format!("{}\n \n", hets[0].content);
+    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .scrollbar_width(SCROLLBAR_WIDTH)
+        .scroller_width(12)
+        .style(style::ScrollableStyle)
+        .push(
+            Text::new(&format!("{}", summary))
+                .font(DEJAVU_BOLD)
+                .size(orig_font_size as u16),
+        );
+
+    // If there is a second part, which for now would be a FeatureBarcodeAlluvialTableSet,
+    // add that.
+
+    if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
+        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[1].content);
+        slf.alluvial_tables_for_spreadsheet.clear();
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!(
+                "\nfeature barcode UMI distribution for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+            slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+        }
+        tables_text += "\n \n";
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Feature barcode UMI count alluvial tables")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Text::new(
+                "All the tables can be copied at once, in a form suitable for inclusion in \
+                 a spreadsheet, by pushing the button below.  This copies the numbers in the \
+                 last column, but not the numbers in the earlier columns.",
+            ))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.alluvial_tables_copy_button,
+                    Text::new("Copy").color(slf.alluvial_tables_copy_button_color),
+                )
+                .on_press(Message::CopyAlluvialTables),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", tables_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
 
     // Suppose we have dataset level metrics.
 
@@ -437,7 +519,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Build final structure.
 
-    let summary = format!("{}\n \n", summary);
+    let summary_snapshot_button = Button::new(
+        &mut slf.graphic_snapshot_button,
+        Text::new("Snapshot").color(slf.summary_snapshot_button_color),
+    )
+    .on_press(Message::SummarySnapshot);
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
         Text::new("Copy").color(slf.copy_summary_button_color),
@@ -448,26 +534,29 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(summary_title)
         .push(Space::with_width(Length::Fill))
+        .push(summary_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(summary_copy_button)
         .push(Space::with_width(Units(8)))
         .push(summary_close_button);
-    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .scrollbar_width(SCROLLBAR_WIDTH)
-        .scroller_width(12)
-        .style(style::ScrollableStyle)
-        .push(
-            Text::new(&format!("{}", summary))
-                .font(DEJAVU_BOLD)
-                .size(orig_font_size as u16),
-        );
-    if n > 0 && n == summaryx.dataset_names.len() {
+    let mut have_metrics = false;
+    for m in summaryx.metrics.iter() {
+        if m.len() > 0 {
+            have_metrics = true;
+        }
+    }
+    if have_metrics && n == summaryx.dataset_names.len() {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)));
         if !slf.metrics_condensed {
             summary_scrollable = summary_scrollable
+                .push(
+                    Text::new("Dataset level metrics")
+                        .size(25)
+                        .color(Color::from_rgb(0.9, 0.0, 0.9)),
+                )
+                .push(Space::with_height(Units(8)))
                 .push(Text::new(
                     "Metrics below can be selectively displayed by clicking on boxes, \
                     and then pushing the button below.",
@@ -482,7 +571,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "The copy selected metrics button may be used to copy the selected \
                     metrics to the clipboard, in a form that can be pasted into a spreadsheet.",
                 ))
-                .push(Space::with_height(Units(8)));
+                .push(Space::with_height(Units(12)));
         }
         let text = if slf.metrics_condensed {
             "Show all metrics".to_string()

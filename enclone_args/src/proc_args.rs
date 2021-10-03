@@ -416,6 +416,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("UNACCOUNTED", &mut ctl.perf_opt.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
+        ("VISUAL", &mut ctl.visual_mode),
         ("WEAK", &mut ctl.gen_opt.weak),
         ("WHITEF", &mut ctl.clono_filt_opt_def.whitef),
     ];
@@ -867,6 +868,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             &mut xcrs,
             &mut using_plot,
         )?;
+    }
+
+    // Force visual mode if plot file is gui.
+
+    if ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout" {
+        ctl.visual_mode = true;
     }
 
     // Record time.

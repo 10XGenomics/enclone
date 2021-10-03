@@ -17,6 +17,7 @@ pub mod prepare_for_apocalypse;
 pub mod print_tools;
 pub mod set_speakers;
 pub mod slurp;
+pub mod stringulate;
 pub mod testlist;
 pub mod var_reg;
 pub mod vdj_features;

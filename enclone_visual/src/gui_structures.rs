@@ -98,6 +98,7 @@ pub struct EncloneVisual {
     pub copy_image_button_color: Color,
     pub snapshot_button_color: Color,
     pub graphic_snapshot_button_color: Color,
+    pub summary_snapshot_button_color: Color,
     pub sanity_button_color: Color,
     pub clonotypes_copy_button_color: Color,
     pub tooltip_toggle_button_color: Color,
@@ -122,7 +123,10 @@ pub struct EncloneVisual {
     pub metrics_condensed: bool,
     pub snapshot_start: Option<Instant>,
     pub graphic_snapshot_start: Option<Instant>,
+    pub summary_snapshot_start: Option<Instant>,
     pub sanity_check_start: Option<Instant>,
+    pub alluvial_tables_for_spreadsheet: String,
+    pub alluvial_tables_copy_button_color: Color,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -183,6 +187,7 @@ pub struct EncloneVisual {
     pub graphic_close_button: button::State,
     pub clonotypes_copy_button: button::State,
     pub tooltip_toggle_button: button::State,
+    pub alluvial_tables_copy_button: button::State,
     //
     // more
     //

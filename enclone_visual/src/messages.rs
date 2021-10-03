@@ -81,6 +81,8 @@ pub enum Message {
     CompleteSnapshot(Result<(), String>),
     GraphicSnapshot,
     CompleteGraphicSnapshot(Result<(), String>),
+    SummarySnapshot,
+    CompleteSummarySnapshot(Result<(), String>),
     Recompute,
     CopyLastNarrative,
     Sleep(u64),
@@ -90,4 +92,6 @@ pub enum Message {
     CompleteClonotypesCopy(Result<(), String>),
     TooltipToggle,
     CompleteTooltipToggle(Result<(), String>),
+    CopyAlluvialTables,
+    CompleteCopyAlluvialTables(Result<(), String>),
 }
