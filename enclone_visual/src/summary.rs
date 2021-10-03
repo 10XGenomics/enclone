@@ -539,7 +539,13 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(summary_copy_button)
         .push(Space::with_width(Units(8)))
         .push(summary_close_button);
-    if n > 0 && n == summaryx.dataset_names.len() {
+    let mut have_metrics = false;
+    for m in summaryx.metrics.iter() {
+        if m.len() > 0 {
+            have_metrics = true;
+        }
+    }
+    if have_metrics && n == summaryx.dataset_names.len() {
         summary_scrollable = summary_scrollable
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)));
