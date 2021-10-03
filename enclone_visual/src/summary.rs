@@ -399,7 +399,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let metricsx = summaryx.metrics.clone();
         let metrics = get_metrics(&metricsx, nd);
         let nm = metrics.len();
-        if slf.metric_button.is_empty() {
+        if slf.metric_button.len() != nm {
             slf.metric_button = vec![iced::button::State::default(); nm];
         }
         let mut categories = Vec::<String>::new();
