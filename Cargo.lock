@@ -1597,7 +1597,7 @@ dependencies = [
  "enclone_core",
  "enclone_proto",
  "equiv",
- "float-ord 0.3.1",
+ "float-ord 0.3.2",
  "hdf5",
  "io_utils",
  "itertools",
@@ -1937,9 +1937,9 @@ checksum = "7bad48618fdb549078c333a7a8528acb57af271d0433bdecd523eb620628364e"
 
 [[package]]
 name = "float-ord"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64860170d0b2dd3f1c5af6d96aafa47b5928ac0163116c1ab27313480d82b547"
+checksum = "8ce81f49ae8a0482e4c55ea62ebbd7e5a686af544c00b9d090bba3ff9be97b3d"
 
 [[package]]
 name = "float_next_after"
