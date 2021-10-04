@@ -22,6 +22,11 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::SetSummaryScrollablePos(p) => {
+                self.summary_scroll.snap_to(p);
+                Command::none()
+            }
+
             Message::SummarySnapshot => {
                 self.summary_snapshot_start = Some(Instant::now());
                 self.summary_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
