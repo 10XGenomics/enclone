@@ -17,7 +17,7 @@ license-file = "../LICENSE.txt"
 publish = false
 
 [dependencies]
-assert_cmd = "1"
+assert_cmd = "2"
 byteorder = "1"
 bytes = "1"
 dirs = "3"
