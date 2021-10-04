@@ -3,7 +3,8 @@
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Align, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text,
+    Alignment, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space,
+    Text,
 };
 use messages::Message;
 
@@ -113,7 +114,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(
             Row::new()
-                .align_items(Align::Center)
+                .align_items(Alignment::Center)
                 .push(
                     Column::new()
                         .push(Space::with_height(Units(10)))
