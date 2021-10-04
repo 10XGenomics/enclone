@@ -77,6 +77,7 @@ use ComputeState::*;
 pub struct EncloneVisual {
     pub modified: bool,
     pub scroll: scrollable::State,
+    pub summary_scroll: scrollable::State,
     pub clonotypes_scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,

@@ -6,7 +6,7 @@
 //
 // Argument: QUIET.
 // Argument: VERBOSE.
-// Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,main).
+// Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,5,main).
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -413,7 +413,7 @@ fn main() {
 
     let used = elapsed(&t);
     if tests.is_empty() {
-        const EXPECTED_TIME: f64 = 44.8; // this is supposed to be the lowest observed value
+        const EXPECTED_TIME: f64 = 43.4; // this is supposed to be the lowest observed value
         const MAX_PERCENT_OVER: f64 = 4.2;
         let percent_over = 100.0 * (used - EXPECTED_TIME) / EXPECTED_TIME;
         if percent_over > MAX_PERCENT_OVER {

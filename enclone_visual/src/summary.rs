@@ -329,7 +329,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Put first part of summary into a scrollable.
 
     let summary = format!("{}\n \n", hets[0].content);
-    let mut summary_scrollable = Scrollable::new(&mut slf.scroll)
+    let mut summary_scrollable = Scrollable::new(&mut slf.summary_scroll)
         .width(Length::Fill)
         .height(Length::Fill)
         .scrollbar_width(SCROLLBAR_WIDTH)

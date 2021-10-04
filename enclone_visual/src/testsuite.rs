@@ -87,30 +87,40 @@ pub fn metatests() -> Vec<Vec<Message>> {
         ],
         // 5 = enclone VIS
         vec![
+
             Message::InputChanged1(
                 "enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,IGHV3-7_g_cell"
                 .to_string()
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("color_by_var"),
+
             Message::InputChanged1(
                 "enclone BCR=85333 HONEY=out=gui,color=var,u_cell1,,minmax,0,10"
                 .to_string()
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("trunc"),
+
             Message::InputChanged1(
                 "enclone BCR=85333 HONEY=out=gui,color=var,u_cell1,legend=none"
                 .to_string()
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("no_legend"),
+
             Message::InputChanged1(
                 "enclone BCR=85333 HONEY=out=gui,color=var,u1:u_cell1"
                 .to_string()
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("abbr"),
+
+            Message::InputChanged1("enclone TCR_GEX=1175299".to_string()),
+            Message::SubmitButtonPressed(Ok(())),
+            Message::SetSummaryScrollablePos(0.2),
+            Message::SummaryOpen(Ok(())),
+            Message::SetName("alluvial_tables"),
         ],
     ]
 }

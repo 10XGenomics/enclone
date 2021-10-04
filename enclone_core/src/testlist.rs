@@ -134,7 +134,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 35] = [
+pub const EXTENDED_TESTS: [&str; 36] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -230,6 +230,9 @@ pub const EXTENDED_TESTS: [&str; 35] = [
     // an effect.  However, other changes will also affect this.  See the previous test and make
     // sure that the results are different from it.
     r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
+    // 36. test MIN_GROUP_DONORS
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
 ];
 
 // Tests of internal features.

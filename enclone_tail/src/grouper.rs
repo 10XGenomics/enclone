@@ -14,7 +14,7 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{next_diff1_2, sort_sync2};
+use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
 
 pub fn grouper(
     refdata: &RefData,
@@ -523,6 +523,26 @@ pub fn grouper(
             e.orbit(greps[i], &mut o);
             if o.len() < ctl.clono_group_opt.min_group {
                 continue;
+            }
+            if ctl.clono_group_opt.min_group_donors > 1 {
+                let mut donors = Vec::<usize>::new();
+                for j in 0..o.len() {
+                    let x = o[j] as usize;
+                    let s = &exacts[x];
+                    for k in 0..s.len() {
+                        let ex = &exact_clonotypes[s[k]];
+                        for l in 0..ex.clones.len() {
+                            let d = ex.clones[l][0].donor_index;
+                            if d.is_some() {
+                                donors.push(d.unwrap());
+                            }
+                        }
+                    }
+                }
+                unique_sort(&mut donors);
+                if donors.len() < ctl.clono_group_opt.min_group_donors {
+                    continue;
+                }
             }
             let mut z = Vec::<(i32, String)>::new();
             for j in 0..o.len() {
