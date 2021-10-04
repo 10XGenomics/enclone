@@ -267,6 +267,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)",
         );
+        h.doc(
+            "MIN_GROUP_DONORS",
+            "minimum number of donors for a group to be printed (default = 1)",
+        );
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2()?;
         h.print("\n")?;

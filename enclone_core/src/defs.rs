@@ -391,9 +391,10 @@ pub struct ClonoPrintOpt {
 #[derive(Default, PartialEq)]
 pub struct ClonoGroupOpt {
     // SYMMETRIC AND ASYMMETRIC
-    pub ngroup: bool,     // do not print group headers
-    pub min_group: usize, // minimum number of clonotypes in group to print
-    pub style: String,    // symmetric or unsymmetric or unspecified
+    pub ngroup: bool,            // do not print group headers
+    pub min_group: usize,        // minimum number of clonotypes in group to print
+    pub min_group_donors: usize, // minimum number of donors in a group to print
+    pub style: String,           // symmetric or unsymmetric or unspecified
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub vj_heavy_refname: bool,  // group by having the same heavy VJ reference names

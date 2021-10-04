@@ -132,6 +132,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.clono_print_opt.lvars = vec!["datasets".to_string(), "n".to_string()];
 
     ctl.clono_group_opt.min_group = 1;
+    ctl.clono_group_opt.min_group_donors = 1;
 
     ctl.allele_alg_opt.min_mult = 4;
     ctl.allele_alg_opt.min_alt = 4;
@@ -458,6 +459,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("MIN_DATASETS", &mut ctl.clono_filt_opt.min_datasets),
         ("MIN_EXACTS", &mut ctl.clono_filt_opt.min_exacts),
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
+        (
+            "MIN_GROUP_DONORS",
+            &mut ctl.clono_group_opt.min_group_donors,
+        ),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
         ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
