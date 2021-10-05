@@ -3,7 +3,6 @@
 // See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
-use crate::determine_ref::determine_ref;
 use crate::setup::{critical_args, setup};
 use crate::stop::main_enclone_stop;
 use enclone::innate::species;
@@ -15,7 +14,8 @@ use enclone_stuff::vars::match_vars;
 use io_utils::path_exists;
 use std::{
     collections::HashMap,
-    fs,
+    fs, fs::File,
+    io::{BufRead, BufReader},
     time::Instant,
 };
 use vdj_ann::refx;
@@ -72,11 +72,17 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Start of code to determine the reference sequence that is to be used.
+    // Determine the reference sequence that is to be used.
 
     let mut refx = String::new();
     let ann = "contig_annotations.json";
-    determine_ref(&mut ctl, &mut refx)?;
+    let fx = File::open(&ctl.gen_opt.refname);
+    let f = BufReader::new(fx.unwrap());
+    for line in f.lines() {
+        let s = line.unwrap();
+        refx += &s;
+        refx += "\n";
+    }
 
     // Build reference data.
 
