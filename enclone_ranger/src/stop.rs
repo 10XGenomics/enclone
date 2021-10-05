@@ -6,7 +6,7 @@ use enclone_print::print_clonotypes::print_clonotypes;
 use rayon::prelude::*;
 use std::collections::HashMap;
 
-pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<(), String> {
+pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), String> {
     // Unpack inputs.
 
     let to_bc = &inter.ex.to_bc;

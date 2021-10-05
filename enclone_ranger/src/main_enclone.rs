@@ -1,9 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
-//
-// See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
-use crate::stop::main_enclone_stop;
+use crate::stop::main_enclone_stop_ranger;
 use crate::USING_PAGER;
 use enclone::innate::species;
 use enclone_args::load_gex::get_gex_info;
@@ -21,18 +19,17 @@ use std::sync::atomic::Ordering::SeqCst;
 use string_utils::TextUtils;
 use vdj_ann::refx;
 
-pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
-    let setup = main_enclone_setup(args)?;
+pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
+    let setup = main_enclone_setup_ranger(args)?;
     let inter = main_enclone_start(setup)?;
-    main_enclone_stop(inter)
+    main_enclone_stop_ranger(inter)
 }
 
-pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
+pub fn main_enclone_setup_ranger(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
 
     // Set up stuff, read args, etc.
 
-    let args_orig = args.clone();
     let mut ctl = EncloneControl::default();
     ctl.gen_opt.cellranger = true;
     ctl.gen_opt.internal_run = false;
@@ -53,16 +50,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     ctl.gen_opt.h5 = true;
     USING_PAGER.store(false, SeqCst);
     proc_args(&mut ctl, args)?;
-    let mut argsy = Vec::<String>::new();
-    for i in 0..args_orig.len() {
-        if args_orig[i] != "NOPAGER"
-            && args_orig[i] != "FORCE_EXTERNAL"
-            && !args_orig[i].starts_with("PRE=")
-            && !args_orig[i].starts_with("MAX_CORES=")
-        {
-            argsy.push(args_orig[i].clone());
-        }
-    }
 
     // Get gene expression and feature barcode counts.  
 
