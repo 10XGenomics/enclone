@@ -3,9 +3,7 @@
 // See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
-use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
-use crate::inconsistent::test_vdj_gex_inconsistent;
 use crate::setup::{critical_args, setup};
 use crate::stop::{main_enclone_stop, EncloneExacts, EncloneIntermediates};
 use crate::vars::match_vars;
@@ -34,7 +32,6 @@ use enclone_stuff::some_filters::some_filters;
 use equiv::EquivRel;
 use io_utils::{fwriteln, open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
-use pretty_trace::start_profiling;
 use std::{
     collections::HashMap,
     env, fs,
@@ -144,9 +141,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         if arg == "PROFILE" {
             ctl.gen_opt.profile = true;
         }
-    }
-    if ctl.gen_opt.profile {
-        start_profiling(&profiling_blacklist());
     }
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
@@ -592,10 +586,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         return Ok(EncloneIntermediates::default());
     }
-
-    // Test for consistency between VDJ cells and GEX cells.
-
-    test_vdj_gex_inconsistent(ctl, &tig_bc, &exact_clonotypes, &vdj_cells, gex_info)?;
 
     // Filter out some foursie artifacts.
 
