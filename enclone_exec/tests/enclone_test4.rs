@@ -273,6 +273,7 @@ fn test_dependency_structure() {
             && d != "enclone_main"
             && d != "enclone_tools"
             && d != "enclone_denovo"
+            && d != "enclone_ranger"
         {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
@@ -282,8 +283,8 @@ fn test_dependency_structure() {
                     if s.starts_with("enclone =") {
                         eprintln!(
                             "\nThe crate {} has the crate enclone as a dependency.  In an \
-                            attempt to reduce\ncompile time, we only allow this for the crate \
-                            enclone_main.\n",
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
                             d
                         );
                         std::process::exit(1);
