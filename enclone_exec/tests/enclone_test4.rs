@@ -274,6 +274,7 @@ fn test_dependency_structure() {
             && d != "enclone_tools"
             && d != "enclone_denovo"
             && d != "enclone_ranger"
+            && d != "enclone_stuff"
         {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
