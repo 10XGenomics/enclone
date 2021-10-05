@@ -1,6 +1,4 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
-//
-// See README for documentation.
 
 use crate::USING_PAGER;
 use enclone_args::proc_args::proc_args;

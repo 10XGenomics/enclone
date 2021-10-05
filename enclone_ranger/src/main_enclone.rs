@@ -10,11 +10,9 @@ use enclone_args::load_gex::get_gex_info;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
 use enclone_stuff::start::*;
-use enclone_stuff::vars::match_vars;
-use io_utils::path_exists;
 use std::{
     collections::HashMap,
-    fs, fs::File,
+    fs::File,
     io::{BufRead, BufReader},
     time::Instant,
 };
@@ -22,13 +20,7 @@ use vdj_ann::refx;
 
 pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
-    if setup.tall.is_none() {
-        return Ok(());
-    }
     let inter = main_enclone_start(setup)?;
-    if inter.setup.tall.is_none() {
-        return Ok(());
-    }
     main_enclone_stop(inter)
 }
 
@@ -60,17 +52,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         return Ok(EncloneSetup::default());
     }
 
-    // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
-    // has to occur after loading GEX data.  This could also occur after loading only the feature
-    // list, which would be better.
+    // Get gene expression and feature barcode counts.  
 
     let gex_info = get_gex_info(&mut ctl)?;
-
-    // Find matching features for <regular expression>_g etc.
-
-    match_vars(&mut ctl, &gex_info)?;
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Determine the reference sequence that is to be used.
 
@@ -105,28 +89,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
-
-    // Get VDJ data paths.
-
-    for li in 0..ctl.origin_info.dataset_path.len() {
-        let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
-        let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
-        if !path_exists(&json) && !path_exists(&json_lz4) {
-            return Err(format!("\ncan't find {} or {}\n", json, json_lz4));
-        } else if path_exists(&json) {
-            ctl.pathlist.push(json);
-        } else {
-            ctl.pathlist.push(json_lz4);
-        }
-    }
-
-    // Get last modified info for pathlist.
-
-    for i in 0..ctl.pathlist.len() {
-        let metadata = fs::metadata(&ctl.pathlist[i]);
-        let modified = metadata.unwrap().modified();
-        ctl.last_modified.push(modified.unwrap());
-    }
 
     // Return.
 
