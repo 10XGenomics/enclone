@@ -23,20 +23,18 @@ use string_utils::TextUtils;
 use vdj_ann::refx;
 
 pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
-    const REQUIRED_ARGS: [&str; 3] = ["CELLRANGER", "FORCE_EXTERNAL", "NOPAGER"];
-    const ALLOWED_ARGS: [&str; 11] = [
-        "BCR",
+    const REQUIRED_ARGS: [&str; 9] = [
+        "CELLRANGER",
         "DONOR_REF_FILE",
+        "FORCE_EXTERNAL",
         "MAX_CORES",
-        "META",
-        "NOPRETTY",
+        "NOPAGER",
         "NOPRINT",
         "PRE",
         "PROTO",
-        "PROTO_METADATA",
         "REF",
-        "TCR",
     ];
+    const ALLOWED_ARGS: [&str; 5] = ["BCR", "META", "NOPRETTY", "PROTO_METADATA", "TCR"];
     let mut found = vec![false; REQUIRED_ARGS.len()];
     for i in 1..args.len() {
         let mut arg = args[i].clone();
