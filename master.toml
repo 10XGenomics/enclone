@@ -30,6 +30,7 @@ enclone = { path = "../enclone" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_server_proto = { path = "../enclone_server_proto" }
+enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }

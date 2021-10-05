@@ -1,5 +1,5 @@
 [package]
-name = "enclone_main"
+name = "enclone_stuff"
 version = "0.5.112"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
@@ -29,8 +29,6 @@ enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
-enclone_stuff = { path = "../enclone_stuff" }
-enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1"
