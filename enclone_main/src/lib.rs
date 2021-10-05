@@ -2,16 +2,12 @@
 
 pub mod blacklist;
 pub mod determine_ref;
-pub mod flag_defective;
-pub mod inconsistent;
 pub mod main_enclone;
 pub mod opt_d_val;
 pub mod sec_mem;
 pub mod setup;
-pub mod start;
 pub mod stop;
 pub mod subset;
-pub mod vars;
 
 use std::sync::atomic::AtomicBool;
 

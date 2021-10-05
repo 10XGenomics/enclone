@@ -1769,6 +1769,7 @@ dependencies = [
  "dirs",
  "enclone_core",
  "enclone_main",
+ "enclone_stuff",
  "enclone_tail",
  "enclone_version",
  "failure",

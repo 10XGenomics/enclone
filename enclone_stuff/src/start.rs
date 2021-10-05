@@ -2,10 +2,13 @@
 //
 // See README for documentation.
 
+use crate::disintegrate::disintegrate_onesies;
+use crate::fcell::filter_by_fcell;
+use crate::filter_umi::filter_umi;
 use crate::flag_defective::flag_defective;
 use crate::inconsistent::test_vdj_gex_inconsistent;
-use crate::main_enclone::*;
-use crate::stop::{EncloneExacts, EncloneIntermediates};
+use crate::populate_features::populate_features;
+use crate::some_filters::some_filters;
 use debruijn::dna_string::DnaString;
 use enclone::allele::{find_alleles, sub_alts};
 use enclone::graph_filter::graph_filter;
@@ -16,12 +19,8 @@ use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_f
 use enclone::misc3::sort_tig_bc;
 use enclone_args::read_json::parse_json_annotations_files;
 use enclone_core::defs::{CloneInfo, TigData};
+use enclone_core::enclone_structs::*;
 use enclone_print::loupe::make_donor_refs;
-use enclone_stuff::disintegrate::disintegrate_onesies;
-use enclone_stuff::fcell::filter_by_fcell;
-use enclone_stuff::filter_umi::filter_umi;
-use enclone_stuff::populate_features::populate_features;
-use enclone_stuff::some_filters::some_filters;
 use equiv::EquivRel;
 use io_utils::fwriteln;
 use std::{
@@ -32,30 +31,6 @@ use std::{
 };
 use stirling_numbers::stirling2_ratio_table;
 use vector_utils::{bin_member, erase_if, unique_sort};
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-#[derive(Clone, Debug, Default)]
-pub struct MainEncloneOutput {
-    pub pics: Vec<String>, // clonotype tables
-    pub last_widths: Vec<u32>,
-    pub svgs: Vec<String>, // SVG objects
-    pub summary: String,   // summary
-    pub metrics: Vec<String>,
-    pub dataset_names: Vec<String>,
-    pub parseable_stdouth: bool,
-    pub noprint: bool,
-    pub noprintx: bool,
-    pub html: bool,
-    pub ngroup: bool,
-    pub pretty: bool,
-}
-
-#[derive(Default)]
-pub struct EncloneState {
-    pub inter: EncloneIntermediates,
-    pub outs: MainEncloneOutput,
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

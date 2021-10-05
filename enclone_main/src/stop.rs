@@ -1,11 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
 use crate::opt_d_val::make_opt_d_val;
 use crate::subset::subset_json;
-use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype, WALLCLOCK};
+use enclone_core::defs::{ColInfo, WALLCLOCK};
+use enclone_core::enclone_structs::*;
 use enclone_print::print_clonotypes::print_clonotypes;
-use enclone_proto::types::DonorReferenceItem;
 use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
 use io_utils::{dir_list, open_for_read, path_exists};
@@ -22,29 +21,6 @@ use std::{
     time::Instant,
 };
 use string_utils::TextUtils;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-#[derive(Default)]
-pub struct EncloneIntermediates {
-    pub setup: EncloneSetup,
-    pub ex: EncloneExacts,
-}
-
-#[derive(Default, Clone)]
-pub struct EncloneExacts {
-    pub to_bc: HashMap<(usize, usize), Vec<String>>,
-    pub exact_clonotypes: Vec<ExactClonotype>,
-    pub raw_joins: Vec<Vec<usize>>,
-    pub info: Vec<CloneInfo>,
-    pub orbits: Vec<Vec<i32>>,
-    pub vdj_cells: Vec<Vec<String>>,
-    pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
-    pub drefs: Vec<DonorReferenceItem>,
-    pub sr: Vec<Vec<f64>>,
-    pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
-    pub is_bcr: bool,
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

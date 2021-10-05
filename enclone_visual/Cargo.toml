@@ -30,6 +30,7 @@ crc = "2"
 dirs = "4"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
+enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
 failure = "0.1"

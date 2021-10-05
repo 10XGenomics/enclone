@@ -1,37 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::main_enclone::EncloneSetup;
-use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype};
+use enclone_core::defs::ColInfo;
+use enclone_core::enclone_structs::*;
 use enclone_print::print_clonotypes::print_clonotypes;
-use enclone_proto::types::DonorReferenceItem;
 use io_utils::{dir_list, path_exists};
 use rayon::prelude::*;
 use std::{collections::HashMap, env, thread, time};
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-#[derive(Default)]
-pub struct EncloneIntermediates {
-    pub setup: EncloneSetup,
-    pub ex: EncloneExacts,
-}
-
-#[derive(Default, Clone)]
-pub struct EncloneExacts {
-    pub to_bc: HashMap<(usize, usize), Vec<String>>,
-    pub exact_clonotypes: Vec<ExactClonotype>,
-    pub raw_joins: Vec<Vec<usize>>,
-    pub info: Vec<CloneInfo>,
-    pub orbits: Vec<Vec<i32>>,
-    pub vdj_cells: Vec<Vec<String>>,
-    pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
-    pub drefs: Vec<DonorReferenceItem>,
-    pub sr: Vec<Vec<f64>>,
-    pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
-    pub is_bcr: bool,
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<(), String> {
     // Unpack inputs.

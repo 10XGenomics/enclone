@@ -7,17 +7,18 @@ use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
 use crate::sec_mem::test_sec_mem;
 use crate::setup::{critical_args, setup};
-use crate::start::*;
-use crate::stop::{main_enclone_stop, EncloneIntermediates};
-use crate::vars::match_vars;
+use crate::stop::main_enclone_stop;
 use enclone::innate::species;
 use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
 use enclone_core::cell_color::CellColor;
-use enclone_core::defs::{EncloneControl, GexInfo};
+use enclone_core::defs::EncloneControl;
+use enclone_core::enclone_structs::*;
 use enclone_core::version_string;
+use enclone_stuff::start::*;
+use enclone_stuff::vars::match_vars;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::start_profiling;
@@ -31,41 +32,6 @@ use std::{
 use string_utils::TextUtils;
 use vdj_ann::refx;
 use vector_utils::{bin_member, next_diff, unique_sort};
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-#[derive(Clone, Debug, Default)]
-pub struct MainEncloneOutput {
-    pub pics: Vec<String>, // clonotype tables
-    pub last_widths: Vec<u32>,
-    pub svgs: Vec<String>, // SVG objects
-    pub summary: String,   // summary
-    pub metrics: Vec<String>,
-    pub dataset_names: Vec<String>,
-    pub parseable_stdouth: bool,
-    pub noprint: bool,
-    pub noprintx: bool,
-    pub html: bool,
-    pub ngroup: bool,
-    pub pretty: bool,
-}
-
-#[derive(Default)]
-pub struct EncloneState {
-    pub inter: EncloneIntermediates,
-    pub outs: MainEncloneOutput,
-}
-
-#[derive(Default)]
-pub struct EncloneSetup {
-    pub ctl: EncloneControl,
-    pub ann: String,
-    pub gex_info: GexInfo,
-    pub tall: Option<Instant>,
-    pub refdata: RefData,
-    pub is_bcr: bool,
-    pub to_ref_index: HashMap<usize, usize>,
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
