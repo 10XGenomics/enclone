@@ -26,7 +26,6 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 debruijn = "0.3"
 dirs = "4"
 enclone_core = { path = "../enclone_core" }
-enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone = { path = "../enclone" }
