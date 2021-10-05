@@ -1450,6 +1450,7 @@ dependencies = [
  "enclone_core",
  "enclone_main",
  "enclone_proto",
+ "enclone_ranger",
  "enclone_tools",
  "enclone_vars",
  "enclone_visual",

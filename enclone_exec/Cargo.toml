@@ -38,6 +38,7 @@ ansi_escape = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 enclone_vars = { path = "../enclone_vars" }
 enclone_proto = { path = "../enclone_proto" }
+enclone_ranger = { path = "../enclone_ranger" }
 enclone_tools = { path = "../enclone_tools" }
 failure = "0.1"
 flate2 = "1"

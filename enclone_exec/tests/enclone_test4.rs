@@ -3,12 +3,14 @@
 #![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
+use enclone_main::main_enclone::main_enclone;
+use enclone_ranger::main_enclone::main_enclone_ranger;
 use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
-use std::fs::{metadata, File};
+use std::fs::{metadata, read_to_string, remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
@@ -561,4 +563,63 @@ fn test_vars() {
         std::process::exit(1);
     }
     let _ = parse_variables(&old);
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 38. Test to see that main_enclone_ranger and main_enclone do the same thing on one test case.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_ranger() {
+    let proto_out = "testx/outputs/test1.proto";
+    let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
+    let mut files = vec![vec![String::new(); 2]; 2];
+    for pass in 1..=2 {
+        for f in [&proto_out, &donor_ref_out].iter() {
+            if path_exists(f) {
+                remove_file(f).unwrap();
+            }
+        }
+        let mut args = Vec::<String>::new();
+        args.push("enclone".to_string());
+        args.push("CELLRANGER".to_string());
+        args.push("PRE=".to_string());
+        args.push("FORCE_EXTERNAL".to_string());
+        args.push("NOPAGER".to_string());
+        args.push("NOPRINT".to_string());
+        args.push("MAX_CORES=8".to_string());
+        args.push("BCR=../enclone-data/big_inputs/version15/tiny_multi_CS_6.1".to_string());
+        args.push(
+            "REF=../enclone-data/big_inputs/version15/tiny_multi_CS_6.1/outs/vdj_reference/\
+            fasta/regions.fa"
+                .to_string(),
+        );
+        args.push(format!("PROTO={}", proto_out));
+        args.push(format!("DONOR_REF_FILE={}", donor_ref_out));
+        if pass == 1 {
+            main_enclone_ranger(&args).unwrap();
+        } else {
+            main_enclone(&args).unwrap();
+        }
+        if !path_exists(&proto_out) {
+            eprintln!("pass = {}, can't find proto_out", pass);
+            std::process::exit(1);
+        }
+        if !path_exists(&donor_ref_out) {
+            eprintln!("pass = {}, can't find donor_ref_out", pass);
+            std::process::exit(1);
+        }
+        files[0][pass - 1] = read_to_string(&proto_out).unwrap();
+        files[1][pass - 1] = read_to_string(&donor_ref_out).unwrap();
+    }
+    for i in 0..2 {
+        if files[i][0] != files[i][1] {
+            eprintln!("files are different");
+            std::process::exit(1);
+        }
+    }
 }
