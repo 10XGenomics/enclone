@@ -12,22 +12,18 @@ use enclone_args::proc_args::proc_args;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
 use enclone_stuff::start::*;
+use std::sync::atomic::Ordering::SeqCst;
 use std::{
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader},
     time::Instant,
 };
-use std::sync::atomic::Ordering::SeqCst;
 use string_utils::TextUtils;
 use vdj_ann::refx;
 
 pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
-    const REQUIRED_ARGS: [&str; 3] = [
-        "CELLRANGER",
-        "FORCE_EXTERNAL",
-        "NOPAGER",
-    ];
+    const REQUIRED_ARGS: [&str; 3] = ["CELLRANGER", "FORCE_EXTERNAL", "NOPAGER"];
     const ALLOWED_ARGS: [&str; 11] = [
         "BCR",
         "DONOR_REF_FILE",
@@ -39,7 +35,7 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
         "PROTO",
         "PROTO_METADATA",
         "REF",
-        "TCR"
+        "TCR",
     ];
     let mut found = vec![false; REQUIRED_ARGS.len()];
     for i in 1..args.len() {
@@ -65,7 +61,10 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
     }
     for j in 0..REQUIRED_ARGS.len() {
         if !found[j] {
-            panic!("Required argument {} not passed to main_enclone_ranger", REQUIRED_ARGS[j]);
+            panic!(
+                "Required argument {} not passed to main_enclone_ranger",
+                REQUIRED_ARGS[j]
+            );
         }
     }
     let setup = main_enclone_setup_ranger(args)?;
@@ -99,7 +98,7 @@ pub fn main_enclone_setup_ranger(args: &Vec<String>) -> Result<EncloneSetup, Str
     USING_PAGER.store(false, SeqCst);
     proc_args(&mut ctl, args)?;
 
-    // Get gene expression and feature barcode counts.  
+    // Get gene expression and feature barcode counts.
 
     let gex_info = get_gex_info(&mut ctl)?;
 
