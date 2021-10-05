@@ -1,5 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// This is a special entry point for cellranger, where we know that the arguments that could
+// be passed are limited.  The code here is simplified and could be further simplified.
+
 use self::refx::{make_vdj_ref_data_core, RefData};
 use crate::stop::main_enclone_stop_ranger;
 use crate::USING_PAGER;
@@ -20,6 +23,37 @@ use string_utils::TextUtils;
 use vdj_ann::refx;
 
 pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
+    const ALLOWED_ARGS: [&str; 14] = [
+        "BCR",
+        "CELLRANGER",
+        "DONOR_REF_FILE",
+        "FORCE_EXTERNAL",
+        "MAX_CORES",
+        "META",
+        "NOPAGER",
+        "NOPRETTY",
+        "NOPRINT",
+        "PRE",
+        "PROTO",
+        "PROTO_METADATA",
+        "REF",
+        "TCR"
+    ];
+    for i in 1..args.len() {
+        let mut arg = args[i].clone();
+        if arg.contains("=") {
+            arg = arg.before("=").to_string();
+        }
+        let mut ok = false;
+        for x in ALLOWED_ARGS.iter() {
+            if arg == *x {
+                ok = true;
+            }
+        }
+        if !ok {
+            panic!("Illegal argument {} passed to main_enclone_ranger.", arg);
+        }
+    }
     let setup = main_enclone_setup_ranger(args)?;
     let inter = main_enclone_start(setup)?;
     main_enclone_stop_ranger(inter)
