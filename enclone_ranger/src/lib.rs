@@ -4,7 +4,6 @@ pub mod determine_ref;
 pub mod main_enclone;
 pub mod setup;
 pub mod stop;
-pub mod vars;
 
 use std::sync::atomic::AtomicBool;
 

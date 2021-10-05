@@ -6,7 +6,6 @@ use self::refx::{make_vdj_ref_data_core, RefData};
 use crate::determine_ref::determine_ref;
 use crate::setup::{critical_args, setup};
 use crate::stop::main_enclone_stop;
-use crate::vars::match_vars;
 use enclone::innate::species;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args_check::{check_gvars, check_lvars};
@@ -14,6 +13,7 @@ use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
 use enclone_core::version_string;
 use enclone_stuff::start::*;
+use enclone_stuff::vars::match_vars;
 use io_utils::path_exists;
 use std::{
     collections::HashMap,
