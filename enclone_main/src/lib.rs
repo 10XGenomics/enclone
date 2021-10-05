@@ -2,8 +2,6 @@
 
 pub mod blacklist;
 pub mod determine_ref;
-pub mod disintegrate;
-pub mod filter_umi;
 pub mod flag_defective;
 pub mod inconsistent;
 pub mod main_enclone;

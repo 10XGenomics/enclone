@@ -5,8 +5,6 @@
 use self::refx::{make_vdj_ref_data_core, RefData};
 use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
-use crate::disintegrate::disintegrate_onesies;
-use crate::filter_umi::filter_umi;
 use crate::flag_defective::flag_defective;
 use crate::inconsistent::test_vdj_gex_inconsistent;
 use crate::populate_features::populate_features;
@@ -32,7 +30,9 @@ use enclone_core::cell_color::CellColor;
 use enclone_core::defs::{CloneInfo, EncloneControl, GexInfo, TigData};
 use enclone_core::version_string;
 use enclone_print::loupe::make_donor_refs;
+use enclone_stuff::disintegrate::disintegrate_onesies;
 use enclone_stuff::fcell::filter_by_fcell;
+use enclone_stuff::filter_umi::filter_umi;
 use enclone_stuff::some_filters::some_filters;
 use equiv::EquivRel;
 use io_utils::{fwriteln, open_for_read, open_userfile_for_read, path_exists};
