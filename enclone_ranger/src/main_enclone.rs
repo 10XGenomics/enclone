@@ -8,21 +8,17 @@ use crate::setup::{critical_args, setup};
 use crate::stop::main_enclone_stop;
 use enclone::innate::species;
 use enclone_args::load_gex::get_gex_info;
-use enclone_args::proc_args_check::{check_gvars, check_lvars};
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
-use enclone_core::version_string;
 use enclone_stuff::start::*;
 use enclone_stuff::vars::match_vars;
 use io_utils::path_exists;
 use std::{
     collections::HashMap,
-    env, fs,
+    fs,
     time::Instant,
 };
 use vdj_ann::refx;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
@@ -47,22 +43,13 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     ctl.start_time = Some(tall);
     ctl.gen_opt.cpu_all_start = 0;
     ctl.gen_opt.cpu_this_start = 0;
-    if args_orig.len() == 2 && (args_orig[1] == "version" || args_orig[1] == "--version") {
-        println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(EncloneSetup::default());
-    }
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx)?;
-    if ctl.gen_opt.split {
-        return Ok(EncloneSetup::default());
-    }
     let mut argsy = Vec::<String>::new();
     for i in 0..args_orig.len() {
         if args_orig[i] != "HTML"
-            && args_orig[i] != "STABLE_DOC"
             && args_orig[i] != "NOPAGER"
             && args_orig[i] != "FORCE_EXTERNAL"
-            && args_orig[i] != "NO_KILL"
             && !args_orig[i].starts_with("PRE=")
             && !args_orig[i].starts_with("MAX_CORES=")
         {
@@ -78,8 +65,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl)?;
-    check_lvars(&ctl, &gex_info)?;
-    check_gvars(&ctl)?;
 
     // Find matching features for <regular expression>_g etc.
 
@@ -92,9 +77,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let mut refx = String::new();
     let ann = "contig_annotations.json";
     determine_ref(&mut ctl, &mut refx)?;
-    if refx.is_empty() && ctl.origin_info.n() == 0 {
-        return Err("\nNo data and no TCR or BCR data have been specified.\n".to_string());
-    }
 
     // Build reference data.
 
@@ -136,21 +118,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     for i in 0..ctl.pathlist.len() {
         let metadata = fs::metadata(&ctl.pathlist[i]);
-        if metadata.is_err() {
-            return Err(format!(
-                "\nUnable to get file metadata for {}.\n",
-                ctl.pathlist[i],
-            ));
-        }
         let modified = metadata.unwrap().modified();
-        if modified.is_err() {
-            return Err(format!(
-                "\nUnable to determine modification date of {}.\n",
-                ctl.pathlist[i],
-            ));
-        } else {
-            ctl.last_modified.push(modified.unwrap());
-        }
+        ctl.last_modified.push(modified.unwrap());
     }
 
     // Return.
