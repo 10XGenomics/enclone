@@ -17,7 +17,7 @@ use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
 use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes};
 use enclone::misc3::sort_tig_bc;
 use enclone_args::load_gex::get_gex_info;
-use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
+use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols};
 use enclone_args::read_json::parse_json_annotations_files;
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::{CloneInfo, EncloneControl, GexInfo, TigData};
@@ -38,7 +38,6 @@ use std::{
     time::Instant,
 };
 use stirling_numbers::stirling2_ratio_table;
-use string_utils::TextUtils;
 use vdj_ann::refx;
 use vector_utils::{bin_member, erase_if, unique_sort};
 
@@ -134,7 +133,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let gex_info = get_gex_info(&mut ctl)?;
     check_lvars(&ctl, &gex_info)?;
-    let twoof = Instant::now();
     check_gvars(&ctl)?;
     check_pcols(
         &ctl,
@@ -169,41 +167,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         &ctl.plot_opt.sim_mat_plot_vars,
         ctl.parseable_opt.pbarcode,
     )?;
-    ctl.perf_stats(&twoof, "checking pcols");
-
-    // Check DVARS.
-
-    if !ctl.gen_opt.dvars.is_empty() {
-        let known_features = get_known_features(&gex_info)?;
-        for j in 0..ctl.gen_opt.dvars.len() {
-            let mut var = ctl.gen_opt.dvars[j].clone();
-            if var.contains(':') {
-                var = var.after(":").to_string();
-            }
-            let mut found = false;
-            for k in 0..gex_info.json_metrics.len() {
-                if gex_info.json_metrics[k].contains_key(&var.to_string()) {
-                    found = true;
-                }
-            }
-            if !found {
-                let feature;
-                if var.ends_with("_cellular_r") {
-                    feature = var.before("_cellular_r").to_string();
-                } else if var.ends_with("_cellular_u") {
-                    feature = var.before("_cellular_u").to_string();
-                } else {
-                    return Err(format!("\nUnknown DVAR = {}.\n", var));
-                }
-                if !bin_member(&known_features, &feature) {
-                    return Err(format!(
-                        "\nIn DVAR = {}, the feature {} is unknown.\n",
-                        var, feature,
-                    ));
-                }
-            }
-        }
-    }
 
     // Find matching features for <regular expression>_g etc.
 
@@ -213,7 +176,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Start of code to determine the reference sequence that is to be used.
 
-    let tr = Instant::now();
     let mut refx = String::new();
     let ann;
     if !ctl.gen_opt.cellranger {
@@ -225,11 +187,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if refx.is_empty() && ctl.origin_info.n() == 0 {
         return Err("\nNo data and no TCR or BCR data have been specified.\n".to_string());
     }
-    ctl.perf_stats(&tr, "starting reference");
 
     // Build reference data.
 
-    let tr = Instant::now();
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();
@@ -249,7 +209,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
-    ctl.perf_stats(&tr, "building reference and other things");
 
     // Get VDJ data paths.
 
@@ -300,7 +259,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 }
 
 pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, String> {
-    let tr = Instant::now();
     let ctl = &setup.ctl;
     let gex_info = &setup.gex_info;
     let refdata = &setup.refdata;
@@ -313,11 +271,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     let mut log = Vec::<u8>::new();
     let broken = Vec::<bool>::new();
-    ctl.perf_stats(&tr, "flagging defective references");
 
     // Parse the json annotations file.
 
-    let tparse = Instant::now();
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut vdj_cells = Vec::<Vec<String>>::new();
     let mut gex_cells = Vec::<Vec<String>>::new();
@@ -331,11 +287,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut gex_cells,
         &mut gex_cells_specified,
     )?;
-    ctl.perf_stats(&tparse, "loading from json");
 
     // Populate features.
 
-    let tpop = Instant::now();
     let mut fr1_starts = Vec::<usize>::new();
     let mut fr2_starts = Vec::<Option<usize>>::new();
     let mut fr3_starts = Vec::<Option<usize>>::new();
@@ -365,11 +319,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             x.cdr2_start = cdr2_starts[x.v_ref_id];
         }
     }
-    ctl.perf_stats(&tpop, "populating features");
 
     // Test for no data.
 
-    let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
         return Err("\nNo TCR or BCR data have been specified.\n".to_string());
     }
@@ -402,7 +354,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Look for barcode reuse.
 
     check_for_barcode_reuse(ctl, &tig_bc)?;
-    ctl.perf_stats(&tproto, "in proto stuff");
 
     // Find exact subclonotypes.
 
@@ -413,7 +364,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Filter out some foursie artifacts.
 
-    let t = Instant::now();
     let mut to_delete = vec![false; exact_clonotypes.len()];
     let mut twosies = Vec::<(Vec<u8>, Vec<u8>)>::new();
     for i in 0..exact_clonotypes.len() {
@@ -466,22 +416,17 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
         erase_if(&mut exact_clonotypes, &to_delete);
     }
-    ctl.perf_stats(&t, "filtering foursies");
 
     // Build info about clonotypes.  Note that this edits the V reference sequence to perform
     // an indel in some cases.
 
-    let tinfo = Instant::now();
     let mut info: Vec<CloneInfo> = build_info(refdata, ctl, &mut exact_clonotypes, &mut fate);
-    ctl.perf_stats(&tinfo, "building info");
 
     // Derive consensus sequences for alternate alleles of V segments.  Then create donor
     // reference sequences for Loupe.
 
-    let talt = Instant::now();
     let alt_refs : Vec<(usize,usize,DnaString)>  // {(donor, ref id, alt seq)}
         = find_alleles( refdata, ctl, &exact_clonotypes );
-    ctl.perf_stats(&talt, "finding alt alleles");
     if !ctl.gen_opt.dref_file.is_empty() {
         let f = File::create(&ctl.gen_opt.dref_file);
         if f.is_err() {
@@ -511,9 +456,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             count += 1;
         }
     }
-    let tdonor = Instant::now();
     let drefs = make_donor_refs(&alt_refs, refdata);
-    ctl.perf_stats(&tdonor, "making donor refs");
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 
@@ -522,7 +465,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
     // This is intended as a replacement for some old code below.
 
-    let tbc = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -538,13 +480,10 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
         }
     }
-    ctl.perf_stats(&tbc, "computing to_bc");
 
     // Make stirling ratio table.  Not sure that fixing the size of this is safe.
 
-    let tsr = Instant::now();
     let sr = stirling2_ratio_table::<f64>(3000);
-    ctl.perf_stats(&tsr, "computing stirling number table");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
@@ -579,7 +518,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Update to_bc.
 
-    let txxx = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -616,11 +554,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     if ctl.gen_opt.heavy_chain_reuse {
         return Ok(EncloneIntermediates::default());
     }
-    ctl.perf_stats(&txxx, "in some odds and ends");
 
     // Filter B cells based on UMI counts.
 
-    let tumi = Instant::now();
     let mut orbits = Vec::<Vec<i32>>::new();
     filter_umi(
         &eq,
@@ -674,7 +610,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Filter using constraints imposed by FCELL.
 
     filter_by_fcell(ctl, &mut orbits, info, &mut exact_clonotypes, gex_info)?;
-    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Run some filters.
 
@@ -694,7 +629,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Mark VDJ noncells.
 
-    let tmark = Instant::now();
     if ctl.clono_filt_opt_def.non_cell_mark {
         for i in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[i];
@@ -706,7 +640,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
         }
     }
-    ctl.perf_stats(&tmark, "marking vdj noncells");
     Ok(EncloneIntermediates {
         setup,
         ex: EncloneExacts {
