@@ -1456,6 +1456,7 @@ dependencies = [
  "enclone_visual",
  "failure",
  "flate2",
+ "fs_extra",
  "io_utils",
  "itertools",
  "nix 0.22.2",

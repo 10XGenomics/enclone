@@ -10,7 +10,7 @@ use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
-use std::fs::{metadata, read_to_string, remove_file, File};
+use std::fs::{metadata, read_to_string, rename, remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
@@ -575,6 +575,19 @@ fn test_vars() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_ranger() {
+    if path_exists("testx/outputs/tiny") {
+        std::fs::remove_dir_all("testx/outputs/tiny").unwrap();
+    }
+    let options = fs_extra::dir::CopyOptions::new();
+    fs_extra::dir::copy(
+        "../enclone-data/big_inputs/version15/tiny_multi_CS_6.1",
+        "testx/outputs/tiny",
+        &options,
+    ).unwrap();
+    rename(
+        "testx/outputs/tiny/outs/multi/vdj_b/all_contig_annotations.json.lz4",
+        "testx/outputs/tiny/outs/multi/vdj_b/contig_annotations.json.lz4",
+    ).unwrap();
     let proto_out = "testx/outputs/test1.proto";
     let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
     let mut files = vec![vec![String::new(); 2]; 2];
