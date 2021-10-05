@@ -23,14 +23,16 @@ use string_utils::TextUtils;
 use vdj_ann::refx;
 
 pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
-    const ALLOWED_ARGS: [&str; 14] = [
-        "BCR",
+    const REQUIRED_ARGS: [&str; 3] = [
         "CELLRANGER",
-        "DONOR_REF_FILE",
         "FORCE_EXTERNAL",
+        "NOPAGER",
+    ];
+    const ALLOWED_ARGS: [&str; 11] = [
+        "BCR",
+        "DONOR_REF_FILE",
         "MAX_CORES",
         "META",
-        "NOPAGER",
         "NOPRETTY",
         "NOPRINT",
         "PRE",
@@ -39,12 +41,19 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
         "REF",
         "TCR"
     ];
+    let mut found = vec![false; REQUIRED_ARGS.len()];
     for i in 1..args.len() {
         let mut arg = args[i].clone();
         if arg.contains("=") {
             arg = arg.before("=").to_string();
         }
         let mut ok = false;
+        for (j, x) in REQUIRED_ARGS.iter().enumerate() {
+            if arg == *x {
+                ok = true;
+                found[j] = true;
+            }
+        }
         for x in ALLOWED_ARGS.iter() {
             if arg == *x {
                 ok = true;
@@ -52,6 +61,11 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
         }
         if !ok {
             panic!("Illegal argument {} passed to main_enclone_ranger.", arg);
+        }
+    }
+    for j in 0..REQUIRED_ARGS.len() {
+        if !found[j] {
+            panic!("Required argument {} not passed to main_enclone_ranger", REQUIRED_ARGS[j]);
         }
     }
     let setup = main_enclone_setup_ranger(args)?;
