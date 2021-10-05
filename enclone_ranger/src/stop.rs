@@ -1,12 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
+use crate::main_enclone::EncloneSetup;
 use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype};
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::{dir_list, path_exists};
 use rayon::prelude::*;
-use std::{collections::HashMap, env, thread, time, time::Instant};
+use std::{collections::HashMap, env, thread, time};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -33,7 +33,7 @@ pub struct EncloneExacts {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState, String> {
+pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<(), String> {
     // Unpack inputs.
 
     let to_bc = &inter.ex.to_bc;
@@ -53,7 +53,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
 
-    let tdi = Instant::now();
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     for li in 0..ctl.origin_info.n() {
@@ -129,11 +128,9 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
             res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
         }
     });
-    ctl.perf_stats(&tdi, "setting up readers");
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
-    let torb = Instant::now();
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
     let mut in_center = Vec::<bool>::new();
@@ -166,27 +163,5 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &mut controls,
         &mut fate,
     )?;
-    ctl.perf_stats(&torb, "making orbits");
-
-    // Tail code.
-
-    let svgs = Vec::<String>::new();
-    let group_pics = Vec::<String>::new();
-    let last_widths = Vec::<u32>::new();
-    let summary = String::new();
-    let outs = MainEncloneOutput {
-        pics: group_pics,
-        last_widths,
-        svgs,
-        summary,
-        metrics: gex_info.metrics.clone(),
-        dataset_names: ctl.origin_info.dataset_id.clone(),
-        parseable_stdouth: ctl.parseable_opt.pout == "stdouth",
-        noprint: ctl.gen_opt.noprint,
-        noprintx: ctl.gen_opt.noprintx,
-        html: ctl.gen_opt.html,
-        ngroup: ctl.clono_group_opt.ngroup,
-        pretty: ctl.pretty,
-    };
-    Ok(EncloneState { inter, outs })
+    Ok(())
 }

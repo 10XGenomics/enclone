@@ -81,14 +81,14 @@ pub struct EncloneSetup {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
-        return Ok(EncloneState::default());
+        return Ok(());
     }
     let inter = main_enclone_start(setup)?;
     if inter.setup.tall.is_none() {
-        return Ok(EncloneState::default());
+        return Ok(());
     }
     main_enclone_stop(inter)
 }
