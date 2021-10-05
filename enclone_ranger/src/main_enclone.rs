@@ -17,9 +17,8 @@ use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
 use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes};
 use enclone::misc3::sort_tig_bc;
 use enclone_args::load_gex::get_gex_info;
-use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols};
+use enclone_args::proc_args_check::{check_gvars, check_lvars};
 use enclone_args::read_json::parse_json_annotations_files;
-use enclone_core::cell_color::CellColor;
 use enclone_core::defs::{CloneInfo, EncloneControl, GexInfo, TigData};
 use enclone_core::version_string;
 use enclone_print::loupe::make_donor_refs;
@@ -134,39 +133,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let gex_info = get_gex_info(&mut ctl)?;
     check_lvars(&ctl, &gex_info)?;
     check_gvars(&ctl)?;
-    check_pcols(
-        &ctl,
-        &gex_info,
-        &ctl.parseable_opt.pcols,
-        ctl.parseable_opt.pbarcode,
-    )?;
-    check_pcols(
-        &ctl,
-        &gex_info,
-        &ctl.gen_opt.tree,
-        ctl.parseable_opt.pbarcode,
-    )?;
-    match ctl.plot_opt.cell_color {
-        CellColor::ByVariableValue(ref x) => {
-            check_pcols(&ctl, &gex_info, &vec![x.var.clone()], true)?;
-        }
-        _ => {}
-    };
-    let mut bound_vars = Vec::<String>::new();
-    for bi in 0..ctl.clono_filt_opt.bounds.len() {
-        let x = &ctl.clono_filt_opt.bounds[bi];
-        for i in 0..x.n() {
-            bound_vars.push(x.var[i].clone());
-        }
-    }
-    unique_sort(&mut bound_vars);
-    check_pcols(&ctl, &gex_info, &bound_vars, ctl.parseable_opt.pbarcode)?;
-    check_pcols(
-        &ctl,
-        &gex_info,
-        &ctl.plot_opt.sim_mat_plot_vars,
-        ctl.parseable_opt.pbarcode,
-    )?;
 
     // Find matching features for <regular expression>_g etc.
 
@@ -177,12 +143,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Start of code to determine the reference sequence that is to be used.
 
     let mut refx = String::new();
-    let ann;
-    if !ctl.gen_opt.cellranger {
-        ann = "all_contig_annotations.json";
-    } else {
-        ann = "contig_annotations.json";
-    }
+    let ann = "contig_annotations.json";
     determine_ref(&mut ctl, &mut refx)?;
     if refx.is_empty() && ctl.origin_info.n() == 0 {
         return Err("\nNo data and no TCR or BCR data have been specified.\n".to_string());
@@ -306,9 +267,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut cdr2_starts,
         &mut log,
     )?;
-    if ctl.gen_opt.require_unbroken_ok {
-        return Ok(EncloneIntermediates::default());
-    }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];
@@ -318,12 +276,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             x.cdr1_start = cdr1_starts[x.v_ref_id];
             x.cdr2_start = cdr2_starts[x.v_ref_id];
         }
-    }
-
-    // Test for no data.
-
-    if ctl.origin_info.n() == 0 {
-        return Err("\nNo TCR or BCR data have been specified.\n".to_string());
     }
 
     // Record fate of non-cells.
