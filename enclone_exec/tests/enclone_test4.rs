@@ -265,7 +265,7 @@ fn test_dependency_structure() {
         }
     }
 
-    // Don't allow any crate except enclone_main and enclone_tools to reach the enclone crate.
+    // Only allow a few crates to reach the enclone crate.
 
     let top = dir_list("..");
     for d in top.iter() {
