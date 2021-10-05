@@ -4,7 +4,7 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
-use enclone_main::main_enclone::main_enclone_main;
+use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 use enclone_visual::enclone_client::enclone_client;
 use enclone_visual::enclone_server::enclone_server;
@@ -96,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Standard run of enclone.
 
     if args.len() < 2 || args[1] != "SERVER" {
-        let res = main_enclone_main(&mut args);
+        let res = main_enclone(&mut args);
         if res.is_err() {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
