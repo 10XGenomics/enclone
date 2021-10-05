@@ -3,7 +3,7 @@
 // Start of code to determine the reference sequence that is to be used.
 
 use enclone_core::defs::EncloneControl;
-use io_utils::{open_for_read, open_maybe_compressed, path_exists, read_vector_entry_from_json};
+use io_utils::{open_maybe_compressed, path_exists, read_vector_entry_from_json};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::fs::File;
@@ -17,12 +17,7 @@ use vector_utils::{erase_if, unique_sort, VecUtils};
 pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), String> {
     // First check for the existence of a json file.
 
-    let ann;
-    if !ctl.gen_opt.cellranger {
-        ann = "all_contig_annotations.json";
-    } else {
-        ann = "contig_annotations.json";
-    }
+    let ann = "contig_annotations.json";
     let mut jsonx = String::new();
     if ctl.origin_info.n() > 0 {
         let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
@@ -64,58 +59,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         }
     }
 
-    // Step 1.  Test to see if CURRENT_REF or BUILT_IN is specified.  Kind of a mess that we
-    // have both.
-
-    if ctl.gen_opt.current_ref || ctl.gen_opt.built_in {
-        if !ctl.gen_opt.mouse {
-            *refx = human_ref();
-        } else {
-            *refx = mouse_ref();
-        }
-        if ctl.gen_opt.built_in {
-            ctl.gen_opt.reannotate = true;
-        }
-    }
-
-    // Step 2. Test to see if IMGT is specified.
-
-    if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
-        if !ctl.gen_opt.mouse {
-            let imgt = &ctl.gen_opt.config["imgt_human"];
-            if ctl.gen_opt.descrip {
-                println!("using IMGT human reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let mut s = line.unwrap();
-                if ctl.gen_opt.imgt_fix {
-                    // Fix IGHJ6.
-                    if s == *"ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
-                        || s == *"ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
-                    {
-                        s += "G";
-                    }
-                }
-                *refx += &s;
-                *refx += "\n";
-            }
-        } else {
-            let imgt = &ctl.gen_opt.config["imgt_mouse"];
-            if ctl.gen_opt.descrip {
-                println!("using IMGT mouse reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let s = line.unwrap();
-                *refx += &s;
-                *refx += "\n";
-            }
-        }
-        ctl.gen_opt.reannotate = true;
-    }
-
-    // Step 3.  Test to see if REF is specified.
+    // Step 1.  Test to see if REF is specified.
 
     if refx.is_empty() && !ctl.gen_opt.refname.is_empty() {
         if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
@@ -137,48 +81,14 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             ));
         }
         let f = BufReader::new(fx.unwrap());
-        let mut nheader = 0;
-        let mut bases = 0;
-        let mut na = 0;
-        let mut nc = 0;
-        let mut ng = 0;
-        let mut nt = 0;
         for line in f.lines() {
             let s = line.unwrap();
             *refx += &s;
             *refx += "\n";
-            if s.starts_with('>') {
-                nheader += 1;
-
-                if s.split_terminator('|').count() < 4 {
-                    return Err(format!(
-                        "\nThe header line\n{}\nin the FASTA file specified by\nREF={}\n\
-                        does not have the required structure for a cellranger or \
-                        enclone VDJ reference.",
-                        s, ctl.gen_opt.refname,
-                    ));
-                }
-            } else {
-                for c in s.chars() {
-                    bases += 1;
-                    if c == 'A' || c == 'a' {
-                        na += 1;
-                    } else if c == 'C' || c == 'c' {
-                        nc += 1;
-                    } else if c == 'G' || c == 'g' {
-                        ng += 1;
-                    } else if c == 'T' || c == 't' {
-                        nt += 1;
-                    }
-                }
-            }
-        }
-        if nheader == 0 || bases == 0 || (na + nc + ng + nt) as f64 / (bases as f64) < 0.95 {
-            return Err("\nProblem with REF: it is not a FASTA file.\n".to_string());
         }
     }
 
-    // Step 4.  Test for presence of a reference file in the VDJ directories.
+    // Step 2.  Test for presence of a reference file in the VDJ directories.
 
     if refx.is_empty() && ctl.gen_opt.refname.is_empty() {
         let rpaths = [
@@ -198,33 +108,11 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         }
         if !refs.is_empty() {
             unique_sort(&mut refs);
-            if refs.len() > 1 {
-                return Err(
-                    "The VDJ reference sequences that were supplied to Cell Ranger are not \
-                    identical with each other.\nAs a consequence, the VDJ output files are not \
-                    compatible with each other, so enclone can't run.\nYou have some options as \
-                    to how to proceed:\n\
-                    1. You can rerun Cell Ranger using the same reference.\n\
-                    2. You can select one of the references, and supply that to enclone using the \
-                    REF option.\n   You will also need to supply the argument RE to get enclone to \
-                    recompute annotations,\n   and that will make it somewhat slower.\n\n"
-                        .to_string(),
-                );
-            }
-            if ctl.gen_opt.mouse {
-                return Err(
-                    "\nSince the reference sequence is already in the VDJ input directories that\n\
-                    you supplied to enclone, it is not necessary to supply the MOUSE argument.\n\
-                    Please remove that argument.  Exiting now because of possible unintended\n\
-                    consequences.\n"
-                        .to_string(),
-                );
-            }
             *refx = refs[0].clone();
         }
     }
 
-    // Step 5.  Attempt to determine the reference that was used by reading far enough into the
+    // Step 3.  Attempt to determine the reference that was used by reading far enough into the
     // first json file to find a distinguishing entry.
 
     if refx.is_empty() && !jsonx.is_empty() {
@@ -306,16 +194,6 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                 }
             }
         }
-    }
-    if refx.is_empty() && !jsonx.is_empty() {
-        return Err(
-            "\nenclone was unable to determine the reference sequence that you used.  You \
-            have two options:\n\
-            1. If you used cellranger version 4.0 or later, copy the vdj_reference directory\n   \
-               from there to the outs directory that contains your other enclone input data.\n\
-            2. Use the REF argument to specify the name of the reference fasta file.\n"
-                .to_string(),
-        );
     }
     Ok(())
 }
