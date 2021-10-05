@@ -581,12 +581,12 @@ fn test_ranger() {
     let options = fs_extra::dir::CopyOptions::new();
     fs_extra::dir::copy(
         "../enclone-data/big_inputs/version15/tiny_multi_CS_6.1",
-        "testx/outputs/tiny",
+        "testx/outputs",
         &options,
     ).unwrap();
     rename(
-        "testx/outputs/tiny/outs/multi/vdj_b/all_contig_annotations.json.lz4",
-        "testx/outputs/tiny/outs/multi/vdj_b/contig_annotations.json.lz4",
+        "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/all_contig_annotations.json.lz4",
+        "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/contig_annotations.json.lz4",
     ).unwrap();
     let proto_out = "testx/outputs/test1.proto";
     let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
@@ -605,7 +605,7 @@ fn test_ranger() {
         args.push("NOPAGER".to_string());
         args.push("NOPRINT".to_string());
         args.push("MAX_CORES=8".to_string());
-        args.push("BCR=../enclone-data/big_inputs/version15/tiny_multi_CS_6.1".to_string());
+        args.push("BCR=testx/outputs/tiny_multi_CS_6.1".to_string());
         args.push(
             "REF=../enclone-data/big_inputs/version15/tiny_multi_CS_6.1/outs/vdj_reference/\
             fasta/regions.fa"
