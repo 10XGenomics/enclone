@@ -14,10 +14,9 @@ use enclone::info::build_info;
 use enclone::innate::species;
 use enclone::join::join_exacts;
 use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
-use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_for_shm_indels};
+use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes};
 use enclone::misc3::sort_tig_bc;
 use enclone_args::load_gex::get_gex_info;
-use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
 use enclone_args::read_json::parse_json_annotations_files;
 use enclone_core::cell_color::CellColor;
@@ -30,19 +29,18 @@ use enclone_stuff::filter_umi::filter_umi;
 use enclone_stuff::populate_features::populate_features;
 use enclone_stuff::some_filters::some_filters;
 use equiv::EquivRel;
-use io_utils::{fwriteln, open_for_read, open_userfile_for_read, path_exists};
-use itertools::Itertools;
+use io_utils::{fwriteln, path_exists};
 use std::{
     collections::HashMap,
     env, fs,
-    fs::{read_to_string, File},
-    io::{BufRead, BufReader, BufWriter, Write},
+    fs::File,
+    io::{BufWriter, Write},
     time::Instant,
 };
 use stirling_numbers::stirling2_ratio_table;
 use string_utils::TextUtils;
 use vdj_ann::refx;
-use vector_utils::{bin_member, erase_if, next_diff, unique_sort};
+use vector_utils::{bin_member, erase_if, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -96,102 +94,20 @@ pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
 
-    // Test for enclone --check.
-
-    if args.len() == 2 && args[1] == "--check" {
-        let version1 = env!("CARGO_PKG_VERSION");
-        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
-        let version_file = format!("{}/enclone/version", home);
-        if !path_exists(&version_file) {
-            return Err("\nError: the file ~/enclone/version does not exist.\n\
-                Please visit bit.ly/enclone_install_issues.\n"
-                .to_string());
-        }
-        let mut version2 = read_to_string(&version_file).unwrap();
-        if !version2.starts_with('v') || !version2.ends_with('\n') {
-            return Err(format!(
-                "\nThe file ~/enclone/version appears to be damaged.\n\
-                Its content is \"{}\".\n\
-                Please visit bit.ly/enclone_install_issues.\n",
-                version2,
-            ));
-        }
-        version2 = version2.between("v", "\n").to_string();
-        if version2 != version1 {
-            return Err(format!(
-                "\nError: enclone sees version {} but you downloaded version {}.\n\
-                Please visit bit.ly/enclone_install_issues.\n",
-                version1, version2
-            ));
-        }
-        println!("\nCheck complete: it appears that your install of enclone was successful!\n");
-        print!("Your version is: ");
-        println!("{} : {}.\n", env!("CARGO_PKG_VERSION"), version_string());
-        return Ok(EncloneSetup::default());
-    }
-
     // Set up stuff, read args, etc.
 
     let args_orig = args.clone();
     let mut ctl = EncloneControl::default();
     let args = critical_args(args, &mut ctl)?;
     ctl.start_time = Some(tall);
-    for i in 0..args.len() {
-        let arg = &args[i];
-        if arg == "PROFILE" {
-            ctl.gen_opt.profile = true;
-        }
-    }
-    let (mut comp, mut comp2) = (false, false);
-    for i in 1..args.len() {
-        if args[i] == "PRINT_CPU" {
-            ctl.gen_opt.print_cpu = true;
-        }
-        if args[i] == "PRINT_CPU_INFO" {
-            ctl.gen_opt.print_cpu_info = true;
-        }
-        if args[i] == "COMP" || args[i] == "COMPE" {
-            comp = true;
-        }
-        if args[i] == "COMPE" {
-            ctl.perf_opt.comp_enforce = true;
-        }
-        if args[i] == "COMP2" {
-            comp2 = true;
-        }
-    }
-    if comp && !comp2 {
-        println!();
-    }
     ctl.gen_opt.cpu_all_start = 0;
     ctl.gen_opt.cpu_this_start = 0;
-    if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
-        let f = open_for_read!["/proc/stat"];
-        if let Some(line) = f.lines().next() {
-            let s = line.unwrap();
-            let mut t = s.after("cpu");
-            while t.starts_with(' ') {
-                t = t.after(" ");
-            }
-            ctl.gen_opt.cpu_all_start = t.before(" ").force_usize();
-        }
-        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
-        for line in f.lines() {
-            let s = line.unwrap();
-            let fields = s.split(' ').collect::<Vec<&str>>();
-            ctl.gen_opt.cpu_this_start = fields[13].force_usize();
-        }
-    }
     if args_orig.len() == 2 && (args_orig[1] == "version" || args_orig[1] == "--version") {
         println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
         return Ok(EncloneSetup::default());
     }
-    if ctl.gen_opt.evil_eye {
-        println!("calling perf_stats, before setup");
-    }
-    ctl.perf_stats(&tall, "before setup");
     let mut argsx = Vec::<String>::new();
-    setup(&mut ctl, &args, &mut argsx, &args_orig)?;
+    setup(&mut ctl, &args, &mut argsx)?;
     if ctl.gen_opt.split {
         return Ok(EncloneSetup::default());
     }
@@ -210,44 +126,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     }
     if argsy.len() == 1 || (argsy.len() > 1 && (argsy[1] == "help" || argsy[1] == "--help")) {
         return Ok(EncloneSetup::default());
-    }
-
-    // Dump internal ids.
-
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS")? {
-            let mut x = Vec::<usize>::new();
-            for y in ctl.origin_info.dataset_id.iter() {
-                x.push(y.force_usize());
-            }
-            x.sort_unstable();
-            println!("\n{}\n", x.iter().format(","));
-            return Ok(EncloneSetup::default());
-        }
-    }
-
-    // Read external data.
-
-    if !ctl.gen_opt.ext.is_empty() {
-        let f = open_userfile_for_read(&ctl.gen_opt.ext);
-        let mut exts = Vec::<String>::new();
-        for line in f.lines() {
-            let s = line.unwrap();
-            let fields = s.split(' ').collect::<Vec<&str>>();
-            ctl.gen_opt.extc.insert(
-                (fields[0].to_string(), fields[1].to_string()),
-                fields[2].to_string(),
-            );
-            exts.push(fields[2].to_string());
-        }
-        ctl.clono_print_opt.lvars.push("ext".to_string());
-        exts.sort();
-        let mut i = 0;
-        while i < exts.len() {
-            let j = next_diff(&exts, i);
-            ctl.gen_opt.extn.insert(exts[i].clone(), j - i);
-            i = j;
-        }
     }
 
     // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
@@ -270,17 +148,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         &ctl.gen_opt.tree,
         ctl.parseable_opt.pbarcode,
     )?;
-    if !ctl.plot_opt.plot_xy_filename.is_empty() {
-        check_pcols(
-            &ctl,
-            &gex_info,
-            &vec![
-                ctl.plot_opt.plot_xy_xvar.clone(),
-                ctl.plot_opt.plot_xy_yvar.clone(),
-            ],
-            ctl.parseable_opt.pbarcode,
-        )?;
-    }
     match ctl.plot_opt.cell_color {
         CellColor::ByVariableValue(ref x) => {
             check_pcols(&ctl, &gex_info, &vec![x.var.clone()], true)?;
@@ -306,7 +173,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Check DVARS.
 
-    let tfcell = Instant::now();
     if !ctl.gen_opt.dvars.is_empty() {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
@@ -338,41 +204,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             }
         }
     }
-
-    // Test fcell.
-
-    if !ctl.clono_filt_opt_def.fcell.is_empty() {
-        let mut alt_bcs = Vec::<String>::new();
-        for li in 0..ctl.origin_info.alt_bc_fields.len() {
-            for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
-                alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
-            }
-        }
-        unique_sort(&mut alt_bcs);
-        let mut test2 = Vec::<String>::new();
-        for con in ctl.clono_filt_opt_def.fcell.iter() {
-            for var in con.iter_variable_identifiers() {
-                if !bin_member(&alt_bcs, &var.to_string()) {
-                    test2.push(var.to_string());
-                }
-            }
-            if let Some(_) = con.iter_function_identifiers().next() {
-                return Err("\nSomething is wrong with your FCELL value.\n".to_string());
-            }
-        }
-        if !test2.is_empty() {
-            let known_features = get_known_features(&gex_info)?; // note duplicated computation
-            for var in test2.iter() {
-                if !bin_member(&known_features, var) {
-                    return Err(format!(
-                        "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
-                        var
-                    ));
-                }
-            }
-        }
-    }
-    ctl.perf_stats(&tfcell, "checking fcell");
 
     // Find matching features for <regular expression>_g etc.
 
@@ -541,13 +372,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
         return Err("\nNo TCR or BCR data have been specified.\n".to_string());
-    }
-
-    // Search for SHM indels.
-
-    search_for_shm_indels(ctl, &tig_bc);
-    if ctl.gen_opt.indels {
-        return Ok(EncloneIntermediates::default());
     }
 
     // Record fate of non-cells.
