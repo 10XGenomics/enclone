@@ -3,7 +3,7 @@
 use crate::copy_image_to_clipboard::*;
 use crate::dimensions::*;
 use crate::gui_structures::EncloneVisual;
-use enclone_core::convert_svg_to_png::*;
+use enclone_tail::convert_svg_to_png::*;
 use failure::Error;
 use iced::{Application, Font, Settings};
 use itertools::Itertools;
