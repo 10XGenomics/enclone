@@ -2,23 +2,18 @@
 
 use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
 use crate::opt_d_val::make_opt_d_val;
-use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype, WALLCLOCK};
+use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype};
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
-use io_utils::{dir_list, open_for_read, path_exists};
-use perf_stats::{elapsed, peak_mem_usage_gb};
+use io_utils::{dir_list, path_exists};
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
-use stats_utils::percent_ratio;
 use std::{
     collections::HashMap,
     env,
-    fs::File,
-    io::{BufRead, BufReader},
     thread, time,
     time::Instant,
 };
-use string_utils::TextUtils;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -61,7 +56,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
-    let tall = &inter.setup.tall.unwrap();
 
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
@@ -218,60 +212,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         stop_profiling();
         ctl.perf_stats(&t, "summarizing profiling");
     }
-
-    // Report computational performance.
-
-    let delta;
-    unsafe {
-        delta = elapsed(tall) - WALLCLOCK;
-    }
-    let deltas = format!("{:.2}", delta);
-    ctl.perf_stats(tall, "total");
-    if ctl.perf_opt.comp {
-        println!("used {} seconds unaccounted for", deltas);
-        println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
-    }
-    if ctl.perf_opt.comp_enforce && deltas.force_f64() > 0.03 {
-        return Err(format!(
-            "\nUnaccounted time = {} seconds, but COMPE option required that it \
-            be at most 0.03.\n\n\
-            Note that this may fail for a small fraction of runs, even though \
-            nothing is wrong.\n",
-            deltas
-        ));
-    }
-    let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
-    if ctl.gen_opt.print_cpu || ctl.gen_opt.print_cpu_info {
-        let f = open_for_read!["/proc/stat"];
-        if let Some(line) = f.lines().next() {
-            let s = line.unwrap();
-            let mut t = s.after("cpu");
-            while t.starts_with(' ') {
-                t = t.after(" ");
-            }
-            cpu_all_stop = t.before(" ").force_usize();
-        }
-        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
-        for line in f.lines() {
-            let s = line.unwrap();
-            let fields = s.split(' ').collect::<Vec<&str>>();
-            cpu_this_stop = fields[13].force_usize();
-        }
-        let (this_used, all_used) = (
-            cpu_this_stop - ctl.gen_opt.cpu_this_start,
-            cpu_all_stop - ctl.gen_opt.cpu_all_start,
-        );
-        if ctl.gen_opt.print_cpu {
-            println!("{}", this_used);
-        } else {
-            println!(
-                "used cpu = {} = {:.1}% of total",
-                this_used,
-                percent_ratio(this_used, all_used)
-            );
-        }
-    }
-
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") && !ctl.gen_opt.no_newline {
         println!();
     }
