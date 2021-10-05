@@ -575,8 +575,8 @@ fn test_vars() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_ranger() {
-    if path_exists("testx/outputs/tiny") {
-        std::fs::remove_dir_all("testx/outputs/tiny").unwrap();
+    if path_exists("testx/outputs/tiny_multi_CS_6.1") {
+        std::fs::remove_dir_all("testx/outputs/tiny_multi_CS_6.1").unwrap();
     }
     let options = fs_extra::dir::CopyOptions::new();
     fs_extra::dir::copy(
