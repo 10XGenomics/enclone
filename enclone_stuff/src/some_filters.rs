@@ -1,11 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::doublets::delete_doublets;
+use crate::merge_onesies::merge_onesies;
+use crate::split_orbits::split_orbits;
 use crate::weak_chains::weak_chains;
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
-use enclone_stuff::merge_onesies::merge_onesies;
-use enclone_stuff::split_orbits::split_orbits;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
