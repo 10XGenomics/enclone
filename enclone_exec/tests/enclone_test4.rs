@@ -249,7 +249,7 @@ fn test_help_page_list() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dependency_structure() {
-    // Don't allow enclone_core to reach to any other enclone crate.
+    // Restrict crates reached by enclone_core.
 
     let f = include_str!["../../enclone_core/Cargo.toml"];
     for line in f.lines() {
@@ -265,7 +265,7 @@ fn test_dependency_structure() {
         }
     }
 
-    // Only allow a few crates to reach the enclone crate.
+    // Restrict crates reaching enclone.
 
     let top = dir_list("..");
     for d in top.iter() {
@@ -284,6 +284,54 @@ fn test_dependency_structure() {
                     if s.starts_with("enclone =") {
                         eprintln!(
                             "\nThe crate {} has the crate enclone as a dependency.  In an \
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
+                            d
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
+
+    // Restrict crates reaching enclone_tail.
+
+    let top = dir_list("..");
+    for d in top.iter() {
+        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_visual" {
+            let toml = format!("../{}/Cargo.toml", d);
+            if path_exists(&toml) {
+                let f = open_for_read![&toml];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with("enclone_tail =") {
+                        eprintln!(
+                            "\nThe crate {} has the crate enclone_tail as a dependency.  In an \
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
+                            d
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
+
+    // Restrict crates reaching enclone_help.
+
+    let top = dir_list("..");
+    for d in top.iter() {
+        if d.starts_with("enclone") && d != "enclone_main" {
+            let toml = format!("../{}/Cargo.toml", d);
+            if path_exists(&toml) {
+                let f = open_for_read![&toml];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with("enclone_help =") {
+                        eprintln!(
+                            "\nThe crate {} has the crate enclone_tail as a dependency.  In an \
                             attempt to reduce\ncompile time, we only allow this for certain \
                             crates.\n",
                             d
