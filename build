@@ -14,8 +14,10 @@
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # partially check prerequisites
+#
+# other dependencies that should be checked: dot
 
-foreach pkg (sweep fmt license)
+foreach pkg (sweep fmt license depgraph)
     cargo $pkg --help >& /dev/null
     if ( $status != 0 ) then
         echo "looks like the prereq cargo $pkg is missing; try cargo install cargo-$pkg"
@@ -142,6 +144,12 @@ endif
 
 git -C enclone-data write-tree --prefix=big_inputs/version15/123085 > datasets_small_checksum
 git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_checksum
+
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+# make dependency graph
+
+cargo depgraph --focus enclone* | dot -Tpng > crates.png
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
