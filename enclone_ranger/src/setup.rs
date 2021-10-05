@@ -5,36 +5,7 @@ use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_core::defs::EncloneControl;
 use std::sync::atomic::Ordering::SeqCst;
-use string_utils::TextUtils;
 use vector_utils::erase_if;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec<String>, String> {
-    let args = args.clone();
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "CELLRANGER")? {
-            ctl.gen_opt.cellranger = true;
-        }
-    }
-    for i in 1..args.len() {
-        if args[i] == *"FORCE_EXTERNAL" {
-            ctl.gen_opt.internal_run = false;
-        }
-    }
-    for i in 1..args.len() {
-        if args[i].starts_with("PRE=") {
-            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
-            ctl.gen_opt.pre.clear();
-            for x in pre.iter() {
-                ctl.gen_opt.pre.push(x.to_string());
-            }
-        }
-    }
-    Ok(args)
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(
     mut ctl: &mut EncloneControl,

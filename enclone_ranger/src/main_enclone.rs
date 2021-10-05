@@ -3,7 +3,7 @@
 // See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
-use crate::setup::{critical_args, setup};
+use crate::setup::setup;
 use crate::stop::main_enclone_stop;
 use enclone::innate::species;
 use enclone_args::load_gex::get_gex_info;
@@ -16,6 +16,7 @@ use std::{
     io::{BufRead, BufReader},
     time::Instant,
 };
+use string_utils::TextUtils;
 use vdj_ann::refx;
 
 pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
@@ -31,7 +32,17 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let args_orig = args.clone();
     let mut ctl = EncloneControl::default();
-    let args = critical_args(args, &mut ctl)?;
+    ctl.gen_opt.cellranger = true;
+    ctl.gen_opt.internal_run = false;
+    for i in 1..args.len() {
+        if args[i].starts_with("PRE=") {
+            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
+            ctl.gen_opt.pre.clear();
+            for x in pre.iter() {
+                ctl.gen_opt.pre.push(x.to_string());
+            }
+        }
+    }
     ctl.start_time = Some(tall);
     ctl.gen_opt.cpu_all_start = 0;
     ctl.gen_opt.cpu_this_start = 0;
@@ -47,9 +58,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         {
             argsy.push(args_orig[i].clone());
         }
-    }
-    if argsy.len() == 1 || (argsy.len() > 1 && (argsy[1] == "help" || argsy[1] == "--help")) {
-        return Ok(EncloneSetup::default());
     }
 
     // Get gene expression and feature barcode counts.  
