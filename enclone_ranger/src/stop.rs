@@ -1,12 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
-use crate::opt_d_val::make_opt_d_val;
 use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype};
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::{dir_list, path_exists};
-use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use std::{
     collections::HashMap,
@@ -173,30 +171,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &mut controls,
         &mut fate,
     )?;
-
-    // Lock data structures so they can't be changed accidentally.
-
-    let ctl = ctl;
-    let refdata = refdata;
-    let exact_clonotypes = exact_clonotypes;
-    let exacts = exacts;
     ctl.perf_stats(&torb, "making orbits");
-
-    // Assign a D segment to each "left" column in a clonotype (if we need this information).
-    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
-    // though the true values have to be the same.  This is also true for V and J segments,
-    // although they are less likely to vary.
-
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
-    make_opt_d_val(
-        ctl,
-        exact_clonotypes,
-        &exacts,
-        &rsi,
-        refdata,
-        drefs,
-        &mut opt_d_val,
-    );
 
     // Tail code.
 
@@ -204,17 +179,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let group_pics = Vec::<String>::new();
     let last_widths = Vec::<u32>::new();
     let summary = String::new();
-
-    // Report profiling.
-
-    if ctl.gen_opt.profile {
-        let t = Instant::now();
-        stop_profiling();
-        ctl.perf_stats(&t, "summarizing profiling");
-    }
-    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") && !ctl.gen_opt.no_newline {
-        println!();
-    }
     let outs = MainEncloneOutput {
         pics: group_pics,
         last_widths,
