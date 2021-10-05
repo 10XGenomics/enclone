@@ -24,7 +24,7 @@ amino = "0.1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
-dirs = "3"
+dirs = "4"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }

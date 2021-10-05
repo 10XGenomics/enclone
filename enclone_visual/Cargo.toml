@@ -27,7 +27,7 @@ publish = false
 base64 = "0.13"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 crc = "2"
-dirs = "3"
+dirs = "4"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_tail = { path = "../enclone_tail" }
@@ -35,8 +35,8 @@ enclone_version = { path = "../enclone_version" }
 failure = "0.1"
 flate2 = "1"
 fs_extra = "1"
-iced = { git = "https://github.com/hecrj/iced", rev = "93fec8d273ef8305e1c2456abe0c8ecd7a9d9407", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "93fec8d273ef8305e1c2456abe0c8ecd7a9d9407" }
+iced = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5", features = ["canvas", "image", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.2"
@@ -63,7 +63,7 @@ vector_utils = "0.1"
 zstd = "0.9"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-arboard = "1"
+arboard = "2"
 procfs = { version = "0.9", default_features = false }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]

@@ -7,8 +7,8 @@
 align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
-arboard = "1"
-assert_cmd = "1"
+arboard = "2"
+assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
@@ -22,7 +22,7 @@ core-foundation = "0.9"
 core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
-dirs = "3"
+dirs = "4"
 edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
@@ -44,8 +44,8 @@ fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "93fec8d273ef8305e1c2456abe0c8ecd7a9d9407", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "93fec8d273ef8305e1c2456abe0c8ecd7a9d9407" }
+iced = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5", features = ["canvas", "image", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.2"
@@ -95,4 +95,4 @@ users = "0.11"
 usvg = { version = "0.17", features = ["text"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
-yaml-rust = "0.3"
+yaml-rust = "0.4"

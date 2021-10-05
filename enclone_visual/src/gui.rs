@@ -13,7 +13,7 @@ use gui_structures::ComputeState::*;
 use gui_structures::*;
 use iced::Length::Units;
 use iced::{
-    Align, Application, Button, Color, Column, Command, Container, Element, Image, Length, Row,
+    Alignment, Application, Button, Color, Column, Command, Container, Element, Image, Length, Row,
     Rule, Scrollable, Space, Subscription, Text, TextInput,
 };
 // use iced::Subscription;
@@ -530,7 +530,7 @@ impl Application for EncloneVisual {
                 )
                 .on_press(Message::CommandCopyButtonPressed),
             );
-            let mut col = Column::new().spacing(8).align_items(Align::End);
+            let mut col = Column::new().spacing(8).align_items(Alignment::End);
             const SMALL_FONT: u16 = 12;
             command_complex_height = ((1 + log_lines + logx_lines) * SMALL_FONT as usize)
                 + (4 * 8)
@@ -693,13 +693,13 @@ impl Application for EncloneVisual {
             .push(tooltip_button)
             .push(archive_button);
         let mut top_row = Row::new()
-            .align_items(Align::Center)
+            .align_items(Alignment::Center)
             .push(left_buttons)
             .push(Space::with_width(Length::Fill))
             .push(banner)
             .push(Space::with_width(Length::Fill));
         let right_col = Column::new()
-            .align_items(Align::End)
+            .align_items(Alignment::End)
             .spacing(8)
             .push(console_row)
             .push(save_row)
@@ -712,7 +712,7 @@ impl Application for EncloneVisual {
             .push(
                 Row::new()
                     .spacing(10)
-                    .align_items(Align::Center)
+                    .align_items(Alignment::Center)
                     .push(text_input_column)
                     .push(button)
                     .push(clear_button),
@@ -725,7 +725,7 @@ impl Application for EncloneVisual {
         content = content.push(
             Row::new()
                 .height(Length::Units(1000)) // Height of scrollable window, maybe??
-                .align_items(Align::Center)
+                .align_items(Alignment::Center)
                 .push(scrollable),
         );
         Container::new(content)

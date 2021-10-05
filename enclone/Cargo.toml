@@ -46,7 +46,7 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f
 vector_utils = "0.1"
 
 [dev-dependencies]
-assert_cmd = "1"
+assert_cmd = "2"
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.16"

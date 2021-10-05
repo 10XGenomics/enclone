@@ -5,7 +5,7 @@
 use crate::*;
 use iced::Length::Units;
 use iced::{
-    Align, Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable,
+    Alignment, Button, Checkbox, Color, Column, Container, Element, Length, Row, Rule, Scrollable,
     Space, Text, TextInput,
 };
 use io_utils::*;
@@ -205,7 +205,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         if valids > 0 {
             let row = Row::new()
-                .align_items(Align::Center)
+                .align_items(Alignment::Center)
                 .push(Text::new("           check to complete share").size(16))
                 .push(Space::with_width(Units(14)))
                 .push(Checkbox::new(slf.do_share, "", Message::DoShare))
@@ -245,7 +245,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         slf.cookbook_narrative_button.iter_mut(),
         slf.copy_cookbook_narrative_button.iter_mut()
     ) {
-        let mut row = Row::new().align_items(Align::Center);
+        let mut row = Row::new().align_items(Alignment::Center);
         let date = "········";
         let time = "·····";
         row = row.push(Text::new(&format!("{:<3} {}    {}    ", i + 1, date, time,)).font(DEJAVU));
@@ -376,7 +376,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             make_row = false;
         }
         if make_row {
-            let mut row = Row::new().align_items(Align::Center);
+            let mut row = Row::new().align_items(Alignment::Center);
             let date = x.before("___").to_string();
             let date1 = stringme(&date.as_bytes()[2..4]);
             let date2 = date.after("-").to_string();

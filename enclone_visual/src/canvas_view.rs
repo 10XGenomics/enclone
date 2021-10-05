@@ -7,8 +7,9 @@ use crate::*;
 use enclone_tail::string_width::*;
 use iced::canvas::event::{self, Event};
 use iced::{
+    alignment,
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
-    mouse, Color, Element, HorizontalAlignment, Length, Rectangle, Size, VerticalAlignment,
+    mouse, Color, Element, Length, Rectangle, Size,
 };
 use iced_native::{Font, Point, Vector};
 use lazy_static::lazy_static;
@@ -322,16 +323,16 @@ impl<'a> canvas::Program<Message> for CanvasView {
                             },
                             // Center doesn't seem to work, should report bug
                             // nor does Top
-                            vertical_alignment: VerticalAlignment::Bottom,
+                            vertical_alignment: alignment::Vertical::Bottom,
                             horizontal_alignment: match o.halign {
                                 crate::geometry::HorizontalAlignment::Left => {
-                                    HorizontalAlignment::Left
+                                    alignment::Horizontal::Left
                                 }
                                 crate::geometry::HorizontalAlignment::Center => {
-                                    HorizontalAlignment::Center
+                                    alignment::Horizontal::Center
                                 }
                                 crate::geometry::HorizontalAlignment::Right => {
-                                    HorizontalAlignment::Right
+                                    alignment::Horizontal::Right
                                 }
                             },
                         };

@@ -25,7 +25,7 @@ publish = false
 
 [dependencies]
 failure = "0.1"
-iced = { git = "https://github.com/hecrj/iced", rev = "93fec8d273ef8305e1c2456abe0c8ecd7a9d9407", features = ["canvas", "image", "async-std"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5", features = ["canvas", "image", "async-std"] }
 itertools = "0.10"
 lazy_static = "1"
 libc = "0.2"

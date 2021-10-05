@@ -639,6 +639,8 @@ fn test_cpu() {
 //     and there is not NOTICE file.
 // 11. iced_wgpu OK because it is MIT AND OFL-1.1.
 // 12. png-decoder is OK because it is MIT but for some reason cargo-license returns null.
+// 13. BSD-2-Clause: if no actual license is provided, we should not have to do anything.
+//     Applies to kamadak-exif and mutate_once.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -649,7 +651,7 @@ fn test_licenses() {
     ];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 17] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 19] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
@@ -658,7 +660,9 @@ fn test_licenses() {
         "gethostname",
         "iced_wgpu",
         "instant",
+        "kamadak-exif",
         "mach",
+        "mutate_once",
         "nalgebra",
         "num_enum",
         "num_enum_derive",

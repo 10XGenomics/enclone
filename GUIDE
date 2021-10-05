@@ -22,3 +22,7 @@ fonts                 DejaVuSansMono, in case not otherwise available
 img                   images for site
 pages                 pages on site and source code for such
 target                where rust puts compilation stuff
+
+How to make a dependency graph for the crates:
+cargo install cargo-depgraph
+cargo depgraph --focus enclone* | dot -Tpng > ~/graph.png

@@ -17,10 +17,10 @@ license-file = "../LICENSE.txt"
 publish = false
 
 [dependencies]
-assert_cmd = "1"
+assert_cmd = "2"
 byteorder = "1"
 bytes = "1"
-dirs = "3"
+dirs = "4"
 failure = "0.1"
 flate2 = "1"
 io_utils = "0.2"
