@@ -5,9 +5,7 @@
 use self::refx::{make_vdj_ref_data_core, RefData};
 use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
-use crate::flag_defective::flag_defective;
 use crate::inconsistent::test_vdj_gex_inconsistent;
-use crate::sec_mem::test_sec_mem;
 use crate::setup::{critical_args, setup};
 use crate::stop::{main_enclone_stop, EncloneExacts, EncloneIntermediates};
 use crate::vars::match_vars;
@@ -20,7 +18,6 @@ use enclone::join::join_exacts;
 use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
 use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_for_shm_indels};
 use enclone::misc3::sort_tig_bc;
-use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
@@ -427,13 +424,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
-
-    // Process for sec (secreted) or mem (membrane) if specified.
-
-    test_sec_mem(&mut ctl)?;
-    if ctl.gen_opt.using_secmem {
-        fetch_secmem(&mut ctl)?;
-    }
     ctl.perf_stats(&tr, "building reference and other things");
 
     // Get VDJ data paths.
@@ -494,11 +484,10 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Flag defective reference sequences.
+    // Flag defective reference sequences.  (NOT DOING ANYTHING NOW.)
 
     let mut log = Vec::<u8>::new();
-    let mut broken = Vec::<bool>::new();
-    flag_defective(ctl, refdata, &mut log, &mut broken);
+    let broken = Vec::<bool>::new();
     ctl.perf_stats(&tr, "flagging defective references");
 
     // Parse the json annotations file.

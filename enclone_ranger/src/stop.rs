@@ -2,7 +2,6 @@
 
 use crate::main_enclone::{EncloneSetup, EncloneState, MainEncloneOutput};
 use crate::opt_d_val::make_opt_d_val;
-use crate::subset::subset_json;
 use enclone_core::defs::{CloneInfo, ColInfo, ExactClonotype, WALLCLOCK};
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
@@ -59,7 +58,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let drefs = &inter.ex.drefs;
     let gex_info = &inter.setup.gex_info;
     let sr = &inter.ex.sr;
-    let ann = &inter.setup.ann;
     let mut fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
@@ -188,10 +186,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let refdata = refdata;
     let exact_clonotypes = exact_clonotypes;
     let exacts = exacts;
-
-    // Process the SUBSET_JSON option.
-
-    subset_json(ctl, exact_clonotypes, &exacts, ann);
     ctl.perf_stats(&torb, "making orbits");
 
     // Assign a D segment to each "left" column in a clonotype (if we need this information).
