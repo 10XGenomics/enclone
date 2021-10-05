@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+#![cfg(feature = "png")]
+
 use crc::{Crc, CRC_32_ISO_HDLC};
 use string_utils::stringme;
 

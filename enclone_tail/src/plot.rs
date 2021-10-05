@@ -8,6 +8,7 @@
 use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
 use crate::circles_to_svg::circles_to_svg;
 use crate::colors::{turbo_color_names, TURBO_SRGB_BYTES};
+#[cfg(feature = "png")]
 use crate::convert_svg_to_png::convert_svg_to_png;
 use crate::group_colors::make_group_colors;
 use crate::legend::add_legend_for_color_by_variable;
@@ -797,8 +798,15 @@ pub fn plot_clonotypes(
     // Output the svg or png file.
 
     if plot_opt.plot_file == "stdout.png" {
-        let png = convert_svg_to_png(svg.as_bytes(), 2000);
-        std::io::stdout().write_all(&png).unwrap();
+        #[cfg(not(feature = "png"))]
+        {
+            panic!("Not compiled with png support.");
+        }
+        #[cfg(feature = "png")]
+        {
+            let png = convert_svg_to_png(svg.as_bytes(), 2000);
+            std::io::stdout().write_all(&png).unwrap();
+        }
     } else if plot_opt.plot_file != "stdout"
         && plot_opt.plot_file != "gui"
         && plot_opt.plot_file != "gui_stdout"
@@ -810,17 +818,24 @@ pub fn plot_clonotypes(
                 plot_opt.plot_file
             ));
         }
-        let mut f = f.unwrap();
         if !plot_opt.plot_file.ends_with(".png") {
-            let mut f = BufWriter::new(f);
+            let mut f = BufWriter::new(f.unwrap());
             fwriteln!(f, "{}", svg);
         } else {
-            let mut width = 2000;
-            if plot_opt.png_width.is_some() {
-                width = plot_opt.png_width.unwrap();
+            #[cfg(not(feature = "png"))]
+            {
+                panic!("Not compiled with png support.");
             }
-            let png = convert_svg_to_png(svg.as_bytes(), width as u32);
-            f.write_all(&png).unwrap();
+            #[cfg(feature = "png")]
+            {
+                let mut f = f.unwrap();
+                let mut width = 2000;
+                if plot_opt.png_width.is_some() {
+                    width = plot_opt.png_width.unwrap();
+                }
+                let png = convert_svg_to_png(svg.as_bytes(), width as u32);
+                f.write_all(&png).unwrap();
+            }
         }
     }
     ctl.perf_stats(&t, "building svg file");

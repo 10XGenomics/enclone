@@ -20,7 +20,7 @@ clipboard = "0.5"
 cocoa = "0.24"
 core-foundation = "0.9"
 core-graphics = "0.22"
-crc = "2"
+crc = { version = "2", optional = true }
 debruijn = "0.3"
 dirs = "3"
 edit-distance = "2"
@@ -39,7 +39,7 @@ failure = "0.1"
 file-lock = "1"
 flate2 = "1"
 float-ord = "0.3"
-fontdb = "0.6"
+fontdb =  { version = "0.6", optional = true }
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
@@ -73,7 +73,7 @@ prost = { version = "0.8", default_features = false }
 prost-build = "0.8"
 rand = "0.8"
 rayon = "1"
-resvg = { version = "0.17", default-features = false }
+resvg = { version = "0.17", default-features = false, optional = true }
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
@@ -86,13 +86,13 @@ superslice = "1"
 tables = "0.1"
 tar = "0.4"
 tilde-expand = "0.1"
-tiny-skia = "0.6"
+tiny-skia =  { version = "0.6", optional = true }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
 users = "0.11"
-usvg = { version = "0.17", features = ["text"] }
+usvg = { version = "0.17", features = ["text"], optional = true }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
 yaml-rust = "0.3"

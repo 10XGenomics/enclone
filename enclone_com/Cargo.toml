@@ -22,7 +22,7 @@ publish = false
 [dependencies]
 bytes = "1"
 enclone_core = { path = "../enclone_core" }
-enclone_tail = { path = "../enclone_tail" }
+enclone_tail = { path = "../enclone_tail", features = ["png"] }
 io_utils = "0.2"
 lazy_static = "1"
 pretty_trace = "0.5"
