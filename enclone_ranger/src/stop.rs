@@ -6,12 +6,7 @@ use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::{dir_list, path_exists};
 use rayon::prelude::*;
-use std::{
-    collections::HashMap,
-    env,
-    thread, time,
-    time::Instant,
-};
+use std::{collections::HashMap, env, thread, time, time::Instant};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

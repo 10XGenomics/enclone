@@ -2,7 +2,6 @@
 
 pub mod determine_ref;
 pub mod main_enclone;
-pub mod opt_d_val;
 pub mod setup;
 pub mod stop;
 pub mod vars;
