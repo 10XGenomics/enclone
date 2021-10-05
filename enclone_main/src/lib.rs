@@ -6,7 +6,6 @@ pub mod flag_defective;
 pub mod inconsistent;
 pub mod main_enclone;
 pub mod opt_d_val;
-pub mod populate_features;
 pub mod sec_mem;
 pub mod setup;
 pub mod stop;

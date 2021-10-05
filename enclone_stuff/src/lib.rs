@@ -5,6 +5,7 @@ pub mod doublets;
 pub mod fcell;
 pub mod filter_umi;
 pub mod merge_onesies;
+pub mod populate_features;
 pub mod some_filters;
 pub mod split_orbits;
 pub mod weak_chains;
