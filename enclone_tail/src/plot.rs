@@ -8,6 +8,7 @@
 use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
 use crate::circles_to_svg::circles_to_svg;
 use crate::colors::{turbo_color_names, TURBO_SRGB_BYTES};
+use crate::convert_svg_to_png::convert_svg_to_png;
 use crate::group_colors::make_group_colors;
 use crate::legend::add_legend_for_color_by_variable;
 use crate::pack_circles::pack_circles;
@@ -17,7 +18,6 @@ use crate::string_width::arial_width;
 use crate::{get_svg_height, set_svg_height, set_svg_width, substitute_enclone_color, BOUNDARY};
 use ansi_escape::print_color13;
 use enclone_core::cell_color::CellColor;
-use enclone_core::convert_svg_to_png::convert_svg_to_png;
 use enclone_core::defs::{EncloneControl, ExactClonotype, PlotOpt, POUT_SEP};
 use io_utils::{fwriteln, open_for_read, open_for_write_new};
 use std::collections::HashMap;

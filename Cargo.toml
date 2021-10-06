@@ -10,6 +10,8 @@ members = [
     "enclone_main",
     "enclone_print",
     "enclone_proto",
+    "enclone_ranger",
+    "enclone_stuff",
     "enclone_tail",
     "enclone_tools",
     "enclone_vars",

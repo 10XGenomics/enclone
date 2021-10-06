@@ -3,13 +3,15 @@
 #![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
+use enclone_main::main_enclone::main_enclone;
+use enclone_ranger::main_enclone::main_enclone_ranger;
 use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
-use std::fs::{metadata, File};
-use std::io::{BufRead, BufReader};
+use std::fs::{metadata, read_to_string, remove_file, rename, File};
+use std::io::{BufRead, BufReader, Read};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
@@ -27,7 +29,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 93882464;
+    const ENCLONE_SIZE: usize = 95132016;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -249,7 +251,7 @@ fn test_help_page_list() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dependency_structure() {
-    // Don't allow enclone_core to reach to any other enclone crate.
+    // Restrict crates reached by enclone_core.
 
     let f = include_str!["../../enclone_core/Cargo.toml"];
     for line in f.lines() {
@@ -265,7 +267,7 @@ fn test_dependency_structure() {
         }
     }
 
-    // Don't allow any crate except enclone_main and enclone_tools to reach the enclone crate.
+    // Restrict crates reaching enclone.
 
     let top = dir_list("..");
     for d in top.iter() {
@@ -273,6 +275,8 @@ fn test_dependency_structure() {
             && d != "enclone_main"
             && d != "enclone_tools"
             && d != "enclone_denovo"
+            && d != "enclone_ranger"
+            && d != "enclone_stuff"
         {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
@@ -282,8 +286,56 @@ fn test_dependency_structure() {
                     if s.starts_with("enclone =") {
                         eprintln!(
                             "\nThe crate {} has the crate enclone as a dependency.  In an \
-                            attempt to reduce\ncompile time, we only allow this for the crate \
-                            enclone_main.\n",
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
+                            d
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
+
+    // Restrict crates reaching enclone_tail.
+
+    let top = dir_list("..");
+    for d in top.iter() {
+        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_visual" {
+            let toml = format!("../{}/Cargo.toml", d);
+            if path_exists(&toml) {
+                let f = open_for_read![&toml];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with("enclone_tail =") {
+                        eprintln!(
+                            "\nThe crate {} has the crate enclone_tail as a dependency.  In an \
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
+                            d
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
+
+    // Restrict crates reaching enclone_help.
+
+    let top = dir_list("..");
+    for d in top.iter() {
+        if d.starts_with("enclone") && d != "enclone_main" {
+            let toml = format!("../{}/Cargo.toml", d);
+            if path_exists(&toml) {
+                let f = open_for_read![&toml];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with("enclone_help =") {
+                        eprintln!(
+                            "\nThe crate {} has the crate enclone_tail as a dependency.  In an \
+                            attempt to reduce\ncompile time, we only allow this for certain \
+                            crates.\n",
                             d
                         );
                         std::process::exit(1);
@@ -511,4 +563,80 @@ fn test_vars() {
         std::process::exit(1);
     }
     let _ = parse_variables(&old);
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 38. Test to see that main_enclone_ranger and main_enclone do the same thing on one test case.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_ranger() {
+    if path_exists("testx/outputs/tiny_multi_CS_6.1") {
+        std::fs::remove_dir_all("testx/outputs/tiny_multi_CS_6.1").unwrap();
+    }
+    let options = fs_extra::dir::CopyOptions::new();
+    fs_extra::dir::copy(
+        "../enclone-data/big_inputs/version15/tiny_multi_CS_6.1",
+        "testx/outputs",
+        &options,
+    )
+    .unwrap();
+    rename(
+        "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/all_contig_annotations.json.lz4",
+        "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/contig_annotations.json.lz4",
+    )
+    .unwrap();
+    let proto_out = "testx/outputs/test1.proto";
+    let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
+    let mut files = vec![vec![Vec::<u8>::new(); 2]; 2];
+    for pass in 1..=2 {
+        for f in [&proto_out, &donor_ref_out].iter() {
+            if path_exists(f) {
+                remove_file(f).unwrap();
+            }
+        }
+        let mut args = Vec::<String>::new();
+        args.push("enclone".to_string());
+        args.push("CELLRANGER".to_string());
+        args.push("PRE=".to_string());
+        args.push("FORCE_EXTERNAL".to_string());
+        args.push("NOPAGER".to_string());
+        args.push("NOPRINT".to_string());
+        args.push("MAX_CORES=8".to_string());
+        args.push("BCR=testx/outputs/tiny_multi_CS_6.1".to_string());
+        args.push(
+            "REF=../enclone-data/big_inputs/version15/tiny_multi_CS_6.1/outs/vdj_reference/\
+            fasta/regions.fa"
+                .to_string(),
+        );
+        args.push(format!("PROTO={}", proto_out));
+        args.push(format!("DONOR_REF_FILE={}", donor_ref_out));
+        if pass == 1 {
+            main_enclone_ranger(&args).unwrap();
+        } else {
+            main_enclone(&args).unwrap();
+        }
+        if !path_exists(&proto_out) {
+            eprintln!("pass = {}, can't find proto_out", pass);
+            std::process::exit(1);
+        }
+        if !path_exists(&donor_ref_out) {
+            eprintln!("pass = {}, can't find donor_ref_out", pass);
+            std::process::exit(1);
+        }
+        let mut f = File::open(&proto_out).unwrap();
+        f.read_to_end(&mut files[0][pass - 1]).unwrap();
+        let mut f = File::open(&donor_ref_out).unwrap();
+        f.read_to_end(&mut files[1][pass - 1]).unwrap();
+    }
+    for i in 0..2 {
+        if files[i][0] != files[i][1] {
+            eprintln!("files are different");
+            std::process::exit(1);
+        }
+    }
 }

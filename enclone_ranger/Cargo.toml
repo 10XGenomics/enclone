@@ -1,5 +1,5 @@
 [package]
-name = "enclone_exec"
+name = "enclone_ranger"
 version = "0.5.112"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
@@ -19,40 +19,17 @@ publish = false
 # Please do not edit crate versions within this file.  Instead edit the file master.toml
 # in the root of the enclone repo.
 
-[[bin]]
-name = "enclone"
-path = "src/bin/enclone.rs"
-
 [dependencies]
 enclone_core = { path = "../enclone_core" }
-enclone_main = { path = "../enclone_main" }
-enclone_visual = { path = "../enclone_visual" }
-io_utils = "0.2"
-nix = ">=0.20, <0.23"
-pretty_trace = "0.5"
-string_utils = "0.1"
-tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-
-[dev-dependencies]
-ansi_escape = "0.1"
-attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
-enclone_vars = { path = "../enclone_vars" }
+enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
-enclone_ranger = { path = "../enclone_ranger" }
-enclone_tools = { path = "../enclone_tools" }
-failure = "0.1"
-flate2 = "1"
-fs_extra = "1"
+enclone_stuff = { path = "../enclone_stuff" }
+enclone = { path = "../enclone" }
+enclone_args = { path = "../enclone_args" }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
+io_utils = "0.2"
 itertools = "0.10"
-perf_stats = "0.1"
 rayon = "1"
-serde_json = "1"
-sha2 = "0.9"
-stats_utils = "0.1"
+string_utils = "0.1"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
 vector_utils = "0.1"
-yaml-rust = "0.4"
-
-[features]
-basic = []
-cpu = []
-linkless = []

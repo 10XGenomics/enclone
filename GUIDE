@@ -11,6 +11,8 @@ enclone_help          help menus from the command line
 enclone_main          this includes the enclone main program guts
 enclone_print         prints clonotypes in the sense of creating the "pictures" (much of core logic)
 enclone_proto         stuff for communicating with Loupe, and reused for other purposes
+enclone_ranger        entry point for cellranger
+enclone_stuff         things called by enclone_main and enclone_ranger
 enclone_tail          last part of the code
 enclone_tools         miscellaneous binaries
 enclone_vars          variable definitions

@@ -29,7 +29,9 @@ enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
+enclone_ranger = { path = "../enclone_ranger" }
 enclone_server_proto = { path = "../enclone_server_proto" }
+enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
