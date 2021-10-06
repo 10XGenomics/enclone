@@ -321,14 +321,19 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Determine initial font size.
 
-    let mut max_line = max_line_val(&hets[0].content);
-    let mut font_size = appropriate_font_size(&hets[0].content, slf.width);
+    let mut sum =
+        "The summary is empty.  Usually this happens if the command failed.\n".to_string();
+    if !hets.is_empty() {
+        sum = hets[0].content.clone();
+    }
+    let mut max_line = max_line_val(&sum);
+    let mut font_size = appropriate_font_size(&sum, slf.width);
     const FUDGE: f32 = 175.0;
     let orig_font_size = font_size;
 
     // Put first part of summary into a scrollable.
 
-    let summary = format!("{}\n \n", hets[0].content);
+    let summary = format!("{}\n \n", sum);
     let mut summary_scrollable = Scrollable::new(&mut slf.summary_scroll)
         .width(Length::Fill)
         .height(Length::Fill)
