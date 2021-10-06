@@ -11,7 +11,7 @@ use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
 use std::fs::{metadata, read_to_string, rename, remove_file, File};
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
@@ -590,7 +590,7 @@ fn test_ranger() {
     ).unwrap();
     let proto_out = "testx/outputs/test1.proto";
     let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
-    let mut files = vec![vec![String::new(); 2]; 2];
+    let mut files = vec![vec![Vec::<u8>::new(); 2]; 2];
     for pass in 1..=2 {
         for f in [&proto_out, &donor_ref_out].iter() {
             if path_exists(f) {
@@ -626,8 +626,10 @@ fn test_ranger() {
             eprintln!("pass = {}, can't find donor_ref_out", pass);
             std::process::exit(1);
         }
-        files[0][pass - 1] = read_to_string(&proto_out).unwrap();
-        files[1][pass - 1] = read_to_string(&donor_ref_out).unwrap();
+        let mut f = File::open(&proto_out).unwrap();
+        f.read_to_end(&mut files[0][pass - 1]).unwrap();
+        let mut f = File::open(&donor_ref_out).unwrap();
+        f.read_to_end(&mut files[1][pass - 1]).unwrap();
     }
     for i in 0..2 {
         if files[i][0] != files[i][1] {
