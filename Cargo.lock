@@ -5309,7 +5309,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=19f96f7115e3e8be3f49739d3a069d9b995cc6cd#19f96f7115e3e8be3f49739d3a069d9b995cc6cd"
+source = "git+https://github.com/nmmsv10x/rust-toolbox.git?rev=990d225a6d24d47bbb4412cba4251dda34ab7bcb#990d225a6d24d47bbb4412cba4251dda34ab7bcb"
 dependencies = [
  "align_tools",
  "amino",
@@ -5329,7 +5329,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "strum",
- "strum_macros 0.21.1",
+ "strum_macros 0.20.1",
  "vdj_types",
  "vector_utils",
 ]
