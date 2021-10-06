@@ -32,7 +32,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                 "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
                 There are various possible reasons for this, including:\n\
                 • an incorrectly specified path\n\
-                • incorrect\nspecification of PRE\n\
+                • incorrect specification of PRE\n\
                 • a partially copied outs directory that does not include all the needed files\n\
                 • a mixup between VDJ and GEX path names\n\
                 • you wrote BCR, when you have TCR, or the other way.",
