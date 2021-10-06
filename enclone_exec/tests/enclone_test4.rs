@@ -10,7 +10,7 @@ use enclone_vars::*;
 use io_utils::*;
 use pretty_trace::*;
 use stats_utils::*;
-use std::fs::{metadata, read_to_string, rename, remove_file, File};
+use std::fs::{metadata, read_to_string, remove_file, rename, File};
 use std::io::{BufRead, BufReader, Read};
 use std::process::Command;
 use string_utils::*;
@@ -583,11 +583,13 @@ fn test_ranger() {
         "../enclone-data/big_inputs/version15/tiny_multi_CS_6.1",
         "testx/outputs",
         &options,
-    ).unwrap();
+    )
+    .unwrap();
     rename(
         "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/all_contig_annotations.json.lz4",
         "testx/outputs/tiny_multi_CS_6.1/outs/multi/vdj_b/contig_annotations.json.lz4",
-    ).unwrap();
+    )
+    .unwrap();
     let proto_out = "testx/outputs/test1.proto";
     let donor_ref_out = "testx/outputs/test1.donor_ref.fasta";
     let mut files = vec![vec![Vec::<u8>::new(); 2]; 2];
