@@ -21,6 +21,7 @@ use enclone_tools::copy_for_enclone::copy_for_enclone;
 use enclone_tools::feature_barcode_matrix::{
     feature_barcode_matrix, feature_barcode_matrix_seq_def, SequencingDef,
 };
+use enclone_tools::packing::*;
 use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
 use mirror_sparse_matrix::write_to_file;
 use pretty_trace::PrettyTrace;
@@ -300,10 +301,14 @@ fn main() {
                     for j in 0..brn.len() {
                         fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
                     }
-                    let mut f = open_for_write_new![&format!(
+                    let mut f = File::create(&format!(
                         "{}/outs/feature_barcode_matrix.common_gumis",
                         target
-                    )];
+                    )).unwrap();
+                    let mut bytes = Vec::<u8>::new();
+                    bytes.append(&mut save_vec_f32(&common_gumi_freq));
+                    bytes.append(&mut save_vec_vec_u8(&common_gumi_content));
+                    f.write_all(&bytes).unwrap();
                 }
             }
         }
