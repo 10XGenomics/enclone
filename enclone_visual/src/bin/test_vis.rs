@@ -263,7 +263,6 @@ fn main() {
     // Run enclone once to get it in cache.  This doesn't totally make sense but seems to improve
     // the reproducibility of timing of the actual work.
 
-
     if printer {
         println!("starting pretest");
     }
