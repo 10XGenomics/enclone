@@ -443,7 +443,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         if slf.common_gumi_expand {
             summary_scrollable = summary_scrollable
                 .push(Text::new(
-                     "All the tables can be copied at once, in a form suitable for inclusion in \
+                    "All the tables can be copied at once, in a form suitable for inclusion in \
                      a spreadsheet, by pushing the button below.",
                 ))
                 .push(Space::with_height(Units(8)))
@@ -455,16 +455,11 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     .on_press(Message::CopyCommonGumiTables),
                 )
                 .push(Space::with_height(Units(8)))
-                .push(Text::new(
-                     "Push the hide button to hide the tables.",
-                ))
+                .push(Text::new("Push the hide button to hide the tables."))
                 .push(Space::with_height(Units(8)))
                 .push(
-                    Button::new(
-                        &mut slf.common_gumi_tables_hide_button,
-                        Text::new("Hide")
-                    )
-                    .on_press(Message::HideCommonGumiTables),
+                    Button::new(&mut slf.common_gumi_tables_hide_button, Text::new("Hide"))
+                        .on_press(Message::HideCommonGumiTables),
                 )
                 .push(Space::with_height(Units(8)))
                 .push(Rule::horizontal(10).style(style::RuleStyle2))
@@ -476,14 +471,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 );
         } else {
             summary_scrollable = summary_scrollable
-                .push(Text::new(
-                     "Push the expand button to see the tables.",
-                ))
+                .push(Text::new("Push the expand button to see the tables."))
                 .push(Space::with_height(Units(8)))
                 .push(
                     Button::new(
                         &mut slf.common_gumi_tables_expand_button,
-                        Text::new("Expand")
+                        Text::new("Expand"),
                     )
                     .on_press(Message::ExpandCommonGumiTables),
                 )
