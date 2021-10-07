@@ -295,10 +295,8 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
                 );
             } else {
                 let mut spreadsheet_text = String::new();
-                for (i, r) in csv_rows.iter().enumerate() {
-                    if i % 2 == 0 {
-                        spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
-                    }
+                for r in csv_rows.iter() {
+                    spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
                 }
                 let f = FeatureBarcodeCommonGumisTable {
                     id: ctl.origin_info.dataset_id[li].clone(),
