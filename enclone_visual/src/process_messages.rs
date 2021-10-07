@@ -361,6 +361,7 @@ impl EncloneVisual {
                             println!("[{}] {}", i + 1, messages[i]);
                         }
                     }
+                    println!("");
                     std::process::exit(0);
                 }
                 Command::perform(noop0(), Message::Meta)
