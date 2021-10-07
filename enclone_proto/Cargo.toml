@@ -21,11 +21,11 @@ publish = false
 bio_edit = "0.1"
 bytes = "1"
 byteorder = "1"
-failure = "0.1"
 prost = { version = "0.8", default_features = false }
 serde = "1"
 serde_derive = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="19f96f7115e3e8be3f49739d3a069d9b995cc6cd" }
+thiserror = "1"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "19329ad04342061ddb6373cfd435f046dfc4331d" }
 
 [build-dependencies]
 prost-build = "0.8"

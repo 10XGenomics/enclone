@@ -3,8 +3,8 @@
 use crate::copy_image_to_clipboard::*;
 use crate::dimensions::*;
 use crate::gui_structures::EncloneVisual;
+use anyhow::Error;
 use enclone_tail::convert_svg_to_png::*;
-use failure::Error;
 use iced::{Application, Font, Settings};
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -56,7 +56,6 @@ pub mod gui_structures;
 pub mod help;
 pub mod history;
 pub mod messages;
-pub mod packing;
 pub mod popover;
 pub mod proc1;
 pub mod proc2;

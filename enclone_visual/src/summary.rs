@@ -321,14 +321,19 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Determine initial font size.
 
-    let mut max_line = max_line_val(&hets[0].content);
-    let mut font_size = appropriate_font_size(&hets[0].content, slf.width);
+    let mut sum =
+        "The summary is empty.  Usually this happens if the command failed.\n".to_string();
+    if !hets.is_empty() {
+        sum = hets[0].content.clone();
+    }
+    let mut max_line = max_line_val(&sum);
+    let mut font_size = appropriate_font_size(&sum, slf.width);
     const FUDGE: f32 = 175.0;
     let orig_font_size = font_size;
 
     // Put first part of summary into a scrollable.
 
-    let summary = format!("{}\n \n", hets[0].content);
+    let summary = format!("{}\n \n", sum);
     let mut summary_scrollable = Scrollable::new(&mut slf.summary_scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -341,11 +346,17 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .size(orig_font_size as u16),
         );
 
-    // If there is a second part, which for now would be a FeatureBarcodeAlluvialTableSet,
-    // add that.
+    // If there is a FeatureBarcodeAlluvialTableSet, add that.
 
-    if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
-        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[1].content);
+    let mut alluv = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeAlluvialTableSet" {
+            alluv = Some(j);
+        }
+    }
+    if alluv.is_some() {
+        let j = alluv.unwrap();
+        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[j].content);
         slf.alluvial_tables_for_spreadsheet.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
@@ -388,6 +399,89 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     .font(DEJAVU_BOLD)
                     .size(tables_font_size as u16),
             );
+    }
+
+    // If there is a FeatureBarcodeCommonGumisTableSet, add that.
+
+    let mut gumi = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeCommonGumisTableSet" {
+            gumi = Some(j);
+        }
+    }
+    if gumi.is_some() {
+        let j = gumi.unwrap();
+        let tables = FeatureBarcodeCommonGumisTableSet::from_string(&hets[j].content);
+        slf.common_gumi_tables_for_spreadsheet.clear();
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!(
+                "\nfrequent UMIs having feature barcode GGGGGGGGGGGGGGG for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+            slf.common_gumi_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+        }
+        tables_text += "\n \n";
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Common UMIs for feature barcode GGGGGGGGGGGGGGG")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Text::new(
+                "These tables concern the feature barcode reads for which the feature barcode \
+                 is GGGGGGGGGGGGGGG.  Amongst these, we show the most frequent UMIs.  The \
+                 percent column is the percent of reads having feature barcode \
+                 GGGGGGGGGGGGGGG, that have the given UMI.",
+            ))
+            .push(Space::with_height(Units(8)));
+        if slf.common_gumi_expand {
+            summary_scrollable = summary_scrollable
+                .push(Text::new(
+                    "All the tables can be copied at once, in a form suitable for inclusion in \
+                     a spreadsheet, by pushing the button below.",
+                ))
+                .push(Space::with_height(Units(8)))
+                .push(
+                    Button::new(
+                        &mut slf.common_gumi_tables_copy_button,
+                        Text::new("Copy").color(slf.common_gumi_tables_copy_button_color),
+                    )
+                    .on_press(Message::CopyCommonGumiTables),
+                )
+                .push(Space::with_height(Units(8)))
+                .push(Text::new("Push the hide button to hide the tables."))
+                .push(Space::with_height(Units(8)))
+                .push(
+                    Button::new(&mut slf.common_gumi_tables_hide_button, Text::new("Hide"))
+                        .on_press(Message::HideCommonGumiTables),
+                )
+                .push(Space::with_height(Units(8)))
+                .push(Rule::horizontal(10).style(style::RuleStyle2))
+                .push(Space::with_height(Units(8)))
+                .push(
+                    Text::new(&format!("{}", tables_text))
+                        .font(DEJAVU_BOLD)
+                        .size(tables_font_size as u16),
+                );
+        } else {
+            summary_scrollable = summary_scrollable
+                .push(Text::new("Push the expand button to see the tables."))
+                .push(Space::with_height(Units(8)))
+                .push(
+                    Button::new(
+                        &mut slf.common_gumi_tables_expand_button,
+                        Text::new("Expand"),
+                    )
+                    .on_press(Message::ExpandCommonGumiTables),
+                )
+                .push(Space::with_height(Units(8)));
+        }
     }
 
     // Suppose we have dataset level metrics.

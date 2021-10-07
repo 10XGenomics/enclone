@@ -51,6 +51,7 @@ fn main() {
     let mut update = false;
     let mut quiet = false;
     let mut verbose = false;
+    let mut printer = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -59,6 +60,8 @@ fn main() {
             quiet = true;
         } else if args[i] == "VERBOSE" {
             verbose = true;
+        } else if args[i] == "PRINTER" {
+            printer = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -93,7 +96,10 @@ fn main() {
     // RUN A COUPLE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    for n in [4, 5].iter() {
+    for n in [4, 5, 6].iter() {
+        if printer {
+            println!("running test {}", n);
+        }
         let n = *n;
         if tests.is_empty() || tests.contains(&format!("{}", n)) {
             let metas = metatests()[n - 1].clone();
@@ -215,6 +221,9 @@ fn main() {
     // ANOTHER TEST
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    if printer {
+        println!("starting another test");
+    }
     if tests.is_empty() || tests.contains(&"3".to_string()) {
         let metas = metatests()[2].clone();
         let mut testnames = Vec::<String>::new();
@@ -254,6 +263,9 @@ fn main() {
     // Run enclone once to get it in cache.  This doesn't totally make sense but seems to improve
     // the reproducibility of timing of the actual work.
 
+    if printer {
+        println!("starting pretest");
+    }
     if tests.is_empty() {
         let o = Command::new("enclone")
             .arg(&"--version")
@@ -270,6 +282,9 @@ fn main() {
     // RUN MAIN TESTS
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    if printer {
+        println!("running main tests");
+    }
     let t = Instant::now();
     if tests.is_empty() || tests.contains(&"main".to_string()) {
         let o = Command::new("enclone")

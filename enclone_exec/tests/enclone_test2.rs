@@ -8,6 +8,7 @@
 // 3. speed test (feature = cpu), requires non-public datasets.
 
 use ansi_escape::*;
+use anyhow::Error;
 use enclone_core::main_testlist::*;
 use enclone_core::testlist::*;
 use enclone_core::*;
@@ -15,7 +16,6 @@ use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
-use failure::Error;
 use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;

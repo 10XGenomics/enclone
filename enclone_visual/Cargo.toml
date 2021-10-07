@@ -24,6 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
+anyhow = "1"
 base64 = "0.13"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 crc = "2"
@@ -33,7 +34,6 @@ enclone_main = { path = "../enclone_main" }
 enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
-failure = "0.1"
 flate2 = "1"
 fs_extra = "1"
 iced = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5", features = ["canvas", "image", "async-std"] }
@@ -61,7 +61,6 @@ tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 users = "0.11"
 vector_utils = "0.1"
-zstd = "0.9"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"

@@ -8,10 +8,10 @@ use enclone_core::stringulate::*;
 use io_utils::fwrite;
 use itertools::Itertools;
 use stats_utils::percent_ratio;
-use std::cmp::max;
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::{parse_csv, TextUtils};
+use string_utils::*;
 use tables::print_tabular_vbox;
 use vector_utils::{bin_member, unique_sort};
 
@@ -257,6 +257,58 @@ pub fn alluvial_fb(
     }
     if ctl.visual_mode && have_some {
         let tables = FeatureBarcodeAlluvialTableSet { s: fs };
+        logx.append(&mut tables.to_string().as_bytes().to_vec());
+    }
+}
+
+pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>) {
+    let mut fs = Vec::<FeatureBarcodeCommonGumisTable>::new();
+    let mut have_some = false;
+    for li in 0..ctl.origin_info.n() {
+        let m = &gex_info.fb_top_matrices[li];
+        if m.initialized() {
+            have_some = true;
+            let freqs = &gex_info.fb_common_gumis[li].0;
+            let umis = &gex_info.fb_common_gumis[li].1;
+            let mut rows = Vec::<Vec<String>>::new();
+            let mut csv_rows = Vec::<Vec<String>>::new();
+            let row = vec!["percent".to_string(), "UMI".to_string()];
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 2]);
+            for i in 0..min(20, freqs.len()) {
+                let row = vec![format!("{:.1}", 100.0 * freqs[i]), stringme(&umis[i])];
+                rows.push(row);
+                csv_rows.push(vec![
+                    ctl.origin_info.dataset_id[li].clone(),
+                    format!("{:.1}", 100.0 * freqs[i]),
+                    stringme(&umis[i]),
+                ]);
+            }
+            let mut display_text = String::new();
+            print_tabular_vbox(&mut display_text, &rows, 0, &b"r|l".to_vec(), false, false);
+            if !ctl.visual_mode {
+                fwrite!(
+                    logx,
+                    "\nfrequent UMIs having feature barcode GGGGGGGGGGGGGGG for {}\n{}",
+                    ctl.origin_info.dataset_id[li],
+                    display_text
+                );
+            } else {
+                let mut spreadsheet_text = String::new();
+                for r in csv_rows.iter() {
+                    spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
+                }
+                let f = FeatureBarcodeCommonGumisTable {
+                    id: ctl.origin_info.dataset_id[li].clone(),
+                    display_text: display_text.clone(),
+                    spreadsheet_text: spreadsheet_text.clone(),
+                };
+                fs.push(f);
+            }
+        }
+    }
+    if ctl.visual_mode && have_some {
+        let tables = FeatureBarcodeCommonGumisTableSet { s: fs };
         logx.append(&mut tables.to_string().as_bytes().to_vec());
     }
 }

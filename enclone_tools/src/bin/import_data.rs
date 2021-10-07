@@ -13,9 +13,13 @@
 // Optional second argument: FB_INFO: do nothing except attempt to create the
 // feature barcode matrix.
 //
+// Optional second argument: FB_INFO_WRITE: do nothing except attempt to create the
+// feature barcode matrix and write the corresponding files.
+//
 // For use at 10x Genomics.
 
 use enclone_core::defs::get_config;
+use enclone_core::packing::*;
 use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_tools::copy_for_enclone::copy_for_enclone;
 use enclone_tools::feature_barcode_matrix::{
@@ -36,9 +40,12 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let mut fb_info = false;
+    let mut fb_info_write = false;
     for i in 2..args.len() {
         if args[i] == "FB_INFO" {
             fb_info = true;
+        } else if args[i] == "FB_INFO_WRITE" {
+            fb_info_write = true;
         } else {
             eprintln!("\nIllegal arg.\n");
             std::process::exit(1);
@@ -130,7 +137,7 @@ fn main() {
         // Move directories if they exist.
 
         let mut moved = false;
-        if !fb_info {
+        if !fb_info && !fb_info_write {
             for dest in dests.iter() {
                 if path_exists(&format!("{}/{}", dest, id)) {
                     if path_exists(&format!("{}/{}.aside", dest, id)) {
@@ -149,7 +156,7 @@ fn main() {
 
         // Start copy.
 
-        if !fb_info {
+        if !fb_info && !fb_info_write {
             println!("copying {} using path = {}", id, p);
             for i in (0..dests.len()).rev() {
                 let dest = &dests[i];
@@ -276,12 +283,17 @@ fn main() {
 
             // Keep going.
 
-            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info, &ref_fb);
+            let x = feature_barcode_matrix(
+                &seq_def.unwrap(),
+                id.force_usize(),
+                fb_info || fb_info_write,
+                &ref_fb,
+            );
             if fb_info {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn) = x.unwrap();
+                let (m, total, brn, common_gumi_freq, common_gumi_content) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -300,6 +312,15 @@ fn main() {
                     for j in 0..brn.len() {
                         fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
                     }
+                    let mut f = File::create(&format!(
+                        "{}/outs/feature_barcode_matrix.common_gumis",
+                        target
+                    ))
+                    .unwrap();
+                    let mut bytes = Vec::<u8>::new();
+                    bytes.append(&mut save_vec_f32(&common_gumi_freq));
+                    bytes.append(&mut save_vec_vec_u8(&common_gumi_content));
+                    f.write_all(&bytes).unwrap();
                 }
             }
         }

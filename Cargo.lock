@@ -407,11 +407,10 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "binary_vec_io"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2043be7a5f85f84516e41fd0d08004015166ce7c31c0a18ab8eccb77dd958ed"
+checksum = "5804366557b1ae79fbff9a0ca3a74c1dc9d9746d74f455337fd5bd0cb841b8e7"
 dependencies = [
- "failure",
  "itertools",
 ]
 
@@ -1408,6 +1407,7 @@ dependencies = [
  "tables",
  "vdj_ann",
  "vector_utils",
+ "zstd",
 ]
 
 [[package]]
@@ -1419,7 +1419,6 @@ dependencies = [
  "bio",
  "debruijn",
  "equiv",
- "failure",
  "fasta_tools",
  "graph_simple",
  "hyperbase",
@@ -1446,6 +1445,7 @@ name = "enclone_exec"
 version = "0.5.112"
 dependencies = [
  "ansi_escape",
+ "anyhow",
  "attohttpc",
  "enclone_core",
  "enclone_main",
@@ -1454,7 +1454,6 @@ dependencies = [
  "enclone_tools",
  "enclone_vars",
  "enclone_visual",
- "failure",
  "flate2",
  "fs_extra",
  "io_utils",
@@ -1525,7 +1524,6 @@ dependencies = [
  "enclone_core",
  "enclone_proto",
  "equiv",
- "failure",
  "hdf5",
  "io_utils",
  "itertools",
@@ -1552,11 +1550,11 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "failure",
  "prost",
  "prost-build",
  "serde",
  "serde_derive",
+ "thiserror",
  "vdj_ann",
 ]
 
@@ -1696,6 +1694,7 @@ dependencies = [
 name = "enclone_visual"
 version = "0.5.112"
 dependencies = [
+ "anyhow",
  "arboard",
  "base64 0.13.0",
  "chrono",
@@ -1710,7 +1709,6 @@ dependencies = [
  "enclone_stuff",
  "enclone_tail",
  "enclone_version",
- "failure",
  "flate2",
  "fs_extra",
  "iced",
@@ -1742,7 +1740,6 @@ dependencies = [
  "tonic-build",
  "users",
  "vector_utils",
- "zstd",
 ]
 
 [[package]]
@@ -1863,28 +1860,6 @@ checksum = "658f19728920138342f68408b7cf7644d90d4784353d8ebc32e7e8663dbe45fa"
 dependencies = [
  "cmake",
  "pkg-config",
-]
-
-[[package]]
-name = "failure"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d32e9bd16cc02eae7db7ef620b392808b89f6a5e16bb3497d159c6b92a0f4f86"
-dependencies = [
- "backtrace",
- "failure_derive",
-]
-
-[[package]]
-name = "failure_derive"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa4da3c766cd7a0db8242e326e9e4e081edd567072893ed320008189715366a4"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "synstructure",
 ]
 
 [[package]]
@@ -3931,19 +3906,17 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.17"
+version = "0.5.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3517f2c3ff4b2eb09a6ea5d860d5f8b09adb0d8b1f9c3cec64ba32e1ecd5675e"
+checksum = "8ec0b8558e69326c5a4394adfd87208445961d7233d53dde7748baa504229a9d"
 dependencies = [
  "backtrace",
- "failure",
  "io_utils",
  "itertools",
  "lazy_static",
  "libc",
  "nix 0.21.2",
  "pprof",
- "rayon",
  "stats_utils",
  "string_utils",
  "tables",
@@ -4801,18 +4774,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "synstructure"
-version = "0.12.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "474aaa926faa1603c40b7885a9eaea29b444d1cb2850cb7c0e37bb1a4182f4fa"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "unicode-xid",
-]
-
-[[package]]
 name = "tables"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5309,7 +5270,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=19f96f7115e3e8be3f49739d3a069d9b995cc6cd#19f96f7115e3e8be3f49739d3a069d9b995cc6cd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=19329ad04342061ddb6373cfd435f046dfc4331d#19329ad04342061ddb6373cfd435f046dfc4331d"
 dependencies = [
  "align_tools",
  "amino",
@@ -5329,7 +5290,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "strum",
- "strum_macros 0.21.1",
+ "strum_macros 0.20.1",
  "vdj_types",
  "vector_utils",
 ]

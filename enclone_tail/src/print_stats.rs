@@ -2,7 +2,7 @@
 
 // Print statistics.
 
-use crate::alluvial_fb::alluvial_fb;
+use crate::alluvial_fb::*;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
@@ -878,4 +878,5 @@ pub fn print_stats(
     // which is not the only way of doing it.
 
     alluvial_fb(ctl, gex_info, vdj_cells, logx);
+    common_gumis(ctl, gex_info, logx);
 }
