@@ -22,6 +22,16 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ExpandCommonGumiTables => {
+                self.common_gumi_expand = true;
+                Command::none()
+            }
+
+            Message::HideCommonGumiTables => {
+                self.common_gumi_expand = false;
+                Command::none()
+            }
+
             Message::SetSummaryScrollablePos(p) => {
                 self.summary_scroll.snap_to(p);
                 Command::none()

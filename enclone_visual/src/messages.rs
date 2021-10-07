@@ -97,4 +97,6 @@ pub enum Message {
     CopyCommonGumiTables,
     CompleteCopyCommonGumiTables(Result<(), String>),
     SetSummaryScrollablePos(f32),
+    ExpandCommonGumiTables,
+    HideCommonGumiTables,
 }

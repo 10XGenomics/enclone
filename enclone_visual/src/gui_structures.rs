@@ -128,6 +128,7 @@ pub struct EncloneVisual {
     pub sanity_check_start: Option<Instant>,
     pub alluvial_tables_for_spreadsheet: String,
     pub alluvial_tables_copy_button_color: Color,
+    pub common_gumi_expand: bool,
     pub common_gumi_tables_for_spreadsheet: String,
     pub common_gumi_tables_copy_button_color: Color,
     //
@@ -192,6 +193,8 @@ pub struct EncloneVisual {
     pub tooltip_toggle_button: button::State,
     pub alluvial_tables_copy_button: button::State,
     pub common_gumi_tables_copy_button: button::State,
+    pub common_gumi_tables_expand_button: button::State,
+    pub common_gumi_tables_hide_button: button::State,
     //
     // more
     //
