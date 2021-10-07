@@ -304,7 +304,8 @@ fn main() {
                     let mut f = File::create(&format!(
                         "{}/outs/feature_barcode_matrix.common_gumis",
                         target
-                    )).unwrap();
+                    ))
+                    .unwrap();
                     let mut bytes = Vec::<u8>::new();
                     bytes.append(&mut save_vec_f32(&common_gumi_freq));
                     bytes.append(&mut save_vec_vec_u8(&common_gumi_content));
