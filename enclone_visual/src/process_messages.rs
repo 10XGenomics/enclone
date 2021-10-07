@@ -354,6 +354,13 @@ impl EncloneVisual {
                         META_TESTING.store(false, SeqCst);
                         return Command::none();
                     }
+                    if PLAYBACK.load(SeqCst) {
+                        println!("message history:\n");
+                        let messages = compressed_message_history();
+                        for i in 0..messages.len() {
+                            println!("[{}] {}", i + 1, messages[i]);
+                        }
+                    }
                     std::process::exit(0);
                 }
                 Command::perform(noop0(), Message::Meta)

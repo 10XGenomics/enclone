@@ -59,7 +59,6 @@ pub fn do_meta(slf: &mut EncloneVisual) -> Command<Message> {
             META_TESTING.store(false, SeqCst);
             return Command::none();
         }
-        std::process::exit(0);
     }
     let mut done = false;
     let mut null = false;
