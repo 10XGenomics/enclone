@@ -346,11 +346,17 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .size(orig_font_size as u16),
         );
 
-    // If there is a second part, which for now would be a FeatureBarcodeAlluvialTableSet,
-    // add that.
+    // If there is a FeatureBarcodeAlluvialTableSet, add that.
 
-    if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
-        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[1].content);
+    let mut alluv = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeAlluvialTableSet" {
+            alluv = Some(j);
+        }
+    }
+    if alluv.is_some() {
+        let j = alluv.unwrap();
+        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[j].content);
         slf.alluvial_tables_for_spreadsheet.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
@@ -384,6 +390,64 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Text::new("Copy").color(slf.alluvial_tables_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTables),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", tables_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
+
+    // If there is a FeatureBarcodeCommonGumisTableSet, add that.
+
+    let mut gumi = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeCommonGumisTableSet" {
+            gumi = Some(j);
+        }
+    }
+    if gumi.is_some() {
+        let j = gumi.unwrap();
+        let tables = FeatureBarcodeCommonGumisTableSet::from_string(&hets[j].content);
+        slf.common_gumi_tables_for_spreadsheet.clear();
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!(
+                "\nfrequent UMIs having feature barcode GGGGGGGGGGGGGGG for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+            slf.common_gumi_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+        }
+        tables_text += "\n \n";
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Common UMIs for feature barcode GGGGGGGGGGGGGGG")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Text::new(
+                "These tables concern the feature barcode reads for which the feature barcode \
+                 is GGGGGGGGGGGGGGG.  Amongst these, we show the most frequent UMIs.  The \
+                 percent column is the percent of reads having feature barcode \
+                 GGGGGGGGGGGGGGG, that have the given UMI.\n\n\
+                 All the tables can be copied at once, in a form suitable for inclusion in \
+                 a spreadsheet, by pushing the button below.",
+            ))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.common_gumi_tables_copy_button,
+                    Text::new("Copy").color(slf.common_gumi_tables_copy_button_color),
+                )
+                .on_press(Message::CopyCommonGumiTables),
             )
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))

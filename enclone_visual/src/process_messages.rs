@@ -64,6 +64,17 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::CopyCommonGumiTables => {
+                self.common_gumi_tables_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.common_gumi_tables_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyCommonGumiTables)
+            }
+
+            Message::CompleteCopyCommonGumiTables(_) => {
+                self.common_gumi_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::TooltipToggle => {
                 self.tooltip_toggle_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let pos = (TOOLTIP_POS.load(SeqCst) + 1) % 4;

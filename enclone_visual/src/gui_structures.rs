@@ -128,6 +128,8 @@ pub struct EncloneVisual {
     pub sanity_check_start: Option<Instant>,
     pub alluvial_tables_for_spreadsheet: String,
     pub alluvial_tables_copy_button_color: Color,
+    pub common_gumi_tables_for_spreadsheet: String,
+    pub common_gumi_tables_copy_button_color: Color,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -189,6 +191,7 @@ pub struct EncloneVisual {
     pub clonotypes_copy_button: button::State,
     pub tooltip_toggle_button: button::State,
     pub alluvial_tables_copy_button: button::State,
+    pub common_gumi_tables_copy_button: button::State,
     //
     // more
     //

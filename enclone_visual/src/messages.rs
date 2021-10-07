@@ -94,5 +94,7 @@ pub enum Message {
     CompleteTooltipToggle(Result<(), String>),
     CopyAlluvialTables,
     CompleteCopyAlluvialTables(Result<(), String>),
+    CopyCommonGumiTables,
+    CompleteCopyCommonGumiTables(Result<(), String>),
     SetSummaryScrollablePos(f32),
 }
