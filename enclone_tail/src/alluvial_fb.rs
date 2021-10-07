@@ -273,17 +273,17 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
             let mut rows = Vec::<Vec<String>>::new();
             let mut csv_rows = Vec::<Vec<String>>::new();
             let row = vec![
-                "dataset name".to_string(),
                 "percent".to_string(),
                 "UMI".to_string(),
             ];
             rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 2]);
             for i in 0..min(10, freqs.len()) {
-                let row = vec![format!("{:.1}", freqs[i]), stringme(&umis[i])];
+                let row = vec![format!("{:.1}", 100.0 * freqs[i]), stringme(&umis[i])];
                 rows.push(row);
                 csv_rows.push(vec![
                     ctl.origin_info.dataset_id[li].clone(),
-                    format!("{:.1}", freqs[i]),
+                    format!("{:.1}", 100.0 * freqs[i]),
                     stringme(&umis[i]),
                 ]);
             }
@@ -292,7 +292,7 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
                 &mut display_text,
                 &rows,
                 0,
-                &b"l|r|l".to_vec(),
+                &b"r|l".to_vec(),
                 false,
                 false,
             );

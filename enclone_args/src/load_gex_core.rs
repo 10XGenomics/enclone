@@ -812,7 +812,7 @@ pub fn load_gex(
                 pathlist.push(common_gumis_file.clone());
                 let mut bytes = Vec::<u8>::new();
                 let mut f = open_for_read![&common_gumis_file];
-                f.read_exact(&mut bytes).unwrap();
+                f.read_to_end(&mut bytes).unwrap();
                 let mut pos = 0;
                 let common_gumi_freq = restore_vec_f32(&bytes, &mut pos).unwrap();
                 let common_gumi_content = restore_vec_vec_u8(&bytes, &mut pos).unwrap();
