@@ -261,11 +261,7 @@ pub fn alluvial_fb(
     }
 }
 
-pub fn common_gumis(
-    ctl: &EncloneControl,
-    gex_info: &GexInfo,
-    logx: &mut Vec<u8>,
-) {
+pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>) {
     let mut fs = Vec::<FeatureBarcodeCommonGumisTable>::new();
     let mut have_some = false;
     for li in 0..ctl.origin_info.n() {
@@ -281,13 +277,11 @@ pub fn common_gumis(
             for i in 0..freqs.len() {
                 let row = vec![format!("{:.1}", freqs[i]), stringme(&umis[i])];
                 rows.push(row);
-                csv_rows.push(
-                    vec![
-                        ctl.origin_info.dataset_id[li].clone(),
-                        format!("{:.1}", freqs[i]), 
-                        stringme(&umis[i]),
-                    ]
-                );
+                csv_rows.push(vec![
+                    ctl.origin_info.dataset_id[li].clone(),
+                    format!("{:.1}", freqs[i]),
+                    stringme(&umis[i]),
+                ]);
             }
             let mut display_text = String::new();
             print_tabular_vbox(
