@@ -194,7 +194,15 @@ pub fn feature_barcode_matrix(
     id: usize,
     verbose: bool,
     ref_fb: &Vec<String>,
-) -> Result<(MirrorSparseMatrix, u64, Vec<(String, u32, u32)>, Vec<(f32, Vec<u8>)>), String> {
+) -> Result<
+    (
+        MirrorSparseMatrix,
+        u64,
+        Vec<(String, u32, u32)>,
+        Vec<(f32, Vec<u8>)>,
+    ),
+    String,
+> {
     let t = Instant::now();
 
     // Find the read files.

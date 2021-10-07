@@ -304,7 +304,6 @@ fn main() {
                         "{}/outs/feature_barcode_matrix.common_gumis",
                         target
                     )];
-
                 }
             }
         }
