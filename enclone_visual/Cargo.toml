@@ -32,6 +32,7 @@ enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
+enclone_tools = { path = "../enclone_tools" }
 enclone_version = { path = "../enclone_version" }
 failure = "0.1"
 flate2 = "1"
@@ -61,7 +62,6 @@ tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
 users = "0.11"
 vector_utils = "0.1"
-zstd = "0.9"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"

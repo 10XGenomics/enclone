@@ -1673,6 +1673,7 @@ dependencies = [
  "string_utils",
  "vdj_ann",
  "vector_utils",
+ "zstd",
 ]
 
 [[package]]
@@ -1709,6 +1710,7 @@ dependencies = [
  "enclone_main",
  "enclone_stuff",
  "enclone_tail",
+ "enclone_tools",
  "enclone_version",
  "failure",
  "flate2",
@@ -1742,7 +1744,6 @@ dependencies = [
  "tonic-build",
  "users",
  "vector_utils",
- "zstd",
 ]
 
 [[package]]
