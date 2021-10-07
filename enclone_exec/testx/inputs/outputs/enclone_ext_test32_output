@@ -56,3 +56,9 @@ feature barcode UMI distribution for 1145040
 │     │                │                 │ 0.6 CCTAATGGTCTAGAC               │
 └─────┴────────────────┴─────────────────┴───────────────────────────────────┘
 
+frequent UMIs having feature barcode GGGGGGGGGGGGGGG for 1145040
+┌───────┬───┐
+│percent│UMI│
+├───────┴───┤
+└───────┴───┘
+
