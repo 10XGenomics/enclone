@@ -4,10 +4,9 @@
 //
 // Create a cell barcode x feature barcode matrix for the most frequent barcodes.
 // 1. Extract {cell barcode, umi, feature barcode} for each read.
-// 2. Discard data where a cell barcode has only one read.
-// 3. For a given {cell barcode, umi}, pick the most frequent feature barcode.
-// 4. Report data for only the top 100 feature barcodes.
-// 5. List the barcodes in order by frequency.
+// 2. For a given {cell barcode, umi}, pick the most frequent feature barcode.
+// 3. Report data for only the top 100 feature barcodes.
+// 4. List the barcodes in order by frequency.
 //
 // Also compute several other statistical entities.
 
@@ -328,8 +327,6 @@ pub fn feature_barcode_matrix(
         }
         if sing {
             singletons += 1;
-            i = j;
-            continue;
         }
         let mut bfs = Vec::<String>::new();
         for k in i..j {
