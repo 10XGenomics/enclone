@@ -275,7 +275,7 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
             let row = vec!["percent".to_string(), "UMI".to_string()];
             rows.push(row);
             rows.push(vec!["\\hline".to_string(); 2]);
-            for i in 0..min(10, freqs.len()) {
+            for i in 0..min(20, freqs.len()) {
                 let row = vec![format!("{:.1}", 100.0 * freqs[i]), stringme(&umis[i])];
                 rows.push(row);
                 csv_rows.push(vec![
