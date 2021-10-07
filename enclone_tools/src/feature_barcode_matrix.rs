@@ -199,7 +199,8 @@ pub fn feature_barcode_matrix(
         MirrorSparseMatrix,
         u64,
         Vec<(String, u32, u32)>,
-        Vec<(f32, Vec<u8>)>,
+        Vec<f32>,
+        Vec<Vec<u8>>,
     ),
     String,
 > {
@@ -302,7 +303,8 @@ pub fn feature_barcode_matrix(
 
     // For poly-G feature barcodes, find overrepresented UMIs.
 
-    let mut common_gumi = Vec::<(f32, Vec<u8>)>::new();
+    let mut common_gumi_freq = Vec::<f32>::new();
+    let mut common_gumi_content = Vec::<Vec<u8>>::new();
     {
         let mut gumi = Vec::<Vec<u8>>::new();
         for i in 0..buf.len() {
@@ -314,7 +316,8 @@ pub fn feature_barcode_matrix(
         let mut freq = Vec::<(u32, Vec<u8>)>::new();
         make_freq(&gumi, &mut freq);
         for i in 0..std::cmp::min(100, freq.len()) {
-            common_gumi.push((freq[i].0 as f32 / gumi.len() as f32, freq[i].1.clone()));
+            common_gumi_freq.push(freq[i].0 as f32 / gumi.len() as f32);
+            common_gumi_content.push(freq[i].1.clone());
         }
     }
 
@@ -484,5 +487,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total, brn, common_gumi))
+    Ok((m, total, brn, common_gumi_freq, common_gumi_content))
 }

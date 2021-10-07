@@ -281,7 +281,7 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn, common_gumis) = x.unwrap();
+                let (m, total, brn, common_gumi_freq, common_gumi_content) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
