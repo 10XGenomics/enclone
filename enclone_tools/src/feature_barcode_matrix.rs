@@ -4,11 +4,12 @@
 //
 // Create a cell barcode x feature barcode matrix for the most frequent barcodes.
 // 1. Extract {cell barcode, umi, feature barcode} for each read.
-// 2. Discard feature barcode = GGGGGGGGGGGGGGG.
-// 3. Discard data where a cell barcode has only one read.
-// 4. For a given {cell barcode, umi}, pick the most frequent feature barcode.
-// 5. Report data for only the top 100 feature barcodes.
-// 6. List the barcodes in order by frequency.
+// 2. Discard data where a cell barcode has only one read.
+// 3. For a given {cell barcode, umi}, pick the most frequent feature barcode.
+// 4. Report data for only the top 100 feature barcodes.
+// 5. List the barcodes in order by frequency.
+//
+// Also compute several other statistical entities.
 
 use enclone_core::defs::get_config;
 use enclone_core::fetch_url;
@@ -187,12 +188,14 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// This computes a feature barcode matrix and several other statistical entities.
+
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
     verbose: bool,
     ref_fb: &Vec<String>,
-) -> Result<(MirrorSparseMatrix, u64, Vec<(String, u32, u32)>), String> {
+) -> Result<(MirrorSparseMatrix, u64, Vec<(String, u32, u32)>, Vec<(f32, Vec<u8>)>), String> {
     let t = Instant::now();
 
     // Find the read files.
@@ -290,7 +293,25 @@ pub fn feature_barcode_matrix(
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
-    // Reduce to UMI counts.
+    // For poly-G feature barcodes, find overrepresented UMIs.
+
+    let mut common_gumi = Vec::<(f32, Vec<u8>)>::new();
+    {
+        let mut gumi = Vec::<Vec<u8>>::new();
+        for i in 0..buf.len() {
+            if buf[i].2 == b"GGGGGGGGGGGGGGG" {
+                gumi.push(buf[i].1.clone());
+            }
+        }
+        gumi.par_sort();
+        let mut freq = Vec::<(u32, Vec<u8>)>::new();
+        make_freq(&gumi, &mut freq);
+        for i in 0..std::cmp::min(100, freq.len()) {
+            common_gumi.push((freq[i].0 as f32 / gumi.len() as f32, freq[i].1.clone()));
+        }
+    }
+
+    // Reduce buf to UMI counts.
 
     buf.par_sort();
     let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
@@ -458,5 +479,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total, brn))
+    Ok((m, total, brn, common_gumi))
 }

@@ -281,7 +281,7 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn) = x.unwrap();
+                let (m, total, brn, common_gumis) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -300,6 +300,11 @@ fn main() {
                     for j in 0..brn.len() {
                         fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
                     }
+                    let mut f = open_for_write_new![&format!(
+                        "{}/outs/feature_barcode_matrix.common_gumis",
+                        target
+                    )];
+
                 }
             }
         }
