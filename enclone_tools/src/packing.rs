@@ -31,6 +31,14 @@ pub fn u32_from_bytes(x: &[u8]) -> u32 {
     u32::from_le_bytes([x[0], x[1], x[2], x[3]])
 }
 
+pub fn f32_bytes(x: usize) -> Vec<u8> {
+    (x as f32).to_le_bytes().to_vec()
+}
+
+pub fn f32_from_bytes(x: &[u8]) -> f32 {
+    f32::from_le_bytes([x[0], x[1], x[2], x[3]])
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn save_string(x: &String) -> Vec<u8> {
@@ -303,5 +311,33 @@ pub fn restore_bool(x: &Vec<u8>, pos: &mut usize) -> Result<bool, ()> {
     }
     let y = x[*pos] != 0;
     *pos += 1;
+    Ok(y)
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn save_vec_f32(x: &Vec<f32>) -> Vec<u8> {
+    let mut bytes = Vec::<u8>::new();
+    bytes.append(&mut f32_bytes(x.len()));
+    for i in 0..x.len() {
+        bytes.append(&mut x[i].to_le_bytes().to_vec());
+    }
+    bytes
+}
+
+pub fn restore_vec_f32(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<f32>, ()> {
+    if *pos + 4 > x.len() {
+        return Err(());
+    }
+    let n = f32_from_bytes(&x[*pos..*pos + 4]) as usize;
+    *pos += 4;
+    if *pos + 4 * n > x.len() {
+        return Err(());
+    }
+    let mut y = vec![0.0; n];
+    for j in 0..n {
+        y[j] = f32_from_bytes(&x[*pos..*pos + 4]);
+        *pos += 4;
+    }
     Ok(y)
 }
