@@ -291,7 +291,7 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
             print_tabular_vbox(
                 &mut display_text,
                 &rows,
-                1,
+                0,
                 &b"l|r|l".to_vec(),
                 false,
                 false,
