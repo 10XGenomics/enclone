@@ -272,10 +272,7 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
             let umis = &gex_info.fb_common_gumis[li].1;
             let mut rows = Vec::<Vec<String>>::new();
             let mut csv_rows = Vec::<Vec<String>>::new();
-            let row = vec![
-                "percent".to_string(),
-                "UMI".to_string(),
-            ];
+            let row = vec!["percent".to_string(), "UMI".to_string()];
             rows.push(row);
             rows.push(vec!["\\hline".to_string(); 2]);
             for i in 0..min(10, freqs.len()) {
@@ -288,14 +285,7 @@ pub fn common_gumis(ctl: &EncloneControl, gex_info: &GexInfo, logx: &mut Vec<u8>
                 ]);
             }
             let mut display_text = String::new();
-            print_tabular_vbox(
-                &mut display_text,
-                &rows,
-                0,
-                &b"r|l".to_vec(),
-                false,
-                false,
-            );
+            print_tabular_vbox(&mut display_text, &rows, 0, &b"r|l".to_vec(), false, false);
             if !ctl.visual_mode {
                 fwrite!(
                     logx,
