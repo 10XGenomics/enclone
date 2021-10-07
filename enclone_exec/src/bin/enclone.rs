@@ -6,7 +6,9 @@
 
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
+#[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_client::enclone_client;
+#[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_server::enclone_server;
 use io_utils::*;
 use nix::sys::signal::{kill, SIGINT};
@@ -17,12 +19,12 @@ use std::env;
 use std::process::Command;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use string_utils::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let t = Instant::now();
+
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
     let mut no_kill = false;
@@ -85,11 +87,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::process::exit(0);
     }
 
-    // Client run of enclone.
 
-    for i in 0..args.len() {
-        if args[i] == "VIS" || args[i].starts_with("VIS=") {
-            enclone_client(&t).await?;
+    // Client run of enclone.
+    #[cfg(feature = "enclone_visual")]
+    {
+        let t = std::time::Instant::now();
+        for i in 0..args.len() {
+            if args[i] == "VIS" || args[i].starts_with("VIS=") {
+                enclone_client(&t).await?;
+            }
         }
     }
 
@@ -125,7 +131,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Server run of enclone.
-
-    enclone_server().await?;
+    #[cfg(feature = "enclone_visual")]
+    {
+        enclone_server().await?;
+    }
     Ok(())
 }

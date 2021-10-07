@@ -26,7 +26,7 @@ path = "src/bin/enclone.rs"
 [dependencies]
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
-enclone_visual = { path = "../enclone_visual" }
+enclone_visual = { path = "../enclone_visual", optional=true }
 io_utils = "0.2"
 nix = ">=0.20, <0.23"
 pretty_trace = "0.5"
