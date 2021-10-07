@@ -93,7 +93,7 @@ fn main() {
     // RUN A COUPLE TESTS IN LOCAL MODE
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    for n in [4, 5].iter() {
+    for n in [4, 5, 6].iter() {
         let n = *n;
         if tests.is_empty() || tests.contains(&format!("{}", n)) {
             let metas = metatests()[n - 1].clone();

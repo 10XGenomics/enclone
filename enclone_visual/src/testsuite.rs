@@ -115,6 +115,9 @@ pub fn metatests() -> Vec<Vec<Message>> {
             ),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetName("abbr"),
+        ],
+        // 6 = enclone VIS
+        vec![
 
             Message::InputChanged1("enclone TCR_GEX=1175299".to_string()),
             Message::SubmitButtonPressed(Ok(())),
@@ -122,6 +125,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::SummaryOpen(Ok(())),
             Message::SetName("alluvial_tables"),
         ],
+
     ]
 }
 
