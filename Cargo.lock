@@ -1329,7 +1329,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1361,7 +1361,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -1382,7 +1382,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1412,7 +1412,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_denovo"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "amino",
  "binary_vec_io",
@@ -1442,7 +1442,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "ansi_escape",
  "anyhow",
@@ -1458,7 +1458,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.22.2",
+ "nix 0.20.2",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1473,7 +1473,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -1485,7 +1485,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "dirs",
  "enclone",
@@ -1512,7 +1512,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1545,7 +1545,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -1560,7 +1560,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_ranger"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1579,7 +1579,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_stuff"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "amino",
  "debruijn",
@@ -1605,7 +1605,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "align_tools",
  "amino",
@@ -1646,7 +1646,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -1675,7 +1675,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_vars"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "pretty_trace",
  "string_utils",
@@ -1684,7 +1684,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_version"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "chrono",
  "string_utils",
@@ -1692,7 +1692,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.112"
+version = "0.5.113"
 dependencies = [
  "anyhow",
  "arboard",
@@ -1722,7 +1722,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.22.2",
+ "nix 0.20.2",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -3357,19 +3357,6 @@ name = "nix"
 version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77d9f3521ea8e0641a153b3cddaf008dcbf26acd4ed739a2517295e0760d12c7"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
- "memoffset",
-]
-
-[[package]]
-name = "nix"
-version = "0.22.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3bb9a13fa32bc5aeb64150cd3f32d6cf4c748f8f8a417cce5d2eb976a8370ba"
 dependencies = [
  "bitflags",
  "cc",
