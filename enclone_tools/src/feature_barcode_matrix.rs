@@ -206,6 +206,8 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 // • rows = cell barcodes
 // • columns = frequent feature barcodes
 // • entries = number of reads
+//
+// 7 = u64 = total number of reads (meaning as usual, read pairs)
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
@@ -220,6 +222,7 @@ pub fn feature_barcode_matrix(
         Vec<f32>,
         Vec<Vec<u8>>,
         MirrorSparseMatrix,
+        u64,
     ),
     String,
 > {
@@ -272,7 +275,6 @@ pub fn feature_barcode_matrix(
 
     eprintln!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
-    let mut total_reads = 0;
     let mut junk = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
@@ -316,7 +318,6 @@ pub fn feature_barcode_matrix(
                     );
                     */
 
-                    total_reads += 1;
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
                     }
@@ -325,8 +326,9 @@ pub fn feature_barcode_matrix(
             }
         }
     }
+    let total_reads = buf.len();
     if verbose {
-        println!("there are {} read pairs", buf.len());
+        println!("there are {} read pairs", total_reads);
         let junk_percent = 100.0 * junk as f64 / total_reads as f64;
         println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
@@ -584,5 +586,6 @@ pub fn feature_barcode_matrix(
         common_gumi_freq,
         common_gumi_content,
         m_reads,
+        total_reads as u64,
     ))
 }

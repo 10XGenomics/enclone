@@ -293,7 +293,8 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn, common_gumi_freq, common_gumi_content, m_reads) = x.unwrap();
+                let (m, total, brn, common_gumi_freq, common_gumi_content, m_reads, total_reads) =
+                    x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -309,6 +310,12 @@ fn main() {
                         File::create(&format!("{}/outs/feature_barcode_matrix_top.total", target))
                             .unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
+                    let mut f = File::create(&format!(
+                        "{}/outs/feature_barcode_matrix_top.total_reads",
+                        target
+                    ))
+                    .unwrap();
+                    f.write_all(&total_reads.to_ne_bytes()).unwrap();
                     let mut f = open_for_write_new![&format!(
                         "{}/outs/feature_barcode_matrix_top.brn",
                         target
