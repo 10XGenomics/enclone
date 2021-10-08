@@ -199,7 +199,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 // 3 = Vec<(String, u32, u32)> = for each cell barcode the number of UMIs whose feature barcode
 //     is reference, and the number whose feature barcode is nonreference.
 //
-// 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and 
+// 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and
 //        their frequencies, as (number of reads) / (all reads for GGGGGGGGGGGGGGG).
 //
 // 6 = MirrorSparseMatrix
@@ -577,5 +577,12 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total_umis, brn, common_gumi_freq, common_gumi_content, m_reads))
+    Ok((
+        m,
+        total_umis,
+        brn,
+        common_gumi_freq,
+        common_gumi_content,
+        m_reads,
+    ))
 }
