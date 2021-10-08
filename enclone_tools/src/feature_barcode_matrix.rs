@@ -26,7 +26,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::time::Instant;
 use string_utils::{stringme, strme, TextUtils};
-use vector_utils::{bin_member, bin_position, make_freq, next_diff12_3, next_diff1_3, sort_sync2};
+use vector_utils::*;
 
 pub struct SequencingDef {
     pub read_path: String,
@@ -201,6 +201,11 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 //
 // 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and 
 //        their frequencies, as (number of reads) / (all reads for GGGGGGGGGGGGGGG).
+//
+// 6 = MirrorSparseMatrix
+// • rows = cell barcodes
+// • columns = frequent feature barcodes
+// • entries = number of reads
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
@@ -214,6 +219,7 @@ pub fn feature_barcode_matrix(
         Vec<(String, u32, u32)>,
         Vec<f32>,
         Vec<Vec<u8>>,
+        MirrorSparseMatrix,
     ),
     String,
 > {
@@ -334,9 +340,69 @@ pub fn feature_barcode_matrix(
         }
     }
 
-    // Reduce buf to UMI counts.
+    // Find the most common feature barcodes, by read count.
+
+    let mut fbs = Vec::<Vec<u8>>::new();
+    for i in 0..buf.len() {
+        fbs.push(buf[i].2.clone());
+    }
+    fbs.par_sort();
+    let mut fb_freq = Vec::<(u32, Vec<u8>)>::new();
+    make_freq(&fbs, &mut fb_freq);
+    const TOP_FEATURE_BARCODES: usize = 100;
+    if fb_freq.len() > TOP_FEATURE_BARCODES {
+        fb_freq.truncate(TOP_FEATURE_BARCODES);
+    }
+    let mut fb_freq_sorted = Vec::<Vec<u8>>::new();
+    for i in 0..fb_freq.len() {
+        fb_freq_sorted.push(fb_freq[i].1.clone());
+    }
+    let mut ids_ffs = Vec::<usize>::new();
+    for i in 0..fb_freq_sorted.len() {
+        ids_ffs.push(i);
+    }
+    sort_sync2(&mut fb_freq_sorted, &mut ids_ffs);
+
+    // Generate a feature-barcode matrix for the common feature barcodes, by read count.
+
+    if verbose {
+        println!("making mirror sparse matrix, by read counts");
+    }
+    let mut bf = Vec::<(Vec<u8>, Vec<u8>)>::new();
+    for i in 0..buf.len() {
+        bf.push((buf[i].0.clone(), buf[i].2.clone()));
+    }
+    bf.par_sort();
+    let mut x = Vec::<Vec<(i32, i32)>>::new();
+    let mut row_labels = Vec::<String>::new();
+    let mut col_labels = Vec::<String>::new();
+    for z in fb_freq.iter() {
+        col_labels.push(stringme(&z.1));
+    }
+    let mut i = 0;
+    while i < bf.len() {
+        let j = next_diff1_2(&bf, i as i32) as usize;
+        let mut y = Vec::<(i32, i32)>::new();
+        for k in i..j {
+            let p = bin_position(&fb_freq_sorted, &bf[k].1);
+            if p >= 0 {
+                y.push((ids_ffs[p as usize] as i32, (j - i) as i32));
+            }
+        }
+        if !y.is_empty() {
+            row_labels.push(format!("{}-1", strme(&bf[i].0)));
+            x.push(y);
+        }
+        i = j;
+    }
+    let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
+
+    // Sort buf.
 
     buf.par_sort();
+
+    // Reduce buf to UMI counts.
+
     let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
     let mut singletons = 0;
     let mut i = 0;
@@ -437,9 +503,8 @@ pub fn feature_barcode_matrix(
         println!("total UMIs = {}\n", total_umis);
     }
 
-    // Report common feature barcodes.
+    // Report common feature barcodes, by UMI count.
 
-    const TOP_FEATURE_BARCODES: usize = 100;
     if verbose {
         println!("common feature barcodes and their total UMI counts\n");
     }
@@ -469,7 +534,7 @@ pub fn feature_barcode_matrix(
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
-    // Generate a feature-barcode matrix for the common feature barcodes.
+    // Generate a feature-barcode matrix for the common feature barcodes, by UMI count.
 
     if verbose {
         println!("making mirror sparse matrix");
@@ -500,5 +565,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total_umis, brn, common_gumi_freq, common_gumi_content))
+    Ok((m, total_umis, brn, common_gumi_freq, common_gumi_content, m_reads))
 }

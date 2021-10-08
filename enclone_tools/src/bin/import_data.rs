@@ -293,13 +293,17 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn, common_gumi_freq, common_gumi_content) = x.unwrap();
+                let (m, total, brn, common_gumi_freq, common_gumi_content, m_reads) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
                     write_to_file(
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
+                    );
+                    write_to_file(
+                        &m_reads,
+                        &format!("{}/outs/feature_barcode_matrix_top_reads.bin", target),
                     );
                     let mut f =
                         File::create(&format!("{}/outs/feature_barcode_matrix_top.total", target))
