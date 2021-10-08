@@ -187,7 +187,20 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This computes a feature barcode matrix and several other statistical entities.
+// This computes a feature barcode matrix and several other statistical entities:
+//
+// 1 = MirrorSparseMatrix
+// • rows = cell barcodes
+// • columns = frequent feature barcodes
+// • entries = number of UMIs
+//
+// 2 = u64 = "total UMIs" = total number of pairs (cell barcode, UMI) observed
+//
+// 3 = Vec<(String, u32, u32)> = for each cell barcode the number of UMIs whose feature barcode
+//     is reference, and the number whose feature barcode is nonreference.
+//
+// 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and 
+//        their frequencies, as (number of reads) / (all reads for GGGGGGGGGGGGGGG).
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
@@ -416,12 +429,12 @@ pub fn feature_barcode_matrix(
         println!("there are {} uniques", bfu.len());
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
-    let mut total = 0;
+    let mut total_umis = 0;
     for i in 0..bfn.len() {
-        total += bfn[i].2 as u64;
+        total_umis += bfn[i].2 as u64;
     }
     if verbose {
-        println!("total UMIs = {}\n", total);
+        println!("total UMIs = {}\n", total_umis);
     }
 
     // Report common feature barcodes.
@@ -487,5 +500,5 @@ pub fn feature_barcode_matrix(
     if verbose {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total, brn, common_gumi_freq, common_gumi_content))
+    Ok((m, total_umis, brn, common_gumi_freq, common_gumi_content))
 }
