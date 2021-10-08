@@ -304,6 +304,18 @@ pub fn feature_barcode_matrix(
                     umi = s[16..28].to_vec();
                 } else {
                     fb = s[10..25].to_vec();
+
+                    /*
+                    println!("{} {} {} {} {} {}",
+                        strme(&barcode),
+                        strme(&umi),
+                        strme(&s[0..10]),
+                        strme(&fb),
+                        strme(&s[25..35]),
+                        strme(&s[35..55]),
+                    );
+                    */
+
                     total_reads += 1;
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
