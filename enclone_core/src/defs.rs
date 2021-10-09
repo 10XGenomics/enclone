@@ -736,6 +736,8 @@ pub struct GexInfo {
     pub gex_matrices: Vec<MirrorSparseMatrix>,
     pub fb_top_matrices: Vec<MirrorSparseMatrix>,
     pub fb_top_barcodes: Vec<Vec<String>>,
+    pub fb_top_reads_matrices: Vec<MirrorSparseMatrix>,
+    pub fb_top_reads_barcodes: Vec<Vec<String>>,
     pub fb_total_umis: Vec<u64>,
     pub fb_brn: Vec<Vec<(String, u32, u32)>>,
     pub fb_brnr: Vec<Vec<(String, u32, u32)>>,

@@ -66,6 +66,8 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_top_barcodes: &mut Vec<Vec<String>>,
     fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
+    fb_top_reads_barcodes: &mut Vec<Vec<String>>,
+    fb_top_reads_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_total_umis: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
     fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
@@ -111,6 +113,8 @@ pub fn load_gex(
         String,
         (Vec<f32>, Vec<Vec<u8>>),
         Vec<(String, u32, u32)>,
+        MirrorSparseMatrix,
+        Vec<String>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -138,6 +142,8 @@ pub fn load_gex(
             String::new(),
             (Vec::new(), Vec::new()),
             Vec::new(),
+            MirrorSparseMatrix::new(),
+            Vec::<String>::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -745,7 +751,7 @@ pub fn load_gex(
             r.4 = gene_mult;
             r.5 = fb_mult;
 
-            // Read the top feature barcode matrix.
+            // Read the top feature barcode matrix, by UMIs.
 
             let mut top_file = format!("{}/../feature_barcode_matrix_top.bin", outs);
             if !path_exists(&top_file) {
@@ -757,6 +763,21 @@ pub fn load_gex(
                 let nrows = r.13.nrows();
                 for i in 0..nrows {
                     r.14.push(r.13.row_label(i));
+                }
+            }
+
+            // Read the top feature barcode matrix, by reads.
+
+            let mut top_file = format!("{}/../feature_barcode_matrix_top_reads.bin", outs);
+            if !path_exists(&top_file) {
+                top_file = format!("{}//feature_barcode_matrix_top_reads.bin", outs);
+            }
+            if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
+                read_from_file(&mut r.24, &top_file);
+                let nrows = r.24.nrows();
+                for i in 0..nrows {
+                    r.25.push(r.24.row_label(i));
                 }
             }
 
@@ -975,6 +996,8 @@ pub fn load_gex(
             x21,
             x22,
             x23,
+            x24,
+            x25,
         ),
     ) in results.into_iter().take(n).enumerate()
     {
@@ -1006,6 +1029,8 @@ pub fn load_gex(
         feature_refs.push(x21);
         fb_common_gumis.push(x22);
         fb_brnr.push(x23);
+        fb_top_reads_matrices.push(x24);
+        fb_top_reads_barcodes.push(x25);
     }
 
     // Done.

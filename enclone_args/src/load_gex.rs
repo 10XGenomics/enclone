@@ -21,6 +21,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut fb_top_barcodes = Vec::<Vec<String>>::new();
     let mut fb_top_matrices = Vec::<MirrorSparseMatrix>::new();
+    let mut fb_top_reads_barcodes = Vec::<Vec<String>>::new();
+    let mut fb_top_reads_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut fb_total_umis = Vec::<u64>::new();
     let mut fb_brn = Vec::<Vec<(String, u32, u32)>>::new();
     let mut fb_brnr = Vec::<Vec<(String, u32, u32)>>::new();
@@ -46,6 +48,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut gex_matrices,
         &mut fb_top_barcodes,
         &mut fb_top_matrices,
+        &mut fb_top_reads_barcodes,
+        &mut fb_top_reads_matrices,
         &mut fb_total_umis,
         &mut fb_brn,
         &mut fb_brnr,
@@ -156,6 +160,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         gex_matrices,
         fb_top_barcodes,
         fb_top_matrices,
+        fb_top_reads_barcodes,
+        fb_top_reads_matrices,
         fb_total_umis,
         fb_brn,
         fb_brnr,
