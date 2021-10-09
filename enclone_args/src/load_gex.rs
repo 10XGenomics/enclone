@@ -23,6 +23,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut fb_top_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut fb_total_umis = Vec::<u64>::new();
     let mut fb_brn = Vec::<Vec<(String, u32, u32)>>::new();
+    let mut fb_brnr = Vec::<Vec<(String, u32, u32)>>::new();
     let mut fb_common_gumis = Vec::<(Vec<f32>, Vec<Vec<u8>>)>::new();
     let mut feature_refs = Vec::<String>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
@@ -47,6 +48,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut fb_top_matrices,
         &mut fb_total_umis,
         &mut fb_brn,
+        &mut fb_brnr,
         &mut fb_common_gumis,
         &mut feature_refs,
         &mut cluster,
@@ -156,6 +158,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         fb_top_matrices,
         fb_total_umis,
         fb_brn,
+        fb_brnr,
         fb_common_gumis,
         feature_refs,
         cluster,

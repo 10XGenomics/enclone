@@ -68,6 +68,7 @@ pub fn load_gex(
     fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_total_umis: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
+    fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
     fb_common_gumis: &mut Vec<(Vec<f32>, Vec<Vec<u8>>)>,
     feature_refs: &mut Vec<String>,
     cluster: &mut Vec<HashMap<String, usize>>,
@@ -109,6 +110,7 @@ pub fn load_gex(
         Vec<(String, u32, u32)>,
         String,
         (Vec<f32>, Vec<Vec<u8>>),
+        Vec<(String, u32, u32)>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -135,6 +137,7 @@ pub fn load_gex(
             Vec::new(),
             String::new(),
             (Vec::new(), Vec::new()),
+            Vec::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -791,6 +794,26 @@ pub fn load_gex(
                 }
             }
 
+            // Read the barcode-ref-nonref read count file.
+
+            let mut brnr_file = format!("{}/../feature_barcode_matrix_top.brnr", outs);
+            if !path_exists(&brnr_file) {
+                brnr_file = format!("{}//feature_barcode_matrix_top.brnr", outs);
+            }
+            if path_exists(&brnr_file) {
+                pathlist.push(brnr_file.clone());
+                let f = open_for_read![&brnr_file];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    r.23.push((
+                        fields[0].to_string(),
+                        fields[1].parse::<u32>().unwrap(),
+                        fields[2].parse::<u32>().unwrap(),
+                    ));
+                }
+            }
+
             // Read the feature reference file.
 
             let mut fref_file = format!("{}/../feature_reference.csv", outs);
@@ -951,6 +974,7 @@ pub fn load_gex(
             x20,
             x21,
             x22,
+            x23,
         ),
     ) in results.into_iter().take(n).enumerate()
     {
@@ -981,6 +1005,7 @@ pub fn load_gex(
         fb_brn.push(x20);
         feature_refs.push(x21);
         fb_common_gumis.push(x22);
+        fb_brnr.push(x23);
     }
 
     // Done.
