@@ -54,7 +54,7 @@ impl Application for EncloneVisual {
         x.copy_selected_metrics_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.tooltip_toggle_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-        x.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.common_gumi_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;

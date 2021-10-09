@@ -63,6 +63,17 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::CopyAlluvialReadsTables => {
+                self.alluvial_reads_tables_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.alluvial_reads_tables_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyAlluvialReadsTables)
+            }
+
+            Message::CompleteCopyAlluvialReadsTables(_) => {
+                self.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyAlluvialTables => {
                 self.alluvial_tables_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.alluvial_tables_for_spreadsheet.as_bytes());
