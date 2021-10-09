@@ -105,6 +105,44 @@ impl FeatureBarcodeAlluvialTableSet {
         FeatureBarcodeAlluvialTableSet { s: s }
     }
 }
+
+pub struct FeatureBarcodeAlluvialReadsTable {
+    pub id: String,
+    pub display_text: String,
+    pub spreadsheet_text: String,
+}
+
+pub struct FeatureBarcodeAlluvialReadsTableSet {
+    pub s: Vec<FeatureBarcodeAlluvialReadsTable>,
+}
+
+impl FeatureBarcodeAlluvialReadsTableSet {
+    pub fn to_string(&self) -> String {
+        let mut v = Vec::<String>::new();
+        v.push("FeatureBarcodeAlluvialReadsTableSet".to_string());
+        v.push((3 * self.s.len() + 2).to_string());
+        for i in 0..self.s.len() {
+            v.push(self.s[i].id.clone());
+            v.push(self.s[i].display_text.clone());
+            v.push(self.s[i].spreadsheet_text.clone());
+        }
+        flatten_vec_string(&v)
+    }
+    pub fn from_string(x: &str) -> Self {
+        let v = unflatten_string(&x);
+        let n = v[1].force_usize() / 3;
+        let mut s = Vec::new();
+        for i in 0..n {
+            s.push(FeatureBarcodeAlluvialReadsTable {
+                id: v[2 + 3 * i].clone(),
+                display_text: v[2 + 3 * i + 1].clone(),
+                spreadsheet_text: v[2 + 3 * i + 2].clone(),
+            });
+        }
+        FeatureBarcodeAlluvialReadsTableSet { s: s }
+    }
+}
+
 pub struct FeatureBarcodeCommonGumisTable {
     pub id: String,
     pub display_text: String,
