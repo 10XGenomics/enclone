@@ -406,11 +406,14 @@ pub fn feature_barcode_matrix(
     while i < bf.len() {
         let j = next_diff1_2(&bf, i as i32) as usize;
         let mut y = Vec::<(i32, i32)>::new();
-        for k in i..j {
+        let mut k = i;
+        while k < j {
+            let l = next_diff(&bf, k);
             let p = bin_position(&fb_freq_sorted, &bf[k].1);
             if p >= 0 {
-                y.push((ids_ffs[p as usize] as i32, (j - i) as i32));
+                y.push((ids_ffs[p as usize] as i32, (l - k) as i32));
             }
+            k = l;
         }
         if !y.is_empty() {
             row_labels.push(format!("{}-1", strme(&bf[i].0)));
