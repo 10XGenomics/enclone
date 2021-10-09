@@ -208,6 +208,9 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 // • entries = number of reads
 //
 // 7 = u64 = total number of reads (meaning as usual, read pairs)
+//
+// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of reads whose feature barcode
+//     is reference, and the number whose feature barcode is nonreference.
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
@@ -223,6 +226,7 @@ pub fn feature_barcode_matrix(
         Vec<Vec<u8>>,
         MirrorSparseMatrix,
         u64,
+        Vec<(String, u32, u32)>,
     ),
     String,
 > {
@@ -377,7 +381,8 @@ pub fn feature_barcode_matrix(
     }
     sort_sync2(&mut fb_freq_sorted, &mut ids_ffs);
 
-    // Generate a feature-barcode matrix for the common feature barcodes, by read count.
+    // Generate a feature-barcode matrix for the common feature barcodes, by read count.  Also,
+    // make a table of all barcodes, and for each, the number of reference and nonreference reads.
 
     if verbose {
         println!("making mirror sparse matrix, by read counts");
@@ -387,11 +392,15 @@ pub fn feature_barcode_matrix(
         bf.push((buf[i].0.clone(), buf[i].2.clone()));
     }
     bf.par_sort();
+    let mut brnr = Vec::<(String, u32, u32)>::new();
     let mut x = Vec::<Vec<(i32, i32)>>::new();
     let mut row_labels = Vec::<String>::new();
     let mut col_labels = Vec::<String>::new();
     for z in fb_freq.iter() {
         col_labels.push(stringme(&z.1));
+    }
+    if verbose {
+        println!("start making m_reads, used {:.1} seconds", elapsed(&t));
     }
     let mut i = 0;
     while i < bf.len() {
@@ -407,9 +416,21 @@ pub fn feature_barcode_matrix(
             row_labels.push(format!("{}-1", strme(&bf[i].0)));
             x.push(y);
         }
+        let (mut refx, mut nrefx) = (0, 0);
+        for k in i..j {
+            if bin_member(ref_fb, &stringme(&bf[k].1)) {
+                refx += 1;
+            } else {
+                nrefx += 1;
+            }
+        }
+        brnr.push((stringme(&bf[i].0), refx, nrefx));
         i = j;
     }
     let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
+    if verbose {
+        println!("after making m_reads, used {:.1} seconds", elapsed(&t));
+    }
 
     // Sort buf.
 
@@ -474,7 +495,7 @@ pub fn feature_barcode_matrix(
                 nrefx += 1;
             }
         }
-        brn.push((stringme(&bfu[i].0.clone()), refx, nrefx));
+        brn.push((stringme(&bfu[i].0), refx, nrefx));
         i = j;
     }
 
@@ -587,5 +608,6 @@ pub fn feature_barcode_matrix(
         common_gumi_content,
         m_reads,
         total_reads as u64,
+        brnr,
     ))
 }
