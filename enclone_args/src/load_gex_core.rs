@@ -69,6 +69,7 @@ pub fn load_gex(
     fb_top_reads_barcodes: &mut Vec<Vec<String>>,
     fb_top_reads_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_total_umis: &mut Vec<u64>,
+    fb_total_reads: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
     fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
     fb_common_gumis: &mut Vec<(Vec<f32>, Vec<Vec<u8>>)>,
@@ -115,6 +116,7 @@ pub fn load_gex(
         Vec<(String, u32, u32)>,
         MirrorSparseMatrix,
         Vec<String>,
+        u64,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -144,6 +146,7 @@ pub fn load_gex(
             Vec::new(),
             MirrorSparseMatrix::new(),
             Vec::<String>::new(),
+            0,
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -795,6 +798,20 @@ pub fn load_gex(
                 r.19 = u64::from_ne_bytes(bytes.try_into().unwrap());
             }
 
+            // Read the total reads.
+
+            let mut top_file = format!("{}/../feature_barcode_matrix_top.total_reads", outs);
+            if !path_exists(&top_file) {
+                top_file = format!("{}/feature_barcode_matrix_top.total_reads", outs);
+            }
+            if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
+                let mut f = open_for_read![&top_file];
+                let mut bytes = Vec::<u8>::new();
+                f.read_to_end(&mut bytes).unwrap();
+                r.26 = u64::from_ne_bytes(bytes.try_into().unwrap());
+            }
+
             // Read the barcode-ref-nonref UMI count file.
 
             let mut brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
@@ -998,6 +1015,7 @@ pub fn load_gex(
             x23,
             x24,
             x25,
+            x26,
         ),
     ) in results.into_iter().take(n).enumerate()
     {
@@ -1031,6 +1049,7 @@ pub fn load_gex(
         fb_brnr.push(x23);
         fb_top_reads_matrices.push(x24);
         fb_top_reads_barcodes.push(x25);
+        fb_total_reads.push(x26);
     }
 
     // Done.
