@@ -290,12 +290,7 @@ fn main() {
             if verb == 0 && (fb_info || fb_info_write) {
                 verb = 1;
             }
-            let x = feature_barcode_matrix(
-                &seq_def.unwrap(),
-                id.force_usize(),
-                verb,
-                &ref_fb,
-            );
+            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), verb, &ref_fb);
             if fb_info {
                 std::process::exit(0);
             }

@@ -25,7 +25,7 @@ prost = { version = "0.8", default_features = false }
 serde = "1"
 serde_derive = "1"
 thiserror = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "19329ad04342061ddb6373cfd435f046dfc4331d" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3ebbdfe8c1b441dd58aa3e4095a79f5e62a56515" }
 
 [build-dependencies]
 prost-build = "0.8"

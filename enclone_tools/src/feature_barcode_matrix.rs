@@ -311,7 +311,8 @@ pub fn feature_barcode_matrix(
                 } else {
                     fb = s[10..25].to_vec();
                     if verbosity == 2 {
-                        println!("r: {} {} {} {} {} {}",
+                        println!(
+                            "r: {} {} {} {} {} {}",
                             strme(&barcode),
                             strme(&umi),
                             strme(&s[0..10]),
