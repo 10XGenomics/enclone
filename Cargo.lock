@@ -3190,9 +3190,9 @@ dependencies = [
 
 [[package]]
 name = "mirror_sparse_matrix"
-version = "0.1.15"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7bdcee96396cd4fafff0b01a9f7ae7944ea5b6abc875d73c60bf8ac7082902c"
+checksum = "8c27abea703e0a5b1f27b6bf7e7a6317dc79d4aa3b54761c560fe903e1f9a07b"
 dependencies = [
  "binary_vec_io",
 ]
