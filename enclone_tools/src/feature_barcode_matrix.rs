@@ -276,10 +276,13 @@ pub fn feature_barcode_matrix(
     }
 
     // Traverse the reads.
+    // Also find "primerish" reads: the first read contains this 14-base sequence CCGAGCCCACGAGA, 
+    // which is reverse complement to part of an Illumina primer, and the second read is all Gs.
 
     eprintln!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut junk = 0;
+    let mut primerish = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -291,6 +294,7 @@ pub fn feature_barcode_matrix(
         let mut count = 0;
         let mut barcode = Vec::<u8>::new();
         let mut umi = Vec::<u8>::new();
+        let mut read1 = Vec::<u8>::new();
         let mut fb;
         for line in b.lines() {
             count += 1;
@@ -308,10 +312,29 @@ pub fn feature_barcode_matrix(
                     assert!(s.len() >= 28);
                     barcode = s[0..16].to_vec();
                     umi = s[16..28].to_vec();
+                    read1 = s.to_vec();
                 } else {
                     fb = s[10..25].to_vec();
+                    let mut allg = true;
+                    for i in 0..s.len() {
+                        if s[i] != b'G' {
+                            allg = false;
+                            break;
+                        }
+                    }
+                    let primer = b"CCGAGCCCACGAGA".to_vec();
+                    let mut pish = false;
+                    if allg {
+                        for j in 0..=read1.len() - primer.len() {
+                            if read1[j..j + primer.len()] == primer {
+                                pish = true;
+                                primerish += 1;
+                                break;
+                            }
+                        }
+                    }
                     if verbosity == 2 {
-                        println!(
+                        print!(
                             "r: {} {} {} {} {} {}",
                             strme(&barcode),
                             strme(&umi),
@@ -320,6 +343,10 @@ pub fn feature_barcode_matrix(
                             strme(&s[25..35]),
                             strme(&s[35..55]),
                         );
+                        if pish {
+                            print!(" = primerish");
+                        }
+                        println!("");
                     }
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
@@ -332,6 +359,8 @@ pub fn feature_barcode_matrix(
     let total_reads = buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
+        let primerish_percent = 100.0 * primerish as f64 / total_reads as f64;
+        println!("primerish fraction = {:.1}%", primerish_percent);
         let junk_percent = 100.0 * junk as f64 / total_reads as f64;
         println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
