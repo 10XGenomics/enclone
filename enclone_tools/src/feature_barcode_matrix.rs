@@ -215,7 +215,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
-    verbose: bool,
+    verbosity: usize,
     ref_fb: &Vec<String>,
 ) -> Result<
     (
@@ -236,14 +236,14 @@ pub fn feature_barcode_matrix(
 
     let mut read_files = Vec::<String>::new();
     let x = dir_list(&seq_def.read_path);
-    if verbose {
+    if verbosity > 0 {
         println!();
     }
     for f in x.iter() {
         for sample_index in seq_def.sample_indices.iter() {
             for lane in seq_def.lanes.iter() {
                 if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
-                    if verbose {
+                    if verbosity > 0 {
                         println!("{}", f);
                     }
                     if f.ends_with("__evap") {
@@ -265,7 +265,7 @@ pub fn feature_barcode_matrix(
 
     // Report what we found.
 
-    if verbose {
+    if verbosity > 0 {
         println!("\nread path = {}", seq_def.read_path);
         println!("lanes = {}", seq_def.lanes.iter().format(","));
         println!(
@@ -310,18 +310,16 @@ pub fn feature_barcode_matrix(
                     umi = s[16..28].to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-
-                    /*
-                    println!("{} {} {} {} {} {}",
-                        strme(&barcode),
-                        strme(&umi),
-                        strme(&s[0..10]),
-                        strme(&fb),
-                        strme(&s[25..35]),
-                        strme(&s[35..55]),
-                    );
-                    */
-
+                    if verbosity == 2 {
+                        println!("{} {} {} {} {} {}",
+                            strme(&barcode),
+                            strme(&umi),
+                            strme(&s[0..10]),
+                            strme(&fb),
+                            strme(&s[25..35]),
+                            strme(&s[35..55]),
+                        );
+                    }
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
                     }
@@ -331,7 +329,7 @@ pub fn feature_barcode_matrix(
         }
     }
     let total_reads = buf.len();
-    if verbose {
+    if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
         let junk_percent = 100.0 * junk as f64 / total_reads as f64;
         println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
@@ -384,7 +382,7 @@ pub fn feature_barcode_matrix(
     // Generate a feature-barcode matrix for the common feature barcodes, by read count.  Also,
     // make a table of all barcodes, and for each, the number of reference and nonreference reads.
 
-    if verbose {
+    if verbosity > 0 {
         println!("making mirror sparse matrix, by read counts");
     }
     let mut bf = Vec::<(Vec<u8>, Vec<u8>)>::new();
@@ -399,7 +397,7 @@ pub fn feature_barcode_matrix(
     for z in fb_freq.iter() {
         col_labels.push(stringme(&z.1));
     }
-    if verbose {
+    if verbosity > 0 {
         println!("start making m_reads, used {:.1} seconds", elapsed(&t));
     }
     let mut i = 0;
@@ -431,7 +429,7 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
-    if verbose {
+    if verbosity > 0 {
         println!("after making m_reads, used {:.1} seconds", elapsed(&t));
     }
 
@@ -504,7 +502,7 @@ pub fn feature_barcode_matrix(
 
     // Proceed.
 
-    if verbose {
+    if verbosity > 0 {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
         let mut bc = 0;
@@ -529,7 +527,7 @@ pub fn feature_barcode_matrix(
         bfn.push((bfu[i].0.clone(), bfu[i].1.clone(), n));
         i = j;
     }
-    if verbose {
+    if verbosity > 0 {
         println!("there are {} uniques", bfu.len());
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
@@ -537,13 +535,13 @@ pub fn feature_barcode_matrix(
     for i in 0..bfn.len() {
         total_umis += bfn[i].2 as u64;
     }
-    if verbose {
+    if verbosity > 0 {
         println!("total UMIs = {}\n", total_umis);
     }
 
     // Report common feature barcodes, by UMI count.
 
-    if verbose {
+    if verbosity > 0 {
         println!("common feature barcodes and their total UMI counts\n");
     }
     let mut fbx = Vec::<Vec<u8>>::new();
@@ -553,7 +551,7 @@ pub fn feature_barcode_matrix(
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
-    if verbose {
+    if verbosity > 0 {
         for i in 0..10 {
             println!("{} = {}", strme(&freq[i].1), freq[i].0);
         }
@@ -568,13 +566,13 @@ pub fn feature_barcode_matrix(
         ids.push(i);
     }
     sort_sync2(&mut tops_sorted, &mut ids);
-    if verbose {
+    if verbosity > 0 {
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
     // Generate a feature-barcode matrix for the common feature barcodes, by UMI count.
 
-    if verbose {
+    if verbosity > 0 {
         println!("making mirror sparse matrix");
     }
     let mut x = Vec::<Vec<(i32, i32)>>::new();
@@ -600,7 +598,7 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
-    if verbose {
+    if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
     Ok((

@@ -41,11 +41,14 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut fb_info = false;
     let mut fb_info_write = false;
+    let mut verbosity = 0;
     for i in 2..args.len() {
         if args[i] == "FB_INFO" {
             fb_info = true;
         } else if args[i] == "FB_INFO_WRITE" {
             fb_info_write = true;
+        } else if args[i].starts_with("VERBOSITY=") {
+            verbosity = args[i].after("VERBOSITY=").force_usize();
         } else {
             eprintln!("\nIllegal arg.\n");
             std::process::exit(1);
@@ -283,10 +286,14 @@ fn main() {
 
             // Keep going.
 
+            let mut verb = verbosity;
+            if verb == 0 && (fb_info || fb_info_write) {
+                verb = 1;
+            }
             let x = feature_barcode_matrix(
                 &seq_def.unwrap(),
                 id.force_usize(),
-                fb_info || fb_info_write,
+                verb,
                 &ref_fb,
             );
             if fb_info {
