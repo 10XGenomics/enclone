@@ -559,6 +559,7 @@ lazy_static! {
     pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref TOOLTIP_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_DIRS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref EXEC: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 lazy_static! {

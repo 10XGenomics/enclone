@@ -217,7 +217,12 @@ impl Application for EncloneVisual {
 
         // Handle test and meta modes.
 
-        if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
+        if EXEC.lock().unwrap().len() > 0 {
+            let cmd = EXEC.lock().unwrap()[0].clone();
+            x.input1_value = cmd.clone();
+            x.input_value = cmd;
+            (x, Command::perform(noop(), Message::SubmitButtonPressed))
+        } else if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
             (x, Command::none())
         } else if !META_TESTING.load(SeqCst) {
             thread::sleep(Duration::from_millis(1000));

@@ -107,6 +107,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         } else if arg.starts_with("META=") {
             META_TESTING.store(true, SeqCst);
             META.store(arg.after("META=").force_usize() - 1, SeqCst);
+        } else if arg.starts_with("EXEC=") {
+            EXEC.lock().unwrap().push(arg.after("EXEC=").to_string());
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
