@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use io_utils::*;
+
 pub mod load_gex;
 pub mod load_gex_core;
 pub mod proc_args;
@@ -42,4 +44,12 @@ pub fn parse_csv_pure(x: &str) -> Vec<String> {
         y.push(String::new());
     }
     y
+}
+
+pub fn fnx(outs: &str, name: &str) -> String {
+    let mut file = format!("{}/../{}", outs, name);
+    if !path_exists(&file) {
+        file = format!("{}/{}", outs, name);
+    }
+    file
 }

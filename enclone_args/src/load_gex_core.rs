@@ -721,10 +721,7 @@ pub fn load_gex(
 
             // Read the top feature barcode matrix, by UMIs.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top.bin", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}//feature_barcode_matrix_top.bin", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.bin");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.13, &top_file);
@@ -736,10 +733,7 @@ pub fn load_gex(
 
             // Read the top feature barcode matrix, by reads.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top_reads.bin", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}//feature_barcode_matrix_top_reads.bin", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top_reads.bin");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.24, &top_file);
@@ -751,10 +745,7 @@ pub fn load_gex(
 
             // Read the total UMIs.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top.total", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}/feature_barcode_matrix_top.total", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.total");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 let mut f = open_for_read![&top_file];
@@ -765,10 +756,7 @@ pub fn load_gex(
 
             // Read the total reads.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top.total_reads", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}/feature_barcode_matrix_top.total_reads", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.total_reads");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 let mut f = open_for_read![&top_file];
@@ -779,10 +767,7 @@ pub fn load_gex(
 
             // Read the barcode-ref-nonref UMI count file.
 
-            let mut brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
-            if !path_exists(&brn_file) {
-                brn_file = format!("{}//feature_barcode_matrix_top.brn", outs);
-            }
+            let brn_file = fnx(&outs, "feature_barcode_matrix_top.brn");
             if path_exists(&brn_file) {
                 pathlist.push(brn_file.clone());
                 let f = open_for_read![&brn_file];
@@ -799,10 +784,7 @@ pub fn load_gex(
 
             // Read the barcode-ref-nonref read count file.
 
-            let mut brnr_file = format!("{}/../feature_barcode_matrix_top.brnr", outs);
-            if !path_exists(&brnr_file) {
-                brnr_file = format!("{}//feature_barcode_matrix_top.brnr", outs);
-            }
+            let brnr_file = fnx(&outs, "feature_barcode_matrix_top.brnr");
             if path_exists(&brnr_file) {
                 pathlist.push(brnr_file.clone());
                 let f = open_for_read![&brnr_file];
@@ -819,10 +801,7 @@ pub fn load_gex(
 
             // Read the feature reference file.
 
-            let mut fref_file = format!("{}/../feature_reference.csv", outs);
-            if !path_exists(&fref_file) {
-                fref_file = format!("{}/feature_reference.csv", outs);
-            }
+            let fref_file = fnx(&outs, "feature_reference.csv");
             if path_exists(&fref_file) {
                 pathlist.push(fref_file.clone());
                 r.21 = read_to_string(&fref_file).unwrap();
@@ -830,10 +809,7 @@ pub fn load_gex(
 
             // Read the common gumis file.
 
-            let mut common_gumis_file = format!("{}/../feature_barcode_matrix.common_gumis", outs);
-            if !path_exists(&common_gumis_file) {
-                common_gumis_file = format!("{}//feature_barcode_matrix.common_gumis", outs);
-            }
+            let common_gumis_file = fnx(&outs, "feature_barcode_matrix.common_gumis");
             if path_exists(&common_gumis_file) {
                 pathlist.push(common_gumis_file.clone());
                 let mut bytes = Vec::<u8>::new();
