@@ -281,6 +281,7 @@ pub fn feature_barcode_matrix(
 
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
+    let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
     let mut junk = 0;
     let mut ncanonical = 0;
     let mut nsemicanonical = 0;
@@ -380,14 +381,19 @@ pub fn feature_barcode_matrix(
                     if fb == b"GGGGGGGGGGGGGGG" {
                         junk += 1;
                     }
-                    buf.push((barcode.clone(), umi.clone(), fb.clone()));
+                    if degenerate {
+                        degen.push((barcode.clone(), umi.clone()));
+                    } else {
+                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
+                    }
                 }
             }
         }
     }
-    let total_reads = buf.len();
+    let total_reads = degen.len() + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
+        println!("of which {} are degenerate", degen.len());
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
         let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
