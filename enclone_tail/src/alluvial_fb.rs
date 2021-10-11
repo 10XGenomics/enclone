@@ -157,11 +157,15 @@ pub fn alluvial_fb_reads(
             rows[3][3] = "\\hline".to_string();
             rows[2][3] = format!("{} semicanonical", pr(cellular_semi, total));
 
-
             rows[2 * (xr + xnr) + 2 * xr + 1][3] = "\\hline".to_string();
-
+            rows[2 * (xr + xnr) + 2 * xr][3] 
+                = format!("{} canonical", pr(ncellular_canon, total));
             rows[2 * (xr + xnr) + 2 * xr + 1][2] 
                 = format!("{} degenerate", pr(ncellular_degen, total));
+            rows[2 * (xr + xnr) + 2 * xr + 2][3] 
+                = format!("{} semicanonical", pr(ncellular_semi, total));
+            rows[2 * (xr + xnr) + 2 * xr + 3][2] = "\\hline".to_string();
+            rows[2 * (xr + xnr) + 2 * xr + 3][3] = "\\hline".to_string();
 
             let mut count = 0;
             for pass in 0..2 {
@@ -253,11 +257,11 @@ pub fn alluvial_fb_reads(
             rows[2 * (xr + xnr) + xr - 1 + 8][2] 
                 = format!("{} reference", pr(ncellular_ref, total));
             rows[2 * xr + xnr - 1 + 4][2] = format!("{} nonreference", pr(cellular_nref, total));
-            rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 4][2] =
+            rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 8][2] =
                 format!("{} nonreference", pr(ncellular_nref, total));
             rows[xr + xnr - 1 + 2][1] 
                 = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
-            rows[2 * (xr + xnr) + xr + xnr - 1 + 4][1] =
+            rows[2 * (xr + xnr) + xr + xnr - 1 + 6][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
 
             let mut display_text = String::new();
