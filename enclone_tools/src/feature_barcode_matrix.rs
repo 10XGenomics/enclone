@@ -279,7 +279,7 @@ pub fn feature_barcode_matrix(
     // Also find "primerish" reads: the first read contains this 14-base sequence CCGAGCCCACGAGA, 
     // which is reverse complement to part of an Illumina primer, and the second read is all Gs.
 
-    eprintln!("start parsing reads for {}", id);
+    println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut junk = 0;
     let mut primerish = 0;
@@ -316,19 +316,38 @@ pub fn feature_barcode_matrix(
                     read1 = s.to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-                    let mut allg = true;
-                    for i in 0..s.len() {
+                    let mut degenerate = true;
+                    for i in 0..10 {
                         if s[i] != b'G' {
-                            allg = false;
+                            degenerate = false;
                             break;
                         }
                     }
                     let canonical = b"CACATCTCCGAGCCCACGAGACT".to_vec(); // 23
-                    let mut cish = false;
-                    if allg {
+
+                    // woof = degnerate and contains first ten bases of canonical as a subsequence
+                    let mut is_woof = false;
+                    if degenerate {
+                        for i in 0..18 {
+                            let mut w = true;
+                            for j in 0..10 {
+                                if read1[i + j] != canonical[j] {
+                                    w = false;
+                                    break;
+                                }
+                            }
+                            if w {
+                                is_woof = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    let mut is_canonical = false;
+                    if degenerate {
                         for j in 0..=read1.len() - canonical.len() {
                             if read1[j..j + canonical.len()] == canonical {
-                                cish = true;
+                                is_canonical = true;
                                 ncanonical += 1;
                                 break;
                             }
@@ -336,7 +355,7 @@ pub fn feature_barcode_matrix(
                     }
                     let primer = b"CCGAGCCCACGAGA".to_vec(); // 14
                     let mut pish = false;
-                    if allg {
+                    if degenerate && !is_canonical {
                         for j in 0..=read1.len() - primer.len() {
                             if read1[j..j + primer.len()] == primer {
                                 pish = true;
@@ -355,10 +374,12 @@ pub fn feature_barcode_matrix(
                             strme(&s[25..35]),
                             strme(&s[35..55]),
                         );
-                        if cish {
-                            print!(" = canonical");
+                        if is_woof {
+                            print!(" = woof");
+                        } else if is_canonical {
+                            print!(" = canon");
                         } else if pish {
-                            print!(" = primerish");
+                            print!(" = semi");
                         }
                         println!("");
                     }
