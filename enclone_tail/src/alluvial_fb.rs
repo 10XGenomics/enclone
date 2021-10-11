@@ -149,9 +149,19 @@ pub fn alluvial_fb_reads(
                 rows[midrow][j] = "\\hline".to_string();
             }
 
-            rows[1][2] = format!("{:.1} degenerate", pr0(cellular_degen, total));
-            rows[2 * (xr + xnr) + 2 * xr + 4][2] 
-                = format!("{:.1} degenerate", pr0(ncellular_degen, total));
+            rows[1][2] = format!("{} degenerate", pr(cellular_degen, total));
+
+            rows[0][3] = format!("{} canonical", pr(cellular_canon, total));
+            rows[1][3] = "\\hline".to_string();
+            rows[3][2] = "\\hline".to_string();
+            rows[3][3] = "\\hline".to_string();
+            rows[2][3] = format!("{} semicanonical", pr(cellular_semi, total));
+
+
+            rows[2 * (xr + xnr) + 2 * xr + 1][3] = "\\hline".to_string();
+
+            rows[2 * (xr + xnr) + 2 * xr + 1][2] 
+                = format!("{} degenerate", pr(ncellular_degen, total));
 
             let mut count = 0;
             for pass in 0..2 {
@@ -164,7 +174,6 @@ pub fn alluvial_fb_reads(
                     }
                     count += 1
                 }
-                count += 4;
                 for i in 0..xnr {
                     count += 1;
                     if pass == 0 || i < xnr - 1 {
@@ -240,10 +249,10 @@ pub fn alluvial_fb_reads(
                     }
                 }
             }
-            rows[xr - 1 + 2][2] = format!("{} reference", pr(cellular_ref, total));
-            rows[2 * (xr + xnr) + xr - 1 + 4][2] 
+            rows[xr - 1 + 4][2] = format!("{} reference", pr(cellular_ref, total));
+            rows[2 * (xr + xnr) + xr - 1 + 8][2] 
                 = format!("{} reference", pr(ncellular_ref, total));
-            rows[2 * xr + xnr - 1 + 2][2] = format!("{} nonreference", pr(cellular_nref, total));
+            rows[2 * xr + xnr - 1 + 4][2] = format!("{} nonreference", pr(cellular_nref, total));
             rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 4][2] =
                 format!("{} nonreference", pr(ncellular_nref, total));
             rows[xr + xnr - 1 + 2][1] 
