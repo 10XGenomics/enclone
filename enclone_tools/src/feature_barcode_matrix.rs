@@ -323,44 +323,43 @@ pub fn feature_barcode_matrix(
                         }
                     }
 
-                    // The following sequence is the end of the // Illumina Nextera-version of 
-                    // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.
-
-                    let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
-
-                    // is_canonical = degenerate and contains canonical as a subsequence
-                    // is_semicanonical = degenerate and contains first ten bases of canonical as 
-                    // a subsequence
-
-                    let mut is_canonical = false;
-                    let mut is_semicanonical = false;
-                    if degenerate {
-                        for j in 0..=read1.len() - canonical.len() {
-                            if read1[j..j + canonical.len()] == canonical {
-                                is_canonical = true;
-                                break;
-                            }
-                        }
-                    }
-                    if degenerate && !is_canonical {
-                        for i in 0..18 {
-                            let mut w = true;
-                            for j in 0..10 {
-                                if read1[i + j] != canonical[j] {
-                                    w = false;
-                                    break;
-                                }
-                            }
-                            if w {
-                                is_semicanonical = true;
-                                break;
-                            }
-                        }
-                    }
-
                     // Save.
 
                     if verbosity == 2 {
+                        // The following sequence is the end of the // Illumina Nextera-version of 
+                        // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.
+    
+                        let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
+    
+                        // is_canonical = degenerate and contains canonical as a subsequence
+                        // is_semicanonical = degenerate and contains first ten bases of canonical
+                        // as a subsequence
+
+                        let mut is_canonical = false;
+                        let mut is_semicanonical = false;
+                        if degenerate {
+                            for j in 0..=read1.len() - canonical.len() {
+                                if read1[j..j + canonical.len()] == canonical {
+                                    is_canonical = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if degenerate && !is_canonical {
+                            for i in 0..18 {
+                                let mut w = true;
+                                for j in 0..10 {
+                                    if read1[i + j] != canonical[j] {
+                                        w = false;
+                                        break;
+                                    }
+                                }
+                                if w {
+                                    is_semicanonical = true;
+                                    break;
+                                }
+                            }
+                        }
                         print!(
                             "r: {} {} {} {} {} {}",
                             strme(&barcode),
