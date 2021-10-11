@@ -325,10 +325,13 @@ pub fn feature_barcode_matrix(
                         }
                     }
 
+                    // The following sequence is the end of the // Illumina Nextera-version of 
+                    // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.
+
                     let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
 
-                    // canonical = degenerate and contains canonical as a subsequence
-                    // semicanonical = degenerate and contains first ten bases of canonical as 
+                    // is_canonical = degenerate and contains canonical as a subsequence
+                    // is_semicanonical = degenerate and contains first ten bases of canonical as 
                     // a subsequence
 
                     let mut is_canonical = false;
