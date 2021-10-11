@@ -210,7 +210,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 //
 // 7 = u64 = total number of reads (meaning as usual, read pairs)
 //
-// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose 
+// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose
 //     feature barcode is reference, and the number whose feature barcode is nonreference.
 //
 // 9 = Vec<(String, u32, u32, u32)> = for each cell barcode the number of degenerate reads,
@@ -281,11 +281,11 @@ pub fn feature_barcode_matrix(
     }
 
     // A read pair is called degenerate if the first ten bases of R2 are GGGGGGGGGG.
-    // The following sequence is the 22-base end of the // Illumina Nextera-version of 
+    // The following sequence is the 22-base end of the // Illumina Nextera-version of
     // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  We call a read pair canonical if it
-    // is degenerate and R1 contains the 22-base sequence, and semicanonical if it does not, but 
+    // is degenerate and R1 contains the 22-base sequence, and semicanonical if it does not, but
     // does contain the first ten bases of it.
-    
+
     let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22 bases
 
     // Traverse the reads.
@@ -433,7 +433,10 @@ pub fn feature_barcode_matrix(
     let total_reads = degen.len() + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
-        println!("of which {:.1}% are degenerate", percent_ratio(degen.len(), total_reads));
+        println!(
+            "of which {:.1}% are degenerate",
+            percent_ratio(degen.len(), total_reads)
+        );
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
         let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
