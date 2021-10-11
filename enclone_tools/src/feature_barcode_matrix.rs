@@ -323,9 +323,9 @@ pub fn feature_barcode_matrix(
                             break;
                         }
                     }
-                    let canonical = b"CACATCTCCGAGCCCACGAGACT".to_vec(); // 23
+                    let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
 
-                    // woof = degnerate and contains first ten bases of canonical as a subsequence
+                    // woof = degenerate and contains first ten bases of canonical as a subsequence
                     let mut is_woof = false;
                     if degenerate {
                         for i in 0..18 {
@@ -374,9 +374,10 @@ pub fn feature_barcode_matrix(
                             strme(&s[25..35]),
                             strme(&s[35..55]),
                         );
+                        /*
                         if is_woof {
                             print!(" = woof");
-                        } else if is_canonical {
+                        } else */ if is_canonical {
                             print!(" = canon");
                         } else if pish {
                             print!(" = semi");
