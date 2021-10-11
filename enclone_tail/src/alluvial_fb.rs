@@ -135,8 +135,6 @@ pub fn alluvial_fb_reads(
                 rows[midrow][j] = "\\hline".to_string();
             }
 
-
-
             let mut count = 0;
             for pass in 0..2 {
                 for i in 0..xr {
@@ -155,8 +153,6 @@ pub fn alluvial_fb_reads(
                     count += 1;
                 }
             }
-
-
 
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
@@ -233,8 +229,6 @@ pub fn alluvial_fb_reads(
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
-
-
 
             let mut display_text = String::new();
             print_tabular_vbox(
