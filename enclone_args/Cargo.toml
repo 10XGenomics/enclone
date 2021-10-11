@@ -27,7 +27,7 @@ attohttpc = { version = "0.17", default-features = false, features = ["compress"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 evalexpr = "6"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "2c5db3f4f081fa4857509cf1770126ae3cd9c426", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "ee3e4fa681abc439d64ce5720fba0c8c819eebdb", default-features=false, features = ["conda", "const_generics"] }
 io_utils = "0.2"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
