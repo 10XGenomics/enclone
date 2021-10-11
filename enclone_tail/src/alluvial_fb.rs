@@ -72,8 +72,10 @@ pub fn alluvial_fb_reads(
             let (mut cellular_ref, mut cellular_nref) = (0, 0);
             let (mut ncellular_ref, mut ncellular_nref) = (0, 0);
             let (mut cellular_degen, mut ncellular_degen) = (0, 0);
-            let (mut cellular_canon, mut ncellular_canon) = (0, 0);
-            let (mut cellular_semi, mut ncellular_semi) = (0, 0);
+            // let (mut cellular_canon, mut ncellular_canon) = (0, 0);
+            // let (mut cellular_semi, mut ncellular_semi) = (0, 0);
+            let mut ncellular_canon = 0;
+            let mut ncellular_semi = 0;
             {
                 for i in 0..brnr.len() {
                     if bin_member(&cells, &brnr[i].0) {
@@ -87,8 +89,8 @@ pub fn alluvial_fb_reads(
                 for i in 0..bdcs.len() {
                     if bin_member(&cells, &bdcs[i].0) {
                         cellular_degen += bdcs[i].1 as usize;
-                        cellular_canon += bdcs[i].2 as usize;
-                        cellular_semi += bdcs[i].3 as usize;
+                        // cellular_canon += bdcs[i].2 as usize;
+                        // cellular_semi += bdcs[i].3 as usize;
                     } else {
                         ncellular_degen += bdcs[i].1 as usize;
                         ncellular_canon += bdcs[i].2 as usize;
@@ -141,26 +143,27 @@ pub fn alluvial_fb_reads(
             }
             let nrows = 4 * (xr + xnr) + 7;
             let ncols = 4;
-            let mut rows = vec![vec![String::new(); ncols]; nrows];
+            let mut rows = vec![vec![String::new(); ncols]; nrows - 2];
             let mut csv_rows = vec![vec![String::new(); 6]; nrows];
-            let midrow = 2 * (xr + xnr) + 3;
+            let midrow = 2 * (xr + xnr) + 1;
             rows[midrow][0] = "100.0".to_string();
             for j in 1..ncols {
                 rows[midrow][j] = "\\hline".to_string();
             }
 
-            rows[1][2] = format!("{} degenerate", pr(cellular_degen, total));
+            rows[0][2] = format!("{} degenerate", pr(cellular_degen, total));
 
-            rows[0][3] = format!("{} canonical", pr(cellular_canon, total));
+            // rows[0][3] = format!("{} canonical", pr(cellular_canon, total));
+            // rows[1][3] = "\\hline".to_string();
+            rows[1][2] = "\\hline".to_string();
             rows[1][3] = "\\hline".to_string();
-            rows[3][2] = "\\hline".to_string();
-            rows[3][3] = "\\hline".to_string();
-            rows[2][3] = format!("{} semicanonical", pr(cellular_semi, total));
+            // rows[2][3] = format!("{} semicanonical", pr(cellular_semi, total));
 
-            rows[midrow + 2][3] = "\\hline".to_string();
+            rows[midrow][3] = "\\hline".to_string();
             rows[midrow + 1][3] = format!("{} canonical", pr(ncellular_canon, total));
 
             rows[midrow + 2][2] = format!("{} degenerate", pr(ncellular_degen, total));
+            rows[midrow + 2][3] = "\\hline".to_string();
 
             rows[midrow + 3][3] = format!("{} semicanonical", pr(ncellular_semi, total));
             rows[midrow + 4][2] = "\\hline".to_string();
@@ -168,7 +171,11 @@ pub fn alluvial_fb_reads(
 
             let mut count = 0;
             for pass in 0..2 {
-                count += 4;
+                if pass == 0 {
+                    count += 2;
+                } else {
+                    count += 4;
+                }
                 for i in 0..xr {
                     count += 1;
                     rows[count][3] = "\\hline".to_string();
@@ -202,7 +209,7 @@ pub fn alluvial_fb_reads(
                     }
                     if pass == 0 {
                         let r = 2 * i + 4;
-                        rows[r][3] = format!("{} {}", pr(cell, total), label);
+                        rows[r - 2][3] = format!("{} {}", pr(cell, total), label);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "cellular".to_string();
                         csv_rows[r][2] = "reference".to_string();
@@ -211,7 +218,7 @@ pub fn alluvial_fb_reads(
                         csv_rows[r][5] = seq_to_id[seq].clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * i + 8;
-                        rows[r][3] = format!("{} {}", pr(ncell, total), label);
+                        rows[r - 2][3] = format!("{} {}", pr(ncell, total), label);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "noncellular".to_string();
                         csv_rows[r][2] = "reference".to_string();
@@ -235,7 +242,7 @@ pub fn alluvial_fb_reads(
                     }
                     if pass == 0 {
                         let r = 2 * (i + xr) + 4;
-                        rows[r][3] = format!("{} {}", pr(cell, total), seq);
+                        rows[r - 2][3] = format!("{} {}", pr(cell, total), seq);
                         csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
                         csv_rows[r][1] = "cellular".to_string();
                         csv_rows[r][2] = "nonreference".to_string();
@@ -248,19 +255,19 @@ pub fn alluvial_fb_reads(
                         csv_rows[r][2] = "nonreference".to_string();
                         csv_rows[r][3] = format!("{}", pr0(ncell, total));
                         csv_rows[r][4] = seq.clone();
-                        rows[r][3] = format!("{} {}", pr(ncell, total), seq);
+                        rows[r - 2][3] = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
             }
-            rows[xr - 1 + 4][2] = format!("{} reference", pr(cellular_ref, total));
-            rows[2 * (xr + xnr) + xr - 1 + 8][2] 
+            rows[xr - 1 + 2][2] = format!("{} reference", pr(cellular_ref, total));
+            rows[2 * (xr + xnr) + xr - 1 + 6][2] 
                 = format!("{} reference", pr(ncellular_ref, total));
-            rows[2 * xr + xnr - 1 + 4][2] = format!("{} nonreference", pr(cellular_nref, total));
-            rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 8][2] =
+            rows[2 * xr + xnr - 1 + 2][2] = format!("{} nonreference", pr(cellular_nref, total));
+            rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 6][2] =
                 format!("{} nonreference", pr(ncellular_nref, total));
-            rows[xr + xnr - 1 + 2][1] 
+            rows[xr + xnr - 1 + 1][1] 
                 = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
-            rows[2 * (xr + xnr) + xr + xnr - 1 + 6][1] =
+            rows[2 * (xr + xnr) + xr + xnr - 1 + 4][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
 
             let mut display_text = String::new();
