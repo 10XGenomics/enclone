@@ -282,8 +282,8 @@ pub fn feature_barcode_matrix(
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut junk = 0;
-    let mut primerish = 0;
     let mut ncanonical = 0;
+    let mut nsemicanonical = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -323,27 +323,15 @@ pub fn feature_barcode_matrix(
                             break;
                         }
                     }
+
                     let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
 
-                    // woof = degenerate and contains first ten bases of canonical as a subsequence
-                    let mut is_woof = false;
-                    if degenerate {
-                        for i in 0..18 {
-                            let mut w = true;
-                            for j in 0..10 {
-                                if read1[i + j] != canonical[j] {
-                                    w = false;
-                                    break;
-                                }
-                            }
-                            if w {
-                                is_woof = true;
-                                break;
-                            }
-                        }
-                    }
+                    // canonical = degenerate and contains canonical as a subsequence
+                    // semicanonical = degenerate and contains first ten bases of canonical as 
+                    // a subsequence
 
                     let mut is_canonical = false;
+                    let mut is_semicanonical = false;
                     if degenerate {
                         for j in 0..=read1.len() - canonical.len() {
                             if read1[j..j + canonical.len()] == canonical {
@@ -353,17 +341,25 @@ pub fn feature_barcode_matrix(
                             }
                         }
                     }
-                    let primer = b"CCGAGCCCACGAGA".to_vec(); // 14
-                    let mut pish = false;
                     if degenerate && !is_canonical {
-                        for j in 0..=read1.len() - primer.len() {
-                            if read1[j..j + primer.len()] == primer {
-                                pish = true;
-                                primerish += 1;
+                        for i in 0..18 {
+                            let mut w = true;
+                            for j in 0..10 {
+                                if read1[i + j] != canonical[j] {
+                                    w = false;
+                                    break;
+                                }
+                            }
+                            if w {
+                                is_semicanonical = true;
+                                nsemicanonical += 1;
                                 break;
                             }
                         }
                     }
+
+                    // Save.
+
                     if verbosity == 2 {
                         print!(
                             "r: {} {} {} {} {} {}",
@@ -374,12 +370,9 @@ pub fn feature_barcode_matrix(
                             strme(&s[25..35]),
                             strme(&s[35..55]),
                         );
-                        /*
-                        if is_woof {
-                            print!(" = woof");
-                        } else */ if is_canonical {
+                        if is_canonical {
                             print!(" = canon");
-                        } else if pish {
+                        } else if is_semicanonical {
                             print!(" = semi");
                         }
                         println!("");
@@ -395,10 +388,10 @@ pub fn feature_barcode_matrix(
     let total_reads = buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
-        let primerish_percent = 100.0 * primerish as f64 / total_reads as f64;
-        println!("primerish fraction = {:.1}%", primerish_percent);
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
+        let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
+        println!("semicanonical fraction = {:.1}%", semicanonical_percent);
         let junk_percent = 100.0 * junk as f64 / total_reads as f64;
         println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
