@@ -37,6 +37,7 @@ pub fn load_gex(
     fb_total_reads: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
     fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
+    fb_bdcs: &mut Vec<Vec<(String, u32, u32, u32)>>,
     fb_common_gumis: &mut Vec<(Vec<f32>, Vec<Vec<u8>>)>,
     feature_refs: &mut Vec<String>,
     cluster: &mut Vec<HashMap<String, usize>>,
@@ -82,6 +83,7 @@ pub fn load_gex(
         MirrorSparseMatrix,
         Vec<String>,
         u64,
+        Vec<(String, u32, u32, u32)>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -112,6 +114,7 @@ pub fn load_gex(
             MirrorSparseMatrix::new(),
             Vec::<String>::new(),
             0,
+            Vec::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -799,6 +802,24 @@ pub fn load_gex(
                 }
             }
 
+            // Read the bdcs read count file.
+
+            let bdcs_file = fnx(&outs, "feature_barcode_matrix_top.bdcs");
+            if path_exists(&bdcs_file) {
+                pathlist.push(bdcs_file.clone());
+                let f = open_for_read![&bdcs_file];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    r.27.push((
+                        fields[0].to_string(),
+                        fields[1].parse::<u32>().unwrap(),
+                        fields[2].parse::<u32>().unwrap(),
+                        fields[3].parse::<u32>().unwrap(),
+                    ));
+                }
+            }
+
             // Read the feature reference file.
 
             let fref_file = fnx(&outs, "feature_reference.csv");
@@ -957,6 +978,7 @@ pub fn load_gex(
             x24,
             x25,
             x26,
+            x27,
         ),
     ) in results.into_iter().take(n).enumerate()
     {
@@ -991,6 +1013,7 @@ pub fn load_gex(
         fb_top_reads_matrices.push(x24);
         fb_top_reads_barcodes.push(x25);
         fb_total_reads.push(x26);
+        fb_bdcs.push(x27);
     }
 
     // Done.

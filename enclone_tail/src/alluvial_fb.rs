@@ -15,7 +15,7 @@ use string_utils::*;
 use tables::print_tabular_vbox;
 use vector_utils::{bin_member, unique_sort};
 
-// There are two nearly identical functions below, one computing by reads, the other by UMIs.
+// There are similar functions below, one computing by reads, the other by UMIs.
 
 pub fn alluvial_fb_reads(
     ctl: &EncloneControl,
