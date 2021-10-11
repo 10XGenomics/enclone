@@ -46,6 +46,7 @@ pub fn alluvial_fb_reads(
                 cells.push(vdj_cells[li][i].before("-").to_string());
             }
             let brnr = &gex_info.fb_brnr[li];
+            let bdcs = &gex_info.fb_bdcs[li];
             let total = gex_info.fb_total_reads[li] as usize;
             let mut seq_to_id = HashMap::<String, String>::new();
             {
@@ -118,14 +119,24 @@ pub fn alluvial_fb_reads(
             unique_sort(&mut top_nref);
             let xr = max(top_ref.len(), 1);
             let xnr = max(top_nref.len(), 1);
-            let nrows = 4 * (xr + xnr) - 1;
+            fn pr(x: usize, y: usize) -> String {
+                format!("{:>4.1}", percent_ratio(x, y))
+            }
+            fn pr0(x: usize, y: usize) -> String {
+                format!("{:.1}", percent_ratio(x, y))
+            }
+            let nrows = 4 * (xr + xnr) + 7;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows];
             let mut csv_rows = vec![vec![String::new(); 6]; nrows];
-            rows[2 * (xr + xnr) - 1][0] = "100.0".to_string();
+            let midrow = 2 * (xr + xnr) + 3;
+            rows[midrow][0] = "100.0".to_string();
             for j in 1..ncols {
-                rows[2 * (xr + xnr) - 1][j] = "\\hline".to_string();
+                rows[midrow][j] = "\\hline".to_string();
             }
+
+
+
             let mut count = 0;
             for pass in 0..2 {
                 for i in 0..xr {
@@ -144,12 +155,9 @@ pub fn alluvial_fb_reads(
                     count += 1;
                 }
             }
-            fn pr(x: usize, y: usize) -> String {
-                format!("{:>4.1}", percent_ratio(x, y))
-            }
-            fn pr0(x: usize, y: usize) -> String {
-                format!("{:.1}", percent_ratio(x, y))
-            }
+
+
+
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i].0;
@@ -225,6 +233,9 @@ pub fn alluvial_fb_reads(
             rows[xr + xnr - 1][1] = format!("{} cellular", pr(cellular_ref + cellular_nref, total));
             rows[2 * (xr + xnr) + xr + xnr - 1][1] =
                 format!("{} noncellular", pr(ncellular_ref + ncellular_nref, total));
+
+
+
             let mut display_text = String::new();
             print_tabular_vbox(
                 &mut display_text,
