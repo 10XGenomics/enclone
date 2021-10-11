@@ -445,7 +445,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                  reference\n\
                  • nonreference: nondegenerate, and whose feature barcode not in the reference.\n\n\
                  \
-                 In the degenerate category, we identify canonical reads, which we define as those \
+                 In the noncellular degenerate category, we identify canonical reads, which we \
+                 define as those \
                  whose R1 contains the sequence CACATCTCCGAGCCCACGAGAC.  This is the end of the \
                  Illumina Nextera version of the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
                  If R1 contains the first ten bases = CACATCTCCG, and the read is not canonical, \
