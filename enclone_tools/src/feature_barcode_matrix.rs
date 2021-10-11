@@ -283,6 +283,7 @@ pub fn feature_barcode_matrix(
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut junk = 0;
     let mut primerish = 0;
+    let mut ncanonical = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -322,7 +323,18 @@ pub fn feature_barcode_matrix(
                             break;
                         }
                     }
-                    let primer = b"CCGAGCCCACGAGA".to_vec();
+                    let canonical = b"CACATCTCCGAGCCCACGAGACT".to_vec(); // 23
+                    let mut cish = false;
+                    if allg {
+                        for j in 0..=read1.len() - canonical.len() {
+                            if read1[j..j + canonical.len()] == canonical {
+                                cish = true;
+                                ncanonical += 1;
+                                break;
+                            }
+                        }
+                    }
+                    let primer = b"CCGAGCCCACGAGA".to_vec(); // 14
                     let mut pish = false;
                     if allg {
                         for j in 0..=read1.len() - primer.len() {
@@ -343,7 +355,9 @@ pub fn feature_barcode_matrix(
                             strme(&s[25..35]),
                             strme(&s[35..55]),
                         );
-                        if pish {
+                        if cish {
+                            print!(" = canonical");
+                        } else if pish {
                             print!(" = primerish");
                         }
                         println!("");
@@ -361,6 +375,8 @@ pub fn feature_barcode_matrix(
         println!("there are {} read pairs", total_reads);
         let primerish_percent = 100.0 * primerish as f64 / total_reads as f64;
         println!("primerish fraction = {:.1}%", primerish_percent);
+        let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
+        println!("canonical fraction = {:.1}%", canonical_percent);
         let junk_percent = 100.0 * junk as f64 / total_reads as f64;
         println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
