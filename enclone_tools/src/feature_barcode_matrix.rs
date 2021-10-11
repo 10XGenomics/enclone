@@ -19,6 +19,7 @@ use mirror_sparse_matrix::MirrorSparseMatrix;
 use perf_stats::elapsed;
 use rayon::prelude::*;
 use serde_json::Value;
+use stats_utils::*;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
@@ -282,7 +283,6 @@ pub fn feature_barcode_matrix(
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-    let mut junk = 0;
     let mut ncanonical = 0;
     let mut nsemicanonical = 0;
     for rf in read_files.iter() {
@@ -378,9 +378,6 @@ pub fn feature_barcode_matrix(
                         }
                         println!("");
                     }
-                    if fb == b"GGGGGGGGGGGGGGG" {
-                        junk += 1;
-                    }
                     if degenerate {
                         degen.push((barcode.clone(), umi.clone()));
                     } else {
@@ -393,13 +390,11 @@ pub fn feature_barcode_matrix(
     let total_reads = degen.len() + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
-        println!("of which {} are degenerate", degen.len());
+        println!("of which {:.1}% are degenerate", percent_ratio(degen.len(), total_reads));
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
         let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
         println!("semicanonical fraction = {:.1}%", semicanonical_percent);
-        let junk_percent = 100.0 * junk as f64 / total_reads as f64;
-        println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
