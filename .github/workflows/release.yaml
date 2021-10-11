@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@master
       - name: Make release build
         run: |
-          cargo build --release. --features=enclone_visual
+          cargo build --release
           target/release/enclone --help | grep -q enclone
           mkdir artifacts
           cp -a target/release/enclone artifacts/enclone-macos

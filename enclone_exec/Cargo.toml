@@ -53,6 +53,7 @@ vector_utils = "0.1"
 yaml-rust = "0.4"
 
 [features]
+default = ["enclone_visual"]
 basic = []
 cpu = []
 linkless = []
