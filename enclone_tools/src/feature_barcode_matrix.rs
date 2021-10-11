@@ -283,8 +283,6 @@ pub fn feature_barcode_matrix(
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-    let mut ncanonical = 0;
-    let mut nsemicanonical = 0;
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -340,7 +338,6 @@ pub fn feature_barcode_matrix(
                         for j in 0..=read1.len() - canonical.len() {
                             if read1[j..j + canonical.len()] == canonical {
                                 is_canonical = true;
-                                ncanonical += 1;
                                 break;
                             }
                         }
@@ -356,7 +353,6 @@ pub fn feature_barcode_matrix(
                             }
                             if w {
                                 is_semicanonical = true;
-                                nsemicanonical += 1;
                                 break;
                             }
                         }
@@ -390,6 +386,52 @@ pub fn feature_barcode_matrix(
             }
         }
     }
+
+    // Build data structure for the degenerate reads.
+
+    let mut _bdcs = Vec::<(String, u32, u32, u32)>::new();
+    degen.par_sort();
+    let (mut ncanonical, mut nsemicanonical) = (0, 0);
+    let mut i = 0;
+    while i < degen.len() {
+        let j = next_diff1_2(&degen, i as i32) as usize;
+        let (mut canon, mut semi) = (0, 0);
+        for k in i..j {
+            let mut read1 = degen[k].0.clone();
+            read1.append(&mut degen[k].1.clone());
+            let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
+            let mut is_canonical = false;
+            for j in 0..=read1.len() - canonical.len() {
+                if read1[j..j + canonical.len()] == canonical {
+                    is_canonical = true;
+                    canon += 1;
+                    ncanonical += 1;
+                    break;
+                }
+            }
+            if !is_canonical {
+                for i in 0..18 {
+                    let mut w = true;
+                    for j in 0..10 {
+                        if read1[i + j] != canonical[j] {
+                            w = false;
+                            break;
+                        }
+                    }
+                    if w {
+                        semi += 1;
+                        nsemicanonical += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        _bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
+        i = j;
+    }
+
+    // Print summary stats.
+
     let total_reads = degen.len() + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
