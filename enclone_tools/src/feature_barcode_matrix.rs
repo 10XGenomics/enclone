@@ -276,9 +276,15 @@ pub fn feature_barcode_matrix(
         println!("used {:.1} seconds\n", elapsed(&t));
     }
 
+    // A read pair is called degenerate if the first ten bases of R2 are GGGGGGGGGG.
+    // The following sequence is the 22-base end of the // Illumina Nextera-version of 
+    // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  We call a read pair canonical if it
+    // is degenerate and R1 contains the 22-base sequence, and semicanonical if it does not, but 
+    // does contain the first ten bases of it.
+    
+    let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22 bases
+
     // Traverse the reads.
-    // Also find "primerish" reads: the first read contains this 14-base sequence CCGAGCCCACGAGA, 
-    // which is reverse complement to part of an Illumina primer, and the second read is all Gs.
 
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
@@ -326,17 +332,7 @@ pub fn feature_barcode_matrix(
                     // Save.
 
                     if verbosity == 2 {
-                        // The following sequence is the end of the // Illumina Nextera-version of 
-                        // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.
-    
-                        let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
-    
-                        // is_canonical = degenerate and contains canonical as a subsequence
-                        // is_semicanonical = degenerate and contains first ten bases of canonical
-                        // as a subsequence
-
-                        let mut is_canonical = false;
-                        let mut is_semicanonical = false;
+                        let (mut is_canonical, mut is_semicanonical) = (false, false);
                         if degenerate {
                             for j in 0..=read1.len() - canonical.len() {
                                 if read1[j..j + canonical.len()] == canonical {
@@ -398,7 +394,6 @@ pub fn feature_barcode_matrix(
         for k in i..j {
             let mut read1 = degen[k].0.clone();
             read1.append(&mut degen[k].1.clone());
-            let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22
             let mut is_canonical = false;
             for j in 0..=read1.len() - canonical.len() {
                 if read1[j..j + canonical.len()] == canonical {
