@@ -292,7 +292,7 @@ pub fn max_line_val(s: &str) -> usize {
     m
 }
 
-pub fn appropriate_font_size(s: &str, w: u32) -> usize {
+pub fn appropriate_font_size(s: &str, w: u32, max_size: usize) -> usize {
     let mut font_size = 20;
     let max_line = max_line_val(&s);
     const FUDGE: f32 = 175.0;
@@ -301,6 +301,9 @@ pub fn appropriate_font_size(s: &str, w: u32) -> usize {
     if iwidth > w {
         let fs = w as f32 / width * (font_size as f32);
         font_size = fs.floor() as usize;
+    }
+    if font_size > max_size {
+        font_size = max_size;
     }
     font_size
 }
@@ -327,7 +330,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         sum = hets[0].content.clone();
     }
     let mut max_line = max_line_val(&sum);
-    let mut font_size = appropriate_font_size(&sum, slf.width);
+    let mut font_size = appropriate_font_size(&sum, slf.width, 20);
     const FUDGE: f32 = 175.0;
     let orig_font_size = font_size;
 
@@ -367,7 +370,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
         tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 20);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
@@ -422,7 +425,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.alluvial_reads_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
         tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 16);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
@@ -497,7 +500,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.common_gumi_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
         tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 20);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
