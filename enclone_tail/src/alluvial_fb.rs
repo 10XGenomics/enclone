@@ -158,12 +158,11 @@ pub fn alluvial_fb_reads(
             rows[2][3] = format!("{} semicanonical", pr(cellular_semi, total));
 
             rows[2 * (xr + xnr) + 2 * xr + 1][3] = "\\hline".to_string();
-            rows[2 * (xr + xnr) + 2 * xr][3] 
-                = format!("{} canonical", pr(ncellular_canon, total));
-            rows[2 * (xr + xnr) + 2 * xr + 1][2] 
-                = format!("{} degenerate", pr(ncellular_degen, total));
-            rows[2 * (xr + xnr) + 2 * xr + 2][3] 
-                = format!("{} semicanonical", pr(ncellular_semi, total));
+            rows[midrow + 1][3] = format!("{} canonical", pr(ncellular_canon, total));
+
+            rows[midrow + 2][2] = format!("{} degenerate", pr(ncellular_degen, total));
+
+            rows[midrow + 3][3] = format!("{} semicanonical", pr(ncellular_semi, total));
             rows[2 * (xr + xnr) + 2 * xr + 3][2] = "\\hline".to_string();
             rows[2 * (xr + xnr) + 2 * xr + 3][3] = "\\hline".to_string();
 
