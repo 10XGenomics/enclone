@@ -24,7 +24,6 @@ use string_utils::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-
     PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
     let mut no_kill = false;
@@ -86,7 +85,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         print!("{}{}", strme(&o.stdout), strme(&o.stderr));
         std::process::exit(0);
     }
-
 
     // Client run of enclone.
     #[cfg(feature = "enclone_visual")]
