@@ -206,12 +206,15 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 // 6 = MirrorSparseMatrix
 // • rows = cell barcodes
 // • columns = frequent feature barcodes
-// • entries = number of reads
+// • entries = number of nondegenerate reads
 //
 // 7 = u64 = total number of reads (meaning as usual, read pairs)
 //
-// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of reads whose feature barcode
-//     is reference, and the number whose feature barcode is nonreference.
+// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose 
+//     feature barcode is reference, and the number whose feature barcode is nonreference.
+//
+// 9 = Vec<(String, u32, u32, u32)> = for each cell barcode the number of degenerate reads,
+//     the number of those that are canonical, and the number of those that are semicanonical.
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
@@ -228,6 +231,7 @@ pub fn feature_barcode_matrix(
         MirrorSparseMatrix,
         u64,
         Vec<(String, u32, u32)>,
+        Vec<(String, u32, u32, u32)>,
     ),
     String,
 > {
@@ -384,7 +388,7 @@ pub fn feature_barcode_matrix(
 
     // Build data structure for the degenerate reads.
 
-    let mut _bdcs = Vec::<(String, u32, u32, u32)>::new();
+    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
     degen.par_sort();
     let (mut ncanonical, mut nsemicanonical) = (0, 0);
     let mut i = 0;
@@ -420,7 +424,7 @@ pub fn feature_barcode_matrix(
                 }
             }
         }
-        _bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
+        bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
         i = j;
     }
 
@@ -711,5 +715,6 @@ pub fn feature_barcode_matrix(
         m_reads,
         total_reads as u64,
         brnr,
+        bdcs,
     ))
 }
