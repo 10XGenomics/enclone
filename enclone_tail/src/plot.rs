@@ -49,6 +49,9 @@ pub fn plot_clonotypes(
     if plot_opt.plot_file.is_empty() {
         return Ok(());
     }
+
+    // Give up if no clonotypes.
+
     if exacts.is_empty() {
         return Err("\nThere are no clonotypes to plot, giving up.\n".to_string());
     }
