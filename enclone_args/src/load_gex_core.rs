@@ -1,7 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Load gene expression and feature barcoding (antibody, antigen) data from
-// Cell Ranger outputs.
+// Load gene expression and feature barcoding (antibody, antigen) data from Cell Ranger outputs.
 
 use crate::*;
 use enclone_core::defs::EncloneControl;
@@ -544,10 +543,8 @@ pub fn load_gex(
 
             // Get the multipliers gene and feature barcode counts.
 
-            let mut gene_mult = None;
-            let mut fb_mult = None;
-            let mut rpc = None;
-            let mut fbrpc = None;
+            let (mut gene_mult, mut fb_mult) = (None, None);
+            let (mut rpc, mut fbrpc) = (None, None);
             let mut lines = Vec::<String>::new();
             {
                 let f = open_userfile_for_read(&csv);
@@ -637,8 +634,7 @@ pub fn load_gex(
                     return;
                 }
             } else {
-                let mut rpc_field = None;
-                let mut fbrpc_field = None;
+                let (mut rpc_field, mut fbrpc_field) = (None, None);
                 for line_no in 0..lines.len() {
                     let s = &lines[line_no];
                     let fields = parse_csv(s);
@@ -726,8 +722,7 @@ pub fn load_gex(
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.13, &top_file);
-                let nrows = r.13.nrows();
-                for i in 0..nrows {
+                for i in 0..r.13.nrows() {
                     r.14.push(r.13.row_label(i));
                 }
             }
@@ -738,8 +733,7 @@ pub fn load_gex(
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.24, &top_file);
-                let nrows = r.24.nrows();
-                for i in 0..nrows {
+                for i in 0..r.24.nrows() {
                     r.25.push(r.24.row_label(i));
                 }
             }
