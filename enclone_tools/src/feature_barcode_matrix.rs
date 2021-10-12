@@ -200,20 +200,17 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 // 3 = Vec<(String, u32, u32)> = for each cell barcode the number of UMIs whose feature barcode
 //     is reference, and the number whose feature barcode is nonreference.
 //
-// 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and
-//        their frequencies, as (number of reads) / (all reads for GGGGGGGGGGGGGGG).
-//
-// 6 = MirrorSparseMatrix
+// 4 = MirrorSparseMatrix
 // • rows = cell barcodes
 // • columns = frequent feature barcodes
 // • entries = number of nondegenerate reads
 //
-// 7 = u64 = total number of reads (meaning as usual, read pairs)
+// 5 = u64 = total number of reads (meaning as usual, read pairs)
 //
-// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose
+// 6 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose
 //     feature barcode is reference, and the number whose feature barcode is nonreference.
 //
-// 9 = Vec<(String, u32, u32, u32)> = for each cell barcode the number of degenerate reads,
+// 7 = Vec<(String, u32, u32, u32)> = for each cell barcode the number of degenerate reads,
 //     the number of those that are canonical, and the number of those that are semicanonical.
 
 pub fn feature_barcode_matrix(
@@ -226,8 +223,6 @@ pub fn feature_barcode_matrix(
         MirrorSparseMatrix,
         u64,
         Vec<(String, u32, u32)>,
-        Vec<f32>,
-        Vec<Vec<u8>>,
         MirrorSparseMatrix,
         u64,
         Vec<(String, u32, u32)>,
@@ -442,26 +437,6 @@ pub fn feature_barcode_matrix(
         let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
         println!("semicanonical fraction = {:.1}%", semicanonical_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
-    }
-
-    // For poly-G feature barcodes, find overrepresented UMIs.
-
-    let mut common_gumi_freq = Vec::<f32>::new();
-    let mut common_gumi_content = Vec::<Vec<u8>>::new();
-    {
-        let mut gumi = Vec::<Vec<u8>>::new();
-        for i in 0..buf.len() {
-            if buf[i].2 == b"GGGGGGGGGGGGGGG" {
-                gumi.push(buf[i].1.clone());
-            }
-        }
-        gumi.par_sort();
-        let mut freq = Vec::<(u32, Vec<u8>)>::new();
-        make_freq(&gumi, &mut freq);
-        for i in 0..std::cmp::min(100, freq.len()) {
-            common_gumi_freq.push(freq[i].0 as f32 / gumi.len() as f32);
-            common_gumi_content.push(freq[i].1.clone());
-        }
     }
 
     // Find the most common feature barcodes, by read count.
@@ -709,15 +684,5 @@ pub fn feature_barcode_matrix(
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((
-        m,
-        total_umis,
-        brn,
-        common_gumi_freq,
-        common_gumi_content,
-        m_reads,
-        total_reads as u64,
-        brnr,
-        bdcs,
-    ))
+    Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }
