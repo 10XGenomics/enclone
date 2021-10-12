@@ -29,7 +29,7 @@ pub fn alluvial_fb_reads(
         let m = &gex_info.fb_top_reads_matrices[li];
         if m.initialized() {
             have_some = true;
-            let mut keep = 4;
+            let mut keep = 3;
             let mut specials = Vec::<String>::new();
             if !ctl.gen_opt.fb_show.is_empty() {
                 let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
@@ -336,7 +336,7 @@ pub fn alluvial_fb(
         let m = &gex_info.fb_top_matrices[li];
         if m.initialized() {
             have_some = true;
-            let mut keep = 4;
+            let mut keep = 3;
             let mut specials = Vec::<String>::new();
             if !ctl.gen_opt.fb_show.is_empty() {
                 let fb_show = ctl.gen_opt.fb_show.split(',').collect::<Vec<&str>>();
