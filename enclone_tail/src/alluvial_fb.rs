@@ -281,10 +281,14 @@ pub fn alluvial_fb_reads(
             rows[2 * xr + xnr - 1 + 2][2] = format!("{} nonreference", pr(cellular_nref, total));
             rows[2 * xr + 2 * (xr + xnr) + xnr - 1 + 6][2] =
                 format!("{} nonreference", pr(ncellular_nref, total));
-            rows[xr + xnr - 1 + 1][1] =
-                format!("{} cellular", pr(cellular_ref + cellular_nref + cellular_degen, total));
-            rows[2 * (xr + xnr) + xr + xnr - 1 + 4][1] =
-                format!("{} noncellular", pr(ncellular_ref + ncellular_nref + ncellular_degen, total));
+            rows[xr + xnr - 1 + 1][1] = format!(
+                "{} cellular",
+                pr(cellular_ref + cellular_nref + cellular_degen, total)
+            );
+            rows[2 * (xr + xnr) + xr + xnr - 1 + 4][1] = format!(
+                "{} noncellular",
+                pr(ncellular_ref + ncellular_nref + ncellular_degen, total)
+            );
 
             let mut display_text = String::new();
             print_tabular_vbox(
