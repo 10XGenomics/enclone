@@ -904,8 +904,8 @@ pub fn print_stats(
     // which is not the only way of doing it.
 
     if ctl.gen_opt.summary {
-        alluvial_fb(ctl, gex_info, vdj_cells, logx);
         alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
+        alluvial_fb(ctl, gex_info, vdj_cells, logx);
         common_gumis(ctl, gex_info, logx);
     }
 }
