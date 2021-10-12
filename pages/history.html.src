@@ -30,6 +30,16 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>10/12/21</b>: 
+<ul> 
+<li>Remove clonotypes that are not placed in a group.  This fixes a bug.</li>
+<li>Add symmetric grouping statistics to the summary.</li>
+<li>Fix a bug that caused feature counts to be incorrectly reported if the value for a particular
+cell for a particular feature exceeded <code>65535</code>.  This only happened if the 
+<code>NH5</code> option was used.</li>
+</ul>
+</p>
+
 <p><b>10/4/21</b>: Add argument <code>MIN_GROUP_DONORS=...</code> to set a lower bound on the
 number of donors contributing to a group, for it to be printed.  Please see
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.

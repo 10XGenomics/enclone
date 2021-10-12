@@ -292,7 +292,7 @@ pub fn max_line_val(s: &str) -> usize {
     m
 }
 
-pub fn appropriate_font_size(s: &str, w: u32) -> usize {
+pub fn appropriate_font_size(s: &str, w: u32, max_size: usize) -> usize {
     let mut font_size = 20;
     let max_line = max_line_val(&s);
     const FUDGE: f32 = 175.0;
@@ -301,6 +301,9 @@ pub fn appropriate_font_size(s: &str, w: u32) -> usize {
     if iwidth > w {
         let fs = w as f32 / width * (font_size as f32);
         font_size = fs.floor() as usize;
+    }
+    if font_size > max_size {
+        font_size = max_size;
     }
     font_size
 }
@@ -327,7 +330,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         sum = hets[0].content.clone();
     }
     let mut max_line = max_line_val(&sum);
-    let mut font_size = appropriate_font_size(&sum, slf.width);
+    let mut font_size = appropriate_font_size(&sum, slf.width, 20);
     const FUDGE: f32 = 175.0;
     let orig_font_size = font_size;
 
@@ -345,6 +348,79 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .font(DEJAVU_BOLD)
                 .size(orig_font_size as u16),
         );
+
+    // If there is a FeatureBarcodeAlluvialReadsTableSet, add that.
+
+    let mut alluv = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeAlluvialReadsTableSet" {
+            alluv = Some(j);
+        }
+    }
+    if alluv.is_some() {
+        let j = alluv.unwrap();
+        let tables = FeatureBarcodeAlluvialReadsTableSet::from_string(&hets[j].content);
+        slf.alluvial_reads_tables_for_spreadsheet.clear();
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!(
+                "\nfeature barcode read distribution for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+            slf.alluvial_reads_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+        }
+        tables_text += "\n \n";
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 16);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Feature barcode read count alluvial tables")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Text::new(
+                "For each dataset, we show a table that classifies its feature barcode reads.\n\n\
+                 \
+                 These reads are classified as cellular, if their cell barcode was \
+                 identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
+                 \
+                 Each of these categories is subdivided into:\n\
+                 • degenerate: R2 starts with at least ten Gs\n\
+                 • reference: nondegenerate + feature barcode is in the reference\n\
+                 • nonreference: otherwise.\n\n\
+                 \
+                 In the noncellular degenerate category, canonical reads are \
+                 those whose R1 contains CACATCTCCGAGCCCACGAGAC.  This is the end of the \
+                 Illumina Nextera version of the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
+                 If R1 contains the first ten bases = CACATCTCCG, and the read is not canonical, \
+                 we call it semicanonical.",
+            ))
+            .push(Space::with_height(Units(8)))
+            .push(Text::new(
+                "All the tables can be copied at once, for inclusion in \
+                 a spreadsheet, by pushing the button below.  This copies the numbers in the \
+                 last column, but not the numbers in the earlier columns.",
+            ))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.alluvial_reads_tables_copy_button,
+                    Text::new("Copy").color(slf.alluvial_reads_tables_copy_button_color),
+                )
+                .on_press(Message::CopyAlluvialReadsTables),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", tables_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
 
     // If there is a FeatureBarcodeAlluvialTableSet, add that.
 
@@ -367,7 +443,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
         tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 20);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))
@@ -399,89 +475,6 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     .font(DEJAVU_BOLD)
                     .size(tables_font_size as u16),
             );
-    }
-
-    // If there is a FeatureBarcodeCommonGumisTableSet, add that.
-
-    let mut gumi = None;
-    for j in 1..hets.len() {
-        if hets[j].name == "FeatureBarcodeCommonGumisTableSet" {
-            gumi = Some(j);
-        }
-    }
-    if gumi.is_some() {
-        let j = gumi.unwrap();
-        let tables = FeatureBarcodeCommonGumisTableSet::from_string(&hets[j].content);
-        slf.common_gumi_tables_for_spreadsheet.clear();
-        let mut tables_text = String::new();
-        for i in 0..tables.s.len() {
-            tables_text += &mut format!(
-                "\nfrequent UMIs having feature barcode GGGGGGGGGGGGGGG for {}\n{}",
-                tables.s[i].id, tables.s[i].display_text
-            );
-            slf.common_gumi_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
-        }
-        tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
-        summary_scrollable = summary_scrollable
-            .push(Space::with_height(Units(8)))
-            .push(Rule::horizontal(10).style(style::RuleStyle2))
-            .push(Space::with_height(Units(8)))
-            .push(
-                Text::new("Common UMIs for feature barcode GGGGGGGGGGGGGGG")
-                    .size(25)
-                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
-            )
-            .push(Space::with_height(Units(8)))
-            .push(Text::new(
-                "These tables concern the feature barcode reads for which the feature barcode \
-                 is GGGGGGGGGGGGGGG.  Amongst these, we show the most frequent UMIs.  The \
-                 percent column is the percent of reads having feature barcode \
-                 GGGGGGGGGGGGGGG, that have the given UMI.",
-            ))
-            .push(Space::with_height(Units(8)));
-        if slf.common_gumi_expand {
-            summary_scrollable = summary_scrollable
-                .push(Text::new(
-                    "All the tables can be copied at once, in a form suitable for inclusion in \
-                     a spreadsheet, by pushing the button below.",
-                ))
-                .push(Space::with_height(Units(8)))
-                .push(
-                    Button::new(
-                        &mut slf.common_gumi_tables_copy_button,
-                        Text::new("Copy").color(slf.common_gumi_tables_copy_button_color),
-                    )
-                    .on_press(Message::CopyCommonGumiTables),
-                )
-                .push(Space::with_height(Units(8)))
-                .push(Text::new("Push the hide button to hide the tables."))
-                .push(Space::with_height(Units(8)))
-                .push(
-                    Button::new(&mut slf.common_gumi_tables_hide_button, Text::new("Hide"))
-                        .on_press(Message::HideCommonGumiTables),
-                )
-                .push(Space::with_height(Units(8)))
-                .push(Rule::horizontal(10).style(style::RuleStyle2))
-                .push(Space::with_height(Units(8)))
-                .push(
-                    Text::new(&format!("{}", tables_text))
-                        .font(DEJAVU_BOLD)
-                        .size(tables_font_size as u16),
-                );
-        } else {
-            summary_scrollable = summary_scrollable
-                .push(Text::new("Push the expand button to see the tables."))
-                .push(Space::with_height(Units(8)))
-                .push(
-                    Button::new(
-                        &mut slf.common_gumi_tables_expand_button,
-                        Text::new("Expand"),
-                    )
-                    .on_press(Message::ExpandCommonGumiTables),
-                )
-                .push(Space::with_height(Units(8)));
-        }
     }
 
     // Suppose we have dataset level metrics.

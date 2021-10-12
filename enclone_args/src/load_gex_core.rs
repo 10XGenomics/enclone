@@ -1,10 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Load gene expression and feature barcoding (antibody, antigen) data from
-// Cell Ranger outputs.
+// Load gene expression and feature barcoding (antibody, antigen) data from Cell Ranger outputs.
 
+use crate::*;
 use enclone_core::defs::EncloneControl;
-use enclone_core::packing::*;
 use enclone_core::slurp::slurp_h5;
 use io_utils::{dir_list, open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
@@ -23,42 +22,6 @@ use std::{
 use string_utils::{parse_csv, TextUtils};
 use vector_utils::{unique_sort, VecUtils};
 
-// parse_csv_pure: same as parse_csv, but don't strip out quotes
-
-pub fn parse_csv_pure(x: &str) -> Vec<String> {
-    let mut y = Vec::<String>::new();
-    let mut w = Vec::<char>::new();
-    for c in x.chars() {
-        w.push(c);
-    }
-    let (mut quotes, mut i) = (0, 0);
-    while i < w.len() {
-        let mut j = i;
-        while j < w.len() {
-            if quotes % 2 == 0 && w[j] == ',' {
-                break;
-            }
-            if w[j] == '"' {
-                quotes += 1;
-            }
-            j += 1;
-        }
-        let (start, stop) = (i, j);
-        let mut s = String::new();
-        for m in start..stop {
-            s.push(w[m]);
-        }
-        y.push(s);
-        i = j + 1;
-    }
-    if !w.is_empty() && *w.last().unwrap() == ',' {
-        y.push(String::new());
-    }
-    y
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn load_gex(
     ctl: &mut EncloneControl,
     gex_features: &mut Vec<Vec<String>>,
@@ -66,9 +29,13 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_top_barcodes: &mut Vec<Vec<String>>,
     fb_top_matrices: &mut Vec<MirrorSparseMatrix>,
+    fb_top_reads_barcodes: &mut Vec<Vec<String>>,
+    fb_top_reads_matrices: &mut Vec<MirrorSparseMatrix>,
     fb_total_umis: &mut Vec<u64>,
+    fb_total_reads: &mut Vec<u64>,
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
-    fb_common_gumis: &mut Vec<(Vec<f32>, Vec<Vec<u8>>)>,
+    fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
+    fb_bdcs: &mut Vec<Vec<(String, u32, u32, u32)>>,
     feature_refs: &mut Vec<String>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
@@ -109,6 +76,11 @@ pub fn load_gex(
         Vec<(String, u32, u32)>,
         String,
         (Vec<f32>, Vec<Vec<u8>>),
+        Vec<(String, u32, u32)>,
+        MirrorSparseMatrix,
+        Vec<String>,
+        u64,
+        Vec<(String, u32, u32, u32)>,
     )>::new();
     for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
@@ -135,6 +107,11 @@ pub fn load_gex(
             Vec::new(),
             String::new(),
             (Vec::new(), Vec::new()),
+            Vec::new(),
+            MirrorSparseMatrix::new(),
+            Vec::<String>::new(),
+            0,
+            Vec::new(),
         ));
     }
     let gex_outs = &ctl.origin_info.gex_path;
@@ -566,10 +543,8 @@ pub fn load_gex(
 
             // Get the multipliers gene and feature barcode counts.
 
-            let mut gene_mult = None;
-            let mut fb_mult = None;
-            let mut rpc = None;
-            let mut fbrpc = None;
+            let (mut gene_mult, mut fb_mult) = (None, None);
+            let (mut rpc, mut fbrpc) = (None, None);
             let mut lines = Vec::<String>::new();
             {
                 let f = open_userfile_for_read(&csv);
@@ -659,8 +634,7 @@ pub fn load_gex(
                     return;
                 }
             } else {
-                let mut rpc_field = None;
-                let mut fbrpc_field = None;
+                let (mut rpc_field, mut fbrpc_field) = (None, None);
                 for line_no in 0..lines.len() {
                     let s = &lines[line_no];
                     let fields = parse_csv(s);
@@ -742,27 +716,31 @@ pub fn load_gex(
             r.4 = gene_mult;
             r.5 = fb_mult;
 
-            // Read the top feature barcode matrix.
+            // Read the top feature barcode matrix, by UMIs.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top.bin", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}//feature_barcode_matrix_top.bin", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.bin");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 read_from_file(&mut r.13, &top_file);
-                let nrows = r.13.nrows();
-                for i in 0..nrows {
+                for i in 0..r.13.nrows() {
                     r.14.push(r.13.row_label(i));
+                }
+            }
+
+            // Read the top feature barcode matrix, by reads.
+
+            let top_file = fnx(&outs, "feature_barcode_matrix_top_reads.bin");
+            if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
+                read_from_file(&mut r.24, &top_file);
+                for i in 0..r.24.nrows() {
+                    r.25.push(r.24.row_label(i));
                 }
             }
 
             // Read the total UMIs.
 
-            let mut top_file = format!("{}/../feature_barcode_matrix_top.total", outs);
-            if !path_exists(&top_file) {
-                top_file = format!("{}/feature_barcode_matrix_top.total", outs);
-            }
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.total");
             if path_exists(&top_file) {
                 pathlist.push(top_file.clone());
                 let mut f = open_for_read![&top_file];
@@ -771,12 +749,20 @@ pub fn load_gex(
                 r.19 = u64::from_ne_bytes(bytes.try_into().unwrap());
             }
 
+            // Read the total reads.
+
+            let top_file = fnx(&outs, "feature_barcode_matrix_top.total_reads");
+            if path_exists(&top_file) {
+                pathlist.push(top_file.clone());
+                let mut f = open_for_read![&top_file];
+                let mut bytes = Vec::<u8>::new();
+                f.read_to_end(&mut bytes).unwrap();
+                r.26 = u64::from_ne_bytes(bytes.try_into().unwrap());
+            }
+
             // Read the barcode-ref-nonref UMI count file.
 
-            let mut brn_file = format!("{}/../feature_barcode_matrix_top.brn", outs);
-            if !path_exists(&brn_file) {
-                brn_file = format!("{}//feature_barcode_matrix_top.brn", outs);
-            }
+            let brn_file = fnx(&outs, "feature_barcode_matrix_top.brn");
             if path_exists(&brn_file) {
                 pathlist.push(brn_file.clone());
                 let f = open_for_read![&brn_file];
@@ -791,32 +777,47 @@ pub fn load_gex(
                 }
             }
 
+            // Read the barcode-ref-nonref read count file.
+
+            let brnr_file = fnx(&outs, "feature_barcode_matrix_top.brnr");
+            if path_exists(&brnr_file) {
+                pathlist.push(brnr_file.clone());
+                let f = open_for_read![&brnr_file];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    r.23.push((
+                        fields[0].to_string(),
+                        fields[1].parse::<u32>().unwrap(),
+                        fields[2].parse::<u32>().unwrap(),
+                    ));
+                }
+            }
+
+            // Read the bdcs read count file.
+
+            let bdcs_file = fnx(&outs, "feature_barcode_matrix_top.bdcs");
+            if path_exists(&bdcs_file) {
+                pathlist.push(bdcs_file.clone());
+                let f = open_for_read![&bdcs_file];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    r.27.push((
+                        fields[0].to_string(),
+                        fields[1].parse::<u32>().unwrap(),
+                        fields[2].parse::<u32>().unwrap(),
+                        fields[3].parse::<u32>().unwrap(),
+                    ));
+                }
+            }
+
             // Read the feature reference file.
 
-            let mut fref_file = format!("{}/../feature_reference.csv", outs);
-            if !path_exists(&fref_file) {
-                fref_file = format!("{}/feature_reference.csv", outs);
-            }
+            let fref_file = fnx(&outs, "feature_reference.csv");
             if path_exists(&fref_file) {
                 pathlist.push(fref_file.clone());
                 r.21 = read_to_string(&fref_file).unwrap();
-            }
-
-            // Read the common gumis file.
-
-            let mut common_gumis_file = format!("{}/../feature_barcode_matrix.common_gumis", outs);
-            if !path_exists(&common_gumis_file) {
-                common_gumis_file = format!("{}//feature_barcode_matrix.common_gumis", outs);
-            }
-            if path_exists(&common_gumis_file) {
-                pathlist.push(common_gumis_file.clone());
-                let mut bytes = Vec::<u8>::new();
-                let mut f = open_for_read![&common_gumis_file];
-                f.read_to_end(&mut bytes).unwrap();
-                let mut pos = 0;
-                let common_gumi_freq = restore_vec_f32(&bytes, &mut pos).unwrap();
-                let common_gumi_content = restore_vec_vec_u8(&bytes, &mut pos).unwrap();
-                r.22 = (common_gumi_freq, common_gumi_content);
             }
 
             // Read the binary matrix file if appropriate.
@@ -950,7 +951,12 @@ pub fn load_gex(
             x19,
             x20,
             x21,
-            x22,
+            _x22,
+            x23,
+            x24,
+            x25,
+            x26,
+            x27,
         ),
     ) in results.into_iter().take(n).enumerate()
     {
@@ -980,7 +986,11 @@ pub fn load_gex(
         fb_total_umis.push(x19);
         fb_brn.push(x20);
         feature_refs.push(x21);
-        fb_common_gumis.push(x22);
+        fb_brnr.push(x23);
+        fb_top_reads_matrices.push(x24);
+        fb_top_reads_barcodes.push(x25);
+        fb_total_reads.push(x26);
+        fb_bdcs.push(x27);
     }
 
     // Done.

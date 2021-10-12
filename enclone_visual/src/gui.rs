@@ -55,7 +55,7 @@ impl Application for EncloneVisual {
         x.clonotypes_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.tooltip_toggle_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
-        x.common_gumi_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
@@ -217,7 +217,12 @@ impl Application for EncloneVisual {
 
         // Handle test and meta modes.
 
-        if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
+        if EXEC.lock().unwrap().len() > 0 {
+            let cmd = EXEC.lock().unwrap()[0].clone();
+            x.input1_value = cmd.clone();
+            x.input_value = cmd;
+            (x, Command::perform(noop(), Message::SubmitButtonPressed))
+        } else if !TEST_MODE.load(SeqCst) && !META_TESTING.load(SeqCst) {
             (x, Command::none())
         } else if !META_TESTING.load(SeqCst) {
             thread::sleep(Duration::from_millis(1000));

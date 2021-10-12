@@ -16,13 +16,14 @@ use std::io::Write;
 use std::time::Instant;
 use string_utils::{add_commas, TextUtils};
 use tables::print_tabular_vbox;
-use vector_utils::{make_freq, next_diff, next_diff1_2};
+use vector_utils::*;
 
 pub fn print_stats(
     tall: &Instant,
     exacts: &Vec<Vec<usize>>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    groups: &Vec<Vec<(i32, String)>>,
     ctl: &EncloneControl,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
@@ -865,6 +866,31 @@ pub fn print_stats(
                 fwriteln!(logx, "{} = {}", var, val);
             }
         }
+
+        // Print group stats, in the symmetric grouping case.
+
+        if ctl.clono_group_opt.style == "symmetric" {
+            fwriteln!(logx, "\nsymmetric grouping statistics");
+            let mut rows = Vec::<Vec<String>>::new();
+            let row = vec!["group size".to_string(), "number of clonotypes".to_string()];
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 2]);
+            let mut lens = Vec::<usize>::new();
+            for i in 0..groups.len() {
+                lens.push(groups[i].len());
+            }
+            lens.sort();
+            let mut i = 0;
+            while i < lens.len() {
+                let j = next_diff(&lens, i);
+                let row = vec![format!("{}", lens[i]), format!("{}", j - i)];
+                rows.push(row);
+                i = j;
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 2, &b"r|r".to_vec(), false, false);
+            logx.append(&mut log.as_bytes().to_vec());
+        }
     }
 
     // Print summary csv stats.
@@ -877,6 +903,8 @@ pub fn print_stats(
     // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
     // which is not the only way of doing it.
 
-    alluvial_fb(ctl, gex_info, vdj_cells, logx);
-    common_gumis(ctl, gex_info, logx);
+    if ctl.gen_opt.summary {
+        alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
+        alluvial_fb(ctl, gex_info, vdj_cells, logx);
+    }
 }

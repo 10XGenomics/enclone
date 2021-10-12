@@ -27,4 +27,4 @@ lazy_static = "1"
 pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "19329ad04342061ddb6373cfd435f046dfc4331d" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3ebbdfe8c1b441dd58aa3e4095a79f5e62a56515" }

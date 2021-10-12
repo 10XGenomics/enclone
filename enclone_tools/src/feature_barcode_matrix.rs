@@ -19,6 +19,7 @@ use mirror_sparse_matrix::MirrorSparseMatrix;
 use perf_stats::elapsed;
 use rayon::prelude::*;
 use serde_json::Value;
+use stats_utils::*;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
@@ -26,7 +27,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::time::Instant;
 use string_utils::{stringme, strme, TextUtils};
-use vector_utils::{bin_member, bin_position, make_freq, next_diff12_3, next_diff1_3, sort_sync2};
+use vector_utils::*;
 
 pub struct SequencingDef {
     pub read_path: String,
@@ -187,12 +188,38 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This computes a feature barcode matrix and several other statistical entities.
+// This computes a feature barcode matrix and several other statistical entities:
+//
+// 1 = MirrorSparseMatrix
+// • rows = cell barcodes
+// • columns = frequent feature barcodes
+// • entries = number of UMIs
+//
+// 2 = u64 = "total UMIs" = total number of pairs (cell barcode, UMI) observed
+//
+// 3 = Vec<(String, u32, u32)> = for each cell barcode the number of UMIs whose feature barcode
+//     is reference, and the number whose feature barcode is nonreference.
+//
+// 4, 5 = Vec<f32>, Vec<Vec<u8>> = for feature barcodes GGGGGGGGGGGGGGG, the common UMIs, and
+//        their frequencies, as (number of reads) / (all reads for GGGGGGGGGGGGGGG).
+//
+// 6 = MirrorSparseMatrix
+// • rows = cell barcodes
+// • columns = frequent feature barcodes
+// • entries = number of nondegenerate reads
+//
+// 7 = u64 = total number of reads (meaning as usual, read pairs)
+//
+// 8 = Vec<(String, u32, u32)> = for each cell barcode the number of nondegenerate reads whose
+//     feature barcode is reference, and the number whose feature barcode is nonreference.
+//
+// 9 = Vec<(String, u32, u32, u32)> = for each cell barcode the number of degenerate reads,
+//     the number of those that are canonical, and the number of those that are semicanonical.
 
 pub fn feature_barcode_matrix(
     seq_def: &SequencingDef,
     id: usize,
-    verbose: bool,
+    verbosity: usize,
     ref_fb: &Vec<String>,
 ) -> Result<
     (
@@ -201,6 +228,10 @@ pub fn feature_barcode_matrix(
         Vec<(String, u32, u32)>,
         Vec<f32>,
         Vec<Vec<u8>>,
+        MirrorSparseMatrix,
+        u64,
+        Vec<(String, u32, u32)>,
+        Vec<(String, u32, u32, u32)>,
     ),
     String,
 > {
@@ -210,14 +241,14 @@ pub fn feature_barcode_matrix(
 
     let mut read_files = Vec::<String>::new();
     let x = dir_list(&seq_def.read_path);
-    if verbose {
+    if verbosity > 0 {
         println!();
     }
     for f in x.iter() {
         for sample_index in seq_def.sample_indices.iter() {
             for lane in seq_def.lanes.iter() {
                 if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
-                    if verbose {
+                    if verbosity > 0 {
                         println!("{}", f);
                     }
                     if f.ends_with("__evap") {
@@ -239,7 +270,7 @@ pub fn feature_barcode_matrix(
 
     // Report what we found.
 
-    if verbose {
+    if verbosity > 0 {
         println!("\nread path = {}", seq_def.read_path);
         println!("lanes = {}", seq_def.lanes.iter().format(","));
         println!(
@@ -249,12 +280,19 @@ pub fn feature_barcode_matrix(
         println!("used {:.1} seconds\n", elapsed(&t));
     }
 
+    // A read pair is called degenerate if the first ten bases of R2 are GGGGGGGGGG.
+    // The following sequence is the 22-base end of the // Illumina Nextera-version of
+    // the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  We call a read pair canonical if it
+    // is degenerate and R1 contains the 22-base sequence, and semicanonical if it does not, but
+    // does contain the first ten bases of it.
+
+    let canonical = b"CACATCTCCGAGCCCACGAGAC".to_vec(); // 22 bases
+
     // Traverse the reads.
 
-    eprintln!("start parsing reads for {}", id);
+    println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
-    let mut total_reads = 0;
-    let mut junk = 0;
+    let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
     for rf in read_files.iter() {
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
@@ -266,6 +304,7 @@ pub fn feature_barcode_matrix(
         let mut count = 0;
         let mut barcode = Vec::<u8>::new();
         let mut umi = Vec::<u8>::new();
+        let mut read1 = Vec::<u8>::new();
         let mut fb;
         for line in b.lines() {
             count += 1;
@@ -283,21 +322,125 @@ pub fn feature_barcode_matrix(
                     assert!(s.len() >= 28);
                     barcode = s[0..16].to_vec();
                     umi = s[16..28].to_vec();
+                    read1 = s.to_vec();
                 } else {
                     fb = s[10..25].to_vec();
-                    total_reads += 1;
-                    if fb == b"GGGGGGGGGGGGGGG" {
-                        junk += 1;
+                    let mut degenerate = true;
+                    for i in 0..10 {
+                        if s[i] != b'G' {
+                            degenerate = false;
+                            break;
+                        }
                     }
-                    buf.push((barcode.clone(), umi.clone(), fb.clone()));
+
+                    // Save.
+
+                    if verbosity == 2 {
+                        let (mut is_canonical, mut is_semicanonical) = (false, false);
+                        if degenerate {
+                            for j in 0..=read1.len() - canonical.len() {
+                                if read1[j..j + canonical.len()] == canonical {
+                                    is_canonical = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if degenerate && !is_canonical {
+                            for i in 0..18 {
+                                let mut w = true;
+                                for j in 0..10 {
+                                    if read1[i + j] != canonical[j] {
+                                        w = false;
+                                        break;
+                                    }
+                                }
+                                if w {
+                                    is_semicanonical = true;
+                                    break;
+                                }
+                            }
+                        }
+                        print!(
+                            "r: {} {} {} {} {} {}",
+                            strme(&barcode),
+                            strme(&umi),
+                            strme(&s[0..10]),
+                            strme(&fb),
+                            strme(&s[25..35]),
+                            strme(&s[35..55]),
+                        );
+                        if is_canonical {
+                            print!(" = canon");
+                        } else if is_semicanonical {
+                            print!(" = semi");
+                        }
+                        println!("");
+                    }
+                    if degenerate {
+                        degen.push((barcode.clone(), umi.clone()));
+                    } else {
+                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
+                    }
                 }
             }
         }
     }
-    if verbose {
-        println!("there are {} read pairs", buf.len());
-        let junk_percent = 100.0 * junk as f64 / total_reads as f64;
-        println!("GGGGGGGGGGGGGGG fraction = {:.1}%", junk_percent);
+
+    // Build data structure for the degenerate reads.
+
+    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
+    degen.par_sort();
+    let (mut ncanonical, mut nsemicanonical) = (0, 0);
+    let mut i = 0;
+    while i < degen.len() {
+        let j = next_diff1_2(&degen, i as i32) as usize;
+        let (mut canon, mut semi) = (0, 0);
+        for k in i..j {
+            let mut read1 = degen[k].0.clone();
+            read1.append(&mut degen[k].1.clone());
+            let mut is_canonical = false;
+            for j in 0..=read1.len() - canonical.len() {
+                if read1[j..j + canonical.len()] == canonical {
+                    is_canonical = true;
+                    canon += 1;
+                    ncanonical += 1;
+                    break;
+                }
+            }
+            if !is_canonical {
+                for i in 0..18 {
+                    let mut w = true;
+                    for j in 0..10 {
+                        if read1[i + j] != canonical[j] {
+                            w = false;
+                            break;
+                        }
+                    }
+                    if w {
+                        semi += 1;
+                        nsemicanonical += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
+        i = j;
+    }
+
+    // Print summary stats.
+
+    let total_reads = degen.len() + buf.len();
+    if verbosity > 0 {
+        println!("there are {} read pairs", total_reads);
+        println!(
+            "of which {:.1}% are degenerate",
+            percent_ratio(degen.len(), total_reads)
+        );
+        let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
+        println!("canonical fraction = {:.1}%", canonical_percent);
+        let semicanonical_percent = 100.0 * nsemicanonical as f64 / total_reads as f64;
+        println!("semicanonical fraction = {:.1}%", semicanonical_percent);
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
@@ -321,9 +464,89 @@ pub fn feature_barcode_matrix(
         }
     }
 
-    // Reduce buf to UMI counts.
+    // Find the most common feature barcodes, by read count.
+
+    let mut fbs = Vec::<Vec<u8>>::new();
+    for i in 0..buf.len() {
+        fbs.push(buf[i].2.clone());
+    }
+    fbs.par_sort();
+    let mut fb_freq = Vec::<(u32, Vec<u8>)>::new();
+    make_freq(&fbs, &mut fb_freq);
+    const TOP_FEATURE_BARCODES: usize = 100;
+    if fb_freq.len() > TOP_FEATURE_BARCODES {
+        fb_freq.truncate(TOP_FEATURE_BARCODES);
+    }
+    let mut fb_freq_sorted = Vec::<Vec<u8>>::new();
+    for i in 0..fb_freq.len() {
+        fb_freq_sorted.push(fb_freq[i].1.clone());
+    }
+    let mut ids_ffs = Vec::<usize>::new();
+    for i in 0..fb_freq_sorted.len() {
+        ids_ffs.push(i);
+    }
+    sort_sync2(&mut fb_freq_sorted, &mut ids_ffs);
+
+    // Generate a feature-barcode matrix for the common feature barcodes, by read count.  Also,
+    // make a table of all barcodes, and for each, the number of reference and nonreference reads.
+
+    if verbosity > 0 {
+        println!("making mirror sparse matrix, by read counts");
+    }
+    let mut bf = Vec::<(Vec<u8>, Vec<u8>)>::new();
+    for i in 0..buf.len() {
+        bf.push((buf[i].0.clone(), buf[i].2.clone()));
+    }
+    bf.par_sort();
+    let mut brnr = Vec::<(String, u32, u32)>::new();
+    let mut x = Vec::<Vec<(i32, i32)>>::new();
+    let mut row_labels = Vec::<String>::new();
+    let mut col_labels = Vec::<String>::new();
+    for z in fb_freq.iter() {
+        col_labels.push(stringme(&z.1));
+    }
+    if verbosity > 0 {
+        println!("start making m_reads, used {:.1} seconds", elapsed(&t));
+    }
+    let mut i = 0;
+    while i < bf.len() {
+        let j = next_diff1_2(&bf, i as i32) as usize;
+        let mut y = Vec::<(i32, i32)>::new();
+        let mut k = i;
+        while k < j {
+            let l = next_diff(&bf, k);
+            let p = bin_position(&fb_freq_sorted, &bf[k].1);
+            if p >= 0 {
+                y.push((ids_ffs[p as usize] as i32, (l - k) as i32));
+            }
+            k = l;
+        }
+        if !y.is_empty() {
+            row_labels.push(format!("{}-1", strme(&bf[i].0)));
+            x.push(y);
+        }
+        let (mut refx, mut nrefx) = (0, 0);
+        for k in i..j {
+            if bin_member(ref_fb, &stringme(&bf[k].1)) {
+                refx += 1;
+            } else {
+                nrefx += 1;
+            }
+        }
+        brnr.push((stringme(&bf[i].0), refx, nrefx));
+        i = j;
+    }
+    let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
+    if verbosity > 0 {
+        println!("after making m_reads, used {:.1} seconds", elapsed(&t));
+    }
+
+    // Sort buf.
 
     buf.par_sort();
+
+    // Reduce buf to UMI counts.
+
     let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
     let mut singletons = 0;
     let mut i = 0;
@@ -381,13 +604,13 @@ pub fn feature_barcode_matrix(
                 nrefx += 1;
             }
         }
-        brn.push((stringme(&bfu[i].0.clone()), refx, nrefx));
+        brn.push((stringme(&bfu[i].0), refx, nrefx));
         i = j;
     }
 
     // Proceed.
 
-    if verbose {
+    if verbosity > 0 {
         let singleton_percent = 100.0 * singletons as f64 / total_reads as f64;
         println!("singleton fraction = {:.1}%", singleton_percent);
         let mut bc = 0;
@@ -412,22 +635,21 @@ pub fn feature_barcode_matrix(
         bfn.push((bfu[i].0.clone(), bfu[i].1.clone(), n));
         i = j;
     }
-    if verbose {
+    if verbosity > 0 {
         println!("there are {} uniques", bfu.len());
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
-    let mut total = 0;
+    let mut total_umis = 0;
     for i in 0..bfn.len() {
-        total += bfn[i].2 as u64;
+        total_umis += bfn[i].2 as u64;
     }
-    if verbose {
-        println!("total UMIs = {}\n", total);
+    if verbosity > 0 {
+        println!("total UMIs = {}\n", total_umis);
     }
 
-    // Report common feature barcodes.
+    // Report common feature barcodes, by UMI count.
 
-    const TOP_FEATURE_BARCODES: usize = 100;
-    if verbose {
+    if verbosity > 0 {
         println!("common feature barcodes and their total UMI counts\n");
     }
     let mut fbx = Vec::<Vec<u8>>::new();
@@ -437,7 +659,7 @@ pub fn feature_barcode_matrix(
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
-    if verbose {
+    if verbosity > 0 {
         for i in 0..10 {
             println!("{} = {}", strme(&freq[i].1), freq[i].0);
         }
@@ -452,13 +674,13 @@ pub fn feature_barcode_matrix(
         ids.push(i);
     }
     sort_sync2(&mut tops_sorted, &mut ids);
-    if verbose {
+    if verbosity > 0 {
         println!("\nused {:.1} seconds\n", elapsed(&t));
     }
 
-    // Generate a feature-barcode matrix for the common feature barcodes.
+    // Generate a feature-barcode matrix for the common feature barcodes, by UMI count.
 
-    if verbose {
+    if verbosity > 0 {
         println!("making mirror sparse matrix");
     }
     let mut x = Vec::<Vec<(i32, i32)>>::new();
@@ -484,8 +706,18 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
-    if verbose {
+    if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    Ok((m, total, brn, common_gumi_freq, common_gumi_content))
+    Ok((
+        m,
+        total_umis,
+        brn,
+        common_gumi_freq,
+        common_gumi_content,
+        m_reads,
+        total_reads as u64,
+        brnr,
+        bdcs,
+    ))
 }

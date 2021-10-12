@@ -870,6 +870,7 @@ pub fn group_and_print_clonotypes(
         exacts,
         rsi,
         exact_clonotypes,
+        groups,
         ctl,
         gex_info,
         vdj_cells,
