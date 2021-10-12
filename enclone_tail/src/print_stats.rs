@@ -903,7 +903,9 @@ pub fn print_stats(
     // Make alluvial tables for feature barcode data.  We determine cellular using vdj_cells,
     // which is not the only way of doing it.
 
-    alluvial_fb(ctl, gex_info, vdj_cells, logx);
-    alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
-    common_gumis(ctl, gex_info, logx);
+    if ctl.gen_opt.summary {
+        alluvial_fb(ctl, gex_info, vdj_cells, logx);
+        alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
+        common_gumis(ctl, gex_info, logx);
+    }
 }
