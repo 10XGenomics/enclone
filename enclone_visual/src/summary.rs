@@ -480,7 +480,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     }
 
     // If there is a FeatureBarcodeCommonGumisTableSet, add that.
+    // DEPRECATED: DOES NOT ADD USEFUL INFORMATION.
 
+    /*
     let mut gumi = None;
     for j in 1..hets.len() {
         if hets[j].name == "FeatureBarcodeCommonGumisTableSet" {
@@ -561,6 +563,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_height(Units(8)));
         }
     }
+    */
 
     // Suppose we have dataset level metrics.
 
