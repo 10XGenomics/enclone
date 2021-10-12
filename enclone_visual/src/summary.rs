@@ -387,22 +387,20 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                  These reads are classified as cellular, if their cell barcode was \
                  identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
                  \
-                 Each of these categories is further divided into three subcategories:\n\
-                 • degenerate: these are the case where R2 starts with at least ten Gs\n\
-                 • reference: nondegenerate, and the feature barcode is in the feature barcode \
-                 reference\n\
-                 • nonreference: nondegenerate, and whose feature barcode not in the reference.\n\n\
+                 Each of these categories is subdivided into:\n\
+                 • degenerate: R2 starts with at least ten Gs\n\
+                 • reference: nondegenerate + feature barcode is in the reference\n\
+                 • nonreference: otherwise.\n\n\
                  \
-                 In the noncellular degenerate category, we identify canonical reads, which we \
-                 define as those \
-                 whose R1 contains the sequence CACATCTCCGAGCCCACGAGAC.  This is the end of the \
+                 In the noncellular degenerate category, canonical reads are \
+                 those whose R1 contains CACATCTCCGAGCCCACGAGAC.  This is the end of the \
                  Illumina Nextera version of the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
                  If R1 contains the first ten bases = CACATCTCCG, and the read is not canonical, \
                  we call it semicanonical.",
             ))
             .push(Space::with_height(Units(8)))
             .push(Text::new(
-                "All the tables can be copied at once, in a form suitable for inclusion in \
+                "All the tables can be copied at once, for inclusion in \
                  a spreadsheet, by pushing the button below.  This copies the numbers in the \
                  last column, but not the numbers in the earlier columns.",
             ))
