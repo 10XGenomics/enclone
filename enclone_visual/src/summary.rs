@@ -384,8 +384,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Text::new(
                 "For each dataset, we show a table that classifies its feature barcode reads.\n\n\
                  \
-                 These reads are first classified as cellular, if their cell barcode was \
-                 identified as a cell by the Cell Ranger VDJ pipeline, or else noncellular.\n\n\
+                 These reads are classified as cellular, if their cell barcode was \
+                 identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
                  \
                  Each of these categories is further divided into three subcategories:\n\
                  • degenerate: these are the case where R2 starts with at least ten Gs\n\
