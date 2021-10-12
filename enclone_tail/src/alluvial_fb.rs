@@ -144,7 +144,7 @@ pub fn alluvial_fb_reads(
             let nrows = 4 * (xr + xnr) + 7;
             let ncols = 4;
             let mut rows = vec![vec![String::new(); ncols]; nrows - 2];
-            let mut csv_rows = vec![vec![String::new(); 6]; nrows];
+            let mut csv_rows = vec![vec![String::new(); 6]; nrows - 4];
             let midrow = 2 * (xr + xnr) + 1;
             rows[midrow][0] = "100.0".to_string();
             for j in 1..ncols {
@@ -192,6 +192,21 @@ pub fn alluvial_fb_reads(
                     count += 1;
                 }
             }
+
+            let r = 2 * (xr + xnr) + 4;
+            csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+            csv_rows[r - 4][1] = "noncellular".to_string();
+            csv_rows[r - 4][2] = "degenerate".to_string();
+            csv_rows[r - 4][3] = format!("{}", pr0(ncellular_canon, total));
+            csv_rows[r - 4][4] = "canonical".to_string();
+
+            let r = 2 * (xr + xnr) + 6;
+            csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+            csv_rows[r - 4][1] = "noncellular".to_string();
+            csv_rows[r - 4][2] = "degenerate".to_string();
+            csv_rows[r - 4][3] = format!("{}", pr0(ncellular_semi, total));
+            csv_rows[r - 4][4] = "semicanonical".to_string();
+
             for pass in 0..2 {
                 for i in 0..top_ref.len() {
                     let c = top_ref[i].0;
@@ -210,23 +225,24 @@ pub fn alluvial_fb_reads(
                     if pass == 0 {
                         let r = 2 * i + 4;
                         rows[r - 2][3] = format!("{} {}", pr(cell, total), label);
-                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
-                        csv_rows[r][1] = "cellular".to_string();
-                        csv_rows[r][2] = "reference".to_string();
-                        csv_rows[r][3] = format!("{}", pr0(cell, total));
-                        csv_rows[r][4] = seq.clone();
-                        csv_rows[r][5] = seq_to_id[seq].clone();
+                        csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r - 4][1] = "cellular".to_string();
+                        csv_rows[r - 4][2] = "reference".to_string();
+                        csv_rows[r - 4][3] = format!("{}", pr0(cell, total));
+                        csv_rows[r - 4][4] = seq.clone();
+                        csv_rows[r - 4][5] = seq_to_id[seq].clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * i + 8;
                         rows[r - 2][3] = format!("{} {}", pr(ncell, total), label);
-                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
-                        csv_rows[r][1] = "noncellular".to_string();
-                        csv_rows[r][2] = "reference".to_string();
-                        csv_rows[r][3] = format!("{}", pr0(ncell, total));
-                        csv_rows[r][4] = seq.clone();
-                        csv_rows[r][5] = seq_to_id[seq].clone();
+                        csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r - 4][1] = "noncellular".to_string();
+                        csv_rows[r - 4][2] = "reference".to_string();
+                        csv_rows[r - 4][3] = format!("{}", pr0(ncell, total));
+                        csv_rows[r - 4][4] = seq.clone();
+                        csv_rows[r - 4][5] = seq_to_id[seq].clone();
                     }
                 }
+
                 for i in 0..top_nref.len() {
                     let c = top_nref[i].0;
                     let seq = &top_nref[i].1;
@@ -243,18 +259,18 @@ pub fn alluvial_fb_reads(
                     if pass == 0 {
                         let r = 2 * (i + xr) + 4;
                         rows[r - 2][3] = format!("{} {}", pr(cell, total), seq);
-                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
-                        csv_rows[r][1] = "cellular".to_string();
-                        csv_rows[r][2] = "nonreference".to_string();
-                        csv_rows[r][3] = format!("{}", pr0(cell, total));
-                        csv_rows[r][4] = seq.clone();
+                        csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r - 4][1] = "cellular".to_string();
+                        csv_rows[r - 4][2] = "nonreference".to_string();
+                        csv_rows[r - 4][3] = format!("{}", pr0(cell, total));
+                        csv_rows[r - 4][4] = seq.clone();
                     } else {
                         let r = 2 * (xr + xnr) + 2 * (i + xr) + 8;
-                        csv_rows[r][0] = ctl.origin_info.dataset_id[li].clone();
-                        csv_rows[r][1] = "noncellular".to_string();
-                        csv_rows[r][2] = "nonreference".to_string();
-                        csv_rows[r][3] = format!("{}", pr0(ncell, total));
-                        csv_rows[r][4] = seq.clone();
+                        csv_rows[r - 4][0] = ctl.origin_info.dataset_id[li].clone();
+                        csv_rows[r - 4][1] = "noncellular".to_string();
+                        csv_rows[r - 4][2] = "nonreference".to_string();
+                        csv_rows[r - 4][3] = format!("{}", pr0(ncell, total));
+                        csv_rows[r - 4][4] = seq.clone();
                         rows[r - 2][3] = format!("{} {}", pr(ncell, total), seq);
                     }
                 }
