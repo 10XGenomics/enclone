@@ -28,7 +28,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut fb_brn = Vec::<Vec<(String, u32, u32)>>::new();
     let mut fb_brnr = Vec::<Vec<(String, u32, u32)>>::new();
     let mut fb_bdcs = Vec::<Vec<(String, u32, u32, u32)>>::new();
-    let mut fb_common_gumis = Vec::<(Vec<f32>, Vec<Vec<u8>>)>::new();
     let mut feature_refs = Vec::<String>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
@@ -57,7 +56,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         &mut fb_brn,
         &mut fb_brnr,
         &mut fb_bdcs,
-        &mut fb_common_gumis,
         &mut feature_refs,
         &mut cluster,
         &mut cell_type,
@@ -171,7 +169,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
         fb_brn,
         fb_brnr,
         fb_bdcs,
-        fb_common_gumis,
         feature_refs,
         cluster,
         cell_type,

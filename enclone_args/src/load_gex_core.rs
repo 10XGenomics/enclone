@@ -5,7 +5,6 @@
 
 use crate::*;
 use enclone_core::defs::EncloneControl;
-use enclone_core::packing::*;
 use enclone_core::slurp::slurp_h5;
 use io_utils::{dir_list, open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
@@ -38,7 +37,6 @@ pub fn load_gex(
     fb_brn: &mut Vec<Vec<(String, u32, u32)>>,
     fb_brnr: &mut Vec<Vec<(String, u32, u32)>>,
     fb_bdcs: &mut Vec<Vec<(String, u32, u32, u32)>>,
-    fb_common_gumis: &mut Vec<(Vec<f32>, Vec<Vec<u8>>)>,
     feature_refs: &mut Vec<String>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
@@ -828,20 +826,6 @@ pub fn load_gex(
                 r.21 = read_to_string(&fref_file).unwrap();
             }
 
-            // Read the common gumis file.
-
-            let common_gumis_file = fnx(&outs, "feature_barcode_matrix.common_gumis");
-            if path_exists(&common_gumis_file) {
-                pathlist.push(common_gumis_file.clone());
-                let mut bytes = Vec::<u8>::new();
-                let mut f = open_for_read![&common_gumis_file];
-                f.read_to_end(&mut bytes).unwrap();
-                let mut pos = 0;
-                let common_gumi_freq = restore_vec_f32(&bytes, &mut pos).unwrap();
-                let common_gumi_content = restore_vec_vec_u8(&bytes, &mut pos).unwrap();
-                r.22 = (common_gumi_freq, common_gumi_content);
-            }
-
             // Read the binary matrix file if appropriate.
 
             if bin_file_state == 2 {
@@ -973,7 +957,7 @@ pub fn load_gex(
             x19,
             x20,
             x21,
-            x22,
+            _x22,
             x23,
             x24,
             x25,
@@ -1008,7 +992,6 @@ pub fn load_gex(
         fb_total_umis.push(x19);
         fb_brn.push(x20);
         feature_refs.push(x21);
-        fb_common_gumis.push(x22);
         fb_brnr.push(x23);
         fb_top_reads_matrices.push(x24);
         fb_top_reads_barcodes.push(x25);

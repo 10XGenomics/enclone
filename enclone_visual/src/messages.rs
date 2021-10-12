@@ -96,9 +96,5 @@ pub enum Message {
     CompleteCopyAlluvialTables(Result<(), String>),
     CopyAlluvialReadsTables,
     CompleteCopyAlluvialReadsTables(Result<(), String>),
-    CopyCommonGumiTables,
-    CompleteCopyCommonGumiTables(Result<(), String>),
     SetSummaryScrollablePos(f32),
-    ExpandCommonGumiTables,
-    HideCommonGumiTables,
 }
