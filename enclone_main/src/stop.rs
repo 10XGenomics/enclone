@@ -167,7 +167,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let ctl = ctl;
     let refdata = refdata;
     let exact_clonotypes = exact_clonotypes;
-    let pics = pics;
 
     // Process the SUBSET_JSON option.
 
@@ -205,7 +204,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Remove clonotypes that are not in groups.
 
-    /*
     let mut to_delete = vec![true; exacts.len()];
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
@@ -226,7 +224,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         }
     }
     erase_if(&mut exacts, &to_delete);
-    */
+    erase_if(&mut pics, &to_delete);
     ctl.perf_stats(&t, "in grouper");
 
     // Process TOY_COM option.
