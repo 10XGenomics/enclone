@@ -165,7 +165,7 @@ use std::io::{BufWriter, Write};
 use std::process::Command;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use superslice::Ext;
-use vdj_ann::refx::{human_ref, mouse_ref};
+use vdj_ann_ref::{human_ref, mouse_ref};
 use vector_utils::{bin_member, bin_position, erase_if, reverse_sort, sort_sync2, unique_sort};
 
 // copied from tenkit2/pack_dna.rs:

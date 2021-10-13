@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use string_utils::{strme, TextUtils};
-use vdj_ann::refx::{
+use vdj_ann_ref::{
     human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, mouse_ref, mouse_ref_3_1, mouse_ref_4_0,
 };
 use vector_utils::{erase_if, unique_sort, VecUtils};
