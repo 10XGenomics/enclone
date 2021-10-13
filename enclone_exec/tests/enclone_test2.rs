@@ -511,7 +511,6 @@ fn test_internal() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
-    extern crate attohttpc;
     use std::time::Duration;
 
     // Set up link exceptions.  These are links that have been observed to break periodically.

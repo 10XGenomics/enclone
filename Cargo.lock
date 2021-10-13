@@ -1356,6 +1356,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils",
 ]
 
@@ -1437,6 +1438,7 @@ dependencies = [
  "superslice",
  "tables",
  "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils",
 ]
 
@@ -1507,6 +1509,7 @@ dependencies = [
  "string_utils",
  "tilde-expand",
  "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils",
 ]
 
@@ -5243,28 +5246,40 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3ebbdfe8c1b441dd58aa3e4095a79f5e62a56515#3ebbdfe8c1b441dd58aa3e4095a79f5e62a56515"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
 dependencies = [
  "align_tools",
  "amino",
  "bio_edit",
  "debruijn",
- "exons",
  "fasta_tools",
- "flate2",
  "hyperbase",
  "io_utils",
  "itertools",
  "kmer_lookup",
- "pretty_trace",
  "serde",
  "serde_json",
- "sha2",
  "stats_utils",
  "string_utils",
- "strum",
- "strum_macros",
  "vdj_types",
+ "vector_utils",
+]
+
+[[package]]
+name = "vdj_ann_ref"
+version = "0.1.6"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
+dependencies = [
+ "debruijn",
+ "exons",
+ "fasta_tools",
+ "flate2",
+ "io_utils",
+ "kmer_lookup",
+ "pretty_trace",
+ "sha2",
+ "string_utils",
+ "vdj_ann",
  "vector_utils",
 ]
 
