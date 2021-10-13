@@ -383,11 +383,13 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_height(Units(8)));
         if slf.alluvial_reads_doc_open {
             summary_scrollable = summary_scrollable
-                .push( Button::new(
-                    &mut slf.close_alluvial_reads_doc_button,
-                    Text::new("Hide documentation"),
+                .push(
+                    Button::new(
+                        &mut slf.close_alluvial_reads_doc_button,
+                        Text::new("Hide documentation"),
+                    )
+                    .on_press(Message::CloseAlluvialReadsDoc),
                 )
-                .on_press(Message::CloseAlluvialReadsDoc))
                 .push(Space::with_height(Units(8)))
                 .push(Text::new(
                     "For each dataset, we show a table that classifies its feature barcode \
@@ -415,13 +417,13 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                      last column, but not the numbers in the earlier columns.",
                 ));
         } else {
-            summary_scrollable = summary_scrollable
-                .push( Button::new(
+            summary_scrollable = summary_scrollable.push(
+                Button::new(
                     &mut slf.open_alluvial_reads_doc_button,
                     Text::new("Expand documentation"),
-                    )
-                    .on_press(Message::OpenAlluvialReadsDoc)
-                );
+                )
+                .on_press(Message::OpenAlluvialReadsDoc),
+            );
         }
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
