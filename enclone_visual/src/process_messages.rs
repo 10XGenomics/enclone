@@ -22,6 +22,16 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::OpenAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = true;
+                Command::none()
+            }
+
+            Message::CloseAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = false;
+                Command::none()
+            }
+
             Message::SetSummaryScrollablePos(p) => {
                 self.summary_scroll.snap_to(p);
                 Command::none()

@@ -380,30 +380,50 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     .size(25)
                     .color(Color::from_rgb(0.9, 0.0, 0.9)),
             )
-            .push(Space::with_height(Units(8)))
-            .push(Text::new(
-                "For each dataset, we show a table that classifies its feature barcode reads.\n\n\
-                 \
-                 These reads are classified as cellular, if their cell barcode was \
-                 identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
-                 \
-                 Each of these categories is subdivided into:\n\
-                 • degenerate: R2 starts with at least ten Gs\n\
-                 • reference: nondegenerate + feature barcode is in the reference\n\
-                 • nonreference: otherwise.\n\n\
-                 \
-                 In the noncellular degenerate category, canonical reads are \
-                 those whose R1 contains CACATCTCCGAGCCCACGAGAC.  This is the end of the \
-                 Illumina Nextera version of the R2 primer = CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
-                 If R1 contains the first ten bases = CACATCTCCG, and the read is not canonical, \
-                 we call it semicanonical.",
-            ))
-            .push(Space::with_height(Units(8)))
-            .push(Text::new(
-                "All the tables can be copied at once, for inclusion in \
-                 a spreadsheet, by pushing the button below.  This copies the numbers in the \
-                 last column, but not the numbers in the earlier columns.",
-            ))
+            .push(Space::with_height(Units(8)));
+        if slf.alluvial_reads_doc_open {
+            summary_scrollable = summary_scrollable
+                .push( Button::new(
+                    &mut slf.close_alluvial_reads_doc_button,
+                    Text::new("Hide documentation"),
+                )
+                .on_press(Message::CloseAlluvialReadsDoc))
+                .push(Space::with_height(Units(8)))
+                .push(Text::new(
+                    "For each dataset, we show a table that classifies its feature barcode \
+                     reads.\n\n\
+                     \
+                     These reads are classified as cellular, if their cell barcode was \
+                     identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
+                     \
+                     Each of these categories is subdivided into:\n\
+                     • degenerate: R2 starts with at least ten Gs\n\
+                     • reference: nondegenerate + feature barcode is in the reference\n\
+                     • nonreference: otherwise.\n\n\
+                     \
+                     In the noncellular degenerate category, canonical reads are \
+                     those whose R1 contains CACATCTCCGAGCCCACGAGAC.  This is the end of the \
+                     Illumina Nextera version of the R2 primer = \
+                     CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
+                     If R1 contains the first ten bases = CACATCTCCG, and the read is not \
+                     canonical, we call it semicanonical.",
+                ))
+                .push(Space::with_height(Units(8)))
+                .push(Text::new(
+                    "All the tables can be copied at once, for inclusion in \
+                     a spreadsheet, by pushing the button below.  This copies the numbers in the \
+                     last column, but not the numbers in the earlier columns.",
+                ));
+        } else {
+            summary_scrollable = summary_scrollable
+                .push( Button::new(
+                    &mut slf.open_alluvial_reads_doc_button,
+                    Text::new("Expand documentation"),
+                    )
+                    .on_press(Message::OpenAlluvialReadsDoc)
+                );
+        }
+        summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(
                 Button::new(

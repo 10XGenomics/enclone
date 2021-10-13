@@ -57,6 +57,8 @@ pub enum Message {
     ArchiveRefreshComplete(Result<(), String>),
     OpenArchiveDoc,
     CloseArchiveDoc,
+    OpenAlluvialReadsDoc,
+    CloseAlluvialReadsDoc,
     ArchiveNarrative(usize),
     CopyArchiveNarrative(usize),
     CompleteCopyArchiveNarrative(Result<(), String>),
