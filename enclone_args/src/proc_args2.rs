@@ -189,7 +189,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
             if dir.ends_with("/outs") {
                 dir = dir.rev_before("/outs").to_string();
             }
-            let invo = format!("{}/_invocation", dir);
+            let mut invo = format!("{}/_invocation", dir);
+            if !path_exists(&invo) {
+                invo = format!("{}/../../../_invocation", dir);
+            }
             if path_exists(&invo) {
                 let f = open_userfile_for_read(&invo);
                 for line in f.lines() {
