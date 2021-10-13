@@ -27,4 +27,4 @@ lazy_static = "1"
 pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev="990d225a6d24d47bbb4412cba4251dda34ab7bcb" }
+vdj_ann = { path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann" }

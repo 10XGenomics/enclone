@@ -25,7 +25,7 @@ failure = "0.1"
 prost = { version = "0.8", default_features = false }
 serde = "1"
 serde_derive = "1"
-vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev="990d225a6d24d47bbb4412cba4251dda34ab7bcb" }
+vdj_ann = { path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann" }
 
 [build-dependencies]
 prost-build = "0.8"
