@@ -42,7 +42,7 @@ pub fn description_table(
             print_tabular_vbox(
                 &mut display_text,
                 &rows,
-                2,
+                0,
                 &b"l|l".to_vec(),
                 false,
                 false,
