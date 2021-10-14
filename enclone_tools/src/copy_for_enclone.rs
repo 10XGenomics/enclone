@@ -263,7 +263,10 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             let list = dir_list(&format!("{}/per_sample_outs", p));
             if list.solo() {
                 let x = &list[0];
-                let d = format!("per_sample_outs/{}/count/analysis", x);
+                let mut d = format!("per_sample_outs/{}/count/analysis", x);
+                if !path_exists(&d) {
+                    d = format!("per_sample_outs/{}/count/analysis_csv", x);
+                }
                 mkdirp(&format!("{}/outs/{}", target, d));
                 copy(
                     &format!("{}/{}", p, d),

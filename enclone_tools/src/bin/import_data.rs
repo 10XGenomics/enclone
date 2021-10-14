@@ -13,6 +13,9 @@
 // Optional second argument: FB_INFO: do nothing except attempt to create the
 // feature barcode matrix.
 //
+// Optional second argument: FB_INFO_WRITE: do nothing except attempt to create the
+// feature barcode matrix and write the corresponding files.
+//
 // For use at 10x Genomics.
 
 use enclone_core::defs::get_config;
@@ -36,9 +39,15 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let mut fb_info = false;
+    let mut fb_info_write = false;
+    let mut verbosity = 0;
     for i in 2..args.len() {
         if args[i] == "FB_INFO" {
             fb_info = true;
+        } else if args[i] == "FB_INFO_WRITE" {
+            fb_info_write = true;
+        } else if args[i].starts_with("VERBOSITY=") {
+            verbosity = args[i].after("VERBOSITY=").force_usize();
         } else {
             eprintln!("\nIllegal arg.\n");
             std::process::exit(1);
@@ -130,7 +139,7 @@ fn main() {
         // Move directories if they exist.
 
         let mut moved = false;
-        if !fb_info {
+        if !fb_info && !fb_info_write {
             for dest in dests.iter() {
                 if path_exists(&format!("{}/{}", dest, id)) {
                     if path_exists(&format!("{}/{}.aside", dest, id)) {
@@ -149,7 +158,7 @@ fn main() {
 
         // Start copy.
 
-        if !fb_info {
+        if !fb_info && !fb_info_write {
             println!("copying {} using path = {}", id, p);
             for i in (0..dests.len()).rev() {
                 let dest = &dests[i];
@@ -276,12 +285,16 @@ fn main() {
 
             // Keep going.
 
-            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), fb_info, &ref_fb);
+            let mut verb = verbosity;
+            if verb == 0 && (fb_info || fb_info_write) {
+                verb = 1;
+            }
+            let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), verb, &ref_fb);
             if fb_info {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (m, total, brn) = x.unwrap();
+                let (m, total, brn, m_reads, total_reads, brnr, bdcs) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -289,16 +302,40 @@ fn main() {
                         &m,
                         &format!("{}/outs/feature_barcode_matrix_top.bin", target),
                     );
+                    write_to_file(
+                        &m_reads,
+                        &format!("{}/outs/feature_barcode_matrix_top_reads.bin", target),
+                    );
                     let mut f =
                         File::create(&format!("{}/outs/feature_barcode_matrix_top.total", target))
                             .unwrap();
                     f.write_all(&total.to_ne_bytes()).unwrap();
+                    let mut f = File::create(&format!(
+                        "{}/outs/feature_barcode_matrix_top.total_reads",
+                        target
+                    ))
+                    .unwrap();
+                    f.write_all(&total_reads.to_ne_bytes()).unwrap();
                     let mut f = open_for_write_new![&format!(
                         "{}/outs/feature_barcode_matrix_top.brn",
                         target
                     )];
                     for j in 0..brn.len() {
                         fwriteln!(f, "{},{},{}", brn[j].0, brn[j].1, brn[j].2);
+                    }
+                    let mut f = open_for_write_new![&format!(
+                        "{}/outs/feature_barcode_matrix_top.brnr",
+                        target
+                    )];
+                    for j in 0..brnr.len() {
+                        fwriteln!(f, "{},{},{}", brnr[j].0, brnr[j].1, brnr[j].2);
+                    }
+                    let mut f = open_for_write_new![&format!(
+                        "{}/outs/feature_barcode_matrix_top.bdcs",
+                        target
+                    )];
+                    for j in 0..bdcs.len() {
+                        fwriteln!(f, "{},{},{},{}", bdcs[j].0, bdcs[j].1, bdcs[j].2, bdcs[j].3);
                     }
                 }
             }

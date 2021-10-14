@@ -2,7 +2,7 @@
 
 // Storage of enclone visual history, and functions to save and restore.
 
-use crate::packing::*;
+use enclone_core::packing::*;
 use io_utils::*;
 use std::fs::{File, OpenOptions};
 use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};

@@ -380,12 +380,20 @@ pub fn build_diff_row(
                         let leader = q < rsi.fr1_starts[col];
                         let mut cdr = false;
                         if rsi.cdr1_starts[col].is_some()
+                            && rsi.cdr2_starts[col].is_some()
+                            && rsi.fr2_starts[col].is_some()
+                            && rsi.fr3_starts[col].is_some()
                             && q >= rsi.cdr1_starts[col].unwrap()
                             && q < rsi.fr2_starts[col].unwrap()
                         {
                             cdr = true;
                         }
-                        if q >= rsi.cdr2_starts[col].unwrap() && q < rsi.fr3_starts[col].unwrap() {
+
+                        if rsi.cdr2_starts[col].is_some()
+                            && rsi.fr3_starts[col].is_some()
+                            && q >= rsi.cdr2_starts[col].unwrap()
+                            && q < rsi.fr3_starts[col].unwrap()
+                        {
                             cdr = true;
                         }
                         if q >= rsi.cdr3_starts[col]

@@ -292,7 +292,7 @@ pub fn max_line_val(s: &str) -> usize {
     m
 }
 
-pub fn appropriate_font_size(s: &str, w: u32) -> usize {
+pub fn appropriate_font_size(s: &str, w: u32, max_size: usize) -> usize {
     let mut font_size = 20;
     let max_line = max_line_val(&s);
     const FUDGE: f32 = 175.0;
@@ -301,6 +301,9 @@ pub fn appropriate_font_size(s: &str, w: u32) -> usize {
     if iwidth > w {
         let fs = w as f32 / width * (font_size as f32);
         font_size = fs.floor() as usize;
+    }
+    if font_size > max_size {
+        font_size = max_size;
     }
     font_size
 }
@@ -321,14 +324,19 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Determine initial font size.
 
-    let mut max_line = max_line_val(&hets[0].content);
-    let mut font_size = appropriate_font_size(&hets[0].content, slf.width);
+    let mut sum =
+        "The summary is empty.  Usually this happens if the command failed.\n".to_string();
+    if !hets.is_empty() {
+        sum = hets[0].content.clone();
+    }
+    let mut max_line = max_line_val(&sum);
+    let mut font_size = appropriate_font_size(&sum, slf.width, 20);
     const FUDGE: f32 = 175.0;
     let orig_font_size = font_size;
 
     // Put first part of summary into a scrollable.
 
-    let summary = format!("{}\n \n", hets[0].content);
+    let summary = format!("{}\n \n", sum);
     let mut summary_scrollable = Scrollable::new(&mut slf.summary_scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -341,11 +349,150 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .size(orig_font_size as u16),
         );
 
-    // If there is a second part, which for now would be a FeatureBarcodeAlluvialTableSet,
-    // add that.
+    // If there is a DescriptionTable, add that.
 
-    if hets.len() > 1 && hets[1].name == "FeatureBarcodeAlluvialTableSet" {
-        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[1].content);
+    let mut descrips = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "DescriptionTable" {
+            descrips = Some(j);
+        }
+    }
+    if descrips.is_some() {
+        let j = descrips.unwrap();
+        let table = DescriptionTable::from_string(&hets[j].content);
+        slf.descrips_for_spreadsheet = table.spreadsheet_text.clone();
+        let tables_font_size = appropriate_font_size(&table.display_text, slf.width, 16);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Dataset descriptions")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.descrips_copy_button,
+                    Text::new("Copy").color(slf.descrips_copy_button_color),
+                )
+                .on_press(Message::CopyDescrips),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", table.display_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
+
+    // If there is a FeatureBarcodeAlluvialReadsTableSet, add that.
+
+    let mut alluv = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeAlluvialReadsTableSet" {
+            alluv = Some(j);
+        }
+    }
+    if alluv.is_some() {
+        let j = alluv.unwrap();
+        let tables = FeatureBarcodeAlluvialReadsTableSet::from_string(&hets[j].content);
+        slf.alluvial_reads_tables_for_spreadsheet.clear();
+        let mut tables_text = String::new();
+        for i in 0..tables.s.len() {
+            tables_text += &mut format!(
+                "\nfeature barcode read distribution for {}\n{}",
+                tables.s[i].id, tables.s[i].display_text
+            );
+            slf.alluvial_reads_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+        }
+        tables_text += "\n \n";
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 16);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Feature barcode read count alluvial tables")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)));
+        if slf.alluvial_reads_doc_open {
+            summary_scrollable = summary_scrollable
+                .push(
+                    Button::new(
+                        &mut slf.close_alluvial_reads_doc_button,
+                        Text::new("Hide documentation"),
+                    )
+                    .on_press(Message::CloseAlluvialReadsDoc),
+                )
+                .push(Space::with_height(Units(8)))
+                .push(Text::new(
+                    "For each dataset, we show a table that classifies its feature barcode \
+                     reads.\n\n\
+                     \
+                     These reads are classified as cellular, if their cell barcode was \
+                     identified as a cell by the Cell Ranger VDJ pipeline, else noncellular.\n\n\
+                     \
+                     Each of these categories is subdivided into:\n\
+                     • degenerate: R2 starts with at least ten Gs\n\
+                     • reference: nondegenerate + feature barcode is in the reference\n\
+                     • nonreference: otherwise.\n\n\
+                     \
+                     In the noncellular degenerate category, canonical reads are \
+                     those whose R1 contains CACATCTCCGAGCCCACGAGAC.  This is the end of the \
+                     Illumina Nextera version of the R2 primer = \
+                     CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
+                     If R1 contains the first ten bases = CACATCTCCG, and the read is not \
+                     canonical, we call it semicanonical.",
+                ))
+                .push(Space::with_height(Units(8)))
+                .push(Text::new(
+                    "All the tables can be copied at once, for inclusion in \
+                     a spreadsheet, by pushing the button below.  This copies the numbers in the \
+                     last column, but not the numbers in the earlier columns.",
+                ));
+        } else {
+            summary_scrollable = summary_scrollable.push(
+                Button::new(
+                    &mut slf.open_alluvial_reads_doc_button,
+                    Text::new("Expand documentation"),
+                )
+                .on_press(Message::OpenAlluvialReadsDoc),
+            );
+        }
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.alluvial_reads_tables_copy_button,
+                    Text::new("Copy").color(slf.alluvial_reads_tables_copy_button_color),
+                )
+                .on_press(Message::CopyAlluvialReadsTables),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", tables_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
+
+    // If there is a FeatureBarcodeAlluvialTableSet, add that.
+
+    let mut alluv = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "FeatureBarcodeAlluvialTableSet" {
+            alluv = Some(j);
+        }
+    }
+    if alluv.is_some() {
+        let j = alluv.unwrap();
+        let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[j].content);
         slf.alluvial_tables_for_spreadsheet.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
@@ -356,7 +503,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
         }
         tables_text += "\n \n";
-        let tables_font_size = appropriate_font_size(&tables_text, slf.width);
+        let tables_font_size = appropriate_font_size(&tables_text, slf.width, 20);
         summary_scrollable = summary_scrollable
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))

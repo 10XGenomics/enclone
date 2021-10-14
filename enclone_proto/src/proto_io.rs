@@ -21,13 +21,27 @@
 
 use crate::types::{Clonotype, EncloneOutputs};
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
-use failure::{format_err, Error};
 use prost::Message;
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::Path;
 
 const BUFFER_CAPACITY: usize = 1_000_000;
+
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("Expected to get {expected} bytes from the reader. Got {got} bytes!")]
+    Truncated { expected: usize, got: usize },
+
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+
+    #[error(transparent)]
+    ProtoDecode(#[from] prost::DecodeError),
+
+    #[error(transparent)]
+    ProtoEncode(#[from] prost::EncodeError),
+}
 
 /// A helper struct to write a length delimited protobuf encoded message into the inner `writer`.
 pub struct ProtoWriter<W: Write> {
@@ -88,11 +102,10 @@ impl<R: Read> ProtoReader<R> {
             .read_to_end(&mut self.decode_buffer)?;
         // If we did not get num_bytes bytes, return an error
         if self.decode_buffer.len() != num_bytes {
-            return Err(format_err!(
-                "Expected to get {} bytes from the reader. Got {} bytes!",
-                num_bytes,
-                self.decode_buffer.len()
-            ));
+            return Err(Error::Truncated {
+                expected: num_bytes,
+                got: self.decode_buffer.len(),
+            });
         }
         Ok(())
     }

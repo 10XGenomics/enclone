@@ -21,6 +21,7 @@ use std::{
     time::Instant,
 };
 use string_utils::TextUtils;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -166,8 +167,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let ctl = ctl;
     let refdata = refdata;
     let exact_clonotypes = exact_clonotypes;
-    let exacts = exacts;
-    let pics = pics;
 
     // Process the SUBSET_JSON option.
 
@@ -191,8 +190,9 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     );
 
     // Group clonotypes.
+
     let t = Instant::now();
-    let groups = grouper(
+    let mut groups = grouper(
         refdata,
         &exacts,
         &in_center,
@@ -201,7 +201,32 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &rsi,
         &opt_d_val,
     );
+
+    // Remove clonotypes that are not in groups.
+
+    let mut to_delete = vec![true; exacts.len()];
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            to_delete[groups[i][j].0 as usize] = false;
+        }
+    }
+    let mut count = 0;
+    let mut to_new = HashMap::<usize, usize>::new();
+    for i in 0..exacts.len() {
+        if !to_delete[i] {
+            to_new.insert(i, count);
+            count += 1;
+        }
+    }
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            groups[i][j].0 = to_new[&(groups[i][j].0 as usize)] as i32;
+        }
+    }
+    erase_if(&mut exacts, &to_delete);
+    erase_if(&mut pics, &to_delete);
     ctl.perf_stats(&t, "in grouper");
+
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {

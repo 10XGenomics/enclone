@@ -1,6 +1,6 @@
 [package]
 name = "enclone_proto"
-version = "0.5.112"
+version = "0.5.114"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Lance Hepler <lance.hepler@10xgenomics.com>,
@@ -21,11 +21,11 @@ publish = false
 bio_edit = "0.1"
 bytes = "1"
 byteorder = "1"
-failure = "0.1"
 prost = { version = "0.8", default_features = false }
 serde = "1"
 serde_derive = "1"
 vdj_ann = { path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann" }
+thiserror = "1"
 
 [build-dependencies]
 prost-build = "0.8"

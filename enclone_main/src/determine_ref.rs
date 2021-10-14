@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use string_utils::{strme, TextUtils};
-use vdj_ann::refx::{
+use vdj_ann_ref::{
     human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, mouse_ref, mouse_ref_3_1, mouse_ref_4_0,
 };
 use vector_utils::{erase_if, unique_sort, VecUtils};
@@ -30,10 +30,12 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         if !path_exists(&json) && !path_exists(&json_lz4) {
             return Err(format!(
                 "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
-                There are various possible reasons for this, including an incorrectly \
-                specified path, or incorrect\nspecification of PRE, or a partially copied outs \
-                directory that does not include \
-                all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
+                There are various possible reasons for this, including:\n\
+                • an incorrectly specified path\n\
+                • incorrect specification of PRE\n\
+                • a partially copied outs directory that does not include all the needed files\n\
+                • a mixup between VDJ and GEX path names\n\
+                • you wrote BCR, when you have TCR, or the other way.",
                 json, json_lz4
             ));
         }

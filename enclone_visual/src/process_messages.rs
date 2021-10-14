@@ -22,6 +22,27 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyDescrips => {
+                self.descrips_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.descrips_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyDescrips)
+            }
+
+            Message::CompleteCopyDescrips(_) => {
+                self.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::OpenAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = true;
+                Command::none()
+            }
+
+            Message::CloseAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = false;
+                Command::none()
+            }
+
             Message::SetSummaryScrollablePos(p) => {
                 self.summary_scroll.snap_to(p);
                 Command::none()
@@ -50,6 +71,17 @@ impl EncloneVisual {
                     thread::sleep(Duration::from_millis(ms));
                 }
                 self.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CopyAlluvialReadsTables => {
+                self.alluvial_reads_tables_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.alluvial_reads_tables_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyAlluvialReadsTables)
+            }
+
+            Message::CompleteCopyAlluvialReadsTables(_) => {
+                self.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
 
@@ -333,6 +365,14 @@ impl EncloneVisual {
                         META_TESTING.store(false, SeqCst);
                         return Command::none();
                     }
+                    if PLAYBACK.load(SeqCst) {
+                        println!("message history:\n");
+                        let messages = compressed_message_history();
+                        for i in 0..messages.len() {
+                            println!("[{}] {}", i + 1, messages[i]);
+                        }
+                    }
+                    println!("");
                     std::process::exit(0);
                 }
                 Command::perform(noop0(), Message::Meta)

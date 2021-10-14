@@ -3,8 +3,8 @@
 use crate::copy_image_to_clipboard::*;
 use crate::dimensions::*;
 use crate::gui_structures::EncloneVisual;
+use anyhow::Error;
 use enclone_tail::convert_svg_to_png::*;
-use failure::Error;
 use iced::{Application, Font, Settings};
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -56,7 +56,6 @@ pub mod gui_structures;
 pub mod help;
 pub mod history;
 pub mod messages;
-pub mod packing;
 pub mod popover;
 pub mod proc1;
 pub mod proc2;
@@ -560,6 +559,7 @@ lazy_static! {
     pub static ref RECEIVED_SHARES_FILENAMES: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref TOOLTIP_TEXT: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref COOKBOOK_DIRS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
+    pub static ref EXEC: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
 }
 
 lazy_static! {
