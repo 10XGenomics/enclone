@@ -8,7 +8,8 @@
 
 use enclone_core::defs::ExactClonotype;
 use string_utils::TextUtils;
-use vdj_ann::refx::{human_ref, mouse_ref, RefData};
+use vdj_ann::refx::RefData;
+use vdj_ann_ref::{human_ref, mouse_ref};
 use vector_utils::{bin_member, reverse_sort, unique_sort};
 
 pub fn species(refdata: &RefData) -> String {
