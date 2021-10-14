@@ -521,7 +521,10 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             )
             .push(Space::with_height(Units(8)))
             .push(Text::new(
-                "All the tables can be copied at once, in a form suitable for inclusion in \
+                "These tables are similar to the tables for reads.  See the documentation there.  \
+                 However for these tables, we have not bothered to separate out the degenerate \
+                 reads.  Note that the FB_SHOW option can also be used here.\n\n\
+                 All the tables can be copied at once, in a form suitable for inclusion in \
                  a spreadsheet, by pushing the button below.  This copies the numbers in the \
                  last column, but not the numbers in the earlier columns.",
             ))
