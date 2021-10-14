@@ -389,9 +389,11 @@ pub fn build_diff_row(
                             cdr = true;
                         }
 
-                        if rsi.cdr2_starts[col].is_some() && rsi.fr3_starts[col].is_some()
-                            && q >= rsi.cdr2_starts[col].unwrap() 
-                            && q < rsi.fr3_starts[col].unwrap() {
+                        if rsi.cdr2_starts[col].is_some()
+                            && rsi.fr3_starts[col].is_some()
+                            && q >= rsi.cdr2_starts[col].unwrap()
+                            && q < rsi.fr3_starts[col].unwrap()
+                        {
                             cdr = true;
                         }
                         if q >= rsi.cdr3_starts[col]

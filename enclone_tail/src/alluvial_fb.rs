@@ -15,16 +15,14 @@ use string_utils::*;
 use tables::print_tabular_vbox;
 use vector_utils::{bin_member, unique_sort};
 
-pub fn description_table(
-    ctl: &EncloneControl,
-    logx: &mut Vec<u8>,
-) {
+pub fn description_table(ctl: &EncloneControl, logx: &mut Vec<u8>) {
     if ctl.visual_mode {
         let mut need = false;
         let n = ctl.origin_info.n();
         for i in 0..n {
-            if ctl.origin_info.descrips[i].len() > 0 &&
-                ctl.origin_info.descrips[i] != ctl.origin_info.dataset_id[i] {
+            if ctl.origin_info.descrips[i].len() > 0
+                && ctl.origin_info.descrips[i] != ctl.origin_info.dataset_id[i]
+            {
                 need = true;
             }
         }
@@ -33,20 +31,17 @@ pub fn description_table(
             let mut csv_rows = Vec::<Vec<String>>::new();
             rows.push(vec!["id".to_string(), "description".to_string()]);
             for i in 0..n {
-                rows.push(vec![ctl.origin_info.dataset_id[i].clone(), 
-                    ctl.origin_info.descrips[i].clone()]);
-                csv_rows.push(vec![ctl.origin_info.dataset_id[i].clone(), 
-                    ctl.origin_info.descrips[i].clone()]);
+                rows.push(vec![
+                    ctl.origin_info.dataset_id[i].clone(),
+                    ctl.origin_info.descrips[i].clone(),
+                ]);
+                csv_rows.push(vec![
+                    ctl.origin_info.dataset_id[i].clone(),
+                    ctl.origin_info.descrips[i].clone(),
+                ]);
             }
             let mut display_text = String::new();
-            print_tabular_vbox(
-                &mut display_text,
-                &rows,
-                0,
-                &b"l|l".to_vec(),
-                false,
-                false,
-            );
+            print_tabular_vbox(&mut display_text, &rows, 0, &b"l|l".to_vec(), false, false);
             let mut spreadsheet_text = String::new();
             for (i, r) in csv_rows.iter().enumerate() {
                 if i % 2 == 0 {
