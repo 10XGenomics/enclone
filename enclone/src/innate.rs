@@ -39,7 +39,7 @@ pub fn species(refdata: &RefData) -> String {
         }
 
         // Build trac.  This is the concatenation, with single space separation, of the all
-        // the human (pass = 1) or mouse (pass = 2) reference sequences that contain 
+        // the human (pass = 1) or mouse (pass = 2) reference sequences that contain
         // |TRAC or |IGHM, for particular versions of these reference sequences (and probably
         // that choice doesn't matter much).
 
@@ -87,7 +87,8 @@ pub fn species(refdata: &RefData) -> String {
             TGCTAGACATGAGGTCTATGGACTTCAAGAGCAACAGTGCTGTGGCCTGGAGCAACAAATCTGACTTTGCATGTG\
             CAAACGCCTTCAACAACAGCATTATTCCAGAAGACACCTTCTTCCCCAGCCCAGAAAGTTCCTGTGATGTCAAGC\
             TGGTCGAGAAAAGCTTTGAAACAGATACGAACCTAAACTTTCAAAACCTGTCAGTGATTGGGTTCCGAATCCTCC\
-            TCCTGAAAGTGGCCGGGTTTAATCTGCTCATGACGCTGCGGCTGTGGTCCAGC".to_vec();
+            TCCTGAAAGTGGCCGGGTTTAATCTGCTCATGACGCTGCGGCTGTGGTCCAGC"
+                .to_vec();
         } else {
             trac = b"AGAGTCAGTCCTTCCCAAATGTCTTCCCCCTCGTCTCCTGCGAGAGCCCCCTGTCTGATAAGAATCTGGTGGCCA\
             TGGGCTGCCTGGCCCGGGACTTCCTGCCCAGCACCATTTCCTTCACCTGGAACTACCAGAACAACACTGAAGTCA\
@@ -131,7 +132,8 @@ pub fn species(refdata: &RefData) -> String {
             CTGACAAAACTGTGCTGGACATGAAAGCTATGGATTCCAAGAGCAATGGGGCCATTGCCTGGAGCAACCAGACAA\
             GCTTCACCTGCCAAGATATCTTCAAAGAGACCAACGCCACCTACCCCAGTTCAGACGTTCCCTGTGATGCCACGT\
             TGACTGAGAAAAGCTTTGAAACAGATATGAACCTAAACTTTCAAAACCTGTCAGTTATGGGACTCCGAATCCTCC\
-            TGCTGAAAGTAGCCGGATTTAACCTGCTCATGACGCTGAGGCTGTGGTCCAGT".to_vec();
+            TGCTGAAAGTAGCCGGATTTAACCTGCTCATGACGCTGAGGCTGTGGTCCAGT"
+                .to_vec();
         }
 
         // Test the kmers.
