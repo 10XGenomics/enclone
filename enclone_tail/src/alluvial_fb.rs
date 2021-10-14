@@ -33,7 +33,6 @@ pub fn description_table(
             let mut csv_rows = Vec::<Vec<String>>::new();
             rows.push(vec!["id".to_string(), "description".to_string()]);
             for i in 0..n {
-                rows.push(vec!["\\hline".to_string(); 2]);
                 rows.push(vec![ctl.origin_info.dataset_id[i].clone(), 
                     ctl.origin_info.descrips[i].clone()]);
                 csv_rows.push(vec![ctl.origin_info.dataset_id[i].clone(), 
@@ -43,7 +42,7 @@ pub fn description_table(
             print_tabular_vbox(
                 &mut display_text,
                 &rows,
-                0,
+                2,
                 &b"l|l".to_vec(),
                 false,
                 false,
