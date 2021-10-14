@@ -309,6 +309,7 @@ pub fn appropriate_font_size(s: &str, w: u32, max_size: usize) -> usize {
 }
 
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let width = (slf.width - 65) as u16; // for text, so scrollbar is not on top of text
     let summary_title = Text::new(&format!("Summary")).size(30);
 
     // Expand summary.
@@ -446,14 +447,19 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                      Illumina Nextera version of the R2 primer = \
                      CTGTCTCTTATACACATCTCCGAGCCCACGAGAC.  \
                      If R1 contains the first ten bases = CACATCTCCG, and the read is not \
-                     canonical, we call it semicanonical.",
-                ))
+                     canonical, we call it semicanonical.\n\n\
+                     \
+                     The number of barcodes shown can be controlled using the extra argument\n\
+                     FB_SHOW=k\n\
+                     where k is the maximum number of feature barcodes shown for reference (and \
+                     likewise for nonreference).  The default value for k is 3.",
+                ).width(Units(width)))
                 .push(Space::with_height(Units(8)))
                 .push(Text::new(
                     "All the tables can be copied at once, for inclusion in \
                      a spreadsheet, by pushing the button below.  This copies the numbers in the \
                      last column, but not the numbers in the earlier columns.",
-                ));
+                ).width(Units(width)));
         } else {
             summary_scrollable = summary_scrollable.push(
                 Button::new(
