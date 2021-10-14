@@ -99,4 +99,6 @@ pub enum Message {
     CopyAlluvialReadsTables,
     CompleteCopyAlluvialReadsTables(Result<(), String>),
     SetSummaryScrollablePos(f32),
+    CopyDescrips,
+    CompleteCopyDescrips(Result<(), String>),
 }

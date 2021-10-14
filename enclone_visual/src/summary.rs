@@ -349,6 +349,44 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .size(orig_font_size as u16),
         );
 
+    // If there is a DescriptionTable, add that.
+
+    let mut descrips = None;
+    for j in 1..hets.len() {
+        if hets[j].name == "DescriptionTable" {
+            descrips = Some(j);
+        }
+    }
+    if descrips.is_some() {
+        let j = descrips.unwrap();
+        let table = DescriptionTable::from_string(&hets[j].content);
+        slf.descrips_for_spreadsheet = table.spreadsheet_text.clone();
+        let tables_font_size = appropriate_font_size(&table.display_text, slf.width, 16);
+        summary_scrollable = summary_scrollable
+            .push(Space::with_height(Units(8)))
+            .push(Rule::horizontal(10).style(style::RuleStyle2))
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new("Dataset descriptions")
+                    .size(25)
+                    .color(Color::from_rgb(0.9, 0.0, 0.9)),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.descrips_copy_button,
+                    Text::new("Copy").color(slf.descrips_copy_button_color),
+                )
+                .on_press(Message::CopyDescrips),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(
+                Text::new(&format!("{}", table.display_text))
+                    .font(DEJAVU_BOLD)
+                    .size(tables_font_size as u16),
+            );
+    }
+
     // If there is a FeatureBarcodeAlluvialReadsTableSet, add that.
 
     let mut alluv = None;
