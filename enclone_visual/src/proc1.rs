@@ -19,7 +19,7 @@ pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message>
     if index.is_some() {
         let mut index = index.unwrap();
         if save {
-            slf.save();
+            slf.save("(saved upon restore)");
             index += 1;
         }
         let filename = format!(
@@ -51,7 +51,7 @@ pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message>
     if index.is_some() {
         let index = index.unwrap();
         if save {
-            slf.save();
+            slf.save("(saved upon restore)");
         }
         let res = EncloneVisualHistory::restore_from_bytes(&slf.cookbooks[index]);
         slf.h = res.unwrap();

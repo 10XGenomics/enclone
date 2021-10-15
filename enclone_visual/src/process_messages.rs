@@ -458,13 +458,13 @@ impl EncloneVisual {
 
             Message::Save => {
                 self.save_in_progress = true;
-                self.save();
+                self.save("");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
             Message::SaveAs(x) => {
                 self.save_in_progress = true;
-                self.save_as(&x);
+                self.save_as(&x, "");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 

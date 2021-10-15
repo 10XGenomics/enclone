@@ -353,7 +353,8 @@ impl EncloneVisual {
             }
         }
     }
-    pub fn save_as(&mut self, filename: &str) {
+    pub fn save_as(&mut self, filename: &str, narrative: &str) {
+        println!("saving with narrative {}", narrative); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), filename);
         let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
@@ -386,13 +387,13 @@ impl EncloneVisual {
             .insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
-        self.archive_narrative.insert(0, String::new());
+        self.archive_narrative.insert(0, narrative.to_string());
         self.orig_archive_name.insert(0, String::new());
     }
-    pub fn save(&mut self) {
+    pub fn save(&mut self, narrative: &str) {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
-        self.save_as(&now);
+        self.save_as(&now, narrative);
     }
 }
