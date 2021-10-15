@@ -436,36 +436,11 @@ impl EncloneVisual {
 
             Message::Restore(check_val, index) => {
                 if !self.just_restored && !self.delete_requested[index] {
-                    let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.modified && self.state_count() > 0 {
-                        self.save();
-                        index += 1;
-                    }
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    let res = read_enclone_visual_history(&filename);
-                    if res.is_ok() {
-                        self.h = res.unwrap();
-                        // Ignore history index and instead rewind.
-                        if self.h.history_index > 1 {
-                            self.h.history_index = 1;
-                        }
-                        self.update_to_current();
-                        self.restore_msg[index] =
-                            "Restored!  Now click Dismiss at top.".to_string();
-                        self.just_restored = true;
-                        self.modified = false;
-                    } else {
-                        self.restore_msg[index] = format!(
-                            "Oh dear, restoration of the file {} \
-                            failed.",
-                            filename
-                        );
-                    }
+                    self.restore_msg[index] =
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top.".to_string();
+                    self.just_restored = true;
+                    self.modified = false;
                 }
                 Command::none()
             }
@@ -473,18 +448,8 @@ impl EncloneVisual {
             Message::RestoreCookbook(check_val, index) => {
                 if !self.just_restored {
                     self.restore_cookbook_requested[index] = check_val;
-                    if self.modified {
-                        self.save();
-                    }
-                    let res = EncloneVisualHistory::restore_from_bytes(&self.cookbooks[index]);
-                    self.h = res.unwrap();
-                    // Ignore history index and instead rewind.
-                    if self.h.history_index > 1 {
-                        self.h.history_index = 1;
-                    }
-                    self.update_to_current();
                     self.restore_cookbook_msg[index] =
-                        "Restored!  Now click Dismiss at top.".to_string();
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top.".to_string();
                     self.just_restored = true;
                     self.modified = false;
                 }
@@ -820,7 +785,9 @@ impl EncloneVisual {
 
             Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
-            Message::ArchiveClose => do_archive_close(self),
+            Message::ArchiveClose => do_archive_close(self, false),
+
+            Message::ArchiveSaveClose => do_archive_close(self, true),
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;

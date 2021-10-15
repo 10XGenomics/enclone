@@ -34,6 +34,7 @@ pub enum Message {
     ConsoleClose,
     ArchiveOpen(Result<(), String>),
     ArchiveClose,
+    ArchiveSaveClose,
     Save,
     SaveAs(String),
     CompleteSave(Result<(), String>),

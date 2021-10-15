@@ -166,6 +166,7 @@ pub struct EncloneVisual {
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
+    pub archive_save_close_button: button::State,
     pub archive_refresh_button: button::State,
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
