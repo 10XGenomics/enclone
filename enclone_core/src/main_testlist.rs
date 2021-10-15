@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 242] = [
+pub const TESTS: [&str; 243] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -599,4 +599,7 @@ pub const TESTS: [&str; 242] = [
     r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW H5"###,
     // 242. test nchains_present
     r###"BCR=86237 LVARSP=nchains_present CDR3=CARSFFGDTAMVMFQAFDPW"###,
+    // 243. this crashed at one point
+    r###"BCR=123085 GROUP="cdr3_aa_heavy>=85%,vj_refname" MIN_GROUP=2 PLOT=/dev/null
+         NOPRINT EXPECT_OK"###,
 ];

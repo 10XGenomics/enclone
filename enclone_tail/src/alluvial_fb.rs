@@ -15,6 +15,48 @@ use string_utils::*;
 use tables::print_tabular_vbox;
 use vector_utils::{bin_member, unique_sort};
 
+pub fn description_table(ctl: &EncloneControl, logx: &mut Vec<u8>) {
+    if ctl.visual_mode {
+        let mut need = false;
+        let n = ctl.origin_info.n();
+        for i in 0..n {
+            if ctl.origin_info.descrips[i].len() > 0
+                && ctl.origin_info.descrips[i] != ctl.origin_info.dataset_id[i]
+            {
+                need = true;
+            }
+        }
+        if need {
+            let mut rows = Vec::<Vec<String>>::new();
+            let mut csv_rows = Vec::<Vec<String>>::new();
+            rows.push(vec!["id".to_string(), "description".to_string()]);
+            for i in 0..n {
+                rows.push(vec![
+                    ctl.origin_info.dataset_id[i].clone(),
+                    ctl.origin_info.descrips[i].clone(),
+                ]);
+                csv_rows.push(vec![
+                    ctl.origin_info.dataset_id[i].clone(),
+                    ctl.origin_info.descrips[i].clone(),
+                ]);
+            }
+            let mut display_text = String::new();
+            print_tabular_vbox(&mut display_text, &rows, 0, &b"l|l".to_vec(), false, false);
+            let mut spreadsheet_text = String::new();
+            for (i, r) in csv_rows.iter().enumerate() {
+                if i % 2 == 0 {
+                    spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
+                }
+            }
+            let f = DescriptionTable {
+                display_text: display_text.clone(),
+                spreadsheet_text: spreadsheet_text.clone(),
+            };
+            logx.append(&mut f.to_string().as_bytes().to_vec());
+        }
+    }
+}
+
 // There are similar functions below, one computing by reads, the other by UMIs.
 
 pub fn alluvial_fb_reads(

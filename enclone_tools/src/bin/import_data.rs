@@ -19,7 +19,6 @@
 // For use at 10x Genomics.
 
 use enclone_core::defs::get_config;
-use enclone_core::packing::*;
 use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_tools::copy_for_enclone::copy_for_enclone;
 use enclone_tools::feature_barcode_matrix::{
@@ -295,17 +294,7 @@ fn main() {
                 std::process::exit(0);
             }
             if x.is_ok() {
-                let (
-                    m,
-                    total,
-                    brn,
-                    common_gumi_freq,
-                    common_gumi_content,
-                    m_reads,
-                    total_reads,
-                    brnr,
-                    bdcs,
-                ) = x.unwrap();
+                let (m, total, brn, m_reads, total_reads, brnr, bdcs) = x.unwrap();
                 for i in (0..dests.len()).rev() {
                     let dest = &dests[i];
                     let target = format!("{}/{}", dest, id);
@@ -348,15 +337,6 @@ fn main() {
                     for j in 0..bdcs.len() {
                         fwriteln!(f, "{},{},{},{}", bdcs[j].0, bdcs[j].1, bdcs[j].2, bdcs[j].3);
                     }
-                    let mut f = File::create(&format!(
-                        "{}/outs/feature_barcode_matrix.common_gumis",
-                        target
-                    ))
-                    .unwrap();
-                    let mut bytes = Vec::<u8>::new();
-                    bytes.append(&mut save_vec_f32(&common_gumi_freq));
-                    bytes.append(&mut save_vec_vec_u8(&common_gumi_content));
-                    f.write_all(&bytes).unwrap();
                 }
             }
         }

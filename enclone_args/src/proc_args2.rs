@@ -176,7 +176,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
     // Get origin descriptions.  Flaky and particularly flaky when internal origin args are paths,
     // since it will look in outs for the file.
 
-    if ctl.gen_opt.internal_run || ctl.gen_opt.descrip {
+    if ctl.gen_opt.internal_run || ctl.gen_opt.descrip || ctl.visual_mode {
         ctl.origin_info.descrips.clear();
         let mut results = vec![(0, "".to_string()); ctl.origin_info.n()];
         for i in 0..ctl.origin_info.n() {
@@ -189,7 +189,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
             if dir.ends_with("/outs") {
                 dir = dir.rev_before("/outs").to_string();
             }
-            let invo = format!("{}/_invocation", dir);
+            let mut invo = format!("{}/_invocation", dir);
+            if !path_exists(&invo) {
+                invo = format!("{}/../../../_invocation", dir);
+            }
             if path_exists(&invo) {
                 let f = open_userfile_for_read(&invo);
                 for line in f.lines() {

@@ -904,6 +904,7 @@ pub fn print_stats(
     // which is not the only way of doing it.
 
     if ctl.gen_opt.summary {
+        description_table(ctl, logx);
         alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
         alluvial_fb(ctl, gex_info, vdj_cells, logx);
     }

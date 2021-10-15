@@ -22,6 +22,27 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CopyDescrips => {
+                self.descrips_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.descrips_for_spreadsheet.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyDescrips)
+            }
+
+            Message::CompleteCopyDescrips(_) => {
+                self.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::OpenAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = true;
+                Command::none()
+            }
+
+            Message::CloseAlluvialReadsDoc => {
+                self.alluvial_reads_doc_open = false;
+                Command::none()
+            }
+
             Message::SetSummaryScrollablePos(p) => {
                 self.summary_scroll.snap_to(p);
                 Command::none()

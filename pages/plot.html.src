@@ -46,17 +46,18 @@ precedence, i.e. color data for the first will be used if provided, etc.</p>
 <hr>
 
 <br><span style="color:red; font-weight:bold">1.</span> The first way is to use the argument
-<pre><code>PLOT="filename,sample1->color1,...,samplen->colorn"</code></pre>
-which creates an svg file of the given name, and assigns the given colors to the given samples. 
-Unspecified samples will be black.
+<pre><code>PLOT="filename,origin1->color1,...,originn->colorn"</code></pre>
+which creates an svg file of the given name, and assigns the given colors to the given origins. 
+Unspecified origins will be black.
 
 <p><b>Example:</b> <code>
 enclone BCR=123085:123089 MIN_CELLS=10 PLOT="plot.svg,s1->blue,s2->red" NOPRINT 
 LEGEND=blue,123085,red,123089</code></p>
 
 <p>Note the colon between <code>123085</code> and <code>123089</code>.  This tells #enclone
-that the two datasets are different samples from the same donor.  This is not actually true, as
-the two datasets are from the same sample, but is needed to plot in this way.</p>
+that the two datasets are different origins from the same donor.  For example, they might
+represent cells collected at two time points.  This is not actually true in this case, as
+these two datasets have the same origin, but is needed to plot in this way.</p>
 
 <p>The <code>NOPRINT</code> argument tells #enclone to <i>not</i> generate its usual output, so
 although the command itself will appear to do nothing, it will create a file 

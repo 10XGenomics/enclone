@@ -208,7 +208,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              name, which is \
              everything after the final slash in the directory name (e.g. \\bold{dataset345} in the \
              above example), or the entire name if there is no slash; \
-             origins and donors are assigned identifers s1,... and d1,..., respectively; \
+             origins and donors are assigned identifiers s1,... and d1,..., respectively; \
              numbering of origins restarts with each new donor.  \\bold{To specify origins}\n\
              \\bold{and donors, use the second input form, and see in particular} \
              \\green{abbr:path}\\bold{.}",

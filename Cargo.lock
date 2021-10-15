@@ -1356,7 +1356,6 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
- "vdj_ann_ref",
  "vector_utils",
 ]
 
