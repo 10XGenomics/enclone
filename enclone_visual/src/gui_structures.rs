@@ -354,6 +354,7 @@ impl EncloneVisual {
         }
     }
     pub fn save_as(&mut self, filename: &str, narrative: &str) {
+        self.h.narrative = narrative.to_string();
         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), filename);
         let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
