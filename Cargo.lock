@@ -1329,7 +1329,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1361,7 +1361,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -1382,7 +1382,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1412,7 +1412,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_denovo"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "amino",
  "binary_vec_io",
@@ -1443,7 +1443,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "ansi_escape",
  "anyhow",
@@ -1474,7 +1474,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -1486,7 +1486,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "dirs",
  "enclone",
@@ -1514,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1547,7 +1547,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -1562,7 +1562,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_ranger"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1581,7 +1581,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_stuff"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "amino",
  "debruijn",
@@ -1607,7 +1607,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "align_tools",
  "amino",
@@ -1648,7 +1648,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -1677,7 +1677,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_vars"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "pretty_trace",
  "string_utils",
@@ -1686,7 +1686,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_version"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "chrono",
  "string_utils",
@@ -1694,7 +1694,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.114"
+version = "0.5.115"
 dependencies = [
  "anyhow",
  "arboard",
