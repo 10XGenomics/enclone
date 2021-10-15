@@ -43,6 +43,7 @@ pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message>
             );
         }
     }
+    let mut index = None;
     for i in 0..slf.restore_cookbook_requested.len() {
         if slf.restore_cookbook_requested[i] {
             index = Some(i);
