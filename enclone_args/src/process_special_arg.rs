@@ -86,6 +86,7 @@ pub fn process_special_arg(
         let mut color_count = 0;
         let (mut min, mut max) = (None, None);
         let (mut var, mut display_var) = (String::new(), String::new());
+        let mut schema = String::new();
         for p in parts.iter() {
             let mut p = p.clone();
             let part_name = p[0].before("=").to_string();
@@ -130,6 +131,7 @@ pub fn process_special_arg(
             } else if part_name == "color" {
                 color_count += 1;
                 if p.len() == 1 && p[0] == "dataset" {
+                    schema = "dataset".to_string();
                     let v = ColorByDataset {};
                     let cc = CellColor::ByDataset(v);
                     ctl.plot_opt.cell_color = cc;
@@ -137,6 +139,7 @@ pub fn process_special_arg(
                     if p[0] != "var" || p.len() < 2 {
                         return Err(err);
                     }
+                    schema = "variable".to_string();
                     var = p[1].to_string();
                     display_var = var.clone();
                     if var.contains(':') {
@@ -187,14 +190,20 @@ pub fn process_special_arg(
         if color_count > 1 {
             return Err("\nHONEY=... must specify color=... only once.\n".to_string());
         }
-        let v = ColorByVariableValue {
-            var,
-            display_var,
-            min,
-            max,
-        };
-        let cc = CellColor::ByVariableValue(v);
-        ctl.plot_opt.cell_color = cc;
+        if schema == "dataset" {
+            let v = ColorByDataset {};
+            let cc = CellColor::ByDataset(v);
+            ctl.plot_opt.cell_color = cc;
+        } else if schema == "variable" {
+            let v = ColorByVariableValue {
+                var,
+                display_var,
+                min,
+                max,
+            };
+            let cc = CellColor::ByVariableValue(v);
+            ctl.plot_opt.cell_color = cc;
+        }
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {
