@@ -438,7 +438,8 @@ impl EncloneVisual {
                 if !self.just_restored && !self.delete_requested[index] {
                     self.restore_requested[index] = check_val;
                     self.restore_msg[index] =
-                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top.".to_string();
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
                     self.just_restored = true;
                     self.modified = false;
                 }
@@ -449,7 +450,8 @@ impl EncloneVisual {
                 if !self.just_restored {
                     self.restore_cookbook_requested[index] = check_val;
                     self.restore_cookbook_msg[index] =
-                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top.".to_string();
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
                     self.just_restored = true;
                     self.modified = false;
                 }

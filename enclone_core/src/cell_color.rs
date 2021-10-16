@@ -43,9 +43,7 @@ pub struct ColorByVariableValue {
 }
 
 #[derive(Clone)]
-pub struct ColorByDataset {
-}
-
+pub struct ColorByDataset {}
 
 #[derive(Clone)]
 pub struct ColorBySample {
