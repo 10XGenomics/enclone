@@ -686,7 +686,26 @@ pub fn plot_clonotypes(
     {
         let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
         let mut max_string_width = 0.0f64;
-        if plot_opt.plot_by_isotype {
+        let mut by_dataset = false;
+        match plot_opt.cell_color {
+            CellColor::ByDataset(_) => {
+                by_dataset = true;
+            }
+            _ => {}
+        };
+        if by_dataset {
+            let n = ctl.origin_info.n();
+            for li in 0..ctl.origin_info.n() {
+                let c;
+                if n >= 256 {
+                    c = li % 256;
+                } else {
+                    c = li * (256 / n);
+                }
+                colors.push(format!("turbo-pre-{}", c));
+                labels.push(ctl.origin_info.dataset_id[li].clone());
+            }
+        } else if plot_opt.plot_by_isotype {
             for i in 0..const_names.len() {
                 labels.push(const_names[i].clone());
                 let color_id = i + 1;
