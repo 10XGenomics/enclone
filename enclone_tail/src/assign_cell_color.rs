@@ -37,16 +37,36 @@ pub fn assign_cell_color(
     let ex = &exact_clonotypes[exacts[i][j]];
     let mut color = "black".to_string();
 
-    // Determine color for coloring by variable.
+    // Determine some things about the coloring scheme.
 
+    let mut by_dataset = false;
     let mut by_var = false;
     match plot_opt.cell_color {
+        CellColor::ByDataset(_) => {
+            by_dataset = true;
+        }
         CellColor::ByVariableValue(_) => {
             by_var = true;
         }
         _ => {}
     };
-    if by_var {
+
+    // Determine color for coloring by dataset.
+
+    if by_dataset {
+        let n = ctl.origin_info.n();
+        let li = ex.clones[k][0].dataset_index;
+        let c;
+        if n >= 256 {
+            c = li % 256;
+        }  else {
+            c = li * (256 / n);
+        }
+        color = format!("turbo-pre-{}", c);
+
+    // Determine color for coloring by variable.
+
+    } else if by_var {
         match plot_opt.cell_color {
             CellColor::ByVariableValue(ref x) => {
                 color = "undefined".to_string();
@@ -131,6 +151,7 @@ pub fn assign_cell_color(
         };
 
     // Determine color for PLOT_BY_ISOTYPE.
+
     } else if plot_opt.plot_by_isotype {
         let mut crefs = Vec::<Option<usize>>::new();
         for l in 0..ex.share.len() {
@@ -157,6 +178,7 @@ pub fn assign_cell_color(
         }
 
     // Determine color for PLOT_BY_MARK.
+
     } else if plot_opt.plot_by_mark {
         let dom = ex.clones[k][0].dataset_index == dsx;
         let marked = ex.clones[k][0].marked;
@@ -173,6 +195,7 @@ pub fn assign_cell_color(
         }
 
     // Determine color in other cases.
+
     } else {
         if ex.clones[k][0].origin_index.is_some() {
             let s = &ctl.origin_info.origin_list[ex.clones[k][0].origin_index.unwrap()];
