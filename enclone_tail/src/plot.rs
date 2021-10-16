@@ -702,7 +702,9 @@ pub fn plot_clonotypes(
                 } else {
                     c = li * (256 / n);
                 }
-                colors.push(format!("turbo-pre-{}", c));
+                let x = TURBO_SRGB_BYTES[c];
+                let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
+                colors.push(color);
                 labels.push(ctl.origin_info.dataset_id[li].clone());
             }
         } else if plot_opt.plot_by_isotype {
