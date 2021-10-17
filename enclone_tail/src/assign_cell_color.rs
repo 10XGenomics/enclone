@@ -54,19 +54,9 @@ pub fn assign_cell_color(
     // Determine color for coloring by dataset.
 
     if by_dataset {
-        // let n = ctl.origin_info.n();
         let li = ex.clones[k][0].dataset_index;
-        /*
-        let c;
-        if n >= 256 {
-            c = li % 256;
-        } else {
-            c = li * (256 / n);
-        }
-        */
         let c = li % 256;
         color = format!("default-pre-{}", c);
-        // color = format!("turbo-pre-{}", c);
 
     // Determine color for coloring by variable.
     } else if by_var {

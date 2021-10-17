@@ -330,8 +330,6 @@ pub fn default_colors() -> Vec<Vec<u8>> {
         let x = TURBO_SRGB_BYTES[best_k];
         y.push(vec![x[0], x[1], x[2]]);
     }
-    println!("y[0] = {} {} {}", y[0][0], y[0][1], y[0][2]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    println!("y[1] = {} {} {}", y[1][0], y[1][1], y[1][2]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     y
 }
 

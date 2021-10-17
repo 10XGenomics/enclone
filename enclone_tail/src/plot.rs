@@ -700,16 +700,7 @@ pub fn plot_clonotypes(
             _ => {}
         };
         if by_dataset {
-            // let n = ctl.origin_info.n();
             for li in 0..ctl.origin_info.n() {
-                /*
-                let c;
-                if n >= 256 {
-                    c = li % 256;
-                } else {
-                    c = li * (256 / n);
-                }
-                */
                 let c = li % 256;
                 let x = &dcx[c];
                 let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
