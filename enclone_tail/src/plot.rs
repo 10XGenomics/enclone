@@ -413,8 +413,11 @@ pub fn plot_clonotypes(
         // Finish color translation.
 
         let tcn = turbo_color_names();
-        let dcn = default_color_names();
-        let dc = default_colors();
+        let n = std::cmp::min(256, ctl.origin_info.n());
+        let dcn = default_color_names(n);
+        let mut dc = default_colors();
+        dc.truncate(n);
+        reorder_color_list(&mut dc);
         for i in 0..clusters.len() {
             for j in 0..clusters[i].colors.len() {
                 if clusters[i].colors[j].starts_with("turbo-") {
@@ -683,7 +686,10 @@ pub fn plot_clonotypes(
 
     // Add legend for color by variable.
 
-    let dcx = default_colors();
+    let mut dcx = default_colors();
+    let n = std::cmp::min(256, ctl.origin_info.n());
+    dcx.truncate(n);
+    reorder_color_list(&mut dcx);
     if by_var && plot_opt.use_legend {
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend

@@ -36,7 +36,8 @@ pub fn build_clusters(
         passes = ctl.origin_info.origin_list.len();
     }
     let tcn = turbo_color_names();
-    let dcn = default_color_names();
+    let n = std::cmp::min(256, ctl.origin_info.n());
+    let dcn = default_color_names(n);
     for i in 0..exacts.len() {
         for pass in 0..passes {
             let mut colors = Vec::<String>::new();

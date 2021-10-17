@@ -375,9 +375,9 @@ pub fn default_colors() -> Vec<Vec<u8>> {
 
 // Define a set of lexicographically ordered names for the default colors.
 
-pub fn default_color_names() -> Vec<String> {
+pub fn default_color_names(n: usize) -> Vec<String> {
     let mut names = Vec::<String>::new();
-    for i in 0..256 {
+    for i in 0..n {
         names.push(format!("default-{}", i));
     }
     names.sort();
