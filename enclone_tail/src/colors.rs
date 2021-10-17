@@ -285,6 +285,10 @@ pub fn turbo_color_names() -> Vec<String> {
     names
 }
 
+// Define a set of default colors.  These are the thirteen colors defined by print_color13,
+// followed by colors from the turbo set chosen, in order, to be maximally distant from
+// preceding colors.
+
 pub fn default_colors() -> Vec<Vec<u8>> {
     let mut y = Vec::<Vec<u8>>::new();
     for i in 0..13 {
@@ -314,4 +318,15 @@ pub fn default_colors() -> Vec<Vec<u8>> {
         y.push(vec![x[0], x[1], x[2]]);
     }
     y
+}
+
+// Define a set of lexicographically ordered names for the default colors.
+
+pub fn default_color_names() -> Vec<String> {
+    let mut names = Vec::<String>::new();
+    for i in 0..256 {
+        names.push(format!("default-{}", i));
+    }
+    names.sort();
+    names
 }
