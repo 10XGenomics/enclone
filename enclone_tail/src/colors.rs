@@ -307,9 +307,18 @@ pub fn default_colors() -> Vec<Vec<u8>> {
             let mut min_dist = 1_000_000_000;
             for l in 0..y.len() {
                 let x2 = &y[l];
+
+                // Compute color distance following https://en.wikipedia.org/wiki/Color_difference.
+
+                let m;
+                if (x1[0] as usize + x2[0] as usize) < 256 {
+                    m = [2, 4, 3];
+                } else {
+                    m = [3, 4, 2];
+                }
                 let mut dist = 0;
                 for l in 0..3 {
-                    dist += (x1[l] as isize - x2[l] as isize) * (x1[l] as isize - x2[l] as isize);
+                    dist += m[l] * (x1[l] as isize - x2[l] as isize) * (x1[l] as isize - x2[l] as isize);
                 }
                 min_dist = std::cmp::min(dist, min_dist);
             }
