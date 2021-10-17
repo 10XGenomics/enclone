@@ -12,7 +12,6 @@
 //
 // More info on turbo coloring may be found at
 // https://ai.googleblog.com/2019/08/turbo-improved-rainbow-colormap-for.html.
-
 use ansi_escape::*;
 
 pub const TURBO_SRGB_BYTES: [[u8; 3]; 256] = [
@@ -318,7 +317,9 @@ pub fn default_colors() -> Vec<Vec<u8>> {
                 }
                 let mut dist = 0;
                 for l in 0..3 {
-                    dist += m[l] * (x1[l] as isize - x2[l] as isize) * (x1[l] as isize - x2[l] as isize);
+                    dist += m[l]
+                        * (x1[l] as isize - x2[l] as isize)
+                        * (x1[l] as isize - x2[l] as isize);
                 }
                 min_dist = std::cmp::min(dist, min_dist);
             }
