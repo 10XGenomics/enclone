@@ -305,7 +305,7 @@ pub fn default_colors() -> Vec<Vec<u8>> {
                 let x2 = &y[l];
                 let mut dist = 0;
                 for l in 0..3 {
-                    dist += (x1[l] as isize - x2[l] as isize) + (x1[l] as isize - x2[l] as isize);
+                    dist += (x1[l] as isize - x2[l] as isize) * (x1[l] as isize - x2[l] as isize);
                 }
                 min_dist = std::cmp::min(dist, min_dist);
             }

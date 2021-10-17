@@ -683,6 +683,7 @@ pub fn plot_clonotypes(
 
     // Add legend for color by variable.
 
+    let dcx = default_colors();
     if by_var && plot_opt.use_legend {
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
@@ -707,7 +708,7 @@ pub fn plot_clonotypes(
                 } else {
                     c = li * (256 / n);
                 }
-                let x = TURBO_SRGB_BYTES[c];
+                let x = &dcx[c];
                 let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
                 colors.push(color);
                 labels.push(ctl.origin_info.dataset_id[li].clone());
