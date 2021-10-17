@@ -116,6 +116,7 @@ pub struct EncloneVisual {
     pub archive_mode: bool,
     pub clonotypes_mode: bool,
     pub graphic_mode: bool,
+    pub graphic_help_mode: bool,
     pub save: bool,
     pub save_in_progress: bool,
     pub save_on_exit: bool,
@@ -135,6 +136,7 @@ pub struct EncloneVisual {
     pub alluvial_reads_tables_copy_button_color: Color,
     pub descrips_for_spreadsheet: String,
     pub graphic_png_title: String,
+    pub graphic_help_title: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -202,6 +204,7 @@ pub struct EncloneVisual {
     pub alluvial_reads_tables_copy_button: button::State,
     pub descrips_copy_button: button::State,
     pub graphic_png_button: button::State,
+    pub graphic_help_button: button::State,
     //
     // more
     //

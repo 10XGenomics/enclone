@@ -22,6 +22,15 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::GraphicHelp => {
+                if self.graphic_help_title == "Help" {
+                    self.graphic_help_title = "Close help".to_string();
+                } else {
+                    self.graphic_help_title = "Help".to_string();
+                }
+                Command::none()
+            }
+
             Message::GraphicPng => {
                 self.summary_png_start = Some(Instant::now());
                 self.png_button_color = Color::from_rgb(1.0, 0.0, 0.0);
@@ -169,6 +178,8 @@ impl EncloneVisual {
 
             Message::GraphicClose => {
                 self.graphic_mode = false;
+                self.graphic_help_mode = true;
+                self.graphic_help_title = "Help".to_string();
                 GRAPHIC_MODE.store(false, SeqCst);
                 self.graphic_png_title = "PNG".to_string();
                 Command::none()

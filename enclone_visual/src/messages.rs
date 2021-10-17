@@ -104,4 +104,5 @@ pub enum Message {
     CompleteCopyDescrips(Result<(), String>),
     GraphicPng,
     CompleteGraphicPng(Result<(), String>),
+    GraphicHelp,
 }

@@ -7,6 +7,19 @@ use messages::Message;
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_title = Text::new(&format!("Graphic")).size(30);
+
+    // Buttons.
+
+    let tooltip_button = Button::new(
+        &mut slf.tooltip_toggle_button,
+        Text::new("Tooltip").color(slf.tooltip_toggle_button_color),
+    )
+    .on_press(Message::TooltipToggle);
+    let help_button = Button::new(
+        &mut slf.graphic_help_button,
+        Text::new(&slf.graphic_help_title),
+    )
+    .on_press(Message::GraphicHelp);
     let graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
@@ -19,14 +32,37 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     .on_press(Message::GraphicPng);
     let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
         .on_press(Message::GraphicClose);
+
+    // Help text.
+
+    let help_text = Text::new("The purpose of this page is to allow the graphics object to \
+        occupy the entire window.\n\n\
+        \
+        The default behavior is to render the graphics from the SVG representation.  Sometimes \
+        converting to PNG first renders better.  To get to this, push the PNG button.\n\n\
+        \
+        The Tooltip button may be used to move the tooltip box that is seen when hovering over \
+        a cell.  Each push of the button causes a rotation of the box location between the four \
+        corners.",
+    );
+
+    // Top bar.
+
     let top_bar = Row::new()
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
+        .push(help_button)
+        .push(Space::with_width(Units(8)))
+        .push(tooltip_button)
+        .push(Space::with_width(Units(8)))
         .push(graphic_snapshot_button)
         .push(Space::with_width(Units(8)))
         .push(png_button)
         .push(Space::with_width(Units(8)))
         .push(graphic_close_button);
+
+    // Complete the display.
+
     let svg_height = CURRENT_HEIGHT.load(SeqCst) as u16;
     let have_canvas = slf.canvas_view.state.geometry_value.is_some();
     let mut graphic_row = Row::new().spacing(10);
@@ -45,10 +81,14 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             graphic_row = graphic_row.push(svg_as_png);
         }
     }
-    let content = Column::new()
+    let mut content = Column::new()
         .spacing(SPACING)
         .padding(20)
-        .push(top_bar)
+        .push(top_bar);
+    if slf.graphic_help_title == "Close help" {
+        content = content.push(help_text);
+    }
+    content = content
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(graphic_row);
     Container::new(content)

@@ -58,6 +58,7 @@ impl Application for EncloneVisual {
         x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_help_title = "Help".to_string();
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
