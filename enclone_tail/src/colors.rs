@@ -13,7 +13,7 @@
 // More info on turbo coloring may be found at
 // https://ai.googleblog.com/2019/08/turbo-improved-rainbow-colormap-for.html.
 
-use ansi_escape::print_color13;
+use ansi_escape::*;
 
 pub const TURBO_SRGB_BYTES: [[u8; 3]; 256] = [
     [48, 18, 59],
@@ -291,7 +291,11 @@ pub fn turbo_color_names() -> Vec<String> {
 
 pub fn default_colors() -> Vec<Vec<u8>> {
     let mut y = Vec::<Vec<u8>>::new();
-    for i in 0..13 {
+    for i in 0..7 {
+        let x = print_color13(best_color_order(i));
+        y.push(vec![x.0 as u8, x.1 as u8, x.2 as u8]);
+    }
+    for i in 7..13 {
         let x = print_color13(i);
         y.push(vec![x.0 as u8, x.1 as u8, x.2 as u8]);
     }
@@ -317,6 +321,8 @@ pub fn default_colors() -> Vec<Vec<u8>> {
         let x = TURBO_SRGB_BYTES[best_k];
         y.push(vec![x[0], x[1], x[2]]);
     }
+    println!("y[0] = {} {} {}", y[0][0], y[0][1], y[0][2]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    println!("y[1] = {} {} {}", y[1][0], y[1][1], y[1][2]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     y
 }
 
