@@ -363,8 +363,6 @@ pub fn plot_clonotypes(
             }
             clusters = clusters2;
         } else {
-            // WORK IN PROGRESS
-
             let mut clusters2 = clusters.clone();
             let mut centersp = centersx.clone();
             for i in 0..centersp.len() {
