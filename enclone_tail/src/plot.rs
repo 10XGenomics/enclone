@@ -690,9 +690,6 @@ pub fn plot_clonotypes(
     let n = std::cmp::min(256, ctl.origin_info.n());
     dcx.truncate(n);
     reorder_color_list(&mut dcx);
-    for i in 0..dcx.len() {
-        println!("{} ==> {} {} {}", i, dcx[i][0], dcx[i][1], dcx[i][2]);
-    }
     if by_var && plot_opt.use_legend {
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
