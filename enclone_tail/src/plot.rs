@@ -7,7 +7,7 @@
 
 use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
 use crate::circles_to_svg::circles_to_svg;
-use crate::colors::{turbo_color_names, TURBO_SRGB_BYTES};
+use crate::colors::*;
 use crate::convert_svg_to_png::convert_svg_to_png;
 use crate::group_colors::make_group_colors;
 use crate::legend::add_legend_for_color_by_variable;
@@ -412,14 +412,21 @@ pub fn plot_clonotypes(
             clusters = clusters2;
         }
 
-        // Finish turbo color translation.
+        // Finish color translation.
 
         let tcn = turbo_color_names();
+        let dcn = default_color_names();
+        let dc = default_colors();
         for i in 0..clusters.len() {
             for j in 0..clusters[i].colors.len() {
                 if clusters[i].colors[j].starts_with("turbo-") {
                     let n = bin_position(&tcn, &clusters[i].colors[j]);
                     let c = &TURBO_SRGB_BYTES[n as usize];
+                    let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
+                    clusters[i].colors[j] = color;
+                } else if clusters[i].colors[j].starts_with("default-") {
+                    let n = bin_position(&dcn, &clusters[i].colors[j]);
+                    let c = &dc[n as usize];
                     let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
                     clusters[i].colors[j] = color;
                 }

@@ -62,7 +62,8 @@ pub fn assign_cell_color(
         } else {
             c = li * (256 / n);
         }
-        color = format!("turbo-pre-{}", c);
+        color = format!("default-pre-{}", c);
+        // color = format!("turbo-pre-{}", c);
 
     // Determine color for coloring by variable.
     } else if by_var {
