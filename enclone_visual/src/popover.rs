@@ -5,6 +5,8 @@ use iced::Length::Units;
 use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
 use messages::Message;
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_title = Text::new(&format!("Graphic")).size(30);
 
@@ -95,6 +97,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .into()
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
 
@@ -150,6 +154,8 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Length::Fill)
         .into()
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let console_title = Text::new(&format!("Console")).size(30);
@@ -219,6 +225,8 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Length::Fill)
         .into()
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn cookbook(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let cookbook_title = Text::new(&format!("Cookbook")).size(30);
