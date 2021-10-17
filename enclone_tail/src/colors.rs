@@ -18,6 +18,16 @@ use palette::ColorDifference;
 use palette::{Lab, Srgb};
 use palette::convert::FromColorUnclamped;
 
+// Compute CIELAB2000 color distance between two RGB colors.
+
+pub fn color_distance(x1: &[u8], x2: &[u8]) -> f64 {
+    let rgb1 =  Srgb::new(x1[0] as f64 /255.0, x1[1] as f64 /255.0, x1[2] as f64 /255.0);
+    let rgb2 =  Srgb::new(x2[0] as f64 /255.0, x2[1] as f64 /255.0, x2[2] as f64 /255.0);
+    let lab1 = Lab::from_color_unclamped(rgb1);
+    let lab2 = Lab::from_color_unclamped(rgb2);
+    lab1.get_color_difference(&lab2)
+}
+
 // Reorder colors to separate adjacent colors.
 
 pub fn reorder_color_list(y: &mut Vec<Vec<u8>>) {
