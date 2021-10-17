@@ -49,6 +49,7 @@ pub fn reorder_color_list(y: &mut Vec<Vec<u8>>) {
             }   
         }
         y2.push(y[best_k].clone());
+        used[best_k] = true;
     }
     *y = y2
 }
