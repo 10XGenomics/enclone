@@ -358,30 +358,7 @@ pub fn default_colors() -> Vec<Vec<u8>> {
             let mut min_dist: f64 = 1_000_000_000.0;
             for l in 0..y.len() {
                 let x2 = &y[l];
-
-                let rgb1 =  Srgb::new(x1[0] as f64 /255.0, x1[1] as f64 /255.0, x1[2] as f64 /255.0);
-                let rgb2 =  Srgb::new(x2[0] as f64 /255.0, x2[1] as f64 /255.0, x2[2] as f64 /255.0);
-                let lab1 = Lab::from_color_unclamped(rgb1);
-                let lab2 = Lab::from_color_unclamped(rgb2);
-                let dist = lab1.get_color_difference(&lab2);
-
-                /*
-                // Compute color distance following https://en.wikipedia.org/wiki/Color_difference.
-
-                let m;
-                if (x1[0] as usize + x2[0] as usize) < 256 {
-                    m = [2, 4, 3];
-                } else {
-                    m = [3, 4, 2];
-                }
-                let mut dist = 0;
-                for l in 0..3 {
-                    dist += m[l]
-                        * (x1[l] as isize - x2[l] as isize)
-                        * (x1[l] as isize - x2[l] as isize);
-                }
-                */
-
+                let dist = color_distance(&x1, &x2);
                 min_dist = min_dist.min(dist);
             }
             if min_dist > best_min_dist {
