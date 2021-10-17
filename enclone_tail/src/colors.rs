@@ -38,23 +38,13 @@ pub fn reorder_color_list(y: &mut Vec<Vec<u8>>) {
     for j in 1..y.len() {
         let x1 = &y2[j - 1];
         let mut best_k = 0;
-        let mut max_dist = 0;
+        let mut max_dist = 0.0;
         for k in 0..y.len() {
             if used[k] {
                 continue;
             }
             let x2 = &y[k];
-            let m;
-            if (x1[0] as usize + x2[0] as usize) < 256 {
-                m = [2, 4, 3];
-            } else {
-                m = [3, 4, 2];
-            }
-            let mut dist = 0;
-            for l in 0..3 {
-                dist +=
-                    m[l] * (x1[l] as isize - x2[l] as isize) * (x1[l] as isize - x2[l] as isize);
-            }
+            let dist = color_distance(&x1, &x2);
             if dist > max_dist {
                 max_dist = dist;
                 best_k = k;
