@@ -12,7 +12,46 @@
 //
 // More info on turbo coloring may be found at
 // https://ai.googleblog.com/2019/08/turbo-improved-rainbow-colormap-for.html.
+
 use ansi_escape::*;
+
+// Reorder colors to separate adjacent colors.
+
+pub fn reorder_color_list(y: &mut Vec<Vec<u8>>) {
+    let mut y2 = Vec::<Vec<u8>>::new();
+    y2.push(y[0].clone());
+    let mut used = vec![false; y.len()];
+    used[0] = true;
+    for j in 1..y.len() {
+        let x1 = &y2[j - 1];
+        let mut best_k = 0;
+        let mut max_dist = 0;
+        for k in 0..y.len() {
+            if used[k] {
+                continue;
+            }
+            let x2 = &y[k];
+            let m;
+            if (x1[0] as usize + x2[0] as usize) < 256 {
+                m = [2, 4, 3]; 
+            } else {
+                m = [3, 4, 2]; 
+            }   
+            let mut dist = 0;
+            for l in 0..3 {
+                dist += m[l]
+                    * (x1[l] as isize - x2[l] as isize)
+                    * (x1[l] as isize - x2[l] as isize);
+            }   
+            if dist > max_dist {
+                max_dist = dist;
+                best_k = k;
+            }   
+        }
+        y2.push(y[best_k].clone());
+    }
+    *y = y2
+}
 
 pub const TURBO_SRGB_BYTES: [[u8; 3]; 256] = [
     [48, 18, 59],
