@@ -23,8 +23,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
-     )
-     .on_press(Message::GraphicSnapshot);
+    )
+    .on_press(Message::GraphicSnapshot);
     let png_button = Button::new(
         &mut slf.graphic_png_button,
         Text::new(&slf.graphic_png_title).color(slf.png_button_color),
@@ -35,7 +35,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Help text.
 
-    let help_text = Text::new("The purpose of this page is to allow the graphics object to \
+    let help_text = Text::new(
+        "The purpose of this page is to allow the graphics object to \
         occupy the entire window.\n\n\
         \
         The default behavior is to render the graphics from the SVG representation.  Sometimes \
@@ -81,10 +82,7 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             graphic_row = graphic_row.push(svg_as_png);
         }
     }
-    let mut content = Column::new()
-        .spacing(SPACING)
-        .padding(20)
-        .push(top_bar);
+    let mut content = Column::new().spacing(SPACING).padding(20).push(top_bar);
     if slf.graphic_help_title == "Close help" {
         content = content.push(help_text);
     }
