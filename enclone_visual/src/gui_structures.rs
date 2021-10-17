@@ -104,6 +104,7 @@ pub struct EncloneVisual {
     pub clonotypes_copy_button_color: Color,
     pub tooltip_toggle_button_color: Color,
     pub descrips_copy_button_color: Color,
+    pub png_button_color: Color,
     pub canvas_view: CanvasView,
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
@@ -124,6 +125,7 @@ pub struct EncloneVisual {
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
     pub snapshot_start: Option<Instant>,
+    pub summary_png_start: Option<Instant>,
     pub graphic_snapshot_start: Option<Instant>,
     pub summary_snapshot_start: Option<Instant>,
     pub sanity_check_start: Option<Instant>,
@@ -132,6 +134,7 @@ pub struct EncloneVisual {
     pub alluvial_reads_tables_for_spreadsheet: String,
     pub alluvial_reads_tables_copy_button_color: Color,
     pub descrips_for_spreadsheet: String,
+    pub graphic_png_title: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -198,6 +201,7 @@ pub struct EncloneVisual {
     pub alluvial_tables_copy_button: button::State,
     pub alluvial_reads_tables_copy_button: button::State,
     pub descrips_copy_button: button::State,
+    pub graphic_png_button: button::State,
     //
     // more
     //

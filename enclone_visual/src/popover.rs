@@ -10,8 +10,13 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
+     )
+     .on_press(Message::GraphicSnapshot);
+    let png_button = Button::new(
+        &mut slf.graphic_png_button,
+        Text::new(&slf.graphic_png_title).color(slf.png_button_color),
     )
-    .on_press(Message::GraphicSnapshot);
+    .on_press(Message::GraphicPng);
     let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
         .on_press(Message::GraphicClose);
     let top_bar = Row::new()
@@ -19,12 +24,14 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_width(Length::Fill))
         .push(graphic_snapshot_button)
         .push(Space::with_width(Units(8)))
+        .push(png_button)
+        .push(Space::with_width(Units(8)))
         .push(graphic_close_button);
     let svg_height = CURRENT_HEIGHT.load(SeqCst) as u16;
     let have_canvas = slf.canvas_view.state.geometry_value.is_some();
     let mut graphic_row = Row::new().spacing(10);
     if slf.svg_value.len() > 0 {
-        if have_canvas {
+        if have_canvas && slf.graphic_png_title != "SVG" {
             graphic_row = graphic_row
                 .push(
                     slf.canvas_view

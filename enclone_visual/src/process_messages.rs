@@ -22,6 +22,33 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::GraphicPng => {
+                self.summary_png_start = Some(Instant::now());
+                self.png_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteGraphicPng)
+            }
+
+            Message::CompleteGraphicPng(_) => {
+                if self.graphic_png_title == "PNG" {
+                    if self.png_value.len() == 0 {
+                        self.png_value = convert_svg_to_png(&self.svg_value.as_bytes(), 2000);
+                    }
+                }
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.summary_png_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                if self.graphic_png_title == "PNG" {
+                    self.graphic_png_title = "SVG".to_string();
+                } else {
+                    self.graphic_png_title = "PNG".to_string();
+                }
+                self.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyDescrips => {
                 self.descrips_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.descrips_for_spreadsheet.as_bytes());
@@ -143,6 +170,7 @@ impl EncloneVisual {
             Message::GraphicClose => {
                 self.graphic_mode = false;
                 GRAPHIC_MODE.store(false, SeqCst);
+                self.graphic_png_title = "PNG".to_string();
                 Command::none()
             }
 

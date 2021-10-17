@@ -102,4 +102,6 @@ pub enum Message {
     SetSummaryScrollablePos(f32),
     CopyDescrips,
     CompleteCopyDescrips(Result<(), String>),
+    GraphicPng,
+    CompleteGraphicPng(Result<(), String>),
 }
