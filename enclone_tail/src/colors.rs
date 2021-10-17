@@ -13,6 +13,8 @@
 // More info on turbo coloring may be found at
 // https://ai.googleblog.com/2019/08/turbo-improved-rainbow-colormap-for.html.
 
+use ansi_escape::print_color13;
+
 pub const TURBO_SRGB_BYTES: [[u8; 3]; 256] = [
     [48, 18, 59],
     [50, 21, 67],
@@ -281,4 +283,35 @@ pub fn turbo_color_names() -> Vec<String> {
     }
     names.sort();
     names
+}
+
+pub fn default_colors() -> Vec<Vec<u8>> {
+    let mut y = Vec::<Vec<u8>>::new();
+    for i in 0..13 {
+        let x = print_color13(i);
+        y.push(vec![x.0 as u8, x.1 as u8, x.2 as u8]);
+    }
+    for _ in 0..256 - 13 {
+        let mut best_k = 0;
+        let mut best_min_dist = 0;
+        for k in 0..256 {
+            let x1 = TURBO_SRGB_BYTES[k];
+            let mut min_dist = 1_000_000_000;
+            for l in 0..y.len() {
+                let x2 = &y[l];
+                let mut dist = 0;
+                for l in 0..3 {
+                    dist += (x1[l] as usize - x2[l] as usize) + (x1[l] as usize - x2[l] as usize);
+                }
+                min_dist = std::cmp::min(dist, min_dist);
+            }
+            if min_dist > best_min_dist {
+                best_min_dist = min_dist;
+                best_k = k;
+            }
+        }
+        let x = TURBO_SRGB_BYTES[best_k];
+        y.push(vec![x[0], x[1], x[2]]);
+    }
+    y
 }
