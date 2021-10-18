@@ -90,8 +90,8 @@ impl CanvasView {
                     width = width.max(tmax);
                 }
                 crate::geometry::Geometry::Rectangle(rect) => {
-                    height = height.max(rect.p.y + rect.height);
-                    width = width.max(rect.p.x + rect.width);
+                    height = height.max(rect.p.y + rect.height + rect.stroke_width);
+                    width = width.max(rect.p.x + rect.width + rect.stroke_width);
                 }
                 crate::geometry::Geometry::PolySegment(segs) => {
                     for i in 0..segs.p.len() - 1 {
