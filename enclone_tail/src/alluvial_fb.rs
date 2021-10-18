@@ -70,6 +70,12 @@ pub fn alluvial_fb_reads(
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_reads_matrices[li];
         if m.initialized() {
+            let mut row_is_cell = vec![false; m.nrows()];
+            for j in 0..m.nrows() {
+                if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                    row_is_cell[j] = true;
+                }
+            }
             have_some = true;
             let mut keep = 3;
             let mut specials = Vec::<String>::new();
@@ -257,7 +263,7 @@ pub fn alluvial_fb_reads(
                     let label = format!("{} = {}", seq, seq_to_id[seq]);
                     if c < 1000000 {
                         for j in 0..m.nrows() {
-                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            if row_is_cell[j] {
                                 cell += m.value(j, c as usize);
                             } else {
                                 ncell += m.value(j, c as usize);
@@ -291,7 +297,7 @@ pub fn alluvial_fb_reads(
                     let (mut cell, mut ncell) = (0, 0);
                     if c < 1000000 {
                         for j in 0..m.nrows() {
-                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            if row_is_cell[j] {
                                 cell += m.value(j, c as usize);
                             } else {
                                 ncell += m.value(j, c as usize);
@@ -381,6 +387,12 @@ pub fn alluvial_fb(
     for li in 0..ctl.origin_info.n() {
         let m = &gex_info.fb_top_matrices[li];
         if m.initialized() {
+            let mut row_is_cell = vec![false; m.nrows()];
+            for j in 0..m.nrows() {
+                if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                    row_is_cell[j] = true;
+                }
+            }
             have_some = true;
             let mut keep = 3;
             let mut specials = Vec::<String>::new();
@@ -511,7 +523,7 @@ pub fn alluvial_fb(
                     let label = format!("{} = {}", seq, seq_to_id[seq]);
                     if c < 1000000 {
                         for j in 0..m.nrows() {
-                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            if row_is_cell[j] {
                                 cell += m.value(j, c as usize);
                             } else {
                                 ncell += m.value(j, c as usize);
@@ -544,7 +556,7 @@ pub fn alluvial_fb(
                     let (mut cell, mut ncell) = (0, 0);
                     if c < 1000000 {
                         for j in 0..m.nrows() {
-                            if bin_member(&vdj_cells[li], &m.row_label(j)) {
+                            if row_is_cell[j] {
                                 cell += m.value(j, c as usize);
                             } else {
                                 ncell += m.value(j, c as usize);
