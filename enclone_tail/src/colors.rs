@@ -350,10 +350,6 @@ pub fn default_colors() -> Vec<Vec<u8>> {
         y.push(vec![x.0 as u8, x.1 as u8, x.2 as u8]);
         ids.push(i);
     }
-
-    use std::time::Instant;
-    use perf_stats::*;
-    let t = Instant::now();
     let mut dists = vec![vec![0.0; 269]; 269];
     for i1 in 0..269 {
         for i2 in 0..269 {
@@ -372,17 +368,12 @@ pub fn default_colors() -> Vec<Vec<u8>> {
             dists[i1][i2] = color_distance(&x1, &x2);
         }
     }
-    println!("used {:.2} seconds computing turbo_turbo", elapsed(&t));
-
     for _ in 0..256 - 13 {
         let mut best_k = 0;
         let mut best_min_dist = 0.0;
         for k in 0..256 {
-            let x1 = TURBO_SRGB_BYTES[k];
             let mut min_dist: f64 = 1_000_000_000.0;
             for l in 0..y.len() {
-                let x2 = &y[l];
-                // let dist = color_distance(&x1, &x2);
                 let dist = dists[k + 13][ids[l]];
                 min_dist = min_dist.min(dist);
             }
