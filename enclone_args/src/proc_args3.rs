@@ -504,9 +504,7 @@ pub fn proc_xcr(
         ));
     }
     val = expand_integer_ranges(&val);
-    if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val, ctl)?;
-    }
+    val = expand_analysis_sets(&val, ctl)?;
     let donor_groups;
     if ctl.gen_opt.cellranger {
         donor_groups = vec![&val[..]];
@@ -514,9 +512,7 @@ pub fn proc_xcr(
         donor_groups = val.split(';').collect::<Vec<&str>>();
     }
     let mut gex2 = expand_integer_ranges(gex);
-    if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2, ctl)?;
-    }
+    gex2 = expand_analysis_sets(&gex2, ctl)?;
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {
         donor_groups_gex = vec![&gex2[..]];
