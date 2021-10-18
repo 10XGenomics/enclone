@@ -42,7 +42,8 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         occupy the entire window.\n\n\
         \
         The default behavior is to render the graphics from the SVG representation.  Sometimes \
-        converting to PNG first renders better.  To get to this, push the PNG button.\n\n\
+        converting to PNG first renders better.  To get to this, push the PNG button.  Note that \
+        tooltip text cannot be displayed in this mode.\n\n\
         \
         The Tooltip button may be used to move the tooltip box that is seen when hovering over \
         a cell.  Each push of the button causes a rotation of the box location between the four \
