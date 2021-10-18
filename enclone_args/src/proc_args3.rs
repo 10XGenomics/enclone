@@ -95,9 +95,9 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                     ids = ids.replace("\n", "");
                     let ids = ids.split(',').collect::<Vec<&str>>();
                     let mut ids2 = Vec::<String>::new();
-    
+
                     // Remove wiped analysis IDs.
-    
+
                     for j in 0..ids.len() {
                         let url = format!("{}/{}", ctl.gen_opt.config["ones"], ids[j]);
                         let m = fetch_url(&url)?;
@@ -129,9 +129,9 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                             }
                         }
                     }
-    
+
                     // Proceed.
-    
+
                     for j in 0..ids2.len() {
                         if j > 0 {
                             tokens2.push(",".to_string());
