@@ -265,7 +265,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 25] = [
+pub const SITE_EXAMPLES: [(&str, &str); 26] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -408,6 +408,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 25] = [
     (
         "img/var.png",
         "BCR=123085 MIN_CELLS=10 HONEY=out=stdout.png,color=var,u_cell1 NOPRINT NO_NEWLINE",
+    ),
+    // 26.
+    (
+        "img/by_dataset.svg",
+        "BCR=123085,123089,124547 MIN_CELLS=5 HONEY=out=stdout,color=dataset NOPRINT",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
