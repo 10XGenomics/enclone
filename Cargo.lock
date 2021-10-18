@@ -3708,9 +3708,9 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 
 [[package]]
 name = "perf_stats"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be36717f5d20c3d74ac1627fbad37e1b4b420a531aa137a3f10db4c02c464575"
+checksum = "1d2b8b72ee03fc8f821d70308f71dcfd00347589bfab568b095e2f859a63aba7"
 dependencies = [
  "io_utils",
  "libc",

@@ -171,14 +171,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         "total time to run command = {:.1} seconds",
         elapsed(&slf.start_command.unwrap())
     );
-    let maxrss_slf;
-    unsafe {
-        let mut rusage: libc::rusage = std::mem::zeroed();
-        let retval = libc::getrusage(libc::RUSAGE_SELF, &mut rusage as *mut _);
-        assert_eq!(retval, 0);
-        maxrss_slf = rusage.ru_maxrss;
-    }
-    let peak_mem_mb = maxrss_slf as f64 / ((1024 * 1024) as f64);
+    let peak_mem_mb = peak_mem_usage_bytes() as f64 / ((1024 * 1024) as f64);
     xprintln!(
         "all time peak mem of this process is {:.1} MB\n",
         peak_mem_mb
