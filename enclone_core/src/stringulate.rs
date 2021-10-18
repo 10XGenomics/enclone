@@ -92,12 +92,14 @@ impl DescriptionTable {
     }
 }
 
+#[derive(Default, Clone)]
 pub struct FeatureBarcodeAlluvialTable {
     pub id: String,
     pub display_text: String,
     pub spreadsheet_text: String,
 }
 
+#[derive(Default, Clone)]
 pub struct FeatureBarcodeAlluvialTableSet {
     pub s: Vec<FeatureBarcodeAlluvialTable>,
 }
@@ -129,12 +131,14 @@ impl FeatureBarcodeAlluvialTableSet {
     }
 }
 
+#[derive(Default, Clone)]
 pub struct FeatureBarcodeAlluvialReadsTable {
     pub id: String,
     pub display_text: String,
     pub spreadsheet_text: String,
 }
 
+#[derive(Default, Clone)]
 pub struct FeatureBarcodeAlluvialReadsTableSet {
     pub s: Vec<FeatureBarcodeAlluvialReadsTable>,
 }

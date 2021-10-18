@@ -57,6 +57,8 @@ impl Application for EncloneVisual {
         x.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_help_title = "Help".to_string();
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
@@ -153,6 +155,7 @@ impl Application for EncloneVisual {
         x.archive_narrative = vec![String::new(); n];
         x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_summary_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_png_title = "PNG".to_string();
 
         // Fetch cookbooks.  For remote cookbooks, we keep a local copy, which may or may not
         // be current.

@@ -34,6 +34,7 @@ pub enum Message {
     ConsoleClose,
     ArchiveOpen(Result<(), String>),
     ArchiveClose,
+    ArchiveSaveClose,
     Save,
     SaveAs(String),
     CompleteSave(Result<(), String>),
@@ -101,4 +102,7 @@ pub enum Message {
     SetSummaryScrollablePos(f32),
     CopyDescrips,
     CompleteCopyDescrips(Result<(), String>),
+    GraphicPng,
+    CompleteGraphicPng(Result<(), String>),
+    GraphicHelp,
 }

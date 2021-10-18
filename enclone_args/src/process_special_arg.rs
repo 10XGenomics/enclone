@@ -3,7 +3,7 @@
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
 use crate::proc_args2::{is_f64_arg, is_simple_arg, is_usize_arg};
-use enclone_core::cell_color::{CellColor, ColorByVariableValue};
+use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
 use evalexpr::build_operator_tree;
@@ -86,6 +86,7 @@ pub fn process_special_arg(
         let mut color_count = 0;
         let (mut min, mut max) = (None, None);
         let (mut var, mut display_var) = (String::new(), String::new());
+        let mut schema = String::new();
         for p in parts.iter() {
             let mut p = p.clone();
             let part_name = p[0].before("=").to_string();
@@ -129,37 +130,45 @@ pub fn process_special_arg(
                 }
             } else if part_name == "color" {
                 color_count += 1;
-                if p[0] != "var" || p.len() < 2 {
-                    return Err(err);
-                }
-                var = p[1].to_string();
-                display_var = var.clone();
-                if var.contains(':') {
-                    display_var = var.before(":").to_string();
-                    var = var.after(":").to_string();
-                }
-                if p.len() >= 3 && !p[2].is_empty() && p[2] != "turbo" {
-                    return Err(err);
-                }
-                if p.len() >= 4 {
-                    let scale = &p[3..];
-                    if !scale.is_empty() && scale[0] != "minmax" {
+                if p.len() == 1 && p[0] == "dataset" {
+                    schema = "dataset".to_string();
+                    let v = ColorByDataset {};
+                    let cc = CellColor::ByDataset(v);
+                    ctl.plot_opt.cell_color = cc;
+                } else {
+                    if p[0] != "var" || p.len() < 2 {
                         return Err(err);
                     }
-                    if scale.len() >= 2 {
-                        if scale[1].parse::<f64>().is_err() {
-                            return Err(err);
-                        }
-                        min = Some(scale[1].force_f64());
+                    schema = "variable".to_string();
+                    var = p[1].to_string();
+                    display_var = var.clone();
+                    if var.contains(':') {
+                        display_var = var.before(":").to_string();
+                        var = var.after(":").to_string();
                     }
-                    if scale.len() >= 3 {
-                        if scale[2].parse::<f64>().is_err() {
-                            return Err(err);
-                        }
-                        max = Some(scale[2].force_f64());
-                    }
-                    if min.is_some() && max.is_some() && min >= max {
+                    if p.len() >= 3 && !p[2].is_empty() && p[2] != "turbo" {
                         return Err(err);
+                    }
+                    if p.len() >= 4 {
+                        let scale = &p[3..];
+                        if !scale.is_empty() && scale[0] != "minmax" {
+                            return Err(err);
+                        }
+                        if scale.len() >= 2 {
+                            if scale[1].parse::<f64>().is_err() {
+                                return Err(err);
+                            }
+                            min = Some(scale[1].force_f64());
+                        }
+                        if scale.len() >= 3 {
+                            if scale[2].parse::<f64>().is_err() {
+                                return Err(err);
+                            }
+                            max = Some(scale[2].force_f64());
+                        }
+                        if min.is_some() && max.is_some() && min >= max {
+                            return Err(err);
+                        }
                     }
                 }
             } else {
@@ -181,14 +190,20 @@ pub fn process_special_arg(
         if color_count > 1 {
             return Err("\nHONEY=... must specify color=... only once.\n".to_string());
         }
-        let v = ColorByVariableValue {
-            var,
-            display_var,
-            min,
-            max,
-        };
-        let cc = CellColor::ByVariableValue(v);
-        ctl.plot_opt.cell_color = cc;
+        if schema == "dataset" {
+            let v = ColorByDataset {};
+            let cc = CellColor::ByDataset(v);
+            ctl.plot_opt.cell_color = cc;
+        } else if schema == "variable" {
+            let v = ColorByVariableValue {
+                var,
+                display_var,
+                min,
+                max,
+            };
+            let cc = CellColor::ByVariableValue(v);
+            ctl.plot_opt.cell_color = cc;
+        }
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {

@@ -257,6 +257,21 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             .unwrap();
         }
 
+        // Delete some stuff.  Yeah dumb to copy then delete.
+
+        let diffexp = format!("{}/outs/{}/analysis_csv/diffexp", target, count);
+        if path_exists(&diffexp) {
+            std::fs::remove_dir_all(&diffexp).unwrap();
+        }
+        let filt_h5 = format!("{}/outs/{}/filtered_feature_bc_matrix.h5", target, count);
+        if path_exists(&filt_h5) {
+            std::fs::remove_file(&filt_h5).unwrap();
+        }
+        let filt_dir = format!("{}/outs/{}/filtered_feature_bc_matrix", target, count);
+        if path_exists(&filt_dir) {
+            std::fs::remove_dir_all(&filt_dir).unwrap();
+        }
+
         // Copy per_sample_outs.
 
         if path_exists(&format!("{}/per_sample_outs", p)) {

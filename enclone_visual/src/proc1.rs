@@ -9,7 +9,59 @@ use io_utils::*;
 use std::time::Duration;
 use vector_utils::*;
 
-pub fn do_archive_close(slf: &mut EncloneVisual) -> Command<Message> {
+pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message> {
+    let mut index = None;
+    for i in 0..slf.restore_requested.len() {
+        if slf.restore_requested[i] {
+            index = Some(i);
+        }
+    }
+    if index.is_some() {
+        let mut index = index.unwrap();
+        if save {
+            slf.save("(saved upon restore)");
+            index += 1;
+        }
+        let filename = format!(
+            "{}/{}",
+            slf.archive_dir.as_ref().unwrap(),
+            slf.archive_list[index]
+        );
+        let res = read_enclone_visual_history(&filename);
+        if res.is_ok() {
+            slf.h = res.unwrap();
+            // Ignore history index and instead rewind.
+            if slf.h.history_index > 1 {
+                slf.h.history_index = 1;
+            }
+            slf.update_to_current();
+        } else {
+            slf.restore_msg[index] = format!(
+                "Oh dear, restoration of the file {} \
+                failed.",
+                filename
+            );
+        }
+    }
+    let mut index = None;
+    for i in 0..slf.restore_cookbook_requested.len() {
+        if slf.restore_cookbook_requested[i] {
+            index = Some(i);
+        }
+    }
+    if index.is_some() {
+        let index = index.unwrap();
+        if save {
+            slf.save("(saved upon restore)");
+        }
+        let res = EncloneVisualHistory::restore_from_bytes(&slf.cookbooks[index]);
+        slf.h = res.unwrap();
+        // Ignore history index and instead rewind.
+        if slf.h.history_index > 1 {
+            slf.h.history_index = 1;
+        }
+        slf.update_to_current();
+    }
     for i in 0..slf.archive_name_value.len() {
         slf.archive_name_value[i] = slf.orig_archive_name[i].clone();
     }

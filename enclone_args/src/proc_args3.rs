@@ -4,12 +4,12 @@
 
 use enclone_core::defs::{EncloneControl, OriginInfo};
 use enclone_core::fetch_url;
-use io_utils::{open_userfile_for_read, path_exists};
+use io_utils::*;
 use itertools::Itertools;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::thread;
@@ -86,47 +86,82 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
     for i in 0..tokens.len() {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
-            let url = format!("{}/{}", ctl.gen_opt.config["sets"], setid);
-            let m = fetch_url(&url)?;
-            if m.contains("\"analysis_ids\":[") {
-                let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
-                ids = ids.replace(" ", "");
-                ids = ids.replace("\n", "");
-                let ids = ids.split(',').collect::<Vec<&str>>();
-                let mut ids2 = Vec::<String>::new();
+            if ctl.gen_opt.internal_run {
+                let url = format!("{}/{}", ctl.gen_opt.config["sets"], setid);
+                let m = fetch_url(&url)?;
+                if m.contains("\"analysis_ids\":[") {
+                    let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
+                    ids = ids.replace(" ", "");
+                    ids = ids.replace("\n", "");
+                    let ids = ids.split(',').collect::<Vec<&str>>();
+                    let mut ids2 = Vec::<String>::new();
 
-                // Remove wiped analysis IDs.
+                    // Remove wiped analysis IDs.
 
-                for j in 0..ids.len() {
-                    let url = format!("{}/{}", ctl.gen_opt.config["ones"], ids[j]);
-                    let m = fetch_url(&url)?;
-                    if m.contains("502 Bad Gateway") {
-                        return Err(format!(
-                            "\nWell, this is sad.  The URL \
-                            {} returned a 502 Bad Gateway \
-                            message.  Please try again later or ask someone for help.\n",
-                            url
-                        ));
+                    for j in 0..ids.len() {
+                        let url = format!("{}/{}", ctl.gen_opt.config["ones"], ids[j]);
+                        let m = fetch_url(&url)?;
+                        if m.contains("502 Bad Gateway") {
+                            return Err(format!(
+                                "\nWell, this is sad.  The URL \
+                                {} returned a 502 Bad Gateway \
+                                message.  Please try again later or ask someone for help.\n",
+                                url
+                            ));
+                        }
+                        if !m.contains("\"wiped\"") {
+                            ids2.push(ids[j].to_string());
+                        }
                     }
-                    if !m.contains("\"wiped\"") {
-                        ids2.push(ids[j].to_string());
+                    let enclone = format!("~/enclone");
+                    let enclone = stringme(&tilde_expand(enclone.as_bytes()));
+                    if path_exists(&enclone) {
+                        let sets = format!("~/enclone/sets");
+                        let sets = stringme(&tilde_expand(sets.as_bytes()));
+                        if !path_exists(&sets) {
+                            std::fs::create_dir(&sets).unwrap();
+                            let setid = format!("~/enclone/sets/{}", setid);
+                            let setid = stringme(&tilde_expand(setid.as_bytes()));
+                            if !path_exists(&setid) {
+                                let mut f = open_for_write_new![&setid];
+                                let s = format!("{}\n", ids2.iter().format(","));
+                                f.write_all(&s.as_bytes()).unwrap();
+                            }
+                        }
                     }
+
+                    // Proceed.
+
+                    for j in 0..ids2.len() {
+                        if j > 0 {
+                            tokens2.push(",".to_string());
+                        }
+                        tokens2.push(ids2[j].to_string());
+                    }
+                    continue;
+                } else {
+                    return Err(format!(
+                        "\nIt looks like you've provided an incorrect analysis set ID {}.\n",
+                        setid
+                    ));
                 }
-
-                // Proceed.
-
-                for j in 0..ids2.len() {
-                    if j > 0 {
-                        tokens2.push(",".to_string());
+            } else if setid.parse::<usize>().is_ok() {
+                let set_file = format!("~/enclone/sets/{}", setid);
+                let set_file = stringme(&tilde_expand(set_file.as_bytes()));
+                if path_exists(&set_file) {
+                    let mut f = open_for_read![&set_file];
+                    let mut s = String::new();
+                    f.read_to_string(&mut s).unwrap();
+                    s = s.before("\n").to_string();
+                    let ids2 = s.split(',').collect::<Vec<&str>>();
+                    for j in 0..ids2.len() {
+                        if j > 0 {
+                            tokens2.push(",".to_string());
+                        }
+                        tokens2.push(ids2[j].to_string());
                     }
-                    tokens2.push(ids2[j].to_string());
+                    continue;
                 }
-                continue;
-            } else {
-                return Err(format!(
-                    "\nIt looks like you've provided an incorrect analysis set ID {}.\n",
-                    setid
-                ));
             }
         }
         tokens2.push(tokens[i].clone());
@@ -469,9 +504,7 @@ pub fn proc_xcr(
         ));
     }
     val = expand_integer_ranges(&val);
-    if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val, ctl)?;
-    }
+    val = expand_analysis_sets(&val, ctl)?;
     let donor_groups;
     if ctl.gen_opt.cellranger {
         donor_groups = vec![&val[..]];
@@ -479,9 +512,7 @@ pub fn proc_xcr(
         donor_groups = val.split(';').collect::<Vec<&str>>();
     }
     let mut gex2 = expand_integer_ranges(gex);
-    if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2, ctl)?;
-    }
+    gex2 = expand_analysis_sets(&gex2, ctl)?;
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {
         donor_groups_gex = vec![&gex2[..]];

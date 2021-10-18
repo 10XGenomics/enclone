@@ -22,6 +22,42 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::GraphicHelp => {
+                if self.graphic_help_title == "Help" {
+                    self.graphic_help_title = "Close help".to_string();
+                } else {
+                    self.graphic_help_title = "Help".to_string();
+                }
+                Command::none()
+            }
+
+            Message::GraphicPng => {
+                self.summary_png_start = Some(Instant::now());
+                self.png_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteGraphicPng)
+            }
+
+            Message::CompleteGraphicPng(_) => {
+                if self.graphic_png_title == "PNG" {
+                    if self.png_value.len() == 0 {
+                        self.png_value = convert_svg_to_png(&self.svg_value.as_bytes(), 2000);
+                    }
+                }
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.summary_png_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                if self.graphic_png_title == "PNG" {
+                    self.graphic_png_title = "SVG".to_string();
+                } else {
+                    self.graphic_png_title = "PNG".to_string();
+                }
+                self.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyDescrips => {
                 self.descrips_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.descrips_for_spreadsheet.as_bytes());
@@ -142,7 +178,10 @@ impl EncloneVisual {
 
             Message::GraphicClose => {
                 self.graphic_mode = false;
+                self.graphic_help_mode = true;
+                self.graphic_help_title = "Help".to_string();
                 GRAPHIC_MODE.store(false, SeqCst);
+                self.graphic_png_title = "PNG".to_string();
                 Command::none()
             }
 
@@ -436,36 +475,12 @@ impl EncloneVisual {
 
             Message::Restore(check_val, index) => {
                 if !self.just_restored && !self.delete_requested[index] {
-                    let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.modified && self.state_count() > 0 {
-                        self.save();
-                        index += 1;
-                    }
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    let res = read_enclone_visual_history(&filename);
-                    if res.is_ok() {
-                        self.h = res.unwrap();
-                        // Ignore history index and instead rewind.
-                        if self.h.history_index > 1 {
-                            self.h.history_index = 1;
-                        }
-                        self.update_to_current();
-                        self.restore_msg[index] =
-                            "Restored!  Now click Dismiss at top.".to_string();
-                        self.just_restored = true;
-                        self.modified = false;
-                    } else {
-                        self.restore_msg[index] = format!(
-                            "Oh dear, restoration of the file {} \
-                            failed.",
-                            filename
-                        );
-                    }
+                    self.restore_msg[index] =
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
+                    self.just_restored = true;
+                    self.modified = false;
                 }
                 Command::none()
             }
@@ -473,18 +488,9 @@ impl EncloneVisual {
             Message::RestoreCookbook(check_val, index) => {
                 if !self.just_restored {
                     self.restore_cookbook_requested[index] = check_val;
-                    if self.modified {
-                        self.save();
-                    }
-                    let res = EncloneVisualHistory::restore_from_bytes(&self.cookbooks[index]);
-                    self.h = res.unwrap();
-                    // Ignore history index and instead rewind.
-                    if self.h.history_index > 1 {
-                        self.h.history_index = 1;
-                    }
-                    self.update_to_current();
                     self.restore_cookbook_msg[index] =
-                        "Restored!  Now click Dismiss at top.".to_string();
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
                     self.just_restored = true;
                     self.modified = false;
                 }
@@ -493,13 +499,13 @@ impl EncloneVisual {
 
             Message::Save => {
                 self.save_in_progress = true;
-                self.save();
+                self.save("");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
             Message::SaveAs(x) => {
                 self.save_in_progress = true;
-                self.save_as(&x);
+                self.save_as(&x, "");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
@@ -820,7 +826,9 @@ impl EncloneVisual {
 
             Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
-            Message::ArchiveClose => do_archive_close(self),
+            Message::ArchiveClose => do_archive_close(self, false),
+
+            Message::ArchiveSaveClose => do_archive_close(self, true),
 
             Message::ArchiveOpen(_) => {
                 self.archive_mode = true;
