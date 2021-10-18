@@ -7,6 +7,7 @@ use enclone_core::defs::{EncloneControl, GexInfo};
 use enclone_core::stringulate::*;
 use io_utils::fwrite;
 use itertools::Itertools;
+use rayon::prelude::*;
 use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -66,8 +67,12 @@ pub fn alluvial_fb_reads(
     logx: &mut Vec<u8>,
 ) {
     let mut fs = Vec::<FeatureBarcodeAlluvialReadsTable>::new();
-    let mut have_some = false;
+    let mut results = Vec::<(usize, bool, FeatureBarcodeAlluvialReadsTable, Vec::<u8>)>::new();
     for li in 0..ctl.origin_info.n() {
+        results.push((li, false, FeatureBarcodeAlluvialReadsTable::default(), Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let li = res.0;
         let m = &gex_info.fb_top_reads_matrices[li];
         if m.initialized() {
             let mut row_is_cell = vec![false; m.nrows()];
@@ -76,7 +81,7 @@ pub fn alluvial_fb_reads(
                     row_is_cell[j] = true;
                 }
             }
-            have_some = true;
+            res.1 = true;
             let mut keep = 3;
             let mut specials = Vec::<String>::new();
             if !ctl.gen_opt.fb_show.is_empty() {
@@ -349,7 +354,7 @@ pub fn alluvial_fb_reads(
             );
             if !ctl.visual_mode {
                 fwrite!(
-                    logx,
+                    res.3,
                     "\nfeature barcode read distribution for {}\n{}",
                     ctl.origin_info.dataset_id[li],
                     display_text
@@ -366,9 +371,17 @@ pub fn alluvial_fb_reads(
                     display_text: display_text.clone(),
                     spreadsheet_text: spreadsheet_text.clone(),
                 };
-                fs.push(f);
+                res.2 = f;
             }
         }
+    });
+    let mut have_some = false;
+    for i in 0..results.len() {
+        if results[i].1 {
+            have_some = true;
+        }
+        fs.push(results[i].2.clone());
+        logx.append(&mut results[i].3.clone());
     }
     if ctl.visual_mode && have_some {
         let tables = FeatureBarcodeAlluvialReadsTableSet { s: fs };
