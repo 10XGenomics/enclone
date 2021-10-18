@@ -683,9 +683,11 @@ pub fn plot_clonotypes(
         set_svg_height(svg, height + BOUNDARY as f64);
         *svg += "</svg>";
     }
+    ctl.perf_stats(&t, "doing more plotting stuff");
 
     // Add legend for color by variable.
 
+    let t = Instant::now();
     let mut dcx = default_colors();
     let n = std::cmp::min(256, ctl.origin_info.n());
     dcx.truncate(n);
