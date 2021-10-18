@@ -263,10 +263,6 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         if path_exists(&diffexp) {
             std::fs::remove_dir_all(&diffexp).unwrap();
         }
-        let raw_h5 = format!("{}/outs/{}/raw_feature_bc_matrix.h5", target, count);
-        if path_exists(&raw_h5) {
-            std::fs::remove_file(&raw_h5).unwrap();
-        }
         let filt_h5 = format!("{}/outs/{}/filtered_feature_bc_matrix.h5", target, count);
         if path_exists(&filt_h5) {
             std::fs::remove_file(&filt_h5).unwrap();
