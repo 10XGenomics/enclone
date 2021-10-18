@@ -67,9 +67,14 @@ pub fn alluvial_fb_reads(
     logx: &mut Vec<u8>,
 ) {
     let mut fs = Vec::<FeatureBarcodeAlluvialReadsTable>::new();
-    let mut results = Vec::<(usize, bool, FeatureBarcodeAlluvialReadsTable, Vec::<u8>)>::new();
+    let mut results = Vec::<(usize, bool, FeatureBarcodeAlluvialReadsTable, Vec<u8>)>::new();
     for li in 0..ctl.origin_info.n() {
-        results.push((li, false, FeatureBarcodeAlluvialReadsTable::default(), Vec::new()));
+        results.push((
+            li,
+            false,
+            FeatureBarcodeAlluvialReadsTable::default(),
+            Vec::new(),
+        ));
     }
     results.par_iter_mut().for_each(|res| {
         let li = res.0;
@@ -396,9 +401,14 @@ pub fn alluvial_fb(
     logx: &mut Vec<u8>,
 ) {
     let mut fs = Vec::<FeatureBarcodeAlluvialTable>::new();
-    let mut results = Vec::<(usize, bool, FeatureBarcodeAlluvialTable, Vec::<u8>)>::new();
+    let mut results = Vec::<(usize, bool, FeatureBarcodeAlluvialTable, Vec<u8>)>::new();
     for li in 0..ctl.origin_info.n() {
-        results.push((li, false, FeatureBarcodeAlluvialTable::default(), Vec::new()));
+        results.push((
+            li,
+            false,
+            FeatureBarcodeAlluvialTable::default(),
+            Vec::new(),
+        ));
     }
     results.par_iter_mut().for_each(|res| {
         let li = res.0;
