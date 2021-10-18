@@ -693,8 +693,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             xprintln!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
         xprintln!("connected");
-        xprintln!("time since startup = {:.1} seconds, peak mem = {:.1} GB\n", 
-            elapsed(&t), peak_mem_usage_gb());
+        xprintln!(
+            "time since startup = {:.1} seconds, peak mem = {:.1} GB\n",
+            elapsed(&t),
+            peak_mem_usage_gb()
+        );
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
