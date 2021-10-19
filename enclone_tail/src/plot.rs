@@ -55,7 +55,13 @@ pub fn plot_clonotypes(
     if exacts.is_empty() {
         return Err("\nThere are no clonotypes to plot, giving up.\n".to_string());
     }
-
+    let mut need_default_colors = false;
+    match plot_opt.cell_color {
+        CellColor::ByDataset(_) => {
+            need_default_colors = true;
+        }
+        _ => {}
+    };
     let mut const_names = Vec::<String>::new();
     for id in refdata.cs.iter() {
         if refdata.rtype[*id] == 0 {
@@ -414,10 +420,14 @@ pub fn plot_clonotypes(
 
         let tcn = turbo_color_names();
         let n = std::cmp::min(256, ctl.origin_info.n());
-        let dcn = default_color_names(n);
-        let mut dc = default_colors();
-        dc.truncate(n);
-        reorder_color_list(&mut dc);
+        let mut dcn = Vec::<String>::new();
+        let mut dc = Vec::<Vec<u8>>::new();
+        if need_default_colors {
+            dcn = default_color_names(n);
+            dc = default_colors();
+            dc.truncate(n);
+            reorder_color_list(&mut dc);
+        }
         for i in 0..clusters.len() {
             for j in 0..clusters[i].colors.len() {
                 if clusters[i].colors[j].starts_with("turbo-") {
@@ -688,10 +698,13 @@ pub fn plot_clonotypes(
     // Add legend for color by variable.
 
     let t = Instant::now();
-    let mut dcx = default_colors();
-    let n = std::cmp::min(256, ctl.origin_info.n());
-    dcx.truncate(n);
-    reorder_color_list(&mut dcx);
+    let mut dcx = Vec::<Vec<u8>>::new();
+    if need_default_colors {
+        dcx = default_colors();
+        let n = std::cmp::min(256, ctl.origin_info.n());
+        dcx.truncate(n);
+        reorder_color_list(&mut dcx);
+    }
     if by_var && plot_opt.use_legend {
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
