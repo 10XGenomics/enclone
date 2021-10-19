@@ -888,8 +888,6 @@ pub fn group_and_print_clonotypes(
     if !ctl.gen_opt.html {
         if !ctl.visual_mode {
             print!("{}", compress_ansi_escapes(strme(&logx)));
-        } else {
-            print!("{}", strme(&logx));
         }
     } else {
         // Remove initial newline if present.
