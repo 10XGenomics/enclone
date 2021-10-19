@@ -93,7 +93,7 @@ fn main() {
     // This assumes that you have defined ENCLONE_CONFIG_DEFAULT.
     //
     // The reason for having this test is that if the remote share dir does not have world
-    // permissions, then some people may not be able to share.  And the permissions on the remote 
+    // permissions, then some people may not be able to share.  And the permissions on the remote
     // share dir might get accidentally changed by git.
 
     if tests.is_empty() {
