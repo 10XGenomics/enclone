@@ -176,8 +176,8 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     // 17. test for very long (120 amino acid) CDR3
     // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
     // there may be long productive CDR3 sequences in data from other species, although we do not
-    // have such data.
-    r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
+    // have such data.  This is from 1020665.
+    r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
     // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
     r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
