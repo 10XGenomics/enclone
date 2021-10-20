@@ -46,7 +46,7 @@ fontdb = "0.6"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "ee3e4fa681abc439d64ce5720fba0c8c819eebdb", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
 iced = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "569aff331f4fd4e9ead1866f56a8a7170de4b7a5" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
