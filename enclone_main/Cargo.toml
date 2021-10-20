@@ -29,7 +29,7 @@ enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "ee3e4fa681abc439d64ce5720fba0c8c819eebdb", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
 io_utils = "0.2"
 itertools = "0.10"
 perf_stats = "0.1"
