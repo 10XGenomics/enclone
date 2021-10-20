@@ -24,7 +24,7 @@ byteorder = "1"
 prost = { version = "0.8", default_features = false }
 serde = "1"
 serde_derive = "1"
-vdj_ann = { path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann" }
+vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev = "f5890cac0b4bb44914cde2319e8f56405bb5d2f0"
 thiserror = "1"
 
 [build-dependencies]

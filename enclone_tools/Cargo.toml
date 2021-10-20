@@ -41,5 +41,5 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
-vdj_ann = { path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann" }
+vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev = "f5890cac0b4bb44914cde2319e8f56405bb5d2f0"
 vector_utils = "0.1"
