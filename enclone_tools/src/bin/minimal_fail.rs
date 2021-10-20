@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Given a BCR  all_contig_annotations.json file, and other arguments for enclone, such that 
+// Given a BCR  all_contig_annotations.json file, and other arguments for enclone, such that
 // the corresponding enclone command crashes, iteratively attempt to make the json file smaller,
 // while maintaining the crash.
 //
@@ -18,10 +18,10 @@ use std::process::Command;
 use vector_utils::*;
 
 fn panics(
-    entries: &Vec<Value>, 
-    using: &Vec<bool>, 
-    work: &str, 
-    working_json: &str, 
+    entries: &Vec<Value>,
+    using: &Vec<bool>,
+    work: &str,
+    working_json: &str,
     extra: &Vec<String>,
 ) -> bool {
     let n = entries.len();
