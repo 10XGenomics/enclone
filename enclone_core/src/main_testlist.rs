@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 243] = [
+pub const TESTS: [&str; 244] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -602,4 +602,9 @@ pub const TESTS: [&str; 243] = [
     // 243. this crashed at one point
     r###"BCR=123085 GROUP="cdr3_aa_heavy>=85%,vj_refname" MIN_GROUP=2 PLOT=/dev/null
          NOPRINT EXPECT_OK"###,
+    // 244. test for very long (120 amino acid) CDR3
+    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
+    // there may be long productive CDR3 sequences in data from other species, although we do not
+    // have such data.  This is from 1020665.
+    r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
 ];

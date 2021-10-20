@@ -173,10 +173,7 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    // 17. test for very long (120 amino acid) CDR3
-    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
-    // there may be long productive CDR3 sequences in data from other species, although we do not
-    // have such data.  This is from 1020665.
+    // 17. DUPLICATE, TO REMOVE
     r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
     // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
