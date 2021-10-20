@@ -1,8 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
 // Given a BCR  all_contig_annotations.json file, and other arguments for enclone, such that
-// the corresponding enclone command crashes, iteratively attempt to make the json file smaller,
-// while maintaining the crash.
+// the corresponding enclone command panics, iteratively attempt to make the json file smaller,
+// while maintaining the panic.
+//
+// This can be used to make tests.
 //
 // Argument 1: path to the all_contig_annotations.json file.
 // Argument 2: working directory.
@@ -12,7 +14,7 @@ use io_utils::*;
 use pretty_trace::PrettyTrace;
 use serde_json::Value;
 use std::env;
-use std::fs::File;
+use std::fs::{copy, File};
 use std::io::{BufWriter, Write};
 use std::process::Command;
 use vector_utils::*;
@@ -52,6 +54,9 @@ fn panics(
         .expect("failed to execute enclone");
     let status = o.status.code().unwrap();
     let panicked = status == 101;
+    if panicked {
+        copy(&working_json, &format!("{}.goodk", working_json)).unwrap();
+    }
     panicked
 }
 
@@ -69,7 +74,7 @@ fn main() {
     let entries = v.as_array().unwrap();
     let n = entries.len();
     println!("len = {}", n);
-    let using = vec![true; n];
+    let mut using = vec![true; n];
 
     let outs = format!("{}/outs", work);
     if !path_exists(&outs) {
@@ -79,9 +84,29 @@ fn main() {
 
     // First try deleting blocks of 1000.
 
-    loop {
-        let panicked = panics(&entries, &using, &work, &working_json, &extra);
-        println!("{}", panicked);
-        break;
+    for k in [1000, 100, 10, 1].iter() {
+        let k = *k;
+        if n >= k {
+            for i in (0..=n - k).step_by(k) {
+                let mut usingx = using.clone();
+                for j in 0..k {
+                    usingx[i + j] = false;
+                }
+                if usingx != using {
+                    println!("trying to delete {}", k);
+                    let panicked = panics(&entries, &using, &work, &working_json, &extra);
+                    if panicked {
+                        using = usingx;
+                        let mut total = 0;
+                        for x in using.iter() {
+                            if *x {
+                                total += 1;
+                            }
+                        }
+                        println!("deleted {}, leaving {}", k, total);
+                    }
+                }
+            }
+        }
     }
 }
