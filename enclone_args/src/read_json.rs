@@ -272,7 +272,7 @@ fn parse_vector_entry_from_json(
                 v_ref_id = t;
                 annv.push(ann[i]);
                 chain_type = refdata.name[t][0..3].to_string();
-                if chain_type == *"IGH" || chain_type == *"TRB" {
+                if chain_type == *"IGH" || chain_type == *"TRB" || chain_type == *"TRD" {
                     left = true;
                 }
                 if ann[i].3 == 0 {
@@ -363,7 +363,7 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-                if chain == *"IGH" || chain == *"TRB" {
+                if chain == *"IGH" || chain == *"TRB" || chain == *"TRD" {
                     left = true;
                 }
                 v_ref_id = feature_idx;

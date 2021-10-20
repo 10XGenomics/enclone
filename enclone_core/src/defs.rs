@@ -558,7 +558,7 @@ pub struct TigData {
     pub full_quals: Vec<u8>, // quality scores
     pub barcode: String, // barcode
     pub tigname: String, // name of contig
-    pub left: bool,      // true if this is IGH or TRB
+    pub left: bool,      // true if this is IGH or TRB or TRD
     pub dataset_index: usize, // index of dataset
     pub origin_index: Option<usize>, // index of origin (sample)
     pub donor_index: Option<usize>, // index of donor
@@ -639,7 +639,7 @@ pub struct TigData1 {
     pub fr3_start: Option<usize>,            // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
-    pub left: bool,                          // true if this is IGH or TRB
+    pub left: bool,                          // true if this is IGH or TRB or TRD
     pub chain_type: String,                  // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
     pub vs: DnaString,                       // reference V segment (possibly donor allele)
