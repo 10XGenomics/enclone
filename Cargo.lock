@@ -451,7 +451,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
- "rand 0.7.3",
+ "rand 0.8.4",
  "regex",
  "serde",
  "serde_derive",
@@ -1459,7 +1459,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.20.2",
+ "nix 0.21.2",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1724,7 +1724,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.20.2",
+ "nix 0.21.2",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -5245,10 +5245,6 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-<<<<<<< HEAD
-=======
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
->>>>>>> upstream/dj/229
 dependencies = [
  "align_tools",
  "amino",
@@ -5263,11 +5259,6 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
-<<<<<<< HEAD
- "strum",
- "strum_macros 0.20.1",
-=======
->>>>>>> upstream/dj/229
  "vdj_types",
  "vector_utils",
 ]
@@ -5275,7 +5266,6 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
 dependencies = [
  "debruijn",
  "exons",
