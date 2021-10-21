@@ -112,7 +112,7 @@ fn main() {
     if !path_exists(&outs) {
         std::fs::create_dir(&outs).unwrap();
     }
-    let working_json = format!("{}/all_contig_annotations.json", work);
+    let working_json = format!("{}/all_contig_annotations.json", outs);
 
     loop {
         let mut progress = false;
