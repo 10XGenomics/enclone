@@ -215,8 +215,9 @@ pub const EXTENDED_TESTS: [&str; 29] = [
     // 29. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
     // question is whether the header line represents cvars for all the chains.  The output of
     // this is expected to change whenever variables are added.
-    r###"BCR=140696,140697,140701,140704 MIN_CHAINS=5 BUILT_IN AMINO= FOLD_HEADERS LVARS=
-         POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
+    // These data are in the extended public dataset collection.
+    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
+         NOPRINT RE NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
