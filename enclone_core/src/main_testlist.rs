@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 244] = [
+pub const TESTS: [&str; 245] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -607,4 +607,6 @@ pub const TESTS: [&str; 244] = [
     // there may be long productive CDR3 sequences in data from other species, although we do not
     // have such data.  This is from 1020665.
     r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
+    // 245. Test a tweak to the weak chains filter.  This should have two chains.  From 174957.
+    r###"BCR=testx/inputs/flaky2 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN"###,
 ];
