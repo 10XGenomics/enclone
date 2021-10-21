@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 32] = [
+pub const EXTENDED_TESTS: [&str; 30] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -155,8 +155,10 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     // an effect.  However, other changes will also affect this.  See the next test and make sure
     // that the results are different from it.
     r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 7. DUPLICATE TO REMOVE
-    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+    // 7. test fb variables
+    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
+         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
+         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
     r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
@@ -181,8 +183,9 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     // an effect.  However, other changes will also affect this.  See the previous test and make
     // sure that the results are different from it.
     r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 18. DUPLICATE TO REMOVE
-    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL NO_PRE NFORCE"###,
+    // 18. previously this yielded a disconnected clonotype
+    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
+         NO_PRE NFORCE"###,
     // 19. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
@@ -216,13 +219,6 @@ pub const EXTENDED_TESTS: [&str; 32] = [
          POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
     // 30. test on PD multi pipestance; failed before bug fix
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    // 31. previously this yielded a disconnected clonotype
-    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
-         NO_PRE NFORCE"###,
-    // 32. test fb variables
-    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
-         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
-         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
