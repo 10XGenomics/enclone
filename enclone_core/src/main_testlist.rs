@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 248] = [
+pub const TESTS: [&str; 249] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -616,4 +616,7 @@ pub const TESTS: [&str; 248] = [
     r###"BCR=testx/inputs/flaky4"###,
     // 248. this crashed
     r###"BCR=testx/inputs/flaky5"###,
+    // 249. an example that triggered an internal inconsistency test, which we subsequently removed;
+    // there are three chains and the middle one was the problem
+    r###"BCR=testx/inputs/flaky6"###,
 ];

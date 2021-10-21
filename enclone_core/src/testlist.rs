@@ -181,9 +181,8 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     // an effect.  However, other changes will also affect this.  See the previous test and make
     // sure that the results are different from it.
     r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
-    // there are three chains and the middle one was the problem
-    r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
+    // 18. DUPLICATE TO REMOVE
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL NO_PRE NFORCE"###,
     // 19. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
