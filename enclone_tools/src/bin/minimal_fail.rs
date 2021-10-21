@@ -11,12 +11,14 @@
 // Argument 3-: additional arguments.
 
 use io_utils::*;
+use itertools::Itertools;
 use pretty_trace::PrettyTrace;
 use serde_json::Value;
 use std::env;
 use std::fs::{copy, File};
 use std::io::{BufWriter, Write};
 use std::process::Command;
+use string_utils::*;
 use vector_utils::*;
 
 fn panics(
@@ -52,10 +54,26 @@ fn panics(
         .args(&*extra)
         .output()
         .expect("failed to execute enclone");
+    // not clear how this can happen
+    if o.status.code().is_none() {
+        // eprintln!("weird, failed to get status code");
+        return false;
+    }
+    if o.status.code().is_none() {
+        eprint!("\nfailed to get status code, stdout =\n{}\nstderr =\n{}", strme(&o.stdout), strme(&o.stderr));
+        eprintln!("\nThe command was enclone BCR={} {}.\n", work, extra.iter().format(" "));
+        std::process::exit(1);
+    }
     let status = o.status.code().unwrap();
     let panicked = status == 101;
     if panicked {
-        copy(&working_json, &format!("{}.goodk", working_json)).unwrap();
+        // println!("\nvery good, panicked with stderr =\n{}", strme(&o.stderr));
+        copy(&working_json, &format!("{}.good", working_json)).unwrap();
+    /*
+    } else if status != 0 {
+        println!("\noh dear, status = {} and stderr =\n{}", status, strme(&o.stderr));
+        std::process::exit(1);
+    */
     }
     panicked
 }
@@ -82,31 +100,36 @@ fn main() {
     }
     let working_json = format!("{}/all_contig_annotations.json", work);
 
-    // First try deleting blocks of 1000.
-
-    for k in [1000, 100, 10, 1].iter() {
-        let k = *k;
-        if n >= k {
-            for i in (0..=n - k).step_by(k) {
-                let mut usingx = using.clone();
-                for j in 0..k {
-                    usingx[i + j] = false;
-                }
-                if usingx != using {
-                    println!("trying to delete {}", k);
-                    let panicked = panics(&entries, &using, &work, &working_json, &extra);
-                    if panicked {
-                        using = usingx;
-                        let mut total = 0;
-                        for x in using.iter() {
-                            if *x {
-                                total += 1;
+    loop {
+        let mut progress = false;
+        for k in [1000, 100, 10, 1].iter() {
+            let k = *k;
+            if n >= k {
+                for i in (0..=n - k).step_by(k) {
+                    let mut usingx = using.clone();
+                    for j in 0..k {
+                        usingx[i + j] = false;
+                    }
+                    if usingx != using {
+                        println!("trying to delete {}", k);
+                        let panicked = panics(&entries, &usingx, &work, &working_json, &extra);
+                        if panicked {
+                            using = usingx;
+                            let mut total = 0;
+                            for x in using.iter() {
+                                if *x {
+                                    total += 1;
+                                }
                             }
+                            println!("deleted {}, leaving {}", k, total);
+                            progress = true;
                         }
-                        println!("deleted {}, leaving {}", k, total);
                     }
                 }
             }
+        }
+        if !progress {
+            break;
         }
     }
 }
