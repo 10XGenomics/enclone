@@ -137,9 +137,10 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 36] = [
-    // 1. DUPLICATE TO REMOVE
-    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+pub const EXTENDED_TESTS: [&str; 32] = [
+    // 1. test DVARS
+    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
@@ -149,8 +150,11 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
-    // 6. DUPLICATE TO REMOVE
-    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+    // 6. test signature filtering ON
+    // This is super annoying.  It is the only case we could find where signature filtering has
+    // an effect.  However, other changes will also affect this.  See the next test and make sure
+    // that the results are different from it.
+    r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
     // 7. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
@@ -172,8 +176,11 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    // 17. DUPLICATE, TO REMOVE
-    r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
+    // 17. test signature filtering OFF
+    // This is super annoying.  It is the only case we could find where signature filtering has
+    // an effect.  However, other changes will also affect this.  See the previous test and make
+    // sure that the results are different from it.
+    r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
     // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
     r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
@@ -193,8 +200,9 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 24. This used to appear as a four-chain clonotype, and is now split.
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
-    // 25. DUPLICATE TEST, TO REMOVE
-    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
+    // 25. test MIN_GROUP_DONORS
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
     // 26. crashed at one point
     r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
          NFORCE"###,
@@ -216,22 +224,6 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
-    // 33. test DVARS
-    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
-         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
-    // 34. test signature filtering ON
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the next test and make sure
-    // that the results are different from it.
-    r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 35. test signature filtering OFF
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the previous test and make
-    // sure that the results are different from it.
-    r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 36. test MIN_GROUP_DONORS
-    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
-         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
 ];
 
 // Tests of internal features.
