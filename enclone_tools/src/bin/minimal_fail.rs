@@ -1,17 +1,19 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
 // Given a BCR  all_contig_annotations.json file, and other arguments for enclone, such that
-// the corresponding enclone command panics, iteratively attempt to make the json file smaller,
-// while maintaining the panic.
+// the corresponding enclone command fails, iteratively attempt to make the json file smaller,
+// while maintaining the fails.
+//
+// Fail may be defined by (a) output containing specified text or (b) panic.
 //
 // This can be used to make tests.
 //
-// Argument 1: path to the all_contig_annotations.json file.
-// Argument 2: working directory.
-// Argument 3-: additional arguments.
+// Argument 1: text (possibly in quotes) or $PANIC.
+// Argument 2: path to the all_contig_annotations.json file.
+// Argument 3: working directory.
+// Argument 4-: additional arguments.
 
 use io_utils::*;
-use itertools::Itertools;
 use pretty_trace::PrettyTrace;
 use serde_json::Value;
 use std::env;
@@ -21,7 +23,8 @@ use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
 
-fn panics(
+fn fails(
+    fail_condition: &str,
     entries: &Vec<Value>,
     using: &Vec<bool>,
     work: &str,
@@ -49,42 +52,49 @@ fn panics(
         }
         fwriteln!(f, "]");
     }
+
+    // Execute command.
+
     let o = Command::new("enclone")
         .arg(&format!("BCR={}", work))
         .args(&*extra)
         .output()
         .expect("failed to execute enclone");
-    // not clear how this can happen
+
+    // Test for lack of status code.  It is not clear if this can happen.  It is possible that
+    // it only happened on old code run with new rust, and reflects some sort of incompatibility
+    // therein.
+
     if o.status.code().is_none() {
-        // eprintln!("weird, failed to get status code");
         return false;
     }
-    if o.status.code().is_none() {
-        eprint!("\nfailed to get status code, stdout =\n{}\nstderr =\n{}", strme(&o.stdout), strme(&o.stderr));
-        eprintln!("\nThe command was enclone BCR={} {}.\n", work, extra.iter().format(" "));
-        std::process::exit(1);
-    }
+
+    // Check for fail.
+
     let status = o.status.code().unwrap();
     let panicked = status == 101;
-    if panicked {
-        // println!("\nvery good, panicked with stderr =\n{}", strme(&o.stderr));
-        copy(&working_json, &format!("{}.good", working_json)).unwrap();
-    /*
-    } else if status != 0 {
-        println!("\noh dear, status = {} and stderr =\n{}", status, strme(&o.stderr));
-        std::process::exit(1);
-    */
+    let out = strme(&o.stdout);
+
+    let mut failed = false;
+    if fail_condition == "$PANIC" {
+        failed = panicked;
+    } else if out.contains(&fail_condition) {
+        failed = true;
     }
-    panicked
+    if failed {
+        copy(&working_json, &format!("{}.good", working_json)).unwrap();
+    }
+    failed
 }
 
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
-    let json = &args[1];
-    let work = &args[2];
+    let fail_condition = &args[1];
+    let json = &args[2];
+    let work = &args[3];
     let mut extra = Vec::<String>::new();
-    for i in 3..args.len() {
+    for i in 4..args.len() {
         extra.push(args[i].clone());
     }
     let json = std::fs::read_to_string(&json).unwrap();
@@ -112,7 +122,14 @@ fn main() {
                     }
                     if usingx != using {
                         println!("trying to delete {}", k);
-                        let panicked = panics(&entries, &usingx, &work, &working_json, &extra);
+                        let panicked = fails(
+                            &fail_condition,
+                            &entries,
+                            &usingx,
+                            &work,
+                            &working_json,
+                            &extra,
+                        );
                         if panicked {
                             using = usingx;
                             let mut total = 0;
