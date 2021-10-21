@@ -4,6 +4,8 @@
 // the corresponding enclone command fails, iteratively attempt to make the json file smaller,
 // while maintaining the fails.
 //
+// We require that the enclone passes, whereas enclone.old fails.
+//
 // Fail may be defined by (a) output containing specified text or (b) panic.
 //
 // This can be used to make tests.
@@ -57,24 +59,24 @@ fn fails(
         fwriteln!(f, "]");
     }
 
-    // Execute command.
+    // Execute new enclone.  Require OK.
 
     let o = Command::new("enclone")
         .arg(&format!("BCR={}", work))
         .args(&*extra)
         .output()
-        .expect("failed to execute enclone");
+        .expect("failed to execute new enclone");
     if o.status.code() != Some(0) {
         return false;
     }
 
-    // Execute command.
+    // Execute old enclone.
 
-    let o = Command::new("/mnt/home/david.jaffe/enclone.old")
+    let o = Command::new("enclone.old")
         .arg(&format!("BCR={}", work))
         .args(&*extra)
         .output()
-        .expect("failed to execute enclone");
+        .expect("failed to execute old enclone");
 
     // Test for lack of status code.  It is not clear if this can happen.  It is possible that
     // it only happened on old code run with new rust, and reflects some sort of incompatibility
