@@ -64,6 +64,17 @@ fn fails(
         .args(&*extra)
         .output()
         .expect("failed to execute enclone");
+    if o.status.code() != Some(0) {
+        return false;
+    }
+
+    // Execute command.
+
+    let o = Command::new("/mnt/home/david.jaffe/enclone.old")
+        .arg(&format!("BCR={}", work))
+        .args(&*extra)
+        .output()
+        .expect("failed to execute enclone");
 
     // Test for lack of status code.  It is not clear if this can happen.  It is possible that
     // it only happened on old code run with new rust, and reflects some sort of incompatibility

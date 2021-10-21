@@ -155,8 +155,8 @@ pub const EXTENDED_TESTS: [&str; 32] = [
     // an effect.  However, other changes will also affect this.  See the next test and make sure
     // that the results are different from it.
     r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 7. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
+    // 7. DUPLICATE TO REMOVE
+    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
     r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
