@@ -116,7 +116,7 @@ fn main() {
 
     loop {
         let mut progress = false;
-        for k in [1000, 100, 10, 1].iter() {
+        for k in [10000, 1000, 100, 10, 1].iter() {
             let k = *k;
             if n >= k {
                 for i in (0..=n - k).step_by(k) {
