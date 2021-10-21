@@ -12,6 +12,10 @@
 // Argument 2: path to the all_contig_annotations.json file.
 // Argument 3: working directory.
 // Argument 4-: additional arguments.
+//
+// Some extensions you might make by temporarily editing this file:
+// 1. Change the name of the enclone executable.
+// 2. Add a second test using a different enclone executable.
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
