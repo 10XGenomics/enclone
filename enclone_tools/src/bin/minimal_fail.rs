@@ -8,7 +8,7 @@
 //
 // This can be used to make tests.
 //
-// Argument 1: text (possibly in quotes) or $PANIC.
+// Argument 1: text (possibly in quotes) or "#PANIC".
 // Argument 2: path to the all_contig_annotations.json file.
 // Argument 3: working directory.
 // Argument 4-: additional arguments.
@@ -80,7 +80,7 @@ fn fails(
     let out = strme(&o.stdout);
 
     let mut failed = false;
-    if fail_condition == "$PANIC" {
+    if fail_condition == "#PANIC" {
         failed = panicked;
     } else if out.contains(&fail_condition) {
         failed = true;
