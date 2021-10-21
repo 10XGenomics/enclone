@@ -149,8 +149,8 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
-    // 6. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=47680 BARCODE=CGCCAAGTCCATGAAC-1 NO_PRE NFORCE"###,
+    // 6. DUPLICATE TO REMOVE
+    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 7. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW

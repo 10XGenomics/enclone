@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 246] = [
+pub const TESTS: [&str; 247] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -612,4 +612,6 @@ pub const TESTS: [&str; 246] = [
     // 246. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=testx/inputs/flaky3 NCELL CDR3=CARNWRYCTSVSCQHREYFYYMDVW AMINO=cdr3"###,
+    // 247. this crashed
+    r###"BCR=testx/inputs/flaky4"###,
 ];
