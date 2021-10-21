@@ -138,9 +138,8 @@ pub const CRASH_SETS: [&str; 6] = [
 // not publicly avaiable, or which require samtools.
 
 pub const EXTENDED_TESTS: [&str; 36] = [
-    // 1. test that used to crash on a particular barcode; this also gave the wrong
-    // answer for an insertion until it was fixed
-    r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
+    // 1. DUPLICATE TO REMOVE
+    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
