@@ -5245,6 +5245,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
+source = "git+https://github.com/nmmsv10x/rust-toolbox.git?rev=f5890cac0b4bb44914cde2319e8f56405bb5d2f0#f5890cac0b4bb44914cde2319e8f56405bb5d2f0"
 dependencies = [
  "align_tools",
  "amino",
@@ -5266,6 +5267,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.1.6"
+source = "git+https://github.com/nmmsv10x/rust-toolbox.git?rev=f5890cac0b4bb44914cde2319e8f56405bb5d2f0#f5890cac0b4bb44914cde2319e8f56405bb5d2f0"
 dependencies = [
  "debruijn",
  "exons",

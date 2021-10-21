@@ -42,7 +42,7 @@ serde_derive = "1"
 serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
-vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev = "f5890cac0b4bb44914cde2319e8f56405bb5d2f0"
+vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev = "f5890cac0b4bb44914cde2319e8f56405bb5d2f0" }
 vector_utils = "0.1"
 
 [dev-dependencies]
