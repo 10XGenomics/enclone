@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 30] = [
+pub const EXTENDED_TESTS: [&str; 29] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -159,8 +159,8 @@ pub const EXTENDED_TESTS: [&str; 30] = [
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
-    // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
-    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+    // 8. test on PD multi pipestance; failed before bug fix
+    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
@@ -217,8 +217,6 @@ pub const EXTENDED_TESTS: [&str; 30] = [
     // this is expected to change whenever variables are added.
     r###"BCR=140696,140697,140701,140704 MIN_CHAINS=5 BUILT_IN AMINO= FOLD_HEADERS LVARS=
          POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
-    // 30. test on PD multi pipestance; failed before bug fix
-    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
