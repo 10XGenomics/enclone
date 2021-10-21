@@ -25,6 +25,7 @@ attohttpc = { version = "0.17", default-features = false, features = ["compress"
 debruijn = "0.3"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
+equiv = "0.1"
 evalexpr = "6"
 flate2 = "1"
 fs_extra = "1"

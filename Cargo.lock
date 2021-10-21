@@ -1656,6 +1656,7 @@ dependencies = [
  "debruijn",
  "enclone",
  "enclone_core",
+ "equiv",
  "evalexpr",
  "flate2",
  "fs_extra",
