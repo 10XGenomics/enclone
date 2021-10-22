@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 255] = [
+pub const TESTS: [&str; 256] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -638,4 +638,9 @@ pub const TESTS: [&str; 255] = [
          BUILT_IN"###,
     // 255. conp value was truncated, from 1117069
     r###"BCR=testx/inputs/flaky CONP CDR3=CVRDPPEELELFDYW BUILT_IN"###,
+    // 256. Make sure that FP join output includes join error details.
+    // If somehow we fix the FP join occurring here, another one should be substituted.
+    // This is from BCR="131036;140707".
+    r###"PRE=enclone_exec/testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC FAIL_ONLY=true
+         PRINT_FAILED_JOINS MIX_DONORS BUILT_IN NO_PRE"###,
 ];
