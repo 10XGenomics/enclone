@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 29] = [
+pub const EXTENDED_TESTS: [&str; 26] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -146,15 +146,16 @@ pub const EXTENDED_TESTS: [&str; 29] = [
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
-    // 4. DUPLICATE TO  REMOVE
-    r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
+    // 4. parseable value for fwr4_aa was wrong
+    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
-    // 6. test signature filtering ON
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the next test and make sure
-    // that the results are different from it.
-    r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
+    // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
+    // question is whether the header line represents cvars for all the chains.  The output of
+    // this is expected to change whenever variables are added.
+    // These data are in the extended public dataset collection.
+    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
+         NOPRINT RE NO_PRE NFORCE"###,
     // 7. test fb variables
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
@@ -183,11 +184,8 @@ pub const EXTENDED_TESTS: [&str; 29] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    // 17. test signature filtering OFF
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the previous test and make
-    // sure that the results are different from it.
-    r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
+    // 17. conp value was truncated
+    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
     // 18. previously this yielded a disconnected clonotype
     r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
          NO_PRE NFORCE"###,
@@ -213,16 +211,6 @@ pub const EXTENDED_TESTS: [&str; 29] = [
     // 26. crashed at one point
     r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
          NFORCE"###,
-    // 27. parseable value for fwr4_aa was wrong
-    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
-    // 28. conp value was truncated
-    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
-    // 29. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
-    // question is whether the header line represents cvars for all the chains.  The output of
-    // this is expected to change whenever variables are added.
-    // These data are in the extended public dataset collection.
-    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
-         NOPRINT RE NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
