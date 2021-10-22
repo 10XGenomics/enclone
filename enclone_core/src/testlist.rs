@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 23] = [
+pub const EXTENDED_TESTS: [&str; 22] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -200,9 +200,7 @@ pub const EXTENDED_TESTS: [&str; 23] = [
     // 21. the result of this changed when sub_alts was changed
     r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
          NO_PRE NFORCE"###,
-    // 22. clonotype that was two clonotypes before raising MAX_DIFFS to 60
-    r###"BCR=1084461-1084462 CDR3=CAKEFGNGGFDTFDIW NO_PRE NFORCE"###,
-    // 23. test BCR_GEX and GD_BC
+    // 22. test BCR_GEX and GD_BC
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
 ];
 
