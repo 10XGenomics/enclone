@@ -4,10 +4,7 @@
 
 rootdir=$(dirname $0)
 
-enclone \
-    BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
+echo \
+    BCR=`cat $rootdir/../../enclone_core/src/testdata.public.bcr.human | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
-    ANN SHOW_BC SEQ FAIL_ONLY=true PLAIN PRINT_FAILED_JOINS \
-    PRE=/mnt/assembly/vdj/current15 MIX_DONORS \
-    BUILT_IN \
-    NOPAGER SUMMARY $*
+    NOPRINT SUMMARY MIX_DONORS BUILT_IN

@@ -87,6 +87,51 @@ fn main() {
     fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // TEST THAT REMOTE SHARE DIR HAS WORLD PERMISSIONS
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // This assumes that you have defined ENCLONE_CONFIG_DEFAULT.
+    //
+    // The reason for having this test is that if the remote share dir does not have world
+    // permissions, then some people may not be able to share.  And the permissions on the remote
+    // share dir might get accidentally changed by git.
+
+    if tests.is_empty() {
+        let mut found = false;
+        for (key, value) in env::vars() {
+            if key == "ENCLONE_CONFIG_DEFAULT" {
+                found = true;
+                let host = value.before(":");
+                let rdir = value.after(":").rev_before("/");
+                let o = Command::new("ssh")
+                    .arg(&host)
+                    .arg(&format!("ls -l {}", rdir))
+                    .output()
+                    .expect("failed to execute ssh for world permissions test");
+                let out = strme(&o.stdout);
+                let mut found2 = false;
+                for line in out.lines() {
+                    if line.ends_with(" share") {
+                        found2 = true;
+                        if line.as_bytes()[7..10].to_vec() != b"rwx".to_vec() {
+                            eprintln!("\nThe remote share dir does not have world permissions.\n");
+                            std::process::exit(1);
+                        }
+                    }
+                }
+                if !found2 {
+                    eprintln!("\nFailed to find remote share dir.\n");
+                    std::process::exit(1);
+                }
+            }
+        }
+        if !found {
+            eprintln!("\nYou need to define ENCLONE_CONFIG_DEFAULT.\n");
+            std::process::exit(1);
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     // A UNIT TEST
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

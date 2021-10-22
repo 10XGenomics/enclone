@@ -571,6 +571,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let set_nothing = [
         "BC",
         "BI",
+        "CONFIG_DEFAULT",
         "EMAIL",
         "GEX",
         "HTML",

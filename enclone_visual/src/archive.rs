@@ -282,7 +282,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         row = row.push(Text::new(&*y));
         archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
         archive_scrollable = archive_scrollable.push(row);
-        const MAX_LINE: usize = 116;
+        const MAX_LINE: usize = 113;
         let mut log = String::new();
         let mut rows = Vec::<Vec<String>>::new();
         let folds = fold(&slf.cookbook_narrative[i], MAX_LINE);

@@ -137,34 +137,47 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 36] = [
-    // 1. test that used to crash on a particular barcode; this also gave the wrong
-    // answer for an insertion until it was fixed
-    r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
+pub const EXTENDED_TESTS: [&str; 22] = [
+    // 1. test DVARS
+    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
     // 2. tests nd2
+    // These are public data.
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
-    // 4. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
+    // 4. crashed at one point
+    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
+         NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
-    // 6. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=47680 BARCODE=CGCCAAGTCCATGAAC-1 NO_PRE NFORCE"###,
-    // 7. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
-    // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
-    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+    // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
+    // question is whether the header line represents cvars for all the chains.  The output of
+    // this is expected to change whenever variables are added.
+    // These data are in the extended public dataset collection.
+    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
+         NOPRINT RE NO_PRE NFORCE"###,
+    // 7. test fb variables
+    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
+         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
+         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
+    // 8. test on PD multi pipestance; failed before bug fix
+    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
+    // These are public data.
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
+    // These are public data.
     r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###,
     // 11. this added because it got better when a noise filter was added, also tests u_max
+    // These are public data.
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
+    // These are public data.
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
+    // These are public data.
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
     // 14. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
@@ -173,81 +186,33 @@ pub const EXTENDED_TESTS: [&str; 36] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    // 17. test for very long (120 amino acid) CDR3
-    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
-    // there may be long productive CDR3 sequences in data from other species, although we do not
-    // have such data.
-    r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
-    // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
-    // there are three chains and the middle one was the problem
-    r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
+    // 17. test MIN_GROUP_DONORS
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
+    // 18. previously this yielded a disconnected clonotype
+    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
+         NO_PRE NFORCE"###,
     // 19. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
+    // These are public data.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    // 20. Make sure that FP join output includes join error details.
-    // If somehow we fix the FP join occurring here, another one should be substituted.
-    r###"BCR="131036;140707" ANN SHOW_BC FAIL_ONLY=true PRINT_FAILED_JOINS MIX_DONORS
-         NO_PRE NFORCE"###,
+    // 20. This used to appear as a four-chain clonotype, and is now split.
+    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
     // 21. the result of this changed when sub_alts was changed
     r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
          NO_PRE NFORCE"###,
-    // 22. clonotype that was two clonotypes before raising MAX_DIFFS to 60
-    r###"BCR=1084461-1084462 CDR3=CAKEFGNGGFDTFDIW NO_PRE NFORCE"###,
-    // 23. test BCR_GEX and GD_BC
+    // 22. test BCR_GEX and GD_BC
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
-    // 24. This used to appear as a four-chain clonotype, and is now split.
-    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
-    // 25. Test a tweak to the weak chains filter.  This should have two chains.
-    r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
-    // 26. crashed at one point
-    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
-         NFORCE"###,
-    // 27. parseable value for fwr4_aa was wrong
-    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
-    // 28. conp value was truncated
-    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
-    // 29. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
-    // question is whether the header line represents cvars for all the chains.  The output of
-    // this is expected to change whenever variables are added.
-    r###"BCR=140696,140697,140701,140704 MIN_CHAINS=5 BUILT_IN AMINO= FOLD_HEADERS LVARS=
-         POUT=stdout PCHAINS=max NOPRINT NO_PRE NFORCE"###,
-    // 30. test on PD multi pipestance; failed before bug fix
-    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    // 31. previously this yielded a disconnected clonotype
-    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
-         NO_PRE NFORCE"###,
-    // 32. test fb variables
-    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
-         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
-         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
-    // 33. test DVARS
-    r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
-         NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
-    // 34. test signature filtering ON
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the next test and make sure
-    // that the results are different from it.
-    r###"BCR=83808-83809 BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 35. test signature filtering OFF
-    // This is super annoying.  It is the only case we could find where signature filtering has
-    // an effect.  However, other changes will also affect this.  See the previous test and make
-    // sure that the results are different from it.
-    r###"BCR=83808-83809 NSIG BUILT_IN NOPRINT SUMMARY SUMMARY_CLEAN NO_PRE NFORCE"###,
-    // 36. test MIN_GROUP_DONORS
-    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
-         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
 ];
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 4] = [
+pub const INTERNAL_TESTS: [&str; 3] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
     // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
-    // 3. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"70838 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN MOUSE NO_PRE NFORCE EXPECT_NULL"###,
-    // 4. this crashed; it is not exactly an internal feature test but uses an internal feature
+    // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
     // (IMGT) to exhibit the phenomenon
     r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
          EXPECT_OK"###,
