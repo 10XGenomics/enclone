@@ -29,7 +29,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 95132016;
+    const ENCLONE_SIZE: usize = 97169256;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -188,7 +188,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 32;
+    const DUPPED_CRATES: usize = 36;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
