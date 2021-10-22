@@ -193,6 +193,7 @@ pub const EXTENDED_TESTS: [&str; 24] = [
          NO_PRE NFORCE"###,
     // 19. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
+    // These are public data.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 20. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
