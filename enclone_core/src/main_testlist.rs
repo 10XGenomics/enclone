@@ -641,6 +641,6 @@ pub const TESTS: [&str; 256] = [
     // 256. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
     // This is from BCR="131036;140707".
-    r###"PRE=enclone_exec/testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC FAIL_ONLY=true
+    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC FAIL_ONLY=true
          PRINT_FAILED_JOINS MIX_DONORS BUILT_IN NO_PRE"###,
 ];
