@@ -376,6 +376,9 @@ pub fn process_special_arg(
     } else if is_usize_arg(arg, "REQUIRED_TWO_CHAIN_CLONOTYPES")? {
         ctl.gen_opt.required_two_chain_clonotypes =
             Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
+    } else if is_usize_arg(arg, "REQUIRED_THREE_CHAIN_CLONOTYPES")? {
+        ctl.gen_opt.required_three_chain_clonotypes =
+            Some(arg.after("REQUIRED_THREE_CHAIN_CLONOTYPES=").force_usize());
     } else if is_usize_arg(arg, "REQUIRED_DATASETS")? {
         ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
     } else if is_usize_arg(arg, "EXACT")? {
