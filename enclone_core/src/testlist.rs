@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 26] = [
+pub const EXTENDED_TESTS: [&str; 25] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -146,8 +146,9 @@ pub const EXTENDED_TESTS: [&str; 26] = [
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
-    // 4. parseable value for fwr4_aa was wrong
-    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
+    // 4. crashed at one point
+    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
+         NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
@@ -208,9 +209,6 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     // 25. test MIN_GROUP_DONORS
     r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
-    // 26. crashed at one point
-    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
-         NFORCE"###,
 ];
 
 // Tests of internal features.
