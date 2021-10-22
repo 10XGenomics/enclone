@@ -142,6 +142,7 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
     // 2. tests nd2
+    // These are public data.
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
