@@ -127,6 +127,7 @@ fn main() {
     }
     let working_json = format!("{}/all_contig_annotations.json", outs);
 
+    let mut total = 0;
     loop {
         let mut progress = false;
         for k in [10000, 1000, 100, 10, 1].iter() {
@@ -149,7 +150,7 @@ fn main() {
                         );
                         if panicked {
                             using = usingx;
-                            let mut total = 0;
+                            total = 0;
                             for x in using.iter() {
                                 if *x {
                                     total += 1;
@@ -166,4 +167,5 @@ fn main() {
             break;
         }
     }
+    println!("\nfinal = {}\n", total);
 }
