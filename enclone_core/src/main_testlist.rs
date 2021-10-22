@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 254] = [
+pub const TESTS: [&str; 255] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -636,4 +636,6 @@ pub const TESTS: [&str; 254] = [
     // 254. parseable value for fwr4_aa was wrong, from 1117070
     r###"BCR=testx/inputs/flaky AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1
          BUILT_IN"###,
+    // 255. conp value was truncated, from 1117069
+    r###"BCR=testx/inputs/flaky CONP CDR3=CVRDPPEELELFDYW BUILT_IN"###,
 ];
