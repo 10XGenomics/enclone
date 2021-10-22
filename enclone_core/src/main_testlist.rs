@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 253] = [
+pub const TESTS: [&str; 254] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -633,4 +633,7 @@ pub const TESTS: [&str; 253] = [
     // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
     r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD NSIG REQUIRED_TWO_CHAIN_CLONOTYPES=0
          REQUIRED_THREE_CHAIN_CLONOTYPES=1 NOPRINT EXPECT_OK"###,
+    // 254. parseable value for fwr4_aa was wrong, from 1117070
+    r###"BCR=testx/inputs/flaky AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1
+         BUILT_IN"###,
 ];
