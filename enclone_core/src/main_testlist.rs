@@ -624,10 +624,12 @@ pub const TESTS: [&str; 253] = [
     // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN NO_PRE NFORCE EXPECT_NULL"###,
     // 252. this exhibits what happens when signature filtering is ON, see next
+    // this was the only example we could find
     // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
     r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=1
          REQUIRED_THREE_CHAIN_CLONOTYPES=0 NOPRINT EXPECT_OK"###,
     // 253. this exhibits what happens when signature filtering is OFF, see previous
+    // this was the only example we could find
     // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
     r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD NSIG REQUIRED_TWO_CHAIN_CLONOTYPES=0
          REQUIRED_THREE_CHAIN_CLONOTYPES=1 NOPRINT EXPECT_OK"###,
