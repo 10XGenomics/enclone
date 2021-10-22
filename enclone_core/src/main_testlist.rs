@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 251] = [
+pub const TESTS: [&str; 253] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -623,4 +623,12 @@ pub const TESTS: [&str; 251] = [
     r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###,
     // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN NO_PRE NFORCE EXPECT_NULL"###,
+    // 252. this exhibits what happens when signature filtering is ON, see next
+    // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
+    r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=1
+         REQUIRED_THREE_CHAIN_CLONOTYPES=0 NOPRINT EXPECT_OK"###,
+    // 253. this exhibits what happens when signature filtering is OFF, see previous
+    // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
+    r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD NSIG REQUIRED_TWO_CHAIN_CLONOTYPES=0
+         REQUIRED_THREE_CHAIN_CLONOTYPES=1 NOPRINT EXPECT_OK"###,
 ];

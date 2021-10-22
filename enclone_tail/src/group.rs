@@ -946,7 +946,15 @@ pub fn group_and_print_clonotypes(
 
     // Test requirements.
 
-    test_requirements(pics, exacts, exact_clonotypes, ctl, nclono2, two_chain, three_chain)?;
+    test_requirements(
+        pics,
+        exacts,
+        exact_clonotypes,
+        ctl,
+        nclono2,
+        two_chain,
+        three_chain,
+    )?;
     ctl.perf_stats(&t, "in group code 2");
     Ok(())
 }
