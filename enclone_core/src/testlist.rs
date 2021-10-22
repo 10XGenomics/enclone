@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 25] = [
+pub const EXTENDED_TESTS: [&str; 24] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -185,8 +185,9 @@ pub const EXTENDED_TESTS: [&str; 25] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    // 17. conp value was truncated
-    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
+    // 17. test MIN_GROUP_DONORS
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
     // 18. previously this yielded a disconnected clonotype
     r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
          NO_PRE NFORCE"###,
@@ -206,9 +207,6 @@ pub const EXTENDED_TESTS: [&str; 25] = [
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 24. This used to appear as a four-chain clonotype, and is now split.
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
-    // 25. test MIN_GROUP_DONORS
-    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
-         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
 ];
 
 // Tests of internal features.
