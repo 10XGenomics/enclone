@@ -69,10 +69,6 @@ fn fails(
     if o.status.code() != Some(0) {
         return false;
     }
-    if strme(&o.stdout).contains("CHAIN 4") {
-        // println!("new has chain 4");
-        return false;
-    }
 
     // Execute old enclone.
 
@@ -82,9 +78,24 @@ fn fails(
         .output()
         .expect("failed to execute old enclone");
 
+    // Test for lack of status code.  It is not clear if this can happen.  It is possible that
+    // it only happened on old code run with new rust, and reflects some sort of incompatibility
+    // therein.
+
+    if o.status.code().is_none() {
+        return false;
+    }
+
+    // Check for fail.
+
+    let status = o.status.code().unwrap();
+    let panicked = status == 101;
+    let out = strme(&o.stdout);
+
     let mut failed = false;
-    // println!("old =\n{}", strme(&o.stdout)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    if o.status.code() == Some(0) && strme(&o.stdout).contains("CHAIN 4") {
+    if fail_condition == "#PANIC" {
+        failed = panicked;
+    } else if out.contains(&fail_condition) {
         failed = true;
     }
     if failed {
