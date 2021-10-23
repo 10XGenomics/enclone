@@ -444,7 +444,7 @@ dependencies = [
  "serde_derive",
  "statrs",
  "strum",
- "strum_macros",
+ "strum_macros 0.21.1",
  "thiserror",
  "triple_accel",
  "vec_map",
@@ -459,7 +459,7 @@ dependencies = [
  "derive-new",
  "lazy_static",
  "regex",
- "strum_macros",
+ "strum_macros 0.20.1",
  "thiserror",
 ]
 
@@ -4866,6 +4866,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "strum_macros"
+version = "0.21.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "superslice"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5467,7 +5479,7 @@ dependencies = [
  "enum-iterator",
  "serde",
  "strum",
- "strum_macros",
+ "strum_macros 0.21.1",
 ]
 
 [[package]]
