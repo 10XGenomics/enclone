@@ -164,21 +164,26 @@ pub const EXTENDED_TESTS: [&str; 22] = [
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
     // 8. test on PD multi pipestance; failed before bug fix
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
+
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
-    // These are public data.
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
-    // These are public data.
     r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###,
     // 11. this added because it got better when a noise filter was added, also tests u_max
-    // These are public data.
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
-    // These are public data.
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
-    // These are public data.
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
+
+    //
+    // NOT ALL PUBLIC
+    //
+
     // 14. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
     // 15. test that LVARSP=gex fails on Ab-only data
