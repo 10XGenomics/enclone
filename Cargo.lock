@@ -108,7 +108,7 @@ version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6f838ae439a56a92181ba4098c2da5eb7ea8283a15ac8226db6cae32a3a24a26"
 dependencies = [
- "clipboard-win 4.2.1",
+ "clipboard-win 4.2.2",
  "core-graphics 0.22.2",
  "image",
  "log",
@@ -708,9 +708,9 @@ dependencies = [
 
 [[package]]
 name = "clipboard-win"
-version = "4.2.1"
+version = "4.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e4ea1881992efc993e4dc50a324cdbd03216e41bdc8385720ff47efc9bd2ca8"
+checksum = "3db8340083d28acb43451166543b98c838299b7e0863621be53a338adceea0ed"
 dependencies = [
  "error-code",
  "str-buf",
@@ -5897,7 +5897,7 @@ version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "33a4518b538a45ad39d138a8c3bea8f6b4452174aeb38143d1dd643a3a838ccc"
 dependencies = [
- "clipboard-win 4.2.1",
+ "clipboard-win 4.2.2",
  "clipboard_macos",
  "clipboard_wayland",
  "clipboard_x11",
