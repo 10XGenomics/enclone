@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 22] = [
+pub const EXTENDED_TESTS: [&str; 21] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -167,7 +167,6 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
-
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
@@ -181,7 +180,6 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     //
     // NOT ALL PUBLIC
     //
-
     // 14. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
     // 15. test that LVARSP=gex fails on Ab-only data
@@ -199,13 +197,11 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     // If we experience failures on other lena ids, we can add them to this list.
     // These are public data.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    // 20. This used to appear as a four-chain clonotype, and is now split.
-    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
+    // 20. test BCR_GEX and GD_BC
+    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 21. the result of this changed when sub_alts was changed
     r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
          NO_PRE NFORCE"###,
-    // 22. test BCR_GEX and GD_BC
-    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
 ];
 
 // Tests of internal features.
