@@ -137,21 +137,27 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 21] = [
+pub const EXTENDED_TESTS: [&str; 20] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
     // 2. tests nd2
-    // These are public data.
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
+    //
+    // NOT ALL PUBLIC
+    //
     // 4. crashed at one point
     r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
          NFORCE"###,
-    // 5. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
+    // 5. the result of this changed when sub_alts was changed
+    r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
+         NO_PRE NFORCE"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
     // question is whether the header line represents cvars for all the chains.  The output of
     // this is expected to change whenever variables are added.
@@ -177,9 +183,6 @@ pub const EXTENDED_TESTS: [&str; 21] = [
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
-    //
-    // NOT ALL PUBLIC
-    //
     // 14. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
     // 15. test that LVARSP=gex fails on Ab-only data
@@ -199,9 +202,6 @@ pub const EXTENDED_TESTS: [&str; 21] = [
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 20. test BCR_GEX and GD_BC
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
-    // 21. the result of this changed when sub_alts was changed
-    r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
-         NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
