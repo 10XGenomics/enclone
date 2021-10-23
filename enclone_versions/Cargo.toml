@@ -30,7 +30,7 @@ permutation = "0.2"
 petgraph = "0.5"
 pretty_trace = "0.5"
 prost = { version = "0.8", default_features = false }
-prost-build = "0.8"
+prost-build = "0.9"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
