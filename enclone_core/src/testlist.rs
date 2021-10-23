@@ -164,7 +164,6 @@ pub const EXTENDED_TESTS: [&str; 22] = [
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
     // 8. test on PD multi pipestance; failed before bug fix
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
@@ -179,7 +178,6 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
-
     //
     // NOT ALL PUBLIC
     //

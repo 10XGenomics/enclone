@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 257] = [
+pub const TESTS: [&str; 258] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -645,4 +645,6 @@ pub const TESTS: [&str; 257] = [
          PRINT_FAILED_JOINS MIX_DONORS BUILT_IN NO_PRE"###,
     // 257. clonotype that was two clonotypes before raising MAX_DIFFS to 60, from 1084461-1084462
     r###"BCR=testx/inputs/flaky CDR3=CAKEFGNGGFDTFDIW BUILT_IN AMINO=cdr3"###,
+    // 258. This used to appear as a four-chain clonotype, and is now split.  From 123085,123090.
+    r###"BCR=testx/inputs/flaky9 BUILT_IN REQUIRED_FOUR_CHAIN_CLONOTYPES=0 EXPECT_OK"###,
 ];
