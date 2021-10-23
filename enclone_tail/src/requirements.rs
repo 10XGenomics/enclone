@@ -12,6 +12,7 @@ pub fn test_requirements(
     nclono2: usize,
     two_chain: usize,
     three_chain: usize,
+    four_chain: usize,
 ) -> Result<(), String> {
     // Test for required number of false positives.
 
@@ -111,6 +112,18 @@ pub fn test_requirements(
             "\nThe required number of three-chain clonotypes is {}, but you actually have {}.\n",
             ctl.gen_opt.required_three_chain_clonotypes.unwrap(),
             three_chain,
+        );
+    }
+
+    // Test for required number of four chain clonotypes.
+
+    if ctl.gen_opt.required_four_chain_clonotypes.is_some()
+        && ctl.gen_opt.required_four_chain_clonotypes.unwrap() != four_chain
+    {
+        msg += &mut format!(
+            "\nThe required number of four-chain clonotypes is {}, but you actually have {}.\n",
+            ctl.gen_opt.required_four_chain_clonotypes.unwrap(),
+            four_chain,
         );
     }
 

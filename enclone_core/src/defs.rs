@@ -149,6 +149,7 @@ pub struct GeneralOpt {
     pub required_two_cell_clonotypes: Option<usize>,
     pub required_two_chain_clonotypes: Option<usize>,
     pub required_three_chain_clonotypes: Option<usize>,
+    pub required_four_chain_clonotypes: Option<usize>,
     pub required_datasets: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,

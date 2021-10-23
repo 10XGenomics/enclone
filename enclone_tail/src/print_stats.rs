@@ -32,6 +32,7 @@ pub fn print_stats(
     nclono2: &mut usize,
     two_chain: &mut usize,
     three_chain: &mut usize,
+    four_chain: &mut usize,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
     // Compute some umi stats.
@@ -120,6 +121,7 @@ pub fn print_stats(
     *nclono2 = 0;
     *two_chain = 0;
     *three_chain = 0;
+    *four_chain = 0;
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
@@ -132,6 +134,8 @@ pub fn print_stats(
             *two_chain += 1;
         } else if rsi[i].mat.len() == 3 {
             *three_chain += 1;
+        } else if rsi[i].mat.len() == 4 {
+            *four_chain += 1;
         }
         let mut n = 0;
         for j in 0..exacts[i].len() {

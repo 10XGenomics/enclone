@@ -865,6 +865,7 @@ pub fn group_and_print_clonotypes(
     let mut nclono2 = 0;
     let mut two_chain = 0;
     let mut three_chain = 0;
+    let mut four_chain = 0;
     let mut slog = Vec::<u8>::new();
     print_stats(
         tall,
@@ -880,6 +881,7 @@ pub fn group_and_print_clonotypes(
         &mut nclono2,
         &mut two_chain,
         &mut three_chain,
+        &mut four_chain,
         opt_d_val,
     );
     *summary = stringme(&slog);
@@ -954,6 +956,7 @@ pub fn group_and_print_clonotypes(
         nclono2,
         two_chain,
         three_chain,
+        four_chain,
     )?;
     ctl.perf_stats(&t, "in group code 2");
     Ok(())
