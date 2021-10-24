@@ -618,7 +618,7 @@ pub const TESTS: [&str; 260] = [
     r###"BCR=testx/inputs/flaky5"###,
     // 249. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
-    r###"TCR=testx/inputs/flaky6"###,
+    r###"TCR=testx/inputs/flaky6 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD EXPECT_OK"###,
     // 250. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###,
     // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
