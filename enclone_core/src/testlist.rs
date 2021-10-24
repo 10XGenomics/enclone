@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 19] = [
+pub const EXTENDED_TESTS: [&str; 18] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
@@ -195,13 +195,10 @@ pub const EXTENDED_TESTS: [&str; 19] = [
     // 17. test MIN_GROUP_DONORS
     r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
-    // 18. previously this yielded a disconnected clonotype
-    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
-         NO_PRE NFORCE"###,
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
-    // 19. Make sure that POUT works on full dataset.
+    // 18. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];

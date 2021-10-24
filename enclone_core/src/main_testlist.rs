@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 260] = [
+pub const TESTS: [&str; 261] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -651,4 +651,6 @@ pub const TESTS: [&str; 260] = [
     r###"BCR=testx/inputs/flaky10 EXPECT_OK"###,
     // 260. the result of this changed when sub_alts was changed, from 40086;132888
     r###"BCR=testx/inputs/flaky11 MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW BUILT_IN"###,
+    // 261. previously this yielded a disconnected clonotype, from 140699,140705-140706
+    r###"BCR=testx/inputs/flaky12 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW" BUILT_IN"###,
 ];
