@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 259] = [
+pub const TESTS: [&str; 260] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -649,4 +649,6 @@ pub const TESTS: [&str; 259] = [
     r###"BCR=testx/inputs/flaky9 BUILT_IN REQUIRED_FOUR_CHAIN_CLONOTYPES=0 EXPECT_OK"###,
     // 259. this crashed at one point, from 83809
     r###"BCR=testx/inputs/flaky10 EXPECT_OK"###,
+    // 260. the result of this changed when sub_alts was changed, from 40086;132888
+    r###"BCR=testx/inputs/flaky11 MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW BUILT_IN"###,
 ];
