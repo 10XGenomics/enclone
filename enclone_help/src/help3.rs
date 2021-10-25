@@ -378,6 +378,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             "only show clonotypes containing cells from at least n origins",
         );
 
+        // doc MIN_DONORS
+
+        h.ldoc(
+            "MIN_DONORS=n",
+            "only show clonotypes containing cells from at least n donors",
+        );
+        h.doc2("If n ≥ 2, this automatically turns on MIX_DONORS, as otherwise cells from");
+        h.doc2("two or more donors would not be combined into the same clonotype.");
+
         // doc CDIFF
 
         h.ldoc(
