@@ -33,7 +33,7 @@ itertools = "0.10"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 petgraph = "0.5"
-pprof = "0.5"
+pprof = "0.6"
 pretty_trace = "0.5"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }

@@ -28,4 +28,4 @@ thiserror = "1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3fb29bd1d46c12df08c686ac2d7c70b969bf017a" }
 
 [build-dependencies]
-prost-build = "0.8"
+prost-build = "0.9"

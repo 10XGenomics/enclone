@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 257] = [
+pub const TESTS: [&str; 264] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -55,8 +55,8 @@ pub const TESTS: [&str; 257] = [
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
-    // 22. there was a false positive clonotype
-    r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
+    // 22. DUPLICATE, TO REMOVE
+    r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 23. here we were generating a fake alternate allele
     r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
     // 24. an example that uses IGHE, and test NGROUP
@@ -618,7 +618,7 @@ pub const TESTS: [&str; 257] = [
     r###"BCR=testx/inputs/flaky5"###,
     // 249. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
-    r###"BCR=testx/inputs/flaky6"###,
+    r###"TCR=testx/inputs/flaky6 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD EXPECT_OK"###,
     // 250. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###,
     // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
@@ -641,8 +641,22 @@ pub const TESTS: [&str; 257] = [
     // 256. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
     // This is from BCR="131036;140707".
-    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC FAIL_ONLY=true
-         PRINT_FAILED_JOINS MIX_DONORS BUILT_IN NO_PRE"###,
+    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC MIN_DONORS=2
+         PRINT_FAILED_JOINS BUILT_IN NO_PRE"###,
     // 257. clonotype that was two clonotypes before raising MAX_DIFFS to 60, from 1084461-1084462
     r###"BCR=testx/inputs/flaky CDR3=CAKEFGNGGFDTFDIW BUILT_IN AMINO=cdr3"###,
+    // 258. This used to appear as a four-chain clonotype, and is now split.  From 123085,123090.
+    r###"BCR=testx/inputs/flaky9 BUILT_IN REQUIRED_FOUR_CHAIN_CLONOTYPES=0 EXPECT_OK"###,
+    // 259. this crashed at one point, from 83809
+    r###"BCR=testx/inputs/flaky10 EXPECT_OK"###,
+    // 260. the result of this changed when sub_alts was changed, from 40086;132888
+    r###"BCR=testx/inputs/flaky11 MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW BUILT_IN"###,
+    // 261. previously this yielded a disconnected clonotype, from 140699,140705-140706
+    r###"BCR=testx/inputs/flaky12 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW" BUILT_IN"###,
+    // 262. test NSEG
+    r###"BCR=86237 SEG=IGHV4-59 NSEG="IGHJ3|IGHJ4|IGHJ6""###,
+    // 263. test NSEGN
+    r###"BCR=86237 SEG=IGHV4-34 NSEGN="51|54|55|57|321""###,
+    // 264. test MIN_ORIGINS
+    r###"BCR=123085:123089 MAX_CELLS=2 SEG=IGHV3-49 MIN_ORIGINS=2"###,
 ];

@@ -132,32 +132,34 @@ fn main() {
         let mut progress = false;
         for k in [10000, 1000, 100, 10, 1].iter() {
             let k = *k;
-            if n >= k {
-                for i in (0..=n - k).step_by(k) {
-                    let mut usingx = using.clone();
-                    for j in 0..k {
-                        usingx[i + j] = false;
-                    }
-                    if usingx != using {
-                        println!("trying to delete {}", k);
-                        let panicked = fails(
-                            &fail_condition,
-                            &entries,
-                            &usingx,
-                            &work,
-                            &working_json,
-                            &extra,
-                        );
-                        if panicked {
-                            using = usingx;
-                            total = 0;
-                            for x in using.iter() {
-                                if *x {
-                                    total += 1;
+            if total == 0 || total > k {
+                if n >= k {
+                    for i in (0..=n - k).step_by(k) {
+                        let mut usingx = using.clone();
+                        for j in 0..k {
+                            usingx[i + j] = false;
+                        }
+                        if usingx != using {
+                            println!("trying to delete {}", k);
+                            let panicked = fails(
+                                &fail_condition,
+                                &entries,
+                                &usingx,
+                                &work,
+                                &working_json,
+                                &extra,
+                            );
+                            if panicked {
+                                using = usingx;
+                                total = 0;
+                                for x in using.iter() {
+                                    if *x {
+                                        total += 1;
+                                    }
                                 }
+                                println!("deleted {}, leaving {}", k, total);
+                                progress = true;
                             }
-                            println!("deleted {}, leaving {}", k, total);
-                            progress = true;
                         }
                     }
                 }

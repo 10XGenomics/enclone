@@ -149,6 +149,7 @@ pub struct GeneralOpt {
     pub required_two_cell_clonotypes: Option<usize>,
     pub required_two_chain_clonotypes: Option<usize>,
     pub required_three_chain_clonotypes: Option<usize>,
+    pub required_four_chain_clonotypes: Option<usize>,
     pub required_datasets: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
@@ -338,6 +339,8 @@ pub struct ClonoFiltOpt {
     pub min_datasets: usize, // only show clonotypes involving at least this many datasets
     pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_dataset_ratio: usize, // see "enclone help filter"
+    pub min_donors: usize,   // only show clonotypes having at least this many donors
+    pub min_origins: usize,  // only show clonotypes involving at least this many origins
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub cdr3: Option<Regex>, // only show clonotypes whose CDR3_AA matches regular expression
@@ -346,6 +349,8 @@ pub struct ClonoFiltOpt {
     pub fail_only: bool,     // only print fails
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
     pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
+    pub nseg: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment names
+    pub nsegn: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
     pub max_exacts: usize,
     pub vj: Vec<u8>, // only show clonotypes having exactly this full length V..J sequence

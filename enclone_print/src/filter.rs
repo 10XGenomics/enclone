@@ -273,6 +273,34 @@ pub fn survives_filter(
             return false;
         }
     }
+    for i in 0..ctl.clono_filt_opt.nseg.len() {
+        let mut hit = false;
+        for j in 0..ctl.clono_filt_opt.nseg[i].len() {
+            for cx in 0..cols {
+                if refdata.name[rsi.vids[cx]] == ctl.clono_filt_opt.nseg[i][j] {
+                    hit = true;
+                }
+                let did = rsi.dids[cx];
+                if did.is_some() {
+                    let did = did.unwrap();
+                    if refdata.name[did] == ctl.clono_filt_opt.nseg[i][j] {
+                        hit = true;
+                    }
+                }
+                if refdata.name[rsi.jids[cx]] == ctl.clono_filt_opt.nseg[i][j] {
+                    hit = true;
+                }
+                if rsi.cids[cx].is_some()
+                    && refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.nseg[i][j]
+                {
+                    hit = true;
+                }
+            }
+        }
+        if hit {
+            return false;
+        }
+    }
 
     // Clonotypes with given V gene number/allele
 
@@ -305,6 +333,35 @@ pub fn survives_filter(
             return false;
         }
     }
+    for i in 0..ctl.clono_filt_opt.nsegn.len() {
+        let mut hit = false;
+        for j in 0..ctl.clono_filt_opt.nsegn[i].len() {
+            for cx in 0..cols {
+                if refdata.id[rsi.vids[cx]] == ctl.clono_filt_opt.nsegn[i][j].force_i32() {
+                    hit = true;
+                }
+                let did = rsi.dids[cx];
+                if did.is_some() {
+                    let did = did.unwrap();
+                    if refdata.id[did] == ctl.clono_filt_opt.nsegn[i][j].force_i32() {
+                        hit = true;
+                    }
+                }
+                if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.nsegn[i][j].force_i32() {
+                    hit = true;
+                }
+                if rsi.cids[cx].is_some()
+                    && refdata.id[rsi.cids[cx].unwrap()]
+                        == ctl.clono_filt_opt.nsegn[i][j].force_i32()
+                {
+                    hit = true;
+                }
+            }
+        }
+        if hit {
+            return false;
+        }
+    }
 
     // Clonotypes with at least n cells
 
@@ -332,6 +389,28 @@ pub fn survives_filter(
     // Clonotypes found in at least n datasets
 
     if lis.len() < ctl.clono_filt_opt.min_datasets {
+        return false;
+    }
+
+    // Clonotypes found in at least n origins
+
+    let mut origins = Vec::<String>::new();
+    for id in lis.iter() {
+        origins.push(ctl.origin_info.origin_id[*id].clone());
+    }
+    unique_sort(&mut origins);
+    if origins.len() < ctl.clono_filt_opt.min_origins {
+        return false;
+    }
+
+    // Clonotypes found in at least n donors
+
+    let mut donors = Vec::<String>::new();
+    for id in lis.iter() {
+        donors.push(ctl.origin_info.donor_id[*id].clone());
+    }
+    unique_sort(&mut donors);
+    if donors.len() < ctl.clono_filt_opt.min_donors {
         return false;
     }
 

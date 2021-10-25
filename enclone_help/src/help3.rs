@@ -323,6 +323,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         );
         h.doc2("effects are cumulative.");
 
+        // doc NSEG and NSEGN
+
+        h.ldoc(
+            "NSEG=\"s_1|...|s_n\"",
+            "do not show clonotypes using one of the given reference segment names",
+        );
+        h.doc(
+            "NSEGN=\"s_1|...|s_n\"",
+            "do not show clonotypes using one of the given reference segment numbers",
+        );
+        h.doc2("Otherwise similar to SEG and SEGN.");
+
         // doc MAX_EXACTS and MIN_EXACTS
 
         h.ldoc(
@@ -358,6 +370,22 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         );
         h.doc2("of the number of cells in the must abundant dataset to the next most");
         h.doc2("abundant one is at least n");
+
+        // doc MIN_ORIGINS
+
+        h.ldoc(
+            "MIN_ORIGINS=n",
+            "only show clonotypes containing cells from at least n origins",
+        );
+
+        // doc MIN_DONORS
+
+        h.ldoc(
+            "MIN_DONORS=n",
+            "only show clonotypes containing cells from at least n donors",
+        );
+        h.doc2("If n ≥ 2, this automatically turns on MIX_DONORS, as otherwise cells from");
+        h.doc2("two or more donors would not be combined into the same clonotype.");
 
         // doc CDIFF
 

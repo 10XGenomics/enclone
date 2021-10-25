@@ -70,11 +70,11 @@ permutation = "0.2"
 petgraph = "0.5"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pprof = "0.5"
+pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.9", default_features = false }
 prost = { version = "0.8", default_features = false }
-prost-build = "0.8"
+prost-build = "0.9"
 rand = "0.8"
 rayon = "1"
 resvg = { version = "0.17", default-features = false }

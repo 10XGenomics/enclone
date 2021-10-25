@@ -137,21 +137,25 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 22] = [
+pub const EXTENDED_TESTS: [&str; 18] = [
     // 1. test DVARS
     r###"TCR_GEX=1175300-1175301 DVARS=Ag_PE-C0951_ab_cellular_u,Ag_PE-C0951_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN NFORCE"###,
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
     // 2. tests nd2
-    // These are public data.
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
     // 4. crashed at one point
-    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
-         NFORCE"###,
-    // 5. this crashed (and didn't check if this is in extended public dataset collection)
-    r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
+    r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    //
+    // NOT ALL PUBLIC
+    //
+    // 5. test BCR_GEX and GD_BC
+    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
     // question is whether the header line represents cvars for all the chains.  The output of
     // this is expected to change whenever variables are added.
@@ -164,21 +168,22 @@ pub const EXTENDED_TESTS: [&str; 22] = [
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
     // 8. test on PD multi pipestance; failed before bug fix
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
-    // These are public data.
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
-    // These are public data.
     r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###,
     // 11. this added because it got better when a noise filter was added, also tests u_max
-    // These are public data.
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
-    // These are public data.
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
-    // These are public data.
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
+    //
+    // NOT ALL PUBLIC
+    //
     // 14. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
     // 15. test that LVARSP=gex fails on Ab-only data
@@ -186,23 +191,15 @@ pub const EXTENDED_TESTS: [&str; 22] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
     // 17. test MIN_GROUP_DONORS
     r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
-    // 18. previously this yielded a disconnected clonotype
-    r###"BUILT_IN BCR=140699,140705-140706 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW"
-         NO_PRE NFORCE"###,
-    // 19. Make sure that POUT works on full dataset.
+    // 18. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
-    // These are public data.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    // 20. This used to appear as a four-chain clonotype, and is now split.
-    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
-    // 21. the result of this changed when sub_alts was changed
-    r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
-         NO_PRE NFORCE"###,
-    // 22. test BCR_GEX and GD_BC
-    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
 ];
 
 // Tests of internal features.

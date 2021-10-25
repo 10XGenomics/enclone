@@ -16,7 +16,6 @@ Optional arguments controlling printing of join events:
 Optional arguments that control clonotype filtering:
 - WHITEF: only show clonotypes that exhibit whitelist contamination
 - PROTECT_BADS: don't delete putatively bad stuff
-- FAIL_ONLY=true or false: only print failed clonotypes in the true case
 - VDUP: only show clonotypes having two chains with the same V segment
 - HAVE_ONESIE: only show clonotypes including a onesie exact subclonotype
 
