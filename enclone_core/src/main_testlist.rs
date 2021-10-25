@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 262] = [
+pub const TESTS: [&str; 263] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -655,4 +655,6 @@ pub const TESTS: [&str; 262] = [
     r###"BCR=testx/inputs/flaky12 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW" BUILT_IN"###,
     // 262. test NSEG
     r###"BCR=86237 SEG=IGHV4-59 NSEG="IGHJ3|IGHJ4|IGHJ6""###,
+    // 263. test NSEGN
+    r###"BCR=86237 SEG=IGHV4-34 NSEGN="51|54|55|57|321""###,
 ];
