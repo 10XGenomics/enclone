@@ -392,6 +392,17 @@ pub fn survives_filter(
         return false;
     }
 
+    // Clonotypes found in at least n origins
+
+    let mut origins = Vec::<String>::new();
+    for id in lis.iter() {
+        origins.push(ctl.origin_info.origin_id[*id].clone());
+    }
+    unique_sort(&mut origins);
+    if origins.len() < ctl.clono_filt_opt.min_origins {
+        return false;
+    }
+
     // Clonotypes in no more than n datasets
 
     if lis.len() > ctl.clono_filt_opt.max_datasets {

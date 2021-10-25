@@ -371,6 +371,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         h.doc2("of the number of cells in the must abundant dataset to the next most");
         h.doc2("abundant one is at least n");
 
+        // doc MIN_ORIGINS
+
+        h.ldoc(
+            "MIN_ORIGINS=n",
+            "only show clonotypes containing cells from at least n origins",
+        );
+
         // doc CDIFF
 
         h.ldoc(

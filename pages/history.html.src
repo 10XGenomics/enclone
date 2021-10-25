@@ -32,9 +32,12 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <p><b>10/26/21</b>: 
 <ul>
-<li>Add NSEG and NSEGN, to allow exclusion of clonotypes having particular VDJC genes.  Please
-see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.</li>
+<li>Add <code>NSEG</code> and <code>NSEGN</code>, to allow exclusion of clonotypes having 
+particular VDJC genes.  
+<li>Add <code>MIN_ORIGINS</code>.</li>
 </ul>
+For all of the above, 
+please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.
 </p>
 
 <p><b>10/18/21</b>: Allow coloring of honeycomb plots by dataset.  Please see

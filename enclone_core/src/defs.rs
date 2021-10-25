@@ -339,6 +339,7 @@ pub struct ClonoFiltOpt {
     pub min_datasets: usize, // only show clonotypes involving at least this many datasets
     pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_dataset_ratio: usize, // see "enclone help filter"
+    pub min_origins: usize,  // only show clonotypes involving at least this many origins
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub cdr3: Option<Regex>, // only show clonotypes whose CDR3_AA matches regular expression

@@ -464,6 +464,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             &mut ctl.clono_group_opt.min_group_donors,
         ),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
+        ("MIN_ORIGINS", &mut ctl.clono_filt_opt.min_origins),
         ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];
