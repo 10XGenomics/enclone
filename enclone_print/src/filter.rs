@@ -358,7 +358,7 @@ pub fn survives_filter(
                 }
             }
         }
-        if !hit {
+        if hit {
             return false;
         }
     }
