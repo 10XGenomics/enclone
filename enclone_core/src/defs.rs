@@ -347,6 +347,8 @@ pub struct ClonoFiltOpt {
     pub fail_only: bool,     // only print fails
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
     pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
+    pub nseg: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment names
+    pub nsegn: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
     pub max_exacts: usize,
     pub vj: Vec<u8>, // only show clonotypes having exactly this full length V..J sequence

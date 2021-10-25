@@ -908,6 +908,25 @@ pub fn process_special_arg(
         }
         y.sort();
         ctl.clono_filt_opt.segn.push(y);
+    } else if arg.starts_with("NSEG=") {
+        let fields = arg.after("NSEG=").split('|').collect::<Vec<&str>>();
+        let mut y = Vec::<String>::new();
+        for x in fields.iter() {
+            y.push(x.to_string());
+        }
+        y.sort();
+        ctl.clono_filt_opt.nseg.push(y);
+    } else if arg.starts_with("NSEGN=") {
+        let fields = arg.after("NSEGN=").split('|').collect::<Vec<&str>>();
+        let mut y = Vec::<String>::new();
+        for x in fields.iter() {
+            if x.parse::<i32>().is_err() {
+                return Err("\nInvalid argument to NSEGN.\n".to_string());
+            }
+            y.push(x.to_string());
+        }
+        y.sort();
+        ctl.clono_filt_opt.nsegn.push(y);
     } else if is_usize_arg(arg, "CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
