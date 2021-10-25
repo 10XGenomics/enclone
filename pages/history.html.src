@@ -30,6 +30,13 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>10/26/21</b>: 
+<ul>
+<li>Add NSEG and NSEGN, to allow exclusion of clonotypes having particular VDJC genes.  Please
+see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.</li>
+</ul>
+</p>
+
 <p><b>10/18/21</b>: Allow coloring of honeycomb plots by dataset.  Please see
 <a href="../../pages/auto/plot.html">enclone plots</a>.</p>
 

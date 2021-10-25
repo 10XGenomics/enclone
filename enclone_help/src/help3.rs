@@ -323,6 +323,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         );
         h.doc2("effects are cumulative.");
 
+        // doc NSEG and NSEGN
+
+        h.ldoc(
+            "NSEG=\"s_1|...|s_n\"",
+            "do not show clonotypes using one of the given reference segment names",
+        );
+        h.doc(
+            "NSEGN=\"s_1|...|s_n\"",
+            "do not show clonotypes using one of the given reference segment numbers",
+        );
+        h.doc2("Otherwise similar to SEG and SEGN.");
+
         // doc MAX_EXACTS and MIN_EXACTS
 
         h.ldoc(
