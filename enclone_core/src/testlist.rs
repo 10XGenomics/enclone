@@ -149,12 +149,11 @@ pub const EXTENDED_TESTS: [&str; 18] = [
          NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW H5"###,
+    // 4. crashed at one point
+    r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     //
     // NOT ALL PUBLIC
     //
-    // 4. crashed at one point
-    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
-         NFORCE"###,
     // 5. test BCR_GEX and GD_BC
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
