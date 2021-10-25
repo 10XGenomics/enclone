@@ -55,8 +55,8 @@ pub const TESTS: [&str; 264] = [
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
-    // 22. there was a false positive clonotype
-    r###"BCR="165807;165808" MIN_DONORS=2 EXPECT_NULL"###,
+    // 22. DUPLICATE, TO REMOVE
+    r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 23. here we were generating a fake alternate allele
     r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
     // 24. an example that uses IGHE, and test NGROUP
