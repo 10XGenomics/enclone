@@ -56,7 +56,7 @@ pub const TESTS: [&str; 264] = [
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 22. there was a false positive clonotype
-    r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
+    r###"BCR="165807;165808" MIN_DONORS=2 EXPECT_NULL"###,
     // 23. here we were generating a fake alternate allele
     r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
     // 24. an example that uses IGHE, and test NGROUP
@@ -641,8 +641,8 @@ pub const TESTS: [&str; 264] = [
     // 256. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
     // This is from BCR="131036;140707".
-    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC FAIL_ONLY=true
-         PRINT_FAILED_JOINS MIX_DONORS BUILT_IN NO_PRE"###,
+    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC MIN_DONORS=2
+         PRINT_FAILED_JOINS BUILT_IN NO_PRE"###,
     // 257. clonotype that was two clonotypes before raising MAX_DIFFS to 60, from 1084461-1084462
     r###"BCR=testx/inputs/flaky CDR3=CAKEFGNGGFDTFDIW BUILT_IN AMINO=cdr3"###,
     // 258. This used to appear as a four-chain clonotype, and is now split.  From 123085,123090.

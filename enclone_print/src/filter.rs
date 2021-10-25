@@ -403,6 +403,17 @@ pub fn survives_filter(
         return false;
     }
 
+    // Clonotypes found in at least n donors
+
+    let mut donors = Vec::<String>::new();
+    for id in lis.iter() {
+        donors.push(ctl.origin_info.donor_id[*id].clone());
+    }
+    unique_sort(&mut donors);
+    if donors.len() < ctl.clono_filt_opt.min_donors {
+        return false;
+    }
+
     // Clonotypes in no more than n datasets
 
     if lis.len() > ctl.clono_filt_opt.max_datasets {

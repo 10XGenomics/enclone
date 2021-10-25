@@ -204,6 +204,16 @@ pub fn process_special_arg(
             let cc = CellColor::ByVariableValue(v);
             ctl.plot_opt.cell_color = cc;
         }
+    } else if arg.starts_with("MIN_DONORS") {
+        let n = arg.after("MIN_DONORS=");
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
+        }
+        let n = n.force_usize();
+        ctl.clono_filt_opt.min_donors = n;
+        if n >= 2 {
+            ctl.clono_filt_opt_def.donor = true;
+        }
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {
@@ -596,8 +606,6 @@ pub fn process_special_arg(
             return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
         ctl.clono_filt_opt_def.fcell.push(compiled.unwrap());
-    } else if is_simple_arg(arg, "FAIL_ONLY=true")? {
-        ctl.clono_filt_opt.fail_only = true;
     } else if arg.starts_with("LEGEND=") {
         let x = parse_csv(arg.after("LEGEND="));
         if x.is_empty() || x.len() % 2 != 0 {
@@ -718,8 +726,6 @@ pub fn process_special_arg(
         if ctl.plot_opt.plot_file.is_empty() {
             return Err("\nFilename value needs to be supplied to PLOT_BY_MARK.\n".to_string());
         }
-    } else if is_simple_arg(arg, "FAIL_ONLY=false")? {
-        ctl.clono_filt_opt.fail_only = false;
     } else if is_usize_arg(arg, "MAX_CORES")? {
         let nthreads = arg.after("MAX_CORES=").force_usize();
         let _ = rayon::ThreadPoolBuilder::new()
