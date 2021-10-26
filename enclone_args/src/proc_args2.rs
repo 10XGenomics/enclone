@@ -191,6 +191,9 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
             }
             let mut invo = format!("{}/_invocation", dir);
             if !path_exists(&invo) {
+                invo = format!("{}/../../_invocation", dir);
+            }
+            if !path_exists(&invo) {
                 invo = format!("{}/../../../_invocation", dir);
             }
             if path_exists(&invo) {
