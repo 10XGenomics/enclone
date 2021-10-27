@@ -259,7 +259,11 @@ pub fn feature_barcode_matrix(
         }
     }
     if read_files.is_empty() {
-        eprintln!("\nreads do not exist\n");
+        eprintln!("\nreads do not exist");
+        eprintln!("read path =\n{}", seq_def.read_path);
+        eprintln!("sample indices = {}", seq_def.sample_indices.iter().format(","));
+        eprintln!("lanes = {}", seq_def.lanes.iter().format(","));
+        eprintln!("filename structure = read-RA_si-<sample index>_lane-00<lane>-\n");
         std::process::exit(1);
     }
 
