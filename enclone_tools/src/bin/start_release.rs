@@ -9,7 +9,7 @@ use itertools::Itertools;
 use pretty_trace::PrettyTrace;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::process::{Command, Stdio};
+use std::process::Command;
 use string_utils::{strme, TextUtils};
 use vector_utils::unique_sort;
 
@@ -275,8 +275,6 @@ fn main() {
     // Step 11. Copy enclone to a shared location.  This is left running in the background.
 
     let _ =  Command::new("release_nanny")
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
         .spawn();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -286,4 +284,6 @@ fn main() {
     println!("\nAll done, looks like it worked!\n");
     println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
+    println!("Please do not exit this terminal session, because release_nanny is now running in\n\
+        the background, and if it fails, you'll want to see that.\n");
 }

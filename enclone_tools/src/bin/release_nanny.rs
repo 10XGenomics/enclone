@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Runs continuously, waiting for a new release to appear, and when that happens, updates the
-// remote linux binary.  See start_release.rs.
+// remote linux binary, and exits.  This is launched by start_release.
 
 use enclone_core::defs::get_config;
 use io_utils::*;
@@ -18,6 +18,10 @@ use string_utils::{strme, TextUtils};
 
 fn main() {
     PrettyTrace::new().on();
+
+    thread::sleep(Duration::from_millis(5 * 1000));
+    println!("woof");
+    if true { std::process::exit(0); }
 
     // Don't run on a Mac.
 
