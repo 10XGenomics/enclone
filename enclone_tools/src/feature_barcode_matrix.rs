@@ -253,7 +253,7 @@ pub fn feature_barcode_matrix(
     for f in x.iter() {
         for sample_index in seq_def.sample_indices.iter() {
             for lane in seq_def.lanes.iter() {
-                if f.contains(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
+                if f.starts_with(&format!("read-RA_si-{}_lane-00{}-", sample_index, lane)) {
                     if verbosity > 0 {
                         println!("{}", f);
                     }
