@@ -271,11 +271,10 @@ fn main() {
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
- 
+
     // Step 11. Copy enclone to a shared location.  This is left running in the background.
 
-    let _ =  Command::new("release_nanny")
-        .spawn();
+    let _ = Command::new("release_nanny").spawn();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -284,6 +283,8 @@ fn main() {
     println!("\nAll done, looks like it worked!\n");
     println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
-    println!("Please do not exit this terminal session, because release_nanny is now running in\n\
-        the background, and if it fails, you'll want to see that.\n");
+    println!(
+        "Please do not exit this terminal session, because release_nanny is now running in\n\
+        the background, and if it fails, you'll want to see that.\n"
+    );
 }

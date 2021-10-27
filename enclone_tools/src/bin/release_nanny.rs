@@ -21,7 +21,9 @@ fn main() {
 
     thread::sleep(Duration::from_millis(5 * 1000));
     println!("woof");
-    if true { std::process::exit(0); }
+    if true {
+        std::process::exit(0);
+    }
 
     // Don't run on a Mac.
 
@@ -33,7 +35,6 @@ fn main() {
     // Loop until enclone executable updates.
 
     loop {
-
         // Sleep for a minute.
 
         thread::sleep(Duration::from_millis(60 * 1000));
@@ -57,9 +58,9 @@ fn main() {
         }
         assert!(github_version.is_some());
         let github_version = github_version.unwrap();
-    
+
         // Get version number of enclone on remote server.
-    
+
         let mut config = HashMap::<String, String>::new();
         let mut config_file = String::new();
         for (key, value) in env::vars() {
