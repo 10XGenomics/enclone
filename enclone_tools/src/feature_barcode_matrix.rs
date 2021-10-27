@@ -147,7 +147,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
                 let y = x["sample_indices"].as_array().unwrap().to_vec();
                 for i in 0..y.len() {
-                    // Manually converting one case for backward compatibility.  Could use a 
+                    // Manually converting one case for backward compatibility.  Could use a
                     // full table if needed.
                     if y[i] == "SI-P01-E1" {
                         si.push("CGCCCGTA".to_string());
@@ -272,7 +272,10 @@ pub fn feature_barcode_matrix(
     if read_files.is_empty() {
         eprintln!("\nreads do not exist");
         eprintln!("read path =\n{}", seq_def.read_path);
-        eprintln!("sample indices = {}", seq_def.sample_indices.iter().format(","));
+        eprintln!(
+            "sample indices = {}",
+            seq_def.sample_indices.iter().format(",")
+        );
         eprintln!("lanes = {}", seq_def.lanes.iter().format(","));
         eprintln!("filename structure = read-RA_si-<sample index>_lane-00<lane>-\n");
         std::process::exit(1);
