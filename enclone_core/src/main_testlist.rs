@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 264] = [
+pub const TESTS: [&str; 265] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -659,4 +659,7 @@ pub const TESTS: [&str; 264] = [
     r###"BCR=86237 SEG=IGHV4-34 NSEGN="51|54|55|57|321""###,
     // 264. test MIN_ORIGINS
     r###"BCR=123085:123089 MAX_CELLS=2 SEG=IGHV3-49 MIN_ORIGINS=2"###,
+    // 265. test DVARS
+    r###"BCR=86237 GEX=85679 DVARS=CD19_ab_cellular_u,CD19_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN"###,
 ];
