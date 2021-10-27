@@ -147,7 +147,16 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
                 let y = x["sample_indices"].as_array().unwrap().to_vec();
                 for i in 0..y.len() {
-                    si.push(y[i].to_string());
+                    // Manually converting one case for backward compatibility.  Could use a 
+                    // full table if needed.
+                    if y[i] == "SI-P01-E1" {
+                        si.push("CGCCCGTA".to_string());
+                        si.push("GTTTGCCT".to_string());
+                        si.push("TAAGTTAG".to_string());
+                        si.push("ACGAAAGC".to_string());
+                    } else {
+                        si.push(y[i].to_string());
+                    }
                 }
                 let y = x["lanes"].as_array().unwrap().to_vec();
                 for i in 0..y.len() {
@@ -156,7 +165,9 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
             }
         }
         for i in 0..si.len() {
-            si[i] = si[i].between("\"", "\"").to_string();
+            if si[i].contains("\"") {
+                si[i] = si[i].between("\"", "\"").to_string();
+            }
         }
         if read_path.is_empty() {
             println!("\nfailed to find read path, presumably because there's no antibody data\n");
