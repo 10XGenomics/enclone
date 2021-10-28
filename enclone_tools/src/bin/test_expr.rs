@@ -14,7 +14,7 @@ fn main() {
     // let expr = "3>5";
     // let expr = "f(10) - g(2)";
     // let expr = "(lambdax + 5) / 0";
-    // let expr = "square(5)"; // fails
+    // let expr = "square(5)";
     let expr = "square(5.0)";
 
     let compiled = build_operator_tree(&expr); // creates a Node
@@ -28,10 +28,28 @@ fn main() {
     let mut c = HashMapContext::new();
     let _ = c.set_value("lambdax".to_string(), evalexpr::Value::Float(1.234));
 
+
+
+
+    fn square(x: f64) -> f64 {
+        x * x
+    }
+
     let _ = c.set_function(
         "square".to_string(), 
-        Function::new(|x| { let x = x.as_float().unwrap(); Ok(Value::from(x * x)) })
+        Function::new(|x| { 
+            if x.is_number() {
+                let x = x.as_number().unwrap(); 
+                Ok(Value::from(square(x)))
+            } else {
+                Ok(Value::from("undefined"))
+            }
+        })
     );
+
+
+
+
 
     let res = compiled.eval_with_context(&c);
     if res.is_err() {
