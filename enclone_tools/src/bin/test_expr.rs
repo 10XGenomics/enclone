@@ -6,16 +6,18 @@ use evalexpr::build_operator_tree;
 use evalexpr::Function;
 use evalexpr::Value;
 use evalexpr::{ContextWithMutableFunctions, ContextWithMutableVariables, HashMapContext};
+use statrs::distribution::{Beta, ContinuousCDF};
 use string_utils::*;
 
 // ================================================================================================
 
-// Convert a function having one of these two forms:
+// Convert a function having one of these forms:
 // - fn f(x: f64) -> f64;
 // - fn f(x: f64, y: f64) -> f64;
+// - fn f(x: f64, y: f64, z: f64) -> f64;
 // into an evalexpr::Function.
 //
-// This could be extended to work for zero variables or three/more.
+// This could be extended to work for zero variables or four/more.
 
 #[macro_export]
 macro_rules! evalexpr_fn1 {
@@ -50,6 +52,38 @@ macro_rules! evalexpr_fn2 {
             Ok(Value::from(""))
         })
     };
+}
+
+#[macro_export]
+macro_rules! evalexpr_fn3 {
+    ($f:expr) => {
+        Function::new(|t| {
+            if t.is_tuple() {
+                let t = t.as_tuple().unwrap();
+                if t.len() == 3 {
+                    let x = &t[0];
+                    let y = &t[1];
+                    let z = &t[2];
+                    if x.is_number() && y.is_number() && z.is_number() {
+                        let x = x.as_number().unwrap();
+                        let y = y.as_number().unwrap();
+                        let z = z.as_number().unwrap();
+                        return Ok(Value::from($f(x, y, z)));
+                    }
+                }
+            }
+            Ok(Value::from(""))
+        })
+    };
+}
+
+// ================================================================================================
+
+// Define beta cdf function.
+
+pub fn beta_cdf(x: f64, y: f64, z: f64) -> f64 {
+    let n = Beta::new(x, y).unwrap();
+    n.cdf(z)
 }
 
 // ================================================================================================
