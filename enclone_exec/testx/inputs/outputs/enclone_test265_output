@@ -1,0 +1,43 @@
+
+SUMMARY STATISTICS
+1. overall
+   • number of datasets = 1
+   • number of donors = 1
+   • original number of cells = 352
+2. barcode fate
+   ┌──────────┬───────────────────┐
+   │barcodes  │  why deleted      │
+   ├──────────┼───────────────────┤
+   │      13  │  failed GEX filter│
+   │      13  │  total            │
+   └──────────┴───────────────────┘
+3. for the selected clonotypes
+   ┌────────┬────────────────────────┬──────────────────┬───────┐
+   │chains  │  clonotypes with this  │  cells in these  │      %│
+   │        │      number of chains  │      clonotypes  │       │
+   ├────────┼────────────────────────┼──────────────────┼───────┤
+   │1       │                    78  │              78  │   23.0│
+   │2       │                   248  │             251  │   74.0│
+   │3       │                     7  │               7  │    2.1│
+   │4       │                     3  │               3  │    0.9│
+   │total   │                   336  │             339  │  100.0│
+   └────────┴────────────────────────┴──────────────────┴───────┘
+   • number of clonotypes having at least two cells = 2
+   • number of cell-cell merges = 3
+   • number of cells having 1 chain = 81
+   • number of cells having 2 or 3 chains = 255
+   • estimated B-B doublet rate = 1.2% = 3/251 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (heavy chain) = 4.54
+   • mean over middle third of contig UMI counts (light chain) = 7.64
+   • mean over middle third of cell UMI counts for cells having two chains = 13.66
+   • mean UMIs per cell = 73.43
+   • mean UMIs per cell having two chains = 96.72
+   • for reads contributing to UMIs in reported chains, mean reads per UMI = 139.87
+
+DATASET-LEVEL METRICS
+┌─────────┬──────────────────────┬────────────────────┐
+│dataset  │  CD19_ab_cellular_u  │  CD19_ab_cellular_r│
+├─────────┼──────────────────────┼────────────────────┤
+│86237    │                50.8  │                51.8│
+└─────────┴──────────────────────┴────────────────────┘
+

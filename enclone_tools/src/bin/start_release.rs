@@ -4,15 +4,11 @@
 //
 // See enclone/release_instructions.
 
-use enclone_core::defs::get_config;
 use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
 use pretty_trace::PrettyTrace;
-use std::collections::HashMap;
-use std::env;
 use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::os::unix::fs::PermissionsExt;
 use std::process::Command;
 use string_utils::{strme, TextUtils};
 use vector_utils::unique_sort;
@@ -276,32 +272,9 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Step 11. Copy enclone to a shared location.
+    // Step 11. Copy enclone to a shared location.  This is left running in the background.
 
-    let mut config = HashMap::<String, String>::new();
-    let mut config_file = String::new();
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            config_file = value.to_string();
-        }
-    }
-    if get_config(&config_file, &mut config) {
-        let bin = &config["enclone_linux_bin"];
-        if !path_exists(bin) {
-            std::fs::create_dir_all(&bin).unwrap();
-        }
-        let current = format!("{}/enclone", bin);
-        let last = format!("{}/enclone_last", bin);
-        if path_exists(&last) {
-            std::fs::remove_file(&last).unwrap();
-        }
-        if path_exists(&current) {
-            std::fs::rename(&current, &last).unwrap();
-        }
-        std::fs::copy("target/debug/enclone", &current).unwrap();
-        let perms = std::fs::Permissions::from_mode(0o775);
-        std::fs::set_permissions(&current, perms).unwrap();
-    }
+    let _ = Command::new("release_nanny").spawn();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -310,4 +283,8 @@ fn main() {
     println!("\nAll done, looks like it worked!\n");
     println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
+    println!(
+        "Please do not exit this terminal session, because release_nanny is now running in\n\
+        the background, and if it fails, you'll want to see that.\n"
+    );
 }
