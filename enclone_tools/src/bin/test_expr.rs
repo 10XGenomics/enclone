@@ -15,7 +15,8 @@ fn main() {
     // let expr = "f(10) - g(2)";
     // let expr = "(lambdax + 5) / 0";
     // let expr = "square(5)";
-    let expr = "square(5.0)";
+    // let expr = "square(5.0)";
+    let expr = "prod(2, 3)";
 
     let compiled = build_operator_tree(&expr); // creates a Node
     if compiled.is_err() {
@@ -47,6 +48,31 @@ fn main() {
         })
     );
 
+
+
+
+    fn prod(x: f64, y: f64) -> f64 {
+        x * y
+    }
+
+    let _ = c.set_function(
+        "prod".to_string(), 
+        Function::new(|t| { 
+            if t.is_tuple() {
+                let t = t.as_tuple().unwrap();
+                if t.len() == 2 {
+                    let x = &t[0];
+                    let y = &t[1];
+                    if x.is_number() && y.is_number() {
+                        let x = x.as_number().unwrap(); 
+                        let y = y.as_number().unwrap(); 
+                        return Ok(Value::from(prod(x, y)));
+                    }
+                }
+            }
+            Ok(Value::from("undefined"))
+        })
+    );
 
 
 
