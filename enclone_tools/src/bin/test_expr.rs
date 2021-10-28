@@ -3,9 +3,9 @@
 // Experimental code for working with evalexpr.
 
 use evalexpr::build_operator_tree;
-use evalexpr::{ContextWithMutableFunctions, ContextWithMutableVariables, HashMapContext};
 use evalexpr::Function;
 use evalexpr::Value;
+use evalexpr::{ContextWithMutableFunctions, ContextWithMutableVariables, HashMapContext};
 use string_utils::*;
 
 // ================================================================================================
@@ -13,20 +13,19 @@ use string_utils::*;
 // pub fn exalexpr_fn2(/* f: &dyn Fn(f64, f64) -> f64 */) -> evalexpr::Function {
 
 pub fn exalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
-
     fn f(x: f64, y: f64) -> f64 {
         x * y
     }
 
-    Function::new(|t| { 
+    Function::new(|t| {
         if t.is_tuple() {
             let t = t.as_tuple().unwrap();
             if t.len() == 2 {
                 let x = &t[0];
                 let y = &t[1];
                 if x.is_number() && y.is_number() {
-                    let x = x.as_number().unwrap(); 
-                    let y = y.as_number().unwrap(); 
+                    let x = x.as_number().unwrap();
+                    let y = y.as_number().unwrap();
                     return Ok(Value::from(f(x, y)));
                 }
             }
@@ -42,7 +41,7 @@ pub fn exalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
 // This can then be used to evaluate an expression.
 //
 // Functions take as input zero or more f64 arguments, and return an f64.  The machine allows them
-// to be called on arbitrary strings, but if the strings are not all f64, then the return value is 
+// to be called on arbitrary strings, but if the strings are not all f64, then the return value is
 // null.
 
 pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalexpr::HashMapContext {
@@ -53,9 +52,11 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
 
     for i in 0..vars.len() {
         if vals[i].parse::<f64>().is_ok() {
-            c.set_value(vars[i].clone(), evalexpr::Value::Float(vals[i].force_f64())).unwrap();
+            c.set_value(vars[i].clone(), evalexpr::Value::Float(vals[i].force_f64()))
+                .unwrap();
         } else {
-            c.set_value(vars[i].clone(), evalexpr::Value::String(vals[i].clone())).unwrap();
+            c.set_value(vars[i].clone(), evalexpr::Value::String(vals[i].clone()))
+                .unwrap();
         }
     }
 
@@ -65,22 +66,22 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         x * y
     }
     let _ = c.set_function(
-        "prod".to_string(), 
-        Function::new(|t| { 
+        "prod".to_string(),
+        Function::new(|t| {
             if t.is_tuple() {
                 let t = t.as_tuple().unwrap();
                 if t.len() == 2 {
                     let x = &t[0];
                     let y = &t[1];
                     if x.is_number() && y.is_number() {
-                        let x = x.as_number().unwrap(); 
-                        let y = y.as_number().unwrap(); 
+                        let x = x.as_number().unwrap();
+                        let y = y.as_number().unwrap();
                         return Ok(Value::from(prod(x, y)));
                     }
                 }
             }
             Ok(Value::from(""))
-        })
+        }),
     );
 
     // Define a function.
@@ -89,15 +90,15 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         x * x
     }
     let _ = c.set_function(
-        "square".to_string(), 
-        Function::new(|x| { 
+        "square".to_string(),
+        Function::new(|x| {
             if x.is_number() {
-                let x = x.as_number().unwrap(); 
+                let x = x.as_number().unwrap();
                 Ok(Value::from(square(x)))
             } else {
                 Ok(Value::from(""))
             }
-        })
+        }),
     );
 
     // Done.
@@ -108,7 +109,6 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
 // ================================================================================================
 
 fn main() {
-
     let expr = "prod(x, y)";
     let compiled = build_operator_tree(&expr); // creates a Node
     if compiled.is_err() {

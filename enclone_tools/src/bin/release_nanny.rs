@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-
 // Runs continuously, waiting for a new release to appear, and when that happens, updates the
 // remote linux binary, and exits.  This is launched by start_release.
 
