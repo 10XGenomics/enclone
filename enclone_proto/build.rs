@@ -5,7 +5,6 @@
 use prost_build::Config;
 
 fn main() {
-    println!("cargo:rerun-if-changed=types.proto");
     let mut config = Config::new();
     config.type_attribute(".", "#[derive(::serde::Serialize, ::serde::Deserialize)]");
     config.compile_protos(&["types.proto"], &["."]).unwrap();
