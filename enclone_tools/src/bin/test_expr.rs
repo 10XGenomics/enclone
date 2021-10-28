@@ -10,13 +10,10 @@ use string_utils::*;
 
 // ================================================================================================
 
-// pub fn exalexpr_fn2(/* f: &dyn Fn(f64, f64) -> f64 */) -> evalexpr::Function {
+// This does not compile, so using a macro below.
 
-pub fn exalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
-    fn f(x: f64, y: f64) -> f64 {
-        x * y
-    }
-
+/*
+pub fn evalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
     Function::new(|t| {
         if t.is_tuple() {
             let t = t.as_tuple().unwrap();
@@ -32,6 +29,31 @@ pub fn exalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
         }
         Ok(Value::from(""))
     })
+}
+*/
+
+macro_rules! evalexpr_fn2 {
+    ($f:expr) => {
+        Function::new(|t| {
+            if t.is_tuple() {
+                let t = t.as_tuple().unwrap();
+                if t.len() == 2 {
+                    let x = &t[0];
+                    let y = &t[1];
+                    if x.is_number() && y.is_number() {
+                        let x = x.as_number().unwrap();
+                        let y = y.as_number().unwrap();
+                        return Ok(Value::from($f(x, y)));
+                    }
+                }
+            }
+            Ok(Value::from(""))
+        })
+    };
+}
+
+pub fn prod(x: f64, y: f64) -> f64 {
+    x * y
 }
 
 // ================================================================================================
@@ -60,8 +82,11 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         }
     }
 
+    let _ = c.set_function("prod".to_string(), evalexpr_fn2![prod]);
+
     // Define a function.
 
+    /*
     fn prod(x: f64, y: f64) -> f64 {
         x * y
     }
@@ -83,6 +108,7 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
             Ok(Value::from(""))
         }),
     );
+    */
 
     // Define a function.
 
