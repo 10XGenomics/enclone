@@ -10,6 +10,33 @@ use string_utils::*;
 
 // ================================================================================================
 
+// pub fn exalexpr_fn2(/* f: &dyn Fn(f64, f64) -> f64 */) -> evalexpr::Function {
+
+pub fn exalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
+
+    fn f(x: f64, y: f64) -> f64 {
+        x * y
+    }
+
+    Function::new(|t| { 
+        if t.is_tuple() {
+            let t = t.as_tuple().unwrap();
+            if t.len() == 2 {
+                let x = &t[0];
+                let y = &t[1];
+                if x.is_number() && y.is_number() {
+                    let x = x.as_number().unwrap(); 
+                    let y = y.as_number().unwrap(); 
+                    return Ok(Value::from(f(x, y)));
+                }
+            }
+        }
+        Ok(Value::from(""))
+    })
+}
+
+// ================================================================================================
+
 // Given a a list of variables and values for them, define an evalexpr::HashMapContext that
 // includes these variables, as well as some convenient (but arbitrarily chosen) functions.
 // This can then be used to evaluate an expression.
