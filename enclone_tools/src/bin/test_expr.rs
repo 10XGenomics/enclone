@@ -6,7 +6,7 @@ use evalexpr::build_operator_tree;
 use evalexpr::Function;
 use evalexpr::Value;
 use evalexpr::{ContextWithMutableFunctions, ContextWithMutableVariables, HashMapContext};
-use statrs::distribution::{Beta, ContinuousCDF};
+use statrs::distribution::ContinuousCDF;
 use string_utils::*;
 
 // ================================================================================================
@@ -79,15 +79,6 @@ macro_rules! evalexpr_fn3 {
 
 // ================================================================================================
 
-// Define beta cdf function.
-
-pub fn beta_cdf(x: f64, a: f64, b: f64) -> f64 {
-    let n = Beta::new(a, b).unwrap();
-    n.cdf(x)
-}
-
-// ================================================================================================
-
 // Given a a list of variables and values for them, define an evalexpr::HashMapContext that
 // includes these variables, as well as some convenient (but arbitrarily chosen) functions.
 // This can then be used to evaluate an expression.
@@ -112,20 +103,18 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         }
     }
 
-    // Define a function.
-
-    fn prod(x: f64, y: f64) -> f64 {
-        x * y
+    // Define the beta cdf function.
+    //
+    // Requirements (not tested, but out of range should return *some* value):
+    // - 0 <= x <= 1
+    // - a > 0
+    // - b > 0.
+    
+    fn beta_cdf(x: f64, a: f64, b: f64) -> f64 {
+        let n = statrs::distribution::Beta::new(a, b).unwrap();
+        n.cdf(x)
     }
-    c.set_function("prod".to_string(), evalexpr_fn2![prod])
-        .unwrap();
-
-    // Define a function.
-
-    fn square(x: f64) -> f64 {
-        x * x
-    }
-    c.set_function("square".to_string(), evalexpr_fn1![square])
+    c.set_function("beta_cdf".to_string(), evalexpr_fn3![beta_cdf])
         .unwrap();
 
     // Done.
