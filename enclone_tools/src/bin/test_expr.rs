@@ -32,6 +32,21 @@ pub fn evalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
 }
 */
 
+#[macro_export]
+macro_rules! evalexpr_fn1 {
+    ($f:expr) => {
+        Function::new(|t| {
+            if t.is_number() {
+                let t = t.as_number().unwrap();
+                Ok(Value::from($f(t)))
+            } else {
+                Ok(Value::from(""))
+            }
+        })
+    };
+}
+
+#[macro_export]
 macro_rules! evalexpr_fn2 {
     ($f:expr) => {
         Function::new(|t| {
@@ -52,9 +67,6 @@ macro_rules! evalexpr_fn2 {
     };
 }
 
-pub fn prod(x: f64, y: f64) -> f64 {
-    x * y
-}
 
 // ================================================================================================
 
@@ -82,50 +94,20 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         }
     }
 
-    let _ = c.set_function("prod".to_string(), evalexpr_fn2![prod]);
 
     // Define a function.
 
-    /*
     fn prod(x: f64, y: f64) -> f64 {
         x * y
     }
-    let _ = c.set_function(
-        "prod".to_string(),
-        Function::new(|t| {
-            if t.is_tuple() {
-                let t = t.as_tuple().unwrap();
-                if t.len() == 2 {
-                    let x = &t[0];
-                    let y = &t[1];
-                    if x.is_number() && y.is_number() {
-                        let x = x.as_number().unwrap();
-                        let y = y.as_number().unwrap();
-                        return Ok(Value::from(prod(x, y)));
-                    }
-                }
-            }
-            Ok(Value::from(""))
-        }),
-    );
-    */
+    c.set_function("prod".to_string(), evalexpr_fn2![prod]).unwrap();
 
     // Define a function.
 
     fn square(x: f64) -> f64 {
         x * x
     }
-    let _ = c.set_function(
-        "square".to_string(),
-        Function::new(|x| {
-            if x.is_number() {
-                let x = x.as_number().unwrap();
-                Ok(Value::from(square(x)))
-            } else {
-                Ok(Value::from(""))
-            }
-        }),
-    );
+    c.set_function("square".to_string(), evalexpr_fn1![square]).unwrap();
 
     // Done.
 
@@ -137,7 +119,8 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
 fn main() {
     // Define an expression.
 
-    let expr = "prod(x, y)";
+    // let expr = "prod(x, y)";
+    let expr = "square(x)";
 
     // Compile the expression.
 
