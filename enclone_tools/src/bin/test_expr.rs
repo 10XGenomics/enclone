@@ -8,6 +8,37 @@ use evalexpr::Value;
 use evalexpr::{ContextWithMutableFunctions, ContextWithMutableVariables, HashMapContext};
 use statrs::distribution::ContinuousCDF;
 use string_utils::*;
+use vector_utils::*;
+
+// ================================================================================================
+
+// Return the list of variable names in a node.
+
+pub fn vars_of_node(n: &evalexpr::Node) -> Vec<String> {
+    let mut x = Vec::<String>::new();
+    for i in n.iter_variable_identifiers() {
+        x.push((*i).to_string());
+    }
+    x
+}
+
+pub fn evalexpr_function_names() -> Vec<String> {
+    let mut x = vec!["beta_cdf".to_string()];
+    x.sort();
+    x
+}
+
+// Test if function names in node are known.
+
+pub fn test_functions_in_node(n: &evalexpr::Node) -> Result<(), String> {
+    let x = evalexpr_function_names();
+    for i in n.iter_function_identifiers() {
+        if !bin_member(&x, &(*i).to_string()) {
+            return Err(format!("Unknown function name {} in expression.", i));
+        }
+    }
+    Ok(())
+}
 
 // ================================================================================================
 
