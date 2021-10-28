@@ -19,12 +19,6 @@ use string_utils::{strme, TextUtils};
 fn main() {
     PrettyTrace::new().on();
 
-    thread::sleep(Duration::from_millis(5 * 1000));
-    println!("woof");
-    if true {
-        std::process::exit(0);
-    }
-
     // Don't run on a Mac.
 
     if cfg!(any(target_os = "macos", target_os = "ios")) {
