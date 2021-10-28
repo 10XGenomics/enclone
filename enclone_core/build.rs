@@ -17,9 +17,6 @@ const BUILD_TYPE: &str = "debug";
 const BUILD_TYPE: &'static str = "release";
 
 fn main() {
-    println!("cargo:rerun-if-env-changed=GITHUB_SHA");
-    println!("cargo:rerun-if-env-changed=GITHUB_REF");
-    println!("cargo:rerun-if-changed=../.git");
     let version_string = format!(
         "{} : {}{} : {} : {} : {} : {}",
         get_branch_name(),
