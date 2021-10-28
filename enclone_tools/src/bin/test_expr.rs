@@ -81,9 +81,9 @@ macro_rules! evalexpr_fn3 {
 
 // Define beta cdf function.
 
-pub fn beta_cdf(x: f64, y: f64, z: f64) -> f64 {
-    let n = Beta::new(x, y).unwrap();
-    n.cdf(z)
+pub fn beta_cdf(x: f64, a: f64, b: f64) -> f64 {
+    let n = Beta::new(a, b).unwrap();
+    n.cdf(x)
 }
 
 // ================================================================================================
@@ -112,20 +112,21 @@ pub fn define_evalexpr_context(vars: &Vec<String>, vals: &Vec<String>) -> evalex
         }
     }
 
-
     // Define a function.
 
     fn prod(x: f64, y: f64) -> f64 {
         x * y
     }
-    c.set_function("prod".to_string(), evalexpr_fn2![prod]).unwrap();
+    c.set_function("prod".to_string(), evalexpr_fn2![prod])
+        .unwrap();
 
     // Define a function.
 
     fn square(x: f64) -> f64 {
         x * x
     }
-    c.set_function("square".to_string(), evalexpr_fn1![square]).unwrap();
+    c.set_function("square".to_string(), evalexpr_fn1![square])
+        .unwrap();
 
     // Done.
 
