@@ -1621,6 +1621,7 @@ dependencies = [
  "enclone_core",
  "equiv",
  "evalexpr",
+ "expr_tools",
  "flate2",
  "fs_extra",
  "hdf5",
@@ -1892,6 +1893,17 @@ checksum = "658f19728920138342f68408b7cf7644d90d4784353d8ebc32e7e8663dbe45fa"
 dependencies = [
  "cmake",
  "pkg-config",
+]
+
+[[package]]
+name = "expr_tools"
+version = "0.1.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=dj/expr_tools#d94a363f86c609e57ebc6b24836bd419a5debcb0"
+dependencies = [
+ "evalexpr",
+ "statrs",
+ "string_utils",
+ "vector_utils",
 ]
 
 [[package]]
