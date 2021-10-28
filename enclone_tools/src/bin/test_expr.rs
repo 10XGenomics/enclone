@@ -10,27 +10,12 @@ use string_utils::*;
 
 // ================================================================================================
 
-// This does not compile, so using a macro below.
-
-/*
-pub fn evalexpr_fn2(f: fn(f64, f64) -> f64) -> evalexpr::Function {
-    Function::new(|t| {
-        if t.is_tuple() {
-            let t = t.as_tuple().unwrap();
-            if t.len() == 2 {
-                let x = &t[0];
-                let y = &t[1];
-                if x.is_number() && y.is_number() {
-                    let x = x.as_number().unwrap();
-                    let y = y.as_number().unwrap();
-                    return Ok(Value::from(f(x, y)));
-                }
-            }
-        }
-        Ok(Value::from(""))
-    })
-}
-*/
+// Convert a function having one of these two forms:
+// - fn f(x: f64) -> f64;
+// - fn f(x: f64, y: f64) -> f64;
+// into an evalexpr::Function.
+//
+// This could be extended to work for zero variables or three/more.
 
 #[macro_export]
 macro_rules! evalexpr_fn1 {
@@ -66,7 +51,6 @@ macro_rules! evalexpr_fn2 {
         })
     };
 }
-
 
 // ================================================================================================
 
