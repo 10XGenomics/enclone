@@ -27,7 +27,9 @@ fn main() {
     let v = vars_of_node(&compiled);
     println!("variables in node = {}", v.iter().format(","));
 
-    if true {std::process::exit(0); }
+    if true {
+        std::process::exit(0);
+    }
 
     // Create variables and values.
 
