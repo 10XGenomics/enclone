@@ -4,6 +4,7 @@
 
 use evalexpr::build_operator_tree;
 use expr_tools::*;
+use itertools::Itertools;
 
 // ================================================================================================
 
@@ -11,7 +12,8 @@ fn main() {
     // Define an expression.
 
     // let expr = "prod(x, y)";
-    let expr = "square(x)";
+    // let expr = "square(x)";
+    let expr = "square(x.µ©¶Ƨ)";
 
     // Compile the expression.
 
@@ -22,6 +24,10 @@ fn main() {
         println!("ok");
     }
     let compiled = compiled.unwrap();
+    let v = vars_of_node(&compiled);
+    println!("variables in node = {}", v.iter().format(","));
+
+    if true {std::process::exit(0); }
 
     // Create variables and values.
 
