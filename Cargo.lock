@@ -1901,7 +1901,8 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=dj/expr_tools#d94a363f86c609e57ebc6b24836bd419a5debcb0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9da9984acc4bf46f8cb103b49a6c5565a8be1813b9b2106ea46639a446dca8e5"
 dependencies = [
  "evalexpr",
  "statrs",
