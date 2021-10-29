@@ -216,7 +216,8 @@ pub fn process_special_arg(
         let eval = encode_arith(&val);
         let compiled = build_operator_tree(&eval);
         if compiled.is_err() {
-            return Err(format!("\nUnable to represent \"{}\" as a valid expression.  You might \
+            return Err(format!(
+                "\nUnable to represent \"{}\" as a valid expression.  You might \
                 check the following:\n\
                 • arithmetic operators + - * / must have a blank on both sides\n\
                 • parentheses must be balanced\n",
@@ -227,7 +228,8 @@ pub fn process_special_arg(
         let res = test_functions_in_node(&compiled);
         if res.is_err() {
             let err = res.as_ref().err().unwrap();
-            return Err(format!("\n{}\nYou might check the following:\n\
+            return Err(format!(
+                "\n{}\nYou might check the following:\n\
                 • arithmetic operators + - * / must have a blank on both sides\n",
                 err,
             ));
