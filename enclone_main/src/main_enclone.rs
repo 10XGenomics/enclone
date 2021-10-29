@@ -19,6 +19,8 @@ use enclone_core::enclone_structs::*;
 use enclone_core::version_string;
 use enclone_stuff::start::*;
 use enclone_stuff::vars::match_vars;
+use enclone_vars::decode_arith;
+use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::start_profiling;
@@ -259,6 +261,16 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         &ctl.plot_opt.sim_mat_plot_vars,
         ctl.parseable_opt.pbarcode,
     )?;
+    let mut var_def_vars = Vec::<String>::new();
+    for i in 0..ctl.gen_opt.var_def.len() {
+        let n = &ctl.gen_opt.var_def[i].1;
+        let vars = vars_of_node(&n);
+        for v in vars.iter() {
+            let w = decode_arith(&*v);
+            var_def_vars.push(w);
+        }
+    }
+    check_pcols(&ctl, &gex_info, &var_def_vars, ctl.parseable_opt.pbarcode)?;
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Check DVARS.

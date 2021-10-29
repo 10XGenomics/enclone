@@ -1462,6 +1462,8 @@ dependencies = [
  "enclone_proto",
  "enclone_stuff",
  "enclone_tail",
+ "enclone_vars",
+ "expr_tools",
  "hdf5",
  "io_utils",
  "itertools",
