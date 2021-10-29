@@ -6,7 +6,9 @@ use crate::proc_args2::{is_f64_arg, is_simple_arg, is_usize_arg};
 use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
+use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
+use expr_tools::test_functions_in_node;
 use io_utils::path_exists;
 use itertools::Itertools;
 use regex::Regex;
@@ -204,6 +206,35 @@ pub fn process_special_arg(
             let cc = CellColor::ByVariableValue(v);
             ctl.plot_opt.cell_color = cc;
         }
+    } else if arg.starts_with("VAR_DEF=") {
+        let val = arg.after("VAR_DEF=");
+        if !val.contains(":") {
+            return Err(format!("\nCould not find : in {}.\n", arg));
+        }
+        let name = val.before(":");
+        let expr = val.after(":");
+        let eval = encode_arith(&val);
+        let compiled = build_operator_tree(&eval);
+        if compiled.is_err() {
+            return Err(format!(
+                "\nUnable to represent \"{}\" as a valid expression.  You might \
+                check the following:\n\
+                • arithmetic operators + - * / must have a blank on both sides\n\
+                • parentheses must be balanced\n",
+                expr,
+            ));
+        }
+        let compiled = compiled.unwrap();
+        let res = test_functions_in_node(&compiled);
+        if res.is_err() {
+            let err = res.as_ref().err().unwrap();
+            return Err(format!(
+                "\n{}\nYou might check the following:\n\
+                • arithmetic operators + - * / must have a blank on both sides\n",
+                err,
+            ));
+        }
+        ctl.gen_opt.var_def.push((name.to_string(), compiled));
     } else if arg.starts_with("MIN_DONORS") {
         let n = arg.after("MIN_DONORS=");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {

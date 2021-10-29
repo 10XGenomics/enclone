@@ -38,3 +38,55 @@ pub fn sort_vars(input: &str) -> String {
     out += &mut format!("{}\n", div);
     out
 }
+
+// Functions to encode and decode arithmetic operators.  Because the symbols - and / appear in gene
+// names, and because these symbols are also arithmetic operators, we need a system for hiding
+// them.  The system is that we encode/decode all the standard arithmetic operators + - * /
+// according to the following table, but only if they appear with characters on both sides, with
+// neither character being a blank.
+//
+// NORMAL    ENCODED
+// +         ©add©
+// -         ©sub©
+// *         ©mul©
+// /         ©div©
+//
+// The funny symbol © is the copyright symbol.
+
+pub fn encode_arith(x: &str) -> String {
+    let mut m = Vec::<char>::new();
+    for c in x.chars() {
+        m.push(c);
+    }
+    let mut encoded = String::new();
+    for i in 1..m.len() - 1 {
+        let mut saved = false;
+        if m[i - 1] != ' ' && m[i + 1] != ' ' {
+            if m[i] == '+' {
+                encoded += "©add©";
+                saved = true;
+            } else if m[i] == '-' {
+                encoded += "©sub©";
+                saved = true;
+            } else if m[i] == '*' {
+                encoded += "©mul©";
+                saved = true;
+            } else if m[i] == '/' {
+                encoded += "©div©";
+                saved = true;
+            }
+        }
+        if !saved {
+            encoded.push(m[i]);
+        }
+    }
+    encoded
+}
+
+pub fn decode_arith(x: &str) -> String {
+    let mut x = x.replace("©add©", "+");
+    x = x.replace("©sub©", "-");
+    x = x.replace("©mul©", "*");
+    x = x.replace("©div©", "/");
+    x
+}

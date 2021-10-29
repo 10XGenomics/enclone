@@ -27,8 +27,10 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
+enclone_vars = { path = "../enclone_vars" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
+expr_tools = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
 io_utils = "0.2"
 itertools = "0.10"

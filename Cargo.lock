@@ -1329,7 +1329,9 @@ dependencies = [
  "attohttpc",
  "debruijn",
  "enclone_core",
+ "enclone_vars",
  "evalexpr",
+ "expr_tools",
  "hdf5",
  "io_utils",
  "itertools",
@@ -1460,6 +1462,8 @@ dependencies = [
  "enclone_proto",
  "enclone_stuff",
  "enclone_tail",
+ "enclone_vars",
+ "expr_tools",
  "hdf5",
  "io_utils",
  "itertools",
@@ -1621,6 +1625,7 @@ dependencies = [
  "enclone_core",
  "equiv",
  "evalexpr",
+ "expr_tools",
  "flate2",
  "fs_extra",
  "hdf5",
@@ -1891,6 +1896,18 @@ checksum = "658f19728920138342f68408b7cf7644d90d4784353d8ebc32e7e8663dbe45fa"
 dependencies = [
  "cmake",
  "pkg-config",
+]
+
+[[package]]
+name = "expr_tools"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9da9984acc4bf46f8cb103b49a6c5565a8be1813b9b2106ea46639a446dca8e5"
+dependencies = [
+ "evalexpr",
+ "statrs",
+ "string_utils",
+ "vector_utils",
 ]
 
 [[package]]

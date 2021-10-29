@@ -39,6 +39,7 @@ enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
 equiv = "0.1"
 evalexpr = "6"
+expr_tools = "0.1"
 file-lock = "1"
 flate2 = "1"
 float-ord = "0.3"

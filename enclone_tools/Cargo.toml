@@ -27,6 +27,7 @@ enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1"
 evalexpr = "6"
+expr_tools = "0.1"
 flate2 = "1"
 fs_extra = "1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }

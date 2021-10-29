@@ -26,7 +26,9 @@ publish = false
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
+enclone_vars = { path = "../enclone_vars" }
 evalexpr = "6"
+expr_tools = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
 io_utils = "0.2"
 itertools = "0.10"
