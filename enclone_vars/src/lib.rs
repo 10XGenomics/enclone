@@ -61,7 +61,7 @@ pub fn encode_arith(x: &str) -> String {
     let mut encoded = String::new();
     for i in 1..m.len() - 1 {
         let mut saved = false;
-        if m[i-1] != ' ' && m[i+1] != ' ' {
+        if m[i - 1] != ' ' && m[i + 1] != ' ' {
             if m[i] == '+' {
                 encoded += "©add©";
                 saved = true;
