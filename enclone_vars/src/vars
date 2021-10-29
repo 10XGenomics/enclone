@@ -17,6 +17,7 @@
 #           INFO       user-defined variable from INFO
 #           NAME       name, see n_<name> at enclone help lvars
 #           REG        regular expression.
+#           VARDEF     user-defined variable from VAR_DEF
 #
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
@@ -251,6 +252,19 @@ level:    exact
 val:      string
 doc:      TBD
 brief:    user-defined variable from INFO
+page:     enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     VARDEF
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    user-defined variable from VAR_DEF
 page:     enclone help input
 avail:    public
 notes:
