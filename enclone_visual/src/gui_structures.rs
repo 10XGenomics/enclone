@@ -205,6 +205,7 @@ pub struct EncloneVisual {
     pub descrips_copy_button: button::State,
     pub graphic_png_button: button::State,
     pub graphic_help_button: button::State,
+    pub command_button: button::State,
     //
     // more
     //

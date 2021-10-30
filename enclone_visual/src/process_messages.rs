@@ -22,6 +22,15 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CommandOpen(_) => {
+                Command::none()
+            }
+
+            Message::CommandClose(_) => {
+                Command::none()
+            }
+
+
             Message::GraphicHelp => {
                 if self.graphic_help_title == "Help" {
                     self.graphic_help_title = "Close help".to_string();

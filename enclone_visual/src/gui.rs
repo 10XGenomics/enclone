@@ -450,8 +450,13 @@ impl Application for EncloneVisual {
                 }
             }
 
-            // Create summary button.
+            // Create some buttons.
 
+            let command_button = Button::new(
+                &mut self.command_button,
+                Text::new("Cmd").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::CommandOpen(Ok(())));
             let summary_button = Button::new(
                 &mut self.summary_button,
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
@@ -459,12 +464,12 @@ impl Application for EncloneVisual {
             .on_press(Message::SummaryOpen(Ok(())));
             let graphic_button = Button::new(
                 &mut self.graphic_open_button,
-                Text::new("Graphic").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Pic").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicOpen(Ok(())));
             let clonotypes_button = Button::new(
                 &mut self.clonotypes_open_button,
-                Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Clono").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ClonotypesOpen(Ok(())));
             let mut summary_buttons_row = Row::new().spacing(8);
@@ -473,7 +478,8 @@ impl Application for EncloneVisual {
             }
             summary_buttons_row = summary_buttons_row
                 .push(clonotypes_button)
-                .push(summary_button);
+                .push(summary_button)
+                .push(command_button);
 
             // Create narrative button.
 
