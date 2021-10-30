@@ -1,9 +1,12 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use crate::*;
 use crate::gui_structures::ComputeState::*;
+use crate::*;
 use iced::Length::Units;
-use iced::{Alignment, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text, TextInput};
+use iced::{
+    Alignment, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space,
+    Text, TextInput,
+};
 use itertools::izip;
 use messages::Message;
 
@@ -19,9 +22,8 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Help text.
 
-    let help_text = Text::new(
-        "The purpose of this page is to allow entry and display of a long command.",
-    );
+    let help_text =
+        Text::new("The purpose of this page is to allow entry and display of a long command.");
 
     // Top bar.
 
@@ -35,38 +37,35 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut text_input_column = Column::new()
         .spacing(8)
         .width(iced::Length::Fill)
-        .push(TextInput::new(
-            &mut slf.input1,
-            "",
-            &slf.input1_value,
-            Message::InputChanged1,
+        .push(
+            TextInput::new(
+                &mut slf.input1,
+                "",
+                &slf.input1_value,
+                Message::InputChanged1,
+            )
+            .padding(7)
+            .font(DEJAVU_BOLD)
+            .size(16),
         )
-        .padding(7)
-        .font(DEJAVU_BOLD)
-        .size(16)
-        )
-        .push(TextInput::new(
-            &mut slf.input2,
-            "",
-            &slf.input2_value,
-            Message::InputChanged2,
-        )
-        .padding(7)
-        .font(DEJAVU_BOLD)
-        .size(16)
+        .push(
+            TextInput::new(
+                &mut slf.input2,
+                "",
+                &slf.input2_value,
+                Message::InputChanged2,
+            )
+            .padding(7)
+            .font(DEJAVU_BOLD)
+            .size(16),
         );
     let n = slf.inputn.len();
     for (i, y, z) in izip!(0..n, slf.inputn.iter_mut(), slf.inputn_value.iter_mut()) {
-        text_input_column = text_input_column
-        .push(TextInput::new(
-            y,
-            "",
-            &z,
-            move |x: String| Message::InputChangedN(x, i),
-        )
-        .padding(7)
-        .font(DEJAVU_BOLD)
-        .size(16)
+        text_input_column = text_input_column.push(
+            TextInput::new(y, "", &z, move |x: String| Message::InputChangedN(x, i))
+                .padding(7)
+                .font(DEJAVU_BOLD)
+                .size(16),
         );
     }
 
@@ -79,7 +78,7 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         } else {
             "thinking"
         }),
-        )
+    )
     .padding(10)
     .on_press(Message::SubmitButtonPressed(Ok(())));
     let clear_button = Button::new(&mut slf.clear_button, Text::new("Clear"))
@@ -105,7 +104,7 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Length::Fill)
         .into()
 }
-    
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {

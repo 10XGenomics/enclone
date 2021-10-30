@@ -345,16 +345,14 @@ impl Application for EncloneVisual {
         }
 
         if !more {
-            text_input_column = text_input_column
-                .push(text_input2);
+            text_input_column = text_input_column.push(text_input2);
         } else {
-            text_input_column = text_input_column
-                .push(Space::with_height(Units(4)))
-                .push(Text::new("(push Cmd to see full command)")
+            text_input_column = text_input_column.push(Space::with_height(Units(4))).push(
+                Text::new("(push Cmd to see full command)")
                     .font(DEJAVU_BOLD)
                     .size(16)
-                    .color(Color::from_rgb(1.0, 0.0, 0.0))
-                );
+                    .color(Color::from_rgb(1.0, 0.0, 0.0)),
+            );
         }
 
         let button = Button::new(
