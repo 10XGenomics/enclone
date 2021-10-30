@@ -1,8 +1,9 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 use crate::*;
+use crate::gui_structures::ComputeState::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text, TextInput};
+use iced::{Alignment, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text, TextInput};
 use itertools::izip;
 use messages::Message;
 
@@ -31,8 +32,9 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Text input column.
 
-    let mut col = Column::new()
+    let mut text_input_column = Column::new()
         .spacing(8)
+        .width(iced::Length::Fill)
         .push(TextInput::new(
             &mut slf.input1,
             "",
@@ -55,7 +57,7 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         );
     let n = slf.inputn.len();
     for (i, y, z) in izip!(0..n, slf.inputn.iter_mut(), slf.inputn_value.iter_mut()) {
-        col = col
+        text_input_column = text_input_column
         .push(TextInput::new(
             y,
             "",
@@ -68,15 +70,36 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         );
     }
 
+    // Buttons beside it.
+
+    let button = Button::new(
+        &mut slf.button,
+        Text::new(if slf.compute_state == WaitingForRequest {
+            "Submit"
+        } else {
+            "thinking"
+        }),
+        )
+    .padding(10)
+    .on_press(Message::SubmitButtonPressed(Ok(())));
+    let clear_button = Button::new(&mut slf.clear_button, Text::new("Clear"))
+        .padding(10)
+        .on_press(Message::ClearButtonPressed);
+
     // Complete the display.
 
     let mut content = Column::new().spacing(SPACING).padding(20).push(top_bar);
     content = content.push(help_text);
-
     content = content
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(col);
-
+        .push(
+            Row::new()
+                .spacing(10)
+                .align_items(Alignment::Center)
+                .push(text_input_column)
+                .push(button)
+                .push(clear_button),
+        );
     Container::new(content)
         .width(Length::Fill)
         .height(Length::Fill)
