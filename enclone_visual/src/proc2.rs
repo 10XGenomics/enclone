@@ -264,11 +264,19 @@ pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Comm
 
 pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;
-    slf.input_value = slf.input1_value.clone();
-    if slf.input1_value.len() > 0 && slf.input2_value.len() > 0 {
-        slf.input_value += " ";
+    let mut values = Vec::<String>::new();
+    if slf.input1_value.len() > 0 {
+        values.push(slf.input1_value.clone());
     }
-    slf.input_value += &mut slf.input2_value.clone();
+    if slf.input2_value.len() > 0 {
+        values.push(slf.input2_value.clone());
+    }
+    for j in 0..slf.inputn_value.len() {
+        if slf.inputn_value[j].len() > 0 {
+            values.push(slf.inputn_value[j].clone());
+        }
+    }
+    slf.input_value = format!("{}", values.iter().format(" "));
     let mut group_spec = true;
     let mut group_ids = Vec::<usize>::new();
     let s = slf.input_value.split(',').collect::<Vec<&str>>();

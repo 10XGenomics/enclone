@@ -11,6 +11,7 @@ use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
+use itertools::Itertools;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
@@ -22,7 +23,22 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
-            Message::InputChangedN(ref _value, _i) => {
+            Message::InputChangedN(ref value, i) => {
+                self.modified = true;
+                self.inputn_value[i] = value.to_string();
+                let mut values = Vec::<String>::new();
+                if self.input1_value.len() > 0 {
+                    values.push(self.input1_value.clone());
+                }
+                if self.input2_value.len() > 0 {
+                    values.push(self.input2_value.clone());
+                }
+                for j in 0..self.inputn_value.len() {
+                    if self.inputn_value[j].len() > 0 {
+                        values.push(self.inputn_value[j].clone());
+                    }
+                }
+                self.input_value = format!("{}", values.iter().format(" "));
                 Command::none()
             }
 
@@ -912,6 +928,9 @@ impl EncloneVisual {
                 self.modified = true;
                 self.input1_value.clear();
                 self.input2_value.clear();
+                for j in 0..self.inputn_value.len() {
+                    self.inputn_value[j].clear();
+                }
                 Command::none()
             }
 
