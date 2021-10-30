@@ -43,6 +43,9 @@ impl Application for EncloneVisual {
         prepare_for_apocalypse_visual();
         COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
+        const EXTRA_INPUTS: usize = 8;
+        x.inputn = vec![iced::text_input::State::default(); EXTRA_INPUTS];
+        x.inputn_value.resize(EXTRA_INPUTS, String::new());
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
@@ -303,6 +306,9 @@ impl Application for EncloneVisual {
         }
         if self.help_mode {
             return help(self);
+        }
+        if self.command_mode {
+            return command(self);
         }
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -22,14 +22,19 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::InputChangedN(ref _value, _i) => {
+                Command::none()
+            }
+
             Message::CommandOpen(_) => {
+                self.command_mode = true;
                 Command::none()
             }
 
-            Message::CommandClose(_) => {
+            Message::CommandClose => {
+                self.command_mode = false;
                 Command::none()
             }
-
 
             Message::GraphicHelp => {
                 if self.graphic_help_title == "Help" {

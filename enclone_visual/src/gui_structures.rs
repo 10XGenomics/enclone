@@ -81,8 +81,10 @@ pub struct EncloneVisual {
     pub clonotypes_scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
+    pub inputn: Vec<text_input::State>,
     pub input1_value: String,
     pub input2_value: String,
+    pub inputn_value: Vec<String>,
     pub narrative_value: String,
     pub input_value: String,
     pub translated_input_value: String,
@@ -110,6 +112,7 @@ pub struct EncloneVisual {
     pub window_id: usize,
     pub start_command: Option<Instant>,
     pub help_mode: bool,
+    pub command_mode: bool,
     pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
@@ -206,6 +209,7 @@ pub struct EncloneVisual {
     pub graphic_png_button: button::State,
     pub graphic_help_button: button::State,
     pub command_button: button::State,
+    pub command_close_button: button::State,
     //
     // more
     //

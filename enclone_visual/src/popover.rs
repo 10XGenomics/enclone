@@ -2,9 +2,87 @@
 
 use crate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text, TextInput};
+use itertools::izip;
 use messages::Message;
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let command_title = Text::new(&format!("Command")).size(30);
+
+    // Buttons.
+
+    let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss"))
+        .on_press(Message::CommandClose);
+
+    // Help text.
+
+    let help_text = Text::new(
+        "The purpose of this page is to allow entry and display of a long command.",
+    );
+
+    // Top bar.
+
+    let top_bar = Row::new()
+        .push(command_title)
+        .push(Space::with_width(Length::Fill))
+        .push(command_close_button);
+
+    // Text input column.
+
+    let mut col = Column::new()
+        .spacing(8)
+        .push(TextInput::new(
+            &mut slf.input1,
+            "",
+            &slf.input1_value,
+            Message::InputChanged1,
+        )
+        .padding(7)
+        .font(DEJAVU_BOLD)
+        .size(16)
+        )
+        .push(TextInput::new(
+            &mut slf.input2,
+            "",
+            &slf.input2_value,
+            Message::InputChanged2,
+        )
+        .padding(7)
+        .font(DEJAVU_BOLD)
+        .size(16)
+        );
+    let n = slf.inputn.len();
+    for (i, y, z) in izip!(0..n, slf.inputn.iter_mut(), slf.inputn_value.iter_mut()) {
+        col = col
+        .push(TextInput::new(
+            y,
+            "",
+            &z,
+            move |x: String| Message::InputChangedN(x, i),
+        )
+        .padding(7)
+        .font(DEJAVU_BOLD)
+        .size(16)
+        );
+    }
+
+    // Complete the display.
+
+    let mut content = Column::new().spacing(SPACING).padding(20).push(top_bar);
+    content = content.push(help_text);
+
+    content = content
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(col);
+
+    Container::new(content)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
+}
+    
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
