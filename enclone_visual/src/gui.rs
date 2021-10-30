@@ -333,11 +333,29 @@ impl Application for EncloneVisual {
         .padding(7)
         .font(DEJAVU_BOLD)
         .size(16);
-        let text_input_column = Column::new()
+        let mut text_input_column = Column::new()
             .spacing(5)
             .width(iced::Length::Fill)
-            .push(text_input1)
-            .push(text_input2);
+            .push(text_input1);
+        let mut more = false;
+        for j in 0..self.inputn_value.len() {
+            if self.inputn_value[j].len() > 0 {
+                more = true;
+            }
+        }
+
+        if !more {
+            text_input_column = text_input_column
+                .push(text_input2);
+        } else {
+            text_input_column = text_input_column
+                .push(Space::with_height(Units(4)))
+                .push(Text::new("(push Cmd to see full command)")
+                    .font(DEJAVU_BOLD)
+                    .size(16)
+                    .color(Color::from_rgb(1.0, 0.0, 0.0))
+                );
+        }
 
         let button = Button::new(
             &mut self.button,
