@@ -347,7 +347,7 @@ impl Application for EncloneVisual {
         if !more {
             text_input_column = text_input_column.push(text_input2);
         } else {
-            text_input_column = text_input_column.push(Space::with_height(Units(4))).push(
+            text_input_column = text_input_column.push(Space::with_height(Units(2))).push(
                 Text::new("(push Cmd to see full command)")
                     .font(DEJAVU_BOLD)
                     .size(16)
