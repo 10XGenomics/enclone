@@ -199,10 +199,10 @@ impl EncloneVisualHistory {
             return Err(());
         }
         let expected_header = b"enclone visual history file version".to_vec();
-        if bytes[0..HEADER_LENGTH - 4].to_vec() != expected_header {
+        if bytes[0..HEADER_LENGTH - 5].to_vec() != expected_header {
             return Err(());
         }
-        let mut version_string = stringme(&bytes[HEADER_LENGTH - 4..HEADER_LENGTH]);
+        let mut version_string = stringme(&bytes[HEADER_LENGTH - 5..HEADER_LENGTH - 1]);
         while version_string.ends_with(' ') {
             version_string = version_string.rev_before(" ").to_string();
         }
