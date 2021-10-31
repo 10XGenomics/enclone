@@ -5,7 +5,6 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::proc2::*;
-use crate::share::*;
 use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
@@ -847,42 +846,7 @@ impl EncloneVisual {
 
             Message::ArchiveSaveClose => do_archive_close(self, true),
 
-            Message::ArchiveOpen(_) => {
-                self.archive_mode = true;
-                update_shares(self);
-                let n = self.archive_name.len();
-                for i in 0..n {
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_metadata(&path);
-                        if res.is_err() {
-                            panic!(
-                                "Unable to read the history file at\n{}\n\
-                                This could either be a bug in enclone or it could be that \
-                                the file is corrupted.\n",
-                                path,
-                            );
-                        }
-                        let (command_list, name, origin, narrative) = res.unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop1(), Message::Capture)
-                }
-            }
+            Message::ArchiveOpen(_) => do_archive_open(self),
 
             Message::SaveOnExit => {
                 self.save_on_exit = !self.save_on_exit;

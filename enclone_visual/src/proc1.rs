@@ -352,3 +352,40 @@ pub fn do_archive_refresh_complete(slf: &mut EncloneVisual) -> Command<Message> 
         Command::perform(noop1(), Message::Capture)
     }
 }
+
+pub fn do_archive_open(slf: &mut EncloneVisual) -> Command<Message> {
+    slf.archive_mode = true;
+    update_shares(slf);
+    let n = slf.archive_name.len();
+    for i in 0..n {
+        slf.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+        slf.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+        // This is a dorky way of causing loading of command lists, etc. from disk
+        // occurs just once per session, and only if the archive button is pushed.
+        if slf.archived_command_list[i].is_none() {
+            let x = &slf.archive_list[i];
+            let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
+            let res = read_metadata(&path);
+            if res.is_err() {
+                panic!(
+                    "Unable to read the history file at\n{}\n\
+                    This could either be a bug in enclone or it could be that \
+                    the file is corrupted.\n",
+                    path,
+                );
+            }
+            let (command_list, name, origin, narrative) = res.unwrap();
+            slf.archived_command_list[i] = Some(command_list);
+            slf.archive_name_value[i] = name;
+            slf.archive_origin[i] = origin;
+            slf.archive_narrative[i] = narrative;
+        }
+    }
+    slf.orig_archive_name = slf.archive_name_value.clone();
+    slf.h.orig_name_value = slf.h.name_value.clone();
+    if !TEST_MODE.load(SeqCst) {
+        Command::none()
+    } else {
+        Command::perform(noop1(), Message::Capture)
+    }
+}
