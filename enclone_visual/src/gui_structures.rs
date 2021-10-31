@@ -81,8 +81,10 @@ pub struct EncloneVisual {
     pub clonotypes_scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
+    pub inputn: Vec<text_input::State>,
     pub input1_value: String,
     pub input2_value: String,
+    pub inputn_value: Vec<String>,
     pub narrative_value: String,
     pub input_value: String,
     pub translated_input_value: String,
@@ -110,6 +112,7 @@ pub struct EncloneVisual {
     pub window_id: usize,
     pub start_command: Option<Instant>,
     pub help_mode: bool,
+    pub command_mode: bool,
     pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
@@ -205,6 +208,8 @@ pub struct EncloneVisual {
     pub descrips_copy_button: button::State,
     pub graphic_png_button: button::State,
     pub graphic_help_button: button::State,
+    pub command_button: button::State,
+    pub command_close_button: button::State,
     //
     // more
     //
@@ -285,6 +290,9 @@ impl EncloneVisual {
     pub fn input2_current(&self) -> String {
         return self.h.input2_hist_uniq[self.h.input2_history[self.hi()] as usize].clone();
     }
+    pub fn inputn_current(&self) -> Vec<String> {
+        return self.h.inputn_hist_uniq[self.h.inputn_history[self.hi()] as usize].clone();
+    }
     pub fn narrative_current(&self) -> String {
         return self.h.narrative_hist_uniq[self.h.narrative_history[self.hi()] as usize].clone();
     }
@@ -316,6 +324,7 @@ impl EncloneVisual {
         assert_eq!(n, self.h.summary_history.len());
         assert_eq!(n, self.h.input1_history.len());
         assert_eq!(n, self.h.input2_history.len());
+        assert_eq!(n, self.h.inputn_history.len());
         assert_eq!(n, self.h.narrative_history.len());
         assert_eq!(n, self.h.translated_input_history.len());
         assert_eq!(n, self.h.displayed_tables_history.len());
@@ -328,6 +337,7 @@ impl EncloneVisual {
         if self.h.history_index == 0 {
             self.input1_value.clear();
             self.input2_value.clear();
+            self.inputn_value.clear();
             self.svg_value.clear();
             self.png_value.clear();
             self.submit_button_text.clear();
@@ -349,6 +359,7 @@ impl EncloneVisual {
             self.descrip_value = self.descrip_current();
             self.input1_value = self.input1_current();
             self.input2_value = self.input2_current();
+            self.inputn_value = self.inputn_current();
             self.translated_input_value = self.translated_input_current();
             if self.table_comp_value.len() > 0 {
                 let mut gunzipped = Vec::<u8>::new();

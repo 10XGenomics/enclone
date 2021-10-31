@@ -119,6 +119,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     } else if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
+            format!("{}/enclone/datasets_me", home),
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];

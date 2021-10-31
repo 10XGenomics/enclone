@@ -4,6 +4,7 @@
 pub enum Message {
     InputChanged1(String),
     InputChanged2(String),
+    InputChangedN(String, usize),
     SubmitButtonPressed(Result<(), String>),
     BackButtonPressed(Result<(), String>),
     ForwardButtonPressed(Result<(), String>),
@@ -24,6 +25,8 @@ pub enum Message {
     HelpClose(Result<(), String>),
     CookbookOpen,
     CookbookClose,
+    CommandOpen(Result<(), String>),
+    CommandClose,
     SummaryOpen(Result<(), String>),
     SummaryClose(Result<(), String>),
     ClonotypesOpen(Result<(), String>),

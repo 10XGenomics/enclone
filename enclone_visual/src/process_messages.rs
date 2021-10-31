@@ -5,12 +5,12 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::proc2::*;
-use crate::share::*;
 use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
+use itertools::Itertools;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::time::{Duration, Instant};
@@ -22,6 +22,16 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::CommandOpen(_) => {
+                self.command_mode = true;
+                Command::none()
+            }
+
+            Message::CommandClose => {
+                self.command_mode = false;
+                Command::none()
+            }
+
             Message::GraphicHelp => {
                 if self.graphic_help_title == "Help" {
                     self.graphic_help_title = "Close help".to_string();
@@ -685,6 +695,9 @@ impl EncloneVisual {
                     self.input_value = format!("{}", group_id);
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
+                    for i in 0..self.inputn_value.len() {
+                        self.inputn_value[i].clear();
+                    }
                     let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
                     copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)
@@ -733,6 +746,9 @@ impl EncloneVisual {
                             self.input_value = TESTS[count].0.to_string();
                             self.input1_value = TESTS[count].0.to_string();
                             self.input2_value.clear();
+                        }
+                        for i in 0..self.inputn_value.len() {
+                            self.inputn_value[i].clear();
                         }
                     }
                 } else {
@@ -830,42 +846,7 @@ impl EncloneVisual {
 
             Message::ArchiveSaveClose => do_archive_close(self, true),
 
-            Message::ArchiveOpen(_) => {
-                self.archive_mode = true;
-                update_shares(self);
-                let n = self.archive_name.len();
-                for i in 0..n {
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_metadata(&path);
-                        if res.is_err() {
-                            panic!(
-                                "Unable to read the history file at\n{}\n\
-                                This could either be a bug in enclone or it could be that \
-                                the file is corrupted.\n",
-                                path,
-                            );
-                        }
-                        let (command_list, name, origin, narrative) = res.unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop1(), Message::Capture)
-                }
-            }
+            Message::ArchiveOpen(_) => do_archive_open(self),
 
             Message::SaveOnExit => {
                 self.save_on_exit = !self.save_on_exit;
@@ -894,10 +875,32 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::InputChangedN(ref value, i) => {
+                self.modified = true;
+                self.inputn_value[i] = value.to_string();
+                let mut values = Vec::<String>::new();
+                if self.input1_value.len() > 0 {
+                    values.push(self.input1_value.clone());
+                }
+                if self.input2_value.len() > 0 {
+                    values.push(self.input2_value.clone());
+                }
+                for j in 0..self.inputn_value.len() {
+                    if self.inputn_value[j].len() > 0 {
+                        values.push(self.inputn_value[j].clone());
+                    }
+                }
+                self.input_value = format!("{}", values.iter().format(" "));
+                Command::none()
+            }
+
             Message::ClearButtonPressed => {
                 self.modified = true;
                 self.input1_value.clear();
                 self.input2_value.clear();
+                for j in 0..self.inputn_value.len() {
+                    self.inputn_value[j].clear();
+                }
                 Command::none()
             }
 
@@ -920,6 +923,7 @@ impl EncloneVisual {
                             self.h.input2_hist_uniq[self.h.input2_history[i] as usize],
                             mark
                         );
+                        // note not showing inputn
                     }
                 }
                 let count = COUNT.load(SeqCst);
