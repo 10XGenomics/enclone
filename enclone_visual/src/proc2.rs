@@ -137,6 +137,13 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         slf.h.input2_history.insert(hi as usize, len as u32);
         slf.h.input2_hist_uniq.push(slf.input2_value.clone());
     }
+    let len = slf.h.inputn_hist_uniq.len();
+    if len > 0 && slf.h.inputn_hist_uniq[len - 1] == slf.inputn_value {
+        slf.h.inputn_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.inputn_history.insert(hi as usize, len as u32);
+        slf.h.inputn_hist_uniq.push(slf.inputn_value.clone());
+    }
     let len = slf.h.descrip_hist_uniq.len();
     if len > 0 && slf.h.descrip_hist_uniq[len - 1] == slf.descrip_value {
         slf.h.descrip_history.insert(hi as usize, (len - 1) as u32);
@@ -316,7 +323,10 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
             let mut reply_text;
             let new = slf.translated_input_current();
             let args = new.split(' ').collect::<Vec<&str>>();
-            if slf.h.input1_history.is_empty() && slf.h.input2_history.is_empty() {
+            if slf.h.input1_history.is_empty()
+                && slf.h.input2_history.is_empty()
+                && slf.h.inputn_history.is_empty()
+            {
                 reply_text = "Group identifier can only be supplied if another \
                     command has already been run."
                     .to_string();
@@ -358,6 +368,10 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
                 .input2_history
                 .insert(hi as usize, slf.h.input2_hist_uniq.len() as u32);
             slf.h.input2_hist_uniq.push(slf.input2_value.clone());
+            slf.h
+                .inputn_history
+                .insert(hi as usize, slf.h.inputn_hist_uniq.len() as u32);
+            slf.h.inputn_hist_uniq.push(slf.inputn_value.clone());
             slf.h
                 .narrative_history
                 .insert(hi as usize, slf.h.narrative_hist_uniq.len() as u32);

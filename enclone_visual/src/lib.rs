@@ -165,6 +165,8 @@ forcing no change for the first three whatevers."###;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+const EXTRA_INPUTS: usize = 8;
+
 pub fn compressed_message_history() -> Vec<String> {
     let mut messages = Vec::<String>::new();
     let n = MESSAGE_HISTORY.lock().unwrap().len();

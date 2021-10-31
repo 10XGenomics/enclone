@@ -176,6 +176,7 @@ pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.h.summary_history.remove(h as usize);
     slf.h.input1_history.remove(h as usize);
     slf.h.input2_history.remove(h as usize);
+    slf.h.inputn_history.remove(h as usize);
     slf.h.narrative_history.remove(h as usize);
     slf.h.translated_input_history.remove(h as usize);
     slf.h.displayed_tables_history.remove(h as usize);
@@ -187,6 +188,7 @@ pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
         slf.h.history_index -= 1;
         slf.input1_value.clear();
         slf.input2_value.clear();
+        slf.inputn_value.clear();
         slf.svg_value.clear();
         slf.png_value.clear();
         slf.submit_button_text.clear();

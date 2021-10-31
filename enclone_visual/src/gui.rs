@@ -43,7 +43,6 @@ impl Application for EncloneVisual {
         prepare_for_apocalypse_visual();
         COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
-        const EXTRA_INPUTS: usize = 8;
         x.inputn = vec![iced::text_input::State::default(); EXTRA_INPUTS];
         x.inputn_value.resize(EXTRA_INPUTS, String::new());
         x.submit_button_text = "Submit".to_string();

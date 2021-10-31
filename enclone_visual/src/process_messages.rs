@@ -23,25 +23,6 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
-            Message::InputChangedN(ref value, i) => {
-                self.modified = true;
-                self.inputn_value[i] = value.to_string();
-                let mut values = Vec::<String>::new();
-                if self.input1_value.len() > 0 {
-                    values.push(self.input1_value.clone());
-                }
-                if self.input2_value.len() > 0 {
-                    values.push(self.input2_value.clone());
-                }
-                for j in 0..self.inputn_value.len() {
-                    if self.inputn_value[j].len() > 0 {
-                        values.push(self.inputn_value[j].clone());
-                    }
-                }
-                self.input_value = format!("{}", values.iter().format(" "));
-                Command::none()
-            }
-
             Message::CommandOpen(_) => {
                 self.command_mode = true;
                 Command::none()
@@ -715,6 +696,9 @@ impl EncloneVisual {
                     self.input_value = format!("{}", group_id);
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
+                    for i in 0..self.inputn_value.len() {
+                        self.inputn_value[i].clear();
+                    }
                     let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
                     copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)
@@ -763,6 +747,9 @@ impl EncloneVisual {
                             self.input_value = TESTS[count].0.to_string();
                             self.input1_value = TESTS[count].0.to_string();
                             self.input2_value.clear();
+                        }
+                        for i in 0..self.inputn_value.len() {
+                            self.inputn_value[i].clear();
                         }
                     }
                 } else {
@@ -924,6 +911,25 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::InputChangedN(ref value, i) => {
+                self.modified = true;
+                self.inputn_value[i] = value.to_string();
+                let mut values = Vec::<String>::new();
+                if self.input1_value.len() > 0 {
+                    values.push(self.input1_value.clone());
+                }
+                if self.input2_value.len() > 0 {
+                    values.push(self.input2_value.clone());
+                }
+                for j in 0..self.inputn_value.len() {
+                    if self.inputn_value[j].len() > 0 {
+                        values.push(self.inputn_value[j].clone());
+                    }
+                }
+                self.input_value = format!("{}", values.iter().format(" "));
+                Command::none()
+            }
+
             Message::ClearButtonPressed => {
                 self.modified = true;
                 self.input1_value.clear();
@@ -953,6 +959,7 @@ impl EncloneVisual {
                             self.h.input2_hist_uniq[self.h.input2_history[i] as usize],
                             mark
                         );
+                        // note not showing inputn
                     }
                 }
                 let count = COUNT.load(SeqCst);
