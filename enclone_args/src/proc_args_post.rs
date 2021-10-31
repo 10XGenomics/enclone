@@ -4,6 +4,7 @@ use crate::proc_args2::proc_args_tail;
 use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
 use crate::proc_args_check::check_cvars;
 use enclone_core::defs::EncloneControl;
+use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use std::fs::File;
@@ -129,7 +130,7 @@ pub fn proc_args_post(
     let mut var_def_vars = Vec::<Vec<String>>::new();
     let n = ctl.gen_opt.var_def.len();
     for i in 0..n {
-        let x = &ctl.gen_opt.var_def[i].1;
+        let x = &ctl.gen_opt.var_def[i].2;
         var_def_vars.push(vars_of_node(&x));
     }
     let mut edges = Vec::<(usize, usize)>::new();
@@ -170,6 +171,28 @@ pub fn proc_args_post(
             return Err(
                 "\nVAR_DEF arguments define a circular chain of dependencies.\n".to_string(),
             );
+        }
+    }
+
+    // Substitute VAR_DEF into VAR_DEF.
+
+    loop {
+        let mut progress = false;
+        for i in 0..n {
+            for j in 0..n {
+                if bin_member(&var_def_vars[j], &ctl.gen_opt.var_def[i].0) {
+                    ctl.gen_opt.var_def[j].1 = ctl.gen_opt.var_def[j].1.replace(
+                        &ctl.gen_opt.var_def[i].0,
+                        &format!("({})", ctl.gen_opt.var_def[i].1),
+                    );
+                    ctl.gen_opt.var_def[j].2 =
+                        build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
+                    progress = true;
+                }
+            }
+        }
+        if !progress {
+            break;
         }
     }
 

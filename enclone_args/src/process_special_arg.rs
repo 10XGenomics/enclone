@@ -234,7 +234,7 @@ pub fn process_special_arg(
                 err,
             ));
         }
-        ctl.gen_opt.var_def.push((name.to_string(), compiled));
+        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled));
     } else if arg.starts_with("MIN_DONORS") {
         let n = arg.after("MIN_DONORS=");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {
