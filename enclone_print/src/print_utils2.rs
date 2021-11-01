@@ -376,7 +376,7 @@ pub fn row_fill(
         // Process VAR_DEF variables.
 
         for j in 0..ctl.gen_opt.var_def.len() {
-            if *x == ctl.gen_opt.var_def[j].0 && j < lvars.len() {
+            if *x == ctl.gen_opt.var_def[j].0 && i < lvars.len() {
                 if pass == 2 {
                     let comp = &ctl.gen_opt.var_def[j].2;
                     let vars = vars_of_node(&comp); // computing this here might be inefficient
