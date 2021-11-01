@@ -188,7 +188,7 @@ pub fn proc_args_post(
                         .replace(&sub, &format!("({})", ctl.gen_opt.var_def[i].1));
                     ctl.gen_opt.var_def[j].2 =
                         build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
-                    let x = &ctl.gen_opt.var_def[i].2;
+                    let x = &ctl.gen_opt.var_def[j].2;
                     var_def_vars[j] = vars_of_node(&x);
                     progress = true;
                 }
