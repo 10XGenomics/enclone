@@ -183,10 +183,9 @@ pub fn proc_args_post(
             for j in 0..n {
                 if bin_member(&var_def_vars[j], &ctl.gen_opt.var_def[i].0) {
                     let sub = encode_arith(&ctl.gen_opt.var_def[i].0);
-                    ctl.gen_opt.var_def[j].1 = ctl.gen_opt.var_def[j].1.replace(
-                        &sub,
-                        &format!("({})", ctl.gen_opt.var_def[i].1),
-                    );
+                    ctl.gen_opt.var_def[j].1 = ctl.gen_opt.var_def[j]
+                        .1
+                        .replace(&sub, &format!("({})", ctl.gen_opt.var_def[i].1));
                     ctl.gen_opt.var_def[j].2 =
                         build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
                     let x = &ctl.gen_opt.var_def[i].2;

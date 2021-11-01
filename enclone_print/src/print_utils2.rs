@@ -417,7 +417,7 @@ pub fn row_fill(
                         median = format!("{:.1}", median_f64(&out_valsf));
                     }
                     lvar_stats![i, x, median.clone(), out_vals];
-                } else {
+                } else if i < lvars.len() {
                     row.push(String::new());
                 }
                 continue 'lvar_loop;
