@@ -55,6 +55,7 @@ pub fn row_fill(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<String>)>,
+    stats_pass1: &Vec<Vec<(String, Vec<String>)>>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
@@ -391,6 +392,15 @@ pub fn row_fill(
                                     in_vals.push(stats[m].1[k].clone());
                                     found = true;
                                     break;
+                                }
+                            }
+                            if !found {
+                                for m in 0..stats_pass1[u].len() {
+                                    if stats_pass1[u][m].0 == var {
+                                        in_vals.push(stats_pass1[u][m].1[k].clone());
+                                        found = true;
+                                        break;
+                                    }
                                 }
                             }
                             assert!(found);
