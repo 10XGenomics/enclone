@@ -428,9 +428,11 @@ pub fn print_clonotypes(
                     );
                 }
 
-                // Done unless on second pass.  Unless there are bounds or COMPLETE specified.
+                // Done unless on second pass.  Unless there are bounds or COMPLETE specified
+                // or VAR_DEF specified.
 
-                if pass == 1 && ctl.clono_filt_opt.bounds.is_empty() && !ctl.gen_opt.complete {
+                if pass == 1 && ctl.clono_filt_opt.bounds.is_empty() && !ctl.gen_opt.complete 
+                    && ctl.gen_opt.var_def.is_empty() {
                     continue;
                 }
 

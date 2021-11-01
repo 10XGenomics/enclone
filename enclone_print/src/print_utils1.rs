@@ -7,6 +7,7 @@ use ansi_escape::{
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::print_tools::{color_by_property, emit_codon_color_escape};
+use expr_tools::vars_of_node;
 use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
 use std::cmp::max;
@@ -667,6 +668,10 @@ pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
         extra_args.append(&mut ctl.gen_opt.gene_scan_control.as_ref().unwrap().var.clone());
     }
     extra_args.append(&mut ctl.plot_opt.sim_mat_plot_vars.clone());
+    for i in 0..ctl.gen_opt.var_def.len() {
+        let x = &ctl.gen_opt.var_def[i].2;
+        extra_args.append(&mut vars_of_node(&x));
+    }
     unique_sort(&mut extra_args);
     extra_args
 }
