@@ -381,18 +381,19 @@ pub fn row_fill(
                     let vars = vars_of_node(&comp); // computing this here might be inefficient
                     let mut out_vals = Vec::<String>::new();
                     for k in 0..ex.clones.len() {
+                        let mut in_vals = Vec::<String>::new();
                         for v in 0..vars.len() {
                             let mut found = false;
                             for m in 0..stats.len() {
                                 if stats[m].0 == vars[v] {
-                                    out_vals.push(stats[m].1[k].clone());
+                                    in_vals.push(stats[m].1[k].clone());
                                     found = true;
                                     break;
                                 }
                             }
                             assert!(found);
                         }
-                        let c = define_evalexpr_context(&vars, &out_vals);
+                        let c = define_evalexpr_context(&vars, &in_vals);
                         let res = comp.eval_with_context(&c);
                         if res.is_err() {
                             eprintln!("\nInternal error, failed to compute {}.\n", x);
@@ -416,6 +417,8 @@ pub fn row_fill(
                         median = format!("{:.1}", median_f64(&out_valsf));
                     }
                     lvar_stats![i, x, median.clone(), out_vals];
+                } else {
+                    row.push(String::new());
                 }
                 continue 'lvar_loop;
             }

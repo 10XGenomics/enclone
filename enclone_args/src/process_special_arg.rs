@@ -213,7 +213,7 @@ pub fn process_special_arg(
         }
         let name = val.before(":");
         let expr = val.after(":");
-        let eval = encode_arith(&val);
+        let eval = encode_arith(&expr);
         let compiled = build_operator_tree(&eval);
         if compiled.is_err() {
             return Err(format!(
