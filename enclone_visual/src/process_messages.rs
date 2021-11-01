@@ -27,14 +27,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteClonotypesSnapshot(_) => {
-                let bytes = capture_as_bytes();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.clonotypes_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.clonotypes_snapshot_start);
                 self.clonotypes_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -46,14 +39,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteCommandSnapshot(_) => {
-                let bytes = capture_as_bytes();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.command_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.command_snapshot_start);
                 self.command_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -137,14 +123,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSummarySnapshot(_) => {
-                let bytes = capture_as_bytes();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.summary_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.summary_snapshot_start);
                 self.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -190,14 +169,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteGraphicSnapshot(_) => {
-                let bytes = capture_as_bytes();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.graphic_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.graphic_snapshot_start);
                 self.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -310,14 +282,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSnapshot(_) => {
-                let bytes = capture_as_bytes();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.snapshot_start);
                 self.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }

@@ -69,6 +69,19 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+// Copy window image to clipboard.
+
+pub fn snapshot(start: &Option<Instant>) {
+    let bytes = capture_as_bytes();
+    copy_png_bytes_to_clipboard(&bytes);
+    const MIN_SLEEP: f64 = 0.4;
+    let used = elapsed(&start.unwrap());
+    if used < MIN_SLEEP {
+        let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+        thread::sleep(Duration::from_millis(ms));
+    }
+}
+
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
 
 pub fn dejavu_text_dim(t: &str, font_size: f32) -> (f32, f32) {
