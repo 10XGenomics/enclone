@@ -508,6 +508,24 @@ pub fn compute_bu(
                         filled = true;
                     }
                 }
+
+                // Not sure it makes sense to do the below for just var_def variables.
+                // Why not all?
+
+                let mut in_var_def = false;
+                for i in 0..ctl.gen_opt.var_def.len() {
+                    if ctl.gen_opt.var_def[i].0 == var {
+                        in_var_def = true;
+                    }
+                }
+                if in_var_def && p >= 0 {
+                    let stats_me = &these_stats[p as usize].1;
+                    row.push(stats_me[bcl.2].clone());
+                    filled = true;
+                }
+
+                // Proceed.
+
                 if filled {
 
                     // Many of the variables (presumably a lot) should be computed by just
