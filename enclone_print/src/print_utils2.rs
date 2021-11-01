@@ -12,6 +12,7 @@ use enclone_core::allowed_vars::LVARS_ALLOWED;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::{median_f64, rounded_median};
 use enclone_proto::types::DonorReferenceItem;
+use enclone_vars::decode_arith;
 use expr_tools::*;
 use itertools::Itertools;
 use ndarray::s;
@@ -383,9 +384,10 @@ pub fn row_fill(
                     for k in 0..ex.clones.len() {
                         let mut in_vals = Vec::<String>::new();
                         for v in 0..vars.len() {
+                            let var = decode_arith(&vars[v]);
                             let mut found = false;
                             for m in 0..stats.len() {
-                                if stats[m].0 == vars[v] {
+                                if stats[m].0 == var {
                                     in_vals.push(stats[m].1[k].clone());
                                     found = true;
                                     break;

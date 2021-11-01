@@ -1492,6 +1492,7 @@ dependencies = [
  "enclone_args",
  "enclone_core",
  "enclone_proto",
+ "enclone_vars",
  "equiv",
  "evalexpr",
  "expr_tools",
