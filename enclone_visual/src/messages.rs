@@ -89,6 +89,8 @@ pub enum Message {
     CompleteGraphicSnapshot(Result<(), String>),
     CommandSnapshot,
     CompleteCommandSnapshot(Result<(), String>),
+    ClonotypesSnapshot,
+    CompleteClonotypesSnapshot(Result<(), String>),
     SummarySnapshot,
     CompleteSummarySnapshot(Result<(), String>),
     Recompute,
