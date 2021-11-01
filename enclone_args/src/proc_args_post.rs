@@ -4,6 +4,7 @@ use crate::proc_args2::proc_args_tail;
 use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
 use crate::proc_args_check::check_cvars;
 use enclone_core::defs::EncloneControl;
+use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
@@ -181,12 +182,15 @@ pub fn proc_args_post(
         for i in 0..n {
             for j in 0..n {
                 if bin_member(&var_def_vars[j], &ctl.gen_opt.var_def[i].0) {
+                    let sub = encode_arith(&ctl.gen_opt.var_def[i].0);
                     ctl.gen_opt.var_def[j].1 = ctl.gen_opt.var_def[j].1.replace(
-                        &ctl.gen_opt.var_def[i].0,
+                        &sub,
                         &format!("({})", ctl.gen_opt.var_def[i].1),
                     );
                     ctl.gen_opt.var_def[j].2 =
                         build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
+                    let x = &ctl.gen_opt.var_def[i].2;
+                    var_def_vars[j] = vars_of_node(&x);
                     progress = true;
                 }
             }
