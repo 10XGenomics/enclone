@@ -16,6 +16,8 @@ use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::convert::TryInto;
+use std::fs::{File, remove_file};
+use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -373,6 +375,18 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
         xprintln!("stderr =\n{}\n", strme(&o.stderr));
         std::process::exit(1);
     }
+}
+
+pub fn capture_as_bytes() -> Vec<u8> {
+    let filename = "/tmp/enclone_visual_snapshot.png";
+    capture_as_file(&filename, get_window_id());
+    let mut bytes = Vec::<u8>::new();
+    {
+        let mut f = File::open(&filename).unwrap();
+        f.read_to_end(&mut bytes).unwrap();
+    }
+    remove_file(&filename).unwrap();
+    bytes
 }
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

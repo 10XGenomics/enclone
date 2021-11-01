@@ -11,8 +11,6 @@ use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
 use itertools::Itertools;
-use std::fs::{remove_file, File};
-use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
@@ -29,14 +27,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteClonotypesSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
+                let bytes = capture_as_bytes();
                 copy_png_bytes_to_clipboard(&bytes);
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.clonotypes_snapshot_start.unwrap());
@@ -55,14 +46,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteCommandSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
+                let bytes = capture_as_bytes();
                 copy_png_bytes_to_clipboard(&bytes);
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.command_snapshot_start.unwrap());
@@ -153,14 +137,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSummarySnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
+                let bytes = capture_as_bytes();
                 copy_png_bytes_to_clipboard(&bytes);
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.summary_snapshot_start.unwrap());
@@ -213,14 +190,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteGraphicSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
+                let bytes = capture_as_bytes();
                 copy_png_bytes_to_clipboard(&bytes);
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.graphic_snapshot_start.unwrap());
@@ -340,14 +310,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
+                let bytes = capture_as_bytes();
                 copy_png_bytes_to_clipboard(&bytes);
                 const MIN_SLEEP: f64 = 0.4;
                 let used = elapsed(&self.snapshot_start.unwrap());
