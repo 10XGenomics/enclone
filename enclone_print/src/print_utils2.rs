@@ -395,12 +395,10 @@ pub fn row_fill(
                         }
                         let c = define_evalexpr_context(&vars, &in_vals);
                         let res = comp.eval_with_context(&c);
-                        /*
-                        if res.is_err() {
-                            eprintln!("\nInternal error, failed to compute {}.\n", x);
-                            std::process::exit(1);
-                        }
-                        */
+                        // if res.is_err() {
+                        //     eprintln!("\nInternal error, failed to compute {}.\n", x);
+                        //     std::process::exit(1);
+                        // }
                         let val = res.unwrap();
                         out_vals.push(val.to_string());
                     }

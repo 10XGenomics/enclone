@@ -422,8 +422,23 @@ fn test_exit() {
                 for line in g.lines() {
                     let s = line.unwrap();
                     if s.contains("process::exit") {
-                        eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
-                        std::process::exit(1);
+                        let mut chars = Vec::<char>::new();
+                        for c in s.chars() {
+                            chars.push(c);
+                        }
+                        let mut comment = false;
+                        for i in 0..chars.len() - 1 {
+                            if chars[i] == ' ' {
+                            } else if chars[i] == '/' && chars[i + 1] == '/' {
+                                comment = true;
+                            } else {
+                                break;
+                            }
+                        }
+                        if !comment {
+                            eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
+                            std::process::exit(1);
+                        }
                     }
                 }
             }
