@@ -415,12 +415,7 @@ pub fn row_fill(
                         out_valsf.sort_by(|a, b| a.partial_cmp(b).unwrap());
                         median = format!("{:.1}", median_f64(&out_valsf));
                     }
-                    lvar_stats![
-                        i,
-                        x,
-                        median.clone(),
-                        out_vals
-                    ];
+                    lvar_stats![i, x, median.clone(), out_vals];
                 }
                 continue 'lvar_loop;
             }
