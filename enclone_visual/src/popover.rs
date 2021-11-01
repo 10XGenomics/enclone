@@ -17,6 +17,11 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Buttons.
 
+    let command_snapshot_button = Button::new(
+        &mut slf.command_snapshot_button,
+        Text::new("Snapshot").color(slf.command_snapshot_button_color),
+    )
+    .on_press(Message::CommandSnapshot);
     let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss"))
         .on_press(Message::CommandClose);
 
@@ -30,6 +35,8 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(command_title)
         .push(Space::with_width(Length::Fill))
+        .push(command_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(command_close_button);
 
     // Text input column.
