@@ -263,7 +263,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     )?;
     let mut var_def_vars = Vec::<String>::new();
     for i in 0..ctl.gen_opt.var_def.len() {
-        let n = &ctl.gen_opt.var_def[i].1;
+        let n = &ctl.gen_opt.var_def[i].2;
         let vars = vars_of_node(&n);
         for v in vars.iter() {
             let w = decode_arith(&*v);

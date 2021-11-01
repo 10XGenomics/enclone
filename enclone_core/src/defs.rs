@@ -235,7 +235,7 @@ pub struct GeneralOpt {
     pub group_post_filter: Option<Vec<usize>>,
     pub no_newline: bool,
     pub fb_show: String,
-    pub var_def: Vec<(String, Node)>,
+    pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.

@@ -213,7 +213,7 @@ pub fn process_special_arg(
         }
         let name = val.before(":");
         let expr = val.after(":");
-        let eval = encode_arith(&val);
+        let eval = encode_arith(&expr);
         let compiled = build_operator_tree(&eval);
         if compiled.is_err() {
             return Err(format!(
@@ -234,7 +234,7 @@ pub fn process_special_arg(
                 err,
             ));
         }
-        ctl.gen_opt.var_def.push((name.to_string(), compiled));
+        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled));
     } else if arg.starts_with("MIN_DONORS") {
         let n = arg.after("MIN_DONORS=");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {

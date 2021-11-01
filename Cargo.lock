@@ -1492,7 +1492,10 @@ dependencies = [
  "enclone_args",
  "enclone_core",
  "enclone_proto",
+ "enclone_vars",
  "equiv",
+ "evalexpr",
+ "expr_tools",
  "hdf5",
  "io_utils",
  "itertools",
@@ -1900,9 +1903,9 @@ dependencies = [
 
 [[package]]
 name = "expr_tools"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9da9984acc4bf46f8cb103b49a6c5565a8be1813b9b2106ea46639a446dca8e5"
+checksum = "fb19509d1d790d73d64060aa25755f85b1ecb3bd747bb0fc1a05ea7a29b49a7e"
 dependencies = [
  "evalexpr",
  "statrs",

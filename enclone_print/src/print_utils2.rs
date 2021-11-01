@@ -12,6 +12,8 @@ use enclone_core::allowed_vars::LVARS_ALLOWED;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::{median_f64, rounded_median};
 use enclone_proto::types::DonorReferenceItem;
+use enclone_vars::decode_arith;
+use expr_tools::*;
 use itertools::Itertools;
 use ndarray::s;
 use std::collections::{HashMap, HashSet};
@@ -53,6 +55,7 @@ pub fn row_fill(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<String>)>,
+    stats_pass1: &Vec<Vec<(String, Vec<String>)>>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
@@ -334,8 +337,107 @@ pub fn row_fill(
         }
     }
     unique_sort(&mut alt_bcs);
-    for i in 0..all_lvars.len() {
+
+    macro_rules! speak {
+        ($u:expr, $var:expr, $val:expr) => {
+            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
+                let mut v = $var.to_string();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
+                if ctl.parseable_opt.pcols.is_empty()
+                    || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
+                    || bin_member(&extra_args, &v)
+                {
+                    out_data[$u].insert(v, $val);
+                }
+            }
+        };
+    }
+
+    let verbose = ctl.gen_opt.row_fill_verbose;
+    macro_rules! lvar_stats {
+        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            stats.push(($var.to_string(), $stats.clone()));
+        };
+    }
+
+    'lvar_loop: for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
+
+        // Process VAR_DEF variables.
+
+        for j in 0..ctl.gen_opt.var_def.len() {
+            if *x == ctl.gen_opt.var_def[j].0 && i < lvars.len() {
+                if pass == 2 {
+                    let comp = &ctl.gen_opt.var_def[j].2;
+                    let vars = vars_of_node(&comp); // computing this here might be inefficient
+                    let mut out_vals = Vec::<String>::new();
+                    for k in 0..ex.clones.len() {
+                        let mut in_vals = Vec::<String>::new();
+                        for v in 0..vars.len() {
+                            let var = decode_arith(&vars[v]);
+                            let mut found = false;
+                            for m in 0..stats.len() {
+                                if stats[m].0 == var {
+                                    in_vals.push(stats[m].1[k].clone());
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if !found {
+                                for m in 0..stats_pass1[u].len() {
+                                    if stats_pass1[u][m].0 == var {
+                                        in_vals.push(stats_pass1[u][m].1[k].clone());
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            assert!(found);
+                        }
+                        let c = define_evalexpr_context(&vars, &in_vals);
+                        let res = comp.eval_with_context(&c);
+                        // if res.is_err() {
+                        //     eprintln!("\nInternal error, failed to compute {}.\n", x);
+                        //     std::process::exit(1);
+                        // }
+                        let val = res.unwrap();
+                        out_vals.push(val.to_string());
+                    }
+                    let mut median = String::new();
+                    let mut out_valsf = Vec::<f64>::new();
+                    let mut all_float = true;
+                    for y in out_vals.iter() {
+                        if !y.parse::<f64>().is_ok() {
+                            all_float = false;
+                        } else {
+                            out_valsf.push(y.force_f64());
+                        }
+                    }
+                    if all_float {
+                        out_valsf.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                        median = format!("{:.1}", median_f64(&out_valsf));
+                    }
+                    lvar_stats![i, x, median.clone(), out_vals];
+                } else if i < lvars.len() {
+                    row.push(String::new());
+                }
+                continue 'lvar_loop;
+            }
+        }
+
+        // Process other lvars.
+
         if !proc_lvar1(
             i,
             x,

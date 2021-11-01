@@ -259,6 +259,7 @@ pub fn print_clonotypes(
         // are junk.  On the second pass we remove those and then print the orbit.
 
         let mut bads = vec![false; exacts.len()];
+        let mut stats_pass1 = Vec::<Vec<(String, Vec<String>)>>::new();
         for pass in 1..=2 {
             // Delete weak exact subclonotypes.
 
@@ -428,9 +429,14 @@ pub fn print_clonotypes(
                     );
                 }
 
-                // Done unless on second pass.  Unless there are bounds or COMPLETE specified.
+                // Done unless on second pass.  Unless there are bounds or COMPLETE specified
+                // or VAR_DEF specified.
 
-                if pass == 1 && ctl.clono_filt_opt.bounds.is_empty() && !ctl.gen_opt.complete {
+                if pass == 1
+                    && ctl.clono_filt_opt.bounds.is_empty()
+                    && !ctl.gen_opt.complete
+                    && ctl.gen_opt.var_def.is_empty()
+                {
                     continue;
                 }
 
@@ -659,6 +665,7 @@ pub fn print_clonotypes(
                         ind_readers,
                         h5_data,
                         &mut these_stats,
+                        &stats_pass1,
                         vdj_cells,
                         &n_vdj_gex,
                         &lvars,
@@ -671,6 +678,9 @@ pub fn print_clonotypes(
                         fate,
                     );
                     stats.append(&mut these_stats.clone());
+                    if pass == 1 {
+                        stats_pass1.push(these_stats.clone());
+                    }
                     these_stats.sort_by(|a, b| a.0.cmp(&b.0));
                     if resx.is_err() {
                         res.13 = resx.unwrap_err();
