@@ -522,6 +522,24 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
+            if emsg.contains("RUST PROGRAM PANIC") {
+                let mut ebuffer2 = Vec::<u8>::new();
+                server_stderr.read_to_end(&mut ebuffer2).unwrap();
+                let mut ebuf = Vec::<u8>::new();
+                ebuf.append(&mut ebuffer.to_vec());
+                ebuf.append(&mut ebuffer2);
+                let mut scream = String::new();
+                for _ in 0..49 {
+                    scream.push('😱');
+                }
+                xprint!(
+                    "\n{}\nThe server crashed upon startup.  Here is what it says:\n{}\n{}",
+                    scream,
+                    scream,
+                    strme(&ebuf),
+                );
+                std::process::exit(1);
+            }
             if emsg.contains("already in use") {
                 xprintln!("oops, that port is in use, trying a different one");
                 continue;
