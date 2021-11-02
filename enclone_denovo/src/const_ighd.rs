@@ -15,10 +15,10 @@ use std::arch::x86_64::{
 /// this version detects whether it can use the fast version at runtime.  
 
 pub fn ighd_score(x: &[u8], ighd_pwm2: &Vec<f32>) -> f32 {
-    let sub_vec_size = 5;
     let logp;
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
+        let sub_vec_size = 5;
         if is_x86_feature_detected!("avx2") {
             logp = unsafe { s32_avx2(x, ighd_pwm2, sub_vec_size) };
         } else {
