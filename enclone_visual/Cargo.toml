@@ -75,4 +75,4 @@ mach = "0.3"
 objc = "0.2"
 
 [build-dependencies]
-tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
+tonic-build = { version = "0.6", default-features = false, features = ["transport", "prost"] }
