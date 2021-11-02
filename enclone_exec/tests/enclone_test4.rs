@@ -655,3 +655,32 @@ fn test_ranger() {
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 39. Test to see if there are unpushed commits.  The reason we do this is that one can
+// accidentally merge a PR for a branch that has unpushed commits, and that causes grief.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_unpushed() {
+    let new = Command::new("git")
+        .arg("status")
+        .output()
+        .expect(&format!("failed to execute git status"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\netest_unpushed: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let out = strme(&new.stdout);
+    if out.contains("Your branch is ahead of") {
+        eprintln!("\nYour branch has unpushed commits.  Please push them.\n");
+        std::process::exit(1);
+    }
+}
