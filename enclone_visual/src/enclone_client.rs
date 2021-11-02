@@ -500,10 +500,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // server succeeded and enough to contain the information that the server is passing to
         // the client.
 
-        let mut ebuffer = [0; 200];
+        const BYTES_TO_READ: usize = 200;
+        let mut ebuffer = [0; BYTES_TO_READ];
         let server_stderr = server_process.stderr.as_mut().unwrap();
         let tread = Instant::now();
         server_stderr.read_exact(&mut ebuffer).unwrap();
+        if ebuffer.len() != BYTES_TO_READ {
+            xprintln!(
+                "\nWeird internal error: read {} bytes from server rather than the expected \
+                number {}.\n",
+                ebuffer.len(),
+                BYTES_TO_READ
+            );
+            std::process::exit(1);
+        }
         if verbose {
             xprintln!(
                 "used {:.1} seconds reading from server stderr",
