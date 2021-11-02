@@ -612,23 +612,34 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    eprintln!("I am process {}.", std::process::id());
-    eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
     let mut version = current_version_string();
     let current_dir = std::env::current_dir()?;
     let current_dir = current_dir.display();
     let current_executable = std::env::current_exe()?;
     let current_executable = current_executable.display();
-    println!("current dir = {}", current_dir);
-    println!("current executable = {}", current_executable);
     if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
         version = current_version_string();
     }
-    eprintln!("version string = {}", version);
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+    let mut emsg = format!("I am process {}.\n", std::process::id());
+    emsg += &mut format!("enclone version = {}\n", env!("CARGO_PKG_VERSION"));
+    emsg += &mut format!("version string = {}\n", version);
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    eprint!("{}", emsg);
+
+    println!("current dir = {}", current_dir);
+    println!("current executable = {}", current_executable);
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
         .serve_with_incoming(TcpListenerStream::new(listener))
