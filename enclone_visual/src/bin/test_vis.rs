@@ -544,7 +544,7 @@ fn main() {
                     .expect("failed to execute ssh");
                 let out = strme(&o.stdout);
                 for line in out.lines() {
-                    if line.contains("enclone") {
+                    if line.contains("enclone SERVER") {
                         eprintln!(
                             "\nLooks like you may have a stray process running on the \
                             remote server:\n{}\n\n\
