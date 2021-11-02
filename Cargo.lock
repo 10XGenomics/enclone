@@ -1309,7 +1309,7 @@ dependencies = [
  "pager",
  "perf_stats",
  "petgraph 0.5.1",
- "pprof 0.6.0",
+ "pprof",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1424,7 +1424,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.20.0",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1522,7 +1522,7 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "prost 0.8.0",
+ "prost 0.9.0",
  "prost-build 0.9.0",
  "serde",
  "serde_derive",
@@ -1697,13 +1697,13 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.20.0",
+ "nix 0.22.0",
  "objc",
  "perf_stats",
  "png-decoder",
  "pretty_trace",
  "procfs",
- "prost 0.8.0",
+ "prost 0.9.0",
  "rayon",
  "serde_json",
  "string_utils",
@@ -2568,9 +2568,9 @@ dependencies = [
 
 [[package]]
 name = "http-body"
-version = "0.4.2"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60daa14be0e0786db0f03a9e57cb404c9d756eed2b6c62b9ea98ec5743ec75a9"
+checksum = "1ff4f84919677303da5f147645dbea6b1881f368d03ac84e1dc09031ebd7b2c6"
 dependencies = [
  "bytes",
  "http",
@@ -2579,9 +2579,9 @@ dependencies = [
 
 [[package]]
 name = "httparse"
-version = "1.4.1"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3a87b616e37e93c22fb19bcd386f02f3af5ea98a25670ad0fce773de23c5e68"
+checksum = "acd94fdbe1d4ff688b67b04eee2e17bd50995534a61539e45adfefb45e5e5503"
 
 [[package]]
 name = "httpdate"
@@ -2591,9 +2591,9 @@ checksum = "6456b8a6c8f33fee7d958fcd1b60d55b11940a79e63ae87013e6d22e26034440"
 
 [[package]]
 name = "hyper"
-version = "0.14.10"
+version = "0.14.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7728a72c4c7d72665fde02204bcbd93b247721025b222ef78606f14513e0fd03"
+checksum = "2b91bb1f221b6ea1f1e4371216b70f40748774c2fb5971b450c07773fb92d26b"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -3965,26 +3965,6 @@ dependencies = [
 
 [[package]]
 name = "pprof"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9fb4eee2f2c4f7d48fe5a33008dececbc405d0e58d2a94afe742d4f175bc401"
-dependencies = [
- "backtrace",
- "lazy_static",
- "libc",
- "log",
- "nix 0.20.0",
- "parking_lot",
- "prost 0.8.0",
- "prost-build 0.8.0",
- "prost-derive 0.8.0",
- "symbolic-demangle",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "pprof"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35ec6927a8c4b0bb3418964ddae137ed6b2d5aa98f4b2210d61764fb30cec4bd"
@@ -3995,6 +3975,9 @@ dependencies = [
  "log",
  "nix 0.23.0",
  "parking_lot",
+ "prost 0.9.0",
+ "prost-build 0.9.0",
+ "prost-derive 0.9.0",
  "symbolic-demangle",
  "tempfile",
  "thiserror",
@@ -4035,17 +4018,16 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.20"
+version = "0.5.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e101cb2f4618f499a674c7f5d4566482e6ca90c890955e1a4c147561ce4c8c6"
+checksum = "b8419ff65177db4745f58df1f76c62e74eff4de7a102af1857959d7272704209"
 dependencies = [
  "backtrace",
  "io_utils",
- "itertools",
  "lazy_static",
  "libc",
- "nix 0.20.0",
- "pprof 0.5.0",
+ "nix 0.22.0",
+ "pprof",
  "stats_utils",
  "string_utils",
  "tables",
@@ -5150,9 +5132,9 @@ dependencies = [
 
 [[package]]
 name = "tonic"
-version = "0.5.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b584f064fdfc50017ec39162d5aebce49912f1eb16fd128e04b7f4ce4907c7e5"
+checksum = "24203b79cf2d68909da91178db3026e77054effba0c5d93deb870d3ca7b35afa"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -5167,8 +5149,8 @@ dependencies = [
  "hyper-timeout",
  "percent-encoding",
  "pin-project",
- "prost 0.8.0",
- "prost-derive 0.8.0",
+ "prost 0.9.0",
+ "prost-derive 0.9.0",
  "tokio",
  "tokio-stream",
  "tokio-util",
