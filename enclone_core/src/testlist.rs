@@ -155,7 +155,7 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     // NOT ALL PUBLIC
     //
     // 5. test BCR_GEX and GD_BC
-    // Internal data.  To replace this we would need to find a public dataset on which genetic 
+    // Internal data.  To replace this we would need to find a public dataset on which genetic
     // demux was run.
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the

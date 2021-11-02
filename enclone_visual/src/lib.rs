@@ -16,7 +16,7 @@ use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::convert::TryInto;
-use std::fs::{File, remove_file};
+use std::fs::{remove_file, File};
 use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
