@@ -528,8 +528,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 let mut ebuf = Vec::<u8>::new();
                 ebuf.append(&mut ebuffer.to_vec());
                 ebuf.append(&mut ebuffer2);
-                xprintln!(
-                    "\nThe server crashed upon startup.  Here is what it says:\n{}",
+                let mut scream = String::new();
+                for _ in 0..49 {
+                    scream.push('😱');
+                }
+                xprint!(
+                    "\n{}\nThe server crashed upon startup.  Here is what it says:\n{}\n{}",
+                    scream,
+                    scream,
                     strme(&ebuf),
                 );
                 std::process::exit(1);
