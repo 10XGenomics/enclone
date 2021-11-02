@@ -16,6 +16,8 @@ use perf_stats::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::convert::TryInto;
+use std::fs::{File, remove_file};
+use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -66,6 +68,19 @@ pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
+
+// Copy window image to clipboard.
+
+pub fn snapshot(start: &Option<Instant>) {
+    let bytes = capture_as_bytes();
+    copy_png_bytes_to_clipboard(&bytes);
+    const MIN_SLEEP: f64 = 0.4;
+    let used = elapsed(&start.unwrap());
+    if used < MIN_SLEEP {
+        let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+        thread::sleep(Duration::from_millis(ms));
+    }
+}
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
 
@@ -373,6 +388,18 @@ pub fn capture_as_file(filename: &str, window_id: usize) {
         xprintln!("stderr =\n{}\n", strme(&o.stderr));
         std::process::exit(1);
     }
+}
+
+pub fn capture_as_bytes() -> Vec<u8> {
+    let filename = "/tmp/enclone_visual_snapshot.png";
+    capture_as_file(&filename, get_window_id());
+    let mut bytes = Vec::<u8>::new();
+    {
+        let mut f = File::open(&filename).unwrap();
+        f.read_to_end(&mut bytes).unwrap();
+    }
+    remove_file(&filename).unwrap();
+    bytes
 }
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

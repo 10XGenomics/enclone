@@ -11,8 +11,6 @@ use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
 use itertools::Itertools;
-use std::fs::{remove_file, File};
-use std::io::Read;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
@@ -22,6 +20,30 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ClonotypesSnapshot => {
+                self.clonotypes_snapshot_start = Some(Instant::now());
+                self.clonotypes_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteClonotypesSnapshot)
+            }
+
+            Message::CompleteClonotypesSnapshot(_) => {
+                snapshot(&self.clonotypes_snapshot_start);
+                self.clonotypes_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CommandSnapshot => {
+                self.command_snapshot_start = Some(Instant::now());
+                self.command_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteCommandSnapshot)
+            }
+
+            Message::CompleteCommandSnapshot(_) => {
+                snapshot(&self.command_snapshot_start);
+                self.command_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CommandOpen(_) => {
                 self.command_mode = true;
                 Command::none()
@@ -101,21 +123,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSummarySnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.summary_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.summary_snapshot_start);
                 self.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -161,21 +169,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteGraphicSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.graphic_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.graphic_snapshot_start);
                 self.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -288,21 +282,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.snapshot_start);
                 self.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }

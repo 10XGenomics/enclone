@@ -17,6 +17,11 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Buttons.
 
+    let command_snapshot_button = Button::new(
+        &mut slf.command_snapshot_button,
+        Text::new("Snapshot").color(slf.command_snapshot_button_color),
+    )
+    .on_press(Message::CommandSnapshot);
     let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss"))
         .on_press(Message::CommandClose);
 
@@ -30,6 +35,8 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(command_title)
         .push(Space::with_width(Length::Fill))
+        .push(command_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(command_close_button);
 
     // Text input column.
@@ -203,15 +210,24 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
 
+    // Buttons.
+
+    let clonotypes_snapshot_button = Button::new(
+        &mut slf.clonotypes_snapshot_button,
+        Text::new("Snapshot").color(slf.clonotypes_snapshot_button_color),
+    )
+    .on_press(Message::ClonotypesSnapshot);
     let copy_button = Button::new(
         &mut slf.clonotypes_copy_button,
         Text::new("Copy text").color(slf.clonotypes_copy_button_color),
     )
     .on_press(Message::ClonotypesCopy);
-
     let clonotypes_close_button =
         Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
             .on_press(Message::ClonotypesClose);
+
+    // The rest.
+
     const CLONOTYPE_FONT_SIZE: u16 = 13;
     let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
     let available = slf.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
@@ -230,6 +246,8 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(clonotypes_title)
         .push(Space::with_width(Length::Fill))
+        .push(clonotypes_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(copy_button)
         .push(Space::with_width(Units(8)))
         .push(clonotypes_close_button);

@@ -552,6 +552,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 remote_version = emsg.between("enclone version = ", "\n").to_string();
             } else {
                 xprint!("\nUnable to determine remote enclone version.\n");
+                xprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
             let remote_version_string;
@@ -560,6 +561,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 remote_version_string = emsg.between("version string = ", "\n").to_string();
             } else {
                 xprint!("\nUnable to determine remote version string.\n");
+                xprintln!("message = {}", emsg);
                 std::process::exit(1);
             }
             let local_version = env!("CARGO_PKG_VERSION");
