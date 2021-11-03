@@ -581,7 +581,7 @@ level:    clono
 val:      positive_integer
 doc:      TBD
 brief:    number of cells in the clonotype
-page:     enclone hep parseable
+page:     enclone help parseable
 avail:    public
 notes:
 code:
@@ -1106,7 +1106,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref
-inputs:   ?
+inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
 limits:
 class:    lvar
 level:    exact
@@ -1117,9 +1117,34 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:
+          let mut diffs = 0;
+          for m in 0..cols {
+              if mat[m][u].is_some() {
+                  let r = mat[m][u].unwrap();
+                  let seq = &ex.share[r].seq_del_amino;
+                  let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                  if rsi.vpids[m].is_some() {
+                      vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                  }
+                  let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                  let z = seq.len();
+                  for p in 0..z {
+                      let b = seq[p];
+                      if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                          diffs += 1;
+                      }
+                      if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                          && b != jref[jref.len() - (z - p)]
+                      {
+                          diffs += 1;
+                      }
+                  }
+              }
+          }
+          format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
-inputs:   ?
+inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
 limits:
 class:    lvar
 level:    exact
@@ -1129,7 +1154,39 @@ brief:    amino acid distance to donor reference
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut diffs = 0;
+          for m in 0..cols {
+              if mat[m][u].is_some() {
+                  let r = mat[m][u].unwrap();
+                  let aa_seq = &ex.share[r].aa_mod_indel;
+                  let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                  if rsi.vpids[m].is_some() {
+                      vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                  }
+                  let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                  let z = 3 * aa_seq.len() + 1;
+                  for p in 0..aa_seq.len() {
+                      if aa_seq[p] == b'-' {
+                          diffs += 1;
+                          continue;
+                      }
+                      if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
+                          && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
+                      {
+                          diffs += 1;
+                      }
+                      if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
+                          && aa_seq[p]
+                              != codon_to_aa(
+                                  &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
+                              )
+                      {
+                          diffs += 1;
+                      }
+                  }
+              }
+          }
+          format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     edit
 inputs:   ?
@@ -1551,7 +1608,7 @@ code:     let u0 = arg1;
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     near
-inputs:   ?
+inputs:   varmat, fp, u
 limits:
 class:    lvar
 level:    exact
@@ -1561,7 +1618,26 @@ brief:    Hamming distance to nearest neighbor
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut dist = 1_000_000;
+          for i2 in 0..varmat.len() {
+              if i2 == u || fp[i2] != fp[u] {
+                  continue;
+              }
+              let mut d = 0;
+              for c in fp[u].iter() {
+                  for j in 0..varmat[u][*c].len() {
+                      if varmat[u][*c][j] != varmat[i2][*c][j] {
+                          d += 1;
+                      }
+                  }
+              }
+              dist = min(dist, d);
+          }
+          if dist == 1_000_000 {
+              "".to_string()
+          } else {
+              format!("{}", dist)
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
 inputs:   ex, mid
