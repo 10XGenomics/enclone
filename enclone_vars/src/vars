@@ -1247,7 +1247,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     g<0,...>
+name:     g{0,...}
 inputs:   ?
 limits:
 class:    lvar
@@ -1522,7 +1522,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     ndiff<1,...>vj
+name:     ndiff{1,...}vj
 inputs:   exacts, col, mat, u, exact_subclonotypes
 limits:
 class:    cvar
@@ -1602,7 +1602,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     q<0,...>_
+name:     q{0,...}_
 inputs:   ?
 limits:
 class:    cvar
