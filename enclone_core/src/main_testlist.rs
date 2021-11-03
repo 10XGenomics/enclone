@@ -660,7 +660,7 @@ pub const TESTS: [&str; 268] = [
     // 264. test MIN_ORIGINS
     r###"BCR=123085:123089 MAX_CELLS=2 SEG=IGHV3-49 MIN_ORIGINS=2"###,
     // 265. test DVARS
-    // The output is a bit flaky because we imported some but not all of the special files 
+    // The output is a bit flaky because we imported some but not all of the special files
     // for 85679.
     r###"BCR=86237 GEX=85679 DVARS=CD19_ab_cellular_u,CD19_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN"###,
