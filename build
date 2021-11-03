@@ -28,6 +28,10 @@ end
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # import and update enclone-data
+#
+# The procedure to update enclone-data is to first make changes to that repo, then change the
+# enclone file stamps/data_version to the new version, and then run this script to do the actual
+# update.
 
 set begin = `date +%s`
 if ( !(-d enclone-data) ) then
