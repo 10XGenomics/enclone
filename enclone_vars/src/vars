@@ -22,6 +22,7 @@
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
+#           refdata
 #           fm: gex_info.feature_metrics = feature values by barcode
 #
 # limits:   limitations on availability of the variable
@@ -440,8 +441,8 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_dna_ref
-inputs:   ?
+name:     cdr{1,2}_dna_ref
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    clono
@@ -451,7 +452,30 @@ brief:    CDR* nucleotide sequence for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == "1" {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          } else {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          }
+          y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_len
 inputs:   ?
