@@ -436,42 +436,6 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2}_aa_ref
-inputs:   ex, mid, refdata
-limits:
-class:    cvar
-level:    clono
-val:      string
-doc:      TBD
-brief:    CDR* amino acid sequence for universal reference
-page:     enclone help cvars
-avail:    public
-notes:
-code:     let x = &ex.share[mid];
-          let mut y = "unknown".to_string();
-          if arg1 == 1 {
-              if x.cdr1_start.is_some()
-                  && x.fr2_start.is_some()
-                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
-              {
-                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
-                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
-                      .to_vec();
-                  y = stringme(&aa_seq(&dna, 0));
-              }
-          } else {
-              if x.cdr2_start.is_some()
-                  && x.fr3_start.is_some()
-                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
-              {
-                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
-                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
-                      .to_vec();
-                  y = stringme(&aa_seq(&dna, 0));
-              }
-          }
-          y
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
 inputs:   ?
 limits:
@@ -510,6 +474,42 @@ page:     enclone help cvars
 avail:    public
 notes:
 code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2}_aa_ref
+inputs:   ex, mid, refdata
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR* amino acid sequence for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          } else {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          }
+          y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2}_dna_ref
 inputs:   ex, mid, refdata
@@ -1247,19 +1247,6 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     g{0,...}
-inputs:   ?
-limits:
-class:    lvar
-level:    exact
-val:      positive_integer
-doc:      TBD
-brief:    exact subclonotype group, by Hamming distance
-page:     enclone help lvars
-avail:    public
-notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex
 inputs:   ?
 limits:
@@ -1388,6 +1375,19 @@ brief:    number of cells in clonotype group
 page:     enclone help parseable
 avail:    public
 notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     g{0,...}
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    exact subclonotype group, by Hamming distance
+page:     enclone help lvars
+avail:    public
+notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
