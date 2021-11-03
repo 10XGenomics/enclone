@@ -570,7 +570,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -580,10 +580,20 @@ brief:    constant region name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut constx = Vec::<String>::new();
+          let cid = ex.share[mid].c_ref_id;
+          if cid.is_some() {
+              constx.push(refdata.name[cid.unwrap()].clone());
+          } else {
+              constx.push("?".to_string());
+          }
+          unique_sort(&mut constx);
+          // This is overcomplicated because there is now at most one
+          // const entry per exact subclonotype.
+          format!("{}", constx.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const_id
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -593,7 +603,11 @@ brief:    numerical identifier of constant region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut const_id = String::new();
+          if ex.share[mid].c_ref_id.is_some() {
+              const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
+          }
+          const_id
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_REG
 inputs:   ?
@@ -694,7 +708,7 @@ code:     if !ex.share[mid].left {
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -704,7 +718,29 @@ brief:    second best D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut opt2 = Vec::new();
+              if ds.len() > 1 {
+                  opt2 = ds[1].clone();
+              }
+              let mut opt2_name = String::new();
+              if opt2.is_empty() {
+                  opt2_name = "none".to_string();
+              } else {
+                  for i in 0..opt2.len() {
+                      if i > 0 {
+                          opt2_name += ":";
+                      }
+                      opt2_name += &refdata.name[opt2[i]];
+                  }
+              }
+              opt2_name
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_score
 inputs:   ?
@@ -733,7 +769,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_donor
-inputs:   ?
+inputs:   ex, mid, refdata, rsi, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -743,10 +779,32 @@ brief:    distance from donor reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let vid = ex.share[mid].v_ref_id;
+          let mut vref = refdata.refs[vid].to_ascii_vec();
+          if rsi.vpids[col].is_some() {
+              vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+          }
+          let jid = ex.share[mid].j_ref_id;
+          let jref = &refdata.refs[jid].to_ascii_vec();
+          let tig = &ex.share[mid].seq_del;
+          let n = tig.len();
+          let mut diffs = 0;
+          for p in 0..n {
+              if tig[p] == b'-' {
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                  diffs += 1;
+              } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                  && tig[p] != jref[jref.len() - (n - p)]
+              {
+                  diffs += 1;
+              }
+          }
+          format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_frame
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -756,10 +814,17 @@ brief:    reading frame of D segment (0, 1, 2 or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut d_frame = String::new();
+          if ex.share[mid].d_start.is_some() {
+              d_frame = format!(
+                  "{}",
+                  (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
+              );
+          }
+          d_frame
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_id
-inputs:   ?
+inputs:   rsi, col, refdata
 limits:
 class:    cvar
 level:    clono
@@ -769,7 +834,12 @@ brief:    D region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let did = if rsi.dids[col].is_some() {
+              format!("{}", refdata.id[rsi.dids[col].unwrap()])
+          } else {
+              String::new()
+          };
+          did
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_inconsistent_%
 inputs:   ?
@@ -798,7 +868,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_name
-inputs:   ?
+inputs:   rsi, col, refdata
 limits:
 class:    cvar
 level:    clono
@@ -808,10 +878,15 @@ brief:    D region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let dname = if rsi.dids[col].is_some() {
+              refdata.name[rsi.dids[col].unwrap()].clone()
+          } else {
+              String::new()
+          };
+          dname
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_start
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -821,7 +896,11 @@ brief:    start of D on full nucleotide sequence (or null)
 page:     enclone help parseable
 avail:    public
 notes:    Starts at 0 or 1?
-code:
+code:     let mut d_start = String::new();
+          if ex.share[mid].d_start.is_some() {
+              d_start = format!("{}", ex.share[mid].d_start.unwrap());
+          }
+          d_start
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_univ
 inputs:   ?
@@ -1214,7 +1293,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_name
-inputs:   ?
+inputs:   rsi, col, refdata
 limits:
 class:    cvar
 level:    clono
@@ -1224,7 +1303,7 @@ brief:    J region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     refdata.name[rsi.jids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
 inputs:   ?
