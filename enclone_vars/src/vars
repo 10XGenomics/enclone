@@ -316,7 +316,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdiff
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -326,7 +326,37 @@ brief:    differences of const region with universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let cstart = ex.share[mid].j_stop;
+          let clen = ex.share[mid].full_seq.len() - cstart;
+          let cid = ex.share[mid].c_ref_id;
+          let mut cdiff = String::new();
+          let mut ndiffs = 0;
+          if cid.is_some() {
+              let r = &refdata.refs[cid.unwrap()];
+              let mut extra = 0;
+              if clen > r.len() {
+                  extra = clen - r.len();
+              }
+              for i in 0..min(clen, r.len()) {
+                  let tb = ex.share[mid].full_seq[cstart + i];
+                  let rb = r.to_ascii_vec()[i];
+                  if tb != rb {
+                      ndiffs += 1;
+                      if ndiffs <= 5 {
+                          cdiff += &format!("{}{}", i, tb as char);
+                      }
+                  }
+              }
+              if ndiffs > 5 {
+                  cdiff += "...";
+              }
+              if extra > 0 {
+                  cdiff += &format!("+{}", extra);
+              }
+          } else if clen > 0 {
+              cdiff = format!("+{}", clen);
+          }
+          cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr*_aa_{0,...}_{0,...}_ext
 inputs:   ?
