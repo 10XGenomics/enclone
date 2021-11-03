@@ -441,6 +441,19 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1,2,3}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    length of CDR* amino acid sequence 
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2}_dna_ref
 inputs:   ex, mid, refdata
 limits:
@@ -476,19 +489,6 @@ code:     let x = &ex.share[mid];
               }
           }
           y
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_len
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      positive_integer
-doc:      TBD
-brief:    length of CDR* amino acid sequence 
-page:     enclone help cvars
-avail:    public
-notes:
-code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   ?
