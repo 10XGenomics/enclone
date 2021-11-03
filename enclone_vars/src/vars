@@ -1190,7 +1190,19 @@ brief:    FWR* nucleotide seq for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if arg1 == 1 {
+              let x = &ex.share[mid];
+              let mut y = "unknown".to_string();
+              if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()[x.fr1_start..x.cdr1_start
+                      .unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+              y
+          } else if arg1 == 2 {
+              // ... NOT FINISHED ...
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1,2,3,4}_len
 inputs:   ?
@@ -1841,7 +1853,7 @@ code:     let mut numis = Vec::<usize>::new();
           format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     udiff
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -1851,10 +1863,48 @@ brief:    differences of 5'-UTR region with universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let ulen = ex.share[mid].v_start;
+          let uid = ex.share[mid].u_ref_id;
+          let mut udiff = String::new();
+          let mut ndiffs = 0;
+          if uid.is_some() {
+              let r = &refdata.refs[uid.unwrap()];
+              let mut extra = 0;
+              if ulen > r.len() {
+                  extra = ulen - r.len();
+              }
+              for i in 0..ulen {
+                  let mut rpos = i;
+                  if ulen < r.len() {
+                      rpos += r.len() - ulen;
+                  } else {
+                      if i + r.len() < ulen {
+                          continue;
+                      }
+                      rpos -= ulen - r.len();
+                  }
+                  let tb = ex.share[mid].full_seq[i];
+                  let rb = r.to_ascii_vec()[rpos];
+                  if tb != rb {
+                      ndiffs += 1;
+                      if ndiffs <= 5 {
+                          udiff += &format!("{}{}", rpos, tb as char);
+                      }
+                  }
+              }
+              if ndiffs > 5 {
+                  udiff += "...";
+              }
+              if extra > 0 {
+                  udiff += &format!("+{}", extra);
+              }
+          } else if ulen > 0 {
+              udiff = format!("+{}", ulen);
+          }
+          udiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ulen
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -1864,10 +1914,10 @@ brief:    length of observed 5'-UTR sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_id
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -1877,10 +1927,15 @@ brief:    numerical identifier of 5'-UTR region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut u = String::new();
+          let uid = ex.share[mid].u_ref_id;
+          if uid.is_some() {
+              u = format!("{}", refdata.id[uid.unwrap()]);
+          }
+          u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_name
-inputs:   ?
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    exact
@@ -1890,10 +1945,15 @@ brief:    name of 5'-UTR region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut u = String::new();
+          let uid = ex.share[mid].u_ref_id;
+          if uid.is_some() {
+              u = refdata.name[uid.unwrap()].clone();
+          }
+          u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_id
-inputs:   ?
+inputs:   rsi, col, refdata
 limits:
 class:    cvar
 level:    clono
@@ -1903,10 +1963,10 @@ brief:    V region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     format!("{}", refdata.id[rsi.vids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_name
-inputs:   ?
+inputs:   refdata, rsi, col
 limits:
 class:    cvar
 level:    clono
@@ -1916,10 +1976,10 @@ brief:    V region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     refdata.name[rsi.vids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -1929,10 +1989,10 @@ brief:    start of V on full nucleotide sequence
 page:     enclone help parseable
 avail:    public
 notes:    Positive integer, or nonnegative integer?
-code:
+code:     format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
-inputs:   ?
+inputs:   varmat, u, col
 limits:
 class:    cvar
 level:    clono
@@ -1942,7 +2002,7 @@ brief:    bases at position in chain that vary across the clonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     stringme(&varmat[u][col])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_aa
 inputs:   ?
@@ -2036,7 +2096,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vjlen
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -2046,5 +2106,5 @@ brief:    length in bases of V..J
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
