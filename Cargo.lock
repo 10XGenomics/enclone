@@ -2487,7 +2487,7 @@ checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 [[package]]
 name = "hdf5"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3#1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
 dependencies = [
  "bitflags",
  "hdf5-derive",
@@ -2503,7 +2503,7 @@ dependencies = [
 [[package]]
 name = "hdf5-derive"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3#1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2513,7 +2513,7 @@ dependencies = [
 [[package]]
 name = "hdf5-sys"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3#1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
 dependencies = [
  "attohttpc",
  "bzip2",
@@ -2531,7 +2531,7 @@ dependencies = [
 [[package]]
 name = "hdf5-types"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3#1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
 dependencies = [
  "ascii",
  "libc",
