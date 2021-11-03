@@ -743,7 +743,7 @@ code:     if !ex.share[mid].left {
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_score
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -753,10 +753,21 @@ brief:    score of second best D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut score = 0.0;
+              if scores.len() > 1 {
+                  score = scores[1];
+              }
+              format!("{:.1}", score)
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_delta
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -766,7 +777,18 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              format!("{:.1}", delta)
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_donor
 inputs:   ex, mid, refdata, rsi, dref, ctl
@@ -903,7 +925,7 @@ code:     let mut d_start = String::new();
           d_start
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_univ
-inputs:   ?
+inputs:   ex, mid, refdata, ctl
 limits:
 class:    cvar
 level:    exact
@@ -913,10 +935,29 @@ brief:    distance from universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let vid = ex.share[mid].v_ref_id;
+          let vref = &refdata.refs[vid].to_ascii_vec();
+          let jid = ex.share[mid].j_ref_id;
+          let jref = &refdata.refs[jid].to_ascii_vec();
+          let tig = &ex.share[mid].seq_del;
+          let n = tig.len();
+          let mut diffs = 0;
+          for p in 0..n {
+              if tig[p] == b'-' {
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                  diffs += 1;
+              } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                  && tig[p] != jref[jref.len() - (n - p)]
+              {
+                  diffs += 1;
+              }
+          }
+          format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_Δ
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -926,7 +967,18 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              format!("{:.1}", delta)
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     datasets
 inputs:   ?
@@ -955,7 +1007,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
-inputs:   ?
+inputs:   ex, mid, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -965,7 +1017,37 @@ brief:    nucleotide identity with donor reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let xm = &ex.share[mid];
+          let mut diffs = 0;
+          let mut denom = 0;
+          let seq = &xm.seq_del_amino;
+          let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+          if xm.v_ref_id_donor_alt_id.is_some() {
+              vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+          }
+          let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+          let z = seq.len();
+          for p in 0..z {
+              let b = seq[p];
+              if b == b'-' {
+                  diffs += 1;
+                  denom += 1;
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim {
+                  denom += 1;
+                  if b != vref[p] {
+                      diffs += 1;
+                  }
+              }
+              if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                  denom += 1;
+                  if b != jref[jref.len() - (z - p)] {
+                      diffs += 1;
+                  }
+              }
+          }
+          format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
 inputs:   ?
@@ -1040,7 +1122,7 @@ level:    exact
 val:      positive_integer
 doc:      TBD
 brief:    identifier of exact subclonotype
-page:     enclone help cvars
+page:     enclone help parseable
 avail:    public
 notes:
 code:
@@ -1280,7 +1362,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_id
-inputs:   ?
+inputs:   col, rsi, refdata
 limits:
 class:    cvar
 level:    clono
@@ -1290,7 +1372,7 @@ brief:    J region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     format!("{}", refdata.id[rsi.jids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_name
 inputs:   rsi, col, refdata
@@ -1399,7 +1481,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ndiff<1,...>vj
-inputs:   ?
+inputs:   exacts, col, mat, u, exact_subclonotypes
 limits:
 class:    cvar
 level:    exact
@@ -1409,7 +1491,22 @@ brief:    number of base differences with exact subclonotype of that number
 page:     enclone help cvars
 avail:    public
 notes:    Start at 1 or 0?
-code:
+code:     let u0 = arg1;
+          if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
+              let m0 = mat[col][u0].unwrap();
+              let m = mat[col][u].unwrap();
+              let mut ndiff = 0;
+              let ex0 = &exact_clonotypes[exacts[u0]];
+              let ex = &exact_clonotypes[exacts[u]];
+              for p in 0..ex0.share[m0].seq_del.len() {
+                  if ex0.share[m0].seq_del[p] != ex.share[m].seq_del[p] {
+                      ndiff += 1;
+                  }
+              }
+              format!("{}", ndiff)
+          } else {
+              "_".to_string()
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     near
 inputs:   ?
@@ -1425,7 +1522,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -1435,7 +1532,7 @@ brief:    notes for exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     ex.share[mid].vs_notesx.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
@@ -1665,7 +1762,7 @@ code:     let mut numis = Vec::<usize>::new();
           format!("{}", numis.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_mean
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -1675,7 +1772,14 @@ brief:    mean chain UMIs across exact subclonotype (= <code>u_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          let utot: usize = numis.iter().sum();
+          let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+          format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_min
 inputs:   ?
@@ -1717,7 +1821,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_μ
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -1727,7 +1831,14 @@ brief:    mean chain UMIs for exact subclonotype (= <code>u_mean</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          let utot: usize = numis.iter().sum();
+          let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+          format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     udiff
 inputs:   ?
