@@ -24,6 +24,10 @@
 #           mid: usize = chain id in clonotype
 #           refdata
 #           fm: gex_info.feature_metrics = feature values by barcode
+#           col
+#           exacts
+#           exact_clonotypes
+#           rsi
 #
 # limits:   limitations on availability of the variable
 #
@@ -338,7 +342,7 @@ notes:    Check if args are really nonnegative integers.
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conp
-inputs:   ?
+inputs:   col, exacts, exact_clonotypes, rsi
 limits:
 class:    cvar
 level:    clono
@@ -348,10 +352,10 @@ brief:    CDR3 amino acid consensus, symbols at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conx
-inputs:   ?
+inputs:   col, exacts, exact_clonotypes, rsi
 limits:
 class:    cvar
 level:    clono
@@ -361,10 +365,10 @@ brief:    CDR3 amino acid clonotype consensus, Xs at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -374,7 +378,7 @@ brief:    nucleotide start of CDR3 sequence on full sequence
 page:     enclone help parseable
 avail:    public
 notes:    Check if type is really positive integer.
-code:
+code:     ex.share[mid].cdr3_start.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa
 inputs:   ex, mid
@@ -402,8 +406,8 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_ref
-inputs:   ?
+name:     cdr{1,2}_aa_ref
+inputs:   ex, mid, refdata
 limits:
 class:    cvar
 level:    clono
@@ -413,7 +417,30 @@ brief:    CDR* amino acid sequence for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          } else {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          }
+          y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
 inputs:   ?
@@ -491,7 +518,7 @@ code:     let x = &ex.share[mid];
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
-inputs:   ?
+inputs:   ex, mid
 limits:
 class:    cvar
 level:    exact
@@ -501,7 +528,7 @@ brief:    length of observed constant region
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_id
 inputs:   ?
@@ -608,7 +635,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -618,10 +645,32 @@ brief:    optimal D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut opt = Vec::new();
+              if !ds.is_empty() {
+                  opt = ds[0].clone();
+              }
+              let mut opt_name = String::new();
+              if opt.is_empty() {
+                  opt_name = "none".to_string();
+              } else {
+                  for i in 0..opt.len() {
+                      if i > 0 {
+                          opt_name += ":";
+                      }
+                      opt_name += &refdata.name[opt[i]];
+                  }
+              }
+              opt_name
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_score
-inputs:   ?
+inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
 limits:
 class:    cvar
 level:    exact
@@ -631,7 +680,18 @@ brief:    score of optimal D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     if !ex.share[mid].left {
+              String::new()
+          } else {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              format!("{:.1}", delta)
+          }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
 inputs:   ?
