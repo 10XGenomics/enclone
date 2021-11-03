@@ -31,7 +31,7 @@ enclone_vars = { path = "../enclone_vars" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 expr_tools = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "tenx_branch_feb2021", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = "0.8"
 io_utils = "0.2"
 itertools = "0.10"
 perf_stats = "0.1"

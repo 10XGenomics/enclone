@@ -29,7 +29,7 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "6"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "tenx_branch_feb2021", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = "0.8"
 io_utils = "0.2"
 itertools = "0.10"
 lazy_static = "1"

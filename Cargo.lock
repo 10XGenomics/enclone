@@ -438,7 +438,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
- "rand 0.7.3",
+ "rand 0.8.4",
  "regex",
  "serde",
  "serde_derive",
@@ -607,27 +607,6 @@ name = "bytes"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b700ce4376041dcd0a327fd0097c41095743c4c8af8887265942faf1100bd040"
-
-[[package]]
-name = "bzip2"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42b7c3cbf0fa9c1b82308d57191728ca0256cb821220f4e2fd410a72ade26e3b"
-dependencies = [
- "bzip2-sys",
- "libc",
-]
-
-[[package]]
-name = "bzip2-sys"
-version = "0.1.11+1.0.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "736a955f3fa7875102d57c82b8cac37ec45224a07fd32d58f9f7a186b6cd4cdc"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
-]
 
 [[package]]
 name = "cache-padded"
@@ -2486,24 +2465,27 @@ checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 
 [[package]]
 name = "hdf5"
-version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b5c31bb899c52eef31a924a99bea231f3330890ef4dd074776fb6e77327d74ab"
 dependencies = [
  "bitflags",
+ "cfg-if 1.0.0",
  "hdf5-derive",
  "hdf5-sys",
  "hdf5-types",
  "lazy_static",
  "libc",
  "ndarray",
- "num-integer",
  "parking_lot",
+ "paste",
 ]
 
 [[package]]
 name = "hdf5-derive"
-version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16d8f70301b7d879dfd719c62ee7d37d95d36db7e217641e56154da3799dc263"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2512,28 +2494,28 @@ dependencies = [
 
 [[package]]
 name = "hdf5-sys"
-version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "740ac0d726cce2e93d4c7716d2d53fa744130d51618ea217cd133fd4c02b95f4"
 dependencies = [
- "attohttpc",
- "bzip2",
  "libc",
  "libloading 0.7.1",
  "pkg-config",
  "regex",
  "serde",
  "serde_derive",
- "sha2",
- "tar",
  "winreg",
 ]
 
 [[package]]
 name = "hdf5-types"
-version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=tenx_branch_feb2021#eafcf43a9bcbc51d46adb4d1206514c7f9e51cff"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67b5b368aeaeba724e006807d8535659bf31ecd605292b372d7e01feb4035b28"
 dependencies = [
  "ascii",
+ "cfg-if 1.0.0",
+ "hdf5-sys",
  "libc",
 ]
 
@@ -4040,7 +4022,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.23.0",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5981,9 +5963,9 @@ dependencies = [
 
 [[package]]
 name = "winreg"
-version = "0.8.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d107f8c6e916235c4c01cabb3e8acf7bea8ef6a63ca2e7fa0527c049badfc48c"
+checksum = "80d0f4e272c85def139476380b12f9ac60926689dd2e01d4923222f40580869d"
 dependencies = [
  "serde",
  "winapi",
