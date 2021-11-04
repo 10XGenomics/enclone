@@ -9,7 +9,7 @@ use stats_utils::percent_ratio;
 use std::collections::HashMap;
 use string_utils::{stringme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, next_diff12_4, unique_sort};
+use vector_utils::{bin_member, next_diff12_4};
 
 pub fn proc_cvar2(
     var: &String,
@@ -608,18 +608,6 @@ pub fn proc_cvar2(
             d_start = format!("{}", ex.share[mid].d_start.unwrap());
         }
         cvar_stats1![j, var, d_start];
-    } else if *var == "const" {
-        let mut constx = Vec::<String>::new();
-        let cid = ex.share[mid].c_ref_id;
-        if cid.is_some() {
-            constx.push(refdata.name[cid.unwrap()].clone());
-        } else {
-            constx.push("?".to_string());
-        }
-        unique_sort(&mut constx);
-        // This is overcomplicated because there is now at most one
-        // const entry per exact subclonotype.
-        cvar_stats1![j, var, format!("{}", constx.iter().format(","))];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.

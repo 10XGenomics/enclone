@@ -6,6 +6,7 @@ use amino::*;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;
+use itertools::Itertools;
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::HashMap;
@@ -171,6 +172,20 @@ pub fn proc_cvar_auto(
         cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
     } else if var == "cdr3_start" {
         ex.share[mid].cdr3_start.to_string()
+    } else if var == "clen" {
+        format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
+    } else if var == "const" {
+        let mut constx = Vec::<String>::new();
+        let cid = ex.share[mid].c_ref_id;
+        if cid.is_some() {
+            constx.push(refdata.name[cid.unwrap()].clone());
+        } else {
+            constx.push("?".to_string());
+        }
+        unique_sort(&mut constx);
+        // This is overcomplicated because there is now at most one
+        // const entry per exact subclonotype.
+        format!("{}", constx.iter().format(","))
     } else if var == "d1_name" {
         if !ex.share[mid].left {
             String::new()

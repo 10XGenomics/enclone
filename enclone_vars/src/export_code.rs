@@ -24,6 +24,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         use enclone_core::defs::*;
         use enclone_core::opt_d::*;
         use enclone_proto::types::*;
+        use itertools::Itertools;
         use stats_utils::*;
         use std::cmp::min;
         use std::collections::HashMap;

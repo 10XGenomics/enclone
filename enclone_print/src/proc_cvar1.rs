@@ -779,12 +779,6 @@ pub fn proc_cvar1(
         cvar_stats1![j, var, y];
     } else if *var == "ulen" {
         cvar_stats1![j, *var, format!("{}", ex.share[mid].v_start)];
-    } else if *var == "clen" {
-        cvar_stats1![
-            j,
-            var,
-            format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
-        ];
     } else if *var == "dna%" {
         let xm = &ex.share[mid];
         let mut diffs = 0;
