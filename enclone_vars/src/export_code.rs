@@ -6,6 +6,8 @@ use crate::var::parse_variables;
 use io_utils::*;
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use std::process::Command;
+use string_utils::*;
 
 pub fn export_code() {
 
@@ -135,33 +137,44 @@ pub fn export_code() {
 
         "###;
 
-    // Fetch variables and traverse.
+    // Build auto file.
 
-    let mut f = open_for_write_new!["enclone_print/src/proc_cvar_auto.rs"];
-    fwrite!(f, "{}", cvar_vdj_start);
-    let vars = std::fs::read_to_string("enclone_vars/src/vars").unwrap();
-    let vars = parse_variables(&vars);
-    for v in vars.iter() {
-        if v.inputs == "cvar_vdj" { // RESTRICTION 1
-            let mut upper = false;
-            let var = &v.name;
-            for c in var.chars() {
-                if c.is_ascii_uppercase() {
-                    upper = true;
+    {
+        let mut f = open_for_write_new!["enclone_print/src/proc_cvar_auto.rs"];
+        fwrite!(f, "{}", cvar_vdj_start);
+        let vars = std::fs::read_to_string("enclone_vars/src/vars").unwrap();
+        let vars = parse_variables(&vars);
+        for v in vars.iter() {
+            if v.inputs == "cvar_vdj" { // RESTRICTION 1
+                let mut upper = false;
+                let var = &v.name;
+                for c in var.chars() {
+                    if c.is_ascii_uppercase() {
+                        upper = true;
+                    }
                 }
-            }
-            if !upper { // RESTRICTION 2
-                if !var.contains('{') { // RESTRICTION 3
-                    fwriteln!(f, "}} else if var == \"{}\" {{", var);
-                    fwriteln!(f, "{}", v.code);
+                if !upper { // RESTRICTION 2
+                    if !var.contains('{') { // RESTRICTION 3
+                        fwriteln!(f, "}} else if var == \"{}\" {{", var);
+                        fwriteln!(f, "{}", v.code);
+                    }
                 }
             }
         }
+        fwrite!(f, "{}", cvar_vdj_stop);
     }
 
-    // Add tail.
+    // Rustfmt.
 
-    fwrite!(f, "{}", cvar_vdj_stop);
+    let new = Command::new("rustfmt")
+        .arg("enclone_print/src/proc_cvar_auto.rs")
+        .output()
+        .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt".to_string()));
+    if new.status.code() != Some(0) {
+        eprintln!("\nrustfmt failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
+        std::process::exit(1);
+    }
 }
 
 // candidates:
