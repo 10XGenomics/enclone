@@ -828,7 +828,7 @@ code:     if !ex.share[mid].left {
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_delta
-inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -852,7 +852,7 @@ code:     if !ex.share[mid].left {
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_donor
-inputs:   ex, mid, refdata, rsi, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -887,7 +887,7 @@ code:     let vid = ex.share[mid].v_ref_id;
           format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_frame
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -907,7 +907,7 @@ code:     let mut d_frame = String::new();
           d_frame
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_id
-inputs:   rsi, col, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono

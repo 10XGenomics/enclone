@@ -26,7 +26,7 @@ pub fn proc_cvar2(
     varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
+    _dref: &Vec<DonorReferenceItem>,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     _show_aa: &Vec<Vec<usize>>,
     _field_types: &Vec<Vec<u8>>,
@@ -467,30 +467,6 @@ pub fn proc_cvar2(
             u = refdata.name[uid.unwrap()].clone();
         }
         cvar_stats1![j, var, u];
-    } else if *var == "d_donor" {
-        let vid = ex.share[mid].v_ref_id;
-        let mut vref = refdata.refs[vid].to_ascii_vec();
-        if rsi.vpids[col].is_some() {
-            vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-        }
-        let jid = ex.share[mid].j_ref_id;
-        let jref = &refdata.refs[jid].to_ascii_vec();
-        let tig = &ex.share[mid].seq_del;
-        let n = tig.len();
-        let mut diffs = 0;
-        for p in 0..n {
-            if tig[p] == b'-' {
-                continue;
-            }
-            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
-                diffs += 1;
-            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                && tig[p] != jref[jref.len() - (n - p)]
-            {
-                diffs += 1;
-            }
-        }
-        cvar_stats1![j, var, format!("{}", diffs)];
     } else if *var == "var" {
         cvar_stats1![j, var, stringme(&varmat[u][col])];
     } else if *var == "u" {
@@ -560,15 +536,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "d_frame" {
-        let mut d_frame = String::new();
-        if ex.share[mid].d_start.is_some() {
-            d_frame = format!(
-                "{}",
-                (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
-            );
-        }
-        cvar_stats1![j, var, d_frame];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.

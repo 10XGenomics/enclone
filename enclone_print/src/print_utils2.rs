@@ -641,13 +641,6 @@ pub fn row_fill(
                     String::new()
                 };
                 cvar_stats1![j, var, dname];
-            } else if *var == "d_id" {
-                let did = if rsi.dids[col].is_some() {
-                    format!("{}", refdata.id[rsi.dids[col].unwrap()])
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, did];
             }
         }
 

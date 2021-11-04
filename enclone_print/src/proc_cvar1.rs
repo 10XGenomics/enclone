@@ -8,7 +8,6 @@ use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
 use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use std::collections::HashMap;
@@ -288,28 +287,6 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, format!("{}", comp)];
         } else {
             cvar_stats1![j, var, edit];
-        }
-    } else if *var == "d_delta" {
-        if !ex.share[mid].left {
-            cvar_stats1![j, var, "".to_string()];
-            return Ok(true);
-        }
-        let mut scores = Vec::<f64>::new();
-        let mut ds = Vec::<Vec<usize>>::new();
-        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
-        if *var == "d#" {
-            // PUZZLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            let mut score = 0.0;
-            if !scores.is_empty() {
-                score = scores[0];
-            }
-            cvar_stats1![j, var, format!("{:.1}", score)];
-        } else {
-            let mut delta = 0.0;
-            if scores.len() > 1 {
-                delta = scores[0] - scores[1];
-            }
-            cvar_stats1![j, var, format!("{:.1}", delta)];
         }
     } else if *var == "cdr1_dna"
         || *var == "cdr1_aa"

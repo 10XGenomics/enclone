@@ -266,6 +266,59 @@ pub fn proc_cvar_auto(
             }
             format!("{:.1}", score)
         }
+    } else if var == "d_delta" {
+        if !ex.share[mid].left {
+            String::new()
+        } else {
+            let mut scores = Vec::<f64>::new();
+            let mut ds = Vec::<Vec<usize>>::new();
+            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            let mut delta = 0.0;
+            if scores.len() > 1 {
+                delta = scores[0] - scores[1];
+            }
+            format!("{:.1}", delta)
+        }
+    } else if var == "d_donor" {
+        let vid = ex.share[mid].v_ref_id;
+        let mut vref = refdata.refs[vid].to_ascii_vec();
+        if rsi.vpids[col].is_some() {
+            vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+        }
+        let jid = ex.share[mid].j_ref_id;
+        let jref = &refdata.refs[jid].to_ascii_vec();
+        let tig = &ex.share[mid].seq_del;
+        let n = tig.len();
+        let mut diffs = 0;
+        for p in 0..n {
+            if tig[p] == b'-' {
+                continue;
+            }
+            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                diffs += 1;
+            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                && tig[p] != jref[jref.len() - (n - p)]
+            {
+                diffs += 1;
+            }
+        }
+        format!("{}", diffs)
+    } else if var == "d_frame" {
+        let mut d_frame = String::new();
+        if ex.share[mid].d_start.is_some() {
+            d_frame = format!(
+                "{}",
+                (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
+            );
+        }
+        d_frame
+    } else if var == "d_id" {
+        let did = if rsi.dids[col].is_some() {
+            format!("{}", refdata.id[rsi.dids[col].unwrap()])
+        } else {
+            String::new()
+        };
+        did
     } else if var == "d_start" {
         let mut d_start = String::new();
         if ex.share[mid].d_start.is_some() {
