@@ -2,7 +2,7 @@
 
 // This file contains the single function proc_cvar.
 
-use crate::print_utils1::color_codon;
+use crate::print_utils1::{color_codon, test_internal_error_seq};
 use amino::aa_seq;
 use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
@@ -14,23 +14,6 @@ use std::collections::HashMap;
 use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, next_diff, sort_sync2};
-
-pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(), String> {
-    let mut found = false;
-    for i in 0..seq.len() {
-        if seq[i..].starts_with(&dna) {
-            found = true;
-        }
-    }
-    if !found {
-        return Err(format!(
-            "\nInternal error, failed to find {}, CDR3 = {}.\n",
-            strme(&dna),
-            cdr3
-        ));
-    }
-    Ok(())
-}
 
 pub fn proc_cvar1(
     var: &String,

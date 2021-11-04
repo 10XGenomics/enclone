@@ -14,9 +14,28 @@ use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::stringme;
+use string_utils::{strme, stringme};
 use tables::{print_tabular_vbox, visible_width};
 use vector_utils::{bin_member, lower_bound1_3, meet_size, unique_sort, upper_bound1_3, VecUtils};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(), String> {
+    let mut found = false;
+    for i in 0..seq.len() {
+        if seq[i..].starts_with(&dna) {
+            found = true;
+        }
+    }
+    if !found {
+        return Err(format!(
+            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+            strme(&dna),
+            cdr3
+        ));
+    }
+    Ok(())
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
