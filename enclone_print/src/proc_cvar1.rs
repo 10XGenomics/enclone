@@ -289,7 +289,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "d2_name" || *var == "d_delta" || *var == "d1_score" || *var == "d2_score" {
+    } else if *var == "d_delta" {
         if !ex.share[mid].left {
             cvar_stats1![j, var, "".to_string()];
             return Ok(true);
@@ -297,33 +297,11 @@ pub fn proc_cvar1(
         let mut scores = Vec::<f64>::new();
         let mut ds = Vec::<Vec<usize>>::new();
         opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
-        let mut opt2 = Vec::new();
-        if ds.len() > 1 {
-            opt2 = ds[1].clone();
-        }
-        let mut opt2_name = String::new();
-        if opt2.is_empty() {
-            opt2_name = "none".to_string();
-        } else {
-            for i in 0..opt2.len() {
-                if i > 0 {
-                    opt2_name += ":";
-                }
-                opt2_name += &refdata.name[opt2[i]];
-            }
-        }
-        if *var == "d2_name" {
-            cvar_stats1![j, var, opt2_name];
-        } else if *var == "d#" {
+        if *var == "d#" {
+            // PUZZLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             let mut score = 0.0;
             if !scores.is_empty() {
                 score = scores[0];
-            }
-            cvar_stats1![j, var, format!("{:.1}", score)];
-        } else if *var == "d2_score" {
-            let mut score = 0.0;
-            if scores.len() > 1 {
-                score = scores[1];
             }
             cvar_stats1![j, var, format!("{:.1}", score)];
         } else {

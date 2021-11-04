@@ -453,12 +453,6 @@ pub fn proc_cvar2(
             udiff = format!("+{}", ulen);
         }
         cvar_stats1![j, var, udiff];
-    } else if *var == "const_id" {
-        let mut const_id = String::new();
-        if ex.share[mid].c_ref_id.is_some() {
-            const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
-        }
-        cvar_stats1![j, var, const_id];
     } else if *var == "utr_id" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;

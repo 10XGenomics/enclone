@@ -186,6 +186,12 @@ pub fn proc_cvar_auto(
         // This is overcomplicated because there is now at most one
         // const entry per exact subclonotype.
         format!("{}", constx.iter().format(","))
+    } else if var == "const_id" {
+        let mut const_id = String::new();
+        if ex.share[mid].c_ref_id.is_some() {
+            const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
+        }
+        const_id
     } else if var == "d1_name" {
         if !ex.share[mid].left {
             String::new()
@@ -209,6 +215,56 @@ pub fn proc_cvar_auto(
                 }
             }
             opt_name
+        }
+    } else if var == "d1_score" {
+        if !ex.share[mid].left {
+            String::new()
+        } else {
+            let mut scores = Vec::<f64>::new();
+            let mut ds = Vec::<Vec<usize>>::new();
+            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            let mut delta = 0.0;
+            if scores.len() > 1 {
+                delta = scores[0] - scores[1];
+            }
+            format!("{:.1}", delta)
+        }
+    } else if var == "d2_name" {
+        if !ex.share[mid].left {
+            String::new()
+        } else {
+            let mut scores = Vec::<f64>::new();
+            let mut ds = Vec::<Vec<usize>>::new();
+            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            let mut opt2 = Vec::new();
+            if ds.len() > 1 {
+                opt2 = ds[1].clone();
+            }
+            let mut opt2_name = String::new();
+            if opt2.is_empty() {
+                opt2_name = "none".to_string();
+            } else {
+                for i in 0..opt2.len() {
+                    if i > 0 {
+                        opt2_name += ":";
+                    }
+                    opt2_name += &refdata.name[opt2[i]];
+                }
+            }
+            opt2_name
+        }
+    } else if var == "d2_score" {
+        if !ex.share[mid].left {
+            String::new()
+        } else {
+            let mut scores = Vec::<f64>::new();
+            let mut ds = Vec::<Vec<usize>>::new();
+            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            let mut score = 0.0;
+            if scores.len() > 1 {
+                score = scores[1];
+            }
+            format!("{:.1}", score)
         }
     } else if var == "d_start" {
         let mut d_start = String::new();
