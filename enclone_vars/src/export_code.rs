@@ -178,7 +178,10 @@ pub fn export_code() -> Vec<(String, String)> {
         .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\nrustfmt failed\n");
-        eprintln!("You can observe the problem by typing rustfmt {}.\n", temp_out);
+        eprintln!(
+            "You can observe the problem by typing rustfmt {}.\n",
+            temp_out
+        );
         std::process::exit(1);
     }
     let f = std::fs::read_to_string(&temp_out).unwrap();
