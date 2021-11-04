@@ -389,7 +389,7 @@ code:     let cstart = ex.share[mid].j_stop;
           }
           cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr*_aa_{0,...}_{0,...}_ext
+name:     cdr*_aa_{0..}_{0..}_ext
 inputs:   ?
 limits:
 class:    cvar
@@ -441,7 +441,7 @@ avail:    public
 notes:    Check if type is really positive integer.
 code:     ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa
+name:     cdr{1..3}_aa
 inputs:   ex, mid
 limits:
 class:    cvar
@@ -454,7 +454,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_north
+name:     cdr{1..3}_aa_north
 inputs:   ?
 limits:
 class:    cvar
@@ -467,7 +467,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
+name:     cdr{1..3}_aa_{0..}_{0..}_ext
 inputs:   ?
 limits:
 class:    cvar
@@ -480,7 +480,7 @@ avail:    public
 notes:    Do extension lengths start at zero?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_dna
+name:     cdr{1..3}_dna
 inputs:   ?
 limits:
 class:    cvar
@@ -493,7 +493,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_len
+name:     cdr{1..3}_len
 inputs:   ?
 limits:
 class:    cvar
@@ -506,7 +506,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2}_aa_ref
+name:     cdr{1..2}_aa_ref
 inputs:   ex, mid, refdata
 limits:
 class:    cvar
@@ -542,7 +542,7 @@ code:     let x = &ex.share[mid];
           }
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2}_dna_ref
+name:     cdr{1..2}_dna_ref
 inputs:   ex, mid, refdata
 limits:
 class:    cvar
@@ -1258,7 +1258,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_aa
+name:     fwr{1..4}_aa
 inputs:   ?
 limits:
 class:    cvar
@@ -1271,7 +1271,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_aa_ref
+name:     fwr{1..4}_aa_ref
 inputs:   ?
 limits:
 class:    cvar
@@ -1284,7 +1284,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_dna
+name:     fwr{1..4}_dna
 inputs:   ?
 limits:
 class:    cvar
@@ -1297,7 +1297,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_dna_ref
+name:     fwr{1..4}_dna_ref
 inputs:   ?
 limits:
 class:    cvar
@@ -1322,7 +1322,7 @@ code:     if arg1 == 1 {
               // ... NOT FINISHED ...
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_len
+name:     fwr{1..4}_len
 inputs:   ?
 limits:
 class:    cvar
