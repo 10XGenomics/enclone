@@ -634,11 +634,7 @@ pub fn row_fill(
 
             // Process some variables.
 
-            if *var == "v_name" {
-                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
-            } else if *var == "v_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
-            } else if *var == "d_name" {
+            if *var == "d_name" {
                 let dname = if rsi.dids[col].is_some() {
                     refdata.name[rsi.dids[col].unwrap()].clone()
                 } else {

@@ -295,6 +295,14 @@ pub fn proc_cvar_auto(
         }
         numis.sort();
         format!("{}", numis.iter().max().unwrap())
+    } else if var == "v_id" {
+        format!("{}", refdata.id[rsi.vids[col]])
+    } else if var == "v_name" {
+        refdata.name[rsi.vids[col]].clone()
+    } else if var == "v_start" {
+        format!("{}", ex.share[mid].v_start)
+    } else if var == "vjlen" {
+        format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
     } else {
         "$UNDEFINED".to_string()
     };

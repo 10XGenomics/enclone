@@ -2095,7 +2095,7 @@ code:     let mut u = String::new();
           u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_id
-inputs:   rsi, col, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -2108,7 +2108,7 @@ notes:
 code:     format!("{}", refdata.id[rsi.vids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_name
-inputs:   refdata, rsi, col
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -2121,7 +2121,7 @@ notes:
 code:     refdata.name[rsi.vids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2238,7 +2238,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vjlen
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact

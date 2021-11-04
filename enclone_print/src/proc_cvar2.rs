@@ -575,8 +575,6 @@ pub fn proc_cvar2(
             );
         }
         cvar_stats1![j, var, d_frame];
-    } else if *var == "v_start" {
-        cvar_stats1![j, var, format!("{}", ex.share[mid].v_start)];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
