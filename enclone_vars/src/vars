@@ -276,7 +276,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     aa%
-inputs:   ex, mid, refdata, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -347,7 +347,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdiff
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -710,7 +710,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
-inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
