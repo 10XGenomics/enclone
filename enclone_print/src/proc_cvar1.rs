@@ -406,22 +406,7 @@ pub fn proc_cvar1(
                         dna.push(x.seq_del_amino[p]);
                     }
                 }
-
-                // Test for internal error.
-
-                let mut found = false;
-                for i in 0..x.seq.len() {
-                    if x.seq[i..].starts_with(&dna) {
-                        found = true;
-                    }
-                }
-                if !found {
-                    return Err(format!(
-                        "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                        strme(&dna),
-                        x.cdr3_aa
-                    ));
-                }
+                test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
                 if *var == "cdr2_dna".to_string() {
                     y = stringme(&dna);
                 } else if var.starts_with("cdr2_aa") {
@@ -481,22 +466,7 @@ pub fn proc_cvar1(
                     dna.push(x.seq_del_amino[p]);
                 }
             }
-
-            // Test for internal error.
-
-            let mut found = false;
-            for i in 0..x.seq.len() {
-                if x.seq[i..].starts_with(&dna) {
-                    found = true;
-                }
-            }
-            if !found {
-                return Err(format!(
-                    "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                    strme(&dna),
-                    x.cdr3_aa
-                ));
-            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
@@ -520,22 +490,7 @@ pub fn proc_cvar1(
                     dna.push(x.seq_del_amino[p]);
                 }
             }
-
-            // Test for internal error.
-
-            let mut found = false;
-            for i in 0..x.seq.len() {
-                if x.seq[i..].starts_with(&dna) {
-                    found = true;
-                }
-            }
-            if !found {
-                return Err(format!(
-                    "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                    strme(&dna),
-                    x.cdr3_aa
-                ));
-            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
             if *var == "fwr1_dna".to_string() {
                 y = stringme(&dna);
             } else if *var == "fwr1_aa".to_string() {
@@ -578,22 +533,7 @@ pub fn proc_cvar1(
                     dna.push(x.seq_del_amino[p]);
                 }
             }
-
-            // Test for internal error.
-
-            let mut found = false;
-            for i in 0..x.seq.len() {
-                if x.seq[i..].starts_with(&dna) {
-                    found = true;
-                }
-            }
-            if !found {
-                return Err(format!(
-                    "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                    strme(&dna),
-                    x.cdr3_aa
-                ));
-            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
             if *var == "fwr2_dna".to_string() {
                 y = stringme(&dna);
             } else if *var == "fwr2_aa".to_string() {
@@ -637,22 +577,7 @@ pub fn proc_cvar1(
                     dna.push(x.seq_del_amino[p]);
                 }
             }
-
-            // Test for internal error.
-
-            let mut found = false;
-            for i in 0..x.seq.len() {
-                if x.seq[i..].starts_with(&dna) {
-                    found = true;
-                }
-            }
-            if !found {
-                return Err(format!(
-                    "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                    strme(&dna),
-                    x.cdr3_aa
-                ));
-            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
             if *var == "fwr3_dna".to_string() {
                 y = stringme(&dna);
             } else if *var == "fwr3_aa".to_string() {
