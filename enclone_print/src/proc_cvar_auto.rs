@@ -207,6 +207,75 @@ pub fn proc_cvar_auto(
             }
         }
         y
+    } else if var.starts_with("cdr")
+        && var.ends_with("_dna")
+        && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
+        && var.after("cdr").rev_before("_dna").force_usize() >= 1
+        && var.after("cdr").rev_before("_dna").force_usize() <= 3
+    {
+        let arg1 = var.after("cdr").rev_before("_dna").force_usize();
+        let x = &ex.share[mid];
+        if arg1 == 1 {
+            let mut y = "unknown".to_string();
+            if x.cdr1_start.is_some()
+                && x.fr2_start.is_some()
+                && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+            {
+                let mut dna = Vec::<u8>::new();
+                if x.cdr1_start.unwrap() as i64 >= 0
+                    && (x.cdr1_start.unwrap() as i64) < x.seq_del_amino.len() as i64
+                    && x.fr2_start.unwrap() as i64 > 0
+                    && x.fr2_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+                {
+                    for p in (x.cdr1_start.unwrap() as i64)..x.fr2_start.unwrap() as i64 {
+                        let p = p as usize;
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                    y = stringme(&dna);
+                }
+            }
+            y
+        } else if arg1 == 2 {
+            let mut y = "unknown".to_string();
+            if x.cdr2_start.is_some()
+                && x.fr3_start.is_some()
+                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+            {
+                let mut dna = Vec::<u8>::new();
+                if x.cdr2_start.unwrap() as i64 >= 0
+                    && (x.cdr2_start.unwrap() as i64) < x.seq_del_amino.len() as i64
+                    && x.fr3_start.unwrap() as i64 > 0
+                    && x.fr3_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+                {
+                    for p in (x.cdr2_start.unwrap() as i64)..x.fr3_start.unwrap() as i64 {
+                        let p = p as usize;
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                    y = stringme(&dna);
+                }
+            }
+            y
+        } else {
+            x.cdr3_dna.clone()
+        }
     } else if var == "clen" {
         format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
     } else if var == "const" {

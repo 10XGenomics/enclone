@@ -285,8 +285,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "cdr1_dna"
-        || *var == "cdr1_aa"
+    } else if *var == "cdr1_aa"
         || *var == "cdr1_aa_north"
         || *var == "cdr1_len"
         || (var.starts_with("cdr1_aa_") && var.ends_with("_ext"))
@@ -324,9 +323,7 @@ pub fn proc_cvar1(
                     }
                 }
                 test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                if *var == "cdr1_dna".to_string() {
-                    y = stringme(&dna);
-                } else if var.starts_with("cdr1_aa") {
+                if var.starts_with("cdr1_aa") {
                     y = stringme(&aa_seq(&dna, 0));
                 } else {
                     y = format!("{}", dna.len() / 3);
@@ -347,8 +344,7 @@ pub fn proc_cvar1(
             y = stringme(&dna);
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr2_dna"
-        || *var == "cdr2_aa"
+    } else if *var == "cdr2_aa"
         || *var == "cdr2_aa_north"
         || *var == "cdr2_len"
         || (var.starts_with("cdr2_aa_") && var.ends_with("_ext"))
@@ -390,9 +386,7 @@ pub fn proc_cvar1(
                     }
                 }
                 test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                if *var == "cdr2_dna".to_string() {
-                    y = stringme(&dna);
-                } else if var.starts_with("cdr2_aa") {
+                if var.starts_with("cdr2_aa") {
                     y = stringme(&aa_seq(&dna, 0));
                 } else {
                     y = format!("{}", dna.len() / 3);
@@ -453,8 +447,6 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr3_dna" {
-        cvar_stats1![j, var, ex.share[mid].cdr3_dna.clone()];
     } else if *var == "cdr3_len" {
         cvar_stats1![j, var, ex.share[mid].cdr3_aa.len().to_string()];
     } else if *var == "fwr1_dna" || *var == "fwr1_aa" || *var == "fwr1_len" {

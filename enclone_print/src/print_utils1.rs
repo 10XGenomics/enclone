@@ -14,7 +14,7 @@ use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::{strme, stringme};
+use string_utils::{stringme, strme};
 use tables::{print_tabular_vbox, visible_width};
 use vector_utils::{bin_member, lower_bound1_3, meet_size, unique_sort, upper_bound1_3, VecUtils};
 
