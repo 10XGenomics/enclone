@@ -442,7 +442,7 @@ notes:    Check if type is really positive integer.
 code:     ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..2}_aa_ref
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono

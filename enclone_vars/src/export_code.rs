@@ -174,7 +174,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         let begin = var.before("{");
                         let end = var.after("}");
                         let low = var.after("{").before("..").force_usize();
-                        let high = var.after("{").after("..");
+                        let high = var.after("{").between("..", "}");
                         let high = if high.len() == 0 {
                             usize::MAX
                         } else {
@@ -185,25 +185,26 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             "}} else if var.starts_with(\"{}\")
                             && var.ends_with(\"{}\")
                             && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                            && var.after(\"{}\").rev_before(\"{}\").force_usize() >= low
-                            && var.after(\"{}\").rev_before(\"{}\").force_usize() <= high {{",
+                            && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {}
+                            && var.after(\"{}\").rev_before(\"{}\").force_usize() <= {} {{",
                             begin,
                             end,
                             begin,
                             end,
                             begin,
                             end,
+                            low,
                             begin,
                             end,
+                            high,
                         );
                         fwriteln!(
                             f,
                             "let arg1 = var.after(\"{}\").rev_before(\"{}\").force_usize();",
-                            low,
-                            high,
+                            begin,
+                            end,
                         );
                         fwriteln!(f, "{}", v.code);
-                        fwriteln!(f, "}}");
                     }
                 }
             }

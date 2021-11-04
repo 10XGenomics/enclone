@@ -172,6 +172,41 @@ pub fn proc_cvar_auto(
         cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
     } else if var == "cdr3_start" {
         ex.share[mid].cdr3_start.to_string()
+    } else if var.starts_with("cdr")
+        && var.ends_with("_aa_ref")
+        && var
+            .after("cdr")
+            .rev_before("_aa_ref")
+            .parse::<usize>()
+            .is_ok()
+        && var.after("cdr").rev_before("_aa_ref").force_usize() >= 1
+        && var.after("cdr").rev_before("_aa_ref").force_usize() <= 2
+    {
+        let arg1 = var.after("cdr").rev_before("_aa_ref").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        if arg1 == 1 {
+            if x.cdr1_start.is_some()
+                && x.fr2_start.is_some()
+                && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+            {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                    .to_vec();
+                y = stringme(&aa_seq(&dna, 0));
+            }
+        } else {
+            if x.cdr2_start.is_some()
+                && x.fr3_start.is_some()
+                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+            {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                    .to_vec();
+                y = stringme(&aa_seq(&dna, 0));
+            }
+        }
+        y
     } else if var == "clen" {
         format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
     } else if var == "const" {
