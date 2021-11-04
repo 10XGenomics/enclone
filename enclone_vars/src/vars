@@ -478,7 +478,7 @@ code:     let x = &ex.share[mid];
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..2}_dna_ref
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -490,7 +490,7 @@ avail:    public
 notes:
 code:     let x = &ex.share[mid];
           let mut y = "unknown".to_string();
-          if arg1 == "1" {
+          if arg1 == 1 {
               if x.cdr1_start.is_some()
                   && x.fr2_start.is_some()
                   && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()

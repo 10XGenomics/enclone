@@ -208,6 +208,41 @@ pub fn proc_cvar_auto(
         }
         y
     } else if var.starts_with("cdr")
+        && var.ends_with("_dna_ref")
+        && var
+            .after("cdr")
+            .rev_before("_dna_ref")
+            .parse::<usize>()
+            .is_ok()
+        && var.after("cdr").rev_before("_dna_ref").force_usize() >= 1
+        && var.after("cdr").rev_before("_dna_ref").force_usize() <= 2
+    {
+        let arg1 = var.after("cdr").rev_before("_dna_ref").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        if arg1 == 1 {
+            if x.cdr1_start.is_some()
+                && x.fr2_start.is_some()
+                && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+            {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                    .to_vec();
+                y = stringme(&dna);
+            }
+        } else {
+            if x.cdr2_start.is_some()
+                && x.fr3_start.is_some()
+                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+            {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                    .to_vec();
+                y = stringme(&dna);
+            }
+        }
+        y
+    } else if var.starts_with("cdr")
         && var.ends_with("_dna")
         && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
         && var.after("cdr").rev_before("_dna").force_usize() >= 1
