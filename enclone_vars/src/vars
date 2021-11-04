@@ -969,7 +969,7 @@ code:     let dname = if rsi.dids[col].is_some() {
           dname
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_start
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -986,7 +986,7 @@ code:     let mut d_start = String::new();
           d_start
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_univ
-inputs:   ex, mid, refdata, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1492,7 +1492,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_id
-inputs:   col, rsi, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -1505,7 +1505,7 @@ notes:
 code:     format!("{}", refdata.id[rsi.jids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_name
-inputs:   rsi, col, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono

@@ -210,6 +210,37 @@ pub fn proc_cvar_auto(
             }
             opt_name
         }
+    } else if var == "d_start" {
+        let mut d_start = String::new();
+        if ex.share[mid].d_start.is_some() {
+            d_start = format!("{}", ex.share[mid].d_start.unwrap());
+        }
+        d_start
+    } else if var == "d_univ" {
+        let vid = ex.share[mid].v_ref_id;
+        let vref = &refdata.refs[vid].to_ascii_vec();
+        let jid = ex.share[mid].j_ref_id;
+        let jref = &refdata.refs[jid].to_ascii_vec();
+        let tig = &ex.share[mid].seq_del;
+        let n = tig.len();
+        let mut diffs = 0;
+        for p in 0..n {
+            if tig[p] == b'-' {
+                continue;
+            }
+            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                diffs += 1;
+            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                && tig[p] != jref[jref.len() - (n - p)]
+            {
+                diffs += 1;
+            }
+        }
+        format!("{}", diffs)
+    } else if var == "j_id" {
+        format!("{}", refdata.id[rsi.jids[col]])
+    } else if var == "j_name" {
+        refdata.name[rsi.jids[col]].clone()
     } else {
         "$UNDEFINED".to_string()
     };

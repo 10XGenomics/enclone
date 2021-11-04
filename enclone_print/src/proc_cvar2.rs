@@ -473,27 +473,6 @@ pub fn proc_cvar2(
             u = refdata.name[uid.unwrap()].clone();
         }
         cvar_stats1![j, var, u];
-    } else if *var == "d_univ" {
-        let vid = ex.share[mid].v_ref_id;
-        let vref = &refdata.refs[vid].to_ascii_vec();
-        let jid = ex.share[mid].j_ref_id;
-        let jref = &refdata.refs[jid].to_ascii_vec();
-        let tig = &ex.share[mid].seq_del;
-        let n = tig.len();
-        let mut diffs = 0;
-        for p in 0..n {
-            if tig[p] == b'-' {
-                continue;
-            }
-            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
-                diffs += 1;
-            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                && tig[p] != jref[jref.len() - (n - p)]
-            {
-                diffs += 1;
-            }
-        }
-        cvar_stats1![j, var, format!("{}", diffs)];
     } else if *var == "d_donor" {
         let vid = ex.share[mid].v_ref_id;
         let mut vref = refdata.refs[vid].to_ascii_vec();
@@ -602,12 +581,6 @@ pub fn proc_cvar2(
         cvar_stats1![j, var, d_frame];
     } else if *var == "v_start" {
         cvar_stats1![j, var, format!("{}", ex.share[mid].v_start)];
-    } else if *var == "d_start" {
-        let mut d_start = String::new();
-        if ex.share[mid].d_start.is_some() {
-            d_start = format!("{}", ex.share[mid].d_start.unwrap());
-        }
-        cvar_stats1![j, var, d_start];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.

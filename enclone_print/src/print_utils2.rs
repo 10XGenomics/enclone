@@ -652,10 +652,6 @@ pub fn row_fill(
                     String::new()
                 };
                 cvar_stats1![j, var, did];
-            } else if *var == "j_name" {
-                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
-            } else if *var == "j_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
             }
         }
 
