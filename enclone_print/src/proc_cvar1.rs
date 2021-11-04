@@ -11,7 +11,6 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
-use stats_utils::percent_ratio;
 use std::collections::HashMap;
 use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::refx::RefData;
@@ -290,12 +289,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "d2_name"
-        || *var == "d_delta"
-        || *var == "d_Δ"
-        || *var == "d1_score"
-        || *var == "d2_score"
-    {
+    } else if *var == "d2_name" || *var == "d_delta" || *var == "d1_score" || *var == "d2_score" {
         if !ex.share[mid].left {
             cvar_stats1![j, var, "".to_string()];
             return Ok(true);
@@ -779,42 +773,6 @@ pub fn proc_cvar1(
         cvar_stats1![j, var, y];
     } else if *var == "ulen" {
         cvar_stats1![j, *var, format!("{}", ex.share[mid].v_start)];
-    } else if *var == "dna%" {
-        let xm = &ex.share[mid];
-        let mut diffs = 0;
-        let mut denom = 0;
-        let seq = &xm.seq_del_amino;
-        let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
-        if xm.v_ref_id_donor_alt_id.is_some() {
-            vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
-        }
-        let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
-        let z = seq.len();
-        for p in 0..z {
-            let b = seq[p];
-            if b == b'-' {
-                diffs += 1;
-                denom += 1;
-                continue;
-            }
-            if p < vref.len() - ctl.heur.ref_v_trim {
-                denom += 1;
-                if b != vref[p] {
-                    diffs += 1;
-                }
-            }
-            if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
-                denom += 1;
-                if b != jref[jref.len() - (z - p)] {
-                    diffs += 1;
-                }
-            }
-        }
-        cvar_stats1![
-            j,
-            *var,
-            format!("{:.1}", percent_ratio(denom - diffs, denom))
-        ];
     } else if *var == "vjlen" {
         cvar_stats1![
             j,

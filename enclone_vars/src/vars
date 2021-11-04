@@ -1018,7 +1018,7 @@ code:     let vid = ex.share[mid].v_ref_id;
           format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_Δ
-inputs:   ex, mid, col, rsi, u, refdata, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1068,7 +1068,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
-inputs:   ex, mid, refdata, dref, ctl
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1671,7 +1671,7 @@ code:     let mut dist = 1_000_000;
           }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1892,7 +1892,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact

@@ -35,7 +35,7 @@ pub fn proc_cvar2(
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     u_min: usize,
-    u_max: usize,
+    _u_max: usize,
     u_mean: usize,
     median_numis: usize,
     utot: usize,
@@ -497,8 +497,6 @@ pub fn proc_cvar2(
             }
         }
         cvar_stats1![j, var, format!("{}", diffs)];
-    } else if *var == "notes" {
-        cvar_stats1![j, var, ex.share[mid].vs_notesx.clone()];
     } else if *var == "var" {
         cvar_stats1![j, var, stringme(&varmat[u][col])];
     } else if *var == "u" {
@@ -528,8 +526,6 @@ pub fn proc_cvar2(
         }
     } else if *var == "u_min" {
         cvar_stats1![j, var, format!("{}", u_min)];
-    } else if *var == "u_max" {
-        cvar_stats1![j, var, format!("{}", u_max)];
     } else if *var == "u_μ" {
         cvar_stats1![j, var, format!("{}", u_mean)];
     } else if *var == "u_Σ" {

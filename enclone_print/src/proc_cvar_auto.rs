@@ -237,10 +237,64 @@ pub fn proc_cvar_auto(
             }
         }
         format!("{}", diffs)
+    } else if var == "d_Δ" {
+        if !ex.share[mid].left {
+            String::new()
+        } else {
+            let mut scores = Vec::<f64>::new();
+            let mut ds = Vec::<Vec<usize>>::new();
+            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            let mut delta = 0.0;
+            if scores.len() > 1 {
+                delta = scores[0] - scores[1];
+            }
+            format!("{:.1}", delta)
+        }
+    } else if var == "dna%" {
+        let xm = &ex.share[mid];
+        let mut diffs = 0;
+        let mut denom = 0;
+        let seq = &xm.seq_del_amino;
+        let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+        if xm.v_ref_id_donor_alt_id.is_some() {
+            vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+        }
+        let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+        let z = seq.len();
+        for p in 0..z {
+            let b = seq[p];
+            if b == b'-' {
+                diffs += 1;
+                denom += 1;
+                continue;
+            }
+            if p < vref.len() - ctl.heur.ref_v_trim {
+                denom += 1;
+                if b != vref[p] {
+                    diffs += 1;
+                }
+            }
+            if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                denom += 1;
+                if b != jref[jref.len() - (z - p)] {
+                    diffs += 1;
+                }
+            }
+        }
+        format!("{:.1}", percent_ratio(denom - diffs, denom))
     } else if var == "j_id" {
         format!("{}", refdata.id[rsi.jids[col]])
     } else if var == "j_name" {
         refdata.name[rsi.jids[col]].clone()
+    } else if var == "notes" {
+        ex.share[mid].vs_notesx.clone()
+    } else if var == "u_max" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort();
+        format!("{}", numis.iter().max().unwrap())
     } else {
         "$UNDEFINED".to_string()
     };
