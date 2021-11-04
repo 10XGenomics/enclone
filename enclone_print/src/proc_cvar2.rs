@@ -34,9 +34,9 @@ pub fn proc_cvar2(
     pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    u_min: usize,
+    _u_min: usize,
     _u_max: usize,
-    u_mean: usize,
+    _u_mean: usize,
     median_numis: usize,
     utot: usize,
     median_nreads: usize,
@@ -413,46 +413,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "udiff" {
-        let ulen = ex.share[mid].v_start;
-        let uid = ex.share[mid].u_ref_id;
-        let mut udiff = String::new();
-        let mut ndiffs = 0;
-        if uid.is_some() {
-            let r = &refdata.refs[uid.unwrap()];
-            let mut extra = 0;
-            if ulen > r.len() {
-                extra = ulen - r.len();
-            }
-            for i in 0..ulen {
-                let mut rpos = i;
-                if ulen < r.len() {
-                    rpos += r.len() - ulen;
-                } else {
-                    if i + r.len() < ulen {
-                        continue;
-                    }
-                    rpos -= ulen - r.len();
-                }
-                let tb = ex.share[mid].full_seq[i];
-                let rb = r.to_ascii_vec()[rpos];
-                if tb != rb {
-                    ndiffs += 1;
-                    if ndiffs <= 5 {
-                        udiff += &format!("{}{}", rpos, tb as char);
-                    }
-                }
-            }
-            if ndiffs > 5 {
-                udiff += "...";
-            }
-            if extra > 0 {
-                udiff += &format!("+{}", extra);
-            }
-        } else if ulen > 0 {
-            udiff = format!("+{}", ulen);
-        }
-        cvar_stats1![j, var, udiff];
     } else if *var == "utr_id" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
@@ -494,10 +454,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "u_min" {
-        cvar_stats1![j, var, format!("{}", u_min)];
-    } else if *var == "u_μ" {
-        cvar_stats1![j, var, format!("{}", u_mean)];
     } else if *var == "u_Σ" {
         cvar_stats1![j, var, format!("{}", utot)];
     } else if *var == "r" {

@@ -404,6 +404,73 @@ pub fn proc_cvar_auto(
         }
         numis.sort();
         format!("{}", numis.iter().max().unwrap())
+    } else if var == "u_mean" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort();
+        let utot: usize = numis.iter().sum();
+        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+        format!("{}", u_mean)
+    } else if var == "u_min" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort();
+        format!("{}", numis.iter().min().unwrap())
+    } else if var == "u_μ" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort();
+        let utot: usize = numis.iter().sum();
+        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+        format!("{}", u_mean)
+    } else if var == "udiff" {
+        let ulen = ex.share[mid].v_start;
+        let uid = ex.share[mid].u_ref_id;
+        let mut udiff = String::new();
+        let mut ndiffs = 0;
+        if uid.is_some() {
+            let r = &refdata.refs[uid.unwrap()];
+            let mut extra = 0;
+            if ulen > r.len() {
+                extra = ulen - r.len();
+            }
+            for i in 0..ulen {
+                let mut rpos = i;
+                if ulen < r.len() {
+                    rpos += r.len() - ulen;
+                } else {
+                    if i + r.len() < ulen {
+                        continue;
+                    }
+                    rpos -= ulen - r.len();
+                }
+                let tb = ex.share[mid].full_seq[i];
+                let rb = r.to_ascii_vec()[rpos];
+                if tb != rb {
+                    ndiffs += 1;
+                    if ndiffs <= 5 {
+                        udiff += &format!("{}{}", rpos, tb as char);
+                    }
+                }
+            }
+            if ndiffs > 5 {
+                udiff += "...";
+            }
+            if extra > 0 {
+                udiff += &format!("+{}", extra);
+            }
+        } else if ulen > 0 {
+            udiff = format!("+{}", ulen);
+        }
+        udiff
+    } else if var == "ulen" {
+        format!("{}", ex.share[mid].v_start)
     } else if var == "v_id" {
         format!("{}", refdata.id[rsi.vids[col]])
     } else if var == "v_name" {

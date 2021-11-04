@@ -726,8 +726,6 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna.to_vec(), 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "ulen" {
-        cvar_stats1![j, *var, format!("{}", ex.share[mid].v_start)];
     } else if var.starts_with("ndiff") {
         let u0 = var.between("ndiff", "vj").force_usize() - 1;
         if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
