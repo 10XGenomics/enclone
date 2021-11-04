@@ -10,6 +10,7 @@ use io_utils::*;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::process::Command;
+use string_utils::*;
 
 pub fn export_code(level: usize) -> Vec<(String, String)> {
     // Define code start/stop for cvar_vdj.
@@ -155,7 +156,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {
-                // RESTRICTION 1
+                // RESTRICTION 1: only allow cvar_vdj
                 let mut upper = false;
                 let var = &v.name;
                 for c in var.chars() {
@@ -164,11 +165,45 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     }
                 }
                 if !upper {
-                    // RESTRICTION 2
+                    // RESTRICTION 2: don't allow upper case
                     if !var.contains('{') {
-                        // RESTRICTION 3
                         fwriteln!(f, "}} else if var == \"{}\" {{", var);
                         fwriteln!(f, "{}", v.code);
+                    // RESTRICTION 3: allow only one {} pair
+                    } else if !var.after("{").contains("{") {
+                        let begin = var.before("{");
+                        let end = var.after("}");
+                        let low = var.after("{").before("..").force_usize();
+                        let high = var.after("{").after("..");
+                        let high = if high.len() == 0 {
+                            usize::MAX
+                        } else {
+                            high.force_usize()
+                        };
+                        fwriteln!(
+                            f,
+                            "}} else if var.starts_with(\"{}\")
+                            && var.ends_with(\"{}\")
+                            && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
+                            && var.after(\"{}\").rev_before(\"{}\").force_usize() >= low
+                            && var.after(\"{}\").rev_before(\"{}\").force_usize() <= high {{",
+                            begin,
+                            end,
+                            begin,
+                            end,
+                            begin,
+                            end,
+                            begin,
+                            end,
+                        );
+                        fwriteln!(
+                            f,
+                            "let arg1 = var.after(\"{}\").rev_before(\"{}\").force_usize();",
+                            low,
+                            high,
+                        );
+                        fwriteln!(f, "{}", v.code);
+                        fwriteln!(f, "}}");
                     }
                 }
             }
