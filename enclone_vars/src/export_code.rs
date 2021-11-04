@@ -1,15 +1,17 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 // Read the vars file and export code.  This is a partial implementation.
+// Output is {(filename, contents)}.
+//
+// This writes a temporary file.
 
 use crate::var::parse_variables;
 use io_utils::*;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::process::Command;
-use string_utils::*;
 
-pub fn export_code() {
+pub fn export_code() -> Vec<(String, String)> {
     // Define code start/stop for cvar_vdj.
 
     let cvar_vdj_start = r###"
@@ -138,8 +140,10 @@ pub fn export_code() {
 
     // Build auto file.
 
+    let actual_out = "enclone_print/src/proc_cvar_auto.rs".to_string();
+    let temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs";
     {
-        let mut f = open_for_write_new!["enclone_print/src/proc_cvar_auto.rs"];
+        let mut f = open_for_write_new![&temp_out];
         fwrite!(f, "{}", cvar_vdj_start);
         let vars = std::fs::read_to_string("enclone_vars/src/vars").unwrap();
         let vars = parse_variables(&vars);
@@ -169,12 +173,16 @@ pub fn export_code() {
     // Rustfmt.
 
     let new = Command::new("rustfmt")
-        .arg("enclone_print/src/proc_cvar_auto.rs")
+        .arg(&temp_out)
         .output()
         .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt".to_string()));
     if new.status.code() != Some(0) {
         eprintln!("\nrustfmt failed\n");
-        eprintln!("stderr = {}", strme(&new.stderr));
+        eprintln!("You can observe the problem by typing rustfmt {}.\n", temp_out);
         std::process::exit(1);
     }
+    let f = std::fs::read_to_string(&temp_out).unwrap();
+    let mut outs = Vec::<(String, String)>::new();
+    outs.push((actual_out, f));
+    outs
 }
