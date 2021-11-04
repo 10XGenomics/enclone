@@ -285,8 +285,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "cdr1_aa"
-        || *var == "cdr1_aa_north"
+    } else if *var == "cdr1_aa_north"
         || *var == "cdr1_len"
         || (var.starts_with("cdr1_aa_") && var.ends_with("_ext"))
     {
@@ -331,8 +330,7 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr2_aa"
-        || *var == "cdr2_aa_north"
+    } else if *var == "cdr2_aa_north"
         || *var == "cdr2_len"
         || (var.starts_with("cdr2_aa_") && var.ends_with("_ext"))
     {
@@ -385,8 +383,6 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, y];
         }
-    } else if *var == "cdr3_aa" {
-        cvar_stats1![j, var, ex.share[mid].cdr3_aa.clone()];
     } else if (var.starts_with("cdr3_aa_") && var.ends_with("_ext")) || var == "cdr3_aa_north" {
         let mut left = -1 * 3;
         let mut right = -1 * 3;

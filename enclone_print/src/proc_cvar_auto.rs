@@ -243,6 +243,30 @@ pub fn proc_cvar_auto(
         }
         y
     } else if var.starts_with("cdr")
+        && var.ends_with("_aa")
+        && var.after("cdr").rev_before("_aa").parse::<usize>().is_ok()
+        && var.after("cdr").rev_before("_aa").force_usize() >= 1
+        && var.after("cdr").rev_before("_aa").force_usize() <= 3
+    {
+        let arg1 = var.after("cdr").rev_before("_aa").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let c;
+        if arg1 == 1 {
+            c = get_cdr1(&x);
+            if c.is_some() {
+                y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+            }
+        } else if arg1 == 2 {
+            c = get_cdr2(&x);
+            if c.is_some() {
+                y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+            }
+        } else {
+            y = x.cdr3_aa.clone();
+        }
+        y
+    } else if var.starts_with("cdr")
         && var.ends_with("_dna")
         && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
         && var.after("cdr").rev_before("_dna").force_usize() >= 1
