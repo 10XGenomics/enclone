@@ -661,9 +661,6 @@ pub fn row_fill(
         numis.sort_unstable();
         let median_numis = rounded_median(&numis);
         let utot: usize = numis.iter().sum();
-        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-        let u_min = *numis.iter().min().unwrap();
-        let u_max = *numis.iter().max().unwrap();
         nreads.sort_unstable();
         let rtot: usize = nreads.iter().sum();
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
@@ -805,9 +802,6 @@ pub fn row_fill(
                     &pcols_sort,
                     bads,
                     cx,
-                    u_min,
-                    u_max,
-                    u_mean,
                     median_numis,
                     utot,
                     median_nreads,
@@ -841,9 +835,6 @@ pub fn row_fill(
                         &pcols_sort,
                         bads,
                         cx,
-                        u_min,
-                        u_max,
-                        u_mean,
                         median_numis,
                         utot,
                         median_nreads,
