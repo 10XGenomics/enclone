@@ -15,6 +15,23 @@ use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, next_diff, sort_sync2};
 
+pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(), String> {
+    let mut found = false;
+    for i in 0..seq.len() {
+        if seq[i..].starts_with(&dna) {
+            found = true;
+        }
+    }
+    if !found {
+        return Err(format!(
+            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+            strme(&dna),
+            cdr3
+        ));
+    }
+    Ok(())
+}
+
 pub fn proc_cvar1(
     var: &String,
     j: usize,
@@ -323,22 +340,7 @@ pub fn proc_cvar1(
                         dna.push(x.seq_del_amino[p]);
                     }
                 }
-
-                // Test for internal error.
-
-                let mut found = false;
-                for i in 0..x.seq.len() {
-                    if x.seq[i..].starts_with(&dna) {
-                        found = true;
-                    }
-                }
-                if !found {
-                    return Err(format!(
-                        "\nInternal error, failed to find {}, CDR3 = {}.\n",
-                        strme(&dna),
-                        x.cdr3_aa
-                    ));
-                }
+                test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
                 if *var == "cdr1_dna".to_string() {
                     y = stringme(&dna);
                 } else if var.starts_with("cdr1_aa") {
