@@ -5,6 +5,7 @@
 
 use crate::proc_cvar1::proc_cvar1;
 use crate::proc_cvar2::proc_cvar2;
+use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
 use amino::{aa_seq, codon_to_aa};
@@ -776,43 +777,25 @@ pub fn row_fill(
 
             // Compute.
 
-            if !proc_cvar1(
-                var,
+            if !proc_cvar_auto(
                 jj,
-                col,
-                mid,
                 pass,
-                u,
+                var,
                 ex,
-                ctl,
-                exacts,
-                exact_clonotypes,
-                refdata,
-                varmat,
-                out_data,
+                mid,
+                col,
+                u,
                 rsi,
+                refdata,
                 dref,
-                peer_groups,
-                show_aa,
-                field_types,
-                col_var,
-                &pcols_sort,
-                bads,
-                cx,
-                u_min,
-                u_max,
-                u_mean,
-                median_numis,
-                utot,
-                median_nreads,
-                r_min,
-                r_max,
-                r_mean,
-                rtot,
+                ctl,
                 extra_args,
+                &pcols_sort,
+                cx,
+                out_data,
                 stats,
             )? {
-                let _ = proc_cvar2(
+                if !proc_cvar1(
                     var,
                     jj,
                     col,
@@ -847,7 +830,44 @@ pub fn row_fill(
                     rtot,
                     extra_args,
                     stats,
-                );
+                )? {
+                    let _ = proc_cvar2(
+                        var,
+                        jj,
+                        col,
+                        mid,
+                        pass,
+                        u,
+                        ex,
+                        ctl,
+                        exacts,
+                        exact_clonotypes,
+                        refdata,
+                        varmat,
+                        out_data,
+                        rsi,
+                        dref,
+                        peer_groups,
+                        show_aa,
+                        field_types,
+                        col_var,
+                        &pcols_sort,
+                        bads,
+                        cx,
+                        u_min,
+                        u_max,
+                        u_mean,
+                        median_numis,
+                        utot,
+                        median_nreads,
+                        r_min,
+                        r_max,
+                        r_mean,
+                        rtot,
+                        extra_args,
+                        stats,
+                    );
+                }
             }
         }
     }

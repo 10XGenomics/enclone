@@ -3,7 +3,7 @@
 // This file contains the single function proc_cvar.
 
 use crate::print_utils1::{cdr3_aa_con, color_codon};
-use amino::{aa_seq, codon_to_aa};
+use amino::aa_seq;
 use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
 use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
@@ -290,8 +290,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "d1_name"
-        || *var == "d2_name"
+    } else if *var == "d2_name"
         || *var == "d_delta"
         || *var == "d_Δ"
         || *var == "d1_score"
@@ -304,24 +303,9 @@ pub fn proc_cvar1(
         let mut scores = Vec::<f64>::new();
         let mut ds = Vec::<Vec<usize>>::new();
         opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
-        let mut opt = Vec::new();
-        if !ds.is_empty() {
-            opt = ds[0].clone();
-        }
         let mut opt2 = Vec::new();
         if ds.len() > 1 {
             opt2 = ds[1].clone();
-        }
-        let mut opt_name = String::new();
-        if opt.is_empty() {
-            opt_name = "none".to_string();
-        } else {
-            for i in 0..opt.len() {
-                if i > 0 {
-                    opt_name += ":";
-                }
-                opt_name += &refdata.name[opt[i]];
-            }
         }
         let mut opt2_name = String::new();
         if opt2.is_empty() {
@@ -334,9 +318,7 @@ pub fn proc_cvar1(
                 opt2_name += &refdata.name[opt2[i]];
             }
         }
-        if *var == "d1_name" {
-            cvar_stats1![j, var, opt_name];
-        } else if *var == "d2_name" {
+        if *var == "d2_name" {
             cvar_stats1![j, var, opt2_name];
         } else if *var == "d#" {
             let mut score = 0.0;
@@ -810,43 +792,6 @@ pub fn proc_cvar1(
             j,
             var,
             format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
-        ];
-    } else if *var == "aa%" {
-        let xm = &ex.share[mid];
-        let mut diffs = 0;
-        let mut denom = 0;
-        let aa_seq = &xm.aa_mod_indel;
-        let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
-        if xm.v_ref_id_donor_alt_id.is_some() {
-            vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
-        }
-        let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
-        let z = 3 * aa_seq.len() + 1;
-        for p in 0..aa_seq.len() {
-            if aa_seq[p] == b'-' {
-                diffs += 1;
-                denom += 1;
-                continue;
-            }
-            if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim {
-                denom += 1;
-                if aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3]) {
-                    diffs += 1;
-                }
-            }
-            if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3 {
-                denom += 1;
-                if aa_seq[p]
-                    != codon_to_aa(&jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3])
-                {
-                    diffs += 1;
-                }
-            }
-        }
-        cvar_stats1![
-            j,
-            *var,
-            format!("{:.1}", percent_ratio(denom - diffs, denom))
         ];
     } else if *var == "dna%" {
         let xm = &ex.share[mid];

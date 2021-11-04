@@ -175,8 +175,3 @@ pub fn export_code() {
         std::process::exit(1);
     }
 }
-
-// candidates:
-// aa%
-// cdiff
-// d1_name
