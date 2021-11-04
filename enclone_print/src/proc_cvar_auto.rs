@@ -215,67 +215,19 @@ pub fn proc_cvar_auto(
     {
         let arg1 = var.after("cdr").rev_before("_dna").force_usize();
         let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let c;
         if arg1 == 1 {
-            let mut y = "unknown".to_string();
-            if x.cdr1_start.is_some()
-                && x.fr2_start.is_some()
-                && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
-            {
-                let mut dna = Vec::<u8>::new();
-                if x.cdr1_start.unwrap() as i64 >= 0
-                    && (x.cdr1_start.unwrap() as i64) < x.seq_del_amino.len() as i64
-                    && x.fr2_start.unwrap() as i64 > 0
-                    && x.fr2_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
-                {
-                    for p in (x.cdr1_start.unwrap() as i64)..x.fr2_start.unwrap() as i64 {
-                        let p = p as usize;
-                        for j in 0..x.ins.len() {
-                            if x.ins[j].0 == p {
-                                let mut z = x.ins[j].1.clone();
-                                dna.append(&mut z);
-                            }
-                        }
-                        if x.seq_del_amino[p] != b'-' {
-                            dna.push(x.seq_del_amino[p]);
-                        }
-                    }
-                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                    y = stringme(&dna);
-                }
-            }
-            y
+            c = get_cdr1(&x);
         } else if arg1 == 2 {
-            let mut y = "unknown".to_string();
-            if x.cdr2_start.is_some()
-                && x.fr3_start.is_some()
-                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
-            {
-                let mut dna = Vec::<u8>::new();
-                if x.cdr2_start.unwrap() as i64 >= 0
-                    && (x.cdr2_start.unwrap() as i64) < x.seq_del_amino.len() as i64
-                    && x.fr3_start.unwrap() as i64 > 0
-                    && x.fr3_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
-                {
-                    for p in (x.cdr2_start.unwrap() as i64)..x.fr3_start.unwrap() as i64 {
-                        let p = p as usize;
-                        for j in 0..x.ins.len() {
-                            if x.ins[j].0 == p {
-                                let mut z = x.ins[j].1.clone();
-                                dna.append(&mut z);
-                            }
-                        }
-                        if x.seq_del_amino[p] != b'-' {
-                            dna.push(x.seq_del_amino[p]);
-                        }
-                    }
-                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                    y = stringme(&dna);
-                }
-            }
-            y
+            c = get_cdr2(&x);
         } else {
-            x.cdr3_dna.clone()
+            c = Some(x.cdr3_dna.clone());
         }
+        if c.is_some() {
+            y = c.unwrap();
+        }
+        y
     } else if var == "clen" {
         format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
     } else if var == "const" {
