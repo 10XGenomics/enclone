@@ -2,6 +2,15 @@
 
 # Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html.
 
+# Note the following special workflow if you are modifying things in enclone_vars:
+#
+# cargo b --bin export_code
+# export_code
+# cargo b
+#
+# This is needed to circumvent broken compilation of auto-generated files, that could result
+# if you make a mistake.
+
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # Build script for enclone.  The only thing missing from this is to run
