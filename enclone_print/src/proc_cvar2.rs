@@ -6,7 +6,6 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use stats_utils::percent_ratio;
-use std::cmp::min;
 use std::collections::HashMap;
 use string_utils::{stringme, TextUtils};
 use vdj_ann::refx::RefData;
@@ -414,38 +413,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "cdiff" {
-        let cstart = ex.share[mid].j_stop;
-        let clen = ex.share[mid].full_seq.len() - cstart;
-        let cid = ex.share[mid].c_ref_id;
-        let mut cdiff = String::new();
-        let mut ndiffs = 0;
-        if cid.is_some() {
-            let r = &refdata.refs[cid.unwrap()];
-            let mut extra = 0;
-            if clen > r.len() {
-                extra = clen - r.len();
-            }
-            for i in 0..min(clen, r.len()) {
-                let tb = ex.share[mid].full_seq[cstart + i];
-                let rb = r.to_ascii_vec()[i];
-                if tb != rb {
-                    ndiffs += 1;
-                    if ndiffs <= 5 {
-                        cdiff += &format!("{}{}", i, tb as char);
-                    }
-                }
-            }
-            if ndiffs > 5 {
-                cdiff += "...";
-            }
-            if extra > 0 {
-                cdiff += &format!("+{}", extra);
-            }
-        } else if clen > 0 {
-            cdiff = format!("+{}", clen);
-        }
-        cvar_stats1![j, var, cdiff];
     } else if *var == "udiff" {
         let ulen = ex.share[mid].v_start;
         let uid = ex.share[mid].u_ref_id;
