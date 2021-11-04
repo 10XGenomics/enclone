@@ -11,7 +11,7 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::process::Command;
 
-pub fn export_code() -> Vec<(String, String)> {
+pub fn export_code(level: usize) -> Vec<(String, String)> {
     // Define code start/stop for cvar_vdj.
 
     let cvar_vdj_start = r###"
@@ -141,11 +141,16 @@ pub fn export_code() -> Vec<(String, String)> {
     // Build auto file.
 
     let actual_out = "enclone_print/src/proc_cvar_auto.rs".to_string();
-    let temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs";
+    let mut temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs".to_string();
+    let mut vars_loc = "enclone_vars/src/vars".to_string();
+    if level == 1 {
+        temp_out = format!("../{}", temp_out);
+        vars_loc = format!("../{}", vars_loc);
+    }
     {
         let mut f = open_for_write_new![&temp_out];
         fwrite!(f, "{}", cvar_vdj_start);
-        let vars = std::fs::read_to_string("enclone_vars/src/vars").unwrap();
+        let vars = std::fs::read_to_string(&vars_loc).unwrap();
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {

@@ -12,7 +12,7 @@ use std::io::{BufWriter, Write};
 
 fn main() {
     PrettyTrace::new().on();
-    let outs = export_code();
+    let outs = export_code(0);
     for i in 0..outs.len() {
         let mut f = open_for_write_new![&outs[i].0];
         fwrite!(f, "{}", outs[i].1);
