@@ -5,7 +5,7 @@ use ansi_escape::{
     emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape, emit_red_escape,
 };
 use enclone_core::cell_color::CellColor;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, TigData1, POUT_SEP};
 use enclone_core::print_tools::{color_by_property, emit_codon_color_escape};
 use enclone_vars::decode_arith;
 use expr_tools::vars_of_node;
@@ -35,6 +35,66 @@ pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(),
         ));
     }
     Ok(())
+}
+
+pub fn get_cdr1(x: &TigData1) -> Option<String> {
+    if x.cdr1_start.is_some()
+        && x.fr2_start.is_some()
+        && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+    {
+        let mut dna = Vec::<u8>::new();
+        if x.cdr1_start.unwrap() as i64 >= 0
+            && (x.cdr1_start.unwrap() as i64) < x.seq_del_amino.len() as i64
+            && x.fr2_start.unwrap() as i64 > 0
+            && x.fr2_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+        {
+            for p in (x.cdr1_start.unwrap() as i64)..x.fr2_start.unwrap() as i64 {
+                let p = p as usize;
+                for j in 0..x.ins.len() {
+                    if x.ins[j].0 == p {
+                        let mut z = x.ins[j].1.clone();
+                        dna.append(&mut z);
+                    }
+                }
+                if x.seq_del_amino[p] != b'-' {
+                    dna.push(x.seq_del_amino[p]);
+                }
+            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+            return Some(stringme(&dna));
+        }
+    }
+    return None;
+}
+
+pub fn get_cdr2(x: &TigData1) -> Option<String> {
+    if x.cdr2_start.is_some()
+        && x.fr3_start.is_some()
+        && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+    {
+        let mut dna = Vec::<u8>::new();
+        if x.cdr2_start.unwrap() as i64 >= 0
+            && (x.cdr2_start.unwrap() as i64) < x.seq_del_amino.len() as i64
+            && x.fr3_start.unwrap() as i64 > 0
+            && x.fr3_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+        {
+            for p in (x.cdr2_start.unwrap() as i64)..x.fr3_start.unwrap() as i64 {
+                let p = p as usize;
+                for j in 0..x.ins.len() {
+                    if x.ins[j].0 == p {
+                        let mut z = x.ins[j].1.clone();
+                        dna.append(&mut z);
+                    }
+                }
+                if x.seq_del_amino[p] != b'-' {
+                    dna.push(x.seq_del_amino[p]);
+                }
+            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+            return Some(stringme(&dna));
+        }
+    }
+    return None;
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
