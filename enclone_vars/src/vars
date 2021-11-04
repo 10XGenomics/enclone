@@ -403,7 +403,7 @@ notes:    Check if args are really nonnegative integers.
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conp
-inputs:   col, exacts, exact_clonotypes, rsi
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -416,7 +416,7 @@ notes:
 code:     cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conx
-inputs:   col, exacts, exact_clonotypes, rsi
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -429,7 +429,7 @@ notes:
 code:     cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -439,7 +439,7 @@ brief:    nucleotide start of CDR3 sequence on full sequence
 page:     enclone help parseable
 avail:    public
 notes:    Check if type is really positive integer.
-code:     ex.share[mid].cdr3_start.clone()
+code:     ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1,2,3}_aa
 inputs:   ex, mid

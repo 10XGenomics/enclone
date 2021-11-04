@@ -782,6 +782,8 @@ pub fn row_fill(
                 pass,
                 var,
                 ex,
+                exacts,
+                exact_clonotypes,
                 mid,
                 col,
                 u,

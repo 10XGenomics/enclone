@@ -600,8 +600,6 @@ pub fn proc_cvar2(
             );
         }
         cvar_stats1![j, var, d_frame];
-    } else if *var == "cdr3_start" {
-        cvar_stats1![j, var, format!("{}", ex.share[mid].cdr3_start)];
     } else if *var == "v_start" {
         cvar_stats1![j, var, format!("{}", ex.share[mid].v_start)];
     } else if *var == "d_start" {

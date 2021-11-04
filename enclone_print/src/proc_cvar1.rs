@@ -2,7 +2,7 @@
 
 // This file contains the single function proc_cvar.
 
-use crate::print_utils1::{cdr3_aa_con, color_codon};
+use crate::print_utils1::color_codon;
 use amino::aa_seq;
 use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
@@ -564,14 +564,6 @@ pub fn proc_cvar1(
         cvar_stats1![j, var, ex.share[mid].cdr3_dna.clone()];
     } else if *var == "cdr3_len" {
         cvar_stats1![j, var, ex.share[mid].cdr3_aa.len().to_string()];
-    } else if *var == "cdr3_aa_conx".to_string() || *var == "cdr3_aa_conp".to_string() {
-        let c;
-        if *var == "cdr3_aa_conx" {
-            c = cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi);
-        } else {
-            c = cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi);
-        }
-        cvar_stats1![j, var, c];
     } else if *var == "fwr1_dna" || *var == "fwr1_aa" || *var == "fwr1_len" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
