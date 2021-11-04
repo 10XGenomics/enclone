@@ -441,71 +441,6 @@ avail:    public
 notes:    Check if type is really positive integer.
 code:     ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_aa
-inputs:   ex, mid
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* amino acid sequence
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_aa_north
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    North version of CDR* amino acid sequence
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_aa_{0..}_{0..}_ext
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* region with specified extension length
-page:     enclone help cvars
-avail:    public
-notes:    Do extension lengths start at zero?
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_dna
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* nucleotide sequence
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_len
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      positive_integer
-doc:      TBD
-brief:    length of CDR* amino acid sequence 
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..2}_aa_ref
 inputs:   ex, mid, refdata
 limits:
@@ -577,6 +512,71 @@ code:     let x = &ex.share[mid];
               }
           }
           y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa
+inputs:   ex, mid
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa_north
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    North version of CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa_{0..}_{0..}_ext
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* region with specified extension length
+page:     enclone help cvars
+avail:    public
+notes:    Do extension lengths start at zero?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_dna
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* nucleotide sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_len
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    length of CDR* amino acid sequence 
+page:     enclone help cvars
+avail:    public
+notes:
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   cvar_vdj
