@@ -389,49 +389,37 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr1_dna_ref" || *var == "fwr1_aa_ref" {
+    } else if *var == "fwr1_aa_ref" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
             let dna = refdata.refs[x.v_ref_id].to_ascii_vec()[x.fr1_start..x.cdr1_start.unwrap()]
                 .to_vec();
-            if *var == "fwr1_dna_ref".to_string() {
-                y = stringme(&dna);
-            } else {
-                y = stringme(&aa_seq(&dna, 0));
-            }
+            y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr2_dna_ref" || *var == "fwr2_aa_ref" {
+    } else if *var == "fwr2_aa_ref" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
             let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
                 [x.fr2_start.unwrap()..x.cdr2_start.unwrap()]
                 .to_vec();
-            if *var == "fwr2_dna_ref".to_string() {
-                y = stringme(&dna);
-            } else {
-                y = stringme(&aa_seq(&dna, 0));
-            }
+            y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr3_dna_ref" || *var == "fwr3_aa_ref" {
+    } else if *var == "fwr3_aa_ref" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
             let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
             if x.cdr3_start <= dna.len() {
                 let dna = dna[x.fr3_start.unwrap()..x.cdr3_start - x.ins_len()].to_vec();
-                if *var == "fwr3_dna_ref".to_string() {
-                    y = stringme(&dna);
-                } else {
-                    y = stringme(&aa_seq(&dna, 0));
-                }
+                y = stringme(&aa_seq(&dna, 0));
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr4_dna_ref" || *var == "fwr4_aa_ref" {
+    } else if var == "fwr4_aa_ref" {
         let x = &ex.share[mid];
         let heavy = refdata.rtype[x.j_ref_id] == 0;
         let aa_len;
@@ -442,12 +430,7 @@ pub fn proc_cvar1(
         }
         let dna = refdata.refs[x.j_ref_id].to_ascii_vec();
         let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
-        let y;
-        if *var == "fwr4_dna_ref".to_string() {
-            y = stringme(&dna);
-        } else {
-            y = stringme(&aa_seq(&dna.to_vec(), 0));
-        }
+        let y = stringme(&aa_seq(&dna.to_vec(), 0));
         cvar_stats1![j, var, y];
     } else if var.starts_with("ndiff") {
         let u0 = var.between("ndiff", "vj").force_usize() - 1;

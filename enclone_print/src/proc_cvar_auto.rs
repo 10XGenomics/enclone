@@ -633,6 +633,54 @@ pub fn proc_cvar_auto(
         }
         y
     } else if var.starts_with("fwr")
+        && var.ends_with("_dna_ref")
+        && var
+            .after("fwr")
+            .rev_before("_dna_ref")
+            .parse::<usize>()
+            .is_ok()
+        && var.after("fwr").rev_before("_dna_ref").force_usize() >= 1
+        && var.after("fwr").rev_before("_dna_ref").force_usize() <= 4
+    {
+        let arg1 = var.after("fwr").rev_before("_dna_ref").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        if arg1 == 1 {
+            if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.fr1_start..x.cdr1_start.unwrap()]
+                    .to_vec();
+                y = stringme(&dna);
+            }
+        } else if arg1 == 2 {
+            if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                    [x.fr2_start.unwrap()..x.cdr2_start.unwrap()]
+                    .to_vec();
+                y = stringme(&dna);
+            }
+        } else if arg1 == 3 {
+            if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
+                let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
+                if x.cdr3_start <= dna.len() {
+                    let dna = dna[x.fr3_start.unwrap()..x.cdr3_start - x.ins_len()].to_vec();
+                    y = stringme(&dna);
+                }
+            }
+        } else {
+            let heavy = refdata.rtype[x.j_ref_id] == 0;
+            let aa_len;
+            if heavy {
+                aa_len = 10;
+            } else {
+                aa_len = 9;
+            }
+            let dna = refdata.refs[x.j_ref_id].to_ascii_vec();
+            let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
+            y = stringme(&dna);
+        }
+        y
+    } else if var.starts_with("fwr")
         && var.ends_with("_len")
         && var.after("fwr").rev_before("_len").parse::<usize>().is_ok()
         && var.after("fwr").rev_before("_len").force_usize() >= 1
