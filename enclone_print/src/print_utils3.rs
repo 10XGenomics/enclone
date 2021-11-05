@@ -502,7 +502,7 @@ pub fn insert_reference_rows(
                     } else {
                         let x = &peer_groups[rsi.vids[cz]];
                         let last = k == show_aa[cz].len() - 1;
-                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last, &vars_amino, &shares_amino, cz);
+                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last, &vars_amino, &shares_amino);
                         refx += strme(&log);
                     }
                 }
