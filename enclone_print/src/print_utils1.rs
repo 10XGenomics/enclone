@@ -681,15 +681,22 @@ pub fn color_codon(
     p: usize,
     last_color: &mut String,
     last: bool,
-    _vars_amino: &Vec<Vec<usize>>,
-    _shares_amino: &Vec<Vec<usize>>,
-    _col: usize,
+    vars_amino: &Vec<Vec<usize>>,
+    shares_amino: &Vec<Vec<usize>>,
+    col: usize,
 ) -> Vec<u8> {
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];
     let aa = codon_to_aa(codon);
     if ctl.gen_opt.color == *"codon" {
-        emit_codon_color_escape(codon, &mut log);
+        // println!("codon = {}", strme(&codon)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        println!("col = {}, p = {}, vars = {}", col, p, vars_amino[col].iter().format(",")); // XXX
+        let var_or_share = bin_member(&vars_amino[col], &p) || bin_member(&shares_amino[col], &p);
+        if !var_or_share {
+            log.append(&mut b"[01m[38;5;252m".to_vec());
+        } else {
+            emit_codon_color_escape(codon, &mut log);
+        }
         log.push(aa);
         emit_end_escape(&mut log);
     } else if ctl.gen_opt.color == *"property" {
