@@ -898,8 +898,6 @@ pub fn print_clonotypes(
                     &mut out_data,
                     &rord,
                     pass,
-                    &vars_amino,
-                    &shares_amino,
                 );
 
                 // Save.

@@ -411,8 +411,6 @@ pub fn insert_reference_rows(
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
-    _vars_amino: &Vec<Vec<usize>>,
-    _shares_amino: &Vec<Vec<usize>>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if !drows.is_empty() {
