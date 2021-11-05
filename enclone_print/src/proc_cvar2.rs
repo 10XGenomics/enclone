@@ -35,7 +35,7 @@ pub fn proc_cvar2(
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     median_numis: usize,
-    utot: usize,
+    _utot: usize,
     median_nreads: usize,
     r_min: usize,
     r_max: usize,
@@ -451,8 +451,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "u_Σ" {
-        cvar_stats1![j, var, format!("{}", utot)];
     } else if *var == "r" {
         let mut nreads = Vec::<String>::new();
         for j in 0..ex.clones.len() {

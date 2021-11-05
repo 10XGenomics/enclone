@@ -807,6 +807,20 @@ pub fn proc_cvar_auto(
         }
         numis.sort();
         format!("{}", numis.iter().min().unwrap())
+    } else if var == "u_sum" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        let utot: usize = numis.iter().sum();
+        format!("{}", utot)
+    } else if var == "u_Σ" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        let utot: usize = numis.iter().sum();
+        format!("{}", utot)
     } else if var == "u_μ" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

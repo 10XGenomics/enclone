@@ -2141,7 +2141,7 @@ code:     let mut numis = Vec::<usize>::new();
           format!("{}", numis.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_sum
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2151,10 +2151,15 @@ brief:    sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          let utot: usize = numis.iter().sum();
+          format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_Σ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2164,7 +2169,12 @@ brief:    sum of chain UMIs across exact subclonotype (= <code>u_sum</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          let utot: usize = numis.iter().sum();
+          format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_μ
 inputs:   cvar_vdj
