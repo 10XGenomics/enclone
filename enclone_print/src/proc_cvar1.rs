@@ -389,26 +389,6 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr1_len" {
-        let x = &ex.share[mid];
-        let mut y = "unknown".to_string();
-        if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
-            let mut dna = Vec::<u8>::new();
-            for p in x.fr1_start..x.cdr1_start.unwrap() {
-                for j in 0..x.ins.len() {
-                    if x.ins[j].0 == p {
-                        let mut z = x.ins[j].1.clone();
-                        dna.append(&mut z);
-                    }
-                }
-                if x.seq_del_amino[p] != b'-' {
-                    dna.push(x.seq_del_amino[p]);
-                }
-            }
-            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            y = format!("{}", dna.len() / 3);
-        }
-        cvar_stats1![j, var, y];
     } else if *var == "fwr1_dna_ref" || *var == "fwr1_aa_ref" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -420,26 +400,6 @@ pub fn proc_cvar1(
             } else {
                 y = stringme(&aa_seq(&dna, 0));
             }
-        }
-        cvar_stats1![j, var, y];
-    } else if *var == "fwr2_len" {
-        let x = &ex.share[mid];
-        let mut y = "unknown".to_string();
-        if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
-            let mut dna = Vec::<u8>::new();
-            for p in x.fr2_start.unwrap()..x.cdr2_start.unwrap() {
-                for j in 0..x.ins.len() {
-                    if x.ins[j].0 == p {
-                        let mut z = x.ins[j].1.clone();
-                        dna.append(&mut z);
-                    }
-                }
-                if x.seq_del_amino[p] != b'-' {
-                    dna.push(x.seq_del_amino[p]);
-                }
-            }
-            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            y = format!("{}", dna.len() / 3);
         }
         cvar_stats1![j, var, y];
     } else if *var == "fwr2_dna_ref" || *var == "fwr2_aa_ref" {
@@ -456,26 +416,6 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr3_len" {
-        let x = &ex.share[mid];
-        let mut y = "unknown".to_string();
-        if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
-            let mut dna = Vec::<u8>::new();
-            for p in x.fr3_start.unwrap()..x.cdr3_start - x.ins_len() {
-                for j in 0..x.ins.len() {
-                    if x.ins[j].0 == p {
-                        let mut z = x.ins[j].1.clone();
-                        dna.append(&mut z);
-                    }
-                }
-                if x.seq_del_amino[p] != b'-' {
-                    dna.push(x.seq_del_amino[p]);
-                }
-            }
-            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            y = format!("{}", dna.len() / 3);
-        }
-        cvar_stats1![j, var, y];
     } else if *var == "fwr3_dna_ref" || *var == "fwr3_aa_ref" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -490,14 +430,6 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar_stats1![j, var, y];
-    } else if *var == "fwr4_len" {
-        let x = &ex.share[mid];
-        let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
-        let stop = rsi.seq_del_lens[col];
-        let dna = &x.seq_del_amino[start..stop];
-        let y;
-        y = format!("{}", dna.len() / 3);
         cvar_stats1![j, var, y];
     } else if *var == "fwr4_dna_ref" || *var == "fwr4_aa_ref" {
         let x = &ex.share[mid];
