@@ -499,6 +499,13 @@ pub fn proc_cvar_auto(
             String::new()
         };
         did
+    } else if var == "d_name" {
+        let dname = if rsi.dids[col].is_some() {
+            refdata.name[rsi.dids[col].unwrap()].clone()
+        } else {
+            String::new()
+        };
+        dname
     } else if var == "d_start" {
         let mut d_start = String::new();
         if ex.share[mid].d_start.is_some() {

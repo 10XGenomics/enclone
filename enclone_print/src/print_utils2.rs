@@ -566,20 +566,6 @@ pub fn row_fill(
     // Traverse the chains.
 
     for col in 0..cols {
-        // Set up chain variable macro.  This is the mechanism for generating
-        // both human-readable and parseable output for chain variables.
-
-        macro_rules! cvar_stats1 {
-            ($i: expr, $var:expr, $val:expr) => {
-                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                    cx[col][$i] = $val.clone();
-                }
-                speakc!(u, col, $var, $val);
-                let varc = format!("{}{}", $var, col + 1);
-                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-            };
-        }
-
         // Process variables that need to be computed even if the chain entry is empty.
         // NO: WHY?  WHY WOULD WE WANT TO PRINT THESE?  BEHAVIOR CHANGED.  DON'T KNOW WHY
         // WE EVER DID THIS>
@@ -630,17 +616,6 @@ pub fn row_fill(
             let col_var = jj < rsi_vars.len();
             if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
-            }
-
-            // Process some variables.
-
-            if *var == "d_name" {
-                let dname = if rsi.dids[col].is_some() {
-                    refdata.name[rsi.dids[col].unwrap()].clone()
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, dname];
             }
         }
 

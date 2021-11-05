@@ -1025,7 +1025,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_name
-inputs:   rsi, col, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
