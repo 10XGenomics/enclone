@@ -649,7 +649,6 @@ pub fn print_clonotypes(
                         &varmat,
                         &fp,
                         &vars_amino,
-                        &shares_amino,
                         &show_aa,
                         &field_types,
                         &mut bads,

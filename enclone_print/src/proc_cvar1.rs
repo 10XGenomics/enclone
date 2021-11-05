@@ -47,8 +47,6 @@ pub fn proc_cvar1(
     _rtot: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
-    _vars_amino: &Vec<Vec<usize>>,
-    _shares_amino: &Vec<Vec<usize>>,
 ) -> Result<bool, String> {
     let seq_amino = &rsi.seqss_amino[col][u];
     let cvars = &ctl.clono_print_opt.cvars;
