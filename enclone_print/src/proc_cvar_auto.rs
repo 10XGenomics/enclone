@@ -579,6 +579,33 @@ pub fn proc_cvar_auto(
         }
         format!("{:.1}", percent_ratio(denom - diffs, denom))
     } else if var.starts_with("fwr")
+        && var.ends_with("_aa")
+        && var.after("fwr").rev_before("_aa").parse::<usize>().is_ok()
+        && var.after("fwr").rev_before("_aa").force_usize() >= 1
+        && var.after("fwr").rev_before("_aa").force_usize() <= 4
+    {
+        let arg1 = var.after("fwr").rev_before("_aa").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let c;
+        if arg1 == 1 {
+            c = get_fwr1(&x);
+        } else if arg1 == 2 {
+            c = get_fwr2(&x);
+        } else if arg1 == 3 {
+            c = get_fwr3(&x);
+        } else {
+            let x = &ex.share[mid];
+            let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
+            let stop = rsi.seq_del_lens[col];
+            let dna = &x.seq_del_amino[start..stop];
+            c = Some(stringme(&dna));
+        }
+        if c.is_some() {
+            y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+        }
+        y
+    } else if var.starts_with("fwr")
         && var.ends_with("_dna")
         && var.after("fwr").rev_before("_dna").parse::<usize>().is_ok()
         && var.after("fwr").rev_before("_dna").force_usize() >= 1
