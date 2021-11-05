@@ -759,6 +759,29 @@ pub fn proc_cvar_auto(
         format!("{}", refdata.id[rsi.jids[col]])
     } else if var == "j_name" {
         refdata.name[rsi.jids[col]].clone()
+    } else if var.starts_with("ndiff")
+        && var.ends_with("vj")
+        && var.after("ndiff").rev_before("vj").parse::<usize>().is_ok()
+        && var.after("ndiff").rev_before("vj").force_usize() >= 1
+    {
+        let arg1 = var.after("ndiff").rev_before("vj").force_usize();
+        let mat = &rsi.mat;
+        let u0 = arg1;
+        if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
+            let m0 = mat[col][u0].unwrap();
+            let m = mat[col][u].unwrap();
+            let mut ndiff = 0;
+            let ex0 = &exact_clonotypes[exacts[u0]];
+            let ex = &exact_clonotypes[exacts[u]];
+            for p in 0..ex0.share[m0].seq_del.len() {
+                if ex0.share[m0].seq_del[p] != ex.share[m].seq_del[p] {
+                    ndiff += 1;
+                }
+            }
+            format!("{}", ndiff)
+        } else {
+            "_".to_string()
+        }
     } else if var == "notes" {
         ex.share[mid].vs_notesx.clone()
     } else if var == "u_max" {

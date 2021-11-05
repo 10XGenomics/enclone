@@ -175,29 +175,42 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         let end = var.after("}");
                         let low = var.after("{").before("..").force_usize();
                         let high = var.after("{").between("..", "}");
-                        let high = if high.len() == 0 {
-                            usize::MAX
+                        if high.len() > 0 {
+                            let high = high.force_usize();
+                            fwriteln!(
+                                f,
+                                "}} else if var.starts_with(\"{}\")
+                                && var.ends_with(\"{}\")
+                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
+                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {}
+                                && var.after(\"{}\").rev_before(\"{}\").force_usize() <= {} {{",
+                                begin,
+                                end,
+                                begin,
+                                end,
+                                begin,
+                                end,
+                                low,
+                                begin,
+                                end,
+                                high,
+                            );
                         } else {
-                            high.force_usize()
-                        };
-                        fwriteln!(
-                            f,
-                            "}} else if var.starts_with(\"{}\")
-                            && var.ends_with(\"{}\")
-                            && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                            && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {}
-                            && var.after(\"{}\").rev_before(\"{}\").force_usize() <= {} {{",
-                            begin,
-                            end,
-                            begin,
-                            end,
-                            begin,
-                            end,
-                            low,
-                            begin,
-                            end,
-                            high,
-                        );
+                            fwriteln!(
+                                f,
+                                "}} else if var.starts_with(\"{}\")
+                                && var.ends_with(\"{}\")
+                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
+                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {} {{",
+                                begin,
+                                end,
+                                begin,
+                                end,
+                                begin,
+                                end,
+                                low,
+                            );
+                        }
                         fwriteln!(
                             f,
                             "let arg1 = var.after(\"{}\").rev_before(\"{}\").force_usize();",

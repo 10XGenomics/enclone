@@ -24,8 +24,8 @@ pub fn proc_cvar1(
     u: usize,
     ex: &ExactClonotype,
     ctl: &EncloneControl,
-    exacts: &Vec<usize>,
-    exact_clonotypes: &Vec<ExactClonotype>,
+    _exacts: &Vec<usize>,
+    _exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
@@ -49,7 +49,6 @@ pub fn proc_cvar1(
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> Result<bool, String> {
     let seq_amino = &rsi.seqss_amino[col][u];
-    let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
@@ -389,23 +388,6 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if var.starts_with("ndiff") {
-        let u0 = var.between("ndiff", "vj").force_usize() - 1;
-        if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
-            let m0 = mat[col][u0].unwrap();
-            let m = mat[col][u].unwrap();
-            let mut ndiff = 0;
-            let ex0 = &exact_clonotypes[exacts[u0]];
-            let ex = &exact_clonotypes[exacts[u]];
-            for p in 0..ex0.share[m0].seq_del.len() {
-                if ex0.share[m0].seq_del[p] != ex.share[m].seq_del[p] {
-                    ndiff += 1;
-                }
-            }
-            cvar_stats1![j, *var, format!("{}", ndiff)];
-        } else {
-            cvar_stats1![j, *var, "_".to_string()];
-        }
     } else {
         return Ok(false);
     }

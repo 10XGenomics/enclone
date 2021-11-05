@@ -1801,8 +1801,8 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     ndiff{1,...}vj
-inputs:   exacts, col, mat, u, exact_subclonotypes
+name:     ndiff{1..}vj
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1812,7 +1812,8 @@ brief:    number of base differences with exact subclonotype of that number
 page:     enclone help cvars
 avail:    public
 notes:    Start at 1 or 0?
-code:     let u0 = arg1;
+code:     let mat = &rsi.mat;
+          let u0 = arg1;
           if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
               let m0 = mat[col][u0].unwrap();
               let m = mat[col][u].unwrap();
