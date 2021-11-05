@@ -389,7 +389,7 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr1_dna" || *var == "fwr1_aa" || *var == "fwr1_len" {
+    } else if *var == "fwr1_aa" || *var == "fwr1_len" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
@@ -406,9 +406,7 @@ pub fn proc_cvar1(
                 }
             }
             test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            if *var == "fwr1_dna".to_string() {
-                y = stringme(&dna);
-            } else if *var == "fwr1_aa".to_string() {
+            if *var == "fwr1_aa".to_string() {
                 y = stringme(&aa_seq(&dna, 0));
             } else {
                 y = format!("{}", dna.len() / 3);
@@ -432,7 +430,7 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr2_dna" || *var == "fwr2_aa" || *var == "fwr2_len" {
+    } else if *var == "fwr2_aa" || *var == "fwr2_len" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
@@ -449,9 +447,7 @@ pub fn proc_cvar1(
                 }
             }
             test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            if *var == "fwr2_dna".to_string() {
-                y = stringme(&dna);
-            } else if *var == "fwr2_aa".to_string() {
+            if *var == "fwr2_aa".to_string() {
                 y = stringme(&aa_seq(&dna, 0));
             } else {
                 y = format!("{}", dna.len() / 3);
@@ -476,7 +472,7 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr3_dna" || *var == "fwr3_aa" || *var == "fwr3_len" {
+    } else if *var == "fwr3_aa" || *var == "fwr3_len" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
@@ -493,9 +489,7 @@ pub fn proc_cvar1(
                 }
             }
             test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-            if *var == "fwr3_dna".to_string() {
-                y = stringme(&dna);
-            } else if *var == "fwr3_aa".to_string() {
+            if *var == "fwr3_aa".to_string() {
                 y = stringme(&aa_seq(&dna, 0));
             } else {
                 y = format!("{}", dna.len() / 3);
@@ -521,15 +515,13 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "fwr4_dna" || *var == "fwr4_aa" || *var == "fwr4_len" {
+    } else if *var == "fwr4_aa" || *var == "fwr4_len" {
         let x = &ex.share[mid];
         let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
         let stop = rsi.seq_del_lens[col];
         let dna = &x.seq_del_amino[start..stop];
         let y;
-        if *var == "fwr4_dna".to_string() {
-            y = stringme(dna);
-        } else if *var == "fwr4_aa".to_string() {
+        if *var == "fwr4_aa".to_string() {
             y = stringme(&aa_seq(&dna.to_vec(), 0));
         } else {
             y = format!("{}", dna.len() / 3);
