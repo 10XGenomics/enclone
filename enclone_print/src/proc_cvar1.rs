@@ -144,7 +144,7 @@ pub fn proc_cvar1(
             } else {
                 let x = &peer_groups[rsi.vids[col]];
                 let last = k == show_aa[col].len() - 1;
-                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last, &vars_amino, &shares_amino);
+                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last, &vars_amino, &shares_amino, col);
                 cx[col][j] += strme(&log);
             }
         }
