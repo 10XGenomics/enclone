@@ -1811,9 +1811,9 @@ doc:      TBD
 brief:    number of base differences with exact subclonotype of that number
 page:     enclone help cvars
 avail:    public
-notes:    Start at 1 or 0?
+notes:
 code:     let mat = &rsi.mat;
-          let u0 = arg1;
+          let u0 = arg1 - 1;
           if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
               let m0 = mat[col][u0].unwrap();
               let m = mat[col][u].unwrap();

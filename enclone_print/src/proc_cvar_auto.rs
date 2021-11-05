@@ -766,7 +766,7 @@ pub fn proc_cvar_auto(
     {
         let arg1 = var.after("ndiff").rev_before("vj").force_usize();
         let mat = &rsi.mat;
-        let u0 = arg1;
+        let u0 = arg1 - 1;
         if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
             let m0 = mat[col][u0].unwrap();
             let m = mat[col][u].unwrap();
