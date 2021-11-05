@@ -130,6 +130,66 @@ pub fn get_cdr3(x: &TigData1, left: i64, right: i64) -> Option<String> {
     return None;
 }
 
+pub fn get_fwr1(x: &TigData1) -> Option<String> {
+    if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr1_start..x.cdr1_start.unwrap() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
+pub fn get_fwr2(x: &TigData1) -> Option<String> {
+    if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr2_start.unwrap()..x.cdr2_start.unwrap() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
+pub fn get_fwr3(x: &TigData1) -> Option<String> {
+    if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr3_start.unwrap()..x.cdr3_start - x.ins_len() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn compute_field_types(
