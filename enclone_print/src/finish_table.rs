@@ -33,6 +33,8 @@ pub fn finish_table(
     out_data: &mut Vec<HashMap<String, String>>,
     rord: &Vec<usize>,
     pass: usize,
+    vars_amino: &Vec<Vec<usize>>,
+    shares_amino: &Vec<Vec<usize>>,
 ) {
     // Fill in exact_subclonotype_id, reorder.
 
@@ -101,6 +103,8 @@ pub fn finish_table(
         exacts,
         exact_clonotypes,
         peer_groups,
+        vars_amino,
+        shares_amino,
     );
 
     // Insert consensus row.
