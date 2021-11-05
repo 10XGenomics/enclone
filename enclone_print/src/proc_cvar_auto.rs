@@ -267,6 +267,50 @@ pub fn proc_cvar_auto(
         }
         y
     } else if var.starts_with("cdr")
+        && var.ends_with("_aa_north")
+        && var
+            .after("cdr")
+            .rev_before("_aa_north")
+            .parse::<usize>()
+            .is_ok()
+        && var.after("cdr").rev_before("_aa_north").force_usize() >= 1
+        && var.after("cdr").rev_before("_aa_north").force_usize() <= 3
+    {
+        let arg1 = var.after("cdr").rev_before("_aa_north").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let c;
+        if arg1 == 1 {
+            let (mut left, mut right) = (0, 0);
+            if x.left {
+                left = 3;
+                right = 3;
+            }
+            c = get_cdr1(&x, left, right);
+            if c.is_some() {
+                y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+            }
+        } else if arg1 == 2 {
+            let (left, right);
+            if ex.share[mid].left {
+                left = 2;
+                right = 3;
+            } else {
+                left = 1;
+                right = 0;
+            }
+            c = get_cdr2(&x, left, right);
+            if c.is_some() {
+                y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+            }
+        } else {
+            c = get_cdr3(&x, -1, -1);
+            if c.is_some() {
+                y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+            }
+        }
+        y
+    } else if var.starts_with("cdr")
         && var.ends_with("_dna")
         && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
         && var.after("cdr").rev_before("_dna").force_usize() >= 1

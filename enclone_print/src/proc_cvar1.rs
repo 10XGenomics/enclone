@@ -285,17 +285,11 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "cdr1_aa_north"
-        || *var == "cdr1_len"
-        || (var.starts_with("cdr1_aa_") && var.ends_with("_ext"))
-    {
+    } else if *var == "cdr1_len" || (var.starts_with("cdr1_aa_") && var.ends_with("_ext")) {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {
             left = var.between("aa_", "_").force_i64() * 3;
             right = var.after("aa_").between("_", "_").force_i64() * 3;
-        } else if var.ends_with("_north") && ex.share[mid].left {
-            left = 3 * 3;
-            right = 3 * 3;
         }
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -330,21 +324,11 @@ pub fn proc_cvar1(
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr2_aa_north"
-        || *var == "cdr2_len"
-        || (var.starts_with("cdr2_aa_") && var.ends_with("_ext"))
-    {
+    } else if *var == "cdr2_len" || (var.starts_with("cdr2_aa_") && var.ends_with("_ext")) {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {
             left = var.between("aa_", "_").force_i64() * 3;
             right = var.after("aa_").between("_", "_").force_i64() * 3;
-        } else if var.ends_with("_north") {
-            if ex.share[mid].left {
-                left = 2 * 3;
-                right = 3 * 3;
-            } else {
-                left = 1 * 3;
-            }
         }
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -383,7 +367,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, y];
         }
-    } else if (var.starts_with("cdr3_aa_") && var.ends_with("_ext")) || var == "cdr3_aa_north" {
+    } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
         let mut left = -1 * 3;
         let mut right = -1 * 3;
         if var.ends_with("_ext") {

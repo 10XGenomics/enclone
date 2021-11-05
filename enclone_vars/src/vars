@@ -543,7 +543,7 @@ code:     let x = &ex.share[mid];
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa_north
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -553,7 +553,39 @@ brief:    North version of CDR* amino acid sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              let (mut left, mut right) = (0, 0);
+              if x.left {
+                  left = 3;
+                  right = 3;
+              }
+              c = get_cdr1(&x, left, right);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else if arg1 == 2 {
+              let (left, right);
+              if ex.share[mid].left {
+                  left = 2;
+                  right = 3;
+              } else {
+                  left = 1;
+                  right = 0;
+              }
+              c = get_cdr2(&x, left, right);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else {
+              c = get_cdr3(&x, -1, -1);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          }
+          y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa_{0..}_{0..}_ext
 inputs:   ?

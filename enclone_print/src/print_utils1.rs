@@ -101,6 +101,35 @@ pub fn get_cdr2(x: &TigData1, left: i64, right: i64) -> Option<String> {
     return None;
 }
 
+pub fn get_cdr3(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
+    let mut dna = Vec::<u8>::new();
+    if x.cdr3_start as i64 - left >= 0
+        && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
+        && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
+        && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right <= x.seq_del_amino.len() as i64
+    {
+        for p in
+            x.cdr3_start as i64 - left..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+        {
+            let p = p as usize;
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn compute_field_types(
