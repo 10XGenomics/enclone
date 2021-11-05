@@ -40,6 +40,7 @@ pub fn row_fill(
     varmat: &Vec<Vec<Vec<u8>>>,
     fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
+    shares_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
     field_types: &Vec<Vec<u8>>,
     bads: &mut Vec<bool>,
@@ -786,6 +787,8 @@ pub fn row_fill(
                     rtot,
                     extra_args,
                     stats,
+                    vars_amino,
+                    shares_amino,
                 )? {
                     let _ = proc_cvar2(
                         var,
