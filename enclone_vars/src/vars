@@ -627,7 +627,7 @@ code:     let x = &ex.share[mid];
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_len
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -637,7 +637,20 @@ brief:    length of CDR* amino acid sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_cdr1(&x, 0, 0);
+          } else if arg1 == 2 {
+              c = get_cdr2(&x, 0, 0);
+          } else {
+              c = Some(x.cdr3_dna.clone());
+          }
+          if c.is_some() {
+              y = format!("{}", c.unwrap().len() / 3);
+          }
+          y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   cvar_vdj

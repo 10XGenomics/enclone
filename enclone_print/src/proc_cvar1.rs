@@ -285,7 +285,7 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, edit];
         }
-    } else if *var == "cdr1_len" || (var.starts_with("cdr1_aa_") && var.ends_with("_ext")) {
+    } else if var.starts_with("cdr1_aa_") && var.ends_with("_ext") {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {
             left = var.between("aa_", "_").force_i64() * 3;
@@ -316,15 +316,11 @@ pub fn proc_cvar1(
                     }
                 }
                 test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                if var.starts_with("cdr1_aa") {
-                    y = stringme(&aa_seq(&dna, 0));
-                } else {
-                    y = format!("{}", dna.len() / 3);
-                }
+                y = stringme(&aa_seq(&dna, 0));
             }
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr2_len" || (var.starts_with("cdr2_aa_") && var.ends_with("_ext")) {
+    } else if var.starts_with("cdr2_aa_") && var.ends_with("_ext") {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {
             left = var.between("aa_", "_").force_i64() * 3;
@@ -355,18 +351,10 @@ pub fn proc_cvar1(
                     }
                 }
                 test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
-                if var.starts_with("cdr2_aa") {
-                    y = stringme(&aa_seq(&dna, 0));
-                } else {
-                    y = format!("{}", dna.len() / 3);
-                }
+                y = stringme(&aa_seq(&dna, 0));
             }
         }
-        if y != "cdr2_len" {
-            cvar_stats1![j, var, y];
-        } else {
-            cvar_stats1![j, var, y];
-        }
+        cvar_stats1![j, var, y];
     } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
         let mut left = -1 * 3;
         let mut right = -1 * 3;
@@ -401,8 +389,6 @@ pub fn proc_cvar1(
             y = stringme(&aa_seq(&dna, 0));
         }
         cvar_stats1![j, var, y];
-    } else if *var == "cdr3_len" {
-        cvar_stats1![j, var, ex.share[mid].cdr3_aa.len().to_string()];
     } else if *var == "fwr1_dna" || *var == "fwr1_aa" || *var == "fwr1_len" {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();

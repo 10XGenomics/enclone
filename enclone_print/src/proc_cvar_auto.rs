@@ -331,6 +331,27 @@ pub fn proc_cvar_auto(
             y = c.unwrap();
         }
         y
+    } else if var.starts_with("cdr")
+        && var.ends_with("_len")
+        && var.after("cdr").rev_before("_len").parse::<usize>().is_ok()
+        && var.after("cdr").rev_before("_len").force_usize() >= 1
+        && var.after("cdr").rev_before("_len").force_usize() <= 3
+    {
+        let arg1 = var.after("cdr").rev_before("_len").force_usize();
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let c;
+        if arg1 == 1 {
+            c = get_cdr1(&x, 0, 0);
+        } else if arg1 == 2 {
+            c = get_cdr2(&x, 0, 0);
+        } else {
+            c = Some(x.cdr3_dna.clone());
+        }
+        if c.is_some() {
+            y = format!("{}", c.unwrap().len() / 3);
+        }
+        y
     } else if var == "clen" {
         format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
     } else if var == "const" {
