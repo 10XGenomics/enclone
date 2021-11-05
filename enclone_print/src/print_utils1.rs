@@ -688,16 +688,16 @@ pub fn color_codon(
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];
     let aa = codon_to_aa(codon);
-    if ctl.gen_opt.color == *"codon" {
+    if ctl.gen_opt.color == *"codon" || ctl.gen_opt.color == *"codon-diffs" {
         let mut diff = false;
-        if !ref_diff_pos.is_empty() {
+        if !ref_diff_pos.is_empty() && ctl.gen_opt.color == *"codon-diffs" {
             for j in 0..3 {
                 if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
                     diff = true;
                 }
             }
         }
-        if !ref_diff_pos.is_empty() && !diff {
+        if !ref_diff_pos.is_empty() && !diff && ctl.gen_opt.color == *"codon-diffs" {
             log.append(&mut b"[01m[38;5;254m".to_vec());
         } else {
             emit_codon_color_escape(codon, &mut log);
