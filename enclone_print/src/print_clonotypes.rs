@@ -886,7 +886,6 @@ pub fn print_clonotypes(
                     &rsi,
                     &vars,
                     &show_aa,
-                    &ref_diff_pos,
                     &field_types,
                     &lvars,
                     refdata,

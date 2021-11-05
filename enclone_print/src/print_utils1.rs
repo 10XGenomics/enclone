@@ -690,12 +690,14 @@ pub fn color_codon(
     let aa = codon_to_aa(codon);
     if ctl.gen_opt.color == *"codon" {
         let mut diff = false;
-        for j in 0..3 {
-            if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
-                diff = true;
+        if !ref_diff_pos.is_empty() {
+            for j in 0..3 {
+                if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
+                    diff = true;
+                }
             }
         }
-        if !diff {
+        if !ref_diff_pos.is_empty() && !diff {
             log.append(&mut b"[01m[38;5;254m".to_vec());
         } else {
             emit_codon_color_escape(codon, &mut log);
