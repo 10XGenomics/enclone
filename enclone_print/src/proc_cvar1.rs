@@ -47,8 +47,8 @@ pub fn proc_cvar1(
     _rtot: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
-    vars_amino: &Vec<Vec<usize>>,
-    shares_amino: &Vec<Vec<usize>>,
+    _vars_amino: &Vec<Vec<usize>>,
+    _shares_amino: &Vec<Vec<usize>>,
 ) -> Result<bool, String> {
     let seq_amino = &rsi.seqss_amino[col][u];
     let cvars = &ctl.clono_print_opt.cvars;
@@ -144,7 +144,7 @@ pub fn proc_cvar1(
             } else {
                 let x = &peer_groups[rsi.vids[col]];
                 let last = k == show_aa[col].len() - 1;
-                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last, &vars_amino, &shares_amino);
+                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last);
                 cx[col][j] += strme(&log);
             }
         }

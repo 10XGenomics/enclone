@@ -411,8 +411,8 @@ pub fn insert_reference_rows(
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
-    vars_amino: &Vec<Vec<usize>>,
-    shares_amino: &Vec<Vec<usize>>,
+    _vars_amino: &Vec<Vec<usize>>,
+    _shares_amino: &Vec<Vec<usize>>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if !drows.is_empty() {
@@ -502,7 +502,7 @@ pub fn insert_reference_rows(
                     } else {
                         let x = &peer_groups[rsi.vids[cz]];
                         let last = k == show_aa[cz].len() - 1;
-                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last, &vars_amino, &shares_amino);
+                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last);
                         refx += strme(&log);
                     }
                 }
