@@ -74,8 +74,9 @@ pub fn vars_and_shares(
                     if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
                         diff = true;
                     }
-                    if p >= n - (jref.len() - ctl.heur.ref_j_trim) 
-                        && b != jref[jref.len() - (n - p)] {
+                    if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (n - p)]
+                    {
                         diff = true;
                     }
                     if diff {

@@ -143,7 +143,17 @@ pub fn proc_cvar1(
             } else {
                 let x = &peer_groups[rsi.vids[col]];
                 let last = k == show_aa[col].len() - 1;
-                let log = color_codon(ctl, seq_amino, ref_diff_pos, x, col, p, u, &mut last_color, last);
+                let log = color_codon(
+                    ctl,
+                    seq_amino,
+                    ref_diff_pos,
+                    x,
+                    col,
+                    p,
+                    u,
+                    &mut last_color,
+                    last,
+                );
                 cx[col][j] += strme(&log);
             }
         }

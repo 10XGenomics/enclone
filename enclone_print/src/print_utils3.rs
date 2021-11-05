@@ -500,7 +500,17 @@ pub fn insert_reference_rows(
                     } else {
                         let x = &peer_groups[rsi.vids[cz]];
                         let last = k == show_aa[cz].len() - 1;
-                        let log = color_codon(ctl, &refseq, &Vec::new(), x, cz, p, 0, &mut last_color, last);
+                        let log = color_codon(
+                            ctl,
+                            &refseq,
+                            &Vec::new(),
+                            x,
+                            cz,
+                            p,
+                            0,
+                            &mut last_color,
+                            last,
+                        );
                         refx += strme(&log);
                     }
                 }
