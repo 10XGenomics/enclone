@@ -253,12 +253,12 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_cdr1(&x);
+            c = get_cdr1(&x, 0, 0);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
         } else if arg1 == 2 {
-            c = get_cdr2(&x);
+            c = get_cdr2(&x, 0, 0);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
@@ -277,9 +277,9 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_cdr1(&x);
+            c = get_cdr1(&x, 0, 0);
         } else if arg1 == 2 {
-            c = get_cdr2(&x);
+            c = get_cdr2(&x, 0, 0);
         } else {
             c = Some(x.cdr3_dna.clone());
         }

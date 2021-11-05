@@ -37,18 +37,20 @@ pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(),
     Ok(())
 }
 
-pub fn get_cdr1(x: &TigData1) -> Option<String> {
+pub fn get_cdr1(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
     if x.cdr1_start.is_some()
         && x.fr2_start.is_some()
         && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
     {
         let mut dna = Vec::<u8>::new();
-        if x.cdr1_start.unwrap() as i64 >= 0
-            && (x.cdr1_start.unwrap() as i64) < x.seq_del_amino.len() as i64
-            && x.fr2_start.unwrap() as i64 > 0
-            && x.fr2_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+        if x.cdr1_start.unwrap() as i64 - left >= 0
+            && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+            && x.fr2_start.unwrap() as i64 + right > 0
+            && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
         {
-            for p in (x.cdr1_start.unwrap() as i64)..x.fr2_start.unwrap() as i64 {
+            for p in x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right {
                 let p = p as usize;
                 for j in 0..x.ins.len() {
                     if x.ins[j].0 == p {
@@ -67,18 +69,20 @@ pub fn get_cdr1(x: &TigData1) -> Option<String> {
     return None;
 }
 
-pub fn get_cdr2(x: &TigData1) -> Option<String> {
+pub fn get_cdr2(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
     if x.cdr2_start.is_some()
         && x.fr3_start.is_some()
         && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
     {
         let mut dna = Vec::<u8>::new();
-        if x.cdr2_start.unwrap() as i64 >= 0
-            && (x.cdr2_start.unwrap() as i64) < x.seq_del_amino.len() as i64
-            && x.fr3_start.unwrap() as i64 > 0
-            && x.fr3_start.unwrap() as i64 <= x.seq_del_amino.len() as i64
+        if x.cdr2_start.unwrap() as i64 - left >= 0
+            && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+            && x.fr3_start.unwrap() as i64 + right > 0
+            && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
         {
-            for p in (x.cdr2_start.unwrap() as i64)..x.fr3_start.unwrap() as i64 {
+            for p in x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right {
                 let p = p as usize;
                 for j in 0..x.ins.len() {
                     if x.ins[j].0 == p {
