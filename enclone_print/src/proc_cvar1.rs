@@ -33,6 +33,7 @@ pub fn proc_cvar1(
     dref: &Vec<DonorReferenceItem>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     show_aa: &Vec<Vec<usize>>,
+    ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     field_types: &Vec<Vec<u8>>,
     col_var: bool,
     pcols_sort: &Vec<String>,
@@ -142,7 +143,7 @@ pub fn proc_cvar1(
             } else {
                 let x = &peer_groups[rsi.vids[col]];
                 let last = k == show_aa[col].len() - 1;
-                let log = color_codon(ctl, seq_amino, x, p, &mut last_color, last);
+                let log = color_codon(ctl, seq_amino, ref_diff_pos, x, col, p, u, &mut last_color, last);
                 cx[col][j] += strme(&log);
             }
         }

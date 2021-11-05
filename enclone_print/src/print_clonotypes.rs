@@ -399,6 +399,7 @@ pub fn print_clonotypes(
                 let mut vars = Vec::<Vec<usize>>::new();
                 let mut vars_amino = Vec::<Vec<usize>>::new();
                 let mut shares_amino = Vec::<Vec<usize>>::new();
+                let mut ref_diff_pos = Vec::<Vec<Vec<usize>>>::new();
                 vars_and_shares(
                     pass,
                     ctl,
@@ -410,6 +411,7 @@ pub fn print_clonotypes(
                     &mut vars,
                     &mut vars_amino,
                     &mut shares_amino,
+                    &mut ref_diff_pos,
                     &mut out_data,
                 );
 
@@ -650,6 +652,7 @@ pub fn print_clonotypes(
                         &fp,
                         &vars_amino,
                         &show_aa,
+                        &ref_diff_pos,
                         &field_types,
                         &mut bads,
                         &mut gex_low,
@@ -883,6 +886,7 @@ pub fn print_clonotypes(
                     &rsi,
                     &vars,
                     &show_aa,
+                    &ref_diff_pos,
                     &field_types,
                     &lvars,
                     refdata,

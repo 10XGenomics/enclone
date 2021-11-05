@@ -677,8 +677,11 @@ pub fn insert_position_rows(
 pub fn color_codon(
     ctl: &EncloneControl,
     seq_amino: &Vec<u8>,
+    ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     x: &Vec<(usize, u8, u32)>,
+    col: usize,
     p: usize,
+    u: usize,
     last_color: &mut String,
     last: bool,
 ) -> Vec<u8> {
@@ -686,7 +689,17 @@ pub fn color_codon(
     let codon = &seq_amino[3 * p..3 * p + 3];
     let aa = codon_to_aa(codon);
     if ctl.gen_opt.color == *"codon" {
-        emit_codon_color_escape(codon, &mut log);
+        let mut diff = false;
+        for j in 0..3 {
+            if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
+                diff = true;
+            }
+        }
+        if !diff {
+            log.append(&mut b"[01m[38;5;254m".to_vec());
+        } else {
+            emit_codon_color_escape(codon, &mut log);
+        }
         log.push(aa);
         emit_end_escape(&mut log);
     } else if ctl.gen_opt.color == *"property" {
