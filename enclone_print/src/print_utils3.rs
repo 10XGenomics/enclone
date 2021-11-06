@@ -32,7 +32,12 @@ pub fn consensus_codon_cdr3(
             let m = rsi.mat[cx][u];
             if m.is_some() {
                 let m = m.unwrap();
-                cdr3s.push(exact_clonotypes[exacts[u]].share[m].cdr3_dna.as_bytes().to_vec());
+                cdr3s.push(
+                    exact_clonotypes[exacts[u]].share[m]
+                        .cdr3_dna
+                        .as_bytes()
+                        .to_vec(),
+                );
             }
         }
         let n = cdr3s[0].len();
@@ -40,7 +45,7 @@ pub fn consensus_codon_cdr3(
         for i in (0..n).step_by(3) {
             let mut codons = Vec::<Vec<u8>>::new();
             for j in 0..cdr3s.len() {
-                codons.push(cdr3s[j][i..i+3].to_vec());
+                codons.push(cdr3s[j][i..i + 3].to_vec());
             }
             codons.sort();
             let mut freq = Vec::<(u32, Vec<u8>)>::new();
