@@ -24,8 +24,8 @@ pub fn proc_cvar1(
     u: usize,
     ex: &ExactClonotype,
     ctl: &EncloneControl,
-    _exacts: &Vec<usize>,
-    _exact_clonotypes: &Vec<ExactClonotype>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
@@ -150,11 +150,14 @@ pub fn proc_cvar1(
                     ref_diff_pos,
                     x,
                     col,
+                    mid,
                     p,
                     u,
                     &mut last_color,
                     last,
                     cdr3_con,
+                    exacts,
+                    exact_clonotypes,
                 );
                 cx[col][j] += strme(&log);
             }

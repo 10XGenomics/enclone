@@ -680,11 +680,14 @@ pub fn color_codon(
     ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     x: &Vec<(usize, u8, u32)>,
     col: usize,
+    mid: usize,
     p: usize,
     u: usize,
     last_color: &mut String,
     last: bool,
-    _cdr3_con: &Vec<Vec<u8>>,
+    cdr3_con: &Vec<Vec<u8>>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
 ) -> Vec<u8> {
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];
@@ -695,6 +698,17 @@ pub fn color_codon(
             for j in 0..3 {
                 if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
                     diff = true;
+                }
+            }
+            let cdr3_start = exact_clonotypes[exacts[u]].share[mid].cdr3_start;
+            let cdr3 = &exact_clonotypes[exacts[u]].share[mid].cdr3_dna.as_bytes();
+            if 3 * p >= cdr3_start && 3 * p < cdr3_start + cdr3.len() {
+                let cdr3_con = &cdr3_con[col];
+                for j in 0..3 {
+                    let cp = 3 * p - cdr3_start + j;
+                    if cdr3[cp] != cdr3_con[cp] {
+                        diff = true;
+                    }
                 }
             }
         }

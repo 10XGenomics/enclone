@@ -557,11 +557,14 @@ pub fn insert_reference_rows(
                             &Vec::new(),
                             x,
                             cz,
+                            0,
                             p,
                             0,
                             &mut last_color,
                             last,
                             cdr3_con,
+                            exacts,
+                            exact_clonotypes,
                         );
                         refx += strme(&log);
                     }
