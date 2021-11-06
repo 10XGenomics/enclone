@@ -41,3 +41,22 @@ DATASET-LEVEL METRICS
 │86237    │                50.8  │                51.8│
 └─────────┴──────────────────────┴────────────────────┘
 
+feature barcode UMI distribution for 86237
+┌─────┬────────────────┬─────────────────┬────────────────────┐
+│     │                │ NaN reference   │                    │
+│     │                ├─────────────────┼────────────────────┤
+│     │                │                 │ inf TCAATCCTTCCGCTT│
+│     │ NaN cellular   │                 ├────────────────────┤
+│     │                │ NaN nonreference│ inf TCACCAGTACCTAGT│
+│     │                │                 ├────────────────────┤
+│     │                │                 │ inf CTCATTGTAACTCCT│
+│100.0├────────────────┼─────────────────┼────────────────────┤
+│     │                │ NaN reference   │                    │
+│     │                ├─────────────────┼────────────────────┤
+│     │                │                 │ inf TCAATCCTTCCGCTT│
+│     │ NaN noncellular│                 ├────────────────────┤
+│     │                │ NaN nonreference│ inf TCACCAGTACCTAGT│
+│     │                │                 ├────────────────────┤
+│     │                │                 │ inf CTCATTGTAACTCCT│
+└─────┴────────────────┴─────────────────┴────────────────────┘
+

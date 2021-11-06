@@ -164,15 +164,17 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     // These data are in the extended public dataset collection.
     r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
          NOPRINT RE NO_PRE NFORCE"###,
+    //
+    // THE FOLLOWING ARE ALL PUBLIC DATA
+    //
     // 7. test fb variables
+    // THIS TEST IS SUPERCEDED AND CAN BE DELETED.
     r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
          AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
          CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
     // 8. test on PD multi pipestance; failed before bug fix
+    // THIS TEST CAN BE DELETED.  MAYBE.
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    //
-    // THE FOLLOWING ARE ALL PUBLIC DATA
-    //
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present

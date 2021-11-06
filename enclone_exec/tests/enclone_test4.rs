@@ -5,6 +5,7 @@
 use enclone_core::defs::*;
 use enclone_main::main_enclone::main_enclone;
 use enclone_ranger::main_enclone::main_enclone_ranger;
+use enclone_vars::export_code::*;
 use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
@@ -90,7 +91,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.6800;
+    const REQUIRED_GI: f64 = 18.7095;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -682,5 +683,26 @@ fn test_unpushed() {
     if out.contains("Your branch is ahead of") {
         eprintln!("\nYour branch has unpushed commits.  Please push them.\n");
         std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 40. Test to see that export_code has been run.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_export_code() {
+    PrettyTrace::new().on();
+    let outs = export_code(1);
+    for i in 0..outs.len() {
+        let f = format!("../{}", outs[i].0);
+        let current = std::fs::read_to_string(&f).unwrap();
+        if outs[i].1 != current {
+            eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
+        }
     }
 }

@@ -28,6 +28,7 @@ pub fn vars_and_shares(
     vars: &mut Vec<Vec<usize>>,
     vars_amino: &mut Vec<Vec<usize>>,
     shares_amino: &mut Vec<Vec<usize>>,
+    ref_diff_pos: &mut Vec<Vec<Vec<usize>>>,
     out_data: &mut Vec<HashMap<String, String>>,
 ) {
     // Copied stuff.
@@ -35,6 +36,7 @@ pub fn vars_and_shares(
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
     let nexacts = exacts.len();
     let cols = rsi.vids.len();
+    *ref_diff_pos = vec![vec![Vec::<usize>::new(); nexacts]; cols];
 
     // Go through the columns.
 
@@ -59,6 +61,31 @@ pub fn vars_and_shares(
                 vseq2 = vseq1.clone();
             }
         }
+
+        for u in 0..nexacts {
+            let m = rsi.mat[cx][u];
+            if m.is_some() {
+                let m = m.unwrap();
+                let seq = &exact_clonotypes[exacts[u]].share[m].seq_del_amino;
+                let n = seq.len();
+                for p in 0..seq.len() {
+                    let b = seq[p];
+                    let mut diff = false;
+                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                        diff = true;
+                    }
+                    if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (n - p)]
+                    {
+                        diff = true;
+                    }
+                    if diff {
+                        ref_diff_pos[cx][u].push(p);
+                    }
+                }
+            }
+        }
+
         let mut n = 0;
         for z in 0..rsi.seqss[cx].len() {
             n = max(n, rsi.seqss[cx][z].len());

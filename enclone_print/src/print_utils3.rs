@@ -13,6 +13,56 @@ use vector_utils::{bin_member, erase_if, make_freq, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Form the consensus CDR3 DNA sequence for a clonotype.  We define this by finding, for each
+// chain, and each codon in CDR3, the most frequent one.  These codons are then chained together
+// to form a DNA sequence.  If no codon has > 50% of the total, we report a tie, as XXX.
+// This code is only used in processing COLOR=codon-diffs.
+
+pub fn consensus_codon_cdr3(
+    rsi: &ColInfo,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+) -> Vec<Vec<u8>> {
+    let mut cons = Vec::<Vec<u8>>::new();
+    let nexacts = exacts.len();
+    let cols = rsi.vids.len();
+    for cx in 0..cols {
+        let mut cdr3s = Vec::<Vec<u8>>::new();
+        for u in 0..nexacts {
+            let m = rsi.mat[cx][u];
+            if m.is_some() {
+                let m = m.unwrap();
+                cdr3s.push(
+                    exact_clonotypes[exacts[u]].share[m]
+                        .cdr3_dna
+                        .as_bytes()
+                        .to_vec(),
+                );
+            }
+        }
+        let n = cdr3s[0].len();
+        let mut con = Vec::<u8>::new();
+        for i in (0..n).step_by(3) {
+            let mut codons = Vec::<Vec<u8>>::new();
+            for j in 0..cdr3s.len() {
+                codons.push(cdr3s[j][i..i + 3].to_vec());
+            }
+            codons.sort();
+            let mut freq = Vec::<(u32, Vec<u8>)>::new();
+            make_freq(&codons, &mut freq);
+            if freq[0].0 as usize * 2 > codons.len() {
+                con.append(&mut freq[0].1.clone());
+            } else {
+                con.append(&mut b"XXX".to_vec());
+            }
+        }
+        cons.push(con);
+    }
+    cons
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Define reference segment identifiers, one per chain.  For the V segment, there is
 // also an optional donor reference sequence alignment.  (For now.  We might do the
 // same thing later for J segments.)
@@ -411,6 +461,7 @@ pub fn insert_reference_rows(
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if !drows.is_empty() {
@@ -500,7 +551,21 @@ pub fn insert_reference_rows(
                     } else {
                         let x = &peer_groups[rsi.vids[cz]];
                         let last = k == show_aa[cz].len() - 1;
-                        let log = color_codon(ctl, &refseq, x, p, &mut last_color, last);
+                        let log = color_codon(
+                            ctl,
+                            &refseq,
+                            &Vec::new(),
+                            x,
+                            cz,
+                            0,
+                            p,
+                            0,
+                            &mut last_color,
+                            last,
+                            cdr3_con,
+                            exacts,
+                            exact_clonotypes,
+                        );
                         refx += strme(&log);
                     }
                 }

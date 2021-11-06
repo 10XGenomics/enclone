@@ -5,6 +5,7 @@
 
 use crate::proc_cvar1::proc_cvar1;
 use crate::proc_cvar2::proc_cvar2;
+use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
 use amino::{aa_seq, codon_to_aa};
@@ -40,6 +41,7 @@ pub fn row_fill(
     fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
+    ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     field_types: &Vec<Vec<u8>>,
     bads: &mut Vec<bool>,
     gex_low: &mut usize,
@@ -66,6 +68,7 @@ pub fn row_fill(
     all_vars: &Vec<String>,
     need_gex: bool,
     fate: &Vec<HashMap<String, String>>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
 
@@ -565,20 +568,6 @@ pub fn row_fill(
     // Traverse the chains.
 
     for col in 0..cols {
-        // Set up chain variable macro.  This is the mechanism for generating
-        // both human-readable and parseable output for chain variables.
-
-        macro_rules! cvar_stats1 {
-            ($i: expr, $var:expr, $val:expr) => {
-                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                    cx[col][$i] = $val.clone();
-                }
-                speakc!(u, col, $var, $val);
-                let varc = format!("{}{}", $var, col + 1);
-                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-            };
-        }
-
         // Process variables that need to be computed even if the chain entry is empty.
         // NO: WHY?  WHY WOULD WE WANT TO PRINT THESE?  BEHAVIOR CHANGED.  DON'T KNOW WHY
         // WE EVER DID THIS>
@@ -630,32 +619,6 @@ pub fn row_fill(
             if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
-
-            // Process some variables.
-
-            if *var == "v_name" {
-                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
-            } else if *var == "v_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
-            } else if *var == "d_name" {
-                let dname = if rsi.dids[col].is_some() {
-                    refdata.name[rsi.dids[col].unwrap()].clone()
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, dname];
-            } else if *var == "d_id" {
-                let did = if rsi.dids[col].is_some() {
-                    format!("{}", refdata.id[rsi.dids[col].unwrap()])
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, did];
-            } else if *var == "j_name" {
-                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
-            } else if *var == "j_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
-            }
         }
 
         // Keep going.
@@ -675,9 +638,6 @@ pub fn row_fill(
         numis.sort_unstable();
         let median_numis = rounded_median(&numis);
         let utot: usize = numis.iter().sum();
-        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-        let u_min = *numis.iter().min().unwrap();
-        let u_max = *numis.iter().max().unwrap();
         nreads.sort_unstable();
         let rtot: usize = nreads.iter().sum();
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
@@ -776,43 +736,27 @@ pub fn row_fill(
 
             // Compute.
 
-            if !proc_cvar1(
-                var,
+            if !proc_cvar_auto(
                 jj,
-                col,
-                mid,
                 pass,
-                u,
+                var,
                 ex,
-                ctl,
                 exacts,
                 exact_clonotypes,
-                refdata,
-                varmat,
-                out_data,
+                mid,
+                col,
+                u,
                 rsi,
+                refdata,
                 dref,
-                peer_groups,
-                show_aa,
-                field_types,
-                col_var,
-                &pcols_sort,
-                bads,
-                cx,
-                u_min,
-                u_max,
-                u_mean,
-                median_numis,
-                utot,
-                median_nreads,
-                r_min,
-                r_max,
-                r_mean,
-                rtot,
+                ctl,
                 extra_args,
+                &pcols_sort,
+                cx,
+                out_data,
                 stats,
             )? {
-                let _ = proc_cvar2(
+                if !proc_cvar1(
                     var,
                     jj,
                     col,
@@ -830,14 +774,12 @@ pub fn row_fill(
                     dref,
                     peer_groups,
                     show_aa,
+                    ref_diff_pos,
                     field_types,
                     col_var,
                     &pcols_sort,
                     bads,
                     cx,
-                    u_min,
-                    u_max,
-                    u_mean,
                     median_numis,
                     utot,
                     median_nreads,
@@ -847,7 +789,42 @@ pub fn row_fill(
                     rtot,
                     extra_args,
                     stats,
-                );
+                    cdr3_con,
+                )? {
+                    let _ = proc_cvar2(
+                        var,
+                        jj,
+                        col,
+                        mid,
+                        pass,
+                        u,
+                        ex,
+                        ctl,
+                        exacts,
+                        exact_clonotypes,
+                        refdata,
+                        varmat,
+                        out_data,
+                        rsi,
+                        dref,
+                        peer_groups,
+                        show_aa,
+                        field_types,
+                        col_var,
+                        &pcols_sort,
+                        bads,
+                        cx,
+                        median_numis,
+                        utot,
+                        median_nreads,
+                        r_min,
+                        r_max,
+                        r_mean,
+                        rtot,
+                        extra_args,
+                        stats,
+                    );
+                }
             }
         }
     }

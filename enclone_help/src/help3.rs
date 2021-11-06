@@ -634,6 +634,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         h.doc("fwr1", "FWR1 sequence");
         h.doc("fwr2", "FWR2 sequence");
         h.doc("fwr3", "FWR3 sequence");
+        h.doc("fwr4", "FWR4 sequence");
         h.doc("", "Notes:");
         h.docpr(
             "",

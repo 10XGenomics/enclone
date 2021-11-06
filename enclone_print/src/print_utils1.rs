@@ -5,7 +5,7 @@ use ansi_escape::{
     emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape, emit_red_escape,
 };
 use enclone_core::cell_color::CellColor;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, TigData1, POUT_SEP};
 use enclone_core::print_tools::{color_by_property, emit_codon_color_escape};
 use enclone_vars::decode_arith;
 use expr_tools::vars_of_node;
@@ -14,9 +14,181 @@ use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
-use string_utils::stringme;
+use string_utils::{stringme, strme};
 use tables::{print_tabular_vbox, visible_width};
 use vector_utils::{bin_member, lower_bound1_3, meet_size, unique_sort, upper_bound1_3, VecUtils};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(), String> {
+    let mut found = false;
+    for i in 0..seq.len() {
+        if seq[i..].starts_with(&dna) {
+            found = true;
+        }
+    }
+    if !found {
+        return Err(format!(
+            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+            strme(&dna),
+            cdr3
+        ));
+    }
+    Ok(())
+}
+
+pub fn get_cdr1(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
+    if x.cdr1_start.is_some()
+        && x.fr2_start.is_some()
+        && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+    {
+        let mut dna = Vec::<u8>::new();
+        if x.cdr1_start.unwrap() as i64 - left >= 0
+            && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+            && x.fr2_start.unwrap() as i64 + right > 0
+            && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+        {
+            for p in x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right {
+                let p = p as usize;
+                for j in 0..x.ins.len() {
+                    if x.ins[j].0 == p {
+                        let mut z = x.ins[j].1.clone();
+                        dna.append(&mut z);
+                    }
+                }
+                if x.seq_del_amino[p] != b'-' {
+                    dna.push(x.seq_del_amino[p]);
+                }
+            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+            return Some(stringme(&dna));
+        }
+    }
+    return None;
+}
+
+pub fn get_cdr2(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
+    if x.cdr2_start.is_some()
+        && x.fr3_start.is_some()
+        && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+    {
+        let mut dna = Vec::<u8>::new();
+        if x.cdr2_start.unwrap() as i64 - left >= 0
+            && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+            && x.fr3_start.unwrap() as i64 + right > 0
+            && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+        {
+            for p in x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right {
+                let p = p as usize;
+                for j in 0..x.ins.len() {
+                    if x.ins[j].0 == p {
+                        let mut z = x.ins[j].1.clone();
+                        dna.append(&mut z);
+                    }
+                }
+                if x.seq_del_amino[p] != b'-' {
+                    dna.push(x.seq_del_amino[p]);
+                }
+            }
+            test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+            return Some(stringme(&dna));
+        }
+    }
+    return None;
+}
+
+pub fn get_cdr3(x: &TigData1, left: i64, right: i64) -> Option<String> {
+    let left = left * 3;
+    let right = right * 3;
+    let mut dna = Vec::<u8>::new();
+    if x.cdr3_start as i64 - left >= 0
+        && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
+        && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
+        && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right <= x.seq_del_amino.len() as i64
+    {
+        for p in
+            x.cdr3_start as i64 - left..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+        {
+            let p = p as usize;
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
+pub fn get_fwr1(x: &TigData1) -> Option<String> {
+    if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr1_start..x.cdr1_start.unwrap() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
+pub fn get_fwr2(x: &TigData1) -> Option<String> {
+    if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr2_start.unwrap()..x.cdr2_start.unwrap() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
+
+pub fn get_fwr3(x: &TigData1) -> Option<String> {
+    if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
+        let mut dna = Vec::<u8>::new();
+        for p in x.fr3_start.unwrap()..x.cdr3_start - x.ins_len() {
+            for j in 0..x.ins.len() {
+                if x.ins[j].0 == p {
+                    let mut z = x.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if x.seq_del_amino[p] != b'-' {
+                dna.push(x.seq_del_amino[p]);
+            }
+        }
+        test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
+        return Some(stringme(&dna));
+    }
+    return None;
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -505,16 +677,46 @@ pub fn insert_position_rows(
 pub fn color_codon(
     ctl: &EncloneControl,
     seq_amino: &Vec<u8>,
+    ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     x: &Vec<(usize, u8, u32)>,
+    col: usize,
+    mid: usize,
     p: usize,
+    u: usize,
     last_color: &mut String,
     last: bool,
+    cdr3_con: &Vec<Vec<u8>>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
 ) -> Vec<u8> {
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];
     let aa = codon_to_aa(codon);
-    if ctl.gen_opt.color == *"codon" {
-        emit_codon_color_escape(codon, &mut log);
+    if ctl.gen_opt.color == *"codon" || ctl.gen_opt.color == *"codon-diffs" {
+        let mut diff = false;
+        if !ref_diff_pos.is_empty() && ctl.gen_opt.color == *"codon-diffs" {
+            for j in 0..3 {
+                if bin_member(&ref_diff_pos[col][u], &(3 * p + j)) {
+                    diff = true;
+                }
+            }
+            let cdr3_start = exact_clonotypes[exacts[u]].share[mid].cdr3_start;
+            let cdr3 = &exact_clonotypes[exacts[u]].share[mid].cdr3_dna.as_bytes();
+            if 3 * p >= cdr3_start && 3 * p < cdr3_start + cdr3.len() {
+                let cdr3_con = &cdr3_con[col];
+                for j in 0..3 {
+                    let cp = 3 * p - cdr3_start + j;
+                    if cdr3[cp] != cdr3_con[cp] {
+                        diff = true;
+                    }
+                }
+            }
+        }
+        if !ref_diff_pos.is_empty() && !diff && ctl.gen_opt.color == *"codon-diffs" {
+            log.append(&mut b"[01m[38;5;254m".to_vec());
+        } else {
+            emit_codon_color_escape(codon, &mut log);
+        }
         log.push(aa);
         emit_end_escape(&mut log);
     } else if ctl.gen_opt.color == *"property" {

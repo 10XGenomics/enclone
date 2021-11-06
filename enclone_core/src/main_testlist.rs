@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 268] = [
+pub const TESTS: [&str; 269] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -660,6 +660,8 @@ pub const TESTS: [&str; 268] = [
     // 264. test MIN_ORIGINS
     r###"BCR=123085:123089 MAX_CELLS=2 SEG=IGHV3-49 MIN_ORIGINS=2"###,
     // 265. test DVARS
+    // The output is a bit flaky because we imported some but not all of the special files
+    // for 85679.
     r###"BCR=86237 GEX=85679 DVARS=CD19_ab_cellular_u,CD19_ab_cellular_r
          NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 266. a test of VAR_DEF
@@ -671,4 +673,6 @@ pub const TESTS: [&str; 268] = [
     // 268. a test of VAR_DEF
     r###"BCR=86237 GEX=85679 VAR_DEF="pink:PINK1-AS_g" LVARSP=pink CDR3=CARSFFGDTAMVMFQAFDPW
          FOLD_HEADERS PER_CELL AMINO="###,
+    // 269. test fb variables
+    r###"BCR=86237 GEX=85679 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n PER_CELL AMINO=cdr3 CVARS=             FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL CDR3=CARSFFGDTAMVMFQAFDPW"###,
 ];

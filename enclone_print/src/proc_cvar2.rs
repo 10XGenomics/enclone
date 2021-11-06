@@ -6,11 +6,10 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use stats_utils::percent_ratio;
-use std::cmp::min;
 use std::collections::HashMap;
 use string_utils::{stringme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, next_diff12_4, unique_sort};
+use vector_utils::{bin_member, next_diff12_4};
 
 pub fn proc_cvar2(
     var: &String,
@@ -27,7 +26,7 @@ pub fn proc_cvar2(
     varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
+    _dref: &Vec<DonorReferenceItem>,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     _show_aa: &Vec<Vec<usize>>,
     _field_types: &Vec<Vec<u8>>,
@@ -35,11 +34,8 @@ pub fn proc_cvar2(
     pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    u_min: usize,
-    u_max: usize,
-    u_mean: usize,
     median_numis: usize,
-    utot: usize,
+    _utot: usize,
     median_nreads: usize,
     r_min: usize,
     r_max: usize,
@@ -414,84 +410,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "cdiff" {
-        let cstart = ex.share[mid].j_stop;
-        let clen = ex.share[mid].full_seq.len() - cstart;
-        let cid = ex.share[mid].c_ref_id;
-        let mut cdiff = String::new();
-        let mut ndiffs = 0;
-        if cid.is_some() {
-            let r = &refdata.refs[cid.unwrap()];
-            let mut extra = 0;
-            if clen > r.len() {
-                extra = clen - r.len();
-            }
-            for i in 0..min(clen, r.len()) {
-                let tb = ex.share[mid].full_seq[cstart + i];
-                let rb = r.to_ascii_vec()[i];
-                if tb != rb {
-                    ndiffs += 1;
-                    if ndiffs <= 5 {
-                        cdiff += &format!("{}{}", i, tb as char);
-                    }
-                }
-            }
-            if ndiffs > 5 {
-                cdiff += "...";
-            }
-            if extra > 0 {
-                cdiff += &format!("+{}", extra);
-            }
-        } else if clen > 0 {
-            cdiff = format!("+{}", clen);
-        }
-        cvar_stats1![j, var, cdiff];
-    } else if *var == "udiff" {
-        let ulen = ex.share[mid].v_start;
-        let uid = ex.share[mid].u_ref_id;
-        let mut udiff = String::new();
-        let mut ndiffs = 0;
-        if uid.is_some() {
-            let r = &refdata.refs[uid.unwrap()];
-            let mut extra = 0;
-            if ulen > r.len() {
-                extra = ulen - r.len();
-            }
-            for i in 0..ulen {
-                let mut rpos = i;
-                if ulen < r.len() {
-                    rpos += r.len() - ulen;
-                } else {
-                    if i + r.len() < ulen {
-                        continue;
-                    }
-                    rpos -= ulen - r.len();
-                }
-                let tb = ex.share[mid].full_seq[i];
-                let rb = r.to_ascii_vec()[rpos];
-                if tb != rb {
-                    ndiffs += 1;
-                    if ndiffs <= 5 {
-                        udiff += &format!("{}{}", rpos, tb as char);
-                    }
-                }
-            }
-            if ndiffs > 5 {
-                udiff += "...";
-            }
-            if extra > 0 {
-                udiff += &format!("+{}", extra);
-            }
-        } else if ulen > 0 {
-            udiff = format!("+{}", ulen);
-        }
-        cvar_stats1![j, var, udiff];
-    } else if *var == "const_id" {
-        let mut const_id = String::new();
-        if ex.share[mid].c_ref_id.is_some() {
-            const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
-        }
-        cvar_stats1![j, var, const_id];
     } else if *var == "utr_id" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
@@ -506,53 +424,6 @@ pub fn proc_cvar2(
             u = refdata.name[uid.unwrap()].clone();
         }
         cvar_stats1![j, var, u];
-    } else if *var == "d_univ" {
-        let vid = ex.share[mid].v_ref_id;
-        let vref = &refdata.refs[vid].to_ascii_vec();
-        let jid = ex.share[mid].j_ref_id;
-        let jref = &refdata.refs[jid].to_ascii_vec();
-        let tig = &ex.share[mid].seq_del;
-        let n = tig.len();
-        let mut diffs = 0;
-        for p in 0..n {
-            if tig[p] == b'-' {
-                continue;
-            }
-            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
-                diffs += 1;
-            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                && tig[p] != jref[jref.len() - (n - p)]
-            {
-                diffs += 1;
-            }
-        }
-        cvar_stats1![j, var, format!("{}", diffs)];
-    } else if *var == "d_donor" {
-        let vid = ex.share[mid].v_ref_id;
-        let mut vref = refdata.refs[vid].to_ascii_vec();
-        if rsi.vpids[col].is_some() {
-            vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-        }
-        let jid = ex.share[mid].j_ref_id;
-        let jref = &refdata.refs[jid].to_ascii_vec();
-        let tig = &ex.share[mid].seq_del;
-        let n = tig.len();
-        let mut diffs = 0;
-        for p in 0..n {
-            if tig[p] == b'-' {
-                continue;
-            }
-            if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
-                diffs += 1;
-            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                && tig[p] != jref[jref.len() - (n - p)]
-            {
-                diffs += 1;
-            }
-        }
-        cvar_stats1![j, var, format!("{}", diffs)];
-    } else if *var == "notes" {
-        cvar_stats1![j, var, ex.share[mid].vs_notesx.clone()];
     } else if *var == "var" {
         cvar_stats1![j, var, stringme(&varmat[u][col])];
     } else if *var == "u" {
@@ -580,14 +451,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "u_min" {
-        cvar_stats1![j, var, format!("{}", u_min)];
-    } else if *var == "u_max" {
-        cvar_stats1![j, var, format!("{}", u_max)];
-    } else if *var == "u_μ" {
-        cvar_stats1![j, var, format!("{}", u_mean)];
-    } else if *var == "u_Σ" {
-        cvar_stats1![j, var, format!("{}", utot)];
     } else if *var == "r" {
         let mut nreads = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -624,37 +487,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "d_frame" {
-        let mut d_frame = String::new();
-        if ex.share[mid].d_start.is_some() {
-            d_frame = format!(
-                "{}",
-                (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
-            );
-        }
-        cvar_stats1![j, var, d_frame];
-    } else if *var == "cdr3_start" {
-        cvar_stats1![j, var, format!("{}", ex.share[mid].cdr3_start)];
-    } else if *var == "v_start" {
-        cvar_stats1![j, var, format!("{}", ex.share[mid].v_start)];
-    } else if *var == "d_start" {
-        let mut d_start = String::new();
-        if ex.share[mid].d_start.is_some() {
-            d_start = format!("{}", ex.share[mid].d_start.unwrap());
-        }
-        cvar_stats1![j, var, d_start];
-    } else if *var == "const" {
-        let mut constx = Vec::<String>::new();
-        let cid = ex.share[mid].c_ref_id;
-        if cid.is_some() {
-            constx.push(refdata.name[cid.unwrap()].clone());
-        } else {
-            constx.push("?".to_string());
-        }
-        unique_sort(&mut constx);
-        // This is overcomplicated because there is now at most one
-        // const entry per exact subclonotype.
-        cvar_stats1![j, var, format!("{}", constx.iter().format(","))];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.

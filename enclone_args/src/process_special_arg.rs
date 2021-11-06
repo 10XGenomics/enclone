@@ -574,7 +574,10 @@ pub fn process_special_arg(
         }
     } else if arg.starts_with("COLOR=") {
         ctl.gen_opt.color = arg.after("COLOR=").to_string();
-        if ctl.gen_opt.color != *"codon" && ctl.gen_opt.color != *"property" {
+        if ctl.gen_opt.color != *"codon"
+            && ctl.gen_opt.color != *"codon-diffs"
+            && ctl.gen_opt.color != *"property"
+        {
             let mut ok = false;
             if arg.starts_with("COLOR=peer.") {
                 let pc = arg.after("COLOR=peer.");

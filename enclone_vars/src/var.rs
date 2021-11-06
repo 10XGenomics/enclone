@@ -85,6 +85,9 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
                 }
                 let n = this_group.len();
                 this_group[n - 1] += &mut format!(" {}", line.after(INDENT));
+                if FIELDS[fc - 1] == "code" {
+                    this_group[n - 1] += "\n";
+                }
             }
         }
     }
