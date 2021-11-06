@@ -684,6 +684,7 @@ pub fn color_codon(
     u: usize,
     last_color: &mut String,
     last: bool,
+    _cdr3_con: &Vec<Vec<u8>>,
 ) -> Vec<u8> {
     let mut log = Vec::<u8>::new();
     let codon = &seq_amino[3 * p..3 * p + 3];

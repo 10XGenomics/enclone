@@ -48,6 +48,7 @@ pub fn proc_cvar1(
     _rtot: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) -> Result<bool, String> {
     let seq_amino = &rsi.seqss_amino[col][u];
     let cvars = &ctl.clono_print_opt.cvars;
@@ -153,6 +154,7 @@ pub fn proc_cvar1(
                     u,
                     &mut last_color,
                     last,
+                    cdr3_con,
                 );
                 cx[col][j] += strme(&log);
             }

@@ -68,6 +68,7 @@ pub fn row_fill(
     all_vars: &Vec<String>,
     need_gex: bool,
     fate: &Vec<HashMap<String, String>>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
 
@@ -788,6 +789,7 @@ pub fn row_fill(
                     rtot,
                     extra_args,
                     stats,
+                    cdr3_con,
                 )? {
                     let _ = proc_cvar2(
                         var,

@@ -461,6 +461,7 @@ pub fn insert_reference_rows(
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if !drows.is_empty() {
@@ -560,6 +561,7 @@ pub fn insert_reference_rows(
                             0,
                             &mut last_color,
                             last,
+                            cdr3_con,
                         );
                         refx += strme(&log);
                     }
