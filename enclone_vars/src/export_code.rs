@@ -170,7 +170,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 if !upper {
                     // RESTRICTION 2: don't allow upper case
                     if !var.contains('{') {
-                        fwriteln!(f, "}} else if var == \"{}\" {{", var);
+                        fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
                         fwriteln!(f, "{}", v.code);
                     // RESTRICTION 3: allow only one {} pair
                     } else if !var.after("{").contains("{") {
@@ -182,11 +182,11 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let high = high.force_usize();
                             fwriteln!(
                                 f,
-                                "}} else if var.starts_with(\"{}\")
-                                && var.ends_with(\"{}\")
-                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {}
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() <= {} {{",
+                                r###"}} else if var.starts_with("{}")
+                                && var.ends_with("{}")
+                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
+                                && var.after("{}").rev_before("{}").force_usize() >= {}
+                                && var.after("{}").rev_before("{}").force_usize() <= {} {{"###,
                                 begin,
                                 end,
                                 begin,
@@ -201,10 +201,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         } else {
                             fwriteln!(
                                 f,
-                                "}} else if var.starts_with(\"{}\")
-                                && var.ends_with(\"{}\")
-                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {} {{",
+                                r###"}} else if var.starts_with("{}")
+                                && var.ends_with("{}")
+                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
+                                && var.after("{}").rev_before("{}").force_usize() >= {} {{"###,
                                 begin,
                                 end,
                                 begin,
@@ -216,7 +216,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         }
                         fwriteln!(
                             f,
-                            "let arg1 = var.after(\"{}\").rev_before(\"{}\").force_usize();",
+                            r###"let arg1 = var.after("{}").rev_before("{}").force_usize();"###,
                             begin,
                             end,
                         );
