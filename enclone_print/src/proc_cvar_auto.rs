@@ -902,6 +902,20 @@ pub fn proc_cvar_auto(
         udiff
     } else if var == "ulen" {
         format!("{}", ex.share[mid].v_start)
+    } else if var == "utr_id" {
+        let mut u = String::new();
+        let uid = ex.share[mid].u_ref_id;
+        if uid.is_some() {
+            u = format!("{}", refdata.id[uid.unwrap()]);
+        }
+        u
+    } else if var == "utr_name" {
+        let mut u = String::new();
+        let uid = ex.share[mid].u_ref_id;
+        if uid.is_some() {
+            u = refdata.name[uid.unwrap()].clone();
+        }
+        u
     } else if var == "v_id" {
         format!("{}", refdata.id[rsi.vids[col]])
     } else if var == "v_name" {

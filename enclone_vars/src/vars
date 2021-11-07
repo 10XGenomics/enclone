@@ -2296,7 +2296,7 @@ notes:
 code:     format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_id
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2314,7 +2314,7 @@ code:     let mut u = String::new();
           u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_name
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact

@@ -5,11 +5,9 @@
 use crate::print_utils1::{color_codon, test_internal_error_seq};
 use amino::aa_seq;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{stringme, strme, TextUtils};
-use vdj_ann::refx::RefData;
 use vector_utils::bin_member;
 
 pub fn proc_cvar1(
@@ -23,11 +21,9 @@ pub fn proc_cvar1(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    _refdata: &RefData,
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    _dref: &Vec<DonorReferenceItem>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     show_aa: &Vec<Vec<usize>>,
     ref_diff_pos: &Vec<Vec<Vec<usize>>>,
@@ -37,7 +33,6 @@ pub fn proc_cvar1(
     _bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     _median_numis: usize,
-    _utot: usize,
     _median_nreads: usize,
     _r_min: usize,
     _r_max: usize,
