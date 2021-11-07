@@ -4,6 +4,7 @@
 use crate::print_utils1::*;
 use crate::print_utils3::*;
 use amino::*;
+use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;
@@ -353,6 +354,28 @@ pub fn proc_cvar_auto(
             y = format!("{}", c.unwrap().len() / 3);
         }
         y
+    } else if var == "cigar" {
+        let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+        let mut dref = Vec::<u8>::new();
+        if rsi.dids[col].is_some() {
+            dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
+        }
+        let d2ref = Vec::<u8>::new();
+        let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+        let td = &ex.share[mid];
+        let tig = &td.seq;
+        let ops = align_to_vdj_ref(
+            tig,
+            &vref,
+            &dref,
+            &d2ref,
+            &jref,
+            "", // drefname
+            ex.share[mid].left,
+            ctl,
+        )
+        .0;
+        cigar(&ops, 0, tig.len(), tig.len())
     } else if var == "clen" {
         format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
     } else if var == "comp" {

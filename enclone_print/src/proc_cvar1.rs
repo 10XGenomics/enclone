@@ -4,7 +4,6 @@
 
 use crate::print_utils1::{color_codon, test_internal_error_seq};
 use amino::aa_seq;
-use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
@@ -24,7 +23,7 @@ pub fn proc_cvar1(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    refdata: &RefData,
+    _refdata: &RefData,
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
@@ -160,29 +159,6 @@ pub fn proc_cvar1(
                 cx[col][j] += strme(&log);
             }
         }
-    } else if *var == "cigar" {
-        let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
-        let mut dref = Vec::<u8>::new();
-        if rsi.dids[col].is_some() {
-            dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
-        }
-        let d2ref = Vec::<u8>::new();
-        let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
-        let td = &ex.share[mid];
-        let tig = &td.seq;
-        let ops = align_to_vdj_ref(
-            tig,
-            &vref,
-            &dref,
-            &d2ref,
-            &jref,
-            "", // drefname
-            ex.share[mid].left,
-            ctl,
-        )
-        .0;
-        let c = cigar(&ops, 0, tig.len(), tig.len());
-        cvar_stats1![j, var, c];
     } else if var.starts_with("cdr1_aa_") && var.ends_with("_ext") {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {

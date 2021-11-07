@@ -652,6 +652,39 @@ code:     let x = &ex.share[mid];
           }
           y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cigar
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CIGAR string defining edit of the V..J contig sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+          let mut dref = Vec::<u8>::new();
+          if rsi.dids[col].is_some() {
+              dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
+          }
+          let d2ref = Vec::<u8>::new();
+          let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+          let td = &ex.share[mid];
+          let tig = &td.seq;
+          let ops = align_to_vdj_ref(
+              tig,
+              &vref,
+              &dref,
+              &d2ref,
+              &jref,
+              "", // drefname
+              ex.share[mid].left,
+              ctl,
+          )
+          .0;
+          cigar(&ops, 0, tig.len(), tig.len())
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   cvar_vdj
 limits:
