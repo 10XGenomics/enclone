@@ -692,7 +692,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -702,7 +702,8 @@ brief:    CDR3 complexity number
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          format!("{}", comp)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const
 inputs:   cvar_vdj
@@ -1294,7 +1295,7 @@ code:     let mut diffs = 0;
           format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     edit
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1304,7 +1305,8 @@ brief:    edit versus reference CDR3
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          edit
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     exact_subclonotype_id
 inputs:   ?

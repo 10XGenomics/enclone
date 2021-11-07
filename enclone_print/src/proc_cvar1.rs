@@ -3,7 +3,6 @@
 // This file contains the single function proc_cvar.
 
 use crate::print_utils1::{color_codon, test_internal_error_seq};
-use crate::print_utils3::comp_edit;
 use amino::aa_seq;
 use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
@@ -29,7 +28,7 @@ pub fn proc_cvar1(
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
+    _dref: &Vec<DonorReferenceItem>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     show_aa: &Vec<Vec<usize>>,
     ref_diff_pos: &Vec<Vec<Vec<usize>>>,
@@ -184,12 +183,6 @@ pub fn proc_cvar1(
         .0;
         let c = cigar(&ops, 0, tig.len(), tig.len());
         cvar_stats1![j, var, c];
-    } else if *var == "comp" {
-        let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-        cvar_stats1![j, var, format!("{}", comp)];
-    } else if *var == "edit" {
-        let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-        cvar_stats1![j, var, edit];
     } else if var.starts_with("cdr1_aa_") && var.ends_with("_ext") {
         let (mut left, mut right) = (0, 0);
         if var.ends_with("_ext") {
