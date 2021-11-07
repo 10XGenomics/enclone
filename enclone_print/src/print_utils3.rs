@@ -1,8 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::print_utils1::color_codon;
 use bio_edit::alignment::pairwise::Aligner;
 use bio_edit::alignment::AlignmentOperation::*;
-use crate::print_utils1::color_codon;
 use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
