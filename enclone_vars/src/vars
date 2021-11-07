@@ -2371,10 +2371,10 @@ notes:    Positive integer, or nonnegative integer?
 code:     format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
-inputs:   varmat, u, col
+inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    clono
+level:    exact
 val:      string
 doc:      TBD
 brief:    bases at position in chain that vary across the clonotype

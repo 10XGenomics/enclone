@@ -752,6 +752,7 @@ pub fn row_fill(
                 extra_args,
                 &pcols_sort,
                 cx,
+                varmat,
                 out_data,
                 stats,
             )? {

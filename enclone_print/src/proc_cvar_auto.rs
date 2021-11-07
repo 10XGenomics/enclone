@@ -33,6 +33,7 @@ pub fn proc_cvar_auto(
     extra_args: &Vec<String>,
     pcols_sort: &Vec<String>,
     cx: &mut Vec<Vec<String>>,
+    varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> Result<bool, String> {
@@ -922,6 +923,8 @@ pub fn proc_cvar_auto(
         refdata.name[rsi.vids[col]].clone()
     } else if var == "v_start" {
         format!("{}", ex.share[mid].v_start)
+    } else if var == "var" {
+        stringme(&varmat[u][col])
     } else if var == "vjlen" {
         format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
     } else {

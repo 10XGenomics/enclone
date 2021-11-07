@@ -6,7 +6,7 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
 use itertools::Itertools;
 use stats_utils::percent_ratio;
 use std::collections::HashMap;
-use string_utils::{stringme, TextUtils};
+use string_utils::TextUtils;
 use vector_utils::{bin_member, next_diff12_4};
 
 pub fn proc_cvar2(
@@ -20,7 +20,7 @@ pub fn proc_cvar2(
     ctl: &EncloneControl,
     _exacts: &Vec<usize>,
     _exact_clonotypes: &Vec<ExactClonotype>,
-    varmat: &Vec<Vec<Vec<u8>>>,
+    _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
@@ -405,8 +405,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "var" {
-        cvar_stats1![j, var, stringme(&varmat[u][col])];
     } else if *var == "u" {
         let mut vals = Vec::<String>::new();
         for k in 0..ex.ncells() {

@@ -52,6 +52,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             extra_args: &Vec<String>,
             pcols_sort: &Vec<String>,
             cx: &mut Vec<Vec<String>>,
+            varmat: &Vec<Vec<Vec<u8>>>,
             out_data: &mut Vec<HashMap<String, String>>,
             stats: &mut Vec<(String, Vec<String>)>,
         ) -> Result<bool, String> {
