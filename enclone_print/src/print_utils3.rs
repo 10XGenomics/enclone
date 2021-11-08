@@ -660,7 +660,9 @@ pub fn insert_reference_rows(
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
                     if k > 0 && field_types[cz][k] != field_types[cz][k - 1] {
-                        refx += " ";
+                        if !ctl.gen_opt.nospaces {
+                            refx += " ";
+                        }
                     }
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
                         refx += "◦";

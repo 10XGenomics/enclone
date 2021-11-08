@@ -619,6 +619,7 @@ pub fn start_gen(
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn insert_position_rows(
+    ctl: &EncloneControl,
     rsi: &ColInfo,
     show_aa: &Vec<Vec<usize>>,
     field_types: &Vec<Vec<u8>>,
@@ -650,7 +651,9 @@ pub fn insert_position_rows(
                             let mut ds = String::new();
                             for (j, p) in show_aa[cx].iter().enumerate() {
                                 if j > 0 && field_types[cx][j] != field_types[cx][j - 1] {
-                                    ds += " ";
+                                    if !ctl.gen_opt.nospaces {
+                                        ds += " ";
+                                    }
                                 }
                                 print_digit(*p, i, digits, &mut ds);
                             }

@@ -141,7 +141,7 @@ pub fn build_table_stuff(
 
     // Insert position rows.
 
-    *drows = insert_position_rows(rsi, show_aa, field_types, vars, row1);
+    *drows = insert_position_rows(ctl, rsi, show_aa, field_types, vars, row1);
     let mut drows2 = drows.clone();
     rows.append(&mut drows2);
 
@@ -168,7 +168,9 @@ pub fn build_table_stuff(
                 let mut n = show.len();
                 for k in 1..show.len() {
                     if field_types[cx][k] != field_types[cx][k - 1] {
-                        n += 1;
+                        if !ctl.gen_opt.nospaces {
+                            n += 1;
+                        }
                     }
                 }
                 let mut ch = vec![' '; n];
@@ -244,7 +246,9 @@ pub fn build_table_stuff(
                         let mut ch_start = 0;
                         for k in 0..show.len() {
                             if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
-                                ch_start += 1;
+                                if !ctl.gen_opt.nospaces {
+                                    ch_start += 1;
+                                }
                             }
                             if show[k] == cs1 {
                                 break;
