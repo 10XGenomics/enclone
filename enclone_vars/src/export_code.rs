@@ -159,6 +159,29 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {
+                // Temporarily, expect "exact: ..." at end; strip that out.
+
+                let mut code = v.code.clone();
+                let mut lines = Vec::<String>::new();
+                for line in code.lines() {
+                    lines.push(line.to_string());
+                }
+                let n = lines.len();
+                if n > 0 {
+                    assert!(lines[n - 1].contains("exact: "));
+                    let mut code2 = String::new();
+                    for i in 0..lines.len() {
+                        if i == n - 1 {
+                            code2 += &mut format!("{}\n", lines[i].after("exact: "));
+                        } else {
+                            code2 += &mut format!("{}\n", lines[i]);
+                        }
+                    }
+                    code = code2;
+                }
+
+                // Proceed.
+
                 // RESTRICTION 1: only allow cvar_vdj
                 let mut upper = false;
                 let var = &v.name;
@@ -171,7 +194,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     // RESTRICTION 2: don't allow upper case
                     if !var.contains('{') {
                         fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
-                        fwriteln!(f, "{}", v.code);
+                        fwriteln!(f, "{}", code);
                     // RESTRICTION 3: allow only one {} pair
                     } else if !var.after("{").contains("{") {
                         let begin = var.before("{");
@@ -220,7 +243,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             begin,
                             end,
                         );
-                        fwriteln!(f, "{}", v.code);
+                        fwriteln!(f, "{}", code);
                     }
                 }
             }

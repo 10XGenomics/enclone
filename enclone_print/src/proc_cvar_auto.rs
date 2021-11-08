@@ -401,9 +401,8 @@ pub fn proc_cvar_auto(
         }
         const_id
     } else if var == "d1_name" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut opt_name = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -411,7 +410,6 @@ pub fn proc_cvar_auto(
             if !ds.is_empty() {
                 opt = ds[0].clone();
             }
-            let mut opt_name = String::new();
             if opt.is_empty() {
                 opt_name = "none".to_string();
             } else {
@@ -422,12 +420,11 @@ pub fn proc_cvar_auto(
                     opt_name += &refdata.name[opt[i]];
                 }
             }
-            opt_name
         }
+        opt_name
     } else if var == "d1_score" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut score = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -435,12 +432,12 @@ pub fn proc_cvar_auto(
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
             }
-            format!("{:.1}", delta)
+            score = format!("{:.1}", delta)
         }
+        score
     } else if var == "d2_name" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut opt2_name = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -448,7 +445,6 @@ pub fn proc_cvar_auto(
             if ds.len() > 1 {
                 opt2 = ds[1].clone();
             }
-            let mut opt2_name = String::new();
             if opt2.is_empty() {
                 opt2_name = "none".to_string();
             } else {
@@ -459,12 +455,11 @@ pub fn proc_cvar_auto(
                     opt2_name += &refdata.name[opt2[i]];
                 }
             }
-            opt2_name
         }
+        opt2_name
     } else if var == "d2_score" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut scorex = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -472,12 +467,12 @@ pub fn proc_cvar_auto(
             if scores.len() > 1 {
                 score = scores[1];
             }
-            format!("{:.1}", score)
+            scorex = format!("{:.1}", score)
         }
+        scorex
     } else if var == "d_delta" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut del = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -485,8 +480,9 @@ pub fn proc_cvar_auto(
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
             }
-            format!("{:.1}", delta)
+            del = format!("{:.1}", delta)
         }
+        del
     } else if var == "d_donor" {
         let vid = ex.share[mid].v_ref_id;
         let mut vref = refdata.refs[vid].to_ascii_vec();
@@ -526,6 +522,7 @@ pub fn proc_cvar_auto(
         } else {
             String::new()
         };
+
         did
     } else if var == "d_name" {
         let dname = if rsi.dids[col].is_some() {
@@ -533,6 +530,7 @@ pub fn proc_cvar_auto(
         } else {
             String::new()
         };
+
         dname
     } else if var == "d_start" {
         let mut d_start = String::new();
@@ -562,9 +560,8 @@ pub fn proc_cvar_auto(
         }
         format!("{}", diffs)
     } else if var == "d_Δ" {
-        if !ex.share[mid].left {
-            String::new()
-        } else {
+        let mut del = String::new();
+        if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -572,8 +569,9 @@ pub fn proc_cvar_auto(
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
             }
-            format!("{:.1}", delta)
+            del = format!("{:.1}", delta)
         }
+        del
     } else if var == "dna%" {
         let xm = &ex.share[mid];
         let mut diffs = 0;
@@ -796,6 +794,7 @@ pub fn proc_cvar_auto(
         && var.after("ndiff").rev_before("vj").force_usize() >= 1
     {
         let arg1 = var.after("ndiff").rev_before("vj").force_usize();
+        let nd;
         let mat = &rsi.mat;
         let u0 = arg1 - 1;
         if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
@@ -809,10 +808,11 @@ pub fn proc_cvar_auto(
                     ndiff += 1;
                 }
             }
-            format!("{}", ndiff)
+            nd = format!("{}", ndiff)
         } else {
-            "_".to_string()
+            nd = "_".to_string()
         }
+        nd
     } else if var == "notes" {
         ex.share[mid].vs_notesx.clone()
     } else if var == "u_max" {
