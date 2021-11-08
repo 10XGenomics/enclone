@@ -161,6 +161,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             if v.inputs == "cvar_vdj" {
                 // Temporarily, expect "exact: ..." at end; strip that out.
 
+                let mut exact = String::new();
+                let mut cell = String::new();
+
                 let mut code = v.code.clone();
                 let mut lines = Vec::<String>::new();
                 for line in code.lines() {
@@ -168,17 +171,24 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 }
                 let n = lines.len();
                 if n > 0 {
-                    assert!(lines[n - 1].contains("exact: "));
-                    let mut code2 = String::new();
-                    for i in 0..lines.len() {
-                        if i == n - 1 {
-                            code2 += &mut format!("{}\n", lines[i].after("exact: "));
-                        } else {
-                            code2 += &mut format!("{}\n", lines[i]);
+                    let mut sub = 0;
+                    for i in (0..lines.len()).rev() {
+                        if lines[i].contains("exact: ") {
+                            exact = lines[i].after("exact: ").to_string();
+                            sub += 1;
+                        } else if lines[i].contains("cell: ") {
+                            cell = lines[i].after("cell: ").to_string();
+                            sub += 1;
                         }
                     }
+                    let mut code2 = String::new();
+                    for i in 0..lines.len() - sub {
+                        code2 += &mut format!("{}\n", lines[i]);
+                    }
                     code = code2;
+                    code += &mut format!("{}\n", exact); // TEMPORARY!
                 }
+                let _cell = cell; // TEMPORARY!
 
                 // Proceed.
 
