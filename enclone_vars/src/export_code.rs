@@ -109,17 +109,6 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 };
             }
     
-            macro_rules! cvar_stats1 {
-                ($i: expr, $var:expr, $val:expr) => {
-                    if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                        cx[col][$i] = $val.clone();
-                    }
-                    speakc!(u, col, $var, $val);
-                    let varc = format!("{}{}", $var, col + 1);
-                    stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-                };
-            }
-
             // Test variable.
 
             let val =
@@ -136,7 +125,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             if val == "$UNDEFINED" {
                 return Ok(false);
             } else {
-                cvar_stats1![j, var, val];
+                if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                    cx[col][j] = val.clone();
+                }
+                speakc!(u, col, var, val);
+                let varc = format!("{}{}", var, col + 1);
+                stats.push((varc, vec![val.to_string(); ex.ncells()]));
                 return Ok(true);
             }
         }

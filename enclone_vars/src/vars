@@ -2096,7 +2096,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u
-inputs:   ex, mid
+inputs:   (work in progress)
 limits:
 class:    cvar
 level:    cell-exact
@@ -2106,7 +2106,18 @@ brief:    median number of UMIs supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort_unstable();
+          let median_numis = rounded_median(&numis);
+          let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              vals.push(format!("{}", ex.clones[k][mid].umi_count));
+          }
+          cell: vals
+          exact: format!("{}", median_numis)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_cell
 inputs:   ex, mid
