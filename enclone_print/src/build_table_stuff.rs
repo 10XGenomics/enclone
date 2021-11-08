@@ -294,7 +294,11 @@ pub fn build_table_stuff(
                         t.make_ascii_uppercase();
                         let t = t.as_bytes();
                         // The second form of this gets converted below.
-                        let c = if t[0] == b'C' { "═" } else { "┅" };
+                        let c = if t[0] == b'C' || !ctl.gen_opt.nospaces {
+                            "═"
+                        } else {
+                            "┅"
+                        };
                         let mut s = String::new();
                         if q >= 4 {
                             let left = (q - 3) / 2;
