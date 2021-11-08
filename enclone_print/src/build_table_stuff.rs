@@ -328,23 +328,29 @@ pub fn build_table_stuff(
 
                 // Convert ┅ to ═ in different color.
 
-                let mut chars = Vec::<char>::new();
-                for c in s.chars() {
-                    chars.push(c);
-                }
-                s.clear();
-                for i in 0..chars.len() {
-                    if (i == 0 || (i > 0 && chars[i - 1] != '┅')) && chars[i] == '┅' {
-                        s += "[01m[38;5;198m";
-                        s.push('═');
-                    } else if chars[i] == '┅' {
-                        s.push('═');
-                        if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅') {
-                            s += "[0m";
-                        }
-                    } else {
-                        s.push(chars[i]);
+                if ctl.gen_opt.nospaces {
+                    let mut chars = Vec::<char>::new();
+                    for c in s.chars() {
+                        chars.push(c);
                     }
+                    s.clear();
+                    for i in 0..chars.len() {
+                        if (i == 0 || (i > 0 && chars[i - 1] != '┅')) && chars[i] == '┅' {
+                            s += "[01m[38;5;198m";
+                            s.push('═');
+                        } else if chars[i] == '┅' {
+                            s.push('═');
+                            if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅') {
+                                s += "[0m";
+                            }
+                        } else {
+                            s.push(chars[i]);
+                        }
+                    }
+                    s = s.replace("FWR1", "[01m[38;5;198mFWR1[0m");
+                    s = s.replace("FWR2", "[01m[38;5;198mFWR2[0m");
+                    s = s.replace("FWR3", "[01m[38;5;198mFWR3[0m");
+                    s = s.replace("FWR4", "[01m[38;5;198mFWR4[0m");
                 }
 
                 // Save.
