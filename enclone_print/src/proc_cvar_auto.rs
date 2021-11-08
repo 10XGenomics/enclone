@@ -979,12 +979,17 @@ pub fn proc_cvar_auto(
     if val.0 == "$UNDEFINED" {
         return Ok(false);
     } else {
+        // (exact, cell) = val
         if j < rsi.cvars[col].len() && cvars.contains(&var) {
             cx[col][j] = val.0.clone();
         }
         speakc!(u, col, var, val.0);
         let varc = format!("{}{}", var, col + 1);
-        stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
+        if val.1.is_empty() {
+            stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
+        } else {
+            stats.push((varc, val.1));
+        }
         return Ok(true);
     }
 }
