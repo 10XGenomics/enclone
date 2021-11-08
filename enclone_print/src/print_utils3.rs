@@ -1,6 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::print_utils1::color_codon;
+use bio_edit::alignment::pairwise::Aligner;
+use bio_edit::alignment::AlignmentOperation::*;
 use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
@@ -9,7 +11,121 @@ use itertools::Itertools;
 use std::io::Write;
 use string_utils::strme;
 use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, erase_if, make_freq, unique_sort};
+use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn comp_edit(
+    ex: &ExactClonotype,
+    mid: usize,
+    col: usize,
+    refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
+    rsi: &ColInfo,
+) -> (usize, String) {
+    let mut comp = 1000000;
+    let mut edit = String::new();
+    let td = &ex.share[mid];
+    let tig = &td.seq;
+    let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
+    let mut aligner = Aligner::new(-6, -1, &score);
+
+    // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
+    // there is just one pass.
+
+    let mut z = 1;
+    if ex.share[mid].left {
+        z = refdata.ds.len();
+    }
+    let mut ds = Vec::<usize>::new();
+    let mut counts = Vec::<usize>::new();
+    for di in 0..z {
+        let mut d = 0;
+        if ex.share[mid].left {
+            d = refdata.ds[di];
+        }
+
+        // Start to build reference concatenation.  First append the V segment.
+
+        let mut concat = Vec::<u8>::new();
+        let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+        if rsi.vpids[col].is_none() {
+        } else {
+            vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+        }
+        concat.append(&mut vref.clone());
+
+        // Append the D segment if IGH/TRB.
+
+        if ex.share[mid].left {
+            let mut x = refdata.refs[d].to_ascii_vec();
+            concat.append(&mut x);
+        }
+
+        // Append the J segment.
+
+        let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
+        concat.append(&mut x);
+
+        // Align the V..J sequence on the contig to the reference concatenation.
+
+        let al = aligner.semiglobal(tig, &concat);
+        let mut m = 0;
+        let mut pos = al.xstart;
+        let mut rpos = (al.ystart as isize) - (vref.len() as isize);
+        let mut count = 0;
+        let start = td.cdr3_start - td.ins_len();
+        let stop = td.j_stop - td.v_start;
+        let mut edits = Vec::<String>::new();
+        while m < al.operations.len() {
+            let n = next_diff(&al.operations, m);
+            match al.operations[m] {
+                Match => {
+                    pos += 1;
+                    rpos += 1;
+                }
+                Subst => {
+                    if pos >= start && pos < stop {
+                        count += 1;
+                        edits.push(format!("S{}", rpos));
+                    }
+                    pos += 1;
+                    rpos += 1;
+                }
+                Del => {
+                    if pos >= start && pos < stop {
+                        count += 1;
+                        edits.push(format!("D{}:{}", rpos, n - m));
+                    }
+                    pos += n - m;
+                    m = n - 1;
+                }
+                Ins => {
+                    if pos >= start && pos < stop {
+                        count += 1;
+                        edits.push(format!("I{}:{}", rpos, n - m));
+                    }
+                    rpos += (n - m) as isize;
+                    m = n - 1;
+                }
+                _ => {}
+            };
+            m += 1;
+        }
+        counts.push(count);
+        ds.push(d);
+        if count < comp {
+            comp = count;
+            edit = format!("{}", edits.iter().format("•"));
+        }
+    }
+    sort_sync2(&mut counts, &mut ds);
+    let mut comp = 0;
+    if !counts.is_empty() {
+        comp = counts[0];
+    }
+    (comp, edit)
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -544,7 +660,9 @@ pub fn insert_reference_rows(
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
                     if k > 0 && field_types[cz][k] != field_types[cz][k - 1] {
-                        refx += " ";
+                        if !ctl.gen_opt.nospaces {
+                            refx += " ";
+                        }
                     }
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
                         refx += "◦";

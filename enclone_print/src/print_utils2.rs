@@ -637,7 +637,6 @@ pub fn row_fill(
         }
         numis.sort_unstable();
         let median_numis = rounded_median(&numis);
-        let utot: usize = numis.iter().sum();
         nreads.sort_unstable();
         let rtot: usize = nreads.iter().sum();
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
@@ -753,6 +752,7 @@ pub fn row_fill(
                 extra_args,
                 &pcols_sort,
                 cx,
+                varmat,
                 out_data,
                 stats,
             )? {
@@ -767,11 +767,9 @@ pub fn row_fill(
                     ctl,
                     exacts,
                     exact_clonotypes,
-                    refdata,
                     varmat,
                     out_data,
                     rsi,
-                    dref,
                     peer_groups,
                     show_aa,
                     ref_diff_pos,
@@ -781,7 +779,6 @@ pub fn row_fill(
                     bads,
                     cx,
                     median_numis,
-                    utot,
                     median_nreads,
                     r_min,
                     r_max,
@@ -802,11 +799,9 @@ pub fn row_fill(
                         ctl,
                         exacts,
                         exact_clonotypes,
-                        refdata,
                         varmat,
                         out_data,
                         rsi,
-                        dref,
                         peer_groups,
                         show_aa,
                         field_types,
@@ -815,7 +810,6 @@ pub fn row_fill(
                         bads,
                         cx,
                         median_numis,
-                        utot,
                         median_nreads,
                         r_min,
                         r_max,

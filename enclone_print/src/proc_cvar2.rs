@@ -3,12 +3,10 @@
 // This file contains the single function proc_cvar.
 
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
-use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use stats_utils::percent_ratio;
 use std::collections::HashMap;
-use string_utils::{stringme, TextUtils};
-use vdj_ann::refx::RefData;
+use string_utils::TextUtils;
 use vector_utils::{bin_member, next_diff12_4};
 
 pub fn proc_cvar2(
@@ -22,11 +20,9 @@ pub fn proc_cvar2(
     ctl: &EncloneControl,
     _exacts: &Vec<usize>,
     _exact_clonotypes: &Vec<ExactClonotype>,
-    refdata: &RefData,
-    varmat: &Vec<Vec<Vec<u8>>>,
+    _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    _dref: &Vec<DonorReferenceItem>,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     _show_aa: &Vec<Vec<usize>>,
     _field_types: &Vec<Vec<u8>>,
@@ -34,8 +30,7 @@ pub fn proc_cvar2(
     pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    median_numis: usize,
-    _utot: usize,
+    _median_numis: usize,
     median_nreads: usize,
     r_min: usize,
     r_max: usize,
@@ -410,28 +405,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "utr_id" {
-        let mut u = String::new();
-        let uid = ex.share[mid].u_ref_id;
-        if uid.is_some() {
-            u = format!("{}", refdata.id[uid.unwrap()]);
-        }
-        cvar_stats1![j, var, u];
-    } else if *var == "utr_name" {
-        let mut u = String::new();
-        let uid = ex.share[mid].u_ref_id;
-        if uid.is_some() {
-            u = refdata.name[uid.unwrap()].clone();
-        }
-        cvar_stats1![j, var, u];
-    } else if *var == "var" {
-        cvar_stats1![j, var, stringme(&varmat[u][col])];
-    } else if *var == "u" {
-        let mut vals = Vec::<String>::new();
-        for k in 0..ex.ncells() {
-            vals.push(format!("{}", ex.clones[k][mid].umi_count));
-        }
-        cvar_stats![j, var, format!("{}", median_numis), vals];
     } else if *var == "u_cell" {
         let var = var.clone();
         if pass == 2

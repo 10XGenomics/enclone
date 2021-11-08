@@ -22,7 +22,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
         use amino::*;
         use crate::print_utils1::*;
+        use crate::print_utils3::*;
+        use enclone_core::align_to_vdj_ref::*;
         use enclone_core::defs::*;
+        use enclone_core::median::*;
         use enclone_core::opt_d::*;
         use enclone_proto::types::*;
         use itertools::Itertools;
@@ -50,6 +53,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             extra_args: &Vec<String>,
             pcols_sort: &Vec<String>,
             cx: &mut Vec<Vec<String>>,
+            varmat: &Vec<Vec<Vec<u8>>>,
             out_data: &mut Vec<HashMap<String, String>>,
             stats: &mut Vec<(String, Vec<String>)>,
         ) -> Result<bool, String> {
@@ -106,34 +110,33 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 };
             }
     
-            macro_rules! cvar_stats1 {
-                ($i: expr, $var:expr, $val:expr) => {
-                    if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                        cx[col][$i] = $val.clone();
-                    }
-                    speakc!(u, col, $var, $val);
-                    let varc = format!("{}{}", $var, col + 1);
-                    stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-                };
-            }
-
             // Test variable.
 
             let val =
             if false {
-                String::new()
+                (String::new(), Vec::<String>::new())
 
         "###;
 
     let cvar_vdj_stop = r###"
 
             } else {
-                "$UNDEFINED".to_string()
+                ("$UNDEFINED".to_string(), Vec::<String>::new())
             };
-            if val == "$UNDEFINED" {
+            if val.0 == "$UNDEFINED" {
                 return Ok(false);
             } else {
-                cvar_stats1![j, var, val];
+                // (exact, cell) = val
+                if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                    cx[col][j] = val.0.clone();
+                }
+                speakc!(u, col, var, val.0);
+                let varc = format!("{}{}", var, col + 1);
+                if val.1.is_empty() {
+                    stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
+                } else {
+                    stats.push((varc, val.1));
+                }
                 return Ok(true);
             }
         }
@@ -156,6 +159,36 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {
+                // Parse value return lines.
+
+                let mut exact = "String::new()".to_string();
+                let mut cell = "Vec::new()".to_string();
+                let mut code = v.code.clone();
+                let mut lines = Vec::<String>::new();
+                for line in code.lines() {
+                    lines.push(line.to_string());
+                }
+                let n = lines.len();
+                if n > 0 {
+                    let mut sub = 0;
+                    for i in (0..lines.len()).rev() {
+                        if lines[i].contains("exact: ") {
+                            exact = lines[i].after("exact: ").to_string();
+                            sub += 1;
+                        } else if lines[i].contains("cell: ") {
+                            cell = lines[i].after("cell: ").to_string();
+                            sub += 1;
+                        }
+                    }
+                    let mut code2 = String::new();
+                    for i in 0..lines.len() - sub {
+                        code2 += &mut format!("{}\n", lines[i]);
+                    }
+                    code = code2;
+                }
+
+                // Proceed.
+
                 // RESTRICTION 1: only allow cvar_vdj
                 let mut upper = false;
                 let var = &v.name;
@@ -167,8 +200,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 if !upper {
                     // RESTRICTION 2: don't allow upper case
                     if !var.contains('{') {
-                        fwriteln!(f, "}} else if var == \"{}\" {{", var);
-                        fwriteln!(f, "{}", v.code);
+                        fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
+                        fwriteln!(f, "{}", code);
+                        fwriteln!(f, "({}, {})", exact, cell);
                     // RESTRICTION 3: allow only one {} pair
                     } else if !var.after("{").contains("{") {
                         let begin = var.before("{");
@@ -179,11 +213,11 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let high = high.force_usize();
                             fwriteln!(
                                 f,
-                                "}} else if var.starts_with(\"{}\")
-                                && var.ends_with(\"{}\")
-                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {}
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() <= {} {{",
+                                r###"}} else if var.starts_with("{}")
+                                && var.ends_with("{}")
+                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
+                                && var.after("{}").rev_before("{}").force_usize() >= {}
+                                && var.after("{}").rev_before("{}").force_usize() <= {} {{"###,
                                 begin,
                                 end,
                                 begin,
@@ -198,10 +232,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         } else {
                             fwriteln!(
                                 f,
-                                "}} else if var.starts_with(\"{}\")
-                                && var.ends_with(\"{}\")
-                                && var.after(\"{}\").rev_before(\"{}\").parse::<usize>().is_ok()
-                                && var.after(\"{}\").rev_before(\"{}\").force_usize() >= {} {{",
+                                r###"}} else if var.starts_with("{}")
+                                && var.ends_with("{}")
+                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
+                                && var.after("{}").rev_before("{}").force_usize() >= {} {{"###,
                                 begin,
                                 end,
                                 begin,
@@ -213,11 +247,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         }
                         fwriteln!(
                             f,
-                            "let arg1 = var.after(\"{}\").rev_before(\"{}\").force_usize();",
+                            r###"let arg1 = var.after("{}").rev_before("{}").force_usize();"###,
                             begin,
                             end,
                         );
-                        fwriteln!(f, "{}", v.code);
+                        fwriteln!(f, "{}", code);
+                        fwriteln!(f, "({}, {})", exact, cell);
                     }
                 }
             }

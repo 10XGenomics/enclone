@@ -50,6 +50,9 @@
 # notes:    things to clarify
 #
 # code:     code for computing the variable value
+#           There are one or two special lines at the end with form like
+#           exact: <value>
+#           where exact can be another keyword.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     BC
@@ -317,7 +320,7 @@ code:     let xm = &ex.share[mid];
                   }
               }
           }
-          format!("{:.1}", percent_ratio(denom - diffs, denom))
+          exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?
@@ -387,7 +390,7 @@ code:     let cstart = ex.share[mid].j_stop;
           } else if clen > 0 {
               cdiff = format!("+{}", clen);
           }
-          cdiff
+          exact: cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr*_aa_{0..}_{0..}_ext
 inputs:   ?
@@ -413,7 +416,7 @@ brief:    CDR3 amino acid consensus, symbols at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:     cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
+code:     exact: cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conx
 inputs:   cvar_vdj
@@ -426,7 +429,7 @@ brief:    CDR3 amino acid clonotype consensus, Xs at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:     cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
+code:     exact: cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
 inputs:   cvar_vdj
@@ -439,7 +442,7 @@ brief:    nucleotide start of CDR3 sequence on full sequence
 page:     enclone help parseable
 avail:    public
 notes:    Check if type is really positive integer.
-code:     ex.share[mid].cdr3_start.to_string()
+code:     exact: ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..2}_aa_ref
 inputs:   cvar_vdj
@@ -475,7 +478,7 @@ code:     let x = &ex.share[mid];
                   y = stringme(&aa_seq(&dna, 0));
               }
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..2}_dna_ref
 inputs:   cvar_vdj
@@ -511,7 +514,7 @@ code:     let x = &ex.share[mid];
                   y = stringme(&dna);
               }
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa
 inputs:   cvar_vdj
@@ -540,7 +543,7 @@ code:     let x = &ex.share[mid];
           } else {
               y = x.cdr3_aa.clone();
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa_north
 inputs:   cvar_vdj
@@ -585,7 +588,7 @@ code:     let x = &ex.share[mid];
                   y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
               }
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa_{0..}_{0..}_ext
 inputs:   ?
@@ -624,7 +627,7 @@ code:     let x = &ex.share[mid];
           if c.is_some() {
               y = c.unwrap();
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_len
 inputs:   cvar_vdj
@@ -650,7 +653,40 @@ code:     let x = &ex.share[mid];
           if c.is_some() {
               y = format!("{}", c.unwrap().len() / 3);
           }
-          y
+          exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cigar
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CIGAR string defining edit of the V..J contig sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+          let mut dref = Vec::<u8>::new();
+          if rsi.dids[col].is_some() {
+              dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
+          }
+          let d2ref = Vec::<u8>::new();
+          let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+          let td = &ex.share[mid];
+          let tig = &td.seq;
+          let ops = align_to_vdj_ref(
+              tig,
+              &vref,
+              &dref,
+              &d2ref,
+              &jref,
+              "", // drefname
+              ex.share[mid].left,
+              ctl,
+          )
+          .0;
+          exact: cigar(&ops, 0, tig.len(), tig.len())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
 inputs:   cvar_vdj
@@ -663,7 +699,7 @@ brief:    length of observed constant region
 page:     enclone help cvars
 avail:    public
 notes:
-code:     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
+code:     exact: format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_id
 inputs:   ?
@@ -692,7 +728,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -702,7 +738,8 @@ brief:    CDR3 complexity number
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          exact: format!("{}", comp)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const
 inputs:   cvar_vdj
@@ -725,7 +762,7 @@ code:     let mut constx = Vec::<String>::new();
           unique_sort(&mut constx);
           // This is overcomplicated because there is now at most one
           // const entry per exact subclonotype.
-          format!("{}", constx.iter().format(","))
+          exact: format!("{}", constx.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const_id
 inputs:   cvar_vdj
@@ -742,7 +779,7 @@ code:     let mut const_id = String::new();
           if ex.share[mid].c_ref_id.is_some() {
               const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
           }
-          const_id
+          exact: const_id
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_REG
 inputs:   ?
@@ -794,9 +831,8 @@ brief:    optimal D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut opt_name = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -804,7 +840,6 @@ code:     if !ex.share[mid].left {
               if !ds.is_empty() {
                   opt = ds[0].clone();
               }
-              let mut opt_name = String::new();
               if opt.is_empty() {
                   opt_name = "none".to_string();
               } else {
@@ -815,8 +850,8 @@ code:     if !ex.share[mid].left {
                       opt_name += &refdata.name[opt[i]];
                   }
               }
-              opt_name
           }
+          exact: opt_name
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_score
 inputs:   cvar_vdj
@@ -829,9 +864,8 @@ brief:    score of optimal D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut score = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -839,8 +873,9 @@ code:     if !ex.share[mid].left {
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];
               }
-              format!("{:.1}", delta)
+              score = format!("{:.1}", delta)
           }
+          exact: score
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
 inputs:   cvar_vdj
@@ -853,9 +888,8 @@ brief:    second best D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut opt2_name = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -863,7 +897,6 @@ code:     if !ex.share[mid].left {
               if ds.len() > 1 {
                   opt2 = ds[1].clone();
               }
-              let mut opt2_name = String::new();
               if opt2.is_empty() {
                   opt2_name = "none".to_string();
               } else {
@@ -874,8 +907,8 @@ code:     if !ex.share[mid].left {
                       opt2_name += &refdata.name[opt2[i]];
                   }
               }
-              opt2_name
           }
+          exact: opt2_name
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_score
 inputs:   cvar_vdj
@@ -888,9 +921,8 @@ brief:    score of second best D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut scorex = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -898,8 +930,9 @@ code:     if !ex.share[mid].left {
               if scores.len() > 1 {
                   score = scores[1];
               }
-              format!("{:.1}", score)
+              scorex = format!("{:.1}", score)
           }
+          exact: scorex
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_delta
 inputs:   cvar_vdj
@@ -912,9 +945,8 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut del = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -922,8 +954,9 @@ code:     if !ex.share[mid].left {
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];
               }
-              format!("{:.1}", delta)
+              del = format!("{:.1}", delta)
           }
+          exact: del
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_donor
 inputs:   cvar_vdj
@@ -958,7 +991,7 @@ code:     let vid = ex.share[mid].v_ref_id;
                   diffs += 1;
               }
           }
-          format!("{}", diffs)
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_frame
 inputs:   cvar_vdj
@@ -978,7 +1011,7 @@ code:     let mut d_frame = String::new();
                   (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
               );
           }
-          d_frame
+          exact: d_frame
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_id
 inputs:   cvar_vdj
@@ -996,7 +1029,7 @@ code:     let did = if rsi.dids[col].is_some() {
           } else {
               String::new()
           };
-          did
+          exact: did
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_inconsistent_%
 inputs:   ?
@@ -1040,7 +1073,7 @@ code:     let dname = if rsi.dids[col].is_some() {
           } else {
               String::new()
           };
-          dname
+          exact: dname
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_start
 inputs:   cvar_vdj
@@ -1057,7 +1090,7 @@ code:     let mut d_start = String::new();
           if ex.share[mid].d_start.is_some() {
               d_start = format!("{}", ex.share[mid].d_start.unwrap());
           }
-          d_start
+          exact: d_start
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_univ
 inputs:   cvar_vdj
@@ -1089,7 +1122,7 @@ code:     let vid = ex.share[mid].v_ref_id;
                   diffs += 1;
               }
           }
-          format!("{}", diffs)
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_Δ
 inputs:   cvar_vdj
@@ -1102,9 +1135,8 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:     if !ex.share[mid].left {
-              String::new()
-          } else {
+code:     let mut del = String::new();
+          if ex.share[mid].left {
               let mut scores = Vec::<f64>::new();
               let mut ds = Vec::<Vec<usize>>::new();
               opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
@@ -1112,8 +1144,9 @@ code:     if !ex.share[mid].left {
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];
               }
-              format!("{:.1}", delta)
+              del = format!("{:.1}", delta)
           }
+          exact: del
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     datasets
 inputs:   ?
@@ -1182,7 +1215,7 @@ code:     let xm = &ex.share[mid];
                   }
               }
           }
-          format!("{:.1}", percent_ratio(denom - diffs, denom))
+          exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
 inputs:   ?
@@ -1246,7 +1279,7 @@ code:
                   }
               }
           }
-          format!("{}", diffs)
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
 inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
@@ -1291,10 +1324,10 @@ code:     let mut diffs = 0;
                   }
               }
           }
-          format!("{}", diffs)
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     edit
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1304,7 +1337,8 @@ brief:    edit versus reference CDR3
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          exact: edit
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     exact_subclonotype_id
 inputs:   ?
@@ -1362,7 +1396,7 @@ code:     let x = &ex.share[mid];
           if c.is_some() {
               y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_aa_ref
 inputs:   cvar_vdj
@@ -1411,7 +1445,7 @@ code:     let x = &ex.share[mid];
               let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
               y = stringme(&aa_seq(&dna, 0));
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_dna
 inputs:   cvar_vdj
@@ -1443,7 +1477,7 @@ code:     let x = &ex.share[mid];
           if c.is_some() {
               y = c.unwrap();
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_dna_ref
 inputs:   cvar_vdj
@@ -1492,7 +1526,7 @@ code:     let x = &ex.share[mid];
               let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
               y = stringme(&dna);
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_len
 inputs:   cvar_vdj
@@ -1524,7 +1558,7 @@ code:     let x = &ex.share[mid];
           if c.is_some() {
               y = format!("{}", c.unwrap().len() / 3);
           }
-          y
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex
 inputs:   ?
@@ -1693,7 +1727,7 @@ brief:    J region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:     format!("{}", refdata.id[rsi.jids[col]])
+code:     exact: format!("{}", refdata.id[rsi.jids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_name
 inputs:   cvar_vdj
@@ -1706,7 +1740,7 @@ brief:    J region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:     refdata.name[rsi.jids[col]].clone()
+code:     exact: refdata.name[rsi.jids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
 inputs:   ?
@@ -1812,7 +1846,8 @@ brief:    number of base differences with exact subclonotype of that number
 page:     enclone help cvars
 avail:    public
 notes:
-code:     let mat = &rsi.mat;
+code:     let nd;
+          let mat = &rsi.mat;
           let u0 = arg1 - 1;
           if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
               let m0 = mat[col][u0].unwrap();
@@ -1825,10 +1860,11 @@ code:     let mat = &rsi.mat;
                       ndiff += 1;
                   }
               }
-              format!("{}", ndiff)
+              nd = format!("{}", ndiff)
           } else {
-              "_".to_string()
+              nd = "_".to_string()
           }
+          exact: nd
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     near
 inputs:   varmat, fp, u
@@ -1841,7 +1877,8 @@ brief:    Hamming distance to nearest neighbor
 page:     enclone help lvars
 avail:    public
 notes:
-code:     let mut dist = 1_000_000;
+code:     let mut near = String::new();
+          let mut dist = 1_000_000;
           for i2 in 0..varmat.len() {
               if i2 == u || fp[i2] != fp[u] {
                   continue;
@@ -1857,10 +1894,11 @@ code:     let mut dist = 1_000_000;
               dist = min(dist, d);
           }
           if dist == 1_000_000 {
-              "".to_string()
+              near = "".to_string()
           } else {
-              format!("{}", dist)
+              near = format!("{}", dist)
           }
+          exact: near
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
 inputs:   cvar_vdj
@@ -1873,7 +1911,7 @@ brief:    notes for exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:     ex.share[mid].vs_notesx.clone()
+code:     exact: ex.share[mid].vs_notesx.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
@@ -2058,7 +2096,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact
@@ -2068,7 +2106,18 @@ brief:    median number of UMIs supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort_unstable();
+          let median_numis = rounded_median(&numis);
+          let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              vals.push(format!("{}", ex.clones[k][mid].umi_count));
+          }
+          cell: vals
+          exact: format!("{}", median_numis)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_cell
 inputs:   ex, mid
@@ -2100,7 +2149,7 @@ code:     let mut numis = Vec::<usize>::new();
               numis.push(ex.clones[j][mid].umi_count);
           }
           numis.sort();
-          format!("{}", numis.iter().max().unwrap())
+          exact: format!("{}", numis.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_mean
 inputs:   cvar_vdj
@@ -2120,7 +2169,7 @@ code:     let mut numis = Vec::<usize>::new();
           numis.sort();
           let utot: usize = numis.iter().sum();
           let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-          format!("{}", u_mean)
+          exact: format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_min
 inputs:   cvar_vdj
@@ -2138,7 +2187,7 @@ code:     let mut numis = Vec::<usize>::new();
               numis.push(ex.clones[j][mid].umi_count);
           }
           numis.sort();
-          format!("{}", numis.iter().min().unwrap())
+          exact: format!("{}", numis.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_sum
 inputs:   cvar_vdj
@@ -2156,7 +2205,7 @@ code:     let mut numis = Vec::<usize>::new();
               numis.push(ex.clones[j][mid].umi_count);
           }
           let utot: usize = numis.iter().sum();
-          format!("{}", utot)
+          exact: format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_Σ
 inputs:   cvar_vdj
@@ -2174,7 +2223,7 @@ code:     let mut numis = Vec::<usize>::new();
               numis.push(ex.clones[j][mid].umi_count);
           }
           let utot: usize = numis.iter().sum();
-          format!("{}", utot)
+          exact: format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_μ
 inputs:   cvar_vdj
@@ -2194,7 +2243,7 @@ code:     let mut numis = Vec::<usize>::new();
           numis.sort();
           let utot: usize = numis.iter().sum();
           let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-          format!("{}", u_mean)
+          exact: format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     udiff
 inputs:   cvar_vdj
@@ -2245,7 +2294,7 @@ code:     let ulen = ex.share[mid].v_start;
           } else if ulen > 0 {
               udiff = format!("+{}", ulen);
           }
-          udiff
+          exact: udiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ulen
 inputs:   cvar_vdj
@@ -2258,10 +2307,10 @@ brief:    length of observed 5'-UTR sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:     format!("{}", ex.share[mid].v_start)
+code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_id
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2276,10 +2325,10 @@ code:     let mut u = String::new();
           if uid.is_some() {
               u = format!("{}", refdata.id[uid.unwrap()]);
           }
-          u
+          exact: u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_name
-inputs:   ex, mid, refdata
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2294,7 +2343,7 @@ code:     let mut u = String::new();
           if uid.is_some() {
               u = refdata.name[uid.unwrap()].clone();
           }
-          u
+          exact: u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_id
 inputs:   cvar_vdj
@@ -2307,7 +2356,7 @@ brief:    V region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:     format!("{}", refdata.id[rsi.vids[col]])
+code:     exact: format!("{}", refdata.id[rsi.vids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_name
 inputs:   cvar_vdj
@@ -2320,7 +2369,7 @@ brief:    V region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:     refdata.name[rsi.vids[col]].clone()
+code:     exact: refdata.name[rsi.vids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
 inputs:   cvar_vdj
@@ -2333,20 +2382,20 @@ brief:    start of V on full nucleotide sequence
 page:     enclone help parseable
 avail:    public
 notes:    Positive integer, or nonnegative integer?
-code:     format!("{}", ex.share[mid].v_start)
+code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
-inputs:   varmat, u, col
+inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    clono
+level:    exact
 val:      string
 doc:      TBD
 brief:    bases at position in chain that vary across the clonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:     stringme(&varmat[u][col])
+code:     exact: stringme(&varmat[u][col])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_aa
 inputs:   ?
@@ -2450,5 +2499,5 @@ brief:    length in bases of V..J
 page:     enclone help cvars
 avail:    public
 notes:
-code:     format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+code:     exact: format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -4,16 +4,11 @@
 
 use crate::print_utils1::{color_codon, test_internal_error_seq};
 use amino::aa_seq;
-use bio_edit::alignment::pairwise::Aligner;
-use bio_edit::alignment::AlignmentOperation::*;
-use enclone_core::align_to_vdj_ref::{align_to_vdj_ref, cigar};
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{stringme, strme, TextUtils};
-use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, next_diff, sort_sync2};
+use vector_utils::bin_member;
 
 pub fn proc_cvar1(
     var: &String,
@@ -26,11 +21,9 @@ pub fn proc_cvar1(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    refdata: &RefData,
     _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     show_aa: &Vec<Vec<usize>>,
     ref_diff_pos: &Vec<Vec<Vec<usize>>>,
@@ -40,7 +33,6 @@ pub fn proc_cvar1(
     _bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     _median_numis: usize,
-    _utot: usize,
     _median_nreads: usize,
     _r_min: usize,
     _r_max: usize,
@@ -133,7 +125,9 @@ pub fn proc_cvar1(
         for k in 0..show_aa[col].len() {
             let p = show_aa[col][k];
             if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                cx[col][j] += " ";
+                if !ctl.gen_opt.nospaces {
+                    cx[col][j] += " ";
+                }
             }
             if 3 * p + 3 <= seq_amino.len()
                 && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()
@@ -161,144 +155,6 @@ pub fn proc_cvar1(
                 );
                 cx[col][j] += strme(&log);
             }
-        }
-    } else if *var == "cigar" {
-        let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
-        let mut dref = Vec::<u8>::new();
-        if rsi.dids[col].is_some() {
-            dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
-        }
-        let d2ref = Vec::<u8>::new();
-        let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
-        let td = &ex.share[mid];
-        let tig = &td.seq;
-        let ops = align_to_vdj_ref(
-            tig,
-            &vref,
-            &dref,
-            &d2ref,
-            &jref,
-            "", // drefname
-            ex.share[mid].left,
-            ctl,
-        )
-        .0;
-        let c = cigar(&ops, 0, tig.len(), tig.len());
-        cvar_stats1![j, var, c];
-    } else if *var == "comp" || *var == "edit" {
-        let mut comp = 1000000;
-        let mut edit = String::new();
-        let td = &ex.share[mid];
-        let tig = &td.seq;
-        let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
-        let mut aligner = Aligner::new(-6, -1, &score);
-
-        // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
-        // there is just one pass.
-
-        let mut z = 1;
-        if ex.share[mid].left {
-            z = refdata.ds.len();
-        }
-        let mut ds = Vec::<usize>::new();
-        let mut counts = Vec::<usize>::new();
-        for di in 0..z {
-            let mut d = 0;
-            if ex.share[mid].left {
-                d = refdata.ds[di];
-            }
-
-            // Start to build reference concatenation.  First append the V segment.
-
-            let mut concat = Vec::<u8>::new();
-            let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
-            if rsi.vpids[col].is_none() {
-            } else {
-                vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-            }
-            concat.append(&mut vref.clone());
-
-            // Append the D segment if IGH/TRB.
-
-            if ex.share[mid].left {
-                let mut x = refdata.refs[d].to_ascii_vec();
-                concat.append(&mut x);
-            }
-
-            // Append the J segment.
-
-            let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
-            concat.append(&mut x);
-
-            // Align the V..J sequence on the contig to the reference concatenation.
-
-            let al = aligner.semiglobal(tig, &concat);
-            let mut m = 0;
-            let mut pos = al.xstart;
-            let mut rpos = (al.ystart as isize) - (vref.len() as isize);
-            let mut count = 0;
-            let start = td.cdr3_start - td.ins_len();
-            let stop = td.j_stop - td.v_start;
-            let mut edits = Vec::<String>::new();
-            while m < al.operations.len() {
-                let n = next_diff(&al.operations, m);
-                match al.operations[m] {
-                    Match => {
-                        pos += 1;
-                        rpos += 1;
-                    }
-                    Subst => {
-                        if pos >= start && pos < stop {
-                            count += 1;
-                            edits.push(format!("S{}", rpos));
-                        }
-                        pos += 1;
-                        rpos += 1;
-                    }
-                    Del => {
-                        if pos >= start && pos < stop {
-                            if *var == "comp" || *var == "edit" {
-                                count += 1;
-                            } else {
-                                count += n - m;
-                            }
-                            edits.push(format!("D{}:{}", rpos, n - m));
-                        }
-                        pos += n - m;
-                        m = n - 1;
-                    }
-                    Ins => {
-                        if pos >= start && pos < stop {
-                            if *var == "comp" || *var == "edit" {
-                                count += 1;
-                            } else {
-                                count += n - m;
-                            }
-                            edits.push(format!("I{}:{}", rpos, n - m));
-                        }
-                        rpos += (n - m) as isize;
-                        m = n - 1;
-                    }
-                    _ => {}
-                };
-                m += 1;
-            }
-            counts.push(count);
-            ds.push(d);
-            if count < comp {
-                comp = count;
-                edit = format!("{}", edits.iter().format("•"));
-            }
-        }
-        sort_sync2(&mut counts, &mut ds);
-        let mut comp = 0;
-        if !counts.is_empty() {
-            comp = counts[0];
-        }
-        if *var == "comp".to_string() {
-            cvar_stats1![j, var, format!("{}", comp)];
-        } else {
-            cvar_stats1![j, var, edit];
         }
     } else if var.starts_with("cdr1_aa_") && var.ends_with("_ext") {
         let (mut left, mut right) = (0, 0);
