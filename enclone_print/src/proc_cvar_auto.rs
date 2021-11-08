@@ -92,7 +92,7 @@ pub fn proc_cvar_auto(
     // Test variable.
 
     let val = if false {
-        String::new()
+        (String::new(), Vec::<String>::new())
     } else if var == "aa%" {
         let xm = &ex.share[mid];
         let mut diffs = 0;
@@ -125,7 +125,11 @@ pub fn proc_cvar_auto(
                 }
             }
         }
-        format!("{:.1}", percent_ratio(denom - diffs, denom))
+
+        (
+            format!("{:.1}", percent_ratio(denom - diffs, denom)),
+            Vec::new(),
+        )
     } else if var == "cdiff" {
         let cstart = ex.share[mid].j_stop;
         let clen = ex.share[mid].full_seq.len() - cstart;
@@ -157,13 +161,20 @@ pub fn proc_cvar_auto(
         } else if clen > 0 {
             cdiff = format!("+{}", clen);
         }
-        cdiff
+
+        (cdiff, Vec::new())
     } else if var == "cdr3_aa_conp" {
-        cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
+        (
+            cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi),
+            Vec::new(),
+        )
     } else if var == "cdr3_aa_conx" {
-        cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
+        (
+            cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi),
+            Vec::new(),
+        )
     } else if var == "cdr3_start" {
-        ex.share[mid].cdr3_start.to_string()
+        (ex.share[mid].cdr3_start.to_string(), Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_ref")
         && var
@@ -198,7 +209,8 @@ pub fn proc_cvar_auto(
                 y = stringme(&aa_seq(&dna, 0));
             }
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_dna_ref")
         && var
@@ -233,7 +245,8 @@ pub fn proc_cvar_auto(
                 y = stringme(&dna);
             }
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa")
         && var.after("cdr").rev_before("_aa").parse::<usize>().is_ok()
@@ -257,7 +270,8 @@ pub fn proc_cvar_auto(
         } else {
             y = x.cdr3_aa.clone();
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_north")
         && var
@@ -301,7 +315,8 @@ pub fn proc_cvar_auto(
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_dna")
         && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
@@ -322,7 +337,8 @@ pub fn proc_cvar_auto(
         if c.is_some() {
             y = c.unwrap();
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_len")
         && var.after("cdr").rev_before("_len").parse::<usize>().is_ok()
@@ -343,7 +359,8 @@ pub fn proc_cvar_auto(
         if c.is_some() {
             y = format!("{}", c.unwrap().len() / 3);
         }
-        y
+
+        (y, Vec::new())
     } else if var == "cigar" {
         let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
         let mut dref = Vec::<u8>::new();
@@ -365,12 +382,17 @@ pub fn proc_cvar_auto(
             ctl,
         )
         .0;
-        cigar(&ops, 0, tig.len(), tig.len())
+
+        (cigar(&ops, 0, tig.len(), tig.len()), Vec::new())
     } else if var == "clen" {
-        format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
+        (
+            format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop),
+            Vec::new(),
+        )
     } else if var == "comp" {
         let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-        format!("{}", comp)
+
+        (format!("{}", comp), Vec::new())
     } else if var == "const" {
         let mut constx = Vec::<String>::new();
         let cid = ex.share[mid].c_ref_id;
@@ -382,13 +404,15 @@ pub fn proc_cvar_auto(
         unique_sort(&mut constx);
         // This is overcomplicated because there is now at most one
         // const entry per exact subclonotype.
-        format!("{}", constx.iter().format(","))
+
+        (format!("{}", constx.iter().format(",")), Vec::new())
     } else if var == "const_id" {
         let mut const_id = String::new();
         if ex.share[mid].c_ref_id.is_some() {
             const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
         }
-        const_id
+
+        (const_id, Vec::new())
     } else if var == "d1_name" {
         let mut opt_name = String::new();
         if ex.share[mid].left {
@@ -410,7 +434,8 @@ pub fn proc_cvar_auto(
                 }
             }
         }
-        opt_name
+
+        (opt_name, Vec::new())
     } else if var == "d1_score" {
         let mut score = String::new();
         if ex.share[mid].left {
@@ -423,7 +448,8 @@ pub fn proc_cvar_auto(
             }
             score = format!("{:.1}", delta)
         }
-        score
+
+        (score, Vec::new())
     } else if var == "d2_name" {
         let mut opt2_name = String::new();
         if ex.share[mid].left {
@@ -445,7 +471,8 @@ pub fn proc_cvar_auto(
                 }
             }
         }
-        opt2_name
+
+        (opt2_name, Vec::new())
     } else if var == "d2_score" {
         let mut scorex = String::new();
         if ex.share[mid].left {
@@ -458,7 +485,8 @@ pub fn proc_cvar_auto(
             }
             scorex = format!("{:.1}", score)
         }
-        scorex
+
+        (scorex, Vec::new())
     } else if var == "d_delta" {
         let mut del = String::new();
         if ex.share[mid].left {
@@ -471,7 +499,8 @@ pub fn proc_cvar_auto(
             }
             del = format!("{:.1}", delta)
         }
-        del
+
+        (del, Vec::new())
     } else if var == "d_donor" {
         let vid = ex.share[mid].v_ref_id;
         let mut vref = refdata.refs[vid].to_ascii_vec();
@@ -495,7 +524,8 @@ pub fn proc_cvar_auto(
                 diffs += 1;
             }
         }
-        format!("{}", diffs)
+
+        (format!("{}", diffs), Vec::new())
     } else if var == "d_frame" {
         let mut d_frame = String::new();
         if ex.share[mid].d_start.is_some() {
@@ -504,7 +534,8 @@ pub fn proc_cvar_auto(
                 (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
             );
         }
-        d_frame
+
+        (d_frame, Vec::new())
     } else if var == "d_id" {
         let did = if rsi.dids[col].is_some() {
             format!("{}", refdata.id[rsi.dids[col].unwrap()])
@@ -512,7 +543,7 @@ pub fn proc_cvar_auto(
             String::new()
         };
 
-        did
+        (did, Vec::new())
     } else if var == "d_name" {
         let dname = if rsi.dids[col].is_some() {
             refdata.name[rsi.dids[col].unwrap()].clone()
@@ -520,13 +551,14 @@ pub fn proc_cvar_auto(
             String::new()
         };
 
-        dname
+        (dname, Vec::new())
     } else if var == "d_start" {
         let mut d_start = String::new();
         if ex.share[mid].d_start.is_some() {
             d_start = format!("{}", ex.share[mid].d_start.unwrap());
         }
-        d_start
+
+        (d_start, Vec::new())
     } else if var == "d_univ" {
         let vid = ex.share[mid].v_ref_id;
         let vref = &refdata.refs[vid].to_ascii_vec();
@@ -547,7 +579,8 @@ pub fn proc_cvar_auto(
                 diffs += 1;
             }
         }
-        format!("{}", diffs)
+
+        (format!("{}", diffs), Vec::new())
     } else if var == "d_Δ" {
         let mut del = String::new();
         if ex.share[mid].left {
@@ -560,7 +593,8 @@ pub fn proc_cvar_auto(
             }
             del = format!("{:.1}", delta)
         }
-        del
+
+        (del, Vec::new())
     } else if var == "dna%" {
         let xm = &ex.share[mid];
         let mut diffs = 0;
@@ -592,10 +626,15 @@ pub fn proc_cvar_auto(
                 }
             }
         }
-        format!("{:.1}", percent_ratio(denom - diffs, denom))
+
+        (
+            format!("{:.1}", percent_ratio(denom - diffs, denom)),
+            Vec::new(),
+        )
     } else if var == "edit" {
         let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-        edit
+
+        (edit, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa")
         && var.after("fwr").rev_before("_aa").parse::<usize>().is_ok()
@@ -622,7 +661,8 @@ pub fn proc_cvar_auto(
         if c.is_some() {
             y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa_ref")
         && var
@@ -670,7 +710,8 @@ pub fn proc_cvar_auto(
             let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
             y = stringme(&aa_seq(&dna, 0));
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna")
         && var.after("fwr").rev_before("_dna").parse::<usize>().is_ok()
@@ -697,7 +738,8 @@ pub fn proc_cvar_auto(
         if c.is_some() {
             y = c.unwrap();
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna_ref")
         && var
@@ -745,7 +787,8 @@ pub fn proc_cvar_auto(
             let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
             y = stringme(&dna);
         }
-        y
+
+        (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_len")
         && var.after("fwr").rev_before("_len").parse::<usize>().is_ok()
@@ -772,11 +815,12 @@ pub fn proc_cvar_auto(
         if c.is_some() {
             y = format!("{}", c.unwrap().len() / 3);
         }
-        y
+
+        (y, Vec::new())
     } else if var == "j_id" {
-        format!("{}", refdata.id[rsi.jids[col]])
+        (format!("{}", refdata.id[rsi.jids[col]]), Vec::new())
     } else if var == "j_name" {
-        refdata.name[rsi.jids[col]].clone()
+        (refdata.name[rsi.jids[col]].clone(), Vec::new())
     } else if var.starts_with("ndiff")
         && var.ends_with("vj")
         && var.after("ndiff").rev_before("vj").parse::<usize>().is_ok()
@@ -801,16 +845,18 @@ pub fn proc_cvar_auto(
         } else {
             nd = "_".to_string()
         }
-        nd
+
+        (nd, Vec::new())
     } else if var == "notes" {
-        ex.share[mid].vs_notesx.clone()
+        (ex.share[mid].vs_notesx.clone(), Vec::new())
     } else if var == "u_max" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
         numis.sort();
-        format!("{}", numis.iter().max().unwrap())
+
+        (format!("{}", numis.iter().max().unwrap()), Vec::new())
     } else if var == "u_mean" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -819,28 +865,32 @@ pub fn proc_cvar_auto(
         numis.sort();
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-        format!("{}", u_mean)
+
+        (format!("{}", u_mean), Vec::new())
     } else if var == "u_min" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
         numis.sort();
-        format!("{}", numis.iter().min().unwrap())
+
+        (format!("{}", numis.iter().min().unwrap()), Vec::new())
     } else if var == "u_sum" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
         let utot: usize = numis.iter().sum();
-        format!("{}", utot)
+
+        (format!("{}", utot), Vec::new())
     } else if var == "u_Σ" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
         let utot: usize = numis.iter().sum();
-        format!("{}", utot)
+
+        (format!("{}", utot), Vec::new())
     } else if var == "u_μ" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -849,7 +899,8 @@ pub fn proc_cvar_auto(
         numis.sort();
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-        format!("{}", u_mean)
+
+        (format!("{}", u_mean), Vec::new())
     } else if var == "udiff" {
         let ulen = ex.share[mid].v_start;
         let uid = ex.share[mid].u_ref_id;
@@ -889,45 +940,51 @@ pub fn proc_cvar_auto(
         } else if ulen > 0 {
             udiff = format!("+{}", ulen);
         }
-        udiff
+
+        (udiff, Vec::new())
     } else if var == "ulen" {
-        format!("{}", ex.share[mid].v_start)
+        (format!("{}", ex.share[mid].v_start), Vec::new())
     } else if var == "utr_id" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             u = format!("{}", refdata.id[uid.unwrap()]);
         }
-        u
+
+        (u, Vec::new())
     } else if var == "utr_name" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             u = refdata.name[uid.unwrap()].clone();
         }
-        u
+
+        (u, Vec::new())
     } else if var == "v_id" {
-        format!("{}", refdata.id[rsi.vids[col]])
+        (format!("{}", refdata.id[rsi.vids[col]]), Vec::new())
     } else if var == "v_name" {
-        refdata.name[rsi.vids[col]].clone()
+        (refdata.name[rsi.vids[col]].clone(), Vec::new())
     } else if var == "v_start" {
-        format!("{}", ex.share[mid].v_start)
+        (format!("{}", ex.share[mid].v_start), Vec::new())
     } else if var == "var" {
-        stringme(&varmat[u][col])
+        (stringme(&varmat[u][col]), Vec::new())
     } else if var == "vjlen" {
-        format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+        (
+            format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start),
+            Vec::new(),
+        )
     } else {
-        "$UNDEFINED".to_string()
+        ("$UNDEFINED".to_string(), Vec::<String>::new())
     };
-    if val == "$UNDEFINED" {
+    if val.0 == "$UNDEFINED" {
         return Ok(false);
     } else {
         if j < rsi.cvars[col].len() && cvars.contains(&var) {
-            cx[col][j] = val.clone();
+            cx[col][j] = val.0.clone();
         }
-        speakc!(u, col, var, val);
+        speakc!(u, col, var, val.0);
         let varc = format!("{}{}", var, col + 1);
-        stats.push((varc, vec![val.to_string(); ex.ncells()]));
+        stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
         return Ok(true);
     }
 }

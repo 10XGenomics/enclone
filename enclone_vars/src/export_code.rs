@@ -113,24 +113,24 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
             let val =
             if false {
-                String::new()
+                (String::new(), Vec::<String>::new())
 
         "###;
 
     let cvar_vdj_stop = r###"
 
             } else {
-                "$UNDEFINED".to_string()
+                ("$UNDEFINED".to_string(), Vec::<String>::new())
             };
-            if val == "$UNDEFINED" {
+            if val.0 == "$UNDEFINED" {
                 return Ok(false);
             } else {
                 if j < rsi.cvars[col].len() && cvars.contains(&var) {
-                    cx[col][j] = val.clone();
+                    cx[col][j] = val.0.clone();
                 }
-                speakc!(u, col, var, val);
+                speakc!(u, col, var, val.0);
                 let varc = format!("{}{}", var, col + 1);
-                stats.push((varc, vec![val.to_string(); ex.ncells()]));
+                stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
                 return Ok(true);
             }
         }
@@ -153,11 +153,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {
-                // Temporarily, expect "exact: ..." at end; strip that out.
+                // Parse value return lines.
 
-                let mut exact = String::new();
-                let mut cell = String::new();
-
+                let mut exact = "String::new()".to_string();
+                let mut cell = "Vec::new()".to_string();
                 let mut code = v.code.clone();
                 let mut lines = Vec::<String>::new();
                 for line in code.lines() {
@@ -180,9 +179,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         code2 += &mut format!("{}\n", lines[i]);
                     }
                     code = code2;
-                    code += &mut format!("{}\n", exact); // TEMPORARY!
                 }
-                let _cell = cell; // TEMPORARY!
 
                 // Proceed.
 
@@ -199,6 +196,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     if !var.contains('{') {
                         fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
                         fwriteln!(f, "{}", code);
+                        fwriteln!(f, "({}, {})", exact, cell);
                     // RESTRICTION 3: allow only one {} pair
                     } else if !var.after("{").contains("{") {
                         let begin = var.before("{");
@@ -248,6 +246,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             end,
                         );
                         fwriteln!(f, "{}", code);
+                        fwriteln!(f, "({}, {})", exact, cell);
                     }
                 }
             }
