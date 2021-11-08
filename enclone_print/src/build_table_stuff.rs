@@ -340,7 +340,8 @@ pub fn build_table_stuff(
                             s.push('═');
                         } else if chars[i] == '┅' {
                             s.push('═');
-                            if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅') {
+                            if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅')
+                            {
                                 s += "[0m";
                             }
                         } else {
