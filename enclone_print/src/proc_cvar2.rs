@@ -30,7 +30,7 @@ pub fn proc_cvar2(
     pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    median_numis: usize,
+    _median_numis: usize,
     median_nreads: usize,
     r_min: usize,
     r_max: usize,
@@ -405,12 +405,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "u" {
-        let mut vals = Vec::<String>::new();
-        for k in 0..ex.ncells() {
-            vals.push(format!("{}", ex.clones[k][mid].umi_count));
-        }
-        cvar_stats![j, var, format!("{}", median_numis), vals];
     } else if *var == "u_cell" {
         let var = var.clone();
         if pass == 2

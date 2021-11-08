@@ -2096,7 +2096,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u
-inputs:   (work in progress)
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact

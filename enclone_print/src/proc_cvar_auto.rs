@@ -6,6 +6,7 @@ use crate::print_utils3::*;
 use amino::*;
 use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use itertools::Itertools;
@@ -849,6 +850,19 @@ pub fn proc_cvar_auto(
         (nd, Vec::new())
     } else if var == "notes" {
         (ex.share[mid].vs_notesx.clone(), Vec::new())
+    } else if var == "u" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort_unstable();
+        let median_numis = rounded_median(&numis);
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            vals.push(format!("{}", ex.clones[k][mid].umi_count));
+        }
+
+        (format!("{}", median_numis), vals)
     } else if var == "u_max" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

@@ -25,6 +25,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         use crate::print_utils3::*;
         use enclone_core::align_to_vdj_ref::*;
         use enclone_core::defs::*;
+        use enclone_core::median::*;
         use enclone_core::opt_d::*;
         use enclone_proto::types::*;
         use itertools::Itertools;
