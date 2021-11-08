@@ -293,13 +293,15 @@ pub fn build_table_stuff(
                         let mut t = fields[z].0.to_string();
                         t.make_ascii_uppercase();
                         let t = t.as_bytes();
+                        // The second form of this gets converted below.
+                        let c = if t[0] == b'C' { "═" } else { "┅" };
                         let mut s = String::new();
                         if q >= 4 {
                             let left = (q - 3) / 2;
                             let right = q - left - 4;
-                            s += &"═".repeat(left);
+                            s += &c.repeat(left);
                             s += strme(t);
-                            s += &"═".repeat(right);
+                            s += &c.repeat(right);
                         } else if q == 3 {
                             s += strme(&t[0..1]);
                             s += strme(&t[2..4]);
@@ -323,6 +325,30 @@ pub fn build_table_stuff(
                     s.push(c);
                 }
                 s = s.trim_end().to_string();
+
+                // Convert ┅ to ═ in different color.
+
+                let mut chars = Vec::<char>::new();
+                for c in s.chars() {
+                    chars.push(c);
+                }
+                s.clear();
+                for i in 0..chars.len() {
+                    if (i == 0 || (i > 0 && chars[i - 1] != '┅')) && chars[i] == '┅' {
+                        s += "[01m[38;5;198m";
+                        s.push('═');
+                    } else if chars[i] == '┅' {
+                        s.push('═');
+                        if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅') {
+                            s += "[0m";
+                        }
+                    } else {
+                        s.push(chars[i]);
+                    }
+                }
+
+                // Save.
+
                 row.push(s);
                 break;
             }
