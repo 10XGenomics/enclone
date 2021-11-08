@@ -120,6 +120,7 @@ fn test_cpu_usage() {
 
 // 29. Test source code file length.  Cap the length in lines of the longest .rs file.  We do this
 // because long files tend to increase compilation time.  They should be split up where possible.
+// Exception ..._auto.rs, for now.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -142,7 +143,7 @@ fn test_source_code_file_length() {
     for d in dirs.iter() {
         let fs = dir_list(d);
         for x in fs.iter() {
-            if x.ends_with(".rs") {
+            if x.ends_with(".rs") && !x.ends_with("_auto.rs") {
                 let y = format!("{}/{}", d, x);
                 let f = open_for_read![&y];
                 let mut n = 0;
