@@ -1953,7 +1953,7 @@ notes:    Should position start at 0 or 1?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact
@@ -1963,7 +1963,15 @@ brief:    median number of reads supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<String>::new();
+          let mut nreads_sorted = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(format!("{}", ex.clones[j][mid].read_count));
+              nreads_sorted.push(ex.clones[j][mid].read_count);
+          }
+          nreads_sorted.sort_unstable();
+          cell: nreads
+          exact: format!("{}", rounded_median(&nreads_sorted))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_cell
 inputs:   ?
@@ -2005,7 +2013,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_min
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2015,7 +2023,11 @@ brief:    minimum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_sum
 inputs:   ?
@@ -2028,7 +2040,12 @@ brief:    sum of chain read counts across exact subclonotype (= <code>r_Σ</code
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_Σ
 inputs:   ?
@@ -2041,7 +2058,12 @@ brief:    sum of chain reads across exact subclonotype (= <code>r_sum</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_μ
 inputs:   ?

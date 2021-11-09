@@ -850,6 +850,23 @@ pub fn proc_cvar_auto(
         (nd, Vec::new())
     } else if var == "notes" {
         (ex.share[mid].vs_notesx.clone(), Vec::new())
+    } else if var == "r" {
+        let mut nreads = Vec::<String>::new();
+        let mut nreads_sorted = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(format!("{}", ex.clones[j][mid].read_count));
+            nreads_sorted.push(ex.clones[j][mid].read_count);
+        }
+        nreads_sorted.sort_unstable();
+
+        (format!("{}", rounded_median(&nreads_sorted)), nreads)
+    } else if var == "r_min" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+
+        (format!("{}", *nreads.iter().min().unwrap()), Vec::new())
     } else if var == "u" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

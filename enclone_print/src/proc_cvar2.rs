@@ -31,11 +31,11 @@ pub fn proc_cvar2(
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     _median_numis: usize,
-    median_nreads: usize,
-    r_min: usize,
+    _median_nreads: usize,
+    _r_min: usize,
     r_max: usize,
     r_mean: usize,
-    rtot: usize,
+    _rtot: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> bool {
@@ -99,16 +99,6 @@ pub fn proc_cvar2(
             speakc!(u, col, $var, $val);
             let varc = format!("{}{}", $var, col + 1);
             stats.push((varc, vec![$val; ex.ncells()]));
-        };
-    }
-    macro_rules! cvar_stats {
-        ($i: expr, $var:expr, $val:expr, $stats:expr) => {
-            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                cx[col][$i] = $val.clone();
-            }
-            speakc!(u, col, $var, $val);
-            let varc = format!("{}{}", $var, col + 1);
-            stats.push((varc, $stats.clone()));
         };
     }
 
@@ -424,20 +414,10 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "r" {
-        let mut nreads = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            nreads.push(format!("{}", ex.clones[j][mid].read_count));
-        }
-        cvar_stats![j, var, format!("{}", median_nreads), nreads];
-    } else if *var == "r_min" {
-        cvar_stats1![j, var, format!("{}", r_min)];
     } else if *var == "r_max" {
         cvar_stats1![j, var, format!("{}", r_max)];
     } else if *var == "r_μ" {
         cvar_stats1![j, var, format!("{}", r_mean)];
-    } else if *var == "r_Σ" {
-        cvar_stats1![j, var, format!("{}", rtot)];
     } else if *var == "r_cell" {
         let var = var.clone();
         if pass == 2
