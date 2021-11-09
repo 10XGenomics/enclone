@@ -678,5 +678,5 @@ pub const TESTS: [&str; 271] = [
     // 270. test NOSPACES
     r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
     // 271. test for weird path bug
-    r###"BCR_GEX=tiny_multi_PD_broken EXPECT_OK"
+    r###"BCR_GEX=tiny_multi_PD_broken EXPECT_OK"###,
 ];
