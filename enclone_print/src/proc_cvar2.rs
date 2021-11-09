@@ -388,49 +388,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    /*
-    } else if *var == "u_cell" {
-        let var = var.clone();
-        if pass == 2
-            && ((ctl.parseable_opt.pchains == "max"
-                || col < ctl.parseable_opt.pchains.force_usize())
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
-                let mut vals = String::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        vals += POUT_SEP;
-                    }
-                    vals += &format!("{}", ex.clones[k][mid].umi_count);
-                }
-                out_data[u].insert(varc, vals.to_string());
-            }
-        }
-    */
-    } else if *var == "r_cell" {
-        let var = var.clone();
-        if pass == 2
-            && ((ctl.parseable_opt.pchains == "max"
-                || col < ctl.parseable_opt.pchains.force_usize())
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut vals = String::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        vals += POUT_SEP;
-                    }
-                    vals += &format!("{}", ex.clones[k][mid].read_count);
-                }
-                out_data[u].insert(varc, vals.to_string());
-            }
-        }
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.

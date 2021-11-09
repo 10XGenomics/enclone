@@ -1973,19 +1973,6 @@ code:     let mut nreads = Vec::<String>::new();
           cell: nreads
           exact: format!("{}", rounded_median(&nreads_sorted))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     r_cell
-inputs:   ?
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of reads supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_max
 inputs:   cvar_vdj
 limits:
@@ -2156,19 +2143,6 @@ code:     let mut numis = Vec::<usize>::new();
           }
           cell: vals
           exact: format!("{}", median_numis)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     u_cell
-inputs:   ex, mid
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of UMIs supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
 inputs:   cvar_vdj

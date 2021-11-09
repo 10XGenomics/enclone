@@ -840,6 +840,17 @@ pub fn proc_cvar_auto(
         nreads_sorted.sort_unstable();
 
         (format!("{}", rounded_median(&nreads_sorted)), nreads)
+    } else if var == "r_cell" {
+        let mut nreads = Vec::<String>::new();
+        let mut nreads_sorted = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(format!("{}", ex.clones[j][mid].read_count));
+            nreads_sorted.push(ex.clones[j][mid].read_count);
+        }
+        nreads_sorted.sort_unstable();
+
+        let _exact = format!("{}", rounded_median(&nreads_sorted));
+        (String::new(), nreads)
     } else if var == "r_max" {
         let mut nreads = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

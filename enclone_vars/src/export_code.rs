@@ -217,7 +217,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 // RESTRICTION 2: don't allow upper case
                 if !upper {
                     let mut passes = 1;
-                    if v.level == "cell-exact" && v.name == "u" {
+                    if v.level == "cell-exact" && (v.name == "u" || v.name == "r") {
                         passes = 2;
                     }
                     for pass in 1..=passes {
