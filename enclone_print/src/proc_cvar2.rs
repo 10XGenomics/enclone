@@ -20,7 +20,6 @@ pub fn proc_cvar2(
     ctl: &EncloneControl,
     _exacts: &Vec<usize>,
     _exact_clonotypes: &Vec<ExactClonotype>,
-    _varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     rsi: &ColInfo,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
