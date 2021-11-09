@@ -143,7 +143,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
         "###;
 
-    // Build auto file.
+    // Build cvar auto file.
 
     let actual_out = "enclone_print/src/proc_cvar_auto.rs".to_string();
     let mut temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs".to_string();
@@ -213,36 +213,28 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let high = high.force_usize();
                             fwriteln!(
                                 f,
-                                r###"}} else if var.starts_with("{}")
-                                && var.ends_with("{}")
-                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
-                                && var.after("{}").rev_before("{}").force_usize() >= {}
-                                && var.after("{}").rev_before("{}").force_usize() <= {} {{"###,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                low,
-                                begin,
-                                end,
-                                high,
+                                r###"}} else if var.starts_with("{begin}")
+                                && var.ends_with("{end}")
+                                && var.after("{begin}").rev_before("{end}").parse::<usize>().is_ok()
+                                && var.after("{begin}").rev_before("{end}").force_usize() >= {low}
+                                && var.after("{begin}").rev_before("{end}").force_usize() 
+                                   <= {high} {{"###,
+                                begin = begin,
+                                end = end,
+                                low = low,
+                                high = high,
                             );
                         } else {
                             fwriteln!(
                                 f,
-                                r###"}} else if var.starts_with("{}")
-                                && var.ends_with("{}")
-                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
-                                && var.after("{}").rev_before("{}").force_usize() >= {} {{"###,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                low,
+                                r###"}} else if var.starts_with("{begin}")
+                                && var.ends_with("{end}")
+                                && var.after("{begin}").rev_before("{end}").parse::<usize>().is_ok()
+                                && var.after("{begin}").rev_before("{end}").force_usize() 
+                                   >= {low} {{"###,
+                                begin = begin,
+                                end = end,
+                                low = low,
                             );
                         }
                         fwriteln!(
