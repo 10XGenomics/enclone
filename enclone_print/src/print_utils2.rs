@@ -627,17 +627,6 @@ pub fn row_fill(
         let ex = &exact_clonotypes[clonotype_id];
         let seq_amino = rsi.seqss_amino[col][u].clone();
 
-        // Get UMI and read stats.
-
-        let mut numis = Vec::<usize>::new();
-        let mut nreads = Vec::<usize>::new();
-        for j in 0..ex.clones.len() {
-            numis.push(ex.clones[j][mid].umi_count);
-            nreads.push(ex.clones[j][mid].read_count);
-        }
-        numis.sort_unstable();
-        nreads.sort_unstable();
-
         // Speak some other column entries.
 
         let xm = &ex.share[mid];
