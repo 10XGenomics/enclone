@@ -209,45 +209,49 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         fwriteln!(f, "({}, {})", exact, cell);
                     // RESTRICTION 3: allow only one {} pair
                     } else if !var.after("{").contains("{") {
-                        let begin = var.before("{");
-                        let end = var.after("}");
-                        let low = var.after("{").before("..").force_usize();
-                        let high = var.after("{").between("..", "}");
-                        if high.len() > 0 {
-                            let high = high.force_usize();
+                        let passes = 1;
+                        for _pass in 1..=passes {
+                            let begin = var.before("{");
+                            let end = var.after("}");
+                            let low = var.after("{").before("..").force_usize();
+                            let high = var.after("{").between("..", "}");
+                            if high.len() > 0 {
+                                let high = high.force_usize();
+                                fwriteln!(
+                                    f,
+                                    r###"}} else if var.starts_with("{begin}")
+                                    && var.ends_with("{end}")
+                                    && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                    && var.between2("{begin}", "{end}").force_usize() >= {low}
+                                    && var.between2("{begin}", "{end}").force_usize() 
+                                       <= {high} {{"###,
+                                    begin = begin,
+                                    end = end,
+                                    low = low,
+                                    high = high,
+                                );
+                            } else {
+                                fwriteln!(
+                                    f,
+                                    r###"}} else if var.starts_with("{begin}")
+                                    && var.ends_with("{end}")
+                                    && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                    && var.between2("{begin}", "{end}").force_usize() 
+                                       >= {low} {{"###,
+                                    begin = begin,
+                                    end = end,
+                                    low = low,
+                                );
+                            }
                             fwriteln!(
                                 f,
-                                r###"}} else if var.starts_with("{begin}")
-                                && var.ends_with("{end}")
-                                && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
-                                && var.between2("{begin}", "{end}").force_usize() >= {low}
-                                && var.between2("{begin}", "{end}").force_usize() <= {high} {{"###,
-                                begin = begin,
-                                end = end,
-                                low = low,
-                                high = high,
+                                r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
+                                begin,
+                                end,
                             );
-                        } else {
-                            fwriteln!(
-                                f,
-                                r###"}} else if var.starts_with("{begin}")
-                                && var.ends_with("{end}")
-                                && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
-                                && var.between2("{begin}", "{end}").force_usize() 
-                                   >= {low} {{"###,
-                                begin = begin,
-                                end = end,
-                                low = low,
-                            );
+                            fwriteln!(f, "{}", code);
+                            fwriteln!(f, "({}, {})", exact, cell);
                         }
-                        fwriteln!(
-                            f,
-                            r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
-                            begin,
-                            end,
-                        );
-                        fwriteln!(f, "{}", code);
-                        fwriteln!(f, "({}, {})", exact, cell);
                     }
                 }
             }
