@@ -186,6 +186,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     }
                     code = code2;
                 }
+                if v.level == "cell-exact" {
+                    assert!(exact.len() > 0);
+                    assert!(cell.len() > 0);
+                }
 
                 // Proceed.
 
@@ -197,8 +201,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         upper = true;
                     }
                 }
+                // RESTRICTION 2: don't allow upper case
                 if !upper {
-                    // RESTRICTION 2: don't allow upper case
                     if !var.contains('{') {
                         fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
                         fwriteln!(f, "{}", code);
