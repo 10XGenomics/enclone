@@ -860,6 +860,13 @@ pub fn proc_cvar_auto(
         nreads_sorted.sort_unstable();
 
         (format!("{}", rounded_median(&nreads_sorted)), nreads)
+    } else if var == "r_max" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+
+        (format!("{}", *nreads.iter().max().unwrap()), Vec::new())
     } else if var == "r_min" {
         let mut nreads = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -867,6 +874,22 @@ pub fn proc_cvar_auto(
         }
 
         (format!("{}", *nreads.iter().min().unwrap()), Vec::new())
+    } else if var == "r_sum" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+        let rtot: usize = nreads.iter().sum();
+
+        (format!("{}", rtot), Vec::new())
+    } else if var == "r_Σ" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+        let rtot: usize = nreads.iter().sum();
+
+        (format!("{}", rtot), Vec::new())
     } else if var == "u" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

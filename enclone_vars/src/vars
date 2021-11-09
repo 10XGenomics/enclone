@@ -1987,7 +1987,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_max
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1997,7 +1997,11 @@ brief:    maximum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_mean
 inputs:   ?
@@ -2030,7 +2034,7 @@ code:     let mut nreads = Vec::<usize>::new();
           exact: format!("{}", *nreads.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_sum
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2048,7 +2052,7 @@ code:     let mut nreads = Vec::<usize>::new();
           exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_Σ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
