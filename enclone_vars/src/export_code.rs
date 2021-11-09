@@ -219,10 +219,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 f,
                                 r###"}} else if var.starts_with("{begin}")
                                 && var.ends_with("{end}")
-                                && var.after("{begin}").rev_before("{end}").parse::<usize>().is_ok()
-                                && var.after("{begin}").rev_before("{end}").force_usize() >= {low}
-                                && var.after("{begin}").rev_before("{end}").force_usize() 
-                                   <= {high} {{"###,
+                                && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                && var.between2("{begin}", "{end}").force_usize() >= {low}
+                                && var.between2("{begin}", "{end}").force_usize() <= {high} {{"###,
                                 begin = begin,
                                 end = end,
                                 low = low,
@@ -233,8 +232,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 f,
                                 r###"}} else if var.starts_with("{begin}")
                                 && var.ends_with("{end}")
-                                && var.after("{begin}").rev_before("{end}").parse::<usize>().is_ok()
-                                && var.after("{begin}").rev_before("{end}").force_usize() 
+                                && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                && var.between2("{begin}", "{end}").force_usize() 
                                    >= {low} {{"###,
                                 begin = begin,
                                 end = end,
@@ -243,7 +242,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         }
                         fwriteln!(
                             f,
-                            r###"let arg1 = var.after("{}").rev_before("{}").force_usize();"###,
+                            r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
                             begin,
                             end,
                         );

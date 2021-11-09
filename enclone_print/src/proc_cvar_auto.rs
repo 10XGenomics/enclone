@@ -178,15 +178,11 @@ pub fn proc_cvar_auto(
         (ex.share[mid].cdr3_start.to_string(), Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_ref")
-        && var
-            .after("cdr")
-            .rev_before("_aa_ref")
-            .parse::<usize>()
-            .is_ok()
-        && var.after("cdr").rev_before("_aa_ref").force_usize() >= 1
-        && var.after("cdr").rev_before("_aa_ref").force_usize() <= 2
+        && var.between2("cdr", "_aa_ref").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa_ref").force_usize() >= 1
+        && var.between2("cdr", "_aa_ref").force_usize() <= 2
     {
-        let arg1 = var.after("cdr").rev_before("_aa_ref").force_usize();
+        let arg1 = var.between2("cdr", "_aa_ref").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -214,15 +210,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_dna_ref")
-        && var
-            .after("cdr")
-            .rev_before("_dna_ref")
-            .parse::<usize>()
-            .is_ok()
-        && var.after("cdr").rev_before("_dna_ref").force_usize() >= 1
-        && var.after("cdr").rev_before("_dna_ref").force_usize() <= 2
+        && var.between2("cdr", "_dna_ref").parse::<usize>().is_ok()
+        && var.between2("cdr", "_dna_ref").force_usize() >= 1
+        && var.between2("cdr", "_dna_ref").force_usize() <= 2
     {
-        let arg1 = var.after("cdr").rev_before("_dna_ref").force_usize();
+        let arg1 = var.between2("cdr", "_dna_ref").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -250,11 +242,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa")
-        && var.after("cdr").rev_before("_aa").parse::<usize>().is_ok()
-        && var.after("cdr").rev_before("_aa").force_usize() >= 1
-        && var.after("cdr").rev_before("_aa").force_usize() <= 3
+        && var.between2("cdr", "_aa").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa").force_usize() >= 1
+        && var.between2("cdr", "_aa").force_usize() <= 3
     {
-        let arg1 = var.after("cdr").rev_before("_aa").force_usize();
+        let arg1 = var.between2("cdr", "_aa").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -275,15 +267,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_north")
-        && var
-            .after("cdr")
-            .rev_before("_aa_north")
-            .parse::<usize>()
-            .is_ok()
-        && var.after("cdr").rev_before("_aa_north").force_usize() >= 1
-        && var.after("cdr").rev_before("_aa_north").force_usize() <= 3
+        && var.between2("cdr", "_aa_north").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa_north").force_usize() >= 1
+        && var.between2("cdr", "_aa_north").force_usize() <= 3
     {
-        let arg1 = var.after("cdr").rev_before("_aa_north").force_usize();
+        let arg1 = var.between2("cdr", "_aa_north").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -320,11 +308,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_dna")
-        && var.after("cdr").rev_before("_dna").parse::<usize>().is_ok()
-        && var.after("cdr").rev_before("_dna").force_usize() >= 1
-        && var.after("cdr").rev_before("_dna").force_usize() <= 3
+        && var.between2("cdr", "_dna").parse::<usize>().is_ok()
+        && var.between2("cdr", "_dna").force_usize() >= 1
+        && var.between2("cdr", "_dna").force_usize() <= 3
     {
-        let arg1 = var.after("cdr").rev_before("_dna").force_usize();
+        let arg1 = var.between2("cdr", "_dna").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -342,11 +330,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_len")
-        && var.after("cdr").rev_before("_len").parse::<usize>().is_ok()
-        && var.after("cdr").rev_before("_len").force_usize() >= 1
-        && var.after("cdr").rev_before("_len").force_usize() <= 3
+        && var.between2("cdr", "_len").parse::<usize>().is_ok()
+        && var.between2("cdr", "_len").force_usize() >= 1
+        && var.between2("cdr", "_len").force_usize() <= 3
     {
-        let arg1 = var.after("cdr").rev_before("_len").force_usize();
+        let arg1 = var.between2("cdr", "_len").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -638,11 +626,11 @@ pub fn proc_cvar_auto(
         (edit, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa")
-        && var.after("fwr").rev_before("_aa").parse::<usize>().is_ok()
-        && var.after("fwr").rev_before("_aa").force_usize() >= 1
-        && var.after("fwr").rev_before("_aa").force_usize() <= 4
+        && var.between2("fwr", "_aa").parse::<usize>().is_ok()
+        && var.between2("fwr", "_aa").force_usize() >= 1
+        && var.between2("fwr", "_aa").force_usize() <= 4
     {
-        let arg1 = var.after("fwr").rev_before("_aa").force_usize();
+        let arg1 = var.between2("fwr", "_aa").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -666,15 +654,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa_ref")
-        && var
-            .after("fwr")
-            .rev_before("_aa_ref")
-            .parse::<usize>()
-            .is_ok()
-        && var.after("fwr").rev_before("_aa_ref").force_usize() >= 1
-        && var.after("fwr").rev_before("_aa_ref").force_usize() <= 4
+        && var.between2("fwr", "_aa_ref").parse::<usize>().is_ok()
+        && var.between2("fwr", "_aa_ref").force_usize() >= 1
+        && var.between2("fwr", "_aa_ref").force_usize() <= 4
     {
-        let arg1 = var.after("fwr").rev_before("_aa_ref").force_usize();
+        let arg1 = var.between2("fwr", "_aa_ref").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -715,11 +699,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna")
-        && var.after("fwr").rev_before("_dna").parse::<usize>().is_ok()
-        && var.after("fwr").rev_before("_dna").force_usize() >= 1
-        && var.after("fwr").rev_before("_dna").force_usize() <= 4
+        && var.between2("fwr", "_dna").parse::<usize>().is_ok()
+        && var.between2("fwr", "_dna").force_usize() >= 1
+        && var.between2("fwr", "_dna").force_usize() <= 4
     {
-        let arg1 = var.after("fwr").rev_before("_dna").force_usize();
+        let arg1 = var.between2("fwr", "_dna").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -743,15 +727,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna_ref")
-        && var
-            .after("fwr")
-            .rev_before("_dna_ref")
-            .parse::<usize>()
-            .is_ok()
-        && var.after("fwr").rev_before("_dna_ref").force_usize() >= 1
-        && var.after("fwr").rev_before("_dna_ref").force_usize() <= 4
+        && var.between2("fwr", "_dna_ref").parse::<usize>().is_ok()
+        && var.between2("fwr", "_dna_ref").force_usize() >= 1
+        && var.between2("fwr", "_dna_ref").force_usize() <= 4
     {
-        let arg1 = var.after("fwr").rev_before("_dna_ref").force_usize();
+        let arg1 = var.between2("fwr", "_dna_ref").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -792,11 +772,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_len")
-        && var.after("fwr").rev_before("_len").parse::<usize>().is_ok()
-        && var.after("fwr").rev_before("_len").force_usize() >= 1
-        && var.after("fwr").rev_before("_len").force_usize() <= 4
+        && var.between2("fwr", "_len").parse::<usize>().is_ok()
+        && var.between2("fwr", "_len").force_usize() >= 1
+        && var.between2("fwr", "_len").force_usize() <= 4
     {
-        let arg1 = var.after("fwr").rev_before("_len").force_usize();
+        let arg1 = var.between2("fwr", "_len").force_usize();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -824,10 +804,10 @@ pub fn proc_cvar_auto(
         (refdata.name[rsi.jids[col]].clone(), Vec::new())
     } else if var.starts_with("ndiff")
         && var.ends_with("vj")
-        && var.after("ndiff").rev_before("vj").parse::<usize>().is_ok()
-        && var.after("ndiff").rev_before("vj").force_usize() >= 1
+        && var.between2("ndiff", "vj").parse::<usize>().is_ok()
+        && var.between2("ndiff", "vj").force_usize() >= 1
     {
-        let arg1 = var.after("ndiff").rev_before("vj").force_usize();
+        let arg1 = var.between2("ndiff", "vj").force_usize();
         let nd;
         let mat = &rsi.mat;
         let u0 = arg1 - 1;
