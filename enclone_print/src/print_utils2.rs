@@ -638,8 +638,6 @@ pub fn row_fill(
         numis.sort_unstable();
         let median_numis = rounded_median(&numis);
         nreads.sort_unstable();
-        let rtot: usize = nreads.iter().sum();
-        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
         let median_nreads = rounded_median(&nreads);
 
         // Speak some other column entries.
@@ -778,7 +776,6 @@ pub fn row_fill(
                     cx,
                     median_numis,
                     median_nreads,
-                    r_mean,
                     extra_args,
                     stats,
                     cdr3_con,
@@ -806,7 +803,6 @@ pub fn row_fill(
                         cx,
                         median_numis,
                         median_nreads,
-                        r_mean,
                         extra_args,
                         stats,
                     );

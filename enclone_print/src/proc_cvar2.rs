@@ -32,7 +32,6 @@ pub fn proc_cvar2(
     cx: &mut Vec<Vec<String>>,
     _median_numis: usize,
     _median_nreads: usize,
-    r_mean: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> bool {
@@ -411,8 +410,6 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
-    } else if *var == "r_μ" {
-        cvar_stats1![j, var, format!("{}", r_mean)];
     } else if *var == "r_cell" {
         let var = var.clone();
         if pass == 2

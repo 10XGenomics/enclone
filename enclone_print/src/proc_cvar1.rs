@@ -34,7 +34,6 @@ pub fn proc_cvar1(
     cx: &mut Vec<Vec<String>>,
     _median_numis: usize,
     _median_nreads: usize,
-    _r_mean: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
     cdr3_con: &Vec<Vec<u8>>,

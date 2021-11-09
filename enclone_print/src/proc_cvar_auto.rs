@@ -867,6 +867,15 @@ pub fn proc_cvar_auto(
         }
 
         (format!("{}", *nreads.iter().max().unwrap()), Vec::new())
+    } else if var == "r_mean" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+        let rtot: usize = nreads.iter().sum();
+        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+
+        (format!("{}", r_mean), Vec::new())
     } else if var == "r_min" {
         let mut nreads = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -890,6 +899,15 @@ pub fn proc_cvar_auto(
         let rtot: usize = nreads.iter().sum();
 
         (format!("{}", rtot), Vec::new())
+    } else if var == "r_μ" {
+        let mut nreads = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count);
+        }
+        let rtot: usize = nreads.iter().sum();
+        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+
+        (format!("{}", r_mean), Vec::new())
     } else if var == "u" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
