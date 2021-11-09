@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 17] = [
+pub const EXTENDED_TESTS: [&str; 16] = [
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
@@ -167,13 +167,11 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
-    // 7. test fb variables
-    // THIS TEST IS SUPERCEDED AND CAN BE DELETED.
-    r###"BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb2,fb2_n,Ag_APC-C0956_ab PER_CELL
-         AMINO=cdr3 CVARS= FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL 
-         CDR3=CAKLLVALHYW NO_PRE NFORCE"###,
+    // 7. test MIN_GROUP_DONORS
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
     // 8. test on PD multi pipestance; failed before bug fix
-    // THIS TEST CAN BE DELETED.  MAYBE.
+    // THIS TEST IS SUPERCEDED AND CAN BE DELETED.
     r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
@@ -195,12 +193,6 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
-    //
-    // THE FOLLOWING ARE ALL PUBLIC DATA
-    //
-    // 17. test MIN_GROUP_DONORS
-    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
-         GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
 ];
 
 // Tests of internal features.
