@@ -30,8 +30,6 @@ pub fn proc_cvar2(
     pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    _median_numis: usize,
-    _median_nreads: usize,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> bool {

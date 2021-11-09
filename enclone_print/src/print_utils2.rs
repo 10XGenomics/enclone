@@ -636,9 +636,7 @@ pub fn row_fill(
             nreads.push(ex.clones[j][mid].read_count);
         }
         numis.sort_unstable();
-        let median_numis = rounded_median(&numis);
         nreads.sort_unstable();
-        let median_nreads = rounded_median(&nreads);
 
         // Speak some other column entries.
 
@@ -774,8 +772,6 @@ pub fn row_fill(
                     &pcols_sort,
                     bads,
                     cx,
-                    median_numis,
-                    median_nreads,
                     extra_args,
                     stats,
                     cdr3_con,
@@ -801,8 +797,6 @@ pub fn row_fill(
                         &pcols_sort,
                         bads,
                         cx,
-                        median_numis,
-                        median_nreads,
                         extra_args,
                         stats,
                     );
