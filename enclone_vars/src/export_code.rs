@@ -243,7 +243,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                     r###"}} else if var.starts_with("{begin}")
                                     && var.ends_with("{end}")
                                     && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
-                                    && var.between2("{begin}", "{end}").force_usize() >= {low}
+                                    && var.between2("{begin}", "{end}").force_i64() >= {low}
                                     && var.between2("{begin}", "{end}").force_usize() 
                                        <= {high} {{"###,
                                     begin = begin,
@@ -257,7 +257,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                     r###"}} else if var.starts_with("{begin}")
                                     && var.ends_with("{end}")
                                     && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
-                                    && var.between2("{begin}", "{end}").force_usize() 
+                                    && var.between2("{begin}", "{end}").force_i64() 
                                        >= {low} {{"###,
                                     begin = begin,
                                     end = end,

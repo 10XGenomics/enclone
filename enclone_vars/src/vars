@@ -1939,18 +1939,26 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     q{0,...}_
-inputs:   ?
+name:     q{0..}_
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
 val:      string
 doc:      TBD
 brief:    read quality scores at position <code>n</code>
-page:     enclone help parseable
+page:     enclone help cvars
 avail:    public
-notes:    Should position start at 0 or 1?
-code:
+notes:
+code:     let mut val = String::new();
+          if arg1 < ex.share[mid].seq.len() {
+              let mut quals = Vec::<u8>::new();
+              for j in 0..ex.clones.len() {
+                  quals.push(ex.clones[j][mid].quals[arg1]);
+              }
+              val = format!("{}", quals.iter().format(","));
+          }
+          exact: val
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r
 inputs:   cvar_vdj

@@ -179,7 +179,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_ref")
         && var.between2("cdr", "_aa_ref").parse::<usize>().is_ok()
-        && var.between2("cdr", "_aa_ref").force_usize() >= 1
+        && var.between2("cdr", "_aa_ref").force_i64() >= 1
         && var.between2("cdr", "_aa_ref").force_usize() <= 2
     {
         let arg1 = var.between2("cdr", "_aa_ref").force_usize();
@@ -211,7 +211,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_dna_ref")
         && var.between2("cdr", "_dna_ref").parse::<usize>().is_ok()
-        && var.between2("cdr", "_dna_ref").force_usize() >= 1
+        && var.between2("cdr", "_dna_ref").force_i64() >= 1
         && var.between2("cdr", "_dna_ref").force_usize() <= 2
     {
         let arg1 = var.between2("cdr", "_dna_ref").force_usize();
@@ -243,7 +243,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_aa")
         && var.between2("cdr", "_aa").parse::<usize>().is_ok()
-        && var.between2("cdr", "_aa").force_usize() >= 1
+        && var.between2("cdr", "_aa").force_i64() >= 1
         && var.between2("cdr", "_aa").force_usize() <= 3
     {
         let arg1 = var.between2("cdr", "_aa").force_usize();
@@ -268,7 +268,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_north")
         && var.between2("cdr", "_aa_north").parse::<usize>().is_ok()
-        && var.between2("cdr", "_aa_north").force_usize() >= 1
+        && var.between2("cdr", "_aa_north").force_i64() >= 1
         && var.between2("cdr", "_aa_north").force_usize() <= 3
     {
         let arg1 = var.between2("cdr", "_aa_north").force_usize();
@@ -309,7 +309,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_dna")
         && var.between2("cdr", "_dna").parse::<usize>().is_ok()
-        && var.between2("cdr", "_dna").force_usize() >= 1
+        && var.between2("cdr", "_dna").force_i64() >= 1
         && var.between2("cdr", "_dna").force_usize() <= 3
     {
         let arg1 = var.between2("cdr", "_dna").force_usize();
@@ -331,7 +331,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("cdr")
         && var.ends_with("_len")
         && var.between2("cdr", "_len").parse::<usize>().is_ok()
-        && var.between2("cdr", "_len").force_usize() >= 1
+        && var.between2("cdr", "_len").force_i64() >= 1
         && var.between2("cdr", "_len").force_usize() <= 3
     {
         let arg1 = var.between2("cdr", "_len").force_usize();
@@ -627,7 +627,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("fwr")
         && var.ends_with("_aa")
         && var.between2("fwr", "_aa").parse::<usize>().is_ok()
-        && var.between2("fwr", "_aa").force_usize() >= 1
+        && var.between2("fwr", "_aa").force_i64() >= 1
         && var.between2("fwr", "_aa").force_usize() <= 4
     {
         let arg1 = var.between2("fwr", "_aa").force_usize();
@@ -655,7 +655,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("fwr")
         && var.ends_with("_aa_ref")
         && var.between2("fwr", "_aa_ref").parse::<usize>().is_ok()
-        && var.between2("fwr", "_aa_ref").force_usize() >= 1
+        && var.between2("fwr", "_aa_ref").force_i64() >= 1
         && var.between2("fwr", "_aa_ref").force_usize() <= 4
     {
         let arg1 = var.between2("fwr", "_aa_ref").force_usize();
@@ -700,7 +700,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("fwr")
         && var.ends_with("_dna")
         && var.between2("fwr", "_dna").parse::<usize>().is_ok()
-        && var.between2("fwr", "_dna").force_usize() >= 1
+        && var.between2("fwr", "_dna").force_i64() >= 1
         && var.between2("fwr", "_dna").force_usize() <= 4
     {
         let arg1 = var.between2("fwr", "_dna").force_usize();
@@ -728,7 +728,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("fwr")
         && var.ends_with("_dna_ref")
         && var.between2("fwr", "_dna_ref").parse::<usize>().is_ok()
-        && var.between2("fwr", "_dna_ref").force_usize() >= 1
+        && var.between2("fwr", "_dna_ref").force_i64() >= 1
         && var.between2("fwr", "_dna_ref").force_usize() <= 4
     {
         let arg1 = var.between2("fwr", "_dna_ref").force_usize();
@@ -773,7 +773,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("fwr")
         && var.ends_with("_len")
         && var.between2("fwr", "_len").parse::<usize>().is_ok()
-        && var.between2("fwr", "_len").force_usize() >= 1
+        && var.between2("fwr", "_len").force_i64() >= 1
         && var.between2("fwr", "_len").force_usize() <= 4
     {
         let arg1 = var.between2("fwr", "_len").force_usize();
@@ -805,7 +805,7 @@ pub fn proc_cvar_auto(
     } else if var.starts_with("ndiff")
         && var.ends_with("vj")
         && var.between2("ndiff", "vj").parse::<usize>().is_ok()
-        && var.between2("ndiff", "vj").force_usize() >= 1
+        && var.between2("ndiff", "vj").force_i64() >= 1
     {
         let arg1 = var.between2("ndiff", "vj").force_usize();
         let nd;
@@ -830,6 +830,22 @@ pub fn proc_cvar_auto(
         (nd, Vec::new())
     } else if var == "notes" {
         (ex.share[mid].vs_notesx.clone(), Vec::new())
+    } else if var.starts_with("q")
+        && var.ends_with("_")
+        && var.between2("q", "_").parse::<usize>().is_ok()
+        && var.between2("q", "_").force_i64() >= 0
+    {
+        let arg1 = var.between2("q", "_").force_usize();
+        let mut val = String::new();
+        if arg1 < ex.share[mid].seq.len() {
+            let mut quals = Vec::<u8>::new();
+            for j in 0..ex.clones.len() {
+                quals.push(ex.clones[j][mid].quals[arg1]);
+            }
+            val = format!("{}", quals.iter().format(","));
+        }
+
+        (val, Vec::new())
     } else if var == "r" {
         let mut nreads = Vec::<String>::new();
         let mut nreads_sorted = Vec::<usize>::new();

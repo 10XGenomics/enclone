@@ -5,7 +5,6 @@
 use crate::print_utils1::{color_codon, test_internal_error_seq};
 use amino::aa_seq;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{stringme, strme, TextUtils};
 use vector_utils::bin_member;
@@ -99,21 +98,7 @@ pub fn proc_cvar1(
         };
     }
 
-    if var.starts_with('q')
-        && var.ends_with('_')
-        && var.after("q").rev_before("_").parse::<usize>().is_ok()
-    {
-        let n = var.between("q", "_").force_usize();
-        let mut val = String::new();
-        if n < ex.share[mid].seq.len() {
-            let mut quals = Vec::<u8>::new();
-            for j in 0..ex.clones.len() {
-                quals.push(ex.clones[j][mid].quals[n]);
-            }
-            val = format!("{}", quals.iter().format(","));
-        }
-        cvar_stats1![j, var, val];
-    } else if *var == "amino" && col_var {
+    if *var == "amino" && col_var {
         let mut last_color = "black".to_string();
         for k in 0..show_aa[col].len() {
             let p = show_aa[col][k];
