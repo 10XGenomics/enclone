@@ -388,6 +388,7 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
+    /*
     } else if *var == "u_cell" {
         let var = var.clone();
         if pass == 2
@@ -407,6 +408,7 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, vals.to_string());
             }
         }
+    */
     } else if *var == "r_cell" {
         let var = var.clone();
         if pass == 2

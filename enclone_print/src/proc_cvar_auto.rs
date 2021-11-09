@@ -901,6 +901,20 @@ pub fn proc_cvar_auto(
         }
 
         (format!("{}", median_numis), vals)
+    } else if var == "u_cell" {
+        let mut numis = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            numis.push(ex.clones[j][mid].umi_count);
+        }
+        numis.sort_unstable();
+        let median_numis = rounded_median(&numis);
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            vals.push(format!("{}", ex.clones[k][mid].umi_count));
+        }
+
+        let _exact = format!("{}", median_numis);
+        (String::new(), vals)
     } else if var == "u_max" {
         let mut numis = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -1031,16 +1045,29 @@ pub fn proc_cvar_auto(
     if val.0 == "$UNDEFINED" {
         return Ok(false);
     } else {
-        // (exact, cell) = val
-        if j < rsi.cvars[col].len() && cvars.contains(&var) {
-            cx[col][j] = val.0.clone();
-        }
-        speakc!(u, col, var, val.0);
+        let (exact, cell) = &val;
         let varc = format!("{}{}", var, col + 1);
-        if val.1.is_empty() {
-            stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
-        } else {
-            stats.push((varc, val.1));
+        if exact.len() > 0 {
+            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                cx[col][j] = exact.clone();
+            }
+            speakc!(u, col, var, exact);
+            if val.1.is_empty() {
+                stats.push((varc, vec![exact.to_string(); ex.ncells()]));
+            } else {
+                stats.push((varc, cell.to_vec()));
+            }
+        } else if cell.len() > 0 {
+            if pass == 2
+                && ((ctl.parseable_opt.pchains == "max"
+                    || col < ctl.parseable_opt.pchains.force_usize())
+                    || !extra_args.is_empty())
+            {
+                if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
+                    let vals = format!("{}", cell.iter().format(&POUT_SEP));
+                    out_data[u].insert(varc, vals);
+                }
+            }
         }
         return Ok(true);
     }
