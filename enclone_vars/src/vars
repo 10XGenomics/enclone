@@ -1913,6 +1913,28 @@ avail:    public
 notes:
 code:     exact: ex.share[mid].vs_notesx.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+          exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
 limits:

@@ -97,37 +97,7 @@ pub fn proc_cvar2(
 
     // Proceed.
 
-    if var == "nval" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut vals = String::new();
-                let mut valsx = Vec::<String>::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        vals += POUT_SEP;
-                    }
-                    let mut n = 0;
-                    if ex.clones[k][mid].validated_umis.is_some() {
-                        n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
-                    }
-                    vals += &format!("{}", n);
-                    valsx.push(format!("{}", n));
-                }
-                out_data[u].insert(varc.clone(), vals.to_string());
-                stats.push((varc, valsx));
-            }
-        }
-    } else if var == "nnval" {
+    if var == "nnval" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((!ctl.parseable_opt.pout.is_empty()

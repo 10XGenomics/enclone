@@ -830,6 +830,29 @@ pub fn proc_cvar_auto(
         (nd, Vec::new())
     } else if var == "notes" {
         (ex.share[mid].vs_notesx.clone(), Vec::new())
+    } else if var == "nval" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        (String::new(), valsx)
+    } else if var == "nval_cell" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        let _exact = String::new();
+        (String::new(), valsx)
     } else if var.starts_with("q")
         && var.ends_with("_")
         && var.between2("q", "_").parse::<usize>().is_ok()
