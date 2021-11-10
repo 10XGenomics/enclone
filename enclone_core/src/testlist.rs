@@ -158,15 +158,14 @@ pub const EXTENDED_TESTS: [&str; 16] = [
     // Internal data.  To replace this we would need to find a public dataset on which genetic
     // demux was run.
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
-    // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
-    // question is whether the header line represents cvars for all the chains.  The output of
-    // this is expected to change whenever variables are added.
-    // These data are in the extended public dataset collection.
-    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
-         NOPRINT RE NO_PRE NFORCE"###,
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
+    // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
+    // question is whether the header line represents cvars for all the chains.  The output of
+    // this is expected to change whenever variables are added.
+    r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
+         NOPRINT RE NO_PRE NFORCE"###,
     // 7. test MIN_GROUP_DONORS
     r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
