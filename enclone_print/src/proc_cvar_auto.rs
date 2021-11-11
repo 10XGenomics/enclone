@@ -853,6 +853,52 @@ pub fn proc_cvar_auto(
 
         let _exact = String::new();
         (String::new(), valsx)
+    } else if var == "nival" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].invalidated_umis.is_some() {
+                n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        (String::new(), valsx)
+    } else if var == "nival_cell" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].invalidated_umis.is_some() {
+                n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        let _exact = String::new();
+        (String::new(), valsx)
+    } else if var == "nnval" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].non_validated_umis.is_some() {
+                n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        (String::new(), valsx)
+    } else if var == "nnval_cell" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].non_validated_umis.is_some() {
+                n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        let _exact = String::new();
+        (String::new(), valsx)
     } else if var.starts_with("q")
         && var.ends_with("_")
         && var.between2("q", "_").parse::<usize>().is_ok()

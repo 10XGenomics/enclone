@@ -97,67 +97,7 @@ pub fn proc_cvar2(
 
     // Proceed.
 
-    if var == "nnval" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut nvals = String::new();
-                let mut nvalsx = Vec::<String>::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        nvals += POUT_SEP;
-                    }
-                    let mut n = 0;
-                    if ex.clones[k][mid].non_validated_umis.is_some() {
-                        n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
-                    }
-                    nvals += &format!("{}", n);
-                    nvalsx.push(format!("{}", n));
-                }
-                out_data[u].insert(varc.clone(), nvals.to_string());
-                stats.push((varc, nvalsx));
-            }
-        }
-    } else if var == "nival" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut nvals = String::new();
-                let mut nvalsx = Vec::<String>::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        nvals += POUT_SEP;
-                    }
-                    let mut n = 0;
-                    if ex.clones[k][mid].invalidated_umis.is_some() {
-                        n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
-                    }
-                    nvals += &format!("{}", n);
-                    nvalsx.push(format!("{}", n));
-                }
-                out_data[u].insert(varc.clone(), nvals.to_string());
-                stats.push((varc, nvalsx));
-            }
-        }
-    } else if var == "valumis" {
+    if var == "valumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((!ctl.parseable_opt.pout.is_empty()

@@ -1900,6 +1900,50 @@ code:     let mut near = String::new();
           }
           exact: near
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nival
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+          exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nnval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+          exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
 inputs:   cvar_vdj
 limits:
