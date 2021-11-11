@@ -645,6 +645,7 @@ pub fn group_and_print_clonotypes(
                             for c in pcols.iter() {
                                 if y.contains_key(c) {
                                     let val = &y[c];
+                                    let val = val.replace(POUT_SEP, ",");
                                     row.push(val.clone());
                                 } else {
                                     row.push("".to_string());
