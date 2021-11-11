@@ -2,137 +2,38 @@
 
 // This file contains the single function proc_cvar.
 
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, POUT_SEP};
-use itertools::Itertools;
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use stats_utils::percent_ratio;
 use std::collections::HashMap;
-use string_utils::TextUtils;
-use vector_utils::{bin_member, next_diff12_4};
+use vector_utils::next_diff12_4;
 
 pub fn proc_cvar2(
     var: &String,
     j: usize,
     col: usize,
-    mid: usize,
-    pass: usize,
+    _mid: usize,
+    _pass: usize,
     u: usize,
     ex: &ExactClonotype,
     ctl: &EncloneControl,
     _exacts: &Vec<usize>,
     _exact_clonotypes: &Vec<ExactClonotype>,
-    out_data: &mut Vec<HashMap<String, String>>,
-    rsi: &ColInfo,
+    _out_data: &mut Vec<HashMap<String, String>>,
+    _rsi: &ColInfo,
     _peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     _show_aa: &Vec<Vec<usize>>,
     _field_types: &Vec<Vec<u8>>,
     col_var: bool,
-    pcols_sort: &Vec<String>,
+    _pcols_sort: &Vec<String>,
     bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
-    extra_args: &Vec<String>,
-    stats: &mut Vec<(String, Vec<String>)>,
+    _extra_args: &Vec<String>,
+    _stats: &mut Vec<(String, Vec<String>)>,
 ) -> bool {
-    let cvars = &ctl.clono_print_opt.cvars;
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if pass == 2
-                && ((ctl.parseable_opt.pout.len() > 0
-                    && (ctl.parseable_opt.pchains == "max"
-                        || col < ctl.parseable_opt.pchains.force_usize()))
-                    || extra_args.len() > 0)
-            {
-                let mut v = $var.clone();
-                v = v.replace("_Σ", "_sum");
-                v = v.replace("_μ", "_mean");
-
-                // Strip escape character sequences from val.  Can happen in notes, maybe
-                // other places.
-
-                let mut val_clean = String::new();
-                let mut chars = Vec::<char>::new();
-                let valx = format!("{}", $val);
-                for c in valx.chars() {
-                    chars.push(c);
-                }
-                let mut escaped = false;
-                for l in 0..chars.len() {
-                    if chars[l] == '' {
-                        escaped = true;
-                    }
-                    if escaped {
-                        if chars[l] == 'm' {
-                            escaped = false;
-                        }
-                        continue;
-                    }
-                    val_clean.push(chars[l]);
-                }
-
-                // Proceed.
-
-                let varc = format!("{}{}", v, $col + 1);
-                if pcols_sort.is_empty()
-                    || bin_member(&pcols_sort, &varc)
-                    || bin_member(&extra_args, &varc)
-                {
-                    out_data[$u].insert(varc, val_clean);
-                }
-            }
-        };
-    }
-
-    // Set up chain variable macro.  This is the mechanism for generating
-    // both human-readable and parseable output for chain variables.
-
-    macro_rules! cvar_stats1 {
-        ($i: expr, $var:expr, $val:expr) => {
-            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                cx[col][$i] = $val.clone();
-            }
-            speakc!(u, col, $var, $val);
-            let varc = format!("{}{}", $var, col + 1);
-            stats.push((varc, vec![$val; ex.ncells()]));
-        };
-    }
-
-    // Proceed.
-
-    if var == "ivalbcumis" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut vals = String::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        vals += POUT_SEP;
-                    }
-                    let mut n = String::new();
-                    if ex.clones[k][mid].invalidated_umis.is_some() {
-                        let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
-                        for i in 0..bc_umis.len() {
-                            bc_umis[i] =
-                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
-                        }
-                        n = format!("{}", bc_umis.iter().format(","));
-                    }
-                    vals += &n.to_string();
-                }
-                out_data[u].insert(varc, vals.to_string());
-            }
-        }
-
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
-    } else if *var == "white" || ctl.clono_filt_opt_def.whitef {
+
+    if *var == "white" || ctl.clono_filt_opt_def.whitef {
         let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
