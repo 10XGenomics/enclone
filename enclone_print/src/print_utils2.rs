@@ -4,7 +4,6 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::proc_cvar1::proc_cvar1;
-use crate::proc_cvar2::proc_cvar2;
 use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
@@ -787,7 +786,7 @@ pub fn row_fill(
                 out_data,
                 stats,
             )? {
-                if !proc_cvar1(
+                proc_cvar1(
                     var,
                     jj,
                     col,
@@ -811,31 +810,7 @@ pub fn row_fill(
                     extra_args,
                     stats,
                     cdr3_con,
-                )? {
-                    let _ = proc_cvar2(
-                        var,
-                        jj,
-                        col,
-                        mid,
-                        pass,
-                        u,
-                        ex,
-                        ctl,
-                        exacts,
-                        exact_clonotypes,
-                        out_data,
-                        rsi,
-                        peer_groups,
-                        show_aa,
-                        field_types,
-                        col_var,
-                        &pcols_sort,
-                        bads,
-                        cx,
-                        extra_args,
-                        stats,
-                    );
-                }
+                )?;
             }
         }
     }
