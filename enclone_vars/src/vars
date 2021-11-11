@@ -1716,6 +1716,61 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ivalbcumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    invalidated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ivalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .invalidated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_id
 inputs:   cvar_vdj
 limits:
@@ -1900,6 +1955,48 @@ code:     let mut near = String::new();
           }
           exact: near
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nival
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nnval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
 inputs:   cvar_vdj
 limits:
@@ -1912,6 +2009,82 @@ page:     enclone help cvars
 avail:    public
 notes:
 code:     exact: ex.share[mid].vs_notesx.clone()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nvalbcumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    non-validated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nvalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .non_validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
@@ -1939,21 +2112,29 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     q{0,...}_
-inputs:   ?
+name:     q{0..}_
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
 val:      string
 doc:      TBD
 brief:    read quality scores at position <code>n</code>
-page:     enclone help parseable
+page:     enclone help cvars
 avail:    public
-notes:    Should position start at 0 or 1?
-code:
+notes:
+code:     let mut val = String::new();
+          if arg1 < ex.share[mid].seq.len() {
+              let mut quals = Vec::<u8>::new();
+              for j in 0..ex.clones.len() {
+                  quals.push(ex.clones[j][mid].quals[arg1]);
+              }
+              val = format!("{}", quals.iter().format(","));
+          }
+          exact: val
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact
@@ -1963,23 +2144,18 @@ brief:    median number of reads supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     r_cell
-inputs:   ?
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of reads supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
+code:     let mut nreads = Vec::<String>::new();
+          let mut nreads_sorted = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(format!("{}", ex.clones[j][mid].read_count));
+              nreads_sorted.push(ex.clones[j][mid].read_count);
+          }
+          nreads_sorted.sort_unstable();
+          cell: nreads
+          exact: format!("{}", rounded_median(&nreads_sorted))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_max
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1989,10 +2165,14 @@ brief:    maximum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_mean
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2002,10 +2182,16 @@ brief:    mean chain reads across exact subclonotype (= <code>r_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+          exact: format!("{}", r_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_min
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2015,10 +2201,14 @@ brief:    minimum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_sum
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2028,10 +2218,15 @@ brief:    sum of chain read counts across exact subclonotype (= <code>r_Σ</code
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_Σ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2041,10 +2236,15 @@ brief:    sum of chain reads across exact subclonotype (= <code>r_sum</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_μ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -2054,7 +2254,13 @@ brief:    mean chain read count across exact subclonotype (= <code>r_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+          exact: format!("{}", r_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     seq
 inputs:   ?
@@ -2118,19 +2324,6 @@ code:     let mut numis = Vec::<usize>::new();
           }
           cell: vals
           exact: format!("{}", median_numis)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     u_cell
-inputs:   ex, mid
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of UMIs supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
 inputs:   cvar_vdj
@@ -2384,6 +2577,61 @@ avail:    public
 notes:    Positive integer, or nonnegative integer?
 code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     valbcumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    validated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     valumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
 inputs:   cvar_vdj
 limits:
@@ -2500,4 +2748,51 @@ page:     enclone help cvars
 avail:    public
 notes:
 code:     exact: format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     white
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    percent of sequences implicated in whitelist expansion
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
+          for l in 0..ex.clones.len() {
+              let li = ex.clones[l][0].dataset_index;
+              let bc = &ex.clones[l][0].barcode;
+              let mut numi = 0;
+              for j in 0..ex.clones[l].len() {
+                  numi += ex.clones[l][j].umi_count;
+              }
+              bch[0].push((li, bc[0..8].to_string(), numi, l));
+              bch[1].push((li, bc[8..16].to_string(), numi, l));
+          }
+          let mut junk = 0;
+          let mut bad = vec![false; ex.clones.len()];
+          for l in 0..2 {
+              bch[l].sort();
+              let mut m = 0;
+              while m < bch[l].len() {
+                  let n = next_diff12_4(&bch[l], m as i32) as usize;
+                  for u1 in m..n {
+                      for u2 in m..n {
+                          if bch[l][u1].2 >= 10 * bch[l][u2].2 {
+                              bad[bch[l][u2].3] = true;
+                          }
+                      }
+                  }
+                  m = n;
+              }
+          }
+          for u in 0..bad.len() {
+              if bad[u] {
+                  junk += 1;
+              }
+          }
+          let junk_rate = percent_ratio(junk, ex.clones.len());
+          exact: format!("{:.1}", junk_rate)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

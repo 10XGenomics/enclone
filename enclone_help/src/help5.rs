@@ -380,7 +380,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         }
         h.print_plain(&format!("{}\n", pal))?;
         h.print(
-            "\nWhen enclone shows amino acids, it uses one of two coloring schemes.  The first \
+            "\nWhen enclone shows amino acids, it uses one of three coloring schemes.  The first \
              scheme (the default, or using the argument \\bold{COLOR=codon}), colors amino \
              acids by codon, according to the following scheme:\n\n",
         )?;
@@ -390,7 +390,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
              clonotype.\n\n",
         )?;
         h.print(
-            "The second scheme for coloring amino acids, \\bold{COLOR=property}, colors amino \
+            "The second scheme, \\bold{COLOR=codon-diffs}, is the same as the first, except that \
+             some amino acids are \"grayed out\".  An amino acid is highlighted (not grayed out) \
+             if (a) its codon differs from the universal reference or (b) it is in a CDR3 and the \
+             codon is shared by half or less of the exact subclonotypes having the given \
+             chain.  You may wish to use this with the \\bold{CONX} or \\bold{CONP} option.\n\n",
+        )?;
+        h.print(
+            "The third scheme for coloring amino acids, \\bold{COLOR=property}, colors amino \
              acids by their properties, according to the following scheme:\n\n",
         )?;
         {
@@ -436,7 +443,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         )?;
         */
         h.print(
-            "In both cases, \
+            "In all cases, \
              the coloring is done using special characters, called ANSI escape characters.  \
              Color is used occasionally elsewhere by enclone, and there is also some \
              bolding, accomplished using the same mechanism.\n\n\

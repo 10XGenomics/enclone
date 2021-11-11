@@ -707,3 +707,24 @@ fn test_export_code() {
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 41. Test a funny command with a newline that asserted at one point.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_newline_bad() {
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .arg("METAX=\"bcr;86237;\n     null:83808\"")
+        .output()
+        .expect(&format!("failed to execute test_newline_bad"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ntest_newline_bad: failed\n");
+        eprintln!("stderr = {}\n", strme(&new.stderr));
+        std::process::exit(1);
+    }
+}

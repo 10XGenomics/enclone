@@ -1014,6 +1014,7 @@ group, where each xi is one of:
 │        │  that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even more   │
 │        │  cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.               │
 │        │  4. The same stipulations apply to FWR1, FWR2 and FWR3.                               │
+│        │  5. Spaces are shown between features unless NOSPACES is specified.                   │
 ├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
 │var     │  positions in chain that vary across the clonotype                                    │
 │share   │  positions in chain that differ consistently from the donor reference                 │
@@ -1746,7 +1747,7 @@ Here is the color palette that enclone uses for amino acids:
 
 <span style="color:#3e7dd1;font-weight:bold;">█</span> <span style="color:#eb99c2;font-weight:bold;">█</span> <span style="color:#31c39a;">█</span> <span style="color:#f37721;font-weight:bold;">█</span> <span style="color:#72c0ff;font-weight:bold;">█</span> <span style="color:#e7bd20;">█</span> <span style="color:#eaec23;font-weight:bold;">█</span> 
 
-When enclone shows amino acids, it uses one of two coloring schemes.  The first scheme (the
+When enclone shows amino acids, it uses one of three coloring schemes.  The first scheme (the
 default, or using the argument <span style="font-weight:bold;">COLOR=codon</span>), colors amino acids by codon, according to the
 following scheme:
 
@@ -1773,8 +1774,13 @@ Valine         V  <span style="color:#e7bd20;">GTT</span> <span style="color:#72
 
 Colored amino acids enable the compact display of all the information in a clonotype.
 
-The second scheme for coloring amino acids, <span style="font-weight:bold;">COLOR=property</span>, colors amino acids by their
-properties, according to the following scheme:
+The second scheme, <span style="font-weight:bold;">COLOR=codon-diffs</span>, is the same as the first, except that some amino acids are
+"grayed out".  An amino acid is highlighted (not grayed out) if (a) its codon differs from the
+universal reference or (b) it is in a CDR3 and the codon is shared by half or less of the exact
+subclonotypes having the given chain.  You may wish to use this with the <span style="font-weight:bold;">CONX</span> or <span style="font-weight:bold;">CONP</span> option.
+
+The third scheme for coloring amino acids, <span style="font-weight:bold;">COLOR=property</span>, colors amino acids by their properties,
+according to the following scheme:
 
 1. Aliphatic: <span style="color:#72c0ff;font-weight:bold;">A</span> <span style="color:#72c0ff;font-weight:bold;">G</span> <span style="color:#72c0ff;font-weight:bold;">I</span> <span style="color:#72c0ff;font-weight:bold;">L</span> <span style="color:#72c0ff;font-weight:bold;">P</span> <span style="color:#72c0ff;font-weight:bold;">V</span>
 2. Aromatic: <span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">Y</span>
@@ -1784,9 +1790,9 @@ properties, according to the following scheme:
 6. Sulfurous: <span style="color:#31c39a;">C</span> <span style="color:#31c39a;">M</span>
 7. Amidic: <span style="color:#eaec23;font-weight:bold;">N</span> <span style="color:#eaec23;font-weight:bold;">Q</span>
 
-In both cases, the coloring is done using special characters, called ANSI escape characters. 
-Color is used occasionally elsewhere by enclone, and there is also some bolding, accomplished
-using the same mechanism.
+In all cases, the coloring is done using special characters, called ANSI escape characters.  Color
+is used occasionally elsewhere by enclone, and there is also some bolding, accomplished using the
+same mechanism.
 
 Correct display of colors and bolding depends on having a terminal window that is properly set up.
  As far as we know, this may always be the case, but it is possible that there are exceptions.  In

@@ -126,16 +126,29 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             if val.0 == "$UNDEFINED" {
                 return Ok(false);
             } else {
-                // (exact, cell) = val
-                if j < rsi.cvars[col].len() && cvars.contains(&var) {
-                    cx[col][j] = val.0.clone();
-                }
-                speakc!(u, col, var, val.0);
+                let (exact, cell) = &val;
                 let varc = format!("{}{}", var, col + 1);
-                if val.1.is_empty() {
-                    stats.push((varc, vec![val.0.to_string(); ex.ncells()]));
-                } else {
-                    stats.push((varc, val.1));
+                if exact.len() > 0 {
+                    if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                        cx[col][j] = exact.clone();
+                    }
+                    speakc!(u, col, var, exact);
+                    if val.1.is_empty() {
+                        stats.push((varc, vec![exact.to_string(); ex.ncells()]));
+                    } else {
+                        stats.push((varc, cell.to_vec()));
+                    }
+                } else if cell.len() > 0 {
+                    if pass == 2
+                        && ((ctl.parseable_opt.pchains == "max"
+                            || col < ctl.parseable_opt.pchains.force_usize())
+                            || !extra_args.is_empty())
+                    {
+                        if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
+                            let vals = format!("{}", cell.iter().format(&POUT_SEP));
+                            out_data[u].insert(varc, vals);
+                        }
+                    }
                 }
                 return Ok(true);
             }
@@ -143,7 +156,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
         "###;
 
-    // Build auto file.
+    // Build cvar auto file.
 
     let actual_out = "enclone_print/src/proc_cvar_auto.rs".to_string();
     let mut temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs".to_string();
@@ -186,6 +199,13 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     }
                     code = code2;
                 }
+                if v.level == "cell-exact" {
+                    assert!(exact.len() > 0);
+                    assert!(cell.len() > 0);
+                }
+                if v.level == "cell" {
+                    assert!(cell.len() > 0);
+                }
 
                 // Proceed.
 
@@ -197,62 +217,70 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         upper = true;
                     }
                 }
+                // RESTRICTION 2: don't allow upper case
                 if !upper {
-                    // RESTRICTION 2: don't allow upper case
-                    if !var.contains('{') {
-                        fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
-                        fwriteln!(f, "{}", code);
-                        fwriteln!(f, "({}, {})", exact, cell);
-                    // RESTRICTION 3: allow only one {} pair
-                    } else if !var.after("{").contains("{") {
-                        let begin = var.before("{");
-                        let end = var.after("}");
-                        let low = var.after("{").before("..").force_usize();
-                        let high = var.after("{").between("..", "}");
-                        if high.len() > 0 {
-                            let high = high.force_usize();
+                    let mut passes = 1;
+                    if v.level == "cell-exact" {
+                        passes = 2;
+                    }
+                    for pass in 1..=passes {
+                        if !var.contains('{') {
+                            let mut var = var.clone();
+                            if pass == 2 {
+                                var += "_cell";
+                            }
+                            fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
+                        // RESTRICTION 3: allow only one {} pair
+                        } else if !var.after("{").contains("{") {
+                            let begin = var.before("{");
+                            let mut end = var.after("}").to_string();
+                            if pass == 2 {
+                                end += "_cell";
+                            }
+                            let low = var.after("{").before("..").force_usize();
+                            let high = var.after("{").between("..", "}");
+                            if high.len() > 0 {
+                                let high = high.force_usize();
+                                fwriteln!(
+                                    f,
+                                    r###"}} else if var.starts_with("{begin}")
+                                    && var.ends_with("{end}")
+                                    && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                    && var.between2("{begin}", "{end}").force_i64() >= {low}
+                                    && var.between2("{begin}", "{end}").force_usize() 
+                                       <= {high} {{"###,
+                                    begin = begin,
+                                    end = end,
+                                    low = low,
+                                    high = high,
+                                );
+                            } else {
+                                fwriteln!(
+                                    f,
+                                    r###"}} else if var.starts_with("{begin}")
+                                    && var.ends_with("{end}")
+                                    && var.between2("{begin}", "{end}").parse::<usize>().is_ok()
+                                    && var.between2("{begin}", "{end}").force_i64() 
+                                       >= {low} {{"###,
+                                    begin = begin,
+                                    end = end,
+                                    low = low,
+                                );
+                            }
                             fwriteln!(
                                 f,
-                                r###"}} else if var.starts_with("{}")
-                                && var.ends_with("{}")
-                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
-                                && var.after("{}").rev_before("{}").force_usize() >= {}
-                                && var.after("{}").rev_before("{}").force_usize() <= {} {{"###,
+                                r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
                                 begin,
                                 end,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                low,
-                                begin,
-                                end,
-                                high,
-                            );
-                        } else {
-                            fwriteln!(
-                                f,
-                                r###"}} else if var.starts_with("{}")
-                                && var.ends_with("{}")
-                                && var.after("{}").rev_before("{}").parse::<usize>().is_ok()
-                                && var.after("{}").rev_before("{}").force_usize() >= {} {{"###,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                begin,
-                                end,
-                                low,
                             );
                         }
-                        fwriteln!(
-                            f,
-                            r###"let arg1 = var.after("{}").rev_before("{}").force_usize();"###,
-                            begin,
-                            end,
-                        );
                         fwriteln!(f, "{}", code);
-                        fwriteln!(f, "({}, {})", exact, cell);
+                        if pass == 1 {
+                            fwriteln!(f, "({}, {})", exact, cell);
+                        } else {
+                            fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
+                            fwriteln!(f, "(String::new(), {})", cell);
+                        }
                     }
                 }
             }

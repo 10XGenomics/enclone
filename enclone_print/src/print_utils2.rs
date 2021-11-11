@@ -4,7 +4,6 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::proc_cvar1::proc_cvar1;
-use crate::proc_cvar2::proc_cvar2;
 use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
@@ -17,9 +16,11 @@ use enclone_vars::decode_arith;
 use expr_tools::*;
 use itertools::Itertools;
 use ndarray::s;
+use stats_utils::percent_ratio;
 use std::collections::{HashMap, HashSet};
 use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::refx::RefData;
+use vector_utils::next_diff12_4;
 use vector_utils::{bin_member, bin_position, unique_sort};
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
@@ -151,8 +152,53 @@ pub fn row_fill(
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
+
+    // It may not make any sense at all for this code to be here.
+
+    if ctl.clono_filt_opt_def.whitef {
+        let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = &ex.clones[l][0].barcode;
+            let mut numi = 0;
+            for j in 0..ex.clones[l].len() {
+                numi += ex.clones[l][j].umi_count;
+            }
+            bch[0].push((li, bc[0..8].to_string(), numi, l));
+            bch[1].push((li, bc[8..16].to_string(), numi, l));
+        }
+        let mut junk = 0;
+        let mut bad = vec![false; ex.clones.len()];
+        for l in 0..2 {
+            bch[l].sort();
+            let mut m = 0;
+            while m < bch[l].len() {
+                let n = next_diff12_4(&bch[l], m as i32) as usize;
+                for u1 in m..n {
+                    for u2 in m..n {
+                        if bch[l][u1].2 >= 10 * bch[l][u2].2 {
+                            bad[bch[l][u2].3] = true;
+                        }
+                    }
+                }
+                m = n;
+            }
+        }
+        for u in 0..bad.len() {
+            if bad[u] {
+                junk += 1;
+            }
+        }
+        let junk_rate = percent_ratio(junk, ex.clones.len());
+        // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if junk_rate == 0.0 {
+            bads[u] = true;
+        }
+    }
+
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
+
     let have_entropy = lvarsh.contains(&"entropy".to_string());
     // Isn't this duplicating code with the next section?
     if have_entropy {
@@ -415,7 +461,8 @@ pub fn row_fill(
                         //     std::process::exit(1);
                         // }
                         let val = res.unwrap();
-                        out_vals.push(val.to_string());
+                        let val = val.as_number().unwrap();
+                        out_vals.push(format!("{:.1}", val));
                     }
                     let mut median = String::new();
                     let mut out_valsf = Vec::<f64>::new();
@@ -627,23 +674,6 @@ pub fn row_fill(
         let ex = &exact_clonotypes[clonotype_id];
         let seq_amino = rsi.seqss_amino[col][u].clone();
 
-        // Get UMI and read stats.
-
-        let mut numis = Vec::<usize>::new();
-        let mut nreads = Vec::<usize>::new();
-        for j in 0..ex.clones.len() {
-            numis.push(ex.clones[j][mid].umi_count);
-            nreads.push(ex.clones[j][mid].read_count);
-        }
-        numis.sort_unstable();
-        let median_numis = rounded_median(&numis);
-        nreads.sort_unstable();
-        let rtot: usize = nreads.iter().sum();
-        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
-        let r_min = *nreads.iter().min().unwrap();
-        let r_max = *nreads.iter().max().unwrap();
-        let median_nreads = rounded_median(&nreads);
-
         // Speak some other column entries.
 
         let xm = &ex.share[mid];
@@ -756,7 +786,7 @@ pub fn row_fill(
                 out_data,
                 stats,
             )? {
-                if !proc_cvar1(
+                proc_cvar1(
                     var,
                     jj,
                     col,
@@ -767,7 +797,6 @@ pub fn row_fill(
                     ctl,
                     exacts,
                     exact_clonotypes,
-                    varmat,
                     out_data,
                     rsi,
                     peer_groups,
@@ -776,49 +805,11 @@ pub fn row_fill(
                     field_types,
                     col_var,
                     &pcols_sort,
-                    bads,
                     cx,
-                    median_numis,
-                    median_nreads,
-                    r_min,
-                    r_max,
-                    r_mean,
-                    rtot,
                     extra_args,
                     stats,
                     cdr3_con,
-                )? {
-                    let _ = proc_cvar2(
-                        var,
-                        jj,
-                        col,
-                        mid,
-                        pass,
-                        u,
-                        ex,
-                        ctl,
-                        exacts,
-                        exact_clonotypes,
-                        varmat,
-                        out_data,
-                        rsi,
-                        peer_groups,
-                        show_aa,
-                        field_types,
-                        col_var,
-                        &pcols_sort,
-                        bads,
-                        cx,
-                        median_numis,
-                        median_nreads,
-                        r_min,
-                        r_max,
-                        r_mean,
-                        rtot,
-                        extra_args,
-                        stats,
-                    );
-                }
+                )?;
             }
         }
     }

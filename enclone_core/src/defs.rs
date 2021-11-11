@@ -832,6 +832,8 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("d2_name")
         || x.starts_with("fb") && !x.ends_with("_n")
         || x == "cigar"
+        || x.contains("valumis")
+        || x.contains("valbcumis")
     {
         b'l'
     } else {

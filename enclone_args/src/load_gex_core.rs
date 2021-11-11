@@ -181,20 +181,17 @@ pub fn load_gex(
             analysis.push(format!("{}/analysis_csv", outs));
             analysis.push(format!("{}/analysis", outs));
             analysis.push(format!("{}/count/analysis", outs));
-            let pso = format!("{}/per_sample_outs", outs);
-            if path_exists(&pso) {
-                let samples = dir_list(&pso);
-                if samples.solo() {
-                    let a = format!("{}/{}/count/analysis", pso, samples[0]);
-                    analysis.push(a);
-                }
-            }
+            let pso1 = format!("{}/per_sample_outs", outs);
             let pso2 = format!("{}/../per_sample_outs", outs);
-            if path_exists(&pso2) {
-                let samples = dir_list(&pso2);
-                if samples.solo() {
-                    let a = format!("{}/{}/count/analysis", pso2, samples[0]);
-                    analysis.push(a);
+            for pso in [pso1, pso2].iter() {
+                if path_exists(&pso) {
+                    let samples = dir_list(&pso);
+                    if samples.solo() {
+                        let a = format!("{}/{}/count/analysis", pso, samples[0]);
+                        analysis.push(a);
+                        let a = format!("{}/{}/count/analysis_csv", pso, samples[0]);
+                        analysis.push(a);
+                    }
                 }
             }
 

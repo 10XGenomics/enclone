@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 270] = [
+pub const TESTS: [&str; 274] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -677,4 +677,15 @@ pub const TESTS: [&str; 270] = [
     r###"BCR=86237 GEX=85679 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n PER_CELL AMINO=cdr3 CVARS=             FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL CDR3=CARSFFGDTAMVMFQAFDPW"###,
     // 270. test NOSPACES
     r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
+    // 271. test for weird path bug
+    r###"BCR_GEX=tiny_multi_PD_broken EXPECT_OK"###,
+    // 272. a test for validated UMI variables
+    r###"BCR=tiny_multi_PD CVARS=u,nval,nnval,nival BARCODE=AAAGCAAGTGGCTCCA-1 AMINO= PER_CELL
+         POUT=stdouth PCOLS=nval1,nval2,nval3,valumis3,valbcumis2"###,
+    // 273. a test for validated UMI variables
+    r###"BCR=tiny_multi_PD CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth
+         PCOLS=ivalumis1,ivalbcumis1,nvalbcumis2 BARCODE=TACCTTAAGAGCCCAA-1"###,
+    // 274. at one point this printed bell characters
+    r###"CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth PCOLS=nval1,nval2 BCR=123085
+         BARCODE=ACAGCCGAGATAGGAG-1"###,
 ];

@@ -657,6 +657,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             85,
         )?;
         h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
+        h.doc(
+            "",
+            "5. Spaces are shown between features unless NOSPACES is specified.",
+        );
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
             "share",

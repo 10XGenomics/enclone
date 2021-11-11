@@ -219,9 +219,9 @@ nival     = number of invalidated UMIs
 valumis   = validated UMIs
 nvalumis  = non-validated UMIs
 ivalumis  = invalidated UMIs
-valbcumis   = validated UMIs, preceeded by barcode
-nvalbcumis  = non-validated UMIs, preceeded by barcode
-ivalbcumis  = invalidated UMIs, preceeded by barcode
+valbcumis   = validated UMIs, preceded by barcode
+nvalbcumis  = non-validated UMIs, preceded by barcode
+ivalbcumis  = invalidated UMIs, preceded by barcode
 
 All three classes of UMIs are capped at 20 UMIs.
 
