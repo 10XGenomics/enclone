@@ -415,7 +415,8 @@ pub fn row_fill(
                         //     std::process::exit(1);
                         // }
                         let val = res.unwrap();
-                        out_vals.push(val.to_string());
+                        let val = val.as_number().unwrap();
+                        out_vals.push(format!("{:.1}", val));
                     }
                     let mut median = String::new();
                     let mut out_valsf = Vec::<f64>::new();
