@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 273] = [
+pub const TESTS: [&str; 274] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -685,4 +685,7 @@ pub const TESTS: [&str; 273] = [
     // 273. a test for validated UMI variables
     r###"BCR=tiny_multi_PD CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth
          PCOLS=ivalumis1,ivalbcumis1,nvalbcumis2 BARCODE=TACCTTAAGAGCCCAA-1"###,
+    // 274. at one point this printed bell characters
+    r###"CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth PCOLS=nval1,nval2 BCR=123085
+         BARCODE=ACAGCCGAGATAGGAG-1"###,
 ];
