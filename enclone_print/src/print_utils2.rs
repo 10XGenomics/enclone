@@ -805,7 +805,6 @@ pub fn row_fill(
                     field_types,
                     col_var,
                     &pcols_sort,
-                    bads,
                     cx,
                     extra_args,
                     stats,

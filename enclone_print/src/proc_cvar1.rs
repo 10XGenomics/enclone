@@ -28,7 +28,6 @@ pub fn proc_cvar1(
     field_types: &Vec<Vec<u8>>,
     col_var: bool,
     pcols_sort: &Vec<String>,
-    _bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     extra_args: &Vec<String>,
     stats: &mut Vec<(String, Vec<String>)>,
