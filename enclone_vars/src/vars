@@ -1716,6 +1716,35 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ivalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .invalidated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_id
 inputs:   cvar_vdj
 limits:
@@ -1997,6 +2026,35 @@ code:     let mut vals = Vec::<String>::new();
                           format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
                   }
                   n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nvalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .non_validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
               }
               vals.push(n.to_string());
           }

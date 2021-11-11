@@ -97,77 +97,7 @@ pub fn proc_cvar2(
 
     // Proceed.
 
-    if var == "nvalumis" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut nvals = String::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        nvals += POUT_SEP;
-                    }
-                    let mut n = String::new();
-                    if ex.clones[k][mid].non_validated_umis.is_some() {
-                        n = format!(
-                            "{}",
-                            ex.clones[k][mid]
-                                .non_validated_umis
-                                .as_ref()
-                                .unwrap()
-                                .iter()
-                                .format(",")
-                        );
-                    }
-                    nvals += &n.to_string();
-                }
-                out_data[u].insert(varc, nvals.to_string());
-            }
-        }
-    } else if var == "ivalumis" {
-        cvar_stats1![j, *var, "".to_string()];
-        if pass == 2
-            && ((!ctl.parseable_opt.pout.is_empty()
-                && (ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize()))
-                || !extra_args.is_empty())
-        {
-            let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty()
-                || bin_member(pcols_sort, &varc)
-                || bin_member(extra_args, &varc)
-            {
-                let mut nvals = String::new();
-                for k in 0..ex.ncells() {
-                    if k > 0 {
-                        nvals += POUT_SEP;
-                    }
-                    let mut n = String::new();
-                    if ex.clones[k][mid].invalidated_umis.is_some() {
-                        n = format!(
-                            "{}",
-                            ex.clones[k][mid]
-                                .invalidated_umis
-                                .as_ref()
-                                .unwrap()
-                                .iter()
-                                .format(",")
-                        );
-                    }
-                    nvals += &n.to_string();
-                }
-                out_data[u].insert(varc, nvals.to_string());
-            }
-        }
-    } else if var == "ivalbcumis" {
+    if var == "ivalbcumis" {
         cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((!ctl.parseable_opt.pout.is_empty()
