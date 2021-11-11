@@ -863,6 +863,21 @@ pub fn proc_cvar_auto(
         }
 
         (String::new(), valsx)
+    } else if var == "nvalbcumis" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = String::new();
+            if ex.clones[k][mid].non_validated_umis.is_some() {
+                let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
+                for i in 0..bc_umis.len() {
+                    bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                }
+                n = format!("{}", bc_umis.iter().format(","));
+            }
+            vals.push(n.to_string());
+        }
+
+        (String::new(), vals)
     } else if var.starts_with("q")
         && var.ends_with("_")
         && var.between2("q", "_").parse::<usize>().is_ok()
@@ -1092,6 +1107,21 @@ pub fn proc_cvar_auto(
         (refdata.name[rsi.vids[col]].clone(), Vec::new())
     } else if var == "v_start" {
         (format!("{}", ex.share[mid].v_start), Vec::new())
+    } else if var == "valbcumis" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = String::new();
+            if ex.clones[k][mid].validated_umis.is_some() {
+                let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
+                for i in 0..bc_umis.len() {
+                    bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                }
+                n = format!("{}", bc_umis.iter().format(","));
+            }
+            vals.push(n.to_string());
+        }
+
+        (String::new(), vals)
     } else if var == "valumis" {
         let mut vals = Vec::<String>::new();
         for k in 0..ex.ncells() {
