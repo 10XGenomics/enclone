@@ -13,9 +13,9 @@ pub fn proc_cvar2(
     col: usize,
     _mid: usize,
     _pass: usize,
-    u: usize,
+    _u: usize,
     ex: &ExactClonotype,
-    ctl: &EncloneControl,
+    _ctl: &EncloneControl,
     _exacts: &Vec<usize>,
     _exact_clonotypes: &Vec<ExactClonotype>,
     _out_data: &mut Vec<HashMap<String, String>>,
@@ -25,7 +25,7 @@ pub fn proc_cvar2(
     _field_types: &Vec<Vec<u8>>,
     col_var: bool,
     _pcols_sort: &Vec<String>,
-    bads: &mut Vec<bool>,
+    _bads: &mut Vec<bool>,
     cx: &mut Vec<Vec<String>>,
     _extra_args: &Vec<String>,
     _stats: &mut Vec<(String, Vec<String>)>,
@@ -33,7 +33,7 @@ pub fn proc_cvar2(
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
 
-    if *var == "white" || ctl.clono_filt_opt_def.whitef {
+    if *var == "white" {
         let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -79,12 +79,6 @@ pub fn proc_cvar2(
         let junk_rate = percent_ratio(junk, ex.clones.len());
         if *var == "white".to_string() && col_var {
             cx[col][j] = format!("{:.1}", junk_rate);
-        }
-        // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if ctl.clono_filt_opt_def.whitef && junk_rate == 0.0
-        /* && pass == 1 */
-        {
-            bads[u] = true;
         }
     } else {
         return false;
