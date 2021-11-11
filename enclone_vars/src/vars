@@ -2470,6 +2470,36 @@ avail:    public
 notes:    Positive integer, or nonnegative integer?
 code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     valumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+          exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
 inputs:   cvar_vdj
 limits:

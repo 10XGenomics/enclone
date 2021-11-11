@@ -828,31 +828,6 @@ pub fn proc_cvar_auto(
         }
 
         (nd, Vec::new())
-    } else if var == "notes" {
-        (ex.share[mid].vs_notesx.clone(), Vec::new())
-    } else if var == "nval" {
-        let mut valsx = Vec::<String>::new();
-        for k in 0..ex.ncells() {
-            let mut n = 0;
-            if ex.clones[k][mid].validated_umis.is_some() {
-                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
-            }
-            valsx.push(format!("{}", n));
-        }
-
-        (String::new(), valsx)
-    } else if var == "nval_cell" {
-        let mut valsx = Vec::<String>::new();
-        for k in 0..ex.ncells() {
-            let mut n = 0;
-            if ex.clones[k][mid].validated_umis.is_some() {
-                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
-            }
-            valsx.push(format!("{}", n));
-        }
-
-        let _exact = String::new();
-        (String::new(), valsx)
     } else if var == "nival" {
         let mut valsx = Vec::<String>::new();
         for k in 0..ex.ncells() {
@@ -893,6 +868,31 @@ pub fn proc_cvar_auto(
             let mut n = 0;
             if ex.clones[k][mid].non_validated_umis.is_some() {
                 n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        let _exact = String::new();
+        (String::new(), valsx)
+    } else if var == "notes" {
+        (ex.share[mid].vs_notesx.clone(), Vec::new())
+    } else if var == "nval" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+            }
+            valsx.push(format!("{}", n));
+        }
+
+        (String::new(), valsx)
+    } else if var == "nval_cell" {
+        let mut valsx = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = 0;
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
             }
             valsx.push(format!("{}", n));
         }
@@ -1128,6 +1128,45 @@ pub fn proc_cvar_auto(
         (refdata.name[rsi.vids[col]].clone(), Vec::new())
     } else if var == "v_start" {
         (format!("{}", ex.share[mid].v_start), Vec::new())
+    } else if var == "valumis" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = String::new();
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = format!(
+                    "{}",
+                    ex.clones[k][mid]
+                        .validated_umis
+                        .as_ref()
+                        .unwrap()
+                        .iter()
+                        .format(",")
+                );
+            }
+            vals.push(n.to_string());
+        }
+
+        (String::new(), vals)
+    } else if var == "valumis_cell" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            let mut n = String::new();
+            if ex.clones[k][mid].validated_umis.is_some() {
+                n = format!(
+                    "{}",
+                    ex.clones[k][mid]
+                        .validated_umis
+                        .as_ref()
+                        .unwrap()
+                        .iter()
+                        .format(",")
+                );
+            }
+            vals.push(n.to_string());
+        }
+
+        let _exact = String::new();
+        (String::new(), vals)
     } else if var == "var" {
         (stringme(&varmat[u][col]), Vec::new())
     } else if var == "vjlen" {
