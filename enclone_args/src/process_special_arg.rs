@@ -976,7 +976,8 @@ pub fn process_special_arg(
         metas.push(f);
     } else if arg.starts_with("METAX=") {
         let f = arg.after("METAX=");
-        metaxs.push(f.to_string());
+        let f = f.chars().filter(|c| !c.is_whitespace()).collect();
+        metaxs.push(f);
     } else if arg.starts_with("TCR=")
         || arg.starts_with("BCR=")
         || (!arg.is_empty() && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
