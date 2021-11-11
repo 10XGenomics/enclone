@@ -203,6 +203,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     assert!(exact.len() > 0);
                     assert!(cell.len() > 0);
                 }
+                if v.level == "cell" {
+                    assert!(cell.len() > 0);
+                }
 
                 // Proceed.
 

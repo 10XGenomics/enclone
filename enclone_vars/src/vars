@@ -1904,7 +1904,7 @@ name:     nival
 inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    cell-exact
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of invalidated UMIs
@@ -1920,13 +1920,12 @@ code:     let mut valsx = Vec::<String>::new();
               valsx.push(format!("{}", n));
           }
           cell: valsx
-          exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nnval
 inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    cell-exact
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of non-validated UMIs
@@ -1942,7 +1941,6 @@ code:     let mut valsx = Vec::<String>::new();
               valsx.push(format!("{}", n));
           }
           cell: valsx
-          exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
 inputs:   cvar_vdj
@@ -1961,7 +1959,7 @@ name:     nval
 inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    cell-exact
+level:    cell
 val:      nonnegative_integer
 doc:      TBD
 brief:    number of validated UMIs
@@ -1977,7 +1975,6 @@ code:     let mut valsx = Vec::<String>::new();
               valsx.push(format!("{}", n));
           }
           cell: valsx
-          exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
@@ -2474,7 +2471,7 @@ name:     valumis
 inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    cell-exact
+level:    cell
 val:      string
 doc:      TBD
 brief:    validated UMIs
@@ -2498,7 +2495,6 @@ code:     let mut vals = Vec::<String>::new();
               vals.push(n.to_string());
           }
           cell: vals
-          exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var
 inputs:   cvar_vdj
