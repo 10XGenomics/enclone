@@ -21,6 +21,7 @@ publish = false
 
 [dependencies]
 io_utils = "0.2"
+itertools = "0.10"
 pretty_trace = "0.5"
 string_utils = "0.1"
 vector_utils = "0.1"

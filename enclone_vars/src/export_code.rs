@@ -7,6 +7,7 @@
 
 use crate::var::parse_variables;
 use io_utils::*;
+use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::process::Command;
@@ -248,7 +249,6 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 var += "_cell";
                             }
                             fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
-                        // RESTRICTION 3: allow only one {} pair
                         } else if !var.after("{").contains("{") {
                             let begin = var.before("{");
                             let mut end = var.after("}").to_string();
@@ -289,6 +289,59 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 f,
                                 r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
                                 begin,
+                                end,
+                            );
+                        } else {
+                            let begin = var.before("{");
+                            let middle = var.between("}", "{");
+                            let mut end = var.rev_after("}").to_string();
+                            if pass == 2 {
+                                end += "_cell";
+                            }
+                            let low1 = var.after("{").before("..").force_usize();
+                            let high1 = var.after("{").between("..", "}");
+                            let low2 = var.rev_after("{").before("..").force_usize();
+                            let high2 = var.rev_after("{").between("..", "}");
+                            let mut conditions = Vec::<String>::new();
+                            conditions.push(format!(
+                                r###"var.between2("{}", "{}").parse::<usize>().is_ok()"###,
+                                begin, middle,
+                            ));
+                            conditions.push(format!(
+                                r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                                begin, middle, low1,
+                            ));
+                            if high1.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_usize() <= {}"###,
+                                    begin, middle, high1,
+                                ));
+                            }
+                            conditions.push(format!(
+                                r###"var.between2("{}", "{}").parse::<usize>().is_ok()"###,
+                                middle, end,
+                            ));
+                            conditions.push(format!(
+                                r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                                middle, end, low2,
+                            ));
+                            if high2.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_usize() <= {}"###,
+                                    middle, end, high2,
+                                ));
+                            }
+                            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+                            fwriteln!(
+                                f,
+                                r###"let arg1 = var.between2("{}", "{}").force_usize();"###,
+                                begin,
+                                middle,
+                            );
+                            fwriteln!(
+                                f,
+                                r###"let arg2 = var.between2("{}", "{}").force_usize();"###,
+                                middle,
                                 end,
                             );
                         }
