@@ -31,5 +31,5 @@ io_utils = "0.2"
 itertools = "0.10"
 rayon = "1"
 string_utils = "0.1"
-vdj_ann = { git = "https://github.com/nmmsv10x/rust-toolbox.git", rev = "f5890cac0b4bb44914cde2319e8f56405bb5d2f0" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox", rev = "96c18b809157014435a3700d950f2bb3e2b621bc" }
 vector_utils = "0.1"
