@@ -141,7 +141,7 @@ pub fn build_table_stuff(
 
     // Insert position rows.
 
-    *drows = insert_position_rows(rsi, show_aa, field_types, vars, row1);
+    *drows = insert_position_rows(ctl, rsi, show_aa, field_types, vars, row1);
     let mut drows2 = drows.clone();
     rows.append(&mut drows2);
 
@@ -168,7 +168,9 @@ pub fn build_table_stuff(
                 let mut n = show.len();
                 for k in 1..show.len() {
                     if field_types[cx][k] != field_types[cx][k - 1] {
-                        n += 1;
+                        if !ctl.gen_opt.nospaces {
+                            n += 1;
+                        }
                     }
                 }
                 let mut ch = vec![' '; n];
@@ -244,7 +246,9 @@ pub fn build_table_stuff(
                         let mut ch_start = 0;
                         for k in 0..show.len() {
                             if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
-                                ch_start += 1;
+                                if !ctl.gen_opt.nospaces {
+                                    ch_start += 1;
+                                }
                             }
                             if show[k] == cs1 {
                                 break;
@@ -289,13 +293,19 @@ pub fn build_table_stuff(
                         let mut t = fields[z].0.to_string();
                         t.make_ascii_uppercase();
                         let t = t.as_bytes();
+                        // The second form of this gets converted below.
+                        let c = if t[0] == b'C' || !ctl.gen_opt.nospaces {
+                            "═"
+                        } else {
+                            "┅"
+                        };
                         let mut s = String::new();
                         if q >= 4 {
                             let left = (q - 3) / 2;
                             let right = q - left - 4;
-                            s += &"═".repeat(left);
+                            s += &c.repeat(left);
                             s += strme(t);
-                            s += &"═".repeat(right);
+                            s += &c.repeat(right);
                         } else if q == 3 {
                             s += strme(&t[0..1]);
                             s += strme(&t[2..4]);
@@ -319,6 +329,37 @@ pub fn build_table_stuff(
                     s.push(c);
                 }
                 s = s.trim_end().to_string();
+
+                // Convert ┅ to ═ in different color.
+
+                if ctl.gen_opt.nospaces {
+                    let mut chars = Vec::<char>::new();
+                    for c in s.chars() {
+                        chars.push(c);
+                    }
+                    s.clear();
+                    for i in 0..chars.len() {
+                        if (i == 0 || (i > 0 && chars[i - 1] != '┅')) && chars[i] == '┅' {
+                            s += "[01m[38;5;198m";
+                            s.push('═');
+                        } else if chars[i] == '┅' {
+                            s.push('═');
+                            if i == chars.len() - 1 || (i < chars.len() - 1 && chars[i + 1] != '┅')
+                            {
+                                s += "[0m";
+                            }
+                        } else {
+                            s.push(chars[i]);
+                        }
+                    }
+                    s = s.replace("FWR1", "[01m[38;5;198mFWR1[0m");
+                    s = s.replace("FWR2", "[01m[38;5;198mFWR2[0m");
+                    s = s.replace("FWR3", "[01m[38;5;198mFWR3[0m");
+                    s = s.replace("FWR4", "[01m[38;5;198mFWR4[0m");
+                }
+
+                // Save.
+
                 row.push(s);
                 break;
             }

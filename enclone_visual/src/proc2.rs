@@ -137,6 +137,13 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         slf.h.input2_history.insert(hi as usize, len as u32);
         slf.h.input2_hist_uniq.push(slf.input2_value.clone());
     }
+    let len = slf.h.inputn_hist_uniq.len();
+    if len > 0 && slf.h.inputn_hist_uniq[len - 1] == slf.inputn_value {
+        slf.h.inputn_history.insert(hi as usize, (len - 1) as u32);
+    } else {
+        slf.h.inputn_history.insert(hi as usize, len as u32);
+        slf.h.inputn_hist_uniq.push(slf.inputn_value.clone());
+    }
     let len = slf.h.descrip_hist_uniq.len();
     if len > 0 && slf.h.descrip_hist_uniq[len - 1] == slf.descrip_value {
         slf.h.descrip_history.insert(hi as usize, (len - 1) as u32);
@@ -171,14 +178,7 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         "total time to run command = {:.1} seconds",
         elapsed(&slf.start_command.unwrap())
     );
-    let maxrss_slf;
-    unsafe {
-        let mut rusage: libc::rusage = std::mem::zeroed();
-        let retval = libc::getrusage(libc::RUSAGE_SELF, &mut rusage as *mut _);
-        assert_eq!(retval, 0);
-        maxrss_slf = rusage.ru_maxrss;
-    }
-    let peak_mem_mb = maxrss_slf as f64 / ((1024 * 1024) as f64);
+    let peak_mem_mb = peak_mem_usage_bytes() as f64 / ((1024 * 1024) as f64);
     xprintln!(
         "all time peak mem of this process is {:.1} MB\n",
         peak_mem_mb
@@ -271,11 +271,19 @@ pub fn do_share_button_pressed(slf: &mut EncloneVisual, check_val: bool) -> Comm
 
 pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.modified = true;
-    slf.input_value = slf.input1_value.clone();
-    if slf.input1_value.len() > 0 && slf.input2_value.len() > 0 {
-        slf.input_value += " ";
+    let mut values = Vec::<String>::new();
+    if slf.input1_value.len() > 0 {
+        values.push(slf.input1_value.clone());
     }
-    slf.input_value += &mut slf.input2_value.clone();
+    if slf.input2_value.len() > 0 {
+        values.push(slf.input2_value.clone());
+    }
+    for j in 0..slf.inputn_value.len() {
+        if slf.inputn_value[j].len() > 0 {
+            values.push(slf.inputn_value[j].clone());
+        }
+    }
+    slf.input_value = format!("{}", values.iter().format(" "));
     let mut group_spec = true;
     let mut group_ids = Vec::<usize>::new();
     let s = slf.input_value.split(',').collect::<Vec<&str>>();
@@ -315,7 +323,10 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
             let mut reply_text;
             let new = slf.translated_input_current();
             let args = new.split(' ').collect::<Vec<&str>>();
-            if slf.h.input1_history.is_empty() && slf.h.input2_history.is_empty() {
+            if slf.h.input1_history.is_empty()
+                && slf.h.input2_history.is_empty()
+                && slf.h.inputn_history.is_empty()
+            {
                 reply_text = "Group identifier can only be supplied if another \
                     command has already been run."
                     .to_string();
@@ -357,6 +368,10 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
                 .input2_history
                 .insert(hi as usize, slf.h.input2_hist_uniq.len() as u32);
             slf.h.input2_hist_uniq.push(slf.input2_value.clone());
+            slf.h
+                .inputn_history
+                .insert(hi as usize, slf.h.inputn_hist_uniq.len() as u32);
+            slf.h.inputn_hist_uniq.push(slf.inputn_value.clone());
             slf.h
                 .narrative_history
                 .insert(hi as usize, slf.h.narrative_hist_uniq.len() as u32);

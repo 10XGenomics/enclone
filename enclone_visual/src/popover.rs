@@ -1,37 +1,184 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use crate::gui_structures::ComputeState::*;
 use crate::*;
 use iced::Length::Units;
-use iced::{Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space, Text};
+use iced::{
+    Alignment, Button, Column, Container, Element, Image, Length, Row, Rule, Scrollable, Space,
+    Text, TextInput,
+};
+use itertools::izip;
 use messages::Message;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
+    let command_title = Text::new(&format!("Command")).size(30);
+
+    // Buttons.
+
+    let command_snapshot_button = Button::new(
+        &mut slf.command_snapshot_button,
+        Text::new("Snapshot").color(slf.command_snapshot_button_color),
+    )
+    .on_press(Message::CommandSnapshot);
+    let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss"))
+        .on_press(Message::CommandClose);
+
+    // Help text.
+
+    let help_text =
+        Text::new("The purpose of this page is to allow entry and display of a long command.");
+
+    // Top bar.
+
+    let top_bar = Row::new()
+        .push(command_title)
+        .push(Space::with_width(Length::Fill))
+        .push(command_snapshot_button)
+        .push(Space::with_width(Units(8)))
+        .push(command_close_button);
+
+    // Text input column.
+
+    let mut text_input_column = Column::new()
+        .spacing(8)
+        .width(iced::Length::Fill)
+        .push(
+            TextInput::new(
+                &mut slf.input1,
+                "",
+                &slf.input1_value,
+                Message::InputChanged1,
+            )
+            .padding(7)
+            .font(DEJAVU_BOLD)
+            .size(16),
+        )
+        .push(
+            TextInput::new(
+                &mut slf.input2,
+                "",
+                &slf.input2_value,
+                Message::InputChanged2,
+            )
+            .padding(7)
+            .font(DEJAVU_BOLD)
+            .size(16),
+        );
+    let n = slf.inputn.len();
+    for (i, y, z) in izip!(0..n, slf.inputn.iter_mut(), slf.inputn_value.iter_mut()) {
+        text_input_column = text_input_column.push(
+            TextInput::new(y, "", &z, move |x: String| Message::InputChangedN(x, i))
+                .padding(7)
+                .font(DEJAVU_BOLD)
+                .size(16),
+        );
+    }
+
+    // Buttons beside it.
+
+    let button = Button::new(
+        &mut slf.button,
+        Text::new(if slf.compute_state == WaitingForRequest {
+            "Submit"
+        } else {
+            "thinking"
+        }),
+    )
+    .padding(10)
+    .on_press(Message::SubmitButtonPressed(Ok(())));
+    let clear_button = Button::new(&mut slf.clear_button, Text::new("Clear"))
+        .padding(10)
+        .on_press(Message::ClearButtonPressed);
+
+    // Complete the display.
+
+    let mut content = Column::new().spacing(SPACING).padding(20).push(top_bar);
+    content = content.push(help_text);
+    content = content
+        .push(Rule::horizontal(10).style(style::RuleStyle2))
+        .push(
+            Row::new()
+                .spacing(10)
+                .align_items(Alignment::Center)
+                .push(text_input_column)
+                .push(button)
+                .push(clear_button),
+        );
+    Container::new(content)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let graphic_title = Text::new(&format!("Graphic")).size(30);
+
+    // Buttons.
+
     let tooltip_button = Button::new(
         &mut slf.tooltip_toggle_button,
         Text::new("Tooltip").color(slf.tooltip_toggle_button_color),
     )
     .on_press(Message::TooltipToggle);
+    let help_button = Button::new(
+        &mut slf.graphic_help_button,
+        Text::new(&slf.graphic_help_title),
+    )
+    .on_press(Message::GraphicHelp);
     let graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
     )
     .on_press(Message::GraphicSnapshot);
+    let png_button = Button::new(
+        &mut slf.graphic_png_button,
+        Text::new(&slf.graphic_png_title).color(slf.png_button_color),
+    )
+    .on_press(Message::GraphicPng);
     let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
         .on_press(Message::GraphicClose);
+
+    // Help text.
+
+    let help_text = Text::new(
+        "The purpose of this page is to allow the graphics object to \
+        occupy the entire window.\n\n\
+        \
+        The default behavior is to render the graphics from the SVG representation.  Sometimes \
+        converting to PNG first renders better.  To get to this, push the PNG button.  Note that \
+        tooltip text cannot be displayed in this mode.\n\n\
+        \
+        The Tooltip button may be used to move the tooltip box that is seen when hovering over \
+        a cell.  Each push of the button causes a rotation of the box location between the four \
+        corners.",
+    );
+
+    // Top bar.
+
     let top_bar = Row::new()
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
+        .push(help_button)
+        .push(Space::with_width(Units(8)))
         .push(tooltip_button)
         .push(Space::with_width(Units(8)))
         .push(graphic_snapshot_button)
         .push(Space::with_width(Units(8)))
+        .push(png_button)
+        .push(Space::with_width(Units(8)))
         .push(graphic_close_button);
+
+    // Complete the display.
+
     let svg_height = CURRENT_HEIGHT.load(SeqCst) as u16;
     let have_canvas = slf.canvas_view.state.geometry_value.is_some();
     let mut graphic_row = Row::new().spacing(10);
     if slf.svg_value.len() > 0 {
-        if have_canvas {
+        if have_canvas && slf.graphic_png_title != "SVG" {
             graphic_row = graphic_row
                 .push(
                     slf.canvas_view
@@ -45,10 +192,11 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             graphic_row = graphic_row.push(svg_as_png);
         }
     }
-    let content = Column::new()
-        .spacing(SPACING)
-        .padding(20)
-        .push(top_bar)
+    let mut content = Column::new().spacing(SPACING).padding(20).push(top_bar);
+    if slf.graphic_help_title == "Close help" {
+        content = content.push(help_text);
+    }
+    content = content
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(graphic_row);
     Container::new(content)
@@ -57,18 +205,29 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .into()
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
 
+    // Buttons.
+
+    let clonotypes_snapshot_button = Button::new(
+        &mut slf.clonotypes_snapshot_button,
+        Text::new("Snapshot").color(slf.clonotypes_snapshot_button_color),
+    )
+    .on_press(Message::ClonotypesSnapshot);
     let copy_button = Button::new(
         &mut slf.clonotypes_copy_button,
         Text::new("Copy text").color(slf.clonotypes_copy_button_color),
     )
     .on_press(Message::ClonotypesCopy);
-
     let clonotypes_close_button =
         Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
             .on_press(Message::ClonotypesClose);
+
+    // The rest.
+
     const CLONOTYPE_FONT_SIZE: u16 = 13;
     let font_width = CLONOTYPE_FONT_SIZE as f32 * DEJAVU_WIDTH_OVER_HEIGHT;
     let available = slf.width - (3 * SPACING + SCROLLBAR_WIDTH) as u32;
@@ -87,6 +246,8 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let top_bar = Row::new()
         .push(clonotypes_title)
         .push(Space::with_width(Length::Fill))
+        .push(clonotypes_snapshot_button)
+        .push(Space::with_width(Units(8)))
         .push(copy_button)
         .push(Space::with_width(Units(8)))
         .push(clonotypes_close_button);
@@ -112,6 +273,8 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Length::Fill)
         .into()
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let console_title = Text::new(&format!("Console")).size(30);
@@ -181,6 +344,8 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Length::Fill)
         .into()
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn cookbook(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let cookbook_title = Text::new(&format!("Cookbook")).size(30);

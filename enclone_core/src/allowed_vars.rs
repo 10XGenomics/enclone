@@ -45,7 +45,7 @@ pub const LVARS_ALLOWED: [&str; 36] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 91] = [
+pub const CVARS_ALLOWED: [&str; 92] = [
     "var",
     "u",
     "u_min",
@@ -111,6 +111,7 @@ pub const CVARS_ALLOWED: [&str; 91] = [
     "aa%",
     "dna%",
     "nval",
+    "nival",
     "nnval",
     "valumis",
     "nvalumis",

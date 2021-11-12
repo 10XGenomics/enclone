@@ -43,6 +43,9 @@ pub struct ColorByVariableValue {
 }
 
 #[derive(Clone)]
+pub struct ColorByDataset {}
+
+#[derive(Clone)]
 pub struct ColorBySample {
     pub by_meta: bool,
     pub specification: HashMap<String, String>,
@@ -58,6 +61,7 @@ pub enum CellColor {
     ByVariableValue(ColorByVariableValue),
     BySample(ColorBySample),
     ByBarcodeSpecification(ColorByBarcodeSpecification),
+    ByDataset(ColorByDataset),
 }
 
 impl Default for CellColor {

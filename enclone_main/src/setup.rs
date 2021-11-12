@@ -119,6 +119,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     } else if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
+            format!("{}/enclone/datasets_me", home),
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];
@@ -321,6 +322,7 @@ pub fn setup(
     ctl.pretty = true;
     let mut nopretty = false;
     ctl.gen_opt.h5 = true;
+    let mut visual = false;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN")? {
             ctl.pretty = false;
@@ -338,6 +340,9 @@ pub fn setup(
         if is_simple_arg(&args[i], "NH5")? {
             ctl.gen_opt.h5 = false;
         }
+        if is_simple_arg(&args[i], "VISUAL")? {
+            visual = true;
+        }
     }
 
     // Turn on pretty trace.
@@ -349,6 +354,9 @@ pub fn setup(
         let mut ctrlc = false;
         for i in 1..args.len() {
             if is_simple_arg(&args[i], "CTRLC")? {
+                if visual {
+                    return Err(format!("Sorry CTRLC can't be used in visual mode."));
+                }
                 ctrlc = true;
             }
         }

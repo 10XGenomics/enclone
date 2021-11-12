@@ -14,7 +14,7 @@ use enclone_core::parse_bsv;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
 use enclone_stuff::start::main_enclone_start;
-use enclone_version::*;
+// use enclone_version::*;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use io_utils::*;
@@ -612,23 +612,53 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    eprintln!("I am process {}.", std::process::id());
-    eprintln!("enclone version = {}", env!("CARGO_PKG_VERSION"));
-    let mut version = current_version_string();
+    // Some some info.
+
     let current_dir = std::env::current_dir()?;
     let current_dir = current_dir.display();
     let current_executable = std::env::current_exe()?;
     let current_executable = current_executable.display();
-    println!("current dir = {}", current_dir);
-    println!("current executable = {}", current_executable);
+
+    // Get version.
+    //
+    // This is what we had before.  It is confusing and unsound:
+    // 1. current_version_string() can fail when it invokes the git command
+    // 2. it seems like we set version, and then sometimes set version to the same thing.
+    //
+    // Therefore, this code is commented out.  But perhaps something in it needs to be salvaged.
+
+    /*
+    let mut version = current_version_string();
     if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
         version = current_version_string();
     }
-    eprintln!("version string = {}", version);
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    eprintln!("Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    */
+
+    // Get version.
+
+    let version = env!("CARGO_PKG_VERSION");
+
+    // Announce.
+
+    let mut emsg = format!("I am process {}.\n", std::process::id());
+    emsg += &mut format!("enclone version = {}\n", env!("CARGO_PKG_VERSION"));
+    emsg += &mut format!("version string = {}\n", version);
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    emsg += &mut format!(
+        "Welcome!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    );
+    eprint!("{}", emsg);
+
+    println!("current dir = {}", current_dir);
+    println!("current executable = {}", current_executable);
     Server::builder()
         .add_service(AnalyzerServer::new(analyzer))
         .serve_with_incoming(TcpListenerStream::new(listener))

@@ -2,6 +2,15 @@
 
 # Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html.
 
+# Note the following special workflow if you are modifying things in enclone_vars:
+#
+# cargo b --bin export_code
+# export_code
+# cargo b
+#
+# This is needed to circumvent broken compilation of auto-generated files, that could result
+# if you make a mistake.
+
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # Build script for enclone.  The only thing missing from this is to run
@@ -28,6 +37,10 @@ end
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # import and update enclone-data
+#
+# The procedure to update enclone-data is to first make changes to that repo, then change the
+# enclone file stamps/data_version to the new version, and then run this script to do the actual
+# update.
 
 set begin = `date +%s`
 if ( !(-d enclone-data) ) then

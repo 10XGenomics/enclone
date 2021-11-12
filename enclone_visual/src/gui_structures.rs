@@ -81,8 +81,10 @@ pub struct EncloneVisual {
     pub clonotypes_scroll: scrollable::State,
     pub input1: text_input::State,
     pub input2: text_input::State,
+    pub inputn: Vec<text_input::State>,
     pub input1_value: String,
     pub input2_value: String,
+    pub inputn_value: Vec<String>,
     pub narrative_value: String,
     pub input_value: String,
     pub translated_input_value: String,
@@ -99,22 +101,27 @@ pub struct EncloneVisual {
     pub copy_image_button_color: Color,
     pub snapshot_button_color: Color,
     pub graphic_snapshot_button_color: Color,
+    pub command_snapshot_button_color: Color,
+    pub clonotypes_snapshot_button_color: Color,
     pub summary_snapshot_button_color: Color,
     pub sanity_button_color: Color,
     pub clonotypes_copy_button_color: Color,
     pub tooltip_toggle_button_color: Color,
     pub descrips_copy_button_color: Color,
+    pub png_button_color: Color,
     pub canvas_view: CanvasView,
     pub cookbook: HashMap<String, String>,
     pub window_id: usize,
     pub start_command: Option<Instant>,
     pub help_mode: bool,
+    pub command_mode: bool,
     pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
     pub archive_mode: bool,
     pub clonotypes_mode: bool,
     pub graphic_mode: bool,
+    pub graphic_help_mode: bool,
     pub save: bool,
     pub save_in_progress: bool,
     pub save_on_exit: bool,
@@ -124,7 +131,10 @@ pub struct EncloneVisual {
     pub metric_selected: Vec<bool>,
     pub metrics_condensed: bool,
     pub snapshot_start: Option<Instant>,
+    pub summary_png_start: Option<Instant>,
     pub graphic_snapshot_start: Option<Instant>,
+    pub command_snapshot_start: Option<Instant>,
+    pub clonotypes_snapshot_start: Option<Instant>,
     pub summary_snapshot_start: Option<Instant>,
     pub sanity_check_start: Option<Instant>,
     pub alluvial_tables_for_spreadsheet: String,
@@ -132,6 +142,8 @@ pub struct EncloneVisual {
     pub alluvial_reads_tables_for_spreadsheet: String,
     pub alluvial_reads_tables_copy_button_color: Color,
     pub descrips_for_spreadsheet: String,
+    pub graphic_png_title: String,
+    pub graphic_help_title: String,
     //
     // current tables: suboptimal, as it would be better to keep some sort of vector of compressed
     // strings (allowing for compression to extend across the vector); see also
@@ -166,6 +178,7 @@ pub struct EncloneVisual {
     pub save_on_exit_button: button::State,
     pub archive_open_button: button::State,
     pub archive_close_button: button::State,
+    pub archive_save_close_button: button::State,
     pub archive_refresh_button: button::State,
     pub open_archive_doc_button: button::State,
     pub close_archive_doc_button: button::State,
@@ -186,6 +199,8 @@ pub struct EncloneVisual {
     pub copy_selected_metrics_button_color: Color,
     pub snapshot_button: button::State,
     pub graphic_snapshot_button: button::State,
+    pub command_snapshot_button: button::State,
+    pub clonotypes_snapshot_button: button::State,
     pub recompute_button: button::State,
     pub sanity_button: button::State,
     pub clonotypes_open_button: button::State,
@@ -197,6 +212,10 @@ pub struct EncloneVisual {
     pub alluvial_tables_copy_button: button::State,
     pub alluvial_reads_tables_copy_button: button::State,
     pub descrips_copy_button: button::State,
+    pub graphic_png_button: button::State,
+    pub graphic_help_button: button::State,
+    pub command_button: button::State,
+    pub command_close_button: button::State,
     //
     // more
     //
@@ -277,6 +296,9 @@ impl EncloneVisual {
     pub fn input2_current(&self) -> String {
         return self.h.input2_hist_uniq[self.h.input2_history[self.hi()] as usize].clone();
     }
+    pub fn inputn_current(&self) -> Vec<String> {
+        return self.h.inputn_hist_uniq[self.h.inputn_history[self.hi()] as usize].clone();
+    }
     pub fn narrative_current(&self) -> String {
         return self.h.narrative_hist_uniq[self.h.narrative_history[self.hi()] as usize].clone();
     }
@@ -308,6 +330,7 @@ impl EncloneVisual {
         assert_eq!(n, self.h.summary_history.len());
         assert_eq!(n, self.h.input1_history.len());
         assert_eq!(n, self.h.input2_history.len());
+        assert_eq!(n, self.h.inputn_history.len());
         assert_eq!(n, self.h.narrative_history.len());
         assert_eq!(n, self.h.translated_input_history.len());
         assert_eq!(n, self.h.displayed_tables_history.len());
@@ -320,6 +343,7 @@ impl EncloneVisual {
         if self.h.history_index == 0 {
             self.input1_value.clear();
             self.input2_value.clear();
+            self.inputn_value.clear();
             self.svg_value.clear();
             self.png_value.clear();
             self.submit_button_text.clear();
@@ -341,6 +365,7 @@ impl EncloneVisual {
             self.descrip_value = self.descrip_current();
             self.input1_value = self.input1_current();
             self.input2_value = self.input2_current();
+            self.inputn_value = self.inputn_current();
             self.translated_input_value = self.translated_input_current();
             if self.table_comp_value.len() > 0 {
                 let mut gunzipped = Vec::<u8>::new();
@@ -352,7 +377,8 @@ impl EncloneVisual {
             }
         }
     }
-    pub fn save_as(&mut self, filename: &str) {
+    pub fn save_as(&mut self, filename: &str, narrative: &str) {
+        self.h.narrative = narrative.to_string();
         let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), filename);
         let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
@@ -385,13 +411,13 @@ impl EncloneVisual {
             .insert(0, button::State::default());
         self.archive_share_requested.insert(0, false);
         self.archive_origin.insert(0, String::new());
-        self.archive_narrative.insert(0, String::new());
+        self.archive_narrative.insert(0, narrative.to_string());
         self.orig_archive_name.insert(0, String::new());
     }
-    pub fn save(&mut self) {
+    pub fn save(&mut self, narrative: &str) {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
-        self.save_as(&now);
+        self.save_as(&now, narrative);
     }
 }

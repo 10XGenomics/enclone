@@ -1,6 +1,6 @@
 [package]
 name = "enclone_tools"
-version = "0.5.114"
+version = "0.5.129"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
@@ -25,10 +25,12 @@ attohttpc = { version = "0.17", default-features = false, features = ["compress"
 debruijn = "0.3"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
+equiv = "0.1"
 evalexpr = "6"
+expr_tools = "0.1"
 flate2 = "1"
 fs_extra = "1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "ee3e4fa681abc439d64ce5720fba0c8c819eebdb", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
 io_utils = "0.2"
 itertools = "0.10"
 lz4 = "1"

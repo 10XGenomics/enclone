@@ -4,7 +4,7 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::proc_cvar1::proc_cvar1;
-use crate::proc_cvar2::proc_cvar2;
+use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
 use amino::{aa_seq, codon_to_aa};
@@ -12,11 +12,15 @@ use enclone_core::allowed_vars::LVARS_ALLOWED;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::{median_f64, rounded_median};
 use enclone_proto::types::DonorReferenceItem;
+use enclone_vars::decode_arith;
+use expr_tools::*;
 use itertools::Itertools;
 use ndarray::s;
+use stats_utils::percent_ratio;
 use std::collections::{HashMap, HashSet};
 use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::refx::RefData;
+use vector_utils::next_diff12_4;
 use vector_utils::{bin_member, bin_position, unique_sort};
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
@@ -38,6 +42,7 @@ pub fn row_fill(
     fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
+    ref_diff_pos: &Vec<Vec<Vec<usize>>>,
     field_types: &Vec<Vec<u8>>,
     bads: &mut Vec<bool>,
     gex_low: &mut usize,
@@ -53,6 +58,7 @@ pub fn row_fill(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<String>)>,
+    stats_pass1: &Vec<Vec<(String, Vec<String>)>>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
@@ -63,6 +69,7 @@ pub fn row_fill(
     all_vars: &Vec<String>,
     need_gex: bool,
     fate: &Vec<HashMap<String, String>>,
+    cdr3_con: &Vec<Vec<u8>>,
 ) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
 
@@ -145,8 +152,53 @@ pub fn row_fill(
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
+
+    // It may not make any sense at all for this code to be here.
+
+    if ctl.clono_filt_opt_def.whitef {
+        let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = &ex.clones[l][0].barcode;
+            let mut numi = 0;
+            for j in 0..ex.clones[l].len() {
+                numi += ex.clones[l][j].umi_count;
+            }
+            bch[0].push((li, bc[0..8].to_string(), numi, l));
+            bch[1].push((li, bc[8..16].to_string(), numi, l));
+        }
+        let mut junk = 0;
+        let mut bad = vec![false; ex.clones.len()];
+        for l in 0..2 {
+            bch[l].sort();
+            let mut m = 0;
+            while m < bch[l].len() {
+                let n = next_diff12_4(&bch[l], m as i32) as usize;
+                for u1 in m..n {
+                    for u2 in m..n {
+                        if bch[l][u1].2 >= 10 * bch[l][u2].2 {
+                            bad[bch[l][u2].3] = true;
+                        }
+                    }
+                }
+                m = n;
+            }
+        }
+        for u in 0..bad.len() {
+            if bad[u] {
+                junk += 1;
+            }
+        }
+        let junk_rate = percent_ratio(junk, ex.clones.len());
+        // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if junk_rate == 0.0 {
+            bads[u] = true;
+        }
+    }
+
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
+
     let have_entropy = lvarsh.contains(&"entropy".to_string());
     // Isn't this duplicating code with the next section?
     if have_entropy {
@@ -334,8 +386,108 @@ pub fn row_fill(
         }
     }
     unique_sort(&mut alt_bcs);
-    for i in 0..all_lvars.len() {
+
+    macro_rules! speak {
+        ($u:expr, $var:expr, $val:expr) => {
+            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
+                let mut v = $var.to_string();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
+                if ctl.parseable_opt.pcols.is_empty()
+                    || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
+                    || bin_member(&extra_args, &v)
+                {
+                    out_data[$u].insert(v, $val);
+                }
+            }
+        };
+    }
+
+    let verbose = ctl.gen_opt.row_fill_verbose;
+    macro_rules! lvar_stats {
+        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            stats.push(($var.to_string(), $stats.clone()));
+        };
+    }
+
+    'lvar_loop: for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
+
+        // Process VAR_DEF variables.
+
+        for j in 0..ctl.gen_opt.var_def.len() {
+            if *x == ctl.gen_opt.var_def[j].0 && i < lvars.len() {
+                if pass == 2 {
+                    let comp = &ctl.gen_opt.var_def[j].2;
+                    let vars = vars_of_node(&comp); // computing this here might be inefficient
+                    let mut out_vals = Vec::<String>::new();
+                    for k in 0..ex.clones.len() {
+                        let mut in_vals = Vec::<String>::new();
+                        for v in 0..vars.len() {
+                            let var = decode_arith(&vars[v]);
+                            let mut found = false;
+                            for m in 0..stats.len() {
+                                if stats[m].0 == var {
+                                    in_vals.push(stats[m].1[k].clone());
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if !found {
+                                for m in 0..stats_pass1[u].len() {
+                                    if stats_pass1[u][m].0 == var {
+                                        in_vals.push(stats_pass1[u][m].1[k].clone());
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            assert!(found);
+                        }
+                        let c = define_evalexpr_context(&vars, &in_vals);
+                        let res = comp.eval_with_context(&c);
+                        // if res.is_err() {
+                        //     eprintln!("\nInternal error, failed to compute {}.\n", x);
+                        //     std::process::exit(1);
+                        // }
+                        let val = res.unwrap();
+                        let val = val.as_number().unwrap();
+                        out_vals.push(format!("{:.1}", val));
+                    }
+                    let mut median = String::new();
+                    let mut out_valsf = Vec::<f64>::new();
+                    let mut all_float = true;
+                    for y in out_vals.iter() {
+                        if !y.parse::<f64>().is_ok() {
+                            all_float = false;
+                        } else {
+                            out_valsf.push(y.force_f64());
+                        }
+                    }
+                    if all_float {
+                        out_valsf.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                        median = format!("{:.1}", median_f64(&out_valsf));
+                    }
+                    lvar_stats![i, x, median.clone(), out_vals];
+                } else if i < lvars.len() {
+                    row.push(String::new());
+                }
+                continue 'lvar_loop;
+            }
+        }
+
+        // Process other lvars.
+
         if !proc_lvar1(
             i,
             x,
@@ -463,20 +615,6 @@ pub fn row_fill(
     // Traverse the chains.
 
     for col in 0..cols {
-        // Set up chain variable macro.  This is the mechanism for generating
-        // both human-readable and parseable output for chain variables.
-
-        macro_rules! cvar_stats1 {
-            ($i: expr, $var:expr, $val:expr) => {
-                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                    cx[col][$i] = $val.clone();
-                }
-                speakc!(u, col, $var, $val);
-                let varc = format!("{}{}", $var, col + 1);
-                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-            };
-        }
-
         // Process variables that need to be computed even if the chain entry is empty.
         // NO: WHY?  WHY WOULD WE WANT TO PRINT THESE?  BEHAVIOR CHANGED.  DON'T KNOW WHY
         // WE EVER DID THIS>
@@ -528,32 +666,6 @@ pub fn row_fill(
             if !col_var && ctl.parseable_opt.pout.is_empty() && extra_args.is_empty() {
                 continue;
             }
-
-            // Process some variables.
-
-            if *var == "v_name" {
-                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
-            } else if *var == "v_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
-            } else if *var == "d_name" {
-                let dname = if rsi.dids[col].is_some() {
-                    refdata.name[rsi.dids[col].unwrap()].clone()
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, dname];
-            } else if *var == "d_id" {
-                let did = if rsi.dids[col].is_some() {
-                    format!("{}", refdata.id[rsi.dids[col].unwrap()])
-                } else {
-                    String::new()
-                };
-                cvar_stats1![j, var, did];
-            } else if *var == "j_name" {
-                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
-            } else if *var == "j_id" {
-                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
-            }
         }
 
         // Keep going.
@@ -561,27 +673,6 @@ pub fn row_fill(
         let mid = mid.unwrap();
         let ex = &exact_clonotypes[clonotype_id];
         let seq_amino = rsi.seqss_amino[col][u].clone();
-
-        // Get UMI and read stats.
-
-        let mut numis = Vec::<usize>::new();
-        let mut nreads = Vec::<usize>::new();
-        for j in 0..ex.clones.len() {
-            numis.push(ex.clones[j][mid].umi_count);
-            nreads.push(ex.clones[j][mid].read_count);
-        }
-        numis.sort_unstable();
-        let median_numis = rounded_median(&numis);
-        let utot: usize = numis.iter().sum();
-        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
-        let u_min = *numis.iter().min().unwrap();
-        let u_max = *numis.iter().max().unwrap();
-        nreads.sort_unstable();
-        let rtot: usize = nreads.iter().sum();
-        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
-        let r_min = *nreads.iter().min().unwrap();
-        let r_max = *nreads.iter().max().unwrap();
-        let median_nreads = rounded_median(&nreads);
 
         // Speak some other column entries.
 
@@ -674,43 +765,28 @@ pub fn row_fill(
 
             // Compute.
 
-            if !proc_cvar1(
-                var,
+            if !proc_cvar_auto(
                 jj,
-                col,
-                mid,
                 pass,
-                u,
+                var,
                 ex,
-                ctl,
                 exacts,
                 exact_clonotypes,
+                mid,
+                col,
+                u,
+                rsi,
                 refdata,
+                dref,
+                ctl,
+                extra_args,
+                &pcols_sort,
+                cx,
                 varmat,
                 out_data,
-                rsi,
-                dref,
-                peer_groups,
-                show_aa,
-                field_types,
-                col_var,
-                &pcols_sort,
-                bads,
-                cx,
-                u_min,
-                u_max,
-                u_mean,
-                median_numis,
-                utot,
-                median_nreads,
-                r_min,
-                r_max,
-                r_mean,
-                rtot,
-                extra_args,
                 stats,
             )? {
-                let _ = proc_cvar2(
+                proc_cvar1(
                     var,
                     jj,
                     col,
@@ -721,31 +797,19 @@ pub fn row_fill(
                     ctl,
                     exacts,
                     exact_clonotypes,
-                    refdata,
-                    varmat,
                     out_data,
                     rsi,
-                    dref,
                     peer_groups,
                     show_aa,
+                    ref_diff_pos,
                     field_types,
                     col_var,
                     &pcols_sort,
-                    bads,
                     cx,
-                    u_min,
-                    u_max,
-                    u_mean,
-                    median_numis,
-                    utot,
-                    median_nreads,
-                    r_min,
-                    r_max,
-                    r_mean,
-                    rtot,
                     extra_args,
                     stats,
-                );
+                    cdr3_con,
+                )?;
             }
         }
     }

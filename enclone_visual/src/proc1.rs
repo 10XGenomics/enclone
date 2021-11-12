@@ -9,7 +9,59 @@ use io_utils::*;
 use std::time::Duration;
 use vector_utils::*;
 
-pub fn do_archive_close(slf: &mut EncloneVisual) -> Command<Message> {
+pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message> {
+    let mut index = None;
+    for i in 0..slf.restore_requested.len() {
+        if slf.restore_requested[i] {
+            index = Some(i);
+        }
+    }
+    if index.is_some() {
+        let mut index = index.unwrap();
+        if save {
+            slf.save("(saved upon restore)");
+            index += 1;
+        }
+        let filename = format!(
+            "{}/{}",
+            slf.archive_dir.as_ref().unwrap(),
+            slf.archive_list[index]
+        );
+        let res = read_enclone_visual_history(&filename);
+        if res.is_ok() {
+            slf.h = res.unwrap();
+            // Ignore history index and instead rewind.
+            if slf.h.history_index > 1 {
+                slf.h.history_index = 1;
+            }
+            slf.update_to_current();
+        } else {
+            slf.restore_msg[index] = format!(
+                "Oh dear, restoration of the file {} \
+                failed.",
+                filename
+            );
+        }
+    }
+    let mut index = None;
+    for i in 0..slf.restore_cookbook_requested.len() {
+        if slf.restore_cookbook_requested[i] {
+            index = Some(i);
+        }
+    }
+    if index.is_some() {
+        let index = index.unwrap();
+        if save {
+            slf.save("(saved upon restore)");
+        }
+        let res = EncloneVisualHistory::restore_from_bytes(&slf.cookbooks[index]);
+        slf.h = res.unwrap();
+        // Ignore history index and instead rewind.
+        if slf.h.history_index > 1 {
+            slf.h.history_index = 1;
+        }
+        slf.update_to_current();
+    }
     for i in 0..slf.archive_name_value.len() {
         slf.archive_name_value[i] = slf.orig_archive_name[i].clone();
     }
@@ -124,6 +176,7 @@ pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
     slf.h.summary_history.remove(h as usize);
     slf.h.input1_history.remove(h as usize);
     slf.h.input2_history.remove(h as usize);
+    slf.h.inputn_history.remove(h as usize);
     slf.h.narrative_history.remove(h as usize);
     slf.h.translated_input_history.remove(h as usize);
     slf.h.displayed_tables_history.remove(h as usize);
@@ -135,6 +188,7 @@ pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
         slf.h.history_index -= 1;
         slf.input1_value.clear();
         slf.input2_value.clear();
+        slf.inputn_value.clear();
         slf.svg_value.clear();
         slf.png_value.clear();
         slf.submit_button_text.clear();
@@ -292,6 +346,43 @@ pub fn do_archive_refresh_complete(slf: &mut EncloneVisual) -> Command<Message> 
         slf.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
         slf.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
     }
+    if !TEST_MODE.load(SeqCst) {
+        Command::none()
+    } else {
+        Command::perform(noop1(), Message::Capture)
+    }
+}
+
+pub fn do_archive_open(slf: &mut EncloneVisual) -> Command<Message> {
+    slf.archive_mode = true;
+    update_shares(slf);
+    let n = slf.archive_name.len();
+    for i in 0..n {
+        slf.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+        slf.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
+        // This is a dorky way of causing loading of command lists, etc. from disk
+        // occurs just once per session, and only if the archive button is pushed.
+        if slf.archived_command_list[i].is_none() {
+            let x = &slf.archive_list[i];
+            let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), x);
+            let res = read_metadata(&path);
+            if res.is_err() {
+                panic!(
+                    "Unable to read the history file at\n{}\n\
+                    This could either be a bug in enclone or it could be that \
+                    the file is corrupted.\n",
+                    path,
+                );
+            }
+            let (command_list, name, origin, narrative) = res.unwrap();
+            slf.archived_command_list[i] = Some(command_list);
+            slf.archive_name_value[i] = name;
+            slf.archive_origin[i] = origin;
+            slf.archive_narrative[i] = narrative;
+        }
+    }
+    slf.orig_archive_name = slf.archive_name_value.clone();
+    slf.h.orig_name_value = slf.h.name_value.clone();
     if !TEST_MODE.load(SeqCst) {
         Command::none()
     } else {

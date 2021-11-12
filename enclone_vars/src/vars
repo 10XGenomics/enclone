@@ -17,11 +17,17 @@
 #           INFO       user-defined variable from INFO
 #           NAME       name, see n_<name> at enclone help lvars
 #           REG        regular expression.
+#           VARDEF     user-defined variable from VAR_DEF
 #
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
+#           refdata
 #           fm: gex_info.feature_metrics = feature values by barcode
+#           col
+#           exacts
+#           exact_clonotypes
+#           rsi
 #
 # limits:   limitations on availability of the variable
 #
@@ -44,6 +50,9 @@
 # notes:    things to clarify
 #
 # code:     code for computing the variable value
+#           There are one or two special lines at the end with form like
+#           exact: <value>
+#           where exact can be another keyword.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     BC
@@ -256,8 +265,21 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     aa%
+name:     VARDEF
 inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    user-defined variable from VAR_DEF
+page:     enclone help input
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     aa%
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -267,7 +289,38 @@ brief:    amino acid identity with donor reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let xm = &ex.share[mid];
+          let mut diffs = 0;
+          let mut denom = 0;
+          let aa_seq = &xm.aa_mod_indel;
+          let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+          if xm.v_ref_id_donor_alt_id.is_some() {
+              vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+          }
+          let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+          let z = 3 * aa_seq.len() + 1;
+          for p in 0..aa_seq.len() {
+              if aa_seq[p] == b'-' {
+                  diffs += 1;
+                  denom += 1;
+                  continue;
+              }
+              if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim {
+                  denom += 1;
+                  if aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3]) {
+                      diffs += 1;
+                  }
+              }
+              if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3 {
+                  denom += 1;
+                  if aa_seq[p]
+                      != codon_to_aa(&jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3])
+                  {
+                      diffs += 1;
+                  }
+              }
+          }
+          exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?
@@ -297,7 +350,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdiff
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -307,9 +360,39 @@ brief:    differences of const region with universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let cstart = ex.share[mid].j_stop;
+          let clen = ex.share[mid].full_seq.len() - cstart;
+          let cid = ex.share[mid].c_ref_id;
+          let mut cdiff = String::new();
+          let mut ndiffs = 0;
+          if cid.is_some() {
+              let r = &refdata.refs[cid.unwrap()];
+              let mut extra = 0;
+              if clen > r.len() {
+                  extra = clen - r.len();
+              }
+              for i in 0..min(clen, r.len()) {
+                  let tb = ex.share[mid].full_seq[cstart + i];
+                  let rb = r.to_ascii_vec()[i];
+                  if tb != rb {
+                      ndiffs += 1;
+                      if ndiffs <= 5 {
+                          cdiff += &format!("{}{}", i, tb as char);
+                      }
+                  }
+              }
+              if ndiffs > 5 {
+                  cdiff += "...";
+              }
+              if extra > 0 {
+                  cdiff += &format!("+{}", extra);
+              }
+          } else if clen > 0 {
+              cdiff = format!("+{}", clen);
+          }
+          exact: cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr*_aa_{0,...}_{0,...}_ext
+name:     cdr*_aa_{0..}_{0..}_ext
 inputs:   ?
 limits:
 class:    cvar
@@ -323,7 +406,7 @@ notes:    Check if args are really nonnegative integers.
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conp
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -333,10 +416,10 @@ brief:    CDR3 amino acid consensus, symbols at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: cdr3_aa_con("p", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conx
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -346,10 +429,10 @@ brief:    CDR3 amino acid clonotype consensus, Xs at variants
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: cdr3_aa_con("x", col, exacts, exact_clonotypes, rsi)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_start
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -359,36 +442,10 @@ brief:    nucleotide start of CDR3 sequence on full sequence
 page:     enclone help parseable
 avail:    public
 notes:    Check if type is really positive integer.
-code:
+code:     exact: ex.share[mid].cdr3_start.to_string()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa
-inputs:   ex, mid
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* amino acid sequence
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_north
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    North version of CDR* amino acid sequence
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_ref
-inputs:   ?
+name:     cdr{1..2}_aa_ref
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -398,9 +455,142 @@ brief:    CDR* amino acid sequence for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          } else {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_aa_{0,...}_{0,...}_ext
+name:     cdr{1..2}_dna_ref
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    CDR* nucleotide sequence for universal reference
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          } else {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          }
+          exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_cdr1(&x, 0, 0);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else if arg1 == 2 {
+              c = get_cdr2(&x, 0, 0);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else {
+              y = x.cdr3_aa.clone();
+          }
+          exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa_north
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    North version of CDR* amino acid sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              let (mut left, mut right) = (0, 0);
+              if x.left {
+                  left = 3;
+                  right = 3;
+              }
+              c = get_cdr1(&x, left, right);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else if arg1 == 2 {
+              let (left, right);
+              if ex.share[mid].left {
+                  left = 2;
+                  right = 3;
+              } else {
+                  left = 1;
+                  right = 0;
+              }
+              c = get_cdr2(&x, left, right);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          } else {
+              c = get_cdr3(&x, -1, -1);
+              if c.is_some() {
+                  y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+              }
+          }
+          exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa_{0..}_{0..}_ext
 inputs:   ?
 limits:
 class:    cvar
@@ -413,8 +603,8 @@ avail:    public
 notes:    Do extension lengths start at zero?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_dna
-inputs:   ?
+name:     cdr{1..3}_dna
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -424,23 +614,23 @@ brief:    CDR* nucleotide sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_cdr1(&x, 0, 0);
+          } else if arg1 == 2 {
+              c = get_cdr2(&x, 0, 0);
+          } else {
+              c = Some(x.cdr3_dna.clone());
+          }
+          if c.is_some() {
+              y = c.unwrap();
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_dna_ref
-inputs:   ?
-limits:
-class:    cvar
-level:    clono
-val:      string
-doc:      TBD
-brief:    CDR* nucleotide sequence for universal reference
-page:     enclone help cvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1,2,3}_len
-inputs:   ?
+name:     cdr{1..3}_len
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -450,10 +640,56 @@ brief:    length of CDR* amino acid sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_cdr1(&x, 0, 0);
+          } else if arg1 == 2 {
+              c = get_cdr2(&x, 0, 0);
+          } else {
+              c = Some(x.cdr3_dna.clone());
+          }
+          if c.is_some() {
+              y = format!("{}", c.unwrap().len() / 3);
+          }
+          exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cigar
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CIGAR string defining edit of the V..J contig sequence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+          let mut dref = Vec::<u8>::new();
+          if rsi.dids[col].is_some() {
+              dref = refdata.refs[rsi.dids[col].unwrap()].to_ascii_vec();
+          }
+          let d2ref = Vec::<u8>::new();
+          let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+          let td = &ex.share[mid];
+          let tig = &td.seq;
+          let ops = align_to_vdj_ref(
+              tig,
+              &vref,
+              &dref,
+              &d2ref,
+              &jref,
+              "", // drefname
+              ex.share[mid].left,
+              ctl,
+          )
+          .0;
+          exact: cigar(&ops, 0, tig.len(), tig.len())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clen
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -463,7 +699,7 @@ brief:    length of observed constant region
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_id
 inputs:   ?
@@ -486,13 +722,13 @@ level:    clono
 val:      positive_integer
 doc:      TBD
 brief:    number of cells in the clonotype
-page:     enclone hep parseable
+page:     enclone help parseable
 avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -502,10 +738,11 @@ brief:    CDR3 complexity number
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          exact: format!("{}", comp)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -515,10 +752,20 @@ brief:    constant region name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut constx = Vec::<String>::new();
+          let cid = ex.share[mid].c_ref_id;
+          if cid.is_some() {
+              constx.push(refdata.name[cid.unwrap()].clone());
+          } else {
+              constx.push("?".to_string());
+          }
+          unique_sort(&mut constx);
+          // This is overcomplicated because there is now at most one
+          // const entry per exact subclonotype.
+          exact: format!("{}", constx.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     const_id
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -528,7 +775,11 @@ brief:    numerical identifier of constant region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut const_id = String::new();
+          if ex.share[mid].c_ref_id.is_some() {
+              const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
+          }
+          exact: const_id
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_REG
 inputs:   ?
@@ -570,7 +821,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -580,10 +831,30 @@ brief:    optimal D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut opt_name = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut opt = Vec::new();
+              if !ds.is_empty() {
+                  opt = ds[0].clone();
+              }
+              if opt.is_empty() {
+                  opt_name = "none".to_string();
+              } else {
+                  for i in 0..opt.len() {
+                      if i > 0 {
+                          opt_name += ":";
+                      }
+                      opt_name += &refdata.name[opt[i]];
+                  }
+              }
+          }
+          exact: opt_name
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_score
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -593,10 +864,21 @@ brief:    score of optimal D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut score = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              score = format!("{:.1}", delta)
+          }
+          exact: score
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -606,10 +888,30 @@ brief:    second best D segment name
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut opt2_name = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut opt2 = Vec::new();
+              if ds.len() > 1 {
+                  opt2 = ds[1].clone();
+              }
+              if opt2.is_empty() {
+                  opt2_name = "none".to_string();
+              } else {
+                  for i in 0..opt2.len() {
+                      if i > 0 {
+                          opt2_name += ":";
+                      }
+                      opt2_name += &refdata.name[opt2[i]];
+                  }
+              }
+          }
+          exact: opt2_name
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d2_score
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -619,10 +921,21 @@ brief:    score of second best D segment
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut scorex = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut score = 0.0;
+              if scores.len() > 1 {
+                  score = scores[1];
+              }
+              scorex = format!("{:.1}", score)
+          }
+          exact: scorex
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_delta
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -632,10 +945,21 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut del = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              del = format!("{:.1}", delta)
+          }
+          exact: del
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_donor
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -645,10 +969,32 @@ brief:    distance from donor reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let vid = ex.share[mid].v_ref_id;
+          let mut vref = refdata.refs[vid].to_ascii_vec();
+          if rsi.vpids[col].is_some() {
+              vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+          }
+          let jid = ex.share[mid].j_ref_id;
+          let jref = &refdata.refs[jid].to_ascii_vec();
+          let tig = &ex.share[mid].seq_del;
+          let n = tig.len();
+          let mut diffs = 0;
+          for p in 0..n {
+              if tig[p] == b'-' {
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                  diffs += 1;
+              } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                  && tig[p] != jref[jref.len() - (n - p)]
+              {
+                  diffs += 1;
+              }
+          }
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_frame
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -658,10 +1004,17 @@ brief:    reading frame of D segment (0, 1, 2 or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut d_frame = String::new();
+          if ex.share[mid].d_start.is_some() {
+              d_frame = format!(
+                  "{}",
+                  (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
+              );
+          }
+          exact: d_frame
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_id
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -671,7 +1024,12 @@ brief:    D region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let did = if rsi.dids[col].is_some() {
+              format!("{}", refdata.id[rsi.dids[col].unwrap()])
+          } else {
+              String::new()
+          };
+          exact: did
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_inconsistent_%
 inputs:   ?
@@ -700,7 +1058,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -710,10 +1068,15 @@ brief:    D region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let dname = if rsi.dids[col].is_some() {
+              refdata.name[rsi.dids[col].unwrap()].clone()
+          } else {
+              String::new()
+          };
+          exact: dname
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_start
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -723,10 +1086,14 @@ brief:    start of D on full nucleotide sequence (or null)
 page:     enclone help parseable
 avail:    public
 notes:    Starts at 0 or 1?
-code:
+code:     let mut d_start = String::new();
+          if ex.share[mid].d_start.is_some() {
+              d_start = format!("{}", ex.share[mid].d_start.unwrap());
+          }
+          exact: d_start
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_univ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -736,10 +1103,29 @@ brief:    distance from universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let vid = ex.share[mid].v_ref_id;
+          let vref = &refdata.refs[vid].to_ascii_vec();
+          let jid = ex.share[mid].j_ref_id;
+          let jref = &refdata.refs[jid].to_ascii_vec();
+          let tig = &ex.share[mid].seq_del;
+          let n = tig.len();
+          let mut diffs = 0;
+          for p in 0..n {
+              if tig[p] == b'-' {
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                  diffs += 1;
+              } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                  && tig[p] != jref[jref.len() - (n - p)]
+              {
+                  diffs += 1;
+              }
+          }
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d_Δ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -749,7 +1135,18 @@ brief:    score delta between top two D gene assignments
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut del = String::new();
+          if ex.share[mid].left {
+              let mut scores = Vec::<f64>::new();
+              let mut ds = Vec::<Vec<usize>>::new();
+              opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+              let mut delta = 0.0;
+              if scores.len() > 1 {
+                  delta = scores[0] - scores[1];
+              }
+              del = format!("{:.1}", delta)
+          }
+          exact: del
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     datasets
 inputs:   ?
@@ -778,7 +1175,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -788,7 +1185,37 @@ brief:    nucleotide identity with donor reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let xm = &ex.share[mid];
+          let mut diffs = 0;
+          let mut denom = 0;
+          let seq = &xm.seq_del_amino;
+          let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+          if xm.v_ref_id_donor_alt_id.is_some() {
+              vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+          }
+          let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+          let z = seq.len();
+          for p in 0..z {
+              let b = seq[p];
+              if b == b'-' {
+                  diffs += 1;
+                  denom += 1;
+                  continue;
+              }
+              if p < vref.len() - ctl.heur.ref_v_trim {
+                  denom += 1;
+                  if b != vref[p] {
+                      diffs += 1;
+                  }
+              }
+              if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                  denom += 1;
+                  if b != jref[jref.len() - (z - p)] {
+                      diffs += 1;
+                  }
+              }
+          }
+          exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
 inputs:   ?
@@ -817,7 +1244,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref
-inputs:   ?
+inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
 limits:
 class:    lvar
 level:    exact
@@ -828,9 +1255,34 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:
+          let mut diffs = 0;
+          for m in 0..cols {
+              if mat[m][u].is_some() {
+                  let r = mat[m][u].unwrap();
+                  let seq = &ex.share[r].seq_del_amino;
+                  let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                  if rsi.vpids[m].is_some() {
+                      vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                  }
+                  let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                  let z = seq.len();
+                  for p in 0..z {
+                      let b = seq[p];
+                      if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                          diffs += 1;
+                      }
+                      if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                          && b != jref[jref.len() - (z - p)]
+                      {
+                          diffs += 1;
+                      }
+                  }
+              }
+          }
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
-inputs:   ?
+inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
 limits:
 class:    lvar
 level:    exact
@@ -840,10 +1292,42 @@ brief:    amino acid distance to donor reference
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut diffs = 0;
+          for m in 0..cols {
+              if mat[m][u].is_some() {
+                  let r = mat[m][u].unwrap();
+                  let aa_seq = &ex.share[r].aa_mod_indel;
+                  let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                  if rsi.vpids[m].is_some() {
+                      vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                  }
+                  let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                  let z = 3 * aa_seq.len() + 1;
+                  for p in 0..aa_seq.len() {
+                      if aa_seq[p] == b'-' {
+                          diffs += 1;
+                          continue;
+                      }
+                      if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
+                          && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
+                      {
+                          diffs += 1;
+                      }
+                      if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
+                          && aa_seq[p]
+                              != codon_to_aa(
+                                  &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
+                              )
+                      {
+                          diffs += 1;
+                      }
+                  }
+              }
+          }
+          exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     edit
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -853,7 +1337,8 @@ brief:    edit versus reference CDR3
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+          exact: edit
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     exact_subclonotype_id
 inputs:   ?
@@ -863,7 +1348,7 @@ level:    exact
 val:      positive_integer
 doc:      TBD
 brief:    identifier of exact subclonotype
-page:     enclone help cvars
+page:     enclone help parseable
 avail:    public
 notes:
 code:
@@ -881,8 +1366,8 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_aa
-inputs:   ?
+name:     fwr{1..4}_aa
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -892,10 +1377,29 @@ brief:    FWR* amino acid sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_fwr1(&x);
+          } else if arg1 == 2 {
+              c = get_fwr2(&x);
+          } else if arg1 == 3 {
+              c = get_fwr3(&x);
+          } else {
+              let x = &ex.share[mid];
+              let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
+              let stop = rsi.seq_del_lens[col];
+              let dna = &x.seq_del_amino[start..stop];
+              c = Some(stringme(&dna));
+          }
+          if c.is_some() {
+              y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_aa_ref
-inputs:   ?
+name:     fwr{1..4}_aa_ref
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -905,10 +1409,46 @@ brief:    FWR* amino acid seq for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()[x.fr1_start..x.cdr1_start
+                      .unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          } else if arg1 == 2 {
+              if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.fr2_start.unwrap()..x.cdr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          } else if arg1 == 3 {
+              if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
+                  if x.cdr3_start <= dna.len() {
+                      let dna = dna[x.fr3_start.unwrap()..x.cdr3_start - x.ins_len()].to_vec();
+                      y = stringme(&aa_seq(&dna, 0));
+                  }
+              }
+          } else {
+              let heavy = refdata.rtype[x.j_ref_id] == 0;
+              let aa_len;
+              if heavy {
+                  aa_len = 10;
+              } else {
+                  aa_len = 9;
+              }
+              let dna = refdata.refs[x.j_ref_id].to_ascii_vec();
+              let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
+              y = stringme(&aa_seq(&dna, 0));
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_dna
-inputs:   ?
+name:     fwr{1..4}_dna
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -918,10 +1458,29 @@ brief:    FWR* nucleotide sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_fwr1(&x);
+          } else if arg1 == 2 {
+              c = get_fwr2(&x);
+          } else if arg1 == 3 {
+              c = get_fwr3(&x);
+          } else {
+              let x = &ex.share[mid];
+              let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
+              let stop = rsi.seq_del_lens[col];
+              let dna = &x.seq_del_amino[start..stop];
+              c = Some(stringme(&dna));
+          }
+          if c.is_some() {
+              y = c.unwrap();
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_dna_ref
-inputs:   ?
+name:     fwr{1..4}_dna_ref
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -931,10 +1490,46 @@ brief:    FWR* nucleotide seq for universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()[x.fr1_start..x.cdr1_start
+                      .unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          } else if arg1 == 2 {
+              if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                      [x.fr2_start.unwrap()..x.cdr2_start.unwrap()]
+                      .to_vec();
+                  y = stringme(&dna);
+              }
+          } else if arg1 == 3 {
+              if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
+                  let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
+                  if x.cdr3_start <= dna.len() {
+                      let dna = dna[x.fr3_start.unwrap()..x.cdr3_start - x.ins_len()].to_vec();
+                      y = stringme(&dna);
+                  }
+              }
+          } else {
+              let heavy = refdata.rtype[x.j_ref_id] == 0;
+              let aa_len;
+              if heavy {
+                  aa_len = 10;
+              } else {
+                  aa_len = 9;
+              }
+              let dna = refdata.refs[x.j_ref_id].to_ascii_vec();
+              let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
+              y = stringme(&dna);
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     fwr{1,2,3,4}_len
-inputs:   ?
+name:     fwr{1..4}_len
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -944,20 +1539,26 @@ brief:    length of FWR* nucleotide sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     g<0,...>
-inputs:   ?
-limits:
-class:    lvar
-level:    exact
-val:      positive_integer
-doc:      TBD
-brief:    exact subclonotype group, by Hamming distance
-page:     enclone help lvars
-avail:    public
-notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
-code:
+code:     let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let c;
+          if arg1 == 1 {
+              c = get_fwr1(&x);
+          } else if arg1 == 2 {
+              c = get_fwr2(&x);
+          } else if arg1 == 3 {
+              c = get_fwr3(&x);
+          } else {
+              let x = &ex.share[mid];
+              let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
+              let stop = rsi.seq_del_lens[col];
+              let dna = &x.seq_del_amino[start..stop];
+              c = Some(stringme(&dna));
+          }
+          if c.is_some() {
+              y = format!("{}", c.unwrap().len() / 3);
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex
 inputs:   ?
@@ -1089,6 +1690,19 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     g{0,...}
+inputs:   ?
+limits:
+class:    lvar
+level:    exact
+val:      positive_integer
+doc:      TBD
+brief:    exact subclonotype group, by Hamming distance
+page:     enclone help lvars
+avail:    public
+notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   ?
 limits:
@@ -1102,8 +1716,63 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ivalbcumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    invalidated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ivalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .invalidated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_id
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -1113,10 +1782,10 @@ brief:    J region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", refdata.id[rsi.jids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     j_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -1126,7 +1795,7 @@ brief:    J region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     exact: refdata.name[rsi.jids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
 inputs:   ?
@@ -1221,8 +1890,8 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     ndiff<1,...>vj
-inputs:   ?
+name:     ndiff{1..}vj
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1231,11 +1900,29 @@ doc:      TBD
 brief:    number of base differences with exact subclonotype of that number
 page:     enclone help cvars
 avail:    public
-notes:    Start at 1 or 0?
-code:
+notes:
+code:     let nd;
+          let mat = &rsi.mat;
+          let u0 = arg1 - 1;
+          if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
+              let m0 = mat[col][u0].unwrap();
+              let m = mat[col][u].unwrap();
+              let mut ndiff = 0;
+              let ex0 = &exact_clonotypes[exacts[u0]];
+              let ex = &exact_clonotypes[exacts[u]];
+              for p in 0..ex0.share[m0].seq_del.len() {
+                  if ex0.share[m0].seq_del[p] != ex.share[m].seq_del[p] {
+                      ndiff += 1;
+                  }
+              }
+              nd = format!("{}", ndiff)
+          } else {
+              nd = "_".to_string()
+          }
+          exact: nd
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     near
-inputs:   ?
+inputs:   varmat, fp, u
 limits:
 class:    lvar
 level:    exact
@@ -1245,10 +1932,73 @@ brief:    Hamming distance to nearest neighbor
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut near = String::new();
+          let mut dist = 1_000_000;
+          for i2 in 0..varmat.len() {
+              if i2 == u || fp[i2] != fp[u] {
+                  continue;
+              }
+              let mut d = 0;
+              for c in fp[u].iter() {
+                  for j in 0..varmat[u][*c].len() {
+                      if varmat[u][*c][j] != varmat[i2][*c][j] {
+                          d += 1;
+                      }
+                  }
+              }
+              dist = min(dist, d);
+          }
+          if dist == 1_000_000 {
+              near = "".to_string()
+          } else {
+              near = format!("{}", dist)
+          }
+          exact: near
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nival
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of invalidated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].invalidated_umis.is_some() {
+                  n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nnval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     notes
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1258,7 +2008,83 @@ brief:    notes for exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: ex.share[mid].vs_notesx.clone()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nval
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut valsx = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = 0;
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
+              }
+              valsx.push(format!("{}", n));
+          }
+          cell: valsx
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nvalbcumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    non-validated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nvalumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    non-validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].non_validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .non_validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     origins
 inputs:   ?
@@ -1286,21 +2112,29 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     q<0,...>_
-inputs:   ?
+name:     q{0..}_
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
 val:      string
 doc:      TBD
 brief:    read quality scores at position <code>n</code>
-page:     enclone help parseable
+page:     enclone help cvars
 avail:    public
-notes:    Should position start at 0 or 1?
-code:
+notes:
+code:     let mut val = String::new();
+          if arg1 < ex.share[mid].seq.len() {
+              let mut quals = Vec::<u8>::new();
+              for j in 0..ex.clones.len() {
+                  quals.push(ex.clones[j][mid].quals[arg1]);
+              }
+              val = format!("{}", quals.iter().format(","));
+          }
+          exact: val
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact
@@ -1310,23 +2144,18 @@ brief:    median number of reads supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     r_cell
-inputs:   ?
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of reads supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
+code:     let mut nreads = Vec::<String>::new();
+          let mut nreads_sorted = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(format!("{}", ex.clones[j][mid].read_count));
+              nreads_sorted.push(ex.clones[j][mid].read_count);
+          }
+          nreads_sorted.sort_unstable();
+          cell: nreads
+          exact: format!("{}", rounded_median(&nreads_sorted))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_max
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1336,10 +2165,14 @@ brief:    maximum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_mean
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1349,10 +2182,16 @@ brief:    mean chain reads across exact subclonotype (= <code>r_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+          exact: format!("{}", r_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_min
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1362,10 +2201,14 @@ brief:    minimum chain read count across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          exact: format!("{}", *nreads.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_sum
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1375,10 +2218,15 @@ brief:    sum of chain read counts across exact subclonotype (= <code>r_Σ</code
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_Σ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1388,10 +2236,15 @@ brief:    sum of chain reads across exact subclonotype (= <code>r_sum</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          exact: format!("{}", rtot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     r_μ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1401,7 +2254,13 @@ brief:    mean chain read count across exact subclonotype (= <code>r_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut nreads = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              nreads.push(ex.clones[j][mid].read_count);
+          }
+          let rtot: usize = nreads.iter().sum();
+          let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+          exact: format!("{}", r_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     seq
 inputs:   ?
@@ -1443,7 +2302,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    cell-exact
@@ -1453,23 +2312,21 @@ brief:    median number of UMIs supporting chain
 page:     enclone help cvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     u_cell
-inputs:   ex, mid
-limits:
-class:    cvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of UMIs supporting chain
-page:     enclone help cvars
-avail:    public
-notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort_unstable();
+          let median_numis = rounded_median(&numis);
+          let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              vals.push(format!("{}", ex.clones[k][mid].umi_count));
+          }
+          cell: vals
+          exact: format!("{}", median_numis)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_max
-inputs:   ex, mid
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1485,10 +2342,10 @@ code:     let mut numis = Vec::<usize>::new();
               numis.push(ex.clones[j][mid].umi_count);
           }
           numis.sort();
-          format!("{}", numis.iter().max().unwrap())
+          exact: format!("{}", numis.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_mean
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1498,10 +2355,17 @@ brief:    mean chain UMIs across exact subclonotype (= <code>u_μ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          let utot: usize = numis.iter().sum();
+          let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+          exact: format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_min
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1511,10 +2375,15 @@ brief:    minimum chain UMIs across exact subclonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          exact: format!("{}", numis.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_sum
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1524,10 +2393,15 @@ brief:    sum of chain UMIs for exact subclonotype (= <code>u_Σ</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          let utot: usize = numis.iter().sum();
+          exact: format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_Σ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1537,10 +2411,15 @@ brief:    sum of chain UMIs across exact subclonotype (= <code>u_sum</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          let utot: usize = numis.iter().sum();
+          exact: format!("{}", utot)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u_μ
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1550,10 +2429,17 @@ brief:    mean chain UMIs for exact subclonotype (= <code>u_mean</code>)
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let mut numis = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              numis.push(ex.clones[j][mid].umi_count);
+          }
+          numis.sort();
+          let utot: usize = numis.iter().sum();
+          let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+          exact: format!("{}", u_mean)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     udiff
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1563,10 +2449,48 @@ brief:    differences of 5'-UTR region with universal reference
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     let ulen = ex.share[mid].v_start;
+          let uid = ex.share[mid].u_ref_id;
+          let mut udiff = String::new();
+          let mut ndiffs = 0;
+          if uid.is_some() {
+              let r = &refdata.refs[uid.unwrap()];
+              let mut extra = 0;
+              if ulen > r.len() {
+                  extra = ulen - r.len();
+              }
+              for i in 0..ulen {
+                  let mut rpos = i;
+                  if ulen < r.len() {
+                      rpos += r.len() - ulen;
+                  } else {
+                      if i + r.len() < ulen {
+                          continue;
+                      }
+                      rpos -= ulen - r.len();
+                  }
+                  let tb = ex.share[mid].full_seq[i];
+                  let rb = r.to_ascii_vec()[rpos];
+                  if tb != rb {
+                      ndiffs += 1;
+                      if ndiffs <= 5 {
+                          udiff += &format!("{}{}", rpos, tb as char);
+                      }
+                  }
+              }
+              if ndiffs > 5 {
+                  udiff += "...";
+              }
+              if extra > 0 {
+                  udiff += &format!("+{}", extra);
+              }
+          } else if ulen > 0 {
+              udiff = format!("+{}", ulen);
+          }
+          exact: udiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ulen
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1576,10 +2500,10 @@ brief:    length of observed 5'-UTR sequence
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_id
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1589,10 +2513,15 @@ brief:    numerical identifier of 5'-UTR region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut u = String::new();
+          let uid = ex.share[mid].u_ref_id;
+          if uid.is_some() {
+              u = format!("{}", refdata.id[uid.unwrap()]);
+          }
+          exact: u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     utr_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1602,10 +2531,15 @@ brief:    name of 5'-UTR region (or null)
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut u = String::new();
+          let uid = ex.share[mid].u_ref_id;
+          if uid.is_some() {
+              u = refdata.name[uid.unwrap()].clone();
+          }
+          exact: u
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_id
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -1615,10 +2549,10 @@ brief:    V region id
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", refdata.id[rsi.vids[col]])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_name
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    clono
@@ -1628,10 +2562,10 @@ brief:    V region name
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     exact: refdata.name[rsi.vids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1641,20 +2575,75 @@ brief:    start of V on full nucleotide sequence
 page:     enclone help parseable
 avail:    public
 notes:    Positive integer, or nonnegative integer?
-code:
+code:     exact: format!("{}", ex.share[mid].v_start)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     var
-inputs:   ?
+name:     valbcumis
+inputs:   cvar_vdj
 limits:
 class:    cvar
-level:    clono
+level:    cell
+val:      string
+doc:      TBD
+brief:    validated UMIs, preceded by barcode
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
+                  for i in 0..bc_umis.len() {
+                      bc_umis[i] =
+                          format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                  }
+                  n = format!("{}", bc_umis.iter().format(","));
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     valumis
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    validated UMIs
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              let mut n = String::new();
+              if ex.clones[k][mid].validated_umis.is_some() {
+                  n = format!(
+                      "{}",
+                      ex.clones[k][mid]
+                          .validated_umis
+                          .as_ref()
+                          .unwrap()
+                          .iter()
+                          .format(",")
+                  );
+              }
+              vals.push(n.to_string());
+          }
+          cell: vals
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     var
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
 val:      string
 doc:      TBD
 brief:    bases at position in chain that vary across the clonotype
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: stringme(&varmat[u][col])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     var_aa
 inputs:   ?
@@ -1748,7 +2737,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     vjlen
-inputs:   ?
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -1758,5 +2747,52 @@ brief:    length in bases of V..J
 page:     enclone help cvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     white
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    exact
+val:      float
+doc:      TBD
+brief:    percent of sequences implicated in whitelist expansion
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
+          for l in 0..ex.clones.len() {
+              let li = ex.clones[l][0].dataset_index;
+              let bc = &ex.clones[l][0].barcode;
+              let mut numi = 0;
+              for j in 0..ex.clones[l].len() {
+                  numi += ex.clones[l][j].umi_count;
+              }
+              bch[0].push((li, bc[0..8].to_string(), numi, l));
+              bch[1].push((li, bc[8..16].to_string(), numi, l));
+          }
+          let mut junk = 0;
+          let mut bad = vec![false; ex.clones.len()];
+          for l in 0..2 {
+              bch[l].sort();
+              let mut m = 0;
+              while m < bch[l].len() {
+                  let n = next_diff12_4(&bch[l], m as i32) as usize;
+                  for u1 in m..n {
+                      for u2 in m..n {
+                          if bch[l][u1].2 >= 10 * bch[l][u2].2 {
+                              bad[bch[l][u2].3] = true;
+                          }
+                      }
+                  }
+                  m = n;
+              }
+          }
+          for u in 0..bad.len() {
+              if bad[u] {
+                  junk += 1;
+              }
+          }
+          let junk_rate = percent_ratio(junk, ex.clones.len());
+          exact: format!("{:.1}", junk_rate)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -4,13 +4,16 @@ use crate::proc_args2::proc_args_tail;
 use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
 use crate::proc_args_check::check_cvars;
 use enclone_core::defs::EncloneControl;
+use enclone_vars::encode_arith;
+use evalexpr::build_operator_tree;
+use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::time::Instant;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
-use vector_utils::{next_diff, unique_sort};
+use vector_utils::{bin_member, next_diff, unique_sort};
 
 pub fn proc_args_post(
     mut ctl: &mut EncloneControl,
@@ -121,6 +124,79 @@ pub fn proc_args_post(
     ];
     for f in files.iter_mut() {
         **f = stringme(&tilde_expand(f.as_bytes()));
+    }
+
+    // Test VAR_DEF arguments for circularity.
+
+    let mut var_def_vars = Vec::<Vec<String>>::new();
+    let n = ctl.gen_opt.var_def.len();
+    for i in 0..n {
+        let x = &ctl.gen_opt.var_def[i].2;
+        var_def_vars.push(vars_of_node(&x));
+    }
+    let mut edges = Vec::<(usize, usize)>::new();
+    for i in 0..n {
+        for j in 0..n {
+            if bin_member(&var_def_vars[j], &ctl.gen_opt.var_def[i].0) {
+                edges.push((i, j));
+            }
+        }
+    }
+    let mut reach = vec![vec![false; n]; n];
+    loop {
+        let mut progress = false;
+        for k in 0..edges.len() {
+            let i = edges[k].0;
+            let j = edges[k].1;
+            if !reach[i][j] {
+                reach[i][j] = true;
+                progress = true;
+            }
+            for l in 0..n {
+                if reach[l][i] && !reach[l][j] {
+                    reach[l][j] = true;
+                    progress = true;
+                }
+                if reach[j][l] && !reach[i][l] {
+                    reach[i][l] = true;
+                    progress = true;
+                }
+            }
+        }
+        if !progress {
+            break;
+        }
+    }
+    for i in 0..n {
+        if reach[i][i] {
+            return Err(
+                "\nVAR_DEF arguments define a circular chain of dependencies.\n".to_string(),
+            );
+        }
+    }
+
+    // Substitute VAR_DEF into VAR_DEF.
+
+    loop {
+        let mut progress = false;
+        for i in 0..n {
+            for j in 0..n {
+                if bin_member(&var_def_vars[j], &ctl.gen_opt.var_def[i].0) {
+                    let sub = encode_arith(&ctl.gen_opt.var_def[i].0);
+                    ctl.gen_opt.var_def[j].1 = ctl.gen_opt.var_def[j]
+                        .1
+                        .replace(&sub, &format!("({})", ctl.gen_opt.var_def[i].1));
+                    ctl.gen_opt.var_def[j].2 =
+                        build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
+                    let x = &ctl.gen_opt.var_def[j].2;
+                    var_def_vars[j] = vars_of_node(&x);
+                    progress = true;
+                }
+            }
+        }
+        if !progress {
+            break;
+        }
     }
 
     // Sanity check grouping arguments.

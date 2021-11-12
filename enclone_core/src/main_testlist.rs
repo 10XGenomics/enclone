@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 243] = [
+pub const TESTS: [&str; 274] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -55,8 +55,8 @@ pub const TESTS: [&str; 243] = [
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
-    // 22. there was a false positive clonotype
-    r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
+    // 22. DUPLICATE, TO REMOVE
+    r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 23. here we were generating a fake alternate allele
     r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
     // 24. an example that uses IGHE, and test NGROUP
@@ -602,4 +602,90 @@ pub const TESTS: [&str; 243] = [
     // 243. this crashed at one point
     r###"BCR=123085 GROUP="cdr3_aa_heavy>=85%,vj_refname" MIN_GROUP=2 PLOT=/dev/null
          NOPRINT EXPECT_OK"###,
+    // 244. test for very long (120 amino acid) CDR3
+    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
+    // there may be long productive CDR3 sequences in data from other species, although we do not
+    // have such data.  This is from 1020665.
+    r###"BCR=testx/inputs/flaky BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO="###,
+    // 245. Test a tweak to the weak chains filter.  This should have two chains.  From 174957.
+    r###"BCR=testx/inputs/flaky2 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN"###,
+    // 246. test that used to crash on a particular barcode; this also gave the wrong
+    // answer for an insertion until it was fixed
+    r###"BCR=testx/inputs/flaky3 NCELL CDR3=CARNWRYCTSVSCQHREYFYYMDVW AMINO=cdr3"###,
+    // 247. this crashed
+    r###"BCR=testx/inputs/flaky4"###,
+    // 248. this crashed
+    r###"BCR=testx/inputs/flaky5"###,
+    // 249. an example that triggered an internal inconsistency test, which we subsequently removed;
+    // there are three chains and the middle one was the problem
+    r###"TCR=testx/inputs/flaky6 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD EXPECT_OK"###,
+    // 250. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###,
+    // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN NO_PRE NFORCE EXPECT_NULL"###,
+    // 252. this exhibits what happens when signature filtering is ON, see next
+    // this was the only example we could find
+    // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
+    r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=1
+         REQUIRED_THREE_CHAIN_CLONOTYPES=0 NOPRINT EXPECT_OK"###,
+    // 253. this exhibits what happens when signature filtering is OFF, see previous
+    // this was the only example we could find
+    // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
+    r###"BCR=testx/inputs/flaky7 BUILT_IN REPROD NSIG REQUIRED_TWO_CHAIN_CLONOTYPES=0
+         REQUIRED_THREE_CHAIN_CLONOTYPES=1 NOPRINT EXPECT_OK"###,
+    // 254. parseable value for fwr4_aa was wrong, from 1117070
+    r###"BCR=testx/inputs/flaky AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1
+         BUILT_IN"###,
+    // 255. conp value was truncated, from 1117069
+    r###"BCR=testx/inputs/flaky CONP CDR3=CVRDPPEELELFDYW BUILT_IN"###,
+    // 256. Make sure that FP join output includes join error details.
+    // If somehow we fix the FP join occurring here, another one should be substituted.
+    // This is from BCR="131036;140707".
+    r###"PRE=testx/inputs BCR="flaky8a;flaky8b" ANN SHOW_BC MIN_DONORS=2
+         PRINT_FAILED_JOINS BUILT_IN NO_PRE"###,
+    // 257. clonotype that was two clonotypes before raising MAX_DIFFS to 60, from 1084461-1084462
+    r###"BCR=testx/inputs/flaky CDR3=CAKEFGNGGFDTFDIW BUILT_IN AMINO=cdr3"###,
+    // 258. This used to appear as a four-chain clonotype, and is now split.  From 123085,123090.
+    r###"BCR=testx/inputs/flaky9 BUILT_IN REQUIRED_FOUR_CHAIN_CLONOTYPES=0 EXPECT_OK"###,
+    // 259. this crashed at one point, from 83809
+    r###"BCR=testx/inputs/flaky10 EXPECT_OK"###,
+    // 260. the result of this changed when sub_alts was changed, from 40086;132888
+    r###"BCR=testx/inputs/flaky11 MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW BUILT_IN"###,
+    // 261. previously this yielded a disconnected clonotype, from 140699,140705-140706
+    r###"BCR=testx/inputs/flaky12 AMINO=cdr3 CDR3="CAKDRQAGGIGEVDDW|CARDRVPGGIGEVDYW" BUILT_IN"###,
+    // 262. test NSEG
+    r###"BCR=86237 SEG=IGHV4-59 NSEG="IGHJ3|IGHJ4|IGHJ6""###,
+    // 263. test NSEGN
+    r###"BCR=86237 SEG=IGHV4-34 NSEGN="51|54|55|57|321""###,
+    // 264. test MIN_ORIGINS
+    r###"BCR=123085:123089 MAX_CELLS=2 SEG=IGHV3-49 MIN_ORIGINS=2"###,
+    // 265. test DVARS
+    // The output is a bit flaky because we imported some but not all of the special files
+    // for 85679.
+    r###"BCR=86237 GEX=85679 DVARS=CD19_ab_cellular_u,CD19_ab_cellular_r
+         NOPRINT SUMMARY SUMMARY_CLEAN"###,
+    // 266. a test of VAR_DEF
+    r###"BCR=86237 GEX=85679 VAR_DEF="mu:CD19_ab + CD25_ab" LVARSP=gex,CD19_ab,CD25_ab,mu
+         CDR3=CARSFFGDTAMVMFQAFDPW FOLD_HEADERS PER_CELL AMINO="###,
+    // 267. a test of VAR_DEF
+    r###"BCR=86237 GEX=85679 VAR_DEF=x19:CD19_ab VAR_DEF=x25:CD25_ab VAR_DEF="mu:x19 + x25"
+         LVARSP=gex,CD19_ab,CD25_ab,mu CDR3=CARSFFGDTAMVMFQAFDPW FOLD_HEADERS PER_CELL AMINO="###,
+    // 268. a test of VAR_DEF
+    r###"BCR=86237 GEX=85679 VAR_DEF="pink:PINK1-AS_g" LVARSP=pink CDR3=CARSFFGDTAMVMFQAFDPW
+         FOLD_HEADERS PER_CELL AMINO="###,
+    // 269. test fb variables
+    r###"BCR=86237 GEX=85679 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n PER_CELL AMINO=cdr3 CVARS=             FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL CDR3=CARSFFGDTAMVMFQAFDPW"###,
+    // 270. test NOSPACES
+    r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
+    // 271. test for weird path bug
+    r###"BCR_GEX=tiny_multi_PD_broken EXPECT_OK"###,
+    // 272. a test for validated UMI variables
+    r###"BCR=tiny_multi_PD CVARS=u,nval,nnval,nival BARCODE=AAAGCAAGTGGCTCCA-1 AMINO= PER_CELL
+         POUT=stdouth PCOLS=nval1,nval2,nval3,valumis3,valbcumis2"###,
+    // 273. a test for validated UMI variables
+    r###"BCR=tiny_multi_PD CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth
+         PCOLS=ivalumis1,ivalbcumis1,nvalbcumis2 BARCODE=TACCTTAAGAGCCCAA-1"###,
+    // 274. at one point this printed bell characters
+    r###"CVARS=u,nval,nnval,nival AMINO= PER_CELL POUT=stdouth PCOLS=nval1,nval2 BCR=123085
+         BARCODE=ACAGCCGAGATAGGAG-1"###,
 ];

@@ -1,3 +1,6 @@
+We thank Albert Vilella for many suggestions, including the column variables cdr3_aa_conx and 
+cdr3_aa_conp, COLOR=codon-diffs and NOSPACES.
+
 enclone includes software developed by the OpenSSL Project
 for use in the OpenSSL Toolkit (http://www.openssl.org/).
 
@@ -7,8 +10,6 @@ https://gitlab.com/Noughmad/ptree, by Miha Čančula.
 The script install.sh reuses code from the rust language installation script.
 
 We thank Ganesh Phad for suggesting localization by color in honeycomb plots.
-
-We thank Albert Vilella for suggesting the column variables cdr3_aa_conx and cdr3_aa_conp.
 
 The file polygon.rs uses code taken from the lorikeet-dash crate version 0.1.0, whose license 
 is MIT/Apache-2.0.

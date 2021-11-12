@@ -2,6 +2,7 @@
 
 // Code to help find IGHD constant regions.
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use std::arch::x86_64::{
     __m128, __m128i, __m256, _mm256_add_epi32, _mm256_add_ps, _mm256_castps256_ps128,
     _mm256_cvtepu8_epi32, _mm256_extractf128_ps, _mm256_i32gather_ps, _mm256_mullo_epi32,
@@ -16,9 +17,16 @@ use std::arch::x86_64::{
 pub fn ighd_score(x: &[u8], ighd_pwm2: &Vec<f32>) -> f32 {
     let sub_vec_size = 5;
     let logp;
-    if is_x86_feature_detected!("avx2") {
-        logp = unsafe { s32_avx2(x, ighd_pwm2, sub_vec_size) };
-    } else {
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        if is_x86_feature_detected!("avx2") {
+            logp = unsafe { s32_avx2(x, ighd_pwm2, sub_vec_size) };
+        } else {
+            logp = ighd_score_orig(x, ighd_pwm2);
+        }
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
         logp = ighd_score_orig(x, ighd_pwm2);
     }
     logp
@@ -34,6 +42,7 @@ fn ighd_score_orig(x: &[u8], u: &Vec<f32>) -> f32 {
     a
 }
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "avx2")]
 unsafe fn s32_avx2(x: &[u8], u: &Vec<f32>, sub_vec_size: usize) -> f32 {
     let n = u.len() / sub_vec_size;
@@ -68,6 +77,7 @@ unsafe fn s32_avx2(x: &[u8], u: &Vec<f32>, sub_vec_size: usize) -> f32 {
 
 /// Sum the slots in 8xf32 vector
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "avx2")]
 unsafe fn hsum256_ps_avx(vin: __m256) -> f32 {
     let vlow: __m128 = _mm256_castps256_ps128(vin);

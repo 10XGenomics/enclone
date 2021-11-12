@@ -5,14 +5,12 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::proc2::*;
-use crate::share::*;
 use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;
 use chrono::prelude::*;
 use iced::{Color, Command};
-use std::fs::{remove_file, File};
-use std::io::Read;
+use itertools::Itertools;
 use std::time::{Duration, Instant};
 
 impl EncloneVisual {
@@ -22,6 +20,76 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ClonotypesSnapshot => {
+                self.clonotypes_snapshot_start = Some(Instant::now());
+                self.clonotypes_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteClonotypesSnapshot)
+            }
+
+            Message::CompleteClonotypesSnapshot(_) => {
+                snapshot(&self.clonotypes_snapshot_start);
+                self.clonotypes_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CommandSnapshot => {
+                self.command_snapshot_start = Some(Instant::now());
+                self.command_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteCommandSnapshot)
+            }
+
+            Message::CompleteCommandSnapshot(_) => {
+                snapshot(&self.command_snapshot_start);
+                self.command_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CommandOpen(_) => {
+                self.command_mode = true;
+                Command::none()
+            }
+
+            Message::CommandClose => {
+                self.command_mode = false;
+                Command::none()
+            }
+
+            Message::GraphicHelp => {
+                if self.graphic_help_title == "Help" {
+                    self.graphic_help_title = "Close help".to_string();
+                } else {
+                    self.graphic_help_title = "Help".to_string();
+                }
+                Command::none()
+            }
+
+            Message::GraphicPng => {
+                self.summary_png_start = Some(Instant::now());
+                self.png_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteGraphicPng)
+            }
+
+            Message::CompleteGraphicPng(_) => {
+                if self.graphic_png_title == "PNG" {
+                    if self.png_value.len() == 0 {
+                        self.png_value = convert_svg_to_png(&self.svg_value.as_bytes(), 2000);
+                    }
+                }
+                const MIN_SLEEP: f64 = 0.4;
+                let used = elapsed(&self.summary_png_start.unwrap());
+                if used < MIN_SLEEP {
+                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
+                    thread::sleep(Duration::from_millis(ms));
+                }
+                if self.graphic_png_title == "PNG" {
+                    self.graphic_png_title = "SVG".to_string();
+                } else {
+                    self.graphic_png_title = "PNG".to_string();
+                }
+                self.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::CopyDescrips => {
                 self.descrips_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 copy_bytes_to_clipboard(&self.descrips_for_spreadsheet.as_bytes());
@@ -55,21 +123,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSummarySnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.summary_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.summary_snapshot_start);
                 self.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -115,21 +169,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteGraphicSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.graphic_snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.graphic_snapshot_start);
                 self.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -142,7 +182,10 @@ impl EncloneVisual {
 
             Message::GraphicClose => {
                 self.graphic_mode = false;
+                self.graphic_help_mode = true;
+                self.graphic_help_title = "Help".to_string();
                 GRAPHIC_MODE.store(false, SeqCst);
+                self.graphic_png_title = "PNG".to_string();
                 Command::none()
             }
 
@@ -239,21 +282,7 @@ impl EncloneVisual {
             }
 
             Message::CompleteSnapshot(_) => {
-                let filename = "/tmp/enclone_visual_snapshot.png";
-                capture_as_file(&filename, get_window_id());
-                let mut bytes = Vec::<u8>::new();
-                {
-                    let mut f = File::open(&filename).unwrap();
-                    f.read_to_end(&mut bytes).unwrap();
-                }
-                remove_file(&filename).unwrap();
-                copy_png_bytes_to_clipboard(&bytes);
-                const MIN_SLEEP: f64 = 0.4;
-                let used = elapsed(&self.snapshot_start.unwrap());
-                if used < MIN_SLEEP {
-                    let ms = ((MIN_SLEEP - used) * 1000.0).round() as u64;
-                    thread::sleep(Duration::from_millis(ms));
-                }
+                snapshot(&self.snapshot_start);
                 self.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
                 Command::none()
             }
@@ -436,36 +465,12 @@ impl EncloneVisual {
 
             Message::Restore(check_val, index) => {
                 if !self.just_restored && !self.delete_requested[index] {
-                    let mut index = index;
                     self.restore_requested[index] = check_val;
-                    if self.modified && self.state_count() > 0 {
-                        self.save();
-                        index += 1;
-                    }
-                    let filename = format!(
-                        "{}/{}",
-                        self.archive_dir.as_ref().unwrap(),
-                        self.archive_list[index]
-                    );
-                    let res = read_enclone_visual_history(&filename);
-                    if res.is_ok() {
-                        self.h = res.unwrap();
-                        // Ignore history index and instead rewind.
-                        if self.h.history_index > 1 {
-                            self.h.history_index = 1;
-                        }
-                        self.update_to_current();
-                        self.restore_msg[index] =
-                            "Restored!  Now click Dismiss at top.".to_string();
-                        self.just_restored = true;
-                        self.modified = false;
-                    } else {
-                        self.restore_msg[index] = format!(
-                            "Oh dear, restoration of the file {} \
-                            failed.",
-                            filename
-                        );
-                    }
+                    self.restore_msg[index] =
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
+                    self.just_restored = true;
+                    self.modified = false;
                 }
                 Command::none()
             }
@@ -473,18 +478,9 @@ impl EncloneVisual {
             Message::RestoreCookbook(check_val, index) => {
                 if !self.just_restored {
                     self.restore_cookbook_requested[index] = check_val;
-                    if self.modified {
-                        self.save();
-                    }
-                    let res = EncloneVisualHistory::restore_from_bytes(&self.cookbooks[index]);
-                    self.h = res.unwrap();
-                    // Ignore history index and instead rewind.
-                    if self.h.history_index > 1 {
-                        self.h.history_index = 1;
-                    }
-                    self.update_to_current();
                     self.restore_cookbook_msg[index] =
-                        "Restored!  Now click Dismiss at top.".to_string();
+                        "Restore scheduled!  Now click Dismiss or Save and dismiss at top."
+                            .to_string();
                     self.just_restored = true;
                     self.modified = false;
                 }
@@ -493,13 +489,13 @@ impl EncloneVisual {
 
             Message::Save => {
                 self.save_in_progress = true;
-                self.save();
+                self.save("");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
             Message::SaveAs(x) => {
                 self.save_in_progress = true;
-                self.save_as(&x);
+                self.save_as(&x, "");
                 Command::perform(noop1(), Message::CompleteSave)
             }
 
@@ -679,6 +675,9 @@ impl EncloneVisual {
                     self.input_value = format!("{}", group_id);
                     self.input1_value = format!("{}", group_id);
                     self.input2_value.clear();
+                    for i in 0..self.inputn_value.len() {
+                        self.inputn_value[i].clear();
+                    }
                     let tt = TOOLTIP_TEXT.lock().unwrap()[0].clone();
                     copy_bytes_to_clipboard(&tt.as_bytes());
                     Command::perform(noop0(), Message::SubmitButtonPressed)
@@ -727,6 +726,9 @@ impl EncloneVisual {
                             self.input_value = TESTS[count].0.to_string();
                             self.input1_value = TESTS[count].0.to_string();
                             self.input2_value.clear();
+                        }
+                        for i in 0..self.inputn_value.len() {
+                            self.inputn_value[i].clear();
                         }
                     }
                 } else {
@@ -820,44 +822,11 @@ impl EncloneVisual {
 
             Message::ArchiveRefreshComplete(_) => do_archive_refresh_complete(self),
 
-            Message::ArchiveClose => do_archive_close(self),
+            Message::ArchiveClose => do_archive_close(self, false),
 
-            Message::ArchiveOpen(_) => {
-                self.archive_mode = true;
-                update_shares(self);
-                let n = self.archive_name.len();
-                for i in 0..n {
-                    self.archive_name_change_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    self.copy_archive_narrative_button_color[i] = Color::from_rgb(0.0, 0.0, 0.0);
-                    // This is a dorky way of causing loading of command lists, etc. from disk
-                    // occurs just once per session, and only if the archive button is pushed.
-                    if self.archived_command_list[i].is_none() {
-                        let x = &self.archive_list[i];
-                        let path = format!("{}/{}", self.archive_dir.as_ref().unwrap(), x);
-                        let res = read_metadata(&path);
-                        if res.is_err() {
-                            panic!(
-                                "Unable to read the history file at\n{}\n\
-                                This could either be a bug in enclone or it could be that \
-                                the file is corrupted.\n",
-                                path,
-                            );
-                        }
-                        let (command_list, name, origin, narrative) = res.unwrap();
-                        self.archived_command_list[i] = Some(command_list);
-                        self.archive_name_value[i] = name;
-                        self.archive_origin[i] = origin;
-                        self.archive_narrative[i] = narrative;
-                    }
-                }
-                self.orig_archive_name = self.archive_name_value.clone();
-                self.h.orig_name_value = self.h.name_value.clone();
-                if !TEST_MODE.load(SeqCst) {
-                    Command::none()
-                } else {
-                    Command::perform(noop1(), Message::Capture)
-                }
-            }
+            Message::ArchiveSaveClose => do_archive_close(self, true),
+
+            Message::ArchiveOpen(_) => do_archive_open(self),
 
             Message::SaveOnExit => {
                 self.save_on_exit = !self.save_on_exit;
@@ -886,10 +855,32 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::InputChangedN(ref value, i) => {
+                self.modified = true;
+                self.inputn_value[i] = value.to_string();
+                let mut values = Vec::<String>::new();
+                if self.input1_value.len() > 0 {
+                    values.push(self.input1_value.clone());
+                }
+                if self.input2_value.len() > 0 {
+                    values.push(self.input2_value.clone());
+                }
+                for j in 0..self.inputn_value.len() {
+                    if self.inputn_value[j].len() > 0 {
+                        values.push(self.inputn_value[j].clone());
+                    }
+                }
+                self.input_value = format!("{}", values.iter().format(" "));
+                Command::none()
+            }
+
             Message::ClearButtonPressed => {
                 self.modified = true;
                 self.input1_value.clear();
                 self.input2_value.clear();
+                for j in 0..self.inputn_value.len() {
+                    self.inputn_value[j].clear();
+                }
                 Command::none()
             }
 
@@ -912,6 +903,7 @@ impl EncloneVisual {
                             self.h.input2_hist_uniq[self.h.input2_history[i] as usize],
                             mark
                         );
+                        // note not showing inputn
                     }
                 }
                 let count = COUNT.load(SeqCst);

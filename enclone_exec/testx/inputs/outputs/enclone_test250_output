@@ -1,0 +1,38 @@
+
+SUMMARY STATISTICS
+1. overall
+   • number of datasets = 1
+   • number of donors = 1
+   • original number of cells = 4982
+2. barcode fate
+   ┌──────────┬────────────────────────────┐
+   │barcodes  │  why deleted               │
+   ├──────────┼────────────────────────────┤
+   │     105  │  failed IMPROPER filter    │
+   │       2  │  failed QUAL filter        │
+   │       1  │  failed GRAPH_FILTER filter│
+   │     108  │  total                     │
+   └──────────┴────────────────────────────┘
+3. for the selected clonotypes
+   ┌────────┬────────────────────────┬──────────────────┬───────┐
+   │chains  │  clonotypes with this  │  cells in these  │      %│
+   │        │      number of chains  │      clonotypes  │       │
+   ├────────┼────────────────────────┼──────────────────┼───────┤
+   │1       │                  1476  │            1476  │   30.3│
+   │2       │                  2854  │            2914  │   59.8│
+   │3       │                   416  │             434  │    8.9│
+   │4       │                    50  │              50  │    1.0│
+   │total   │                  4796  │            4874  │  100.0│
+   └────────┴────────────────────────┴──────────────────┴───────┘
+   • number of clonotypes having at least two cells = 66
+   • number of cell-cell merges = 78
+   • number of cells having 1 chain = 1514
+   • number of cells having 2 or 3 chains = 3310
+   • estimated T-T doublet rate = 1.7% = 50/2939 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (TRB) = 5.90
+   • mean over middle third of contig UMI counts (TRA) = 2.90
+   • mean over middle third of cell UMI counts for cells having two chains = 9.18
+   • mean UMIs per cell = 9.90
+   • mean UMIs per cell having two chains = 10.65
+   • for reads contributing to UMIs in reported chains, mean reads per UMI = 1024.19
+

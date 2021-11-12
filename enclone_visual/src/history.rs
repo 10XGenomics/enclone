@@ -2,21 +2,24 @@
 
 // Storage of enclone visual history, and functions to save and restore.
 
+use crate::EXTRA_INPUTS;
 use enclone_core::packing::*;
 use io_utils::*;
 use std::fs::{File, OpenOptions};
 use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};
+use string_utils::*;
 
 #[derive(Default, PartialEq, Clone)]
 pub struct EncloneVisualHistory {
     //
     // more or less uniqued history:
     //
-    pub svg_hist_uniq: Vec<String>,       // each entry is an SVG
-    pub summary_hist_uniq: Vec<String>,   // each entry is a summary
-    pub input1_hist_uniq: Vec<String>,    // each entry is the originating command 1
-    pub input2_hist_uniq: Vec<String>,    // each entry is the originating command 2
-    pub narrative_hist_uniq: Vec<String>, // each entry is the narrative
+    pub svg_hist_uniq: Vec<String>,         // each entry is an SVG
+    pub summary_hist_uniq: Vec<String>,     // each entry is a summary
+    pub input1_hist_uniq: Vec<String>,      // each entry is the originating command 1
+    pub input2_hist_uniq: Vec<String>,      // each entry is the originating command 2
+    pub inputn_hist_uniq: Vec<Vec<String>>, // each entry is the originating command n
+    pub narrative_hist_uniq: Vec<String>,   // each entry is the narrative
     pub translated_input_hist_uniq: Vec<String>, // each entry is the translated originating command
     pub displayed_tables_hist_uniq: Vec<String>, // each entry is the tables that are displayed
     pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
@@ -29,6 +32,7 @@ pub struct EncloneVisualHistory {
     pub summary_history: Vec<u32>,          // each entry is a summary
     pub input1_history: Vec<u32>,           // each entry is the originating command 1
     pub input2_history: Vec<u32>,           // each entry is the originating command 2
+    pub inputn_history: Vec<u32>,           // each entry is the originating command n
     pub narrative_history: Vec<u32>,        // each entry is the narrative
     pub translated_input_history: Vec<u32>, // each entry is the translated originating command
     pub displayed_tables_history: Vec<u32>, // each entry is the tables that are displayed
@@ -84,6 +88,7 @@ impl EncloneVisualHistory {
         clean_history(&mut self.summary_hist_uniq, &mut self.summary_history);
         clean_history(&mut self.input1_hist_uniq, &mut self.input1_history);
         clean_history(&mut self.input2_hist_uniq, &mut self.input2_history);
+        clean_history(&mut self.inputn_hist_uniq, &mut self.inputn_history);
         clean_history(&mut self.narrative_hist_uniq, &mut self.narrative_history);
         clean_history(
             &mut self.translated_input_hist_uniq,
@@ -104,7 +109,7 @@ impl EncloneVisualHistory {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const ENCLONE_VISUAL_HISTORY_VERSION: usize = 1;
+const ENCLONE_VISUAL_HISTORY_VERSION: usize = 2;
 const HEADER_LENGTH: usize = 40;
 const NAME_BYTES: usize = 160;
 
@@ -138,49 +143,53 @@ impl EncloneVisualHistory {
         )
         .as_bytes()
         .to_vec();
-        if ENCLONE_VISUAL_HISTORY_VERSION == 1 {
-            bytes.append(&mut vec![0 as u8; 12]);
-            let mut name_bytes = vec![0 as u8; NAME_BYTES];
-            for i in 0..std::cmp::min(NAME_BYTES, self.name_value.as_bytes().len()) {
-                name_bytes[i] = self.name_value.as_bytes()[i];
-            }
-            bytes.append(&mut name_bytes);
-            bytes.append(&mut save_vec_u32(&self.translated_input_history));
-            bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
-            bytes.append(&mut save_string(&self.origin));
-            let b = u32_bytes(bytes.len());
-            for i in 0..4 {
-                bytes[HEADER_LENGTH + 4 + i] = b[i];
-            }
-            bytes.append(&mut save_vec_string_comp(&self.svg_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.input2_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.narrative_hist_uniq));
-            bytes.append(&mut save_vec_string_comp(&self.displayed_tables_hist_uniq));
-            bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
-            bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
-            bytes.append(&mut save_vec_string(&self.descrip_hist_uniq));
-            bytes.append(&mut save_vec_u32(&self.svg_history));
-            bytes.append(&mut save_vec_u32(&self.summary_history));
-            bytes.append(&mut save_vec_u32(&self.input1_history));
-            bytes.append(&mut save_vec_u32(&self.input2_history));
-            bytes.append(&mut save_vec_u32(&self.narrative_history));
-            bytes.append(&mut save_vec_u32(&self.displayed_tables_history));
-            bytes.append(&mut save_vec_u32(&self.table_comp_history));
-            bytes.append(&mut save_vec_u32(&self.last_widths_history));
-            bytes.append(&mut save_vec_bool(&self.is_blank));
-            bytes.append(&mut save_vec_u32(&self.descrip_history));
-            bytes.append(&mut save_u32(self.history_index));
-            bytes.append(&mut self.narrative.as_bytes().to_vec());
-            let b = u32_bytes(bytes.len());
-            for i in 0..4 {
-                bytes[HEADER_LENGTH + i] = b[i];
-            }
-            let b = u32_bytes(self.narrative.len());
-            for i in 0..4 {
-                bytes[HEADER_LENGTH + 8 + i] = b[i];
-            }
+        bytes.append(&mut vec![0 as u8; 12]);
+        let mut name_bytes = vec![0 as u8; NAME_BYTES];
+        for i in 0..std::cmp::min(NAME_BYTES, self.name_value.as_bytes().len()) {
+            name_bytes[i] = self.name_value.as_bytes()[i];
+        }
+        bytes.append(&mut name_bytes);
+        bytes.append(&mut save_vec_u32(&self.translated_input_history));
+        bytes.append(&mut save_vec_string(&self.translated_input_hist_uniq));
+        bytes.append(&mut save_string(&self.origin));
+        let b = u32_bytes(bytes.len());
+        for i in 0..4 {
+            bytes[HEADER_LENGTH + 4 + i] = b[i];
+        }
+        bytes.append(&mut save_vec_string_comp(&self.svg_hist_uniq));
+        bytes.append(&mut save_vec_string(&self.summary_hist_uniq));
+        bytes.append(&mut save_vec_string(&self.input1_hist_uniq));
+        bytes.append(&mut save_vec_string(&self.input2_hist_uniq));
+        if ENCLONE_VISUAL_HISTORY_VERSION >= 2 {
+            bytes.append(&mut save_vec_vec_string(&self.inputn_hist_uniq));
+        }
+        bytes.append(&mut save_vec_string(&self.narrative_hist_uniq));
+        bytes.append(&mut save_vec_string_comp(&self.displayed_tables_hist_uniq));
+        bytes.append(&mut save_vec_vec_u8(&self.table_comp_hist_uniq));
+        bytes.append(&mut save_vec_vec_u32(&self.last_widths_hist_uniq));
+        bytes.append(&mut save_vec_string(&self.descrip_hist_uniq));
+        bytes.append(&mut save_vec_u32(&self.svg_history));
+        bytes.append(&mut save_vec_u32(&self.summary_history));
+        bytes.append(&mut save_vec_u32(&self.input1_history));
+        bytes.append(&mut save_vec_u32(&self.input2_history));
+        if ENCLONE_VISUAL_HISTORY_VERSION >= 2 {
+            bytes.append(&mut save_vec_u32(&self.inputn_history));
+        }
+        bytes.append(&mut save_vec_u32(&self.narrative_history));
+        bytes.append(&mut save_vec_u32(&self.displayed_tables_history));
+        bytes.append(&mut save_vec_u32(&self.table_comp_history));
+        bytes.append(&mut save_vec_u32(&self.last_widths_history));
+        bytes.append(&mut save_vec_bool(&self.is_blank));
+        bytes.append(&mut save_vec_u32(&self.descrip_history));
+        bytes.append(&mut save_u32(self.history_index));
+        bytes.append(&mut self.narrative.as_bytes().to_vec());
+        let b = u32_bytes(bytes.len());
+        for i in 0..4 {
+            bytes[HEADER_LENGTH + i] = b[i];
+        }
+        let b = u32_bytes(self.narrative.len());
+        for i in 0..4 {
+            bytes[HEADER_LENGTH + 8 + i] = b[i];
         }
         bytes
     }
@@ -189,15 +198,18 @@ impl EncloneVisualHistory {
         if bytes.len() < HEADER_LENGTH + 12 {
             return Err(());
         }
-        let expected_header = format!(
-            "enclone visual history file version{:<4}\n",
-            ENCLONE_VISUAL_HISTORY_VERSION
-        )
-        .as_bytes()
-        .to_vec();
-        if bytes[0..HEADER_LENGTH].to_vec() != expected_header {
+        let expected_header = b"enclone visual history file version".to_vec();
+        if bytes[0..HEADER_LENGTH - 5].to_vec() != expected_header {
             return Err(());
         }
+        let mut version_string = stringme(&bytes[HEADER_LENGTH - 5..HEADER_LENGTH - 1]);
+        while version_string.ends_with(' ') {
+            version_string = version_string.rev_before(" ").to_string();
+        }
+        if !version_string.parse::<usize>().is_ok() {
+            return Err(());
+        }
+        let version = version_string.force_usize();
         let narrative_len = u32_from_bytes(&bytes[HEADER_LENGTH + 8..HEADER_LENGTH + 12]) as usize;
         let mut pos = HEADER_LENGTH + 12;
         let mut name_value_bytes = Vec::<u8>::new();
@@ -220,6 +232,13 @@ impl EncloneVisualHistory {
         let summary_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input1_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let input2_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
+        let inputn_hist_uniq;
+        if version >= 2 {
+            inputn_hist_uniq = restore_vec_vec_string(&bytes, &mut pos)?;
+        } else {
+            let null_hist = vec![String::new(); EXTRA_INPUTS];
+            inputn_hist_uniq = vec![null_hist];
+        }
         let narrative_hist_uniq = restore_vec_string(&bytes, &mut pos)?;
         let displayed_tables_hist_uniq = restore_vec_string_comp(&bytes, &mut pos)?;
         let table_comp_hist_uniq = restore_vec_vec_u8(&bytes, &mut pos)?;
@@ -229,6 +248,12 @@ impl EncloneVisualHistory {
         let summary_history = restore_vec_u32(&bytes, &mut pos)?;
         let input1_history = restore_vec_u32(&bytes, &mut pos)?;
         let input2_history = restore_vec_u32(&bytes, &mut pos)?;
+        let inputn_history;
+        if version >= 2 {
+            inputn_history = restore_vec_u32(&bytes, &mut pos)?;
+        } else {
+            inputn_history = vec![0; input2_history.len()];
+        }
         let narrative_history = restore_vec_u32(&bytes, &mut pos)?;
         let displayed_tables_history = restore_vec_u32(&bytes, &mut pos)?;
         let table_comp_history = restore_vec_u32(&bytes, &mut pos)?;
@@ -250,6 +275,7 @@ impl EncloneVisualHistory {
             summary_hist_uniq: summary_hist_uniq,
             input1_hist_uniq: input1_hist_uniq,
             input2_hist_uniq: input2_hist_uniq,
+            inputn_hist_uniq: inputn_hist_uniq,
             narrative_hist_uniq: narrative_hist_uniq,
             displayed_tables_hist_uniq: displayed_tables_hist_uniq,
             table_comp_hist_uniq: table_comp_hist_uniq,
@@ -259,6 +285,7 @@ impl EncloneVisualHistory {
             summary_history: summary_history,
             input1_history: input1_history,
             input2_history: input2_history,
+            inputn_history: inputn_history,
             narrative_history: narrative_history,
             displayed_tables_history: displayed_tables_history,
             table_comp_history: table_comp_history,

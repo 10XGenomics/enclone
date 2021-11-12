@@ -43,11 +43,15 @@ impl Application for EncloneVisual {
         prepare_for_apocalypse_visual();
         COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
+        x.inputn = vec![iced::text_input::State::default(); EXTRA_INPUTS];
+        x.inputn_value.resize(EXTRA_INPUTS, String::new());
         x.submit_button_text = "Submit".to_string();
         x.compute_state = WaitingForRequest;
         x.copy_image_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.graphic_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.command_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.clonotypes_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.summary_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.sanity_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.archive_refresh_button_color = Color::from_rgb(0.0, 0.0, 0.0);
@@ -57,6 +61,8 @@ impl Application for EncloneVisual {
         x.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_help_title = "Help".to_string();
         x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
@@ -153,6 +159,7 @@ impl Application for EncloneVisual {
         x.archive_narrative = vec![String::new(); n];
         x.copy_narrative_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.copy_summary_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.graphic_png_title = "PNG".to_string();
 
         // Fetch cookbooks.  For remote cookbooks, we keep a local copy, which may or may not
         // be current.
@@ -301,6 +308,9 @@ impl Application for EncloneVisual {
         if self.help_mode {
             return help(self);
         }
+        if self.command_mode {
+            return command(self);
+        }
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -324,11 +334,27 @@ impl Application for EncloneVisual {
         .padding(7)
         .font(DEJAVU_BOLD)
         .size(16);
-        let text_input_column = Column::new()
+        let mut text_input_column = Column::new()
             .spacing(5)
             .width(iced::Length::Fill)
-            .push(text_input1)
-            .push(text_input2);
+            .push(text_input1);
+        let mut more = false;
+        for j in 0..self.inputn_value.len() {
+            if self.inputn_value[j].len() > 0 {
+                more = true;
+            }
+        }
+
+        if !more {
+            text_input_column = text_input_column.push(text_input2);
+        } else {
+            text_input_column = text_input_column.push(Space::with_height(Units(2))).push(
+                Text::new("(push Cmd to see full command)")
+                    .font(DEJAVU_BOLD)
+                    .size(16)
+                    .color(Color::from_rgb(1.0, 0.0, 0.0)),
+            );
+        }
 
         let button = Button::new(
             &mut self.button,
@@ -447,8 +473,13 @@ impl Application for EncloneVisual {
                 }
             }
 
-            // Create summary button.
+            // Create some buttons.
 
+            let command_button = Button::new(
+                &mut self.command_button,
+                Text::new("Cmd").size(COPY_BUTTON_FONT_SIZE),
+            )
+            .on_press(Message::CommandOpen(Ok(())));
             let summary_button = Button::new(
                 &mut self.summary_button,
                 Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
@@ -456,12 +487,12 @@ impl Application for EncloneVisual {
             .on_press(Message::SummaryOpen(Ok(())));
             let graphic_button = Button::new(
                 &mut self.graphic_open_button,
-                Text::new("Graphic").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Pic").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicOpen(Ok(())));
             let clonotypes_button = Button::new(
                 &mut self.clonotypes_open_button,
-                Text::new("Clonotypes").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Clono").size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ClonotypesOpen(Ok(())));
             let mut summary_buttons_row = Row::new().spacing(8);
@@ -470,7 +501,8 @@ impl Application for EncloneVisual {
             }
             summary_buttons_row = summary_buttons_row
                 .push(clonotypes_button)
-                .push(summary_button);
+                .push(summary_button)
+                .push(command_button);
 
             // Create narrative button.
 

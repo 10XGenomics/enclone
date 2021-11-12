@@ -42,6 +42,7 @@ use itertools::Itertools;
 use libc::atexit;
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
 use nix::unistd::Pid;
+use perf_stats::peak_mem_usage_gb;
 use std::env;
 use std::io::Read;
 use std::process::{Command, Stdio};
@@ -499,10 +500,20 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         // server succeeded and enough to contain the information that the server is passing to
         // the client.
 
-        let mut ebuffer = [0; 200];
+        const BYTES_TO_READ: usize = 200;
+        let mut ebuffer = [0; BYTES_TO_READ];
         let server_stderr = server_process.stderr.as_mut().unwrap();
         let tread = Instant::now();
         server_stderr.read_exact(&mut ebuffer).unwrap();
+        if ebuffer.len() != BYTES_TO_READ {
+            xprintln!(
+                "\nWeird internal error: read {} bytes from server rather than the expected \
+                number {}.\n",
+                ebuffer.len(),
+                BYTES_TO_READ
+            );
+            std::process::exit(1);
+        }
         if verbose {
             xprintln!(
                 "used {:.1} seconds reading from server stderr",
@@ -511,6 +522,24 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         }
         let emsg = strme(&ebuffer);
         if emsg.len() > 0 {
+            if emsg.contains("RUST PROGRAM PANIC") {
+                let mut ebuffer2 = Vec::<u8>::new();
+                server_stderr.read_to_end(&mut ebuffer2).unwrap();
+                let mut ebuf = Vec::<u8>::new();
+                ebuf.append(&mut ebuffer.to_vec());
+                ebuf.append(&mut ebuffer2);
+                let mut scream = String::new();
+                for _ in 0..49 {
+                    scream.push('😱');
+                }
+                xprint!(
+                    "\n{}\nThe server crashed upon startup.  Here is what it says:\n{}\n{}",
+                    scream,
+                    scream,
+                    strme(&ebuf),
+                );
+                std::process::exit(1);
+            }
             if emsg.contains("already in use") {
                 xprintln!("oops, that port is in use, trying a different one");
                 continue;
@@ -541,7 +570,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             }
             if remote_id.is_none() {
                 xprintln!("\nUnable to determine remote process id.\n");
-                xprintln!("message = {}", emsg);
+                xprintln!("message =\n\"{}\"", emsg);
                 std::process::exit(1);
             }
             let remote_version;
@@ -551,6 +580,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 remote_version = emsg.between("enclone version = ", "\n").to_string();
             } else {
                 xprint!("\nUnable to determine remote enclone version.\n");
+                xprintln!("message =\n\"{}\"", emsg);
                 std::process::exit(1);
             }
             let remote_version_string;
@@ -559,6 +589,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 remote_version_string = emsg.between("version string = ", "\n").to_string();
             } else {
                 xprint!("\nUnable to determine remote version string.\n");
+                xprintln!("message =\n\"{}\"", emsg);
                 std::process::exit(1);
             }
             let local_version = env!("CARGO_PKG_VERSION");
@@ -692,7 +723,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             xprintln!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
         xprintln!("connected");
-        xprintln!("time since startup = {:.1} seconds\n", elapsed(&t));
+        xprintln!(
+            "time since startup = {:.1} seconds, peak mem = {:.1} GB\n",
+            elapsed(&t),
+            peak_mem_usage_gb()
+        );
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.

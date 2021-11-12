@@ -634,6 +634,14 @@ pub fn check_one_lvar(
         }
     }
 
+    // Check names defined by VAR_DEF.
+
+    for i in 0..ctl.gen_opt.var_def.len() {
+        if x == &ctl.gen_opt.var_def[i].0 {
+            return Ok(true);
+        }
+    }
+
     // Check for fb<n> and fb<n>_n, and _cell versions.
 
     if x.starts_with("fb") {

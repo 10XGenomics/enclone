@@ -148,6 +148,8 @@ pub struct GeneralOpt {
     pub required_donors: Option<usize>,
     pub required_two_cell_clonotypes: Option<usize>,
     pub required_two_chain_clonotypes: Option<usize>,
+    pub required_three_chain_clonotypes: Option<usize>,
+    pub required_four_chain_clonotypes: Option<usize>,
     pub required_datasets: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
@@ -233,6 +235,8 @@ pub struct GeneralOpt {
     pub group_post_filter: Option<Vec<usize>>,
     pub no_newline: bool,
     pub fb_show: String,
+    pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
+    pub nospaces: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -337,6 +341,8 @@ pub struct ClonoFiltOpt {
     pub min_datasets: usize, // only show clonotypes involving at least this many datasets
     pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_dataset_ratio: usize, // see "enclone help filter"
+    pub min_donors: usize,   // only show clonotypes having at least this many donors
+    pub min_origins: usize,  // only show clonotypes involving at least this many origins
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub cdr3: Option<Regex>, // only show clonotypes whose CDR3_AA matches regular expression
@@ -345,6 +351,8 @@ pub struct ClonoFiltOpt {
     pub fail_only: bool,     // only print fails
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
     pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
+    pub nseg: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment names
+    pub nsegn: Vec<Vec<String>>, // do not show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
     pub max_exacts: usize,
     pub vj: Vec<u8>, // only show clonotypes having exactly this full length V..J sequence
@@ -824,6 +832,8 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("d2_name")
         || x.starts_with("fb") && !x.ends_with("_n")
         || x == "cigar"
+        || x.contains("valumis")
+        || x.contains("valbcumis")
     {
         b'l'
     } else {

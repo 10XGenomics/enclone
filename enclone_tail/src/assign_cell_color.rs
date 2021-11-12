@@ -37,16 +37,29 @@ pub fn assign_cell_color(
     let ex = &exact_clonotypes[exacts[i][j]];
     let mut color = "black".to_string();
 
-    // Determine color for coloring by variable.
+    // Determine some things about the coloring scheme.
 
+    let mut by_dataset = false;
     let mut by_var = false;
     match plot_opt.cell_color {
+        CellColor::ByDataset(_) => {
+            by_dataset = true;
+        }
         CellColor::ByVariableValue(_) => {
             by_var = true;
         }
         _ => {}
     };
-    if by_var {
+
+    // Determine color for coloring by dataset.
+
+    if by_dataset {
+        let li = ex.clones[k][0].dataset_index;
+        let c = li % 256;
+        color = format!("default-pre-{}", c);
+
+    // Determine color for coloring by variable.
+    } else if by_var {
         match plot_opt.cell_color {
             CellColor::ByVariableValue(ref x) => {
                 color = "undefined".to_string();

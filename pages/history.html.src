@@ -30,6 +30,34 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>11/9/21</b>: 
+<ul>
+<li>Add option <code>NOSPACES</code> to not show spaces between features specified by the
+<code>AMINO</code> option.  See
+<a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a>.</li>
+<li>Add option <code>COLOR=codon-diffs</code>, that causes certain "unchanged" amino acids to
+be grayed out.  This can make it much easer to see changes.  See
+<a href="../../pages/auto/help.color.html"><code>enclone help color</code></a>.</li>
+</ul>
+</p>
+
+<p><b>10/26/21</b>: 
+<ul>
+<li>Add <code>NSEG</code> and <code>NSEGN</code>, to allow exclusion of clonotypes having 
+particular VDJC genes.  
+<li>Add <code>MIN_ORIGINS</code>.</li>
+<li>Add option <code>MIN_DONORS</code>.  For example <code>MIN_DONORS=2</code> only shows 
+clonotypes containing cells from at least two donors.  If you use
+<code>MIN_DONORS=2</code> (or more), <code>MIX_DONORS</code> will be automatically turned on,
+to allow generation of clonotypes having cells from multiple donors.</li>
+</ul>
+For all of the above, 
+please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.
+</p>
+
+<p><b>10/18/21</b>: Allow coloring of honeycomb plots by dataset.  Please see
+<a href="../../pages/auto/plot.html">enclone plots</a>.</p>
+
 <p><b>10/12/21</b>: 
 <ul> 
 <li>Remove clonotypes that are not placed in a group.  This fixes a bug.</li>

@@ -1,6 +1,6 @@
 [package]
 name = "enclone_proto"
-version = "0.5.114"
+version = "0.5.129"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Lance Hepler <lance.hepler@10xgenomics.com>,
@@ -28,4 +28,4 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox", rev = "96c18b80
 thiserror = "1"
 
 [build-dependencies]
-prost-build = "0.8"
+prost-build = "0.9"

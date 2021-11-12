@@ -5,6 +5,7 @@
 use enclone_core::defs::*;
 use enclone_main::main_enclone::main_enclone;
 use enclone_ranger::main_enclone::main_enclone_ranger;
+use enclone_vars::export_code::*;
 use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
@@ -29,7 +30,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 95132016;
+    const ENCLONE_SIZE: usize = 97243904;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -90,7 +91,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.6800;
+    const REQUIRED_GI: f64 = 18.7095;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -119,6 +120,7 @@ fn test_cpu_usage() {
 
 // 29. Test source code file length.  Cap the length in lines of the longest .rs file.  We do this
 // because long files tend to increase compilation time.  They should be split up where possible.
+// Exception ..._auto.rs, for now.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -141,7 +143,7 @@ fn test_source_code_file_length() {
     for d in dirs.iter() {
         let fs = dir_list(d);
         for x in fs.iter() {
-            if x.ends_with(".rs") {
+            if x.ends_with(".rs") && !x.ends_with("_auto.rs") {
                 let y = format!("{}/{}", d, x);
                 let f = open_for_read![&y];
                 let mut n = 0;
@@ -188,7 +190,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 32;
+    const DUPPED_CRATES: usize = 44;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
@@ -422,8 +424,23 @@ fn test_exit() {
                 for line in g.lines() {
                     let s = line.unwrap();
                     if s.contains("process::exit") {
-                        eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
-                        std::process::exit(1);
+                        let mut chars = Vec::<char>::new();
+                        for c in s.chars() {
+                            chars.push(c);
+                        }
+                        let mut comment = false;
+                        for i in 0..chars.len() - 1 {
+                            if chars[i] == ' ' {
+                            } else if chars[i] == '/' && chars[i + 1] == '/' {
+                                comment = true;
+                            } else {
+                                break;
+                            }
+                        }
+                        if !comment {
+                            eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
+                            std::process::exit(1);
+                        }
                     }
                 }
             }
@@ -638,5 +655,76 @@ fn test_ranger() {
             eprintln!("files are different");
             std::process::exit(1);
         }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 39. Test to see if there are unpushed commits.  The reason we do this is that one can
+// accidentally merge a PR for a branch that has unpushed commits, and that causes grief.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_unpushed() {
+    let new = Command::new("git")
+        .arg("status")
+        .output()
+        .expect(&format!("failed to execute git status"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\netest_unpushed: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let out = strme(&new.stdout);
+    if out.contains("Your branch is ahead of") {
+        eprintln!("\nYour branch has unpushed commits.  Please push them.\n");
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 40. Test to see that export_code has been run.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_export_code() {
+    PrettyTrace::new().on();
+    let outs = export_code(1);
+    for i in 0..outs.len() {
+        let f = format!("../{}", outs[i].0);
+        let current = std::fs::read_to_string(&f).unwrap();
+        if outs[i].1 != current {
+            eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 41. Test a funny command with a newline that asserted at one point.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_newline_bad() {
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .arg("METAX=\"bcr;86237;\n     null:83808\"")
+        .output()
+        .expect(&format!("failed to execute test_newline_bad"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ntest_newline_bad: failed\n");
+        eprintln!("stderr = {}\n", strme(&new.stderr));
+        std::process::exit(1);
     }
 }

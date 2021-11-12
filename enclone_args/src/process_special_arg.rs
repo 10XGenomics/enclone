@@ -3,10 +3,12 @@
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
 use crate::proc_args2::{is_f64_arg, is_simple_arg, is_usize_arg};
-use enclone_core::cell_color::{CellColor, ColorByVariableValue};
+use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
+use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
+use expr_tools::test_functions_in_node;
 use io_utils::path_exists;
 use itertools::Itertools;
 use regex::Regex;
@@ -86,6 +88,7 @@ pub fn process_special_arg(
         let mut color_count = 0;
         let (mut min, mut max) = (None, None);
         let (mut var, mut display_var) = (String::new(), String::new());
+        let mut schema = String::new();
         for p in parts.iter() {
             let mut p = p.clone();
             let part_name = p[0].before("=").to_string();
@@ -129,37 +132,45 @@ pub fn process_special_arg(
                 }
             } else if part_name == "color" {
                 color_count += 1;
-                if p[0] != "var" || p.len() < 2 {
-                    return Err(err);
-                }
-                var = p[1].to_string();
-                display_var = var.clone();
-                if var.contains(':') {
-                    display_var = var.before(":").to_string();
-                    var = var.after(":").to_string();
-                }
-                if p.len() >= 3 && !p[2].is_empty() && p[2] != "turbo" {
-                    return Err(err);
-                }
-                if p.len() >= 4 {
-                    let scale = &p[3..];
-                    if !scale.is_empty() && scale[0] != "minmax" {
+                if p.len() == 1 && p[0] == "dataset" {
+                    schema = "dataset".to_string();
+                    let v = ColorByDataset {};
+                    let cc = CellColor::ByDataset(v);
+                    ctl.plot_opt.cell_color = cc;
+                } else {
+                    if p[0] != "var" || p.len() < 2 {
                         return Err(err);
                     }
-                    if scale.len() >= 2 {
-                        if scale[1].parse::<f64>().is_err() {
-                            return Err(err);
-                        }
-                        min = Some(scale[1].force_f64());
+                    schema = "variable".to_string();
+                    var = p[1].to_string();
+                    display_var = var.clone();
+                    if var.contains(':') {
+                        display_var = var.before(":").to_string();
+                        var = var.after(":").to_string();
                     }
-                    if scale.len() >= 3 {
-                        if scale[2].parse::<f64>().is_err() {
-                            return Err(err);
-                        }
-                        max = Some(scale[2].force_f64());
-                    }
-                    if min.is_some() && max.is_some() && min >= max {
+                    if p.len() >= 3 && !p[2].is_empty() && p[2] != "turbo" {
                         return Err(err);
+                    }
+                    if p.len() >= 4 {
+                        let scale = &p[3..];
+                        if !scale.is_empty() && scale[0] != "minmax" {
+                            return Err(err);
+                        }
+                        if scale.len() >= 2 {
+                            if scale[1].parse::<f64>().is_err() {
+                                return Err(err);
+                            }
+                            min = Some(scale[1].force_f64());
+                        }
+                        if scale.len() >= 3 {
+                            if scale[2].parse::<f64>().is_err() {
+                                return Err(err);
+                            }
+                            max = Some(scale[2].force_f64());
+                        }
+                        if min.is_some() && max.is_some() && min >= max {
+                            return Err(err);
+                        }
                     }
                 }
             } else {
@@ -181,14 +192,59 @@ pub fn process_special_arg(
         if color_count > 1 {
             return Err("\nHONEY=... must specify color=... only once.\n".to_string());
         }
-        let v = ColorByVariableValue {
-            var,
-            display_var,
-            min,
-            max,
-        };
-        let cc = CellColor::ByVariableValue(v);
-        ctl.plot_opt.cell_color = cc;
+        if schema == "dataset" {
+            let v = ColorByDataset {};
+            let cc = CellColor::ByDataset(v);
+            ctl.plot_opt.cell_color = cc;
+        } else if schema == "variable" {
+            let v = ColorByVariableValue {
+                var,
+                display_var,
+                min,
+                max,
+            };
+            let cc = CellColor::ByVariableValue(v);
+            ctl.plot_opt.cell_color = cc;
+        }
+    } else if arg.starts_with("VAR_DEF=") {
+        let val = arg.after("VAR_DEF=");
+        if !val.contains(":") {
+            return Err(format!("\nCould not find : in {}.\n", arg));
+        }
+        let name = val.before(":");
+        let expr = val.after(":");
+        let eval = encode_arith(&expr);
+        let compiled = build_operator_tree(&eval);
+        if compiled.is_err() {
+            return Err(format!(
+                "\nUnable to represent \"{}\" as a valid expression.  You might \
+                check the following:\n\
+                • arithmetic operators + - * / must have a blank on both sides\n\
+                • parentheses must be balanced\n",
+                expr,
+            ));
+        }
+        let compiled = compiled.unwrap();
+        let res = test_functions_in_node(&compiled);
+        if res.is_err() {
+            let err = res.as_ref().err().unwrap();
+            return Err(format!(
+                "\n{}\nYou might check the following:\n\
+                • arithmetic operators + - * / must have a blank on both sides\n",
+                err,
+            ));
+        }
+        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled));
+    } else if arg.starts_with("MIN_DONORS") {
+        let n = arg.after("MIN_DONORS=");
+        if n.parse::<usize>().is_err() || n.force_usize() == 0 {
+            return Err(format!("\nArgument {} is not properly specified.\n", arg));
+        }
+        let n = n.force_usize();
+        ctl.clono_filt_opt.min_donors = n;
+        if n >= 2 {
+            ctl.clono_filt_opt_def.donor = true;
+        }
     } else if arg.starts_with("JALIGN") {
         let n = arg.after("JALIGN");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {
@@ -361,6 +417,12 @@ pub fn process_special_arg(
     } else if is_usize_arg(arg, "REQUIRED_TWO_CHAIN_CLONOTYPES")? {
         ctl.gen_opt.required_two_chain_clonotypes =
             Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
+    } else if is_usize_arg(arg, "REQUIRED_THREE_CHAIN_CLONOTYPES")? {
+        ctl.gen_opt.required_three_chain_clonotypes =
+            Some(arg.after("REQUIRED_THREE_CHAIN_CLONOTYPES=").force_usize());
+    } else if is_usize_arg(arg, "REQUIRED_FOUR_CHAIN_CLONOTYPES")? {
+        ctl.gen_opt.required_four_chain_clonotypes =
+            Some(arg.after("REQUIRED_FOUR_CHAIN_CLONOTYPES=").force_usize());
     } else if is_usize_arg(arg, "REQUIRED_DATASETS")? {
         ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
     } else if is_usize_arg(arg, "EXACT")? {
@@ -512,7 +574,10 @@ pub fn process_special_arg(
         }
     } else if arg.starts_with("COLOR=") {
         ctl.gen_opt.color = arg.after("COLOR=").to_string();
-        if ctl.gen_opt.color != *"codon" && ctl.gen_opt.color != *"property" {
+        if ctl.gen_opt.color != *"codon"
+            && ctl.gen_opt.color != *"codon-diffs"
+            && ctl.gen_opt.color != *"property"
+        {
             let mut ok = false;
             if arg.starts_with("COLOR=peer.") {
                 let pc = arg.after("COLOR=peer.");
@@ -575,8 +640,6 @@ pub fn process_special_arg(
             return Err(format!("\n{} usage incorrect.\n", arg.before("=")));
         }
         ctl.clono_filt_opt_def.fcell.push(compiled.unwrap());
-    } else if is_simple_arg(arg, "FAIL_ONLY=true")? {
-        ctl.clono_filt_opt.fail_only = true;
     } else if arg.starts_with("LEGEND=") {
         let x = parse_csv(arg.after("LEGEND="));
         if x.is_empty() || x.len() % 2 != 0 {
@@ -697,8 +760,6 @@ pub fn process_special_arg(
         if ctl.plot_opt.plot_file.is_empty() {
             return Err("\nFilename value needs to be supplied to PLOT_BY_MARK.\n".to_string());
         }
-    } else if is_simple_arg(arg, "FAIL_ONLY=false")? {
-        ctl.clono_filt_opt.fail_only = false;
     } else if is_usize_arg(arg, "MAX_CORES")? {
         let nthreads = arg.after("MAX_CORES=").force_usize();
         let _ = rayon::ThreadPoolBuilder::new()
@@ -887,6 +948,25 @@ pub fn process_special_arg(
         }
         y.sort();
         ctl.clono_filt_opt.segn.push(y);
+    } else if arg.starts_with("NSEG=") {
+        let fields = arg.after("NSEG=").split('|').collect::<Vec<&str>>();
+        let mut y = Vec::<String>::new();
+        for x in fields.iter() {
+            y.push(x.to_string());
+        }
+        y.sort();
+        ctl.clono_filt_opt.nseg.push(y);
+    } else if arg.starts_with("NSEGN=") {
+        let fields = arg.after("NSEGN=").split('|').collect::<Vec<&str>>();
+        let mut y = Vec::<String>::new();
+        for x in fields.iter() {
+            if x.parse::<i32>().is_err() {
+                return Err("\nInvalid argument to NSEGN.\n".to_string());
+            }
+            y.push(x.to_string());
+        }
+        y.sort();
+        ctl.clono_filt_opt.nsegn.push(y);
     } else if is_usize_arg(arg, "CELLS")? {
         ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
@@ -896,7 +976,8 @@ pub fn process_special_arg(
         metas.push(f);
     } else if arg.starts_with("METAX=") {
         let f = arg.after("METAX=");
-        metaxs.push(f.to_string());
+        let f = f.chars().filter(|c| !c.is_whitespace()).collect();
+        metaxs.push(f);
     } else if arg.starts_with("TCR=")
         || arg.starts_with("BCR=")
         || (!arg.is_empty() && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')

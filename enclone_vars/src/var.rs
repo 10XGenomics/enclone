@@ -85,6 +85,9 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
                 }
                 let n = this_group.len();
                 this_group[n - 1] += &mut format!(" {}", line.after(INDENT));
+                if FIELDS[fc - 1] == "code" {
+                    this_group[n - 1] += "\n";
+                }
             }
         }
     }
@@ -93,6 +96,11 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
 
     let mut vars = Vec::<Variable>::new();
     for g in groups.iter() {
+        // Weird fix to code.
+        let mut code = g[11].clone();
+        if code.contains(";") {
+            code = format!("{};\n{}", code.before(";"), code.after(";"));
+        }
         vars.push(Variable {
             name: g[0].clone(),
             inputs: g[1].clone(),
@@ -105,7 +113,7 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
             page: g[8].clone(),
             avail: g[9].clone(),
             notes: g[10].clone(),
-            code: g[11].clone(),
+            code: code,
         });
     }
 
@@ -123,7 +131,7 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
 
     // Test upper-case rule.
 
-    let classes = ["BC", "DATASET", "FEATURE", "INFO", "NAME", "REG"];
+    let classes = ["BC", "DATASET", "FEATURE", "INFO", "NAME", "REG", "VARDEF"];
     for i in 0..vars.len() {
         let n = &vars[i].name;
         let mut chars = Vec::<char>::new();
