@@ -12,6 +12,24 @@ use std::io::{BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
 
+// translate_range: translate an inclusive nonnegative integer range of the form a..b or a..
+// into a regular expression.  Only implemented for a handful of cases but could be generalized.
+
+pub fn translate_range(r: &str) -> String {
+    if r == "1..2" {
+        return "1|2".to_string();
+    } else if r == "1..3" {
+        return "1|2|3".to_string();
+    } else if r == "1..4" {
+        return "1|2|3|4".to_string();
+    } else if r == "0.." {
+        return "0|[1-9][0-9].".to_string();
+    } else if r == "1.." {
+        return "[1-9][0-9].".to_string();
+    }
+    panic!("translate_range: not general enough to handle {}", r);
+}
+
 pub fn export_code(level: usize) -> Vec<(String, String)> {
     // Define code start/stop for cvar_vdj.
 
