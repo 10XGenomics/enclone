@@ -101,10 +101,8 @@ pub fn proc_cvar1(
         let mut last_color = "black".to_string();
         for k in 0..show_aa[col].len() {
             let p = show_aa[col][k];
-            if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                if !ctl.gen_opt.nospaces {
-                    cx[col][j] += " ";
-                }
+            if k > 0 && field_types[col][k] != field_types[col][k - 1] && !ctl.gen_opt.nospaces {
+                cx[col][j] += " ";
             }
             if 3 * p + 3 <= seq_amino.len()
                 && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()

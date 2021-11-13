@@ -195,16 +195,14 @@ pub fn proc_cvar_auto(
                     .to_vec();
                 y = stringme(&aa_seq(&dna, 0));
             }
-        } else {
-            if x.cdr2_start.is_some()
-                && x.fr3_start.is_some()
-                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
-            {
-                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
-                    [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
-                    .to_vec();
-                y = stringme(&aa_seq(&dna, 0));
-            }
+        } else if x.cdr2_start.is_some()
+            && x.fr3_start.is_some()
+            && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+        {
+            let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                .to_vec();
+            y = stringme(&aa_seq(&dna, 0));
         }
 
         (y, Vec::new())
@@ -227,16 +225,14 @@ pub fn proc_cvar_auto(
                     .to_vec();
                 y = stringme(&dna);
             }
-        } else {
-            if x.cdr2_start.is_some()
-                && x.fr3_start.is_some()
-                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
-            {
-                let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
-                    [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
-                    .to_vec();
-                y = stringme(&dna);
-            }
+        } else if x.cdr2_start.is_some()
+            && x.fr3_start.is_some()
+            && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+        {
+            let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                .to_vec();
+            y = stringme(&dna);
         }
 
         (y, Vec::new())
@@ -251,12 +247,12 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_cdr1(&x, 0, 0);
+            c = get_cdr1(x, 0, 0);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
         } else if arg1 == 2 {
-            c = get_cdr2(&x, 0, 0);
+            c = get_cdr2(x, 0, 0);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
@@ -281,7 +277,7 @@ pub fn proc_cvar_auto(
                 left = 3;
                 right = 3;
             }
-            c = get_cdr1(&x, left, right);
+            c = get_cdr1(x, left, right);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
@@ -294,12 +290,12 @@ pub fn proc_cvar_auto(
                 left = 1;
                 right = 0;
             }
-            c = get_cdr2(&x, left, right);
+            c = get_cdr2(x, left, right);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
         } else {
-            c = get_cdr3(&x, -1, -1);
+            c = get_cdr3(x, -1, -1);
             if c.is_some() {
                 y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
             }
@@ -317,9 +313,9 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_cdr1(&x, 0, 0);
+            c = get_cdr1(x, 0, 0);
         } else if arg1 == 2 {
-            c = get_cdr2(&x, 0, 0);
+            c = get_cdr2(x, 0, 0);
         } else {
             c = Some(x.cdr3_dna.clone());
         }
@@ -339,9 +335,9 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_cdr1(&x, 0, 0);
+            c = get_cdr1(x, 0, 0);
         } else if arg1 == 2 {
-            c = get_cdr2(&x, 0, 0);
+            c = get_cdr2(x, 0, 0);
         } else {
             c = Some(x.cdr3_dna.clone());
         }
@@ -379,7 +375,7 @@ pub fn proc_cvar_auto(
             Vec::new(),
         )
     } else if var == "comp" {
-        let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+        let (comp, _edit) = comp_edit(ex, mid, col, refdata, dref, rsi);
 
         (format!("{}", comp), Vec::new())
     } else if var == "const" {
@@ -621,7 +617,7 @@ pub fn proc_cvar_auto(
             Vec::new(),
         )
     } else if var == "edit" {
-        let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
+        let (_comp, edit) = comp_edit(ex, mid, col, refdata, dref, rsi);
 
         (edit, Vec::new())
     } else if var.starts_with("fwr")
@@ -635,17 +631,17 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_fwr1(&x);
+            c = get_fwr1(x);
         } else if arg1 == 2 {
-            c = get_fwr2(&x);
+            c = get_fwr2(x);
         } else if arg1 == 3 {
-            c = get_fwr3(&x);
+            c = get_fwr3(x);
         } else {
             let x = &ex.share[mid];
             let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
             let stop = rsi.seq_del_lens[col];
             let dna = &x.seq_del_amino[start..stop];
-            c = Some(stringme(&dna));
+            c = Some(stringme(dna));
         }
         if c.is_some() {
             y = stringme(&aa_seq(c.unwrap().as_bytes(), 0));
@@ -708,17 +704,17 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_fwr1(&x);
+            c = get_fwr1(x);
         } else if arg1 == 2 {
-            c = get_fwr2(&x);
+            c = get_fwr2(x);
         } else if arg1 == 3 {
-            c = get_fwr3(&x);
+            c = get_fwr3(x);
         } else {
             let x = &ex.share[mid];
             let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
             let stop = rsi.seq_del_lens[col];
             let dna = &x.seq_del_amino[start..stop];
-            c = Some(stringme(&dna));
+            c = Some(stringme(dna));
         }
         if c.is_some() {
             y = c.unwrap();
@@ -781,17 +777,17 @@ pub fn proc_cvar_auto(
         let mut y = "unknown".to_string();
         let c;
         if arg1 == 1 {
-            c = get_fwr1(&x);
+            c = get_fwr1(x);
         } else if arg1 == 2 {
-            c = get_fwr2(&x);
+            c = get_fwr2(x);
         } else if arg1 == 3 {
-            c = get_fwr3(&x);
+            c = get_fwr3(x);
         } else {
             let x = &ex.share[mid];
             let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
             let stop = rsi.seq_del_lens[col];
             let dna = &x.seq_del_amino[start..stop];
-            c = Some(stringme(&dna));
+            c = Some(stringme(dna));
         }
         if c.is_some() {
             y = format!("{}", c.unwrap().len() / 3);
@@ -931,8 +927,8 @@ pub fn proc_cvar_auto(
         }
 
         (String::new(), vals)
-    } else if var.starts_with("q")
-        && var.ends_with("_")
+    } else if var.starts_with('q')
+        && var.ends_with('_')
         && var.between2("q", "_").parse::<usize>().is_ok()
         && var.between2("q", "_").force_i64() >= 0
     {
@@ -1048,7 +1044,7 @@ pub fn proc_cvar_auto(
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
-        numis.sort();
+        numis.sort_unstable();
 
         (format!("{}", numis.iter().max().unwrap()), Vec::new())
     } else if var == "u_mean" {
@@ -1056,7 +1052,7 @@ pub fn proc_cvar_auto(
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
-        numis.sort();
+        numis.sort_unstable();
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
 
@@ -1066,7 +1062,7 @@ pub fn proc_cvar_auto(
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
-        numis.sort();
+        numis.sort_unstable();
 
         (format!("{}", numis.iter().min().unwrap()), Vec::new())
     } else if var == "u_sum" {
@@ -1090,7 +1086,7 @@ pub fn proc_cvar_auto(
         for j in 0..ex.clones.len() {
             numis.push(ex.clones[j][mid].umi_count);
         }
-        numis.sort();
+        numis.sort_unstable();
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
 
@@ -1242,12 +1238,12 @@ pub fn proc_cvar_auto(
         ("$UNDEFINED".to_string(), Vec::<String>::new())
     };
     if val.0 == "$UNDEFINED" {
-        return Ok(false);
+        Ok(false)
     } else {
         let (exact, cell) = &val;
         let varc = format!("{}{}", var, col + 1);
-        if exact.len() > 0 {
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+        if !exact.is_empty() {
+            if j < rsi.cvars[col].len() && cvars.contains(var) {
                 cx[col][j] = exact.clone();
             }
             speakc!(u, col, var, exact);
@@ -1256,18 +1252,16 @@ pub fn proc_cvar_auto(
             } else {
                 stats.push((varc, cell.to_vec()));
             }
-        } else if cell.len() > 0 {
-            if pass == 2
-                && ((ctl.parseable_opt.pchains == "max"
-                    || col < ctl.parseable_opt.pchains.force_usize())
-                    || !extra_args.is_empty())
-            {
-                if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
-                    let vals = format!("{}", cell.iter().format(&POUT_SEP));
-                    out_data[u].insert(varc, vals);
-                }
-            }
+        } else if !cell.is_empty()
+            && pass == 2
+            && ((ctl.parseable_opt.pchains == "max"
+                || col < ctl.parseable_opt.pchains.force_usize())
+                || !extra_args.is_empty())
+            && (pcols_sort.is_empty() || bin_member(pcols_sort, &varc))
+        {
+            let vals = cell.iter().format(POUT_SEP).to_string();
+            out_data[u].insert(varc, vals);
         }
-        return Ok(true);
+        Ok(true)
     }
 }

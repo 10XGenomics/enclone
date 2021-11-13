@@ -627,7 +627,7 @@ pub fn print_clonotypes(
 
                 let mut cdr3_con = Vec::<Vec<u8>>::new();
                 if ctl.gen_opt.color == "codon-diffs" {
-                    cdr3_con = consensus_codon_cdr3(&rsi, &exacts, &exact_clonotypes);
+                    cdr3_con = consensus_codon_cdr3(&rsi, &exacts, exact_clonotypes);
                 }
 
                 // Build rows.

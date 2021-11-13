@@ -399,10 +399,11 @@ pub fn build_diff_row(
                 if rsi.cvars[col][m] == *"amino" {
                     let mut xdots = String::new();
                     for k in 0..show_aa[col].len() {
-                        if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                            if !ctl.gen_opt.nospaces {
-                                xdots.push(' ');
-                            }
+                        if k > 0
+                            && field_types[col][k] != field_types[col][k - 1]
+                            && !ctl.gen_opt.nospaces
+                        {
+                            xdots.push(' ');
                         }
                         let p = show_aa[col][k];
                         let q = 3 * p;
@@ -535,10 +536,11 @@ pub fn insert_consensus_row(
                 if rsi.cvars[col][m] == *"amino" {
                     let mut xdots = String::new();
                     for k in 0..show_aa[col].len() {
-                        if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                            if !ctl.gen_opt.nospaces {
-                                xdots.push(' ');
-                            }
+                        if k > 0
+                            && field_types[col][k] != field_types[col][k - 1]
+                            && !ctl.gen_opt.nospaces
+                        {
+                            xdots.push(' ');
                         }
                         let p = show_aa[col][k];
                         let mut codons = Vec::<Vec<u8>>::new();

@@ -38,7 +38,7 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
     let mut found = vec![false; REQUIRED_ARGS.len()];
     for i in 1..args.len() {
         let mut arg = args[i].clone();
-        if arg.contains("=") {
+        if arg.contains('=') {
             arg = arg.before("=").to_string();
         }
         let mut ok = false;

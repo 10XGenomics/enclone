@@ -185,7 +185,7 @@ pub fn load_gex(
             let pso2 = format!("{}/../per_sample_outs", outs);
             for pso in [pso1, pso2].iter() {
                 if path_exists(&pso) {
-                    let samples = dir_list(&pso);
+                    let samples = dir_list(pso);
                     if samples.solo() {
                         let a = format!("{}/{}/count/analysis", pso, samples[0]);
                         analysis.push(a);
