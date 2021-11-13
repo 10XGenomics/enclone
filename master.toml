@@ -74,7 +74,7 @@ png-decoder = "0.1"
 pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.9", default_features = false }
-prost = { version = "0.8", default_features = false }
+prost = { version = ">=0.8,<0.10", default_features = false }
 prost-build = "0.9"
 rand = "0.8"
 rayon = "1"

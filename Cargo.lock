@@ -1513,7 +1513,7 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "prost 0.8.0",
+ "prost 0.9.0",
  "prost-build 0.9.0",
  "serde",
  "serde_derive",
