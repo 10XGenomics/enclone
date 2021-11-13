@@ -31,7 +31,7 @@ expr_tools = "0.1"
 flate2 = "1"
 fs_extra = "1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
-io_utils = "0.2"
+io_utils = "0.3"
 itertools = "0.10"
 lz4 = "1"
 mirror_sparse_matrix = "0.1"
@@ -43,5 +43,5 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3fb29bd1d46c12df08c686ac2d7c70b969bf017a" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
 vector_utils = "0.1"

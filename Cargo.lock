@@ -56,9 +56,9 @@ dependencies = [
 
 [[package]]
 name = "align_tools"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f667484564c6f4639412bf7678284197552ce9d130fb77d965a999c9848d5f55"
+checksum = "d106e31e27304b55a3dcfa088f8705411f58e5c6718cda6bce7d8a7484f80c0b"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -79,9 +79,9 @@ dependencies = [
 
 [[package]]
 name = "ansi_escape"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "225b80798b4b09b1c7978a4efa0e8fe215af5e28fde51ed31110942c7dbf5dc4"
+checksum = "8e704dda4f6ccbc1e07c55dca526160989a84973723996a0ff473a3b23094557"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -394,9 +394,9 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "binary_vec_io"
-version = "0.1.11"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bed84b9bf0f0dadc4712a6ab06919cc9c081df52d61860590e5b7b0a94b0acbe"
+checksum = "e8b26a64da90d37568da288a76425c5efd45278a92e71ca544f6d366048bd03a"
 dependencies = [
  "itertools",
 ]
@@ -444,7 +444,7 @@ dependencies = [
  "serde_derive",
  "statrs",
  "strum",
- "strum_macros 0.21.1",
+ "strum_macros",
  "thiserror",
  "triple_accel",
  "vec_map",
@@ -459,7 +459,7 @@ dependencies = [
  "derive-new",
  "lazy_static",
  "regex",
- "strum_macros 0.20.1",
+ "strum_macros",
  "thiserror",
 ]
 
@@ -1309,7 +1309,7 @@ dependencies = [
  "pager",
  "perf_stats",
  "petgraph 0.5.1",
- "pprof 0.6.0",
+ "pprof",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1884,9 +1884,9 @@ checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
 
 [[package]]
 name = "exons"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c880dcf1c1f3ec73f81807a42655f3a45ef6b02fff48c7069fd11789808f838"
+checksum = "98ade6e4dae7e83c43060ed785ae734608cda540c055acc59f80efa582e30068"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1905,9 +1905,9 @@ dependencies = [
 
 [[package]]
 name = "expr_tools"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb19509d1d790d73d64060aa25755f85b1ecb3bd747bb0fc1a05ea7a29b49a7e"
+checksum = "decd24d7468ad8a966eda9dd491a7ee0ab6020c0f853bf0998e4c71ebce0f4d9"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1917,9 +1917,9 @@ dependencies = [
 
 [[package]]
 name = "fasta_tools"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65115af346eedb7f03fd18c6ccd4755169053cd4a4e7cc586ce6fd23f9226f40"
+checksum = "9b74cd477c44581e4bea50cc9bc4fbd3a7d517d5fee489784d9059937ff9f4ff"
 dependencies = [
  "debruijn",
  "flate2",
@@ -2422,9 +2422,9 @@ dependencies = [
 
 [[package]]
 name = "graph_simple"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf27cb02aaa9b7915c3a0cc17efcad73e1c1b894d2f05ebb576bc512279febef"
+checksum = "2ad416c609c61bb8dfd1ab36044e842e4f71b9d5e5240d059693b6d832d489d6"
 dependencies = [
  "petgraph 0.5.1",
  "vector_utils",
@@ -2629,9 +2629,9 @@ dependencies = [
 
 [[package]]
 name = "hyperbase"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a1f61e651888744ac52afe5b2eb2b50a9c7daeae3e8da78020b2cff06f22b26"
+checksum = "8fed1f1c05f120a3ceba29f72b739763be0d4cf851e97f4b20a5ace72a7f167b"
 dependencies = [
  "debruijn",
  "equiv",
@@ -2849,16 +2849,15 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.2.12"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ddc8045714eda913be48466de2910e0c9134d7a2d0f7cf1f986a6a46d688b7ad"
+checksum = "cf9db5b29f9ab5f3a9d19a9279c2dc58411d9ce584bac6785d105cbe375e0ae3"
 dependencies = [
  "bincode",
  "flate2",
  "lz4",
  "serde",
  "string_utils",
- "vector_utils",
 ]
 
 [[package]]
@@ -2939,9 +2938,9 @@ dependencies = [
 
 [[package]]
 name = "kmer_lookup"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c1e9d449945e7bee2cc5d2dbbaf8354e26e9ab49749e998f3cca90b82d70717"
+checksum = "54dba4cacdcca8ba7374a6bad2ab3de28811f8e71526aacd24e58601547fe0b5"
 dependencies = [
  "debruijn",
  "rayon",
@@ -3246,9 +3245,9 @@ dependencies = [
 
 [[package]]
 name = "mirror_sparse_matrix"
-version = "0.1.16"
+version = "0.1.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c27abea703e0a5b1f27b6bf7e7a6317dc79d4aa3b54761c560fe903e1f9a07b"
+checksum = "025eec0a3c4c1839c17af9ff2729054ebef77f1e48983429541428509a8b4799"
 dependencies = [
  "binary_vec_io",
 ]
@@ -3756,9 +3755,9 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 
 [[package]]
 name = "perf_stats"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d2b8b72ee03fc8f821d70308f71dcfd00347589bfab568b095e2f859a63aba7"
+checksum = "97351b3d037f3e3226bbcc796ce53dfbb5298e9286e6ac58f65b8bfe336a8c42"
 dependencies = [
  "io_utils",
  "libc",
@@ -3967,26 +3966,6 @@ dependencies = [
 
 [[package]]
 name = "pprof"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9fb4eee2f2c4f7d48fe5a33008dececbc405d0e58d2a94afe742d4f175bc401"
-dependencies = [
- "backtrace",
- "lazy_static",
- "libc",
- "log",
- "nix 0.20.0",
- "parking_lot",
- "prost 0.8.0",
- "prost-build 0.8.0",
- "prost-derive 0.8.0",
- "symbolic-demangle",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "pprof"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35ec6927a8c4b0bb3418964ddae137ed6b2d5aa98f4b2210d61764fb30cec4bd"
@@ -3997,6 +3976,9 @@ dependencies = [
  "log",
  "nix 0.23.0",
  "parking_lot",
+ "prost 0.9.0",
+ "prost-build 0.9.0",
+ "prost-derive 0.9.0",
  "symbolic-demangle",
  "tempfile",
  "thiserror",
@@ -4037,17 +4019,16 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.20"
+version = "0.5.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e101cb2f4618f499a674c7f5d4566482e6ca90c890955e1a4c147561ce4c8c6"
+checksum = "f782e4a3c572c596b302323fe8decb83815a07e8cb21e223383b926668318cc8"
 dependencies = [
  "backtrace",
  "io_utils",
- "itertools",
  "lazy_static",
  "libc",
  "nix 0.20.0",
- "pprof 0.5.0",
+ "pprof",
  "stats_utils",
  "string_utils",
  "tables",
@@ -4841,9 +4822,9 @@ checksum = "b2d615734a36694d0a5803b1fe69b185611864224f5b2d4425ad0b69e39fb877"
 
 [[package]]
 name = "stirling_numbers"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f077641706a1369ee520ad963fdd71c85a2c4bc0645b6fe2808a48260f9b1db7"
+checksum = "9b38318215cdac77fc77de2b7d5a79db9098340d05b4960dbe227e33a95ece95"
 dependencies = [
  "num-traits",
 ]
@@ -4880,18 +4861,6 @@ name = "strum_macros"
 version = "0.20.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "strum_macros"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -4966,9 +4935,9 @@ dependencies = [
 
 [[package]]
 name = "tables"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8040dd06612f1e071719aa1db7d5b97c6e59c18a6115eb12cf6374a13499085a"
+checksum = "8ee0c732e620e592ba3ad7cafceef32028e185c7bf6c8e34b367565bf3b43ece"
 dependencies = [
  "io_utils",
  "itertools",
@@ -5152,9 +5121,9 @@ dependencies = [
 
 [[package]]
 name = "tonic"
-version = "0.5.0"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b584f064fdfc50017ec39162d5aebce49912f1eb16fd128e04b7f4ce4907c7e5"
+checksum = "796c5e1cd49905e65dd8e700d4cb1dffcbfdb4fc9d017de08c1a537afd83627c"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -5183,9 +5152,9 @@ dependencies = [
 
 [[package]]
 name = "tonic-build"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d12faebbe071b06f486be82cc9318350814fdd07fcb28f3690840cd770599283"
+checksum = "12b52d07035516c2b74337d2ac7746075e7dcae7643816c1b12c5ff8a7484c08"
 dependencies = [
  "proc-macro2",
  "prost-build 0.8.0",
@@ -5454,8 +5423,8 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann"
-version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
+version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
 dependencies = [
  "align_tools",
  "amino",
@@ -5476,8 +5445,8 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann_ref"
-version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3fb29bd1d46c12df08c686ac2d7c70b969bf017a#3fb29bd1d46c12df08c686ac2d7c70b969bf017a"
+version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
 dependencies = [
  "debruijn",
  "exons",
@@ -5501,7 +5470,7 @@ dependencies = [
  "enum-iterator",
  "serde",
  "strum",
- "strum_macros 0.21.1",
+ "strum_macros",
 ]
 
 [[package]]

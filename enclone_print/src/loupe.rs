@@ -362,7 +362,7 @@ pub fn loupe_out(
             uref.push(UniversalReferenceItem {
                 ref_idx: refdata.id[i] as u32,
                 display_name: refdata.name[i].clone(),
-                region: match refdata.segtype[i].as_str() {
+                region: match refdata.segtype[i] {
                     "U" => Region::U.into(),
                     "V" => Region::V.into(),
                     "D" => Region::D.into(),

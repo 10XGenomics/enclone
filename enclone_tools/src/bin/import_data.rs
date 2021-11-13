@@ -184,7 +184,7 @@ fn main() {
             {
                 let mut antibody_seq_id = None;
                 let inv = format!("{}/../_invocation", p);
-                let f = open_for_read![inv];
+                let f = open_for_read![&inv];
                 let mut lines = Vec::<String>::new();
                 for line in f.lines() {
                     let s = line.unwrap();

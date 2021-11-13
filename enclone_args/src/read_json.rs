@@ -217,7 +217,7 @@ fn parse_vector_entry_from_json(
                 }
                 k += 1;
             }
-            if refdata.segtype[t] == *"V" && k - j > 1 {
+            if refdata.segtype[t] == "V" && k - j > 1 {
                 let mut entries = 1;
                 if j < ann.len() - 1
                     && ann[j + 1].2 as usize == t

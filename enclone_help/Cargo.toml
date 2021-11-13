@@ -22,7 +22,7 @@ publish = false
 [dependencies]
 ansi_escape = "0.1"
 enclone_core = { path = "../enclone_core" }
-io_utils = "0.2"
+io_utils = "0.3"
 itertools = "0.10"
 string_utils = "0.1"
 tables = "0.1"

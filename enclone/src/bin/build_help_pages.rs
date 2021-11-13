@@ -60,7 +60,7 @@ fn main() {
             eprintln!("stderr:\n{}", strme(&new.stderr));
             std::process::exit(1);
         }
-        let mut f = open_for_write_new![format!("pages/auto/help.{}.html", x)];
+        let mut f = open_for_write_new![format!("pages/auto/help.{}.html", x).as_str()];
         fwrite!(f, "{}", strme(&new.stdout));
     }
 }
