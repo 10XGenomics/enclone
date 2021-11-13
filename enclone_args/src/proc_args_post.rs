@@ -8,8 +8,8 @@ use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use std::time::Instant;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;

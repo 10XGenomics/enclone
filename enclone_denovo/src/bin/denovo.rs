@@ -160,8 +160,8 @@ use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::process::Command;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use superslice::Ext;

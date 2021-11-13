@@ -5,8 +5,8 @@
 use enclone_core::defs::HELP_PAGES;
 use io_utils::{fwrite, open_for_write_new};
 use pretty_trace::PrettyTrace;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::process::Command;
 use string_utils::strme;
 

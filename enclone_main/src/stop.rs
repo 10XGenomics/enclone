@@ -12,14 +12,7 @@ use perf_stats::{elapsed, peak_mem_usage_gb};
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::{
-    collections::HashMap,
-    env,
-    fs::File,
-    io::{BufRead, BufReader},
-    thread, time,
-    time::Instant,
-};
+use std::{collections::HashMap, env, io::BufRead, thread, time, time::Instant};
 use string_utils::TextUtils;
 use vector_utils::*;
 

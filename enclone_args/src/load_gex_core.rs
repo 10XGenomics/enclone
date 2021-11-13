@@ -16,7 +16,7 @@ use std::{
     collections::HashMap,
     convert::TryInto,
     fs::{read_to_string, remove_file, File},
-    io::{BufRead, BufReader, Read},
+    io::{BufRead, Read},
     time::Instant,
 };
 use string_utils::{parse_csv, TextUtils};

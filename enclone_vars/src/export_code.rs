@@ -8,8 +8,8 @@
 use crate::var::parse_variables;
 use io_utils::*;
 use itertools::Itertools;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::process::Command;
 use string_utils::*;
 

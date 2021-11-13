@@ -7,8 +7,8 @@
 use enclone_vars::export_code::*;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 
 fn main() {
     PrettyTrace::new().on();

@@ -11,8 +11,8 @@ use io_utils::{fwriteln, open_for_write_new};
 use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::time::Instant;
 use string_utils::strme;
 use vdj_ann::refx::RefData;

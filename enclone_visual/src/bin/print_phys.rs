@@ -8,8 +8,8 @@ use crc::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
-use std::fs::File;
-use std::io::{BufReader, Read, Seek, SeekFrom};
+
+use std::io::{Read, Seek, SeekFrom};
 use string_utils::*;
 
 fn main() {
