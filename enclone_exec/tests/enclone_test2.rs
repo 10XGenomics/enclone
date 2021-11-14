@@ -94,6 +94,13 @@ fn test_enclone() {
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let test = TESTS[it].to_string();
+        if test.split(' ').collect::<Vec<&str>>().contains(&"NFORCE") {
+            eprintln!(
+                "\nOn main tests, NFORCE is not allowed, because it can cause \
+                failure in the GitHub Actions tests.\n"
+            );
+            std::process::exit(1);
+        }
         let mut out = String::new();
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
