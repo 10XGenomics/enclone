@@ -26,6 +26,7 @@ fn main() {
         &mut ok,
         &mut logx,
         &mut out,
+        0,
     );
     print!("{}", logx);
 }

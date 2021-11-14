@@ -111,6 +111,7 @@ fn test_enclone() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -186,6 +187,7 @@ fn test_accounting() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -260,6 +262,7 @@ fn test_enclone_d() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -334,6 +337,7 @@ fn test_grouping() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -381,6 +385,7 @@ fn test_extended() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -431,6 +436,7 @@ fn test_crash() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            40,
         );
     });
     for i in 0..results.len() {
@@ -478,6 +484,7 @@ fn test_internal() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {

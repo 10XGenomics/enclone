@@ -540,6 +540,7 @@ fn test_cpu() {
         &mut ok,
         &mut log,
         &mut out,
+        0,
     );
     let this_used = out.before("\n").force_usize();
     let mut cpu_all_stop = 0;
@@ -595,6 +596,7 @@ fn test_cpu() {
         &mut ok,
         &mut log,
         &mut out,
+        0,
     );
     let this_used = elapsed(&t);
     let dev = 100.0 * (this_used as f64 - expect as f64) / (expect as f64);

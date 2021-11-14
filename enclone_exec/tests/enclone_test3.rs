@@ -591,6 +591,7 @@ fn test_annotated_example() {
         &mut ok,
         &mut log,
         &mut out,
+        0,
     );
     print!("{}", log);
     if !ok {
