@@ -262,7 +262,7 @@ fn test_enclone_d() {
             &mut res.1,
             &mut res.2,
             &mut out,
-            0,
+            40,
         );
     });
     for i in 0..results.len() {
