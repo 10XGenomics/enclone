@@ -392,19 +392,6 @@ code:     let cstart = ex.share[mid].j_stop;
           }
           exact: cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_aa_{0..}_{0..}_ext
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* region with specified extension length
-page:     enclone help cvars
-avail:    public
-notes:    Check if args are really nonnegative integers.
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conp
 inputs:   cvar_vdj
 limits:
@@ -589,6 +576,19 @@ code:     let x = &ex.share[mid];
               }
           }
           exact: y
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     cdr{1..3}_aa_{0..}_{0..}_ext
+inputs:   ?
+limits:
+class:    cvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    CDR* region with specified extension length
+page:     enclone help cvars
+avail:    public
+notes:    Check if args are really nonnegative integers.
+code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_aa_{0..}_{0..}_ext
 inputs:   ?
