@@ -24,6 +24,7 @@ pub fn run_test(
     ok: &mut bool,     // true if test passes
     logx: &mut String, // logging from test
     out: &mut String,  // stdout of test
+    max_cores: usize,  // max cores, or if 0, default value determined here
 ) {
     let orig_test = test.to_string();
     let mut test = test.replace("\n", "");
@@ -149,7 +150,7 @@ pub fn run_test(
         if !nforce {
             new = new.arg("FORCE_EXTERNAL")
         }
-        if !ncores {
+        if !ncores && max_cores == 0 {
             // Cap number of cores at 24.  Surprisingly, for testing on a 64-core
             // server, this significantly reduces wallclock.  And substituting either
             // 16 or 64 is slower.  Slower at the time of testing!  As we add tests or

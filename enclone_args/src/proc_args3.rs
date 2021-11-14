@@ -193,14 +193,24 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> Result<Stri
             ));
         } else {
             let path = std::env::current_dir().unwrap();
+            let mut pre_msg =
+                "Here are the number of entries in your PRE directories:\n".to_string();
+            for x in ctl.gen_opt.pre.iter() {
+                let mut count = "(does not exist)".to_string();
+                if path_exists(&*x) {
+                    count = dir_list(&*x).len().to_string();
+                }
+                pre_msg += &mut format!("{}: {}\n", x, count);
+            }
             return Err(format!(
                 "\nIn directory {}, unable to find the\npath {},\n\
                 even if prepended by any of the directories \
-                in\nPRE={}.\nThis came from the {} argument.\n",
+                in\nPRE={}.\nThis came from the {} argument.\n{}",
                 path.display(),
                 p,
                 ctl.gen_opt.pre.iter().format(","),
-                source
+                source,
+                pre_msg
             ));
         }
     }

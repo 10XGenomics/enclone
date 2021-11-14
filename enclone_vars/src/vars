@@ -392,19 +392,6 @@ code:     let cstart = ex.share[mid].j_stop;
           }
           exact: cdiff
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr*_aa_{0..}_{0..}_ext
-inputs:   ?
-limits:
-class:    cvar
-level:    exact
-val:      string
-doc:      TBD
-brief:    CDR* region with specified extension length
-page:     enclone help cvars
-avail:    public
-notes:    Check if args are really nonnegative integers.
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr3_aa_conp
 inputs:   cvar_vdj
 limits:
@@ -1690,7 +1677,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     g{0,...}
+name:     g{0..}
 inputs:   ?
 limits:
 class:    lvar
@@ -1700,7 +1687,7 @@ doc:      TBD
 brief:    exact subclonotype group, by Hamming distance
 page:     enclone help lvars
 avail:    public
-notes:    0,... or 1,... and is it positive_integer or nonnegative_integer?
+notes:    0.. or 1.. and is it positive_integer or nonnegative_integer?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt

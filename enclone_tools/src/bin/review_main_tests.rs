@@ -29,6 +29,7 @@ fn main() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..TESTS.len() {

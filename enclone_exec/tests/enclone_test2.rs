@@ -94,6 +94,13 @@ fn test_enclone() {
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let test = TESTS[it].to_string();
+        if test.split(' ').collect::<Vec<&str>>().contains(&"NFORCE") {
+            eprintln!(
+                "\nOn main tests, NFORCE is not allowed, because it can cause \
+                failure in the GitHub Actions tests.\n"
+            );
+            std::process::exit(1);
+        }
         let mut out = String::new();
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
@@ -104,6 +111,7 @@ fn test_enclone() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -179,6 +187,7 @@ fn test_accounting() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -253,6 +262,7 @@ fn test_enclone_d() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            40,
         );
     });
     for i in 0..results.len() {
@@ -327,6 +337,7 @@ fn test_grouping() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -374,6 +385,7 @@ fn test_extended() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            0,
         );
     });
     for i in 0..results.len() {
@@ -424,6 +436,7 @@ fn test_crash() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            40,
         );
     });
     for i in 0..results.len() {
@@ -471,6 +484,7 @@ fn test_internal() {
             &mut res.1,
             &mut res.2,
             &mut out,
+            40,
         );
     });
     for i in 0..results.len() {

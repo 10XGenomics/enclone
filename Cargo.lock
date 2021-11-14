@@ -1653,6 +1653,7 @@ name = "enclone_vars"
 version = "0.5.129"
 dependencies = [
  "io_utils",
+ "itertools",
  "pretty_trace",
  "string_utils",
  "vector_utils",
