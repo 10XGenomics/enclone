@@ -622,7 +622,7 @@ pub const TESTS: [&str; 274] = [
     // 250. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###,
     // 251. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN NO_PRE NFORCE EXPECT_NULL"###,
+    r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
     // 252. this exhibits what happens when signature filtering is ON, see next
     // this was the only example we could find
     // based on 83808-83809, derived using modified version of minimal_fail, and also shrink_json
