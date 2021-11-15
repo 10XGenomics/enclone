@@ -258,35 +258,40 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             if pass == 2 {
                                 end += "_cell";
                             }
-                            let low = var.after("{").before("..").force_i64();
+                            let low = var.after("{").before("..");
                             let high = var.after("{").between("..", "}");
-                            if !high.is_empty() {
-                                let high = high.force_i64();
-                                fwriteln!(
-                                    f,
-                                    r###"}} else if var.starts_with("{begin}")
-                                    && var.ends_with("{end}")
-                                    && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
-                                    && var.between2("{begin}", "{end}").force_i64() >= {low}
-                                    && var.between2("{begin}", "{end}").force_i64() 
-                                       <= {high} {{"###,
-                                    begin = begin,
-                                    end = end,
-                                    low = low,
-                                    high = high,
-                                );
+                            if !low.is_empty() {
+                                let low = low.force_i64();
+                                if !high.is_empty() {
+                                    let high = high.force_i64();
+                                    fwriteln!(
+                                        f,
+                                        r###"}} else if var.starts_with("{begin}")
+                                        && var.ends_with("{end}")
+                                        && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
+                                        && var.between2("{begin}", "{end}").force_i64() >= {low}
+                                        && var.between2("{begin}", "{end}").force_i64() 
+                                           <= {high} {{"###,
+                                        begin = begin,
+                                        end = end,
+                                        low = low,
+                                        high = high,
+                                    );
+                                } else {
+                                    fwriteln!(
+                                        f,
+                                        r###"}} else if var.starts_with("{begin}")
+                                        && var.ends_with("{end}")
+                                        && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
+                                        && var.between2("{begin}", "{end}").force_i64() 
+                                           >= {low} {{"###,
+                                        begin = begin,
+                                        end = end,
+                                        low = low,
+                                    );
+                                }
                             } else {
-                                fwriteln!(
-                                    f,
-                                    r###"}} else if var.starts_with("{begin}")
-                                    && var.ends_with("{end}")
-                                    && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
-                                    && var.between2("{begin}", "{end}").force_i64() 
-                                       >= {low} {{"###,
-                                    begin = begin,
-                                    end = end,
-                                    low = low,
-                                );
+                                assert!(high.is_empty());
                             }
                             fwriteln!(
                                 f,
@@ -302,19 +307,21 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             if pass == 2 {
                                 end += "_cell";
                             }
-                            let low1 = var.after("{").before("..").force_i64();
+                            let low1 = var.after("{").before("..");
                             let high1 = var.after("{").between("..", "}");
-                            let low2 = var.rev_after("{").before("..").force_i64();
+                            let low2 = var.rev_after("{").before("..");
                             let high2 = var.rev_after("{").between("..", "}");
                             let mut conditions = Vec::<String>::new();
                             conditions.push(format!(
                                 r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
                                 begin, middle,
                             ));
-                            conditions.push(format!(
-                                r###"var.between2("{}", "{}").force_i64() >= {}"###,
-                                begin, middle, low1,
-                            ));
+                            if low1.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                                    begin, middle, low1,
+                                ));
+                            }
                             if high1.len() > 0 {
                                 conditions.push(format!(
                                     r###"var.between2("{}", "{}").force_i64() <= {}"###,
@@ -325,10 +332,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
                                 middle, end,
                             ));
-                            conditions.push(format!(
-                                r###"var.between2("{}", "{}").force_i64() >= {}"###,
-                                middle, end, low2,
-                            ));
+                            if low2.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                                    middle, end, low2,
+                                ));
+                            }
                             if high2.len() > 0 {
                                 conditions.push(format!(
                                     r###"var.between2("{}", "{}").force_i64() <= {}"###,
@@ -356,31 +365,35 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             if pass == 2 {
                                 end += "_cell";
                             }
-                            let low1 = var.after("{").before("..").force_i64();
+                            let low1 = var.after("{").before("..");
                             let high1 = var.after("{").between("..", "}");
-                            let low2 = var.after("{").after("{").before("..").force_i64();
+                            let low2 = var.after("{").after("{").before("..");
                             let high2 = var.after("{").after("{").between("..", "}");
-                            let low3 = var.rev_after("{").before("..").force_i64();
+                            let low3 = var.rev_after("{").before("..");
                             let high3 = var.rev_after("{").between("..", "}");
                             let mut conditions = Vec::<String>::new();
                             conditions.push(format!(
                                 r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
                                 begin, mid1,
                             ));
-                            conditions.push(format!(
-                                r###"var.between("{}", "{}").force_i64() >= {}"###,
-                                begin, mid1, low1,
-                            ));
+                            if low1.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                    begin, mid1, low1,
+                                ));
+                            }
                             if high1.len() > 0 {
                                 conditions.push(format!(
                                     r###"var.between("{}", "{}").force_i64() <= {}"###,
                                     begin, mid1, high1,
                                 ));
                             }
-                            conditions.push(format!(
-                                r###"var.between("{}", "{}").force_i64() >= {}"###,
-                                mid1, mid2, low2,
-                            ));
+                            if low2.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                    mid1, mid2, low2,
+                                ));
+                            }
                             if high2.len() > 0 {
                                 conditions.push(format!(
                                     r###"var.between("{}", "{}").force_i64() <= {}"###,
@@ -391,10 +404,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
                                 mid2, end,
                             ));
-                            conditions.push(format!(
-                                r###"var.between("{}", "{}").force_i64() >= {}"###,
-                                mid2, end, low3,
-                            ));
+                            if low3.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                    mid2, end, low3,
+                                ));
+                            }
                             if high3.len() > 0 {
                                 conditions.push(format!(
                                     r###"var.between("{}", "{}").force_i64() <= {}"###,
