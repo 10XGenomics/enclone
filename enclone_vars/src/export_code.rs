@@ -8,28 +8,9 @@
 use crate::var::parse_variables;
 use io_utils::*;
 use itertools::Itertools;
-
 use std::io::Write;
 use std::process::Command;
 use string_utils::*;
-
-// translate_range: translate an inclusive nonnegative integer range of the form a..b or a..
-// into a regular expression.  Only implemented for a handful of cases but could be generalized.
-
-pub fn translate_range(r: &str) -> String {
-    if r == "1..2" {
-        return "1|2".to_string();
-    } else if r == "1..3" {
-        return "1|2|3".to_string();
-    } else if r == "1..4" {
-        return "1|2|3|4".to_string();
-    } else if r == "0.." {
-        return "0|[1-9][0-9].".to_string();
-    } else if r == "1.." {
-        return "[1-9][0-9].".to_string();
-    }
-    panic!("translate_range: not general enough to handle {}", r);
-}
 
 pub fn export_code(level: usize) -> Vec<(String, String)> {
     // Define code start/stop for cvar_vdj.
@@ -325,7 +306,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 ));
                             }
                             conditions.push(format!(
-                                r###"var.after("{}").between2("{}", "{}").parse::<i64>().is_ok()"###,
+                                r###"var.after("{}").between2("{}", "{}").parse::<i64>()
+                                    .is_ok()"###,
                                 begin, middle, end,
                             ));
                             if low2.len() > 0 {
@@ -349,7 +331,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             );
                             fwriteln!(
                                 f,
-                                r###"let arg2 = var.after("{}"),between2("{}", "{}").force_i64();"###,
+                                r###"let arg2 = var.after("{}"),between2("{}", "{}")
+                                    .force_i64();"###,
                                 begin,
                                 middle,
                                 end,
@@ -411,18 +394,21 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 ));
                             }
                             conditions.push(format!(
-                                r###"var.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
+                                r###"var.after("{}").after("{}").between("{}", "{}").parse::<i64>()
+                                    .is_ok()"###,
                                 begin, mid1, mid2, end,
                             ));
                             if low3.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
+                                    r###"var.after("{}").after("{}").between("{}", "{}")
+                                        .force_i64() >= {}"###,
                                     begin, mid1, mid2, end, low3,
                                 ));
                             }
                             if high3.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
+                                    r###"var.after("{}").after("{}").between("{}", "{}")
+                                        .force_i64() <= {}"###,
                                     begin, mid1, mid2, end, high3,
                                 ));
                             }
@@ -442,7 +428,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             );
                             fwriteln!(
                                 f,
-                                r###"let arg3 = var.after("{}").after("{}").between("{}", "{}").force_i64();"###,
+                                r###"let arg3 = var.after("{}").after("{}").between("{}", "{}")
+                                    .force_i64();"###,
                                 begin,
                                 mid1,
                                 mid2,
