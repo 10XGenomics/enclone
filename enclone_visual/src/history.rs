@@ -6,7 +6,7 @@ use crate::EXTRA_INPUTS;
 use enclone_core::packing::*;
 use io_utils::*;
 use std::fs::{File, OpenOptions};
-use std::io::{BufReader, Error, ErrorKind, Read, Seek, SeekFrom, Write};
+use std::io::{Error, ErrorKind, Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
 #[derive(Default, PartialEq, Clone)]

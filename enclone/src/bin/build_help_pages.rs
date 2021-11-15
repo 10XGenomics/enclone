@@ -5,8 +5,8 @@
 use enclone_core::defs::HELP_PAGES;
 use io_utils::{fwrite, open_for_write_new};
 use pretty_trace::PrettyTrace;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::process::Command;
 use string_utils::strme;
 
@@ -60,7 +60,7 @@ fn main() {
             eprintln!("stderr:\n{}", strme(&new.stderr));
             std::process::exit(1);
         }
-        let mut f = open_for_write_new![format!("pages/auto/help.{}.html", x)];
+        let mut f = open_for_write_new![format!("pages/auto/help.{}.html", x).as_str()];
         fwrite!(f, "{}", strme(&new.stdout));
     }
 }

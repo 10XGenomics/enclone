@@ -24,13 +24,7 @@ use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::start_profiling;
-use std::{
-    collections::HashMap,
-    env, fs,
-    fs::{read_to_string, File},
-    io::{BufRead, BufReader},
-    time::Instant,
-};
+use std::{collections::HashMap, env, fs, fs::read_to_string, io::BufRead, time::Instant};
 use string_utils::TextUtils;
 use vdj_ann::refx;
 use vector_utils::{bin_member, next_diff, unique_sort};

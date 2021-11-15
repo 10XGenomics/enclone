@@ -8,8 +8,8 @@ use io_utils::*;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::os::unix::fs::PermissionsExt;
 use std::process::Command;
 use std::thread;

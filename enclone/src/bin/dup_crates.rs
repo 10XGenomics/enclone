@@ -4,8 +4,8 @@
 
 use io_utils::open_for_read;
 use pretty_trace::PrettyTrace;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use string_utils::TextUtils;
 use vector_utils::next_diff;
 

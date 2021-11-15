@@ -208,12 +208,12 @@ pub fn process_special_arg(
         }
     } else if arg.starts_with("VAR_DEF=") {
         let val = arg.after("VAR_DEF=");
-        if !val.contains(":") {
+        if !val.contains(':') {
             return Err(format!("\nCould not find : in {}.\n", arg));
         }
         let name = val.before(":");
         let expr = val.after(":");
-        let eval = encode_arith(&expr);
+        let eval = encode_arith(expr);
         let compiled = build_operator_tree(&eval);
         if compiled.is_err() {
             return Err(format!(

@@ -31,7 +31,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::env;
 use std::fs::{copy, remove_dir_all, rename, File};
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, Write};
 use std::process::Command;
 use string_utils::{parse_csv, TextUtils};
 
@@ -184,7 +184,7 @@ fn main() {
             {
                 let mut antibody_seq_id = None;
                 let inv = format!("{}/../_invocation", p);
-                let f = open_for_read![inv];
+                let f = open_for_read![&inv];
                 let mut lines = Vec::<String>::new();
                 for line in f.lines() {
                     let s = line.unwrap();

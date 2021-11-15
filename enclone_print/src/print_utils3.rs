@@ -659,10 +659,11 @@ pub fn insert_reference_rows(
                 let mut last_color = "black".to_string();
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
-                    if k > 0 && field_types[cz][k] != field_types[cz][k - 1] {
-                        if !ctl.gen_opt.nospaces {
-                            refx += " ";
-                        }
+                    if k > 0
+                        && field_types[cz][k] != field_types[cz][k - 1]
+                        && !ctl.gen_opt.nospaces
+                    {
+                        refx += " ";
                     }
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
                         refx += "◦";

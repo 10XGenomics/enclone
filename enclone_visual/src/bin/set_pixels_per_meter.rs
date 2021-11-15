@@ -14,8 +14,8 @@ use crc::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
-use std::fs::File;
-use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
+
+use std::io::{Read, Seek, SeekFrom, Write};
 use string_utils::*;
 
 fn main() {

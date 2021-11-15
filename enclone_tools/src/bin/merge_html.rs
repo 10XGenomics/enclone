@@ -13,7 +13,7 @@ use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
 use std::env;
 use std::fs::{read_dir, File};
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, Write};
 use std::process::Command;
 use string_utils::{strme, TextUtils};
 use vector_utils::{bin_member, unique_sort};

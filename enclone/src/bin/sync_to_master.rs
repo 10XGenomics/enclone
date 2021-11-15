@@ -7,8 +7,8 @@ use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
-use std::fs::{read_dir, File};
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::fs::read_dir;
+use std::io::{BufRead, Write};
 use string_utils::TextUtils;
 
 fn main() {

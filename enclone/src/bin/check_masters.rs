@@ -6,8 +6,8 @@
 use io_utils::{dir_list, open_for_read, path_exists};
 use pretty_trace::PrettyTrace;
 use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use string_utils::TextUtils;
 
 fn main() {

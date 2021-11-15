@@ -8,8 +8,8 @@ use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use std::time::Instant;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
@@ -132,7 +132,7 @@ pub fn proc_args_post(
     let n = ctl.gen_opt.var_def.len();
     for i in 0..n {
         let x = &ctl.gen_opt.var_def[i].2;
-        var_def_vars.push(vars_of_node(&x));
+        var_def_vars.push(vars_of_node(x));
     }
     let mut edges = Vec::<(usize, usize)>::new();
     for i in 0..n {
@@ -189,7 +189,7 @@ pub fn proc_args_post(
                     ctl.gen_opt.var_def[j].2 =
                         build_operator_tree(&ctl.gen_opt.var_def[j].1).unwrap();
                     let x = &ctl.gen_opt.var_def[j].2;
-                    var_def_vars[j] = vars_of_node(&x);
+                    var_def_vars[j] = vars_of_node(x);
                     progress = true;
                 }
             }

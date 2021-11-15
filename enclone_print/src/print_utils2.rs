@@ -429,7 +429,7 @@ pub fn row_fill(
             if *x == ctl.gen_opt.var_def[j].0 && i < lvars.len() {
                 if pass == 2 {
                     let comp = &ctl.gen_opt.var_def[j].2;
-                    let vars = vars_of_node(&comp); // computing this here might be inefficient
+                    let vars = vars_of_node(comp); // computing this here might be inefficient
                     let mut out_vals = Vec::<String>::new();
                     for k in 0..ex.clones.len() {
                         let mut in_vals = Vec::<String>::new();
@@ -468,7 +468,7 @@ pub fn row_fill(
                     let mut out_valsf = Vec::<f64>::new();
                     let mut all_float = true;
                     for y in out_vals.iter() {
-                        if !y.parse::<f64>().is_ok() {
+                        if y.parse::<f64>().is_err() {
                             all_float = false;
                         } else {
                             out_valsf.push(y.force_f64());
