@@ -243,13 +243,16 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         passes = 2;
                     }
                     for pass in 1..=passes {
-                        if !var.contains('{') {
+                        let nranges = var.matches('{').count();
+                        assert_eq!(nranges, var.matches('}').count());
+                        assert!(nranges <= 3);
+                        if nranges == 0 {
                             let mut var = var.clone();
                             if pass == 2 {
                                 var += "_cell";
                             }
                             fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
-                        } else if !var.after("{").contains("{") {
+                        } else if nranges == 1 {
                             let begin = var.before("{");
                             let mut end = var.after("}").to_string();
                             if pass == 2 {
@@ -291,7 +294,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 begin,
                                 end,
                             );
-                        } else {
+                        } else if nranges == 2 {
+                            // This code has not been exercised.
                             let begin = var.before("{");
                             let middle = var.between("}", "{");
                             let mut end = var.rev_after("}").to_string();
@@ -342,6 +346,78 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 f,
                                 r###"let arg2 = var.between2("{}", "{}").force_usize();"###,
                                 middle,
+                                end,
+                            );
+                        } else {
+                            let begin = var.before("{");
+                            let mid1 = var.between("}", "{");
+                            let mid2 = var.after("}").between("}", "{");
+                            let mut end = var.rev_after("}").to_string();
+                            if pass == 2 {
+                                end += "_cell";
+                            }
+                            let low1 = var.after("{").before("..").force_usize();
+                            let high1 = var.after("{").between("..", "}");
+                            let low2 = var.after("{").after("{").before("..").force_usize();
+                            let high2 = var.after("{").after("{").between("..", "}");
+                            let low3 = var.rev_after("{").before("..").force_usize();
+                            let high3 = var.rev_after("{").between("..", "}");
+                            let mut conditions = Vec::<String>::new();
+                            conditions.push(format!(
+                                r###"var.between("{}", "{}").parse::<usize>().is_ok()"###,
+                                begin, mid1,
+                            ));
+                            conditions.push(format!(
+                                r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                begin, mid1, low1,
+                            ));
+                            if high1.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_usize() <= {}"###,
+                                    begin, mid1, high1,
+                                ));
+                            }
+                            conditions.push(format!(
+                                r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                mid1, mid2, low2,
+                            ));
+                            if high2.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_usize() <= {}"###,
+                                    mid1, mid2, high2,
+                                ));
+                            }
+                            conditions.push(format!(
+                                r###"var.between("{}", "{}").parse::<usize>().is_ok()"###,
+                                mid2, end,
+                            ));
+                            conditions.push(format!(
+                                r###"var.between("{}", "{}").force_i64() >= {}"###,
+                                mid2, end, low3,
+                            ));
+                            if high3.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between("{}", "{}").force_usize() <= {}"###,
+                                    mid2, end, high3,
+                                ));
+                            }
+                            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+                            fwriteln!(
+                                f,
+                                r###"let arg1 = var.between("{}", "{}").force_usize();"###,
+                                begin,
+                                mid1,
+                            );
+                            fwriteln!(
+                                f,
+                                r###"let arg2 = var.between("{}", "{}").force_usize();"###,
+                                mid1,
+                                mid2,
+                            );
+                            fwriteln!(
+                                f,
+                                r###"let arg3 = var.between("{}", "{}").force_usize();"###,
+                                mid2,
                                 end,
                             );
                         }

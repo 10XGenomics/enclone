@@ -19,6 +19,9 @@
 #           REG        regular expression.
 #           VARDEF     user-defined variable from VAR_DEF
 #
+#           Inclusive nonnegative integer ranges: these have the form {a..b} or {a..}.  Up to
+#           three ranges are allowed in a variable.
+#
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
