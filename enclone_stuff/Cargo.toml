@@ -38,5 +38,5 @@ stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
 tables = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
+vdj_ann = {path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann"}
 vector_utils = "0.1"
