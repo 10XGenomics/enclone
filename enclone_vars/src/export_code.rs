@@ -325,19 +325,19 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 ));
                             }
                             conditions.push(format!(
-                                r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
-                                middle, end,
+                                r###"var.after("{}").between2("{}", "{}").parse::<i64>().is_ok()"###,
+                                begin, middle, end,
                             ));
                             if low2.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
-                                    middle, end, low2,
+                                    r###"var.after("{}").between2("{}", "{}").force_i64() >= {}"###,
+                                    begin, middle, end, low2,
                                 ));
                             }
                             if high2.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between2("{}", "{}").force_i64() <= {}"###,
-                                    middle, end, high2,
+                                    r###"var.after("{}").between2("{}", "{}").force_i64() <= {}"###,
+                                    begin, middle, end, high2,
                                 ));
                             }
                             fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
@@ -349,7 +349,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             );
                             fwriteln!(
                                 f,
-                                r###"let arg2 = var.between2("{}", "{}").force_i64();"###,
+                                r###"let arg2 = var.after("{}"),between2("{}", "{}").force_i64();"###,
+                                begin,
                                 middle,
                                 end,
                             );
@@ -399,30 +400,30 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             }
                             if low2.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between("{}", "{}").force_i64() >= {}"###,
-                                    mid1, mid2, low2,
+                                    r###"var.after("{}").between("{}", "{}").force_i64() >= {}"###,
+                                    begin, mid1, mid2, low2,
                                 ));
                             }
                             if high2.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between("{}", "{}").force_i64() <= {}"###,
-                                    mid1, mid2, high2,
+                                    r###"var.after("{}").between("{}", "{}").force_i64() <= {}"###,
+                                    begin, mid1, mid2, high2,
                                 ));
                             }
                             conditions.push(format!(
-                                r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
-                                mid2, end,
+                                r###"var.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
+                                begin, mid1, mid2, end,
                             ));
                             if low3.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between("{}", "{}").force_i64() >= {}"###,
-                                    mid2, end, low3,
+                                    r###"var.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
+                                    begin, mid1, mid2, end, low3,
                                 ));
                             }
                             if high3.len() > 0 {
                                 conditions.push(format!(
-                                    r###"var.between("{}", "{}").force_i64() <= {}"###,
-                                    mid2, end, high3,
+                                    r###"var.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
+                                    begin, mid1, mid2, end, high3,
                                 ));
                             }
                             fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
@@ -434,13 +435,16 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             );
                             fwriteln!(
                                 f,
-                                r###"let arg2 = var.between("{}", "{}").force_i64();"###,
+                                r###"let arg2 = var.after("{}").between("{}", "{}").force_i64();"###,
+                                begin,
                                 mid1,
                                 mid2,
                             );
                             fwriteln!(
                                 f,
-                                r###"let arg3 = var.between("{}", "{}").forcei64();"###,
+                                r###"let arg3 = var.after("{}").after("{}").between("{}", "{}").force_i64();"###,
+                                begin,
+                                mid1,
                                 mid2,
                                 end,
                             );
