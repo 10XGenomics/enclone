@@ -704,6 +704,7 @@ fn test_export_code() {
         let current = std::fs::read_to_string(&f).unwrap();
         if outs[i].1 != current {
             eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
+            std::process::exit(1);
         }
     }
 }
