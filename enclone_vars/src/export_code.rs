@@ -261,8 +261,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let low = var.after("{").before("..");
                             let high = var.after("{").between("..", "}");
                             let mut conditions = Vec::<String>::new();
-                            conditions.push(format!(r###"var.starts_with("{}")"###, begin,));
-                            conditions.push(format!(r###"var.ends_with("{}")"###, end,));
+                            conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+                            conditions.push(format!(r###"var.ends_with("{}")"###, end));
                             conditions.push(format!(
                                 r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
                                 begin, end,
@@ -299,6 +299,15 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let low2 = var.rev_after("{").before("..");
                             let high2 = var.rev_after("{").between("..", "}");
                             let mut conditions = Vec::<String>::new();
+                            conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+                            conditions.push(format!(
+                                r###"var.after("{}").contains("{}")"###,
+                                begin, middle,
+                            ));
+                            conditions.push(format!(
+                                r###"var.after("{}").after("{}").ends_with("{}")"###,
+                                begin, middle, end,
+                            ));
                             conditions.push(format!(
                                 r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
                                 begin, middle,
@@ -359,6 +368,19 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             let low3 = var.rev_after("{").before("..");
                             let high3 = var.rev_after("{").between("..", "}");
                             let mut conditions = Vec::<String>::new();
+                            conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+                            conditions.push(format!(
+                                r###"var.after("{}").contains("{}")"###,
+                                begin, mid1,
+                            ));
+                            conditions.push(format!(
+                                r###"var.after("{}").after("{}").contains("{}")"###,
+                                begin, mid1, mid2,
+                            ));
+                            conditions.push(format!(
+                                r###"var.after("{}").after("{}").after("{}").ends_with("{}")"###,
+                                begin, mid1, mid2, end,
+                            ));
                             conditions.push(format!(
                                 r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
                                 begin, mid1,
