@@ -19,7 +19,7 @@
 #           REG        regular expression.
 #           VARDEF     user-defined variable from VAR_DEF
 #
-#           Inclusive integer ranges: these have the form {a..b} or {a..} or {..}.  Up to
+#           Inclusive integer ranges: these have the form {a..b} or {a..} or {..b} or {..}.  Up to
 #           three ranges are allowed in a variable.
 #
 # inputs:   data structures needed as input

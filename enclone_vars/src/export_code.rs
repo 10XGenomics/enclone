@@ -260,39 +260,26 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             }
                             let low = var.after("{").before("..");
                             let high = var.after("{").between("..", "}");
-                            if !low.is_empty() {
-                                let low = low.force_i64();
-                                if !high.is_empty() {
-                                    let high = high.force_i64();
-                                    fwriteln!(
-                                        f,
-                                        r###"}} else if var.starts_with("{begin}")
-                                        && var.ends_with("{end}")
-                                        && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
-                                        && var.between2("{begin}", "{end}").force_i64() >= {low}
-                                        && var.between2("{begin}", "{end}").force_i64() 
-                                           <= {high} {{"###,
-                                        begin = begin,
-                                        end = end,
-                                        low = low,
-                                        high = high,
-                                    );
-                                } else {
-                                    fwriteln!(
-                                        f,
-                                        r###"}} else if var.starts_with("{begin}")
-                                        && var.ends_with("{end}")
-                                        && var.between2("{begin}", "{end}").parse::<i64>().is_ok()
-                                        && var.between2("{begin}", "{end}").force_i64() 
-                                           >= {low} {{"###,
-                                        begin = begin,
-                                        end = end,
-                                        low = low,
-                                    );
-                                }
-                            } else {
-                                assert!(high.is_empty());
+                            let mut conditions = Vec::<String>::new();
+                            conditions.push(format!(r###"var.starts_with("{}")"###, begin,));
+                            conditions.push(format!(r###"var.ends_with("{}")"###, end,));
+                            conditions.push(format!(
+                                r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
+                                begin, end,
+                            ));
+                            if low.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                                    begin, end, low,
+                                ));
                             }
+                            if high.len() > 0 {
+                                conditions.push(format!(
+                                    r###"var.between2("{}", "{}").force_i64() <= {}"###,
+                                    begin, end, high,
+                                ));
+                            }
+                            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
                             fwriteln!(
                                 f,
                                 r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
