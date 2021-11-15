@@ -23,14 +23,14 @@ use vector_utils::{bin_member, lower_bound1_3, meet_size, unique_sort, upper_bou
 pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(), String> {
     let mut found = false;
     for i in 0..seq.len() {
-        if seq[i..].starts_with(&dna) {
+        if seq[i..].starts_with(dna) {
             found = true;
         }
     }
     if !found {
         return Err(format!(
             "\nInternal error, failed to find {}, CDR3 = {}.\n",
-            strme(&dna),
+            strme(dna),
             cdr3
         ));
     }
@@ -66,7 +66,7 @@ pub fn get_cdr1(x: &TigData1, left: i64, right: i64) -> Option<String> {
             return Some(stringme(&dna));
         }
     }
-    return None;
+    None
 }
 
 pub fn get_cdr2(x: &TigData1, left: i64, right: i64) -> Option<String> {
@@ -98,7 +98,7 @@ pub fn get_cdr2(x: &TigData1, left: i64, right: i64) -> Option<String> {
             return Some(stringme(&dna));
         }
     }
-    return None;
+    None
 }
 
 pub fn get_cdr3(x: &TigData1, left: i64, right: i64) -> Option<String> {
@@ -127,7 +127,7 @@ pub fn get_cdr3(x: &TigData1, left: i64, right: i64) -> Option<String> {
         test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
         return Some(stringme(&dna));
     }
-    return None;
+    None
 }
 
 pub fn get_fwr1(x: &TigData1) -> Option<String> {
@@ -147,7 +147,7 @@ pub fn get_fwr1(x: &TigData1) -> Option<String> {
         test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
         return Some(stringme(&dna));
     }
-    return None;
+    None
 }
 
 pub fn get_fwr2(x: &TigData1) -> Option<String> {
@@ -167,7 +167,7 @@ pub fn get_fwr2(x: &TigData1) -> Option<String> {
         test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
         return Some(stringme(&dna));
     }
-    return None;
+    None
 }
 
 pub fn get_fwr3(x: &TigData1) -> Option<String> {
@@ -187,7 +187,7 @@ pub fn get_fwr3(x: &TigData1) -> Option<String> {
         test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa).unwrap();
         return Some(stringme(&dna));
     }
-    return None;
+    None
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -650,10 +650,11 @@ pub fn insert_position_rows(
                         if rsi.cvars[cx][m] == *"amino" {
                             let mut ds = String::new();
                             for (j, p) in show_aa[cx].iter().enumerate() {
-                                if j > 0 && field_types[cx][j] != field_types[cx][j - 1] {
-                                    if !ctl.gen_opt.nospaces {
-                                        ds += " ";
-                                    }
+                                if j > 0
+                                    && field_types[cx][j] != field_types[cx][j - 1]
+                                    && !ctl.gen_opt.nospaces
+                                {
+                                    ds += " ";
                                 }
                                 print_digit(*p, i, digits, &mut ds);
                             }
@@ -876,8 +877,8 @@ pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
     extra_args.append(&mut ctl.plot_opt.sim_mat_plot_vars.clone());
     for i in 0..ctl.gen_opt.var_def.len() {
         let x = &ctl.gen_opt.var_def[i].2;
-        for v in vars_of_node(&x).iter() {
-            extra_args.push(decode_arith(&v));
+        for v in vars_of_node(x).iter() {
+            extra_args.push(decode_arith(v));
         }
     }
     unique_sort(&mut extra_args);

@@ -7,8 +7,8 @@
 use io_utils::open_for_read;
 use pretty_trace::PrettyTrace;
 use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use string_utils::parse_csv;
 
 fn main() {

@@ -40,7 +40,7 @@ iced = { git = "https://github.com/hecrj/iced", rev = "20177e423cd2bdc08f8060b31
 iced_native = { git = "https://github.com/hecrj/iced", rev = "20177e423cd2bdc08f8060b31c379a6f764e3df6" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = "0.2"
+io_utils = "0.3"
 itertools = "0.10"
 jpeg-decoder = "0.1"
 lazy_static = "1"
@@ -50,7 +50,7 @@ nix = ">=0.20, <0.23"
 perf_stats = "0.1"
 png-decoder = "0.1"
 pretty_trace = "0.5"
-prost = { version = "0.8", default_features = false }
+prost = { version = ">=0.8,<0.10", default_features = false }
 rayon = "1"
 serde_json = "1"
 string_utils = "0.1"

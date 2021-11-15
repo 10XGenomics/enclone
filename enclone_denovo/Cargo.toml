@@ -24,7 +24,7 @@ equiv = "0.1"
 fasta_tools = "0.1.2"
 graph_simple = "0.1"
 hyperbase = "0.1.2"
-io_utils = "0.2"
+io_utils = "0.3"
 itertools = "0.10"
 kmer_lookup = "0.1.1"
 # poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
@@ -39,6 +39,6 @@ stats_utils = "0.1"
 string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3fb29bd1d46c12df08c686ac2d7c70b969bf017a" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3fb29bd1d46c12df08c686ac2d7c70b969bf017a" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
 vector_utils = "0.1"

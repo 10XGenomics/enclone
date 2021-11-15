@@ -35,7 +35,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::stdout;
-use std::io::{BufWriter, Write};
+use std::io::Write;
 use std::path::Path;
 use std::time::Instant;
 use string_utils::{stringme, strme, TextUtils};

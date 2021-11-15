@@ -5,8 +5,8 @@
 use enclone_core::defs::EncloneControl;
 use io_utils::{fwrite, open_for_write_new};
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use string_utils::{stringme, TextUtils};
 use tables::print_tabular;
 

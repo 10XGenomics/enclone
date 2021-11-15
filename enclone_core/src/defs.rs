@@ -11,8 +11,8 @@ use perf_stats::{elapsed, peak_mem_usage_gb};
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use std::sync::atomic::AtomicBool;
 use std::time::{Instant, SystemTime};
 use string_utils::TextUtils;

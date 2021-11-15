@@ -32,7 +32,7 @@ log = "0.4"
 nix = ">=0.20, <0.23"
 perf_stats = "0.1"
 pretty_trace = "0.5"
-prost = { version = "0.8", default_features = false }
+prost = { version = ">=0.8,<0.10", default_features = false }
 string_utils = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }

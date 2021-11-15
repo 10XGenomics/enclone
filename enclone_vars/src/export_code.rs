@@ -8,8 +8,8 @@
 use crate::var::parse_variables;
 use io_utils::*;
 use itertools::Itertools;
-use std::fs::File;
-use std::io::{BufWriter, Write};
+
+use std::io::Write;
 use std::process::Command;
 use string_utils::*;
 
@@ -219,11 +219,11 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     code = code2;
                 }
                 if v.level == "cell-exact" {
-                    assert!(exact.len() > 0);
-                    assert!(cell.len() > 0);
+                    assert!(!exact.is_empty());
+                    assert!(!cell.is_empty());
                 }
                 if v.level == "cell" {
-                    assert!(cell.len() > 0);
+                    assert!(!cell.is_empty());
                 }
 
                 // Proceed.
@@ -249,7 +249,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 var += "_cell";
                             }
                             fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
-                        } else if !var.after("{").contains("{") {
+                        } else if !var.after("{").contains('{') {
                             let begin = var.before("{");
                             let mut end = var.after("}").to_string();
                             if pass == 2 {
@@ -257,7 +257,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             }
                             let low = var.after("{").before("..").force_usize();
                             let high = var.after("{").between("..", "}");
-                            if high.len() > 0 {
+                            if !high.is_empty() {
                                 let high = high.force_usize();
                                 fwriteln!(
                                     f,

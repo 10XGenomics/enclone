@@ -167,10 +167,8 @@ pub fn build_table_stuff(
                 let m = m.unwrap();
                 let mut n = show.len();
                 for k in 1..show.len() {
-                    if field_types[cx][k] != field_types[cx][k - 1] {
-                        if !ctl.gen_opt.nospaces {
-                            n += 1;
-                        }
+                    if field_types[cx][k] != field_types[cx][k - 1] && !ctl.gen_opt.nospaces {
+                        n += 1;
                     }
                 }
                 let mut ch = vec![' '; n];
@@ -245,10 +243,11 @@ pub fn build_table_stuff(
                         let cs1 = fields[z].1 / 3;
                         let mut ch_start = 0;
                         for k in 0..show.len() {
-                            if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
-                                if !ctl.gen_opt.nospaces {
-                                    ch_start += 1;
-                                }
+                            if k > 0
+                                && field_types[cx][k] != field_types[cx][k - 1]
+                                && !ctl.gen_opt.nospaces
+                            {
+                                ch_start += 1;
                             }
                             if show[k] == cs1 {
                                 break;

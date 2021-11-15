@@ -71,9 +71,9 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
 
     if ctl.gen_opt.current_ref || ctl.gen_opt.built_in {
         if !ctl.gen_opt.mouse {
-            *refx = human_ref();
+            *refx = (*human_ref()).to_string();
         } else {
-            *refx = mouse_ref();
+            *refx = (*mouse_ref()).to_string();
         }
         if ctl.gen_opt.built_in {
             ctl.gen_opt.reannotate = true;
@@ -268,7 +268,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                         h.insert(id, (len, gene));
                     }
                 }
-                refhash.push((h, refx));
+                refhash.push((h, refx.to_string()));
             }
         }
         let mut to_delete = vec![false; refhash.len()];

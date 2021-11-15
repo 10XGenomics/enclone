@@ -9,7 +9,7 @@ use itertools::Itertools;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Read, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::thread;
@@ -113,10 +113,10 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                             ids2.push(ids[j].to_string());
                         }
                     }
-                    let enclone = format!("~/enclone");
+                    let enclone = "~/enclone".to_string();
                     let enclone = stringme(&tilde_expand(enclone.as_bytes()));
                     if path_exists(&enclone) {
-                        let sets = format!("~/enclone/sets");
+                        let sets = "~/enclone/sets".to_string();
                         let sets = stringme(&tilde_expand(sets.as_bytes()));
                         if !path_exists(&sets) {
                             std::fs::create_dir(&sets).unwrap();
@@ -125,7 +125,7 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                             if !path_exists(&setid) {
                                 let mut f = open_for_write_new![&setid];
                                 let s = format!("{}\n", ids2.iter().format(","));
-                                f.write_all(&s.as_bytes()).unwrap();
+                                f.write_all(s.as_bytes()).unwrap();
                             }
                         }
                     }

@@ -8,8 +8,8 @@ use io_utils::{
     read_vector_entry_from_json,
 };
 use serde_json::Value;
-use std::fs::File;
-use std::io::{BufReader, BufWriter, Write};
+
+use std::io::{BufReader, Write};
 use string_utils::{strme, TextUtils};
 use vector_utils::{bin_member, unique_sort};
 

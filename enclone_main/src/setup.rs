@@ -20,8 +20,8 @@ use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::{new_thread_message, PrettyTrace};
 use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use std::io::BufRead;
 use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
 use string_utils::{stringme, TextUtils};
