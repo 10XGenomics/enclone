@@ -1978,7 +1978,7 @@ avail:    public
 notes:
 code:     let nd;
           let mat = &rsi.mat;
-          let u0 = arg1 - 1;
+          let u0 = (arg1 - 1) as usize;
           if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
               let m0 = mat[col][u0].unwrap();
               let m = mat[col][u].unwrap();
@@ -2199,10 +2199,10 @@ page:     enclone help cvars
 avail:    public
 notes:
 code:     let mut val = String::new();
-          if arg1 < ex.share[mid].seq.len() {
+          if (arg1 as usize) < ex.share[mid].seq.len() {
               let mut quals = Vec::<u8>::new();
               for j in 0..ex.clones.len() {
-                  quals.push(ex.clones[j][mid].quals[arg1]);
+                  quals.push(ex.clones[j][mid].quals[arg1 as usize]);
               }
               val = format!("{}", quals.iter().format(","));
           }
