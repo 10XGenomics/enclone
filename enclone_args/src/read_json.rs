@@ -2,7 +2,7 @@
 
 use self::annotate::{annotate_seq, get_cdr3_using_ann, print_some_annotations};
 use self::refx::RefData;
-use self::transcript::is_valid;
+use self::transcript::{is_valid, is_valid_gd};
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::{EncloneControl, OriginInfo, TigData};
 use io_utils::{open_maybe_compressed, path_exists, read_vector_entry_from_json};
@@ -247,14 +247,26 @@ fn parse_vector_entry_from_json(
             print!("\n{}", strme(&log));
         }
         let mut log = Vec::<u8>::new();
-        if ctl.gen_opt.trace_barcode == *barcode {
-            if !is_valid(&x, refdata, &ann, true, &mut log) {
-                print!("{}", strme(&log));
-                println!("invalid");
+        if ctl.gen_opt.gamma_delta {
+            if ctl.gen_opt.trace_barcode == *barcode {
+                if !is_valid_gd(&x, refdata, &ann, true, &mut log) {
+                    print!("{}", strme(&log));
+                    println!("invalid");
+                    return Ok(());
+                }
+            } else if !is_valid_gd(&x, refdata, &ann, false, &mut log) {
                 return Ok(());
             }
-        } else if !is_valid(&x, refdata, &ann, false, &mut log) {
-            return Ok(());
+        } else {
+            if ctl.gen_opt.trace_barcode == *barcode {
+                if !is_valid(&x, refdata, &ann, true, &mut log) {
+                    print!("{}", strme(&log));
+                    println!("invalid");
+                    return Ok(());
+                }
+            } else if !is_valid(&x, refdata, &ann, false, &mut log) {
+                return Ok(());
+            }
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, refdata, &ann, &mut cdr3);
@@ -272,12 +284,11 @@ fn parse_vector_entry_from_json(
                 v_ref_id = t;
                 annv.push(ann[i]);
                 chain_type = refdata.name[t][0..3].to_string();
-                if ctl.gen_opt.gamma_delta{
-                    if chain_type == *"IGH" || chain_type == *"TRB" || chain_type == *"TRD"{
+                if ctl.gen_opt.gamma_delta {
+                    if chain_type == *"IGH" || chain_type == *"TRB" || chain_type == *"TRD" {
                         left = true;
                     }
-                }
-                else{
+                } else {
                     if chain_type == *"IGH" || chain_type == *"TRB" {
                         left = true;
                     }
@@ -370,12 +381,11 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-                if ctl.gen_opt.gamma_delta{
-                    if chain == *"IGH" || chain == *"TRB" || chain == *"TRD"{
+                if ctl.gen_opt.gamma_delta {
+                    if chain == *"IGH" || chain == *"TRB" || chain == *"TRD" {
                         left = true;
                     }
-                }
-                else{
+                } else {
                     if chain == *"IGH" || chain == *"TRB" {
                         left = true;
                     }
