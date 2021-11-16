@@ -54,8 +54,8 @@ pub fn proc_cvar_auto(
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
 
-                // Strip escape character sequences from val.  Can happen in notes, maybe
-                // other places.
+                // Strip escape character sequences from val.  Can happen in notes,
+                // maybe other places.
 
                 let mut val_clean = String::new();
                 let mut chars = Vec::<char>::new();
