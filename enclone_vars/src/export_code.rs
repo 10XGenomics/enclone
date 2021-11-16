@@ -426,8 +426,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 if v.inputs == "cvar_vdj" {
                     // Parse value return lines.
 
-                    let mut exact = String::new();
-                    let mut cell = String::new();
+                    let (mut exact, mut cell) = (String::new(), String::new());
                     let mut code = v.code.clone();
                     parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
 
