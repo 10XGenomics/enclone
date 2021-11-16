@@ -799,7 +799,11 @@ brief:    number of cells in the clonotype
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          for u in exacts.iter() {
+              n += exact_clonotypes[*u].ncells();
+          }
+          clono: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
 inputs:   cvar_vdj
@@ -1430,7 +1434,18 @@ brief:    name of filter that would be applied (if filters off)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut fates = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let mut f = String::new();
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if fate[li].contains_key(&bc.clone()) {
+                  f = fate[li][&bc.clone()].clone();
+                  f = f.between(" ", " ").to_string();
+              }
+              fates.push(f);
+          }
+          cell: fates
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_aa
 inputs:   cvar_vdj
