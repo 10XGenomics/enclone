@@ -16,6 +16,7 @@ use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
+use rayon::prelude::*;
 use sha2::Digest;
 use std::cmp::min;
 use std::env;
@@ -40,11 +41,15 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_site_examples() {
+    let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..SITE_EXAMPLES.len() {
+        results.push((i, false, String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
         let in_file = format!("../{}", example_name);
-
         let mut f = File::open(&in_file).expect(&format!("couldn't find {}", in_file));
         let mut in_stuff = Vec::<u8>::new();
         f.read_to_end(&mut in_stuff).unwrap();
@@ -58,38 +63,38 @@ fn test_site_examples() {
             .output()
             .expect(&format!("failed to execute test_site_examples"));
         if new.status.code() != Some(0) {
-            eprint!(
+            res.2 = format!(
                 "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
                 i + 1,
                 strme(&new.stderr),
             );
-            std::process::exit(1);
+            res.1 = true;
         }
         let out_stuff = new.stdout.to_vec();
         if in_stuff != out_stuff {
-            eprintln!("\nThe output for site example {} has changed.\n", i + 1);
-            eprintln!("stderr:\n{}", strme(&new.stderr));
-
+            res.1 = true;
+            res.2 += &mut format!("\nThe output for site example {} has changed.\n\n", i + 1);
+            res.2 += &mut format!("stderr:\n{}\n", strme(&new.stderr));
             if String::from_utf8(in_stuff.clone()).is_err()
                 && String::from_utf8(out_stuff.clone()).is_err()
             {
-                eprintln!("Both the old and new files are binary.\n");
+                res.2 += &mut format!("Both the old and new files are binary.\n\n");
             } else if String::from_utf8(in_stuff.clone()).is_err() {
-                eprintln!("The new file is binary but the old is not.\n");
+                res.2 += &mut format!("The new file is binary but the old is not.\n\n");
             } else if String::from_utf8(out_stuff.clone()).is_err() {
-                eprintln!("The old file is binary but the new is not.\n");
+                res.2 += &mut format!("The old file is binary but the new is not.\n\n");
             } else {
                 let old_lines = strme(&in_stuff).split('\n').collect::<Vec<&str>>();
                 let new_lines = strme(&out_stuff).split('\n').collect::<Vec<&str>>();
-                eprintln!(
-                    "old stdout has {} lines; new stdout has {} lines",
+                res.2 += &mut format!(
+                    "old stdout has {} lines; new stdout has {} lines\n",
                     old_lines.len(),
                     new_lines.len(),
                 );
                 for i in 0..min(old_lines.len(), new_lines.len()) {
                     if old_lines[i] != new_lines[i] {
-                        eprintln!(
-                            "first different stdout line is line {}\nold = {}\nnew = {}",
+                        res.2 += &mut format!(
+                            "first different stdout line is line {}\nold = {}\nnew = {}\n",
                             i + 1,
                             old_lines[i],
                             new_lines[i],
@@ -106,22 +111,26 @@ fn test_site_examples() {
                 if in_filex.starts_with("../") {
                     in_filex = in_filex.after("../").to_string();
                 }
-                eprintln!("\nPlease diff {} enclone_exec/{}.", in_filex, save);
-                eprintln!(
+                res.2 += &mut format!("\nPlease diff {} enclone_exec/{}.\n", in_filex, save);
+                res.2 += &mut format!(
                     "\nPossibly this could be because you're running \"cargo t\" in an \
                     environment without the\n\
                     extended dataset collection.  Possibly you should run \
                     \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
                     Otherwise, if you're satisfied with the new output, you can update using\n\n\
-                    enclone {} > {}.\n",
+                    enclone {} > {}.\n\n",
                     args.iter().format(" "),
                     example_name
                 );
             }
+        }
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if results[i].1 {
             std::process::exit(1);
         }
     }
-
     insert_html(
         "../pages/index.html.src",
         "testx/outputs/index.html",
