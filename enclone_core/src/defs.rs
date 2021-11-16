@@ -237,6 +237,7 @@ pub struct GeneralOpt {
     pub fb_show: String,
     pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
     pub nospaces: bool,
+    pub gamma_delta: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
