@@ -19,6 +19,9 @@
 #           REG        regular expression.
 #           VARDEF     user-defined variable from VAR_DEF
 #
+#           Inclusive integer ranges: these have the form {a..b} or {a..} or {..b} or {..}.  Up to
+#           three ranges are allowed in a variable.
+#
 # inputs:   data structures needed as input
 #           ex: ExactClonotype = exact subclonotype structure
 #           mid: usize = chain id in clonotype
@@ -577,8 +580,8 @@ code:     let x = &ex.share[mid];
           }
           exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cdr{1..3}_aa_{0..}_{0..}_ext
-inputs:   ?
+name:     cdr{1..3}_aa_{..}_{..}_ext
+inputs:   cvar_vdj
 limits:
 class:    cvar
 level:    exact
@@ -587,8 +590,92 @@ doc:      TBD
 brief:    CDR* region with specified extension length
 page:     enclone help cvars
 avail:    public
-notes:    Do extension lengths start at zero?
-code:
+notes:
+code:     let (left, right) = (arg2 * 3, arg3 * 3);
+          let x = &ex.share[mid];
+          let mut y = "unknown".to_string();
+          let mut dna = Vec::<u8>::new();
+          if arg1 == 1 {
+              if x.cdr1_start.is_some()
+                  && x.fr2_start.is_some()
+                  && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+              {
+                  if x.cdr1_start.unwrap() as i64 - left >= 0
+                      && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                      && x.fr2_start.unwrap() as i64 + right > 0
+                      && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+                  {
+                      for p in x.cdr1_start.unwrap() as i64 - left..
+                          x.fr2_start.unwrap() as i64 + right {
+                          let p = p as usize;
+                          for j in 0..x.ins.len() {
+                              if x.ins[j].0 == p {
+                                  let mut z = x.ins[j].1.clone();
+                                  dna.append(&mut z);
+                              }
+                          }
+                          if x.seq_del_amino[p] != b'-' {
+                              dna.push(x.seq_del_amino[p]);
+                          }
+                      }
+                      test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                      y = stringme(&aa_seq(&dna, 0));
+                  }
+              }
+          } else if arg1 == 2 {
+              if x.cdr2_start.is_some()
+                  && x.fr3_start.is_some()
+                  && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+              {
+                  if x.cdr2_start.unwrap() as i64 - left >= 0
+                      && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                      && x.fr3_start.unwrap() as i64 + right > 0
+                      && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+                  {
+                      for p in x.cdr2_start.unwrap() as i64 - left..
+                          x.fr3_start.unwrap() as i64 + right {
+                          let p = p as usize;
+                          for j in 0..x.ins.len() {
+                              if x.ins[j].0 == p {
+                                  let mut z = x.ins[j].1.clone();
+                                  dna.append(&mut z);
+                              }
+                          }
+                          if x.seq_del_amino[p] != b'-' {
+                              dna.push(x.seq_del_amino[p]);
+                          }
+                      }
+                      test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                      y = stringme(&aa_seq(&dna, 0));
+                  }
+              }
+          } else {
+              if x.cdr3_start as i64 - left >= 0
+                  && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
+                  && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
+                  && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+                      <= x.seq_del_amino.len() as i64
+              {
+                  for p in
+                      x.cdr3_start as i64 - left..
+                          x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+                  {
+                      let p = p as usize;
+                      for j in 0..x.ins.len() {
+                          if x.ins[j].0 == p {
+                              let mut z = x.ins[j].1.clone();
+                              dna.append(&mut z);
+                          }
+                      }
+                      if x.seq_del_amino[p] != b'-' {
+                          dna.push(x.seq_del_amino[p]);
+                      }
+                  }
+                  test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                  y = stringme(&aa_seq(&dna, 0));
+              }
+          }
+          exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cdr{1..3}_dna
 inputs:   cvar_vdj
@@ -1890,7 +1977,7 @@ avail:    public
 notes:
 code:     let nd;
           let mat = &rsi.mat;
-          let u0 = arg1 - 1;
+          let u0 = (arg1 - 1) as usize;
           if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
               let m0 = mat[col][u0].unwrap();
               let m = mat[col][u].unwrap();
@@ -2111,10 +2198,10 @@ page:     enclone help cvars
 avail:    public
 notes:
 code:     let mut val = String::new();
-          if arg1 < ex.share[mid].seq.len() {
+          if (arg1 as usize) < ex.share[mid].seq.len() {
               let mut quals = Vec::<u8>::new();
               for j in 0..ex.clones.len() {
-                  quals.push(ex.clones[j][mid].quals[arg1]);
+                  quals.push(ex.clones[j][mid].quals[arg1 as usize]);
               }
               val = format!("{}", quals.iter().format(","));
           }

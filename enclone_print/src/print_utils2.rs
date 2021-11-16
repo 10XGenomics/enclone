@@ -3,7 +3,7 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::proc_cvar1::proc_cvar1;
+use crate::print_utils1::color_codon;
 use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
@@ -786,30 +786,46 @@ pub fn row_fill(
                 out_data,
                 stats,
             )? {
-                proc_cvar1(
-                    var,
-                    jj,
-                    col,
-                    mid,
-                    pass,
-                    u,
-                    ex,
-                    ctl,
-                    exacts,
-                    exact_clonotypes,
-                    out_data,
-                    rsi,
-                    peer_groups,
-                    show_aa,
-                    ref_diff_pos,
-                    field_types,
-                    col_var,
-                    &pcols_sort,
-                    cx,
-                    extra_args,
-                    stats,
-                    cdr3_con,
-                )?;
+                if *var == "amino" && col_var {
+                    let mut last_color = "black".to_string();
+                    for k in 0..show_aa[col].len() {
+                        let p = show_aa[col][k];
+                        if k > 0
+                            && field_types[col][k] != field_types[col][k - 1]
+                            && !ctl.gen_opt.nospaces
+                        {
+                            cx[col][jj] += " ";
+                        }
+                        if 3 * p + 3 <= seq_amino.len()
+                            && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()
+                        {
+                            cx[col][jj] += "-";
+                        } else if 3 * p + 3 > seq_amino.len()
+                            || seq_amino[3 * p..3 * p + 3].contains(&b'-')
+                        {
+                            cx[col][jj] += "*";
+                        } else {
+                            let x = &peer_groups[rsi.vids[col]];
+                            let last = k == show_aa[col].len() - 1;
+                            let log = color_codon(
+                                ctl,
+                                &seq_amino,
+                                ref_diff_pos,
+                                x,
+                                col,
+                                mid,
+                                p,
+                                u,
+                                &mut last_color,
+                                last,
+                                cdr3_con,
+                                exacts,
+                                exact_clonotypes,
+                            );
+                            cx[col][jj] += strme(&log);
+                        }
+                    }
+                }
             }
         }
     }

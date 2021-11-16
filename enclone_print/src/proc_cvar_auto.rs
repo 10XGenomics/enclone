@@ -54,8 +54,8 @@ pub fn proc_cvar_auto(
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
 
-                // Strip escape character sequences from val.  Can happen in notes, maybe
-                // other places.
+                // Strip escape character sequences from val.  Can happen in notes,
+                // maybe other places.
 
                 let mut val_clean = String::new();
                 let mut chars = Vec::<char>::new();
@@ -178,11 +178,11 @@ pub fn proc_cvar_auto(
         (ex.share[mid].cdr3_start.to_string(), Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_ref")
-        && var.between2("cdr", "_aa_ref").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa_ref").parse::<i64>().is_ok()
         && var.between2("cdr", "_aa_ref").force_i64() >= 1
-        && var.between2("cdr", "_aa_ref").force_usize() <= 2
+        && var.between2("cdr", "_aa_ref").force_i64() <= 2
     {
-        let arg1 = var.between2("cdr", "_aa_ref").force_usize();
+        let arg1 = var.between2("cdr", "_aa_ref").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -210,11 +210,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_dna_ref")
-        && var.between2("cdr", "_dna_ref").parse::<usize>().is_ok()
+        && var.between2("cdr", "_dna_ref").parse::<i64>().is_ok()
         && var.between2("cdr", "_dna_ref").force_i64() >= 1
-        && var.between2("cdr", "_dna_ref").force_usize() <= 2
+        && var.between2("cdr", "_dna_ref").force_i64() <= 2
     {
-        let arg1 = var.between2("cdr", "_dna_ref").force_usize();
+        let arg1 = var.between2("cdr", "_dna_ref").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -242,11 +242,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa")
-        && var.between2("cdr", "_aa").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa").parse::<i64>().is_ok()
         && var.between2("cdr", "_aa").force_i64() >= 1
-        && var.between2("cdr", "_aa").force_usize() <= 3
+        && var.between2("cdr", "_aa").force_i64() <= 3
     {
-        let arg1 = var.between2("cdr", "_aa").force_usize();
+        let arg1 = var.between2("cdr", "_aa").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -267,11 +267,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_aa_north")
-        && var.between2("cdr", "_aa_north").parse::<usize>().is_ok()
+        && var.between2("cdr", "_aa_north").parse::<i64>().is_ok()
         && var.between2("cdr", "_aa_north").force_i64() >= 1
-        && var.between2("cdr", "_aa_north").force_usize() <= 3
+        && var.between2("cdr", "_aa_north").force_i64() <= 3
     {
-        let arg1 = var.between2("cdr", "_aa_north").force_usize();
+        let arg1 = var.between2("cdr", "_aa_north").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -307,12 +307,120 @@ pub fn proc_cvar_auto(
 
         (y, Vec::new())
     } else if var.starts_with("cdr")
-        && var.ends_with("_dna")
-        && var.between2("cdr", "_dna").parse::<usize>().is_ok()
-        && var.between2("cdr", "_dna").force_i64() >= 1
-        && var.between2("cdr", "_dna").force_usize() <= 3
+        && var.after("cdr").contains("_aa_")
+        && var.after("cdr").after("_aa_").contains("_")
+        && var.after("cdr").after("_aa_").after("_").ends_with("_ext")
+        && var.between("cdr", "_aa_").parse::<i64>().is_ok()
+        && var.between("cdr", "_aa_").force_i64() >= 1
+        && var.between("cdr", "_aa_").force_i64() <= 3
+        && var
+            .after("cdr")
+            .after("_aa_")
+            .between("_", "_ext")
+            .parse::<i64>()
+            .is_ok()
     {
-        let arg1 = var.between2("cdr", "_dna").force_usize();
+        let arg1 = var.between("cdr", "_aa_").force_i64();
+        let arg2 = var.after("cdr").between("_aa_", "_").force_i64();
+        let arg3 = var
+            .after("cdr")
+            .after("_aa_")
+            .between("_", "_ext")
+            .force_i64();
+        let (left, right) = (arg2 * 3, arg3 * 3);
+        let x = &ex.share[mid];
+        let mut y = "unknown".to_string();
+        let mut dna = Vec::<u8>::new();
+        if arg1 == 1 {
+            if x.cdr1_start.is_some()
+                && x.fr2_start.is_some()
+                && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+            {
+                if x.cdr1_start.unwrap() as i64 - left >= 0
+                    && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                    && x.fr2_start.unwrap() as i64 + right > 0
+                    && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+                {
+                    for p in
+                        x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right
+                    {
+                        let p = p as usize;
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                    y = stringme(&aa_seq(&dna, 0));
+                }
+            }
+        } else if arg1 == 2 {
+            if x.cdr2_start.is_some()
+                && x.fr3_start.is_some()
+                && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+            {
+                if x.cdr2_start.unwrap() as i64 - left >= 0
+                    && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                    && x.fr3_start.unwrap() as i64 + right > 0
+                    && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
+                {
+                    for p in
+                        x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right
+                    {
+                        let p = p as usize;
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                    y = stringme(&aa_seq(&dna, 0));
+                }
+            }
+        } else {
+            if x.cdr3_start as i64 - left >= 0
+                && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
+                && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
+                && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+                    <= x.seq_del_amino.len() as i64
+            {
+                for p in x.cdr3_start as i64 - left
+                    ..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+                {
+                    let p = p as usize;
+                    for j in 0..x.ins.len() {
+                        if x.ins[j].0 == p {
+                            let mut z = x.ins[j].1.clone();
+                            dna.append(&mut z);
+                        }
+                    }
+                    if x.seq_del_amino[p] != b'-' {
+                        dna.push(x.seq_del_amino[p]);
+                    }
+                }
+                test_internal_error_seq(&x.seq, &dna, &x.cdr3_aa)?;
+                y = stringme(&aa_seq(&dna, 0));
+            }
+        }
+
+        (y, Vec::new())
+    } else if var.starts_with("cdr")
+        && var.ends_with("_dna")
+        && var.between2("cdr", "_dna").parse::<i64>().is_ok()
+        && var.between2("cdr", "_dna").force_i64() >= 1
+        && var.between2("cdr", "_dna").force_i64() <= 3
+    {
+        let arg1 = var.between2("cdr", "_dna").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -330,11 +438,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("cdr")
         && var.ends_with("_len")
-        && var.between2("cdr", "_len").parse::<usize>().is_ok()
+        && var.between2("cdr", "_len").parse::<i64>().is_ok()
         && var.between2("cdr", "_len").force_i64() >= 1
-        && var.between2("cdr", "_len").force_usize() <= 3
+        && var.between2("cdr", "_len").force_i64() <= 3
     {
-        let arg1 = var.between2("cdr", "_len").force_usize();
+        let arg1 = var.between2("cdr", "_len").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -626,11 +734,11 @@ pub fn proc_cvar_auto(
         (edit, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa")
-        && var.between2("fwr", "_aa").parse::<usize>().is_ok()
+        && var.between2("fwr", "_aa").parse::<i64>().is_ok()
         && var.between2("fwr", "_aa").force_i64() >= 1
-        && var.between2("fwr", "_aa").force_usize() <= 4
+        && var.between2("fwr", "_aa").force_i64() <= 4
     {
-        let arg1 = var.between2("fwr", "_aa").force_usize();
+        let arg1 = var.between2("fwr", "_aa").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -654,11 +762,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa_ref")
-        && var.between2("fwr", "_aa_ref").parse::<usize>().is_ok()
+        && var.between2("fwr", "_aa_ref").parse::<i64>().is_ok()
         && var.between2("fwr", "_aa_ref").force_i64() >= 1
-        && var.between2("fwr", "_aa_ref").force_usize() <= 4
+        && var.between2("fwr", "_aa_ref").force_i64() <= 4
     {
-        let arg1 = var.between2("fwr", "_aa_ref").force_usize();
+        let arg1 = var.between2("fwr", "_aa_ref").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -699,11 +807,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna")
-        && var.between2("fwr", "_dna").parse::<usize>().is_ok()
+        && var.between2("fwr", "_dna").parse::<i64>().is_ok()
         && var.between2("fwr", "_dna").force_i64() >= 1
-        && var.between2("fwr", "_dna").force_usize() <= 4
+        && var.between2("fwr", "_dna").force_i64() <= 4
     {
-        let arg1 = var.between2("fwr", "_dna").force_usize();
+        let arg1 = var.between2("fwr", "_dna").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -727,11 +835,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_dna_ref")
-        && var.between2("fwr", "_dna_ref").parse::<usize>().is_ok()
+        && var.between2("fwr", "_dna_ref").parse::<i64>().is_ok()
         && var.between2("fwr", "_dna_ref").force_i64() >= 1
-        && var.between2("fwr", "_dna_ref").force_usize() <= 4
+        && var.between2("fwr", "_dna_ref").force_i64() <= 4
     {
-        let arg1 = var.between2("fwr", "_dna_ref").force_usize();
+        let arg1 = var.between2("fwr", "_dna_ref").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         if arg1 == 1 {
@@ -772,11 +880,11 @@ pub fn proc_cvar_auto(
         (y, Vec::new())
     } else if var.starts_with("fwr")
         && var.ends_with("_len")
-        && var.between2("fwr", "_len").parse::<usize>().is_ok()
+        && var.between2("fwr", "_len").parse::<i64>().is_ok()
         && var.between2("fwr", "_len").force_i64() >= 1
-        && var.between2("fwr", "_len").force_usize() <= 4
+        && var.between2("fwr", "_len").force_i64() <= 4
     {
-        let arg1 = var.between2("fwr", "_len").force_usize();
+        let arg1 = var.between2("fwr", "_len").force_i64();
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
         let c;
@@ -838,13 +946,13 @@ pub fn proc_cvar_auto(
         (refdata.name[rsi.jids[col]].clone(), Vec::new())
     } else if var.starts_with("ndiff")
         && var.ends_with("vj")
-        && var.between2("ndiff", "vj").parse::<usize>().is_ok()
+        && var.between2("ndiff", "vj").parse::<i64>().is_ok()
         && var.between2("ndiff", "vj").force_i64() >= 1
     {
-        let arg1 = var.between2("ndiff", "vj").force_usize();
+        let arg1 = var.between2("ndiff", "vj").force_i64();
         let nd;
         let mat = &rsi.mat;
-        let u0 = arg1 - 1;
+        let u0 = (arg1 - 1) as usize;
         if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
             let m0 = mat[col][u0].unwrap();
             let m = mat[col][u].unwrap();
@@ -933,15 +1041,15 @@ pub fn proc_cvar_auto(
         (String::new(), vals)
     } else if var.starts_with("q")
         && var.ends_with("_")
-        && var.between2("q", "_").parse::<usize>().is_ok()
+        && var.between2("q", "_").parse::<i64>().is_ok()
         && var.between2("q", "_").force_i64() >= 0
     {
-        let arg1 = var.between2("q", "_").force_usize();
+        let arg1 = var.between2("q", "_").force_i64();
         let mut val = String::new();
-        if arg1 < ex.share[mid].seq.len() {
+        if (arg1 as usize) < ex.share[mid].seq.len() {
             let mut quals = Vec::<u8>::new();
             for j in 0..ex.clones.len() {
-                quals.push(ex.clones[j][mid].quals[arg1]);
+                quals.push(ex.clones[j][mid].quals[arg1 as usize]);
             }
             val = format!("{}", quals.iter().format(","));
         }
