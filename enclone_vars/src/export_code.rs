@@ -14,6 +14,42 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn parse_value_return_lines(code: &mut String, level: &str, exact: &mut String, cell: &mut String) {
+    *exact = "String::new()".to_string();
+    *cell = "Vec::new()".to_string();
+    let mut lines = Vec::<String>::new();
+    for line in code.lines() {
+        lines.push(line.to_string());
+    }
+    let n = lines.len();
+    if n > 0 {
+        let mut sub = 0;
+        for i in (0..lines.len()).rev() {
+            if lines[i].contains("exact: ") {
+                *exact = lines[i].after("exact: ").to_string();
+                sub += 1;
+            } else if lines[i].contains("cell: ") {
+                *cell = lines[i].after("cell: ").to_string();
+                sub += 1;
+            }
+        }
+        let mut code2 = String::new();
+        for i in 0..lines.len() - sub {
+            code2 += &mut format!("{}\n", lines[i]);
+        }
+        *code = code2;
+    }
+    if level == "cell-exact" {
+        assert!(!exact.is_empty());
+        assert!(!cell.is_empty());
+    }
+    if level == "cell" {
+        assert!(!cell.is_empty());
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn run_rustfmt(f: &str) {
     let new = Command::new("rustfmt")
         .arg(&f)
@@ -401,38 +437,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 if v.inputs == "cvar_vdj" {
                     // Parse value return lines.
 
-                    let mut exact = "String::new()".to_string();
-                    let mut cell = "Vec::new()".to_string();
+                    let mut exact = String::new();
+                    let mut cell = String::new();
                     let mut code = v.code.clone();
-                    let mut lines = Vec::<String>::new();
-                    for line in code.lines() {
-                        lines.push(line.to_string());
-                    }
-                    let n = lines.len();
-                    if n > 0 {
-                        let mut sub = 0;
-                        for i in (0..lines.len()).rev() {
-                            if lines[i].contains("exact: ") {
-                                exact = lines[i].after("exact: ").to_string();
-                                sub += 1;
-                            } else if lines[i].contains("cell: ") {
-                                cell = lines[i].after("cell: ").to_string();
-                                sub += 1;
-                            }
-                        }
-                        let mut code2 = String::new();
-                        for i in 0..lines.len() - sub {
-                            code2 += &mut format!("{}\n", lines[i]);
-                        }
-                        code = code2;
-                    }
-                    if v.level == "cell-exact" {
-                        assert!(!exact.is_empty());
-                        assert!(!cell.is_empty());
-                    }
-                    if v.level == "cell" {
-                        assert!(!cell.is_empty());
-                    }
+                    parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
 
                     // Proceed.
 
