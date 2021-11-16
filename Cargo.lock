@@ -1696,7 +1696,7 @@ dependencies = [
  "png-decoder",
  "pretty_trace",
  "procfs",
- "prost 0.8.0",
+ "prost 0.9.0",
  "rayon",
  "serde_json",
  "string_utils",

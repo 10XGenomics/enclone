@@ -21,7 +21,7 @@ publish = false
 bio_edit = "0.1"
 bytes = "1"
 byteorder = "1"
-prost = { version = ">=0.8,<0.10", default_features = false }
+prost = { version = "0.9", default_features = false }
 serde = "1"
 serde_derive = "1"
 thiserror = "1"
