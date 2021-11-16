@@ -14,6 +14,20 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn run_rustfmt(f: &str) {
+    let new = Command::new("rustfmt")
+        .arg(&f)
+        .output()
+        .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt".to_string()));
+    if new.status.code() != Some(0) {
+        eprintln!("\nrustfmt failed\n");
+        eprintln!("You can observe the problem by typing rustfmt {}.\n", f);
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Emit code that tests for a given variable, allowing for up to three bracket expressions
 // in the variable.
 
@@ -456,20 +470,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             fwrite!(f, "{}", cvar_vdj_stop);
         }
 
-        // Rustfmt.
+        // Rustfmt and save.
 
-        let new = Command::new("rustfmt")
-            .arg(&temp_out)
-            .output()
-            .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt".to_string()));
-        if new.status.code() != Some(0) {
-            eprintln!("\nrustfmt failed\n");
-            eprintln!(
-                "You can observe the problem by typing rustfmt {}.\n",
-                temp_out
-            );
-            std::process::exit(1);
-        }
+        run_rustfmt(&temp_out);
         let f = std::fs::read_to_string(&temp_out).unwrap();
         outs.push((actual_out, f));
     }
