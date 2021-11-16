@@ -14,7 +14,8 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Emit code that tests for a given variable, allowing for bracket expressions in the variable.
+// Emit code that tests for a given variable, allowing for up to three bracket expressions
+// in the variable.
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     let nranges = var.matches('{').count();
@@ -140,8 +141,7 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             begin, mid1, mid2,
         ));
         conditions.push(format!(
-            r###"var.after("{}").after("{}").after("{}")
-                .ends_with("{}")"###,
+            r###"var.after("{}").after("{}").after("{}").ends_with("{}")"###,
             begin, mid1, mid2, end,
         ));
         conditions.push(format!(
@@ -162,34 +162,29 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
         }
         if low2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between("{}", "{}").force_i64() 
-                    >= {}"###,
+                r###"var.after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, low2,
             ));
         }
         if high2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between("{}", "{}").force_i64() 
-                    <= {}"###,
+                r###"var.after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, high2,
             ));
         }
         conditions.push(format!(
-            r###"var.after("{}").after("{}")
-                .between("{}", "{}").parse::<i64>().is_ok()"###,
+            r###"var.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
             begin, mid1, mid2, end,
         ));
         if low3.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").after("{}").between("{}", "{}")
-                    .force_i64() >= {}"###,
+                r###"var.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, end, low3,
             ));
         }
         if high3.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").after("{}").between("{}", "{}")
-                    .force_i64() <= {}"###,
+                r###"var.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, end, high3,
             ));
         }
@@ -202,16 +197,14 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
         );
         fwriteln!(
             f,
-            r###"let arg2 = var.after("{}").between("{}", "{}")
-                .force_i64();"###,
+            r###"let arg2 = var.after("{}").between("{}", "{}").force_i64();"###,
             begin,
             mid1,
             mid2,
         );
         fwriteln!(
             f,
-            r###"let arg3 = var.after("{}").after("{}").between("{}", "{}")
-                .force_i64();"###,
+            r###"let arg3 = var.after("{}").after("{}").between("{}", "{}").force_i64();"###,
             begin,
             mid1,
             mid2,
