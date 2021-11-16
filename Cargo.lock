@@ -5365,6 +5365,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/gamma-delta-support#df5a09bc0f863a51e2758a28dfd8090375d9d0d5"
 dependencies = [
  "align_tools",
  "amino",
@@ -5386,6 +5387,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/gamma-delta-support#df5a09bc0f863a51e2758a28dfd8090375d9d0d5"
 dependencies = [
  "debruijn",
  "exons",

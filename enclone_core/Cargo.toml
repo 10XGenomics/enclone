@@ -42,7 +42,7 @@ stirling_numbers = "0.1"
 string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
-vdj_ann = {path = "/mnt/home/nima.mousavi/src/github/rust-toolbox/vdj_ann"}
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "nmmsv/gamma-delta-support" }
 vector_utils = "0.1"
 zstd = "0.9"
 
