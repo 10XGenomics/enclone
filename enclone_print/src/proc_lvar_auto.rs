@@ -13,7 +13,7 @@ use itertools::Itertools;
 // use stats_utils::*;
 // use std::cmp::min;
 use std::collections::HashMap;
-// use string_utils::*;
+use string_utils::*;
 use vdj_ann::refx::RefData;
 use vector_utils::*;
 
@@ -32,6 +32,7 @@ pub fn proc_lvar_auto(
     stats: &mut Vec<(String, Vec<String>)>,
     lvars: &Vec<String>,
     row: &mut Vec<String>,
+    fate: &Vec<HashMap<String, String>>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -69,8 +70,24 @@ pub fn proc_lvar_auto(
         };
     }
 
+    macro_rules! lvar_stats {
+        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            stats.push(($var.to_string(), $stats.clone()));
+        };
+    }
+
     let val = if false {
-        (String::new(), Vec::<String>::new())
+        (String::new(), Vec::<String>::new(), String::new())
     } else if var == "datasets" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -79,7 +96,11 @@ pub fn proc_lvar_auto(
         let mut datasets_unique = datasets.clone();
         unique_sort(&mut datasets_unique);
 
-        (format!("{}", datasets_unique.iter().format(",")), datasets)
+        (
+            format!("{}", datasets_unique.iter().format(",")),
+            datasets,
+            "cell-exact".to_string(),
+        )
     } else if var == "datasets_cell" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -89,7 +110,7 @@ pub fn proc_lvar_auto(
         unique_sort(&mut datasets_unique);
 
         let _exact = format!("{}", datasets_unique.iter().format(","));
-        (String::new(), datasets)
+        (String::new(), datasets, "cell-exact".to_string())
     } else if var == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -103,7 +124,11 @@ pub fn proc_lvar_auto(
         let donors_unsorted = donors.clone();
         unique_sort(&mut donors);
 
-        (format!("{}", donors.iter().format(",")), donors_unsorted)
+        (
+            format!("{}", donors.iter().format(",")),
+            donors_unsorted,
+            "cell-exact".to_string(),
+        )
     } else if var == "donors_cell" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -118,13 +143,32 @@ pub fn proc_lvar_auto(
         unique_sort(&mut donors);
 
         let _exact = format!("{}", donors.iter().format(","));
-        (String::new(), donors_unsorted)
+        (String::new(), donors_unsorted, "cell-exact".to_string())
+    } else if var == "filter" {
+        let mut fates = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut f = String::new();
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if fate[li].contains_key(&bc.clone()) {
+                f = fate[li][&bc.clone()].clone();
+                f = f.between(" ", " ").to_string();
+            }
+            fates.push(f);
+        }
+
+        (String::new(), fates, "cell".to_string())
     } else if var == "nchains" {
-        (format!("{}", rsi.mat.len()), Vec::new())
+        (
+            format!("{}", rsi.mat.len()),
+            Vec::new(),
+            "clono".to_string(),
+        )
     } else if var == "nchains_present" {
         (
             format!("{}", exact_clonotypes[exacts[u]].share.len()),
             Vec::new(),
+            "exact".to_string(),
         )
     } else if var == "origins" {
         let mut origins = Vec::<String>::new();
@@ -140,7 +184,11 @@ pub fn proc_lvar_auto(
         let origins_unsorted = origins.clone();
         unique_sort(&mut origins);
 
-        (format!("{}", origins.iter().format(",")), origins_unsorted)
+        (
+            format!("{}", origins.iter().format(",")),
+            origins_unsorted,
+            "cell-exact".to_string(),
+        )
     } else if var == "origins_cell" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -156,15 +204,24 @@ pub fn proc_lvar_auto(
         unique_sort(&mut origins);
 
         let _exact = format!("{}", origins.iter().format(","));
-        (String::new(), origins_unsorted)
+        (String::new(), origins_unsorted, "cell-exact".to_string())
     } else {
-        ("$UNDEFINED".to_string(), Vec::<String>::new())
+        (
+            "$UNDEFINED".to_string(),
+            Vec::<String>::new(),
+            String::new(),
+        )
     };
     if val.0 == "$UNDEFINED" {
         return Ok(false);
     } else {
-        let (exact, cell) = &val;
-        if exact.len() > 0 && !var.ends_with("_cell") {
+        let (exact, cell, level) = &val;
+        if level == "cell" && !var.ends_with("_cell") {
+            lvar_stats![i, var, String::new(), cell];
+            if pass == 2 {
+                speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+            }
+        } else if exact.len() > 0 && !var.ends_with("_cell") {
             lvar_stats1![i, var, exact.to_string()];
         } else if cell.len() > 0 {
             if pass == 2 {

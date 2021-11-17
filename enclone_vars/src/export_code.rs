@@ -485,7 +485,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         // use stats_utils::*;
         // use std::cmp::min;
         use std::collections::HashMap;
-        // use string_utils::*;
+        use string_utils::*;
         use vdj_ann::refx::RefData;
         use vector_utils::*;
 
@@ -504,6 +504,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             stats: &mut Vec<(String, Vec<String>)>,
             lvars: &Vec<String>,
             row: &mut Vec<String>,
+            fate: &Vec<HashMap<String, String>>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];
@@ -542,22 +543,43 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 };
             }
 
+            macro_rules! lvar_stats {
+                ($i: expr, $var:expr, $val:expr, $stats: expr) => {
+                    if verbose {
+                        eprint!("lvar {} ==> {}; ", $var, $val);
+                        eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+                    }
+                    if $i < lvars.len() {
+                        row.push($val)
+                    }
+                    if pass == 2 {
+                        speak!(u, $var.to_string(), $val);
+                    }
+                    stats.push(($var.to_string(), $stats.clone()));
+                };
+            }
+
             let val =
             if false {
-                (String::new(), Vec::<String>::new())
+                (String::new(), Vec::<String>::new(), String::new())
 
         "###;
 
     let lvar_vdj_stop = r###"
 
             } else {
-                ("$UNDEFINED".to_string(), Vec::<String>::new())
+                ("$UNDEFINED".to_string(), Vec::<String>::new(), String::new())
             };
             if val.0 == "$UNDEFINED" {
                 return Ok(false);
             } else {
-                let (exact, cell) = &val;
-                if exact.len() > 0 && !var.ends_with("_cell") {
+                let (exact, cell, level) = &val;
+                if level == "cell" && !var.ends_with("_cell") {
+                    lvar_stats![i, var, String::new(), cell];
+                    if pass == 2 {
+                        speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+                    }
+                } else if exact.len() > 0 && !var.ends_with("_cell") {
                     lvar_stats1![i, var, exact.to_string()];
                 } else if cell.len() > 0 {
                     if pass == 2 {
@@ -617,10 +639,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         emit_code_to_test_for_var(&var, &mut f);
                         fwriteln!(f, "{}", code);
                         if pass == 1 {
-                            fwriteln!(f, "({}, {})", exact, cell);
+                            fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
                         } else {
                             fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
-                            fwriteln!(f, "(String::new(), {})", cell);
+                            fwriteln!(f, "(String::new(), {}, \"{}\".to_string())", cell, v.level);
                         }
                     }
                 }

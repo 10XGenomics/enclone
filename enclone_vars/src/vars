@@ -1426,7 +1426,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     filter
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell
