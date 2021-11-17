@@ -282,7 +282,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         erase_if(&mut refhash, &to_delete);
         let mut f = BufReader::new(open_maybe_compressed(&jsonx));
         'json_entry: loop {
-            let x = read_vector_entry_from_json(&mut f);
+            let x = read_vector_entry_from_json(&mut f)?;
             if x.is_none() {
                 break;
             }

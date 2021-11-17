@@ -39,59 +39,6 @@ pub fn proc_cvar_auto(
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> Result<bool, String> {
     let cvars = &ctl.clono_print_opt.cvars;
-
-    // Set up macros.
-
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if pass == 2
-                && ((ctl.parseable_opt.pout.len() > 0
-                    && (ctl.parseable_opt.pchains == "max"
-                        || col < ctl.parseable_opt.pchains.force_usize()))
-                    || extra_args.len() > 0)
-            {
-                let mut v = $var.clone();
-                v = v.replace("_Σ", "_sum");
-                v = v.replace("_μ", "_mean");
-
-                // Strip escape character sequences from val.  Can happen in notes,
-                // maybe other places.
-
-                let mut val_clean = String::new();
-                let mut chars = Vec::<char>::new();
-                let valx = format!("{}", $val);
-                for c in valx.chars() {
-                    chars.push(c);
-                }
-                let mut escaped = false;
-                for l in 0..chars.len() {
-                    if chars[l] == '' {
-                        escaped = true;
-                    }
-                    if escaped {
-                        if chars[l] == 'm' {
-                            escaped = false;
-                        }
-                        continue;
-                    }
-                    val_clean.push(chars[l]);
-                }
-
-                // Proceed.
-
-                let varc = format!("{}{}", v, $col + 1);
-                if pcols_sort.is_empty()
-                    || bin_member(&pcols_sort, &varc)
-                    || bin_member(&extra_args, &varc)
-                {
-                    out_data[$u].insert(varc, val_clean);
-                }
-            }
-        };
-    }
-
-    // Test variable.
-
     let val = if false {
         (String::new(), Vec::<String>::new())
     } else if var == "aa%" {
@@ -1358,7 +1305,49 @@ pub fn proc_cvar_auto(
             if j < rsi.cvars[col].len() && cvars.contains(&var) {
                 cx[col][j] = exact.clone();
             }
-            speakc!(u, col, var, exact);
+            if pass == 2
+                && ((ctl.parseable_opt.pout.len() > 0
+                    && (ctl.parseable_opt.pchains == "max"
+                        || col < ctl.parseable_opt.pchains.force_usize()))
+                    || extra_args.len() > 0)
+            {
+                let mut v = var.clone();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
+
+                // Strip escape character sequences from exact.  Can happen in notes,
+                // maybe other places.
+
+                let mut val_clean = String::new();
+                let mut chars = Vec::<char>::new();
+                let valx = format!("{}", exact);
+                for c in valx.chars() {
+                    chars.push(c);
+                }
+                let mut escaped = false;
+                for l in 0..chars.len() {
+                    if chars[l] == '' {
+                        escaped = true;
+                    }
+                    if escaped {
+                        if chars[l] == 'm' {
+                            escaped = false;
+                        }
+                        continue;
+                    }
+                    val_clean.push(chars[l]);
+                }
+
+                // Proceed.
+
+                let varc = format!("{}{}", v, col + 1);
+                if pcols_sort.is_empty()
+                    || bin_member(&pcols_sort, &varc)
+                    || bin_member(&extra_args, &varc)
+                {
+                    out_data[u].insert(varc, val_clean);
+                }
+            }
             if val.1.is_empty() {
                 stats.push((varc, vec![exact.to_string(); ex.ncells()]));
             } else {

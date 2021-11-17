@@ -799,7 +799,11 @@ brief:    number of cells in the clonotype
 page:     enclone help parseable
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          for u in exacts.iter() {
+              n += exact_clonotypes[*u].ncells();
+          }
+          clono: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
 inputs:   cvar_vdj
@@ -1233,20 +1237,12 @@ brief:    dataset names
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     datasets_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      string
-doc:      TBD
-brief:    dataset name
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut datasets = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
+          }
+          cell: datasets
+          exact: datasets.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
 inputs:   cvar_vdj
@@ -1302,20 +1298,20 @@ brief:    donor names
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     donors_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      string
-doc:      TBD
-brief:    donor name
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut donors = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              if ex.clones[j][0].donor_index.is_some() {
+                  donors
+                      .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()]
+                          .clone());
+              } else {
+                  donors.push("?".to_string());
+              }
+          }
+          let donors_unsorted = donors.clone();
+          unique_sort(&mut donors);
+          cell: donors_unsorted
+          exact: format!("{}", donors.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref
 inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
@@ -1438,7 +1434,18 @@ brief:    name of filter that would be applied (if filters off)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut fates = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let mut f = String::new();
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if fate[li].contains_key(&bc.clone()) {
+                  f = fate[li][&bc.clone()].clone();
+                  f = f.between(" ", " ").to_string();
+              }
+              fates.push(f);
+          }
+          cell: fates
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     fwr{1..4}_aa
 inputs:   cvar_vdj
@@ -1949,7 +1956,7 @@ brief:    number of chains in the clonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", rsi.mat.len())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains_present
 inputs:   ?
@@ -1962,7 +1969,7 @@ brief:    number of chains present in an exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", exact_clonotypes[exacts[u]].share.len())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ndiff{1..}vj
 inputs:   cvar_vdj
@@ -2171,20 +2178,20 @@ brief:    origin names
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     origins_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      string
-doc:      TBD
-brief:    origin name
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut origins = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              if ex.clones[j][0].origin_index.is_some() {
+                  origins.push(
+                      ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                  );
+              } else {
+                  origins.push("?".to_string());
+              }
+          }
+          let origins_unsorted = origins.clone();
+          unique_sort(&mut origins);
+          cell: origins_unsorted
+          exact: format!("{}", origins.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     q{0..}_
 inputs:   cvar_vdj

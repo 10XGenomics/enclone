@@ -2840,9 +2840,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf9db5b29f9ab5f3a9d19a9279c2dc58411d9ce584bac6785d105cbe375e0ae3"
+checksum = "a857da7bfebb286324f3787ff63a3bf6da3d844e43d6345b58644d5bf59d957d"
 dependencies = [
  "bincode",
  "flate2",
