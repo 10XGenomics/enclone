@@ -205,40 +205,7 @@ pub fn proc_lvar1(
         }
     }
 
-    if x == "origins" {
-        let mut origins = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
-            } else {
-                origins.push("?".to_string());
-            }
-        }
-        let origins_unsorted = origins.clone();
-        unique_sort(&mut origins);
-        lvar_stats![
-            i,
-            x,
-            format!("{}", origins.iter().format(",")),
-            origins_unsorted
-        ];
-    } else if x == "origins_cell" {
-        let mut origins = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
-            } else {
-                origins.push("?".to_string());
-            }
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", origins.iter().format(POUT_SEP)));
-        }
-    } else if x == "clonotype_ncells" {
+    if x == "clonotype_ncells" {
         let mut n = 0;
         for u in exacts.iter() {
             n += exact_clonotypes[*u].ncells();

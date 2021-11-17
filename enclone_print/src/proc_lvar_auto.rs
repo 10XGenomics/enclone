@@ -90,6 +90,37 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", datasets_unique.iter().format(","));
         (String::new(), datasets)
+    } else if var == "origins" {
+        let mut origins = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].origin_index.is_some() {
+                origins.push(
+                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                );
+            } else {
+                origins.push("?".to_string());
+            }
+        }
+        let origins_unsorted = origins.clone();
+        unique_sort(&mut origins);
+
+        (format!("{}", origins.iter().format(",")), origins_unsorted)
+    } else if var == "origins_cell" {
+        let mut origins = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].origin_index.is_some() {
+                origins.push(
+                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                );
+            } else {
+                origins.push("?".to_string());
+            }
+        }
+        let origins_unsorted = origins.clone();
+        unique_sort(&mut origins);
+
+        let _exact = format!("{}", origins.iter().format(","));
+        (String::new(), origins_unsorted)
     } else {
         ("$UNDEFINED".to_string(), Vec::<String>::new())
     };
