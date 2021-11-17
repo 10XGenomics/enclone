@@ -204,9 +204,6 @@ fn test_dupped_crates() {
 
 // 30. Make sure that help page list is correct.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_page_list() {
