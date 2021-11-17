@@ -71,7 +71,7 @@ pub fn proc_lvar1(
     n_vdj_gex: &Vec<usize>,
     nd_fields: &Vec<String>,
     lvars: &Vec<String>,
-    lenas: &Vec<String>,
+    _lenas: &Vec<String>,
     alt_bcs: &Vec<String>,
     _n_gex: usize,
     _n_gexs: &Vec<usize>,
@@ -248,17 +248,6 @@ pub fn proc_lvar1(
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
     } else if x == "nchains_present" {
         lvar_stats1![i, x, format!("{}", exact_clonotypes[exacts[u]].share.len())];
-    } else if x == "datasets" {
-        lvar_stats1![i, x, format!("{}", lenas.iter().format(","))];
-    } else if x == "datasets_cell" {
-        let mut datasets = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));
-        }
-        stats.push((x.to_string(), datasets));
     } else if x == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {

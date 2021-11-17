@@ -1227,7 +1227,7 @@ code:     let mut del = String::new();
           exact: del
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     datasets
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
@@ -1241,8 +1241,10 @@ code:     let mut datasets = Vec::<String>::new();
           for j in 0..ex.clones.len() {
               datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
           }
+          let mut datasets_unique = datasets.clone();
+          unique_sort(&mut datasets_unique);
           cell: datasets
-          exact: datasets.iter().format(","))
+          exact: format!("{}", datasets_unique.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dna%
 inputs:   cvar_vdj

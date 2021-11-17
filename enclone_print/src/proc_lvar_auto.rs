@@ -71,6 +71,25 @@ pub fn proc_lvar_auto(
 
     let val = if false {
         (String::new(), Vec::<String>::new())
+    } else if var == "datasets" {
+        let mut datasets = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
+        }
+        let mut datasets_unique = datasets.clone();
+        unique_sort(&mut datasets_unique);
+
+        (format!("{}", datasets_unique.iter().format(",")), datasets)
+    } else if var == "datasets_cell" {
+        let mut datasets = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
+        }
+        let mut datasets_unique = datasets.clone();
+        unique_sort(&mut datasets_unique);
+
+        let _exact = format!("{}", datasets_unique.iter().format(","));
+        (String::new(), datasets)
     } else {
         ("$UNDEFINED".to_string(), Vec::<String>::new())
     };
@@ -80,8 +99,7 @@ pub fn proc_lvar_auto(
         let (exact, cell) = &val;
         if exact.len() > 0 && !var.ends_with("_cell") {
             lvar_stats1![i, var, exact.to_string()];
-        }
-        if cell.len() > 0 {
+        } else if cell.len() > 0 {
             if pass == 2 {
                 speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
             }
