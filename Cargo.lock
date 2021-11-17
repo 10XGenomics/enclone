@@ -452,9 +452,9 @@ dependencies = [
 
 [[package]]
 name = "bio-types"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f79d996fbffc59cbaeec4c831f9c1bbf6debdfadd9bb02ff4caf70507159c63"
+checksum = "13bc4296477f37f54e4fd21efaf48a7fa40fbb289bfbf338af5fbbe42797acb6"
 dependencies = [
  "derive-new",
  "lazy_static",
@@ -1299,7 +1299,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -2413,11 +2413,11 @@ dependencies = [
 
 [[package]]
 name = "graph_simple"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ad416c609c61bb8dfd1ab36044e842e4f71b9d5e5240d059693b6d832d489d6"
+checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2620,15 +2620,15 @@ dependencies = [
 
 [[package]]
 name = "hyperbase"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fed1f1c05f120a3ceba29f72b739763be0d4cf851e97f4b20a5ace72a7f167b"
+checksum = "7f7b421523378416db37aef1e0e4d41bc3c84524acc0f69da9b7e8890f4760d1"
 dependencies = [
  "debruijn",
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -4799,9 +4799,9 @@ checksum = "aaf86bbcfd1fa9670b7a129f64fc0c9fcbbfe4f1bc4210e9e98fe71ffc12cde2"
 
 [[package]]
 name = "strum_macros"
-version = "0.20.1"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
+checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
 dependencies = [
  "heck",
  "proc-macro2",
