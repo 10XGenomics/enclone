@@ -395,7 +395,6 @@ fn test_rust_version() {
 
 // 33. Don't allow exit in code in some crates.
 
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_exit() {
