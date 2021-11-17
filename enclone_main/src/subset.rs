@@ -18,7 +18,7 @@ pub fn subset_json(
     exact_clonotypes: &Vec<ExactClonotype>,
     exacts: &Vec<Vec<usize>>,
     ann: &str,
-) {
+) -> Result<(), String> {
     if !ctl.gen_opt.subset_json.is_empty() {
         let mut barcode_li = Vec::<(String, usize)>::new();
         for l in 0..exacts.len() {
@@ -45,7 +45,7 @@ pub fn subset_json(
             let mut xs = Vec::<Vec<u8>>::new();
             let mut f = BufReader::new(open_maybe_compressed(&jsonx));
             loop {
-                match read_vector_entry_from_json(&mut f) {
+                match read_vector_entry_from_json(&mut f)? {
                     None => break,
                     Some(x) => {
                         let v: Value = serde_json::from_str(strme(&x)).unwrap();
@@ -73,4 +73,5 @@ pub fn subset_json(
         }
         fwriteln!(g, "]");
     }
+    Ok(())
 }

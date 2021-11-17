@@ -163,7 +163,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Process the SUBSET_JSON option.
 
-    subset_json(ctl, exact_clonotypes, &exacts, ann);
+    subset_json(ctl, exact_clonotypes, &exacts, ann)?;
     ctl.perf_stats(&torb, "making orbits");
 
     // Assign a D segment to each "left" column in a clonotype (if we need this information).

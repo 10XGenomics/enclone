@@ -692,7 +692,7 @@ fn test_licenses() {
     let mut f = &lic[..];
     let mut fails = Vec::<String>::new();
     loop {
-        match read_vector_entry_from_json(&mut f) {
+        match read_vector_entry_from_json(&mut f).unwrap() {
             None => break,
             Some(x) => {
                 let v: Value = serde_json::from_str(strme(&x)).unwrap();

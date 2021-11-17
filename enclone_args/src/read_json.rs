@@ -685,7 +685,7 @@ pub fn read_json(
     // ◼ This loop could be speeded up, see comments above.
     let mut xs = Vec::<Vec<u8>>::new();
     loop {
-        match read_vector_entry_from_json(&mut f) {
+        match read_vector_entry_from_json(&mut f)? {
             None => break,
             Some(x) => {
                 xs.push(x);
