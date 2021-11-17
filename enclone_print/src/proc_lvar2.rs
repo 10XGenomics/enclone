@@ -3,7 +3,7 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use amino::{aa_seq, codon_to_aa};
+use amino::aa_seq;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::rounded_median;
 use enclone_proto::types::DonorReferenceItem;
@@ -59,15 +59,15 @@ pub fn proc_lvar2(
     _mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    refdata: &RefData,
+    _refdata: &RefData,
     varmat: &Vec<Vec<Vec<u8>>>,
     fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     d_all: &mut Vec<Vec<u32>>,
     ind_all: &mut Vec<Vec<u32>>,
-    rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
+    _rsi: &ColInfo,
+    _dref: &Vec<DonorReferenceItem>,
     _groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
@@ -90,10 +90,8 @@ pub fn proc_lvar2(
     extra_args: &Vec<String>,
     _fate: &Vec<HashMap<String, String>>,
 ) -> bool {
-    let mat = &rsi.mat;
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
-    let cols = varmat[0].len();
     let verbose = ctl.gen_opt.row_fill_verbose;
 
     // Set up speak macro.
@@ -192,40 +190,6 @@ pub fn proc_lvar2(
             y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
-    } else if x == "dref_aa" {
-        let mut diffs = 0;
-        for m in 0..cols {
-            if mat[m][u].is_some() {
-                let r = mat[m][u].unwrap();
-                let aa_seq = &ex.share[r].aa_mod_indel;
-                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                if rsi.vpids[m].is_some() {
-                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                }
-                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                let z = 3 * aa_seq.len() + 1;
-                for p in 0..aa_seq.len() {
-                    if aa_seq[p] == b'-' {
-                        diffs += 1;
-                        continue;
-                    }
-                    if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
-                        && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
-                    {
-                        diffs += 1;
-                    }
-                    if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
-                        && aa_seq[p]
-                            != codon_to_aa(
-                                &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
-                            )
-                    {
-                        diffs += 1;
-                    }
-                }
-            }
-        }
-        lvar_stats1![i, x, format!("{}", diffs)];
     } else if x == "near" {
         let mut dist = 1_000_000;
         for i2 in 0..varmat.len() {

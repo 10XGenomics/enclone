@@ -1354,7 +1354,7 @@ code:
           exact: format!("{}", diffs)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref_aa
-inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
