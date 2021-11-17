@@ -535,9 +535,6 @@ fn test_honey() {
 
 // 36. Test to see if GitHub Actions scripts are valid YAML.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_yaml() {
