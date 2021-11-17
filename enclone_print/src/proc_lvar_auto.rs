@@ -21,9 +21,8 @@ pub fn proc_lvar_auto(
     i: usize,
     pass: usize,
     var: &String,
-    ex: &ExactClonotype,
-    _exacts: &Vec<usize>,
-    _exact_clonotypes: &Vec<ExactClonotype>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
     u: usize,
     _rsi: &ColInfo,
     _refdata: &RefData,
@@ -34,6 +33,8 @@ pub fn proc_lvar_auto(
     lvars: &Vec<String>,
     row: &mut Vec<String>,
 ) -> Result<bool, String> {
+    let clonotype_id = exacts[u];
+    let ex = &exact_clonotypes[clonotype_id];
     let verbose = ctl.gen_opt.row_fill_verbose;
 
     macro_rules! speak {
