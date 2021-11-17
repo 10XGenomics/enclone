@@ -248,12 +248,12 @@ fn parse_vector_entry_from_json(
         }
         let mut log = Vec::<u8>::new();
         if ctl.gen_opt.trace_barcode == *barcode {
-            if !is_valid(&x, refdata, &ann, true, &mut log) {
+            if !is_valid(&x, refdata, &ann, true, &mut log, None) {
                 print!("{}", strme(&log));
                 println!("invalid");
                 return Ok(());
             }
-        } else if !is_valid(&x, refdata, &ann, false, &mut log) {
+        } else if !is_valid(&x, refdata, &ann, false, &mut log, None) {
             return Ok(());
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
