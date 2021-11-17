@@ -22,12 +22,14 @@ publish = false
 [dependencies]
 ansi_escape = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
+bio_edit = "0.1"
 debruijn = "0.3"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1"
 evalexpr = "6"
 expr_tools = "0.1"
+fasta_tools = "0.1"
 flate2 = "1"
 fs_extra = "1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
@@ -44,4 +46,5 @@ serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
 vector_utils = "0.1"

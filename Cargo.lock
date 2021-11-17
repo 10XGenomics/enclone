@@ -1614,12 +1614,14 @@ version = "0.5.129"
 dependencies = [
  "ansi_escape",
  "attohttpc",
+ "bio_edit",
  "debruijn",
  "enclone",
  "enclone_core",
  "equiv",
  "evalexpr",
  "expr_tools",
+ "fasta_tools",
  "flate2",
  "fs_extra",
  "hdf5",
@@ -1636,6 +1638,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils",
 ]
 
