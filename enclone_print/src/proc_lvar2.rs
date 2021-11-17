@@ -9,7 +9,6 @@ use enclone_core::median::rounded_median;
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use regex::Regex;
-use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
@@ -60,8 +59,8 @@ pub fn proc_lvar2(
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
     _refdata: &RefData,
-    varmat: &Vec<Vec<Vec<u8>>>,
-    fp: &Vec<Vec<usize>>,
+    _varmat: &Vec<Vec<Vec<u8>>>,
+    _fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     d_all: &mut Vec<Vec<u32>>,
@@ -190,27 +189,6 @@ pub fn proc_lvar2(
             y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
-    } else if x == "far" {
-        let mut dist = -1_isize;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0_isize;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
-                    }
-                }
-            }
-            dist = max(dist, d);
-        }
-        if dist == -1_isize {
-            lvar_stats1![i, x, "".to_string()];
-        } else {
-            lvar_stats1![i, x, format!("{}", dist)];
-        }
     } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr1_") {

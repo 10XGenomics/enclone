@@ -1425,6 +1425,40 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     far
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    Hamming distance to farthest neighbor 
+page:     enclone help lvars
+avail:    public
+notes:    
+code:     let mut dist = -1_isize;
+          for i2 in 0..varmat.len() {
+              if i2 == u || fp[i2] != fp[u] {
+                  continue;
+              }
+              let mut d = 0_isize;
+              for c in fp[u].iter() {
+                  for j in 0..varmat[u][*c].len() {
+                      if varmat[u][*c][j] != varmat[i2][*c][j] {
+                          d += 1;
+                      }
+                  }
+              }
+              dist = max(dist, d);
+          }
+          let d;
+          if dist == -1_isize {
+              d = "".to_string();
+          } else {
+              d = format!("{}", dist);
+          }
+          exact: d
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     filter
 inputs:   lvar_vdj
 limits:

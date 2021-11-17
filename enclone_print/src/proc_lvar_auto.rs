@@ -11,7 +11,7 @@ use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::Itertools;
 // use stats_utils::*;
-use std::cmp::min;
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::RefData;
@@ -212,6 +212,30 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", diffs), Vec::new(), "exact".to_string())
+    } else if var == "far" {
+        let mut dist = -1_isize;
+        for i2 in 0..varmat.len() {
+            if i2 == u || fp[i2] != fp[u] {
+                continue;
+            }
+            let mut d = 0_isize;
+            for c in fp[u].iter() {
+                for j in 0..varmat[u][*c].len() {
+                    if varmat[u][*c][j] != varmat[i2][*c][j] {
+                        d += 1;
+                    }
+                }
+            }
+            dist = max(dist, d);
+        }
+        let d;
+        if dist == -1_isize {
+            d = "".to_string();
+        } else {
+            d = format!("{}", dist);
+        }
+
+        (d, Vec::new(), "exact".to_string())
     } else if var == "filter" {
         let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {
