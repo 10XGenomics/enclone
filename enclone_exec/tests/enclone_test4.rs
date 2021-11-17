@@ -244,9 +244,6 @@ fn test_help_page_list() {
 // 31. Test workspace dependency structure.  These restrictions are there to reduce compile time.
 // To be expanded over time.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dependency_structure() {
