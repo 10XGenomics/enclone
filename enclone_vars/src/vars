@@ -1290,7 +1290,7 @@ code:     let xm = &ex.share[mid];
           exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     donors
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact

@@ -10,7 +10,7 @@ use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{abbrev_list, strme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, unique_sort};
+use vector_utils::bin_member;
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -215,37 +215,6 @@ pub fn proc_lvar1(
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
     } else if x == "nchains_present" {
         lvar_stats1![i, x, format!("{}", exact_clonotypes[exacts[u]].share.len())];
-    } else if x == "donors" {
-        let mut donors = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
-            }
-        }
-        let donors_unsorted = donors.clone();
-        unique_sort(&mut donors);
-        lvar_stats![
-            i,
-            x,
-            format!("{}", donors.iter().format(",")),
-            donors_unsorted
-        ];
-    } else if x == "donors_cell" {
-        let mut donors = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
-            }
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", donors.iter().format(POUT_SEP)));
-        }
     } else if x == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];

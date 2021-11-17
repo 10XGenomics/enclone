@@ -90,6 +90,35 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", datasets_unique.iter().format(","));
         (String::new(), datasets)
+    } else if var == "donors" {
+        let mut donors = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].donor_index.is_some() {
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
+            } else {
+                donors.push("?".to_string());
+            }
+        }
+        let donors_unsorted = donors.clone();
+        unique_sort(&mut donors);
+
+        (format!("{}", donors.iter().format(",")), donors_unsorted)
+    } else if var == "donors_cell" {
+        let mut donors = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].donor_index.is_some() {
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
+            } else {
+                donors.push("?".to_string());
+            }
+        }
+        let donors_unsorted = donors.clone();
+        unique_sort(&mut donors);
+
+        let _exact = format!("{}", donors.iter().format(","));
+        (String::new(), donors_unsorted)
     } else if var == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
