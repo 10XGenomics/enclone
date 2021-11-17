@@ -1316,7 +1316,7 @@ code:     let mut donors = Vec::<String>::new();
           exact: format!("{}", donors.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     dref
-inputs:   cols, mat, u, ex, refdata, rsi, dref, ctl
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact

@@ -505,6 +505,8 @@ pub fn row_fill(
             &lvars,
             row,
             fate,
+            dref,
+            varmat,
         )? {
             if !proc_lvar1(
                 i,

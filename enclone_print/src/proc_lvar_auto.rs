@@ -8,7 +8,7 @@
 use enclone_core::defs::*;
 // use enclone_core::median::*;
 // use enclone_core::opt_d::*;
-// use enclone_proto::types::*;
+use enclone_proto::types::*;
 use itertools::Itertools;
 // use stats_utils::*;
 // use std::cmp::min;
@@ -25,7 +25,7 @@ pub fn proc_lvar_auto(
     exact_clonotypes: &Vec<ExactClonotype>,
     u: usize,
     rsi: &ColInfo,
-    _refdata: &RefData,
+    refdata: &RefData,
     ctl: &EncloneControl,
     extra_args: &Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
@@ -33,9 +33,13 @@ pub fn proc_lvar_auto(
     lvars: &Vec<String>,
     row: &mut Vec<String>,
     fate: &Vec<HashMap<String, String>>,
+    dref: &Vec<DonorReferenceItem>,
+    varmat: &Vec<Vec<Vec<u8>>>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
+    let mat = &rsi.mat;
+    let cols = varmat[0].len();
     let verbose = ctl.gen_opt.row_fill_verbose;
 
     macro_rules! speak {
@@ -144,6 +148,34 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", donors.iter().format(","));
         (String::new(), donors_unsorted, "cell-exact".to_string())
+    } else if var == "dref" {
+        let mut diffs = 0;
+
+        for m in 0..cols {
+            if mat[m][u].is_some() {
+                let r = mat[m][u].unwrap();
+                let seq = &ex.share[r].seq_del_amino;
+                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                if rsi.vpids[m].is_some() {
+                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                let z = seq.len();
+                for p in 0..z {
+                    let b = seq[p];
+                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                        diffs += 1;
+                    }
+                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (z - p)]
+                    {
+                        diffs += 1;
+                    }
+                }
+            }
+        }
+
+        (format!("{}", diffs), Vec::new(), "exact".to_string())
     } else if var == "filter" {
         let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {

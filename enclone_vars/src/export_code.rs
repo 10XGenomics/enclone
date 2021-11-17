@@ -480,7 +480,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         use enclone_core::defs::*;
         // use enclone_core::median::*;
         // use enclone_core::opt_d::*;
-        // use enclone_proto::types::*;
+        use enclone_proto::types::*;
         use itertools::Itertools;
         // use stats_utils::*;
         // use std::cmp::min;
@@ -497,7 +497,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             exact_clonotypes: &Vec<ExactClonotype>,
             u: usize,
             rsi: &ColInfo,
-            _refdata: &RefData,
+            refdata: &RefData,
             ctl: &EncloneControl,
             extra_args: &Vec<String>,
             out_data: &mut Vec<HashMap<String, String>>,
@@ -505,10 +505,14 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             lvars: &Vec<String>,
             row: &mut Vec<String>,
             fate: &Vec<HashMap<String, String>>,
+            dref: &Vec<DonorReferenceItem>,
+            varmat: &Vec<Vec<Vec<u8>>>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];
             let ex = &exact_clonotypes[clonotype_id];
+            let mat = &rsi.mat;
+            let cols = varmat[0].len();
             let verbose = ctl.gen_opt.row_fill_verbose;
 
             macro_rules! speak {
