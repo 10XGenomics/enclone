@@ -12,7 +12,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, bin_position, next_diff};
+use vector_utils::{bin_member, bin_position};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -507,32 +507,6 @@ pub fn proc_lvar2(
         lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
     } else if x == "gex_Σ" {
         lvar_stats1![i, x, format!("{}", gex_sum.round() as usize)];
-    } else if x == "ext" {
-        let mut exts = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone();
-            let bc = ex.clones[l][0].barcode.clone();
-            if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
-                exts.push(ctl.gen_opt.extc[&(li, bc)].clone());
-            }
-        }
-        exts.sort();
-        let mut s = String::new();
-        let mut j = 0;
-        while j < exts.len() {
-            let k = next_diff(&exts, j);
-            if j > 0 {
-                s += ",";
-            }
-            s += &format!(
-                "{}[{}/{}]",
-                exts[j],
-                k - j,
-                ctl.gen_opt.extn[&exts[j].clone()]
-            );
-            j = k;
-        }
-        lvar_stats1![i, x, s.clone()];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
