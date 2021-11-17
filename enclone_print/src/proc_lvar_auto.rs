@@ -190,6 +190,58 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), fates, "cell".to_string())
+    } else if var == "inkt" {
+        let mut s = String::new();
+        let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
+        let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
+        let beta_g = ex.share[0].inkt_beta_chain_gene_match;
+        let beta_j = ex.share[0].inkt_beta_chain_junction_match;
+        if alpha_g || alpha_j {
+            s += "𝝰";
+            if alpha_g {
+                s += "g";
+            }
+            if alpha_j {
+                s += "j";
+            }
+        }
+        if beta_g || beta_j {
+            s += "𝝱";
+            if beta_g {
+                s += "g";
+            }
+            if beta_j {
+                s += "j";
+            }
+        }
+
+        (s, Vec::new(), "exact".to_string())
+    } else if var == "mait" {
+        let mut s = String::new();
+        let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
+        let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
+        let beta_g = ex.share[0].mait_beta_chain_gene_match;
+        let beta_j = ex.share[0].mait_beta_chain_junction_match;
+        if alpha_g || alpha_j {
+            s += "𝝰";
+            if alpha_g {
+                s += "g";
+            }
+            if alpha_j {
+                s += "j";
+            }
+        }
+        if beta_g || beta_j {
+            s += "𝝱";
+            if beta_g {
+                s += "g";
+            }
+            if beta_j {
+                s += "j";
+            }
+        }
+
+        (s, Vec::new(), "exact".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),
@@ -253,7 +305,7 @@ pub fn proc_lvar_auto(
             if pass == 2 {
                 speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
             }
-        } else if exact.len() > 0 && !var.ends_with("_cell") {
+        } else if (exact.len() > 0 && !var.ends_with("_cell")) || cell.len() == 0 {
             lvar_stats1![i, var, exact.to_string()];
         } else if cell.len() > 0 {
             if pass == 2 {

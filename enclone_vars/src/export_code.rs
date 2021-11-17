@@ -583,7 +583,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     if pass == 2 {
                         speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
                     }
-                } else if exact.len() > 0 && !var.ends_with("_cell") {
+                } else if ( exact.len() > 0 && !var.ends_with("_cell") ) || cell.len() == 0 {
                     lvar_stats1![i, var, exact.to_string()];
                 } else if cell.len() > 0 {
                     if pass == 2 {

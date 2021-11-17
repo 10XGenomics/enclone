@@ -290,56 +290,6 @@ pub fn proc_lvar1(
             }
         }
         lvar![i, x, format!("{}", n)];
-    } else if x == "inkt" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
-        let beta_g = ex.share[0].inkt_beta_chain_gene_match;
-        let beta_j = ex.share[0].inkt_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-        lvar_stats1![i, x, s.clone()];
-    } else if x == "mait" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
-        let beta_g = ex.share[0].mait_beta_chain_gene_match;
-        let beta_j = ex.share[0].mait_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-        lvar_stats1![i, x, s.clone()];
     } else if x.starts_with("pe") {
         lvar_stats1![i, x, format!("")];
     } else if x.starts_with("npe") {

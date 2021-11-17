@@ -1787,7 +1787,7 @@ notes:    0.. or 1.. and is it positive_integer or nonnegative_integer?
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1797,7 +1797,30 @@ brief:    evidence for iNKT cell
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut s = String::new();
+          let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
+          let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
+          let beta_g = ex.share[0].inkt_beta_chain_gene_match;
+          let beta_j = ex.share[0].inkt_beta_chain_junction_match;
+          if alpha_g || alpha_j {
+              s += "𝝰";
+              if alpha_g {
+                  s += "g";
+              }
+              if alpha_j {
+                  s += "j";
+              }
+          }
+          if beta_g || beta_j {
+              s += "𝝱";
+              if beta_g {
+                  s += "g";
+              }
+              if beta_j {
+                  s += "j";
+              }
+          }
+          exact: s
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     ivalbcumis
 inputs:   cvar_vdj
@@ -1881,7 +1904,7 @@ notes:
 code:     exact: refdata.name[rsi.jids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1891,7 +1914,30 @@ brief:    evidence for MAIT cell
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut s = String::new();
+          let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
+          let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
+          let beta_g = ex.share[0].mait_beta_chain_gene_match;
+          let beta_j = ex.share[0].mait_beta_chain_junction_match;
+          if alpha_g || alpha_j {
+              s += "𝝰";
+              if alpha_g {
+                  s += "g";
+              }
+              if alpha_j {
+                  s += "j";
+              }
+          }
+          if beta_g || beta_j {
+              s += "𝝱";
+              if beta_g {
+                  s += "g";
+              }
+              if beta_j {
+                  s += "j";
+              }
+          }
+          exact: s
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n
 inputs:   ?
