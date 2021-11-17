@@ -63,7 +63,7 @@ pub fn proc_lvar1(
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
-    rsi: &ColInfo,
+    _rsi: &ColInfo,
     _dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
@@ -211,10 +211,6 @@ pub fn proc_lvar1(
             n += exact_clonotypes[*u].ncells();
         }
         lvar_stats1![i, x, format!("{}", n)];
-    } else if x == "nchains" {
-        lvar_stats1![i, x, format!("{}", rsi.mat.len())];
-    } else if x == "nchains_present" {
-        lvar_stats1![i, x, format!("{}", exact_clonotypes[exacts[u]].share.len())];
     } else if x == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];

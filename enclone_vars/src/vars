@@ -1948,7 +1948,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    clono
@@ -1961,7 +1961,7 @@ notes:
 code:     exact: format!("{}", rsi.mat.len())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains_present
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact

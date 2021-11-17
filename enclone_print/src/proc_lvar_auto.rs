@@ -24,7 +24,7 @@ pub fn proc_lvar_auto(
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     u: usize,
-    _rsi: &ColInfo,
+    rsi: &ColInfo,
     _refdata: &RefData,
     ctl: &EncloneControl,
     extra_args: &Vec<String>,
@@ -119,6 +119,13 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", donors.iter().format(","));
         (String::new(), donors_unsorted)
+    } else if var == "nchains" {
+        (format!("{}", rsi.mat.len()), Vec::new())
+    } else if var == "nchains_present" {
+        (
+            format!("{}", exact_clonotypes[exacts[u]].share.len()),
+            Vec::new(),
+        )
     } else if var == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {

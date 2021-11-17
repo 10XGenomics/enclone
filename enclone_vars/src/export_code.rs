@@ -496,7 +496,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             exacts: &Vec<usize>,
             exact_clonotypes: &Vec<ExactClonotype>,
             u: usize,
-            _rsi: &ColInfo,
+            rsi: &ColInfo,
             _refdata: &RefData,
             ctl: &EncloneControl,
             extra_args: &Vec<String>,
