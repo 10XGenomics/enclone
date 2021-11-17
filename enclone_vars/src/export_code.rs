@@ -508,6 +508,38 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             lvars: &Vec<String>,
         ) -> Result<bool, String> {
 
+            macro_rules! speak {
+                ($u:expr, $var:expr, $val:expr) => {
+                    if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
+                        let mut v = $var.to_string();
+                        v = v.replace("_Σ", "_sum");
+                        v = v.replace("_μ", "_mean");
+                        if ctl.parseable_opt.pcols.is_empty()
+                            || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
+                            || bin_member(&extra_args, &v)
+                        {
+                            out_data[$u].insert(v, $val);
+                        }
+                    }
+                };
+            }
+
+            macro_rules! lvar_stats1 {
+                ($i: expr, $var:expr, $val:expr) => {
+                    if verbose {
+                        eprint!("lvar {} ==> {}; ", $var, $val);
+                        eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+                    }
+                    if $i < lvars.len() {
+                        row.push($val)
+                    }
+                    if pass == 2 {
+                        speak!(u, $var.to_string(), $val);
+                    }
+                    stats.push(($var.to_string(), vec![$val; ex.ncells()]));
+                };
+            }
+
             let val =
             if false {
                 (String::new(), Vec::<String>::new())
@@ -523,70 +555,14 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 return Ok(false);
             } else {
                 let (exact, cell) = &val;
-                let varc = format!("{}{}", var, col + 1);
-                if exact.len() > 0 {
-                    if j < rsi.cvars[col].len() && cvars.contains(&var) {
-                        cx[col][j] = exact.clone();
+                if exact.len() > 0 && !var.ends_with("_cell") {
+                    lvar_stats1![i, x, exact];
+                }
+                if cell.len() > 0 {
+                    if pass == 2 {
+                        speak!(u, x, format!("{}", cell.iter().format(POUT_SEP)));
                     }
-                    if pass == 2
-                        && ((ctl.parseable_opt.pout.len() > 0
-                            && (ctl.parseable_opt.pchains == "max"
-                                || col < ctl.parseable_opt.pchains.force_usize()))
-                            || extra_args.len() > 0)
-                    {
-                        let mut v = var.clone();
-                        v = v.replace("_Σ", "_sum");
-                        v = v.replace("_μ", "_mean");
-
-                        // Strip escape character sequences from exact.  Can happen in notes,
-                        // maybe other places.
-
-                        let mut val_clean = String::new();
-                        let mut chars = Vec::<char>::new();
-                        let valx = format!("{}", exact);
-                        for c in valx.chars() {
-                            chars.push(c);
-                        }
-                        let mut escaped = false;
-                        for l in 0..chars.len() {
-                            if chars[l] == '' {
-                                escaped = true;
-                            }
-                            if escaped {
-                                if chars[l] == 'm' {
-                                    escaped = false;
-                                }
-                                continue;
-                            }
-                            val_clean.push(chars[l]);
-                        }
-
-                        // Proceed.
-
-                        let varc = format!("{}{}", v, col + 1);
-                        if pcols_sort.is_empty()
-                            || bin_member(&pcols_sort, &varc)
-                            || bin_member(&extra_args, &varc)
-                        {
-                            out_data[u].insert(varc, val_clean);
-                        }
-                    }
-                    if val.1.is_empty() {
-                        stats.push((varc, vec![exact.to_string(); ex.ncells()]));
-                    } else {
-                        stats.push((varc, cell.to_vec()));
-                    }
-                } else if cell.len() > 0 {
-                    if pass == 2
-                        && ((ctl.parseable_opt.pchains == "max"
-                            || col < ctl.parseable_opt.pchains.force_usize())
-                            || !extra_args.is_empty())
-                    {
-                        if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
-                            let vals = format!("{}", cell.iter().format(&POUT_SEP));
-                            out_data[u].insert(varc, vals);
-                        }
-                    }
+                    stats.push((x.to_string(), cell));
                 }
                 return Ok(true);
             }
@@ -594,10 +570,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
         "###;
 
-    // Build cvar auto file.
+    // Build lvar auto file.
 
-    let actual_out = "enclone_print/src/proc_cvar_auto.rs".to_string();
-    let mut temp_out = "enclone_exec/testx/outputs/proc_cvar_auto.rs".to_string();
+    let actual_out = "enclone_print/src/proc_lvar_auto.rs".to_string();
+    let mut temp_out = "enclone_exec/testx/outputs/proc_lvar_auto.rs".to_string();
     let mut vars_loc = "enclone_vars/src/vars".to_string();
     if level == 1 {
         temp_out = format!("../{}", temp_out);
@@ -605,11 +581,11 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
     }
     {
         let mut f = open_for_write_new![&temp_out];
-        fwrite!(f, "{}", cvar_vdj_start);
+        fwrite!(f, "{}", lvar_vdj_start);
         let vars = std::fs::read_to_string(&vars_loc).unwrap();
         let vars = parse_variables(&vars);
         for v in vars.iter() {
-            if v.inputs == "cvar_vdj" {
+            if v.inputs == "lvar_vdj" {
                 // Parse value return lines.
 
                 let (mut exact, mut cell) = (String::new(), String::new());
@@ -618,7 +594,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
 
                 // Proceed.
 
-                // RESTRICTION 1: only allow cvar_vdj
+                // RESTRICTION 1: only allow lvar_vdj
                 let mut upper = false;
                 let var = &v.name;
                 for c in var.chars() {
@@ -649,7 +625,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 }
             }
         }
-        fwrite!(f, "{}", cvar_vdj_stop);
+        fwrite!(f, "{}", lvar_vdj_stop);
     }
 
     // Rustfmt and save.
