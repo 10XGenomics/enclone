@@ -9,7 +9,7 @@ use enclone_core::median::rounded_median;
 use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use regex::Regex;
-use std::cmp::{max, min};
+use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
@@ -190,27 +190,6 @@ pub fn proc_lvar2(
             y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
-    } else if x == "near" {
-        let mut dist = 1_000_000;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
-                    }
-                }
-            }
-            dist = min(dist, d);
-        }
-        if dist == 1_000_000 {
-            lvar_stats1![i, x, "".to_string()];
-        } else {
-            lvar_stats1![i, x, format!("{}", dist)];
-        }
     } else if x == "far" {
         let mut dist = -1_isize;
         for i2 in 0..varmat.len() {

@@ -2051,7 +2051,7 @@ code:     let nd;
           exact: nd
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     near
-inputs:   varmat, fp, u
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -2061,7 +2061,7 @@ brief:    Hamming distance to nearest neighbor
 page:     enclone help lvars
 avail:    public
 notes:
-code:     let mut near = String::new();
+code:     let near;
           let mut dist = 1_000_000;
           for i2 in 0..varmat.len() {
               if i2 == u || fp[i2] != fp[u] {

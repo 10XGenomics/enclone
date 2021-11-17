@@ -483,7 +483,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         use enclone_proto::types::*;
         use itertools::Itertools;
         // use stats_utils::*;
-        // use std::cmp::min;
+        use std::cmp::min;
         use std::collections::HashMap;
         use string_utils::*;
         use vdj_ann::refx::RefData;
@@ -507,6 +507,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             fate: &Vec<HashMap<String, String>>,
             dref: &Vec<DonorReferenceItem>,
             varmat: &Vec<Vec<Vec<u8>>>,
+            fp: &Vec<Vec<usize>>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];

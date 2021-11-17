@@ -11,7 +11,7 @@ use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::Itertools;
 // use stats_utils::*;
-// use std::cmp::min;
+use std::cmp::min;
 use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::RefData;
@@ -35,6 +35,7 @@ pub fn proc_lvar_auto(
     fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
     varmat: &Vec<Vec<Vec<u8>>>,
+    fp: &Vec<Vec<usize>>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -289,6 +290,30 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
+    } else if var == "near" {
+        let near;
+        let mut dist = 1_000_000;
+        for i2 in 0..varmat.len() {
+            if i2 == u || fp[i2] != fp[u] {
+                continue;
+            }
+            let mut d = 0;
+            for c in fp[u].iter() {
+                for j in 0..varmat[u][*c].len() {
+                    if varmat[u][*c][j] != varmat[i2][*c][j] {
+                        d += 1;
+                    }
+                }
+            }
+            dist = min(dist, d);
+        }
+        if dist == 1_000_000 {
+            near = "".to_string()
+        } else {
+            near = format!("{}", dist)
+        }
+
+        (near, Vec::new(), "exact".to_string())
     } else if var == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
