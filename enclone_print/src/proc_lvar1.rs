@@ -64,7 +64,6 @@ pub fn proc_lvar1(
     n_vdj_gex: &Vec<usize>,
     nd_fields: &Vec<String>,
     lvars: &Vec<String>,
-    _lenas: &Vec<String>,
     alt_bcs: &Vec<String>,
     _n_gex: usize,
     _n_gexs: &Vec<usize>,
@@ -78,7 +77,6 @@ pub fn proc_lvar1(
     _entropies_unsorted: &Vec<f64>,
     _fcounts: &Vec<f64>,
     extra_args: &Vec<String>,
-    _fate: &Vec<HashMap<String, String>>,
 ) -> bool {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];

@@ -529,7 +529,6 @@ pub fn row_fill(
                 n_vdj_gex,
                 nd_fields,
                 &lvars,
-                &lenas,
                 &alt_bcs,
                 n_gex,
                 &n_gexs,
@@ -543,7 +542,6 @@ pub fn row_fill(
                 &entropies_unsorted,
                 &fcounts,
                 extra_args,
-                fate,
             ) {
                 let _ = proc_lvar2(
                     i,
@@ -565,7 +563,6 @@ pub fn row_fill(
                     n_vdj_gex,
                     nd_fields,
                     &lvars,
-                    &lenas,
                     &alt_bcs,
                     n_gex,
                     &n_gexs,
@@ -579,7 +576,6 @@ pub fn row_fill(
                     &entropies_unsorted,
                     &fcounts,
                     extra_args,
-                    fate,
                 );
             }
         }
