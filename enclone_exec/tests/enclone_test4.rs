@@ -679,6 +679,9 @@ fn test_unpushed() {
 
 // 40. Test to see that export_code has been run.
 
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_export_code() {
