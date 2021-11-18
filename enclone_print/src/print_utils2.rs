@@ -7,6 +7,7 @@ use crate::print_utils1::color_codon;
 use crate::proc_cvar_auto::proc_cvar_auto;
 use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
+use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
 use enclone_core::allowed_vars::LVARS_ALLOWED;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
@@ -488,48 +489,30 @@ pub fn row_fill(
 
         // Process other lvars.
 
-        if !proc_lvar1(
+        if !proc_lvar_auto(
             i,
-            x,
             pass,
-            u,
-            ctl,
+            x,
             exacts,
-            mults,
             exact_clonotypes,
-            gex_info,
+            u,
+            rsi,
             refdata,
+            ctl,
+            extra_args,
+            out_data,
+            stats,
+            &lvars,
+            row,
+            fate,
+            dref,
             varmat,
             fp,
-            row,
-            out_data,
-            d_all,
-            ind_all,
-            rsi,
-            dref,
-            groups,
-            stats,
-            vdj_cells,
             n_vdj_gex,
-            nd_fields,
-            &lvars,
-            &lenas,
-            &alt_bcs,
-            n_gex,
-            &n_gexs,
-            gex_min,
-            gex_max,
-            gex_mean,
-            gex_sum,
-            gex_median,
-            &count_unsorted,
-            entropy,
-            &entropies_unsorted,
-            &fcounts,
-            extra_args,
-            fate,
-        ) {
-            let _ = proc_lvar2(
+            vdj_cells,
+            gex_info,
+        )? {
+            if !proc_lvar1(
                 i,
                 x,
                 pass,
@@ -539,22 +522,16 @@ pub fn row_fill(
                 mults,
                 exact_clonotypes,
                 gex_info,
-                refdata,
-                varmat,
-                fp,
                 row,
                 out_data,
                 d_all,
                 ind_all,
-                rsi,
-                dref,
                 groups,
                 stats,
                 vdj_cells,
                 n_vdj_gex,
                 nd_fields,
                 &lvars,
-                &lenas,
                 &alt_bcs,
                 n_gex,
                 &n_gexs,
@@ -568,8 +545,42 @@ pub fn row_fill(
                 &entropies_unsorted,
                 &fcounts,
                 extra_args,
-                fate,
-            );
+            ) {
+                let _ = proc_lvar2(
+                    i,
+                    x,
+                    pass,
+                    u,
+                    ctl,
+                    exacts,
+                    mults,
+                    exact_clonotypes,
+                    gex_info,
+                    row,
+                    out_data,
+                    d_all,
+                    ind_all,
+                    groups,
+                    stats,
+                    vdj_cells,
+                    n_vdj_gex,
+                    nd_fields,
+                    &lvars,
+                    &alt_bcs,
+                    n_gex,
+                    &n_gexs,
+                    gex_min,
+                    gex_max,
+                    gex_mean,
+                    gex_sum,
+                    gex_median,
+                    &count_unsorted,
+                    entropy,
+                    &entropies_unsorted,
+                    &fcounts,
+                    extra_args,
+                );
+            }
         }
     }
 

@@ -15,3 +15,4 @@ pub mod print_utils5;
 pub mod proc_cvar_auto;
 pub mod proc_lvar1;
 pub mod proc_lvar2;
+pub mod proc_lvar_auto;

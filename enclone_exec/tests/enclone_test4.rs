@@ -204,9 +204,6 @@ fn test_dupped_crates() {
 
 // 30. Make sure that help page list is correct.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_page_list() {
@@ -247,9 +244,6 @@ fn test_help_page_list() {
 // 31. Test workspace dependency structure.  These restrictions are there to reduce compile time.
 // To be expanded over time.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dependency_structure() {
@@ -401,7 +395,6 @@ fn test_rust_version() {
 
 // 33. Don't allow exit in code in some crates.
 
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_exit() {
@@ -542,9 +535,6 @@ fn test_honey() {
 
 // 36. Test to see if GitHub Actions scripts are valid YAML.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_yaml() {
@@ -567,9 +557,6 @@ fn test_yaml() {
 
 // 37. Test to see if vars file is sorted and formatted correctly.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_vars() {
@@ -585,6 +572,7 @@ fn test_vars() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 38. Test to see that main_enclone_ranger and main_enclone do the same thing on one test case.
+// An attempt to make this basic failed.
 
 // NOT BASIC
 
@@ -690,6 +678,7 @@ fn test_unpushed() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 40. Test to see that export_code has been run.
+// An attempt to make this basic failed.
 
 // NOT BASIC
 
@@ -712,6 +701,7 @@ fn test_export_code() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 41. Test a funny command with a newline that asserted at one point.
+// An attempt to make this basic failed.
 
 // NOT BASIC
 
