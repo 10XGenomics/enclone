@@ -702,6 +702,9 @@ fn test_export_code() {
 
 // 41. Test a funny command with a newline that asserted at one point.
 
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_newline_bad() {
