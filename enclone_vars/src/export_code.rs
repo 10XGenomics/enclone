@@ -5,12 +5,44 @@
 //
 // This writes a temporary file.
 
-use crate::var::parse_variables;
+use crate::var::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::io::{BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &mut BufWriter<W>) {
+    let mut upper = false;
+    let var = &v.name;
+    for c in var.chars() {
+        if c.is_ascii_uppercase() {
+            upper = true;
+        }
+    }
+    if !upper {
+        let mut passes = 1;
+        if v.level == "cell-exact" {
+            passes = 2;
+        }
+        for pass in 1..=passes {
+            let mut var = var.clone();
+            if pass == 2 {
+                var += "_cell";
+            }
+            emit_code_to_test_for_var(&var, f);
+            fwriteln!(f, "{}", code);
+            if pass == 1 {
+                fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
+            } else {
+                fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
+                fwriteln!(f, "(String::new(), {}, \"{}\".to_string())", cell, v.level);
+            }
+        }
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -418,43 +450,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "cvar_vdj" {
-                // Parse value return lines.
-
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-
-                // Proceed.
-
-                // RESTRICTION 1: only allow cvar_vdj
-                let mut upper = false;
-                let var = &v.name;
-                for c in var.chars() {
-                    if c.is_ascii_uppercase() {
-                        upper = true;
-                    }
-                }
-                // RESTRICTION 2: don't allow upper case
-                if !upper {
-                    let mut passes = 1;
-                    if v.level == "cell-exact" {
-                        passes = 2;
-                    }
-                    for pass in 1..=passes {
-                        let mut var = var.clone();
-                        if pass == 2 {
-                            var += "_cell";
-                        }
-                        emit_code_to_test_for_var(&var, &mut f);
-                        fwriteln!(f, "{}", code);
-                        if pass == 1 {
-                            fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
-                        } else {
-                            fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
-                            fwriteln!(f, "(String::new(), {}, \"{}\".to_string())", cell, v.level);
-                        }
-                    }
-                }
+                process_var(&v, &exact, &cell, &code, &mut f);
             }
         }
         fwrite!(f, "{}", cvar_vdj_stop);
@@ -614,43 +613,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         let vars = parse_variables(&vars);
         for v in vars.iter() {
             if v.inputs == "lvar_vdj" {
-                // Parse value return lines.
-
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-
-                // Proceed.
-
-                // RESTRICTION 1: only allow lvar_vdj
-                let mut upper = false;
-                let var = &v.name;
-                for c in var.chars() {
-                    if c.is_ascii_uppercase() {
-                        upper = true;
-                    }
-                }
-                // RESTRICTION 2: don't allow upper case
-                if !upper {
-                    let mut passes = 1;
-                    if v.level == "cell-exact" {
-                        passes = 2;
-                    }
-                    for pass in 1..=passes {
-                        let mut var = var.clone();
-                        if pass == 2 {
-                            var += "_cell";
-                        }
-                        emit_code_to_test_for_var(&var, &mut f);
-                        fwriteln!(f, "{}", code);
-                        if pass == 1 {
-                            fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
-                        } else {
-                            fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
-                            fwriteln!(f, "(String::new(), {}, \"{}\".to_string())", cell, v.level);
-                        }
-                    }
-                }
+                process_var(&v, &exact, &cell, &code, &mut f);
             }
         }
         fwrite!(f, "{}", lvar_vdj_stop);
