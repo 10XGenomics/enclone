@@ -59,22 +59,6 @@ pub fn proc_lvar_auto(
         };
     }
 
-    macro_rules! lvar_stats1 {
-        ($i: expr, $var:expr, $val:expr) => {
-            if verbose {
-                eprint!("lvar {} ==> {}; ", $var, $val);
-                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-            }
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-            stats.push(($var.to_string(), vec![$val; ex.ncells()]));
-        };
-    }
-
     macro_rules! lvar_stats {
         ($i: expr, $var:expr, $val:expr, $stats: expr) => {
             if verbose {
@@ -397,7 +381,17 @@ pub fn proc_lvar_auto(
                 speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
             }
         } else if (exact.len() > 0 && !var.ends_with("_cell")) || cell.len() == 0 {
-            lvar_stats1![i, var, exact.to_string()];
+            if verbose {
+                eprint!("lvar {} ==> {}; ", var, exact);
+                eprintln!("i = {}, lvars.len() = {}", i, lvars.len());
+            }
+            if i < lvars.len() {
+                row.push(exact.clone())
+            }
+            if pass == 2 {
+                speak!(u, var.to_string(), exact.to_string());
+            }
+            stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
         } else if cell.len() > 0 {
             if pass == 2 {
                 speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
