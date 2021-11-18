@@ -93,6 +93,13 @@ pub fn proc_lvar_auto(
 
     let val = if false {
         (String::new(), Vec::<String>::new(), String::new())
+    } else if var == "clonotype_ncells" {
+        let mut n = 0;
+        for u in exacts.iter() {
+            n += exact_clonotypes[*u].ncells();
+        }
+
+        (format!("{}", n), Vec::new(), "clono".to_string())
     } else if var == "datasets" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {

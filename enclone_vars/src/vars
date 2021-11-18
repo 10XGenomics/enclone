@@ -789,7 +789,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     clonotype_ncells
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    clono
@@ -803,7 +803,7 @@ code:     let mut n = 0;
           for u in exacts.iter() {
               n += exact_clonotypes[*u].ncells();
           }
-          clono: format!("{}", n)
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
 inputs:   cvar_vdj
