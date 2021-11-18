@@ -4,9 +4,8 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use amino::aa_seq;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::rounded_median;
-use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use regex::Regex;
 use std::collections::HashMap;
@@ -61,8 +60,6 @@ pub fn proc_lvar2(
     out_data: &mut Vec<HashMap<String, String>>,
     d_all: &mut Vec<Vec<u32>>,
     ind_all: &mut Vec<Vec<u32>>,
-    _rsi: &ColInfo,
-    _dref: &Vec<DonorReferenceItem>,
     _groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
