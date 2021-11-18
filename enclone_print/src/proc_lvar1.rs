@@ -4,7 +4,6 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
-use enclone_core::median::median_f64;
 use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{abbrev_list, strme, TextUtils};
@@ -60,8 +59,8 @@ pub fn proc_lvar1(
     _ind_all: &mut Vec<Vec<u32>>,
     groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
-    vdj_cells: &Vec<Vec<String>>,
-    n_vdj_gex: &Vec<usize>,
+    _vdj_cells: &Vec<Vec<String>>,
+    _n_vdj_gex: &Vec<usize>,
     nd_fields: &Vec<String>,
     lvars: &Vec<String>,
     alt_bcs: &Vec<String>,
@@ -281,57 +280,6 @@ pub fn proc_lvar1(
         lvar_stats1![i, x, format!("")];
     } else if x.starts_with("ppe") {
         lvar_stats1![i, x, format!("")];
-    } else if x == "cred" || x == "cred_cell" {
-        let mut credsx = Vec::<f64>::new();
-        for l in 0..ex.clones.len() {
-            let bc = &ex.clones[l][0].barcode;
-            let li = ex.clones[l][0].dataset_index;
-            if gex_info.pca[li].contains_key(&bc.clone()) {
-                let mut creds = 0;
-                let mut z = Vec::<(f64, String)>::new();
-                let x = &gex_info.pca[li][&bc.clone()];
-                for y in gex_info.pca[li].iter() {
-                    let mut dist2 = 0.0;
-                    for m in 0..x.len() {
-                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
-                    }
-                    z.push((dist2, y.0.clone()));
-                }
-                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let top = n_vdj_gex[li];
-                for i in 0..top {
-                    if bin_member(&vdj_cells[li], &z[i].1) {
-                        creds += 1;
-                    }
-                }
-                let pc = 100.0 * creds as f64 / top as f64;
-                credsx.push(pc);
-            } else {
-                credsx.push(0.0);
-            }
-        }
-        let credsx_unsorted = credsx.clone();
-        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        if x == "cred" {
-            if credsx.is_empty() {
-                lvar![i, x, format!("")];
-            } else {
-                lvar_stats1![i, x, format!("{:.1}", median_f64(&credsx))];
-            }
-        } else {
-            let mut r = Vec::<String>::new();
-            for j in 0..credsx_unsorted.len() {
-                r.push(format!("{}", credsx_unsorted[j]));
-            }
-            stats.push((x.to_string(), r));
-            if pass == 2 {
-                let mut r = Vec::<String>::new();
-                for j in 0..credsx_unsorted.len() {
-                    r.push(format!("{:.1}", credsx_unsorted[j]));
-                }
-                speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
-            }
-        }
     } else if bin_member(alt_bcs, x) {
         let mut r = Vec::<String>::new();
         for l in 0..ex.clones.len() {

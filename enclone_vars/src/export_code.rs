@@ -477,7 +477,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         // use crate::print_utils3::*;
         // use enclone_core::align_to_vdj_ref::*;
         use enclone_core::defs::*;
-        // use enclone_core::median::*;
+        use enclone_core::median::*;
         // use enclone_core::opt_d::*;
         use enclone_proto::types::*;
         use itertools::Itertools;
@@ -507,6 +507,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             dref: &Vec<DonorReferenceItem>,
             varmat: &Vec<Vec<Vec<u8>>>,
             fp: &Vec<Vec<usize>>,
+            n_vdj_gex: &Vec<usize>,
+            vdj_cells: &Vec<Vec<String>>,
+            gex_info: &GexInfo,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];

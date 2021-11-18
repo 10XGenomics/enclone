@@ -6,7 +6,7 @@ use amino::*;
 // use crate::print_utils3::*;
 // use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
-// use enclone_core::median::*;
+use enclone_core::median::*;
 // use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use itertools::Itertools;
@@ -36,6 +36,9 @@ pub fn proc_lvar_auto(
     dref: &Vec<DonorReferenceItem>,
     varmat: &Vec<Vec<Vec<u8>>>,
     fp: &Vec<Vec<usize>>,
+    n_vdj_gex: &Vec<usize>,
+    vdj_cells: &Vec<Vec<String>>,
+    gex_info: &GexInfo,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -84,6 +87,85 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), Vec::new(), "clono".to_string())
+    } else if var == "cred" {
+        let mut credsx = Vec::<f64>::new();
+        for l in 0..ex.clones.len() {
+            let bc = &ex.clones[l][0].barcode;
+            let li = ex.clones[l][0].dataset_index;
+            if gex_info.pca[li].contains_key(&bc.clone()) {
+                let mut creds = 0;
+                let mut z = Vec::<(f64, String)>::new();
+                let x = &gex_info.pca[li][&bc.clone()];
+                for y in gex_info.pca[li].iter() {
+                    let mut dist2 = 0.0;
+                    for m in 0..x.len() {
+                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                    }
+                    z.push((dist2, y.0.clone()));
+                }
+                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let top = n_vdj_gex[li];
+                for i in 0..top {
+                    if bin_member(&vdj_cells[li], &z[i].1) {
+                        creds += 1;
+                    }
+                }
+                let pc = 100.0 * creds as f64 / top as f64;
+                credsx.push(pc);
+            } else {
+                credsx.push(0.0);
+            }
+        }
+        let credsx_unsorted = credsx.clone();
+        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut r = Vec::<String>::new();
+        for j in 0..credsx_unsorted.len() {
+            r.push(format!("{:.1}", credsx_unsorted[j]));
+        }
+
+        (
+            format!("{:.1}", median_f64(&credsx)),
+            r,
+            "cell-exact".to_string(),
+        )
+    } else if var == "cred_cell" {
+        let mut credsx = Vec::<f64>::new();
+        for l in 0..ex.clones.len() {
+            let bc = &ex.clones[l][0].barcode;
+            let li = ex.clones[l][0].dataset_index;
+            if gex_info.pca[li].contains_key(&bc.clone()) {
+                let mut creds = 0;
+                let mut z = Vec::<(f64, String)>::new();
+                let x = &gex_info.pca[li][&bc.clone()];
+                for y in gex_info.pca[li].iter() {
+                    let mut dist2 = 0.0;
+                    for m in 0..x.len() {
+                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                    }
+                    z.push((dist2, y.0.clone()));
+                }
+                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let top = n_vdj_gex[li];
+                for i in 0..top {
+                    if bin_member(&vdj_cells[li], &z[i].1) {
+                        creds += 1;
+                    }
+                }
+                let pc = 100.0 * creds as f64 / top as f64;
+                credsx.push(pc);
+            } else {
+                credsx.push(0.0);
+            }
+        }
+        let credsx_unsorted = credsx.clone();
+        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut r = Vec::<String>::new();
+        for j in 0..credsx_unsorted.len() {
+            r.push(format!("{:.1}", credsx_unsorted[j]));
+        }
+
+        let _exact = format!("{:.1}", median_f64(&credsx));
+        (String::new(), r, "cell-exact".to_string())
     } else if var == "datasets" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {

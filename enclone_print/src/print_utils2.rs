@@ -508,6 +508,9 @@ pub fn row_fill(
             dref,
             varmat,
             fp,
+            n_vdj_gex,
+            vdj_cells,
+            gex_info,
         )? {
             if !proc_lvar1(
                 i,
