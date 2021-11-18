@@ -318,19 +318,19 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             let cvars = &ctl.clono_print_opt.cvars;
             let val =
             if false {
-                (String::new(), Vec::<String>::new())
+                (String::new(), Vec::<String>::new(), String::new())
 
         "###;
 
     let cvar_vdj_stop = r###"
 
             } else {
-                ("$UNDEFINED".to_string(), Vec::<String>::new())
+                ("$UNDEFINED".to_string(), Vec::<String>::new(), String::new())
             };
             if val.0 == "$UNDEFINED" {
                 return Ok(false);
             } else {
-                let (exact, cell) = &val;
+                let (exact, cell, _level) = &val;
                 let varc = format!("{}{}", var, col + 1);
                 if exact.len() > 0 {
                     if j < rsi.cvars[col].len() && cvars.contains(&var) {
@@ -448,10 +448,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         emit_code_to_test_for_var(&var, &mut f);
                         fwriteln!(f, "{}", code);
                         if pass == 1 {
-                            fwriteln!(f, "({}, {})", exact, cell);
+                            fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
                         } else {
                             fwriteln!(f, "let _exact = {};", exact); // to circumvent warning
-                            fwriteln!(f, "(String::new(), {})", cell);
+                            fwriteln!(f, "(String::new(), {}, \"{}\".to_string())", cell, v.level);
                         }
                     }
                 }
