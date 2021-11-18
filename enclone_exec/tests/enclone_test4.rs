@@ -573,6 +573,9 @@ fn test_vars() {
 
 // 38. Test to see that main_enclone_ranger and main_enclone do the same thing on one test case.
 
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_ranger() {
