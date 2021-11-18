@@ -557,9 +557,6 @@ fn test_yaml() {
 
 // 37. Test to see if vars file is sorted and formatted correctly.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_vars() {
