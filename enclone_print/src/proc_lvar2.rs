@@ -11,7 +11,6 @@ use itertools::Itertools;
 use regex::Regex;
 use std::collections::HashMap;
 use string_utils::{strme, TextUtils};
-use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, bin_position};
 
 pub fn get_gex_matrix_entry(
@@ -58,9 +57,6 @@ pub fn proc_lvar2(
     _mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    _refdata: &RefData,
-    _varmat: &Vec<Vec<Vec<u8>>>,
-    _fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     d_all: &mut Vec<Vec<u32>>,

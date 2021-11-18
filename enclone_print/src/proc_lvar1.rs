@@ -9,7 +9,6 @@ use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{abbrev_list, strme, TextUtils};
-use vdj_ann::refx::RefData;
 use vector_utils::bin_member;
 
 pub fn get_gex_matrix_entry(
@@ -56,9 +55,6 @@ pub fn proc_lvar1(
     mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    _refdata: &RefData,
-    _varmat: &Vec<Vec<Vec<u8>>>,
-    _fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
