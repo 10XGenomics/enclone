@@ -268,7 +268,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
             }
             args2.push(format!("BCR={}", bcrv.iter().format(";")));
-            if !gexv.is_empty() {
+            if !gexv.is_empty() && args[i].starts_with("BI=") {
                 have_gex = true;
                 args2.push(format!("GEX={}", gexv.iter().format(";")));
                 gex = format!("{}", gexv.iter().format(";"));
