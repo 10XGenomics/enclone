@@ -3,14 +3,11 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
-use enclone_core::median::median_f64;
-use enclone_proto::types::DonorReferenceItem;
+use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::{abbrev_list, strme, TextUtils};
-use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, unique_sort};
+use vector_utils::bin_member;
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -56,22 +53,16 @@ pub fn proc_lvar1(
     mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    _refdata: &RefData,
-    _varmat: &Vec<Vec<Vec<u8>>>,
-    _fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
-    rsi: &ColInfo,
-    _dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
-    vdj_cells: &Vec<Vec<String>>,
-    n_vdj_gex: &Vec<usize>,
+    _vdj_cells: &Vec<Vec<String>>,
+    _n_vdj_gex: &Vec<usize>,
     nd_fields: &Vec<String>,
     lvars: &Vec<String>,
-    lenas: &Vec<String>,
     alt_bcs: &Vec<String>,
     _n_gex: usize,
     _n_gexs: &Vec<usize>,
@@ -85,7 +76,6 @@ pub fn proc_lvar1(
     _entropies_unsorted: &Vec<f64>,
     _fcounts: &Vec<f64>,
     extra_args: &Vec<String>,
-    fate: &Vec<HashMap<String, String>>,
 ) -> bool {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -205,92 +195,7 @@ pub fn proc_lvar1(
         }
     }
 
-    if x == "origins" {
-        let mut origins = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
-            } else {
-                origins.push("?".to_string());
-            }
-        }
-        let origins_unsorted = origins.clone();
-        unique_sort(&mut origins);
-        lvar_stats![
-            i,
-            x,
-            format!("{}", origins.iter().format(",")),
-            origins_unsorted
-        ];
-    } else if x == "origins_cell" {
-        let mut origins = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
-            } else {
-                origins.push("?".to_string());
-            }
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", origins.iter().format(POUT_SEP)));
-        }
-    } else if x == "clonotype_ncells" {
-        let mut n = 0;
-        for u in exacts.iter() {
-            n += exact_clonotypes[*u].ncells();
-        }
-        lvar_stats1![i, x, format!("{}", n)];
-    } else if x == "nchains" {
-        lvar_stats1![i, x, format!("{}", rsi.mat.len())];
-    } else if x == "nchains_present" {
-        lvar_stats1![i, x, format!("{}", exact_clonotypes[exacts[u]].share.len())];
-    } else if x == "datasets" {
-        lvar_stats1![i, x, format!("{}", lenas.iter().format(","))];
-    } else if x == "datasets_cell" {
-        let mut datasets = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));
-        }
-        stats.push((x.to_string(), datasets));
-    } else if x == "donors" {
-        let mut donors = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
-            }
-        }
-        let donors_unsorted = donors.clone();
-        unique_sort(&mut donors);
-        lvar_stats![
-            i,
-            x,
-            format!("{}", donors.iter().format(",")),
-            donors_unsorted
-        ];
-    } else if x == "donors_cell" {
-        let mut donors = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
-            }
-        }
-        if pass == 2 {
-            speak!(u, x, format!("{}", donors.iter().format(POUT_SEP)));
-        }
-    } else if x == "n" {
+    if x == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];
     } else if x == "clust" {
@@ -361,22 +266,6 @@ pub fn proc_lvar1(
         */
         cell_types.sort();
         lvar![i, x, abbrev_list(&cell_types)];
-    } else if x == "filter" {
-        let mut fates = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let mut f = String::new();
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if fate[li].contains_key(&bc.clone()) {
-                f = fate[li][&bc.clone()].clone();
-                f = f.between(" ", " ").to_string();
-            }
-            fates.push(f);
-        }
-        lvar_stats![i, x, String::new(), fates];
-        if pass == 2 {
-            speak!(u, x, format!("{}", fates.iter().format(POUT_SEP)));
-        }
     } else if x == "mark" {
         let mut n = 0;
         for j in 0..ex.clones.len() {
@@ -385,113 +274,12 @@ pub fn proc_lvar1(
             }
         }
         lvar![i, x, format!("{}", n)];
-    } else if x == "inkt" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
-        let beta_g = ex.share[0].inkt_beta_chain_gene_match;
-        let beta_j = ex.share[0].inkt_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-        lvar_stats1![i, x, s.clone()];
-    } else if x == "mait" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
-        let beta_g = ex.share[0].mait_beta_chain_gene_match;
-        let beta_j = ex.share[0].mait_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-        lvar_stats1![i, x, s.clone()];
     } else if x.starts_with("pe") {
         lvar_stats1![i, x, format!("")];
     } else if x.starts_with("npe") {
         lvar_stats1![i, x, format!("")];
     } else if x.starts_with("ppe") {
         lvar_stats1![i, x, format!("")];
-    } else if x == "cred" || x == "cred_cell" {
-        let mut credsx = Vec::<f64>::new();
-        for l in 0..ex.clones.len() {
-            let bc = &ex.clones[l][0].barcode;
-            let li = ex.clones[l][0].dataset_index;
-            if gex_info.pca[li].contains_key(&bc.clone()) {
-                let mut creds = 0;
-                let mut z = Vec::<(f64, String)>::new();
-                let x = &gex_info.pca[li][&bc.clone()];
-                for y in gex_info.pca[li].iter() {
-                    let mut dist2 = 0.0;
-                    for m in 0..x.len() {
-                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
-                    }
-                    z.push((dist2, y.0.clone()));
-                }
-                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let top = n_vdj_gex[li];
-                for i in 0..top {
-                    if bin_member(&vdj_cells[li], &z[i].1) {
-                        creds += 1;
-                    }
-                }
-                let pc = 100.0 * creds as f64 / top as f64;
-                credsx.push(pc);
-            } else {
-                credsx.push(0.0);
-            }
-        }
-        let credsx_unsorted = credsx.clone();
-        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        if x == "cred" {
-            if credsx.is_empty() {
-                lvar![i, x, format!("")];
-            } else {
-                lvar_stats1![i, x, format!("{:.1}", median_f64(&credsx))];
-            }
-        } else {
-            let mut r = Vec::<String>::new();
-            for j in 0..credsx_unsorted.len() {
-                r.push(format!("{}", credsx_unsorted[j]));
-            }
-            stats.push((x.to_string(), r));
-            if pass == 2 {
-                let mut r = Vec::<String>::new();
-                for j in 0..credsx_unsorted.len() {
-                    r.push(format!("{:.1}", credsx_unsorted[j]));
-                }
-                speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
-            }
-        }
     } else if bin_member(alt_bcs, x) {
         let mut r = Vec::<String>::new();
         for l in 0..ex.clones.len() {

@@ -137,7 +137,7 @@ pub const CRASH_SETS: [&str; 6] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 16] = [
+pub const EXTENDED_TESTS: [&str; 15] = [
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
@@ -184,14 +184,12 @@ pub const EXTENDED_TESTS: [&str; 16] = [
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
     //
     // NOT ALL PUBLIC
-    //
-    // 14. this crashed before a bug was fixed
-    r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
-    // 15. test that LVARSP=gex fails on Ab-only data
-    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL NO_PRE NFORCE"###,
-    // 16. test Ab-only data
+
+    // 14. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
+    // 15. test that LVARSP=gex fails on Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

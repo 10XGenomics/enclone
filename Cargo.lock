@@ -452,9 +452,9 @@ dependencies = [
 
 [[package]]
 name = "bio-types"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f79d996fbffc59cbaeec4c831f9c1bbf6debdfadd9bb02ff4caf70507159c63"
+checksum = "13bc4296477f37f54e4fd21efaf48a7fa40fbb289bfbf338af5fbbe42797acb6"
 dependencies = [
  "derive-new",
  "lazy_static",
@@ -1299,7 +1299,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1614,12 +1614,14 @@ version = "0.5.129"
 dependencies = [
  "ansi_escape",
  "attohttpc",
+ "bio_edit",
  "debruijn",
  "enclone",
  "enclone_core",
  "equiv",
  "evalexpr",
  "expr_tools",
+ "fasta_tools",
  "flate2",
  "fs_extra",
  "hdf5",
@@ -1636,6 +1638,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils",
 ]
 
@@ -2413,11 +2416,11 @@ dependencies = [
 
 [[package]]
 name = "graph_simple"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ad416c609c61bb8dfd1ab36044e842e4f71b9d5e5240d059693b6d832d489d6"
+checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2620,22 +2623,22 @@ dependencies = [
 
 [[package]]
 name = "hyperbase"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fed1f1c05f120a3ceba29f72b739763be0d4cf851e97f4b20a5ace72a7f167b"
+checksum = "7f7b421523378416db37aef1e0e4d41bc3c84524acc0f69da9b7e8890f4760d1"
 dependencies = [
  "debruijn",
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
 [[package]]
 name = "iced"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "iced_core",
  "iced_futures",
@@ -2648,7 +2651,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "bitflags",
 ]
@@ -2656,7 +2659,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "async-std",
  "futures",
@@ -2667,7 +2670,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.2.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "bytemuck",
  "font-kit",
@@ -2682,10 +2685,11 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "iced_core",
  "iced_futures",
+ "iced_style",
  "num-traits",
  "twox-hash",
  "unicode-segmentation",
@@ -2694,7 +2698,7 @@ dependencies = [
 [[package]]
 name = "iced_style"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "iced_core",
 ]
@@ -2702,7 +2706,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "base64 0.13.0",
  "dodrio",
@@ -2719,7 +2723,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "bitflags",
  "bytemuck",
@@ -2739,7 +2743,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
+source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
 dependencies = [
  "iced_futures",
  "iced_graphics",
@@ -2840,9 +2844,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf9db5b29f9ab5f3a9d19a9279c2dc58411d9ce584bac6785d105cbe375e0ae3"
+checksum = "a857da7bfebb286324f3787ff63a3bf6da3d844e43d6345b58644d5bf59d957d"
 dependencies = [
  "bincode",
  "flate2",
@@ -4799,9 +4803,9 @@ checksum = "aaf86bbcfd1fa9670b7a129f64fc0c9fcbbfe4f1bc4210e9e98fe71ffc12cde2"
 
 [[package]]
 name = "strum_macros"
-version = "0.20.1"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
+checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
 dependencies = [
  "heck",
  "proc-macro2",

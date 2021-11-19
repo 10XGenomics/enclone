@@ -3,17 +3,14 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use amino::{aa_seq, codon_to_aa};
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use amino::aa_seq;
+use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::rounded_median;
-use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use regex::Regex;
-use std::cmp::{max, min};
 use std::collections::HashMap;
 use string_utils::{strme, TextUtils};
-use vdj_ann::refx::RefData;
-use vector_utils::{bin_member, bin_position, next_diff};
+use vector_utils::{bin_member, bin_position};
 
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
@@ -59,22 +56,16 @@ pub fn proc_lvar2(
     _mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
-    refdata: &RefData,
-    varmat: &Vec<Vec<Vec<u8>>>,
-    fp: &Vec<Vec<usize>>,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     d_all: &mut Vec<Vec<u32>>,
     ind_all: &mut Vec<Vec<u32>>,
-    rsi: &ColInfo,
-    dref: &Vec<DonorReferenceItem>,
     _groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
     _n_vdj_gex: &Vec<usize>,
     _nd_fields: &Vec<String>,
     lvars: &Vec<String>,
-    _lenas: &Vec<String>,
     _alt_bcs: &Vec<String>,
     n_gex: usize,
     n_gexs: &Vec<usize>,
@@ -88,12 +79,9 @@ pub fn proc_lvar2(
     entropies_unsorted: &Vec<f64>,
     fcounts: &Vec<f64>,
     extra_args: &Vec<String>,
-    _fate: &Vec<HashMap<String, String>>,
 ) -> bool {
-    let mat = &rsi.mat;
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
-    let cols = varmat[0].len();
     let verbose = ctl.gen_opt.row_fill_verbose;
 
     // Set up speak macro.
@@ -192,108 +180,6 @@ pub fn proc_lvar2(
             y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
-    } else if x == "dref" {
-        let mut diffs = 0;
-        for m in 0..cols {
-            if mat[m][u].is_some() {
-                let r = mat[m][u].unwrap();
-                let seq = &ex.share[r].seq_del_amino;
-                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                if rsi.vpids[m].is_some() {
-                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                }
-                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                let z = seq.len();
-                for p in 0..z {
-                    let b = seq[p];
-                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
-                        diffs += 1;
-                    }
-                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
-                        && b != jref[jref.len() - (z - p)]
-                    {
-                        diffs += 1;
-                    }
-                }
-            }
-        }
-        lvar_stats1![i, x, format!("{}", diffs)];
-    } else if x == "dref_aa" {
-        let mut diffs = 0;
-        for m in 0..cols {
-            if mat[m][u].is_some() {
-                let r = mat[m][u].unwrap();
-                let aa_seq = &ex.share[r].aa_mod_indel;
-                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                if rsi.vpids[m].is_some() {
-                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                }
-                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                let z = 3 * aa_seq.len() + 1;
-                for p in 0..aa_seq.len() {
-                    if aa_seq[p] == b'-' {
-                        diffs += 1;
-                        continue;
-                    }
-                    if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
-                        && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
-                    {
-                        diffs += 1;
-                    }
-                    if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
-                        && aa_seq[p]
-                            != codon_to_aa(
-                                &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
-                            )
-                    {
-                        diffs += 1;
-                    }
-                }
-            }
-        }
-        lvar_stats1![i, x, format!("{}", diffs)];
-    } else if x == "near" {
-        let mut dist = 1_000_000;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
-                    }
-                }
-            }
-            dist = min(dist, d);
-        }
-        if dist == 1_000_000 {
-            lvar_stats1![i, x, "".to_string()];
-        } else {
-            lvar_stats1![i, x, format!("{}", dist)];
-        }
-    } else if x == "far" {
-        let mut dist = -1_isize;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0_isize;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
-                    }
-                }
-            }
-            dist = max(dist, d);
-        }
-        if dist == -1_isize {
-            lvar_stats1![i, x, "".to_string()];
-        } else {
-            lvar_stats1![i, x, format!("{}", dist)];
-        }
     } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr1_") {
@@ -612,32 +498,6 @@ pub fn proc_lvar2(
         lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
     } else if x == "gex_Σ" {
         lvar_stats1![i, x, format!("{}", gex_sum.round() as usize)];
-    } else if x == "ext" {
-        let mut exts = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone();
-            let bc = ex.clones[l][0].barcode.clone();
-            if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
-                exts.push(ctl.gen_opt.extc[&(li, bc)].clone());
-            }
-        }
-        exts.sort();
-        let mut s = String::new();
-        let mut j = 0;
-        while j < exts.len() {
-            let k = next_diff(&exts, j);
-            if j > 0 {
-                s += ",";
-            }
-            s += &format!(
-                "{}[{}/{}]",
-                exts[j],
-                k - j,
-                ctl.gen_opt.extn[&exts[j].clone()]
-            );
-            j = k;
-        }
-        lvar_stats1![i, x, s.clone()];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
