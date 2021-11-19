@@ -134,7 +134,14 @@ pub fn delete_doublets(
             let mut vs = Vec::<Vec<usize>>::new();
             let mut j = 0;
             while j < shares.len() {
-                let k = next_diff1_2(&shares, j as i32) as usize;
+                // not using next_diff1_2 here because of i32 overflow issue
+                let mut k = j + 1;
+                loop {
+                    if k == shares.len() || shares[k].0 != shares[j].0 {
+                        break;
+                    }
+                    k += 1;
+                }
                 let u = shares[j].0;
                 us.push(u);
                 let mut x = Vec::<usize>::new();
