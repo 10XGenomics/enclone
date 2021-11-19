@@ -1,4 +1,6 @@
-# These are matched BCR/GEX datasets, all human except one mouse.
+# These are mostly matched BCR/GEX datasets, all human except one mouse.
+# Some do not have GEX, as noted by absence of GEX.
+# Some of BCR, then GEX, then BCR lines.  The first two are matched and the last has no GEX.
 #
 # These overlap other dataset lists, and many of the ids given here are not given in any
 # other list.  All are included in the big VDJ dataset collection that is internal to 10x,
@@ -55,6 +57,7 @@ DONOR=10
 NAME=MALT
 BCR=83808-83809,86233-86234
 GEX=83216-83217,85651-85652
+BCR=86229-86230,89644-89645
 
 DONOR=11
 NAME=PBMC
@@ -62,9 +65,50 @@ BCR=129476-129486,131256,131270,131275,134532-134538
 GEX=131092-131102,127966,127948,127953,133968-133974
 
 DONOR=12
-NAME=
+NAME=Lupus2
 BCR=86202-86208,86210-86216
 GEX=86518-86524,86218-86224
+BCR=86228,86237,86238
+
+DONOR=13
+NAME=
+BCR=40043
+
+DONOR=14
+NAME=
+BCR=40086
+
+DONOR=15
+NAME=
+BCR=83817,83819,83821
+
+DONOR=16
+NAME=
+BCR=91673
+
+DONOR=17
+NAME=
+BCR=48620,48634
+
+DONOR=18
+NAME=Lupus1
+BCR=48622
+
+DONOR=19
+NAME=multiple sclerosis
+BCR=48618
+
+DONOR=20
+NAME=
+BCR=48614
+
+DONOR=21
+NAME=
+BCR=45987,45977
+
+DONOR=22
+NAME=rheumatoid arthritis
+BCR=86225,86226,89642,89643
 
 DONOR=m1
 NAME=mouse
