@@ -231,9 +231,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
             for n in y.iter() {
                 if *n != "m1" {
-                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 33 {
+                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 32 {
                         return Err(
-                            "\nBI and BIB only work for values n with if 1 <= n <= 33, or n = m1.\n"
+                            "\nBI and BIB only work for values n with if 1 <= n <= 32, or n = m1.\n"
                                 .to_string(),
                         );
                     }
