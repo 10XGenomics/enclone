@@ -253,7 +253,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     }
                     if found {
                         if s.starts_with("BCR=") {
-                            if !bcr_seen || args[i].starts_with("BIB=") {
+                            if bcr_seen {
+                                if args[i].starts_with("BIB=") {
+                                    let n = bcrv.len();
+                                    bcrv[n - 1] += &mut format!(",{}", s.after("BCR="));
+                                }
+                            } else {
                                 bcrv.push(s.after("BCR=").to_string());
                             }
                             bcr_seen = true;
