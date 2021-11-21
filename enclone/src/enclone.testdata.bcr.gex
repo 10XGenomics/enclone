@@ -10,6 +10,11 @@
 #
 # To see the entirety of false positives for the human datasets, one may do the following:
 # enclone BIB=1-39 BUILT_IN MIN_DONORS=2 PLAIN SUMMARY
+#
+# original cells    fps   notes
+#  144787             0   specificity test using only public data
+#  638431            25   current specificity test
+# 2016131           193   all the data (but not updated for a long time)
 
 DONOR=1
 NAME=B cells
