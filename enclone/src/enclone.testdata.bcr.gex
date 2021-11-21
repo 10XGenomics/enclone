@@ -7,6 +7,9 @@
 # and not all are distributable.
 #
 # Note that in some cases, multiple donors etc. are included within individual sets.
+#
+# To see the entirety of false positives for the human datasets, one may do the following:
+# enclone BIB=1-39 BUILT_IN MIN_DONORS=2 PLAIN SUMMARY
 
 DONOR=1
 NAME=B cells
