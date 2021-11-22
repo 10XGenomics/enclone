@@ -378,30 +378,34 @@ pub fn proc_lvar_auto(
     } else if var == "mem" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                n += count;
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
+                    n += count;
+                }
+                y.push(format!("{}", count));
             }
-            y.push(format!("{}", count));
         }
 
         (format!("{}", n), y, "cell-exact".to_string())
     } else if var == "mem_cell" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                n += count;
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
+                    n += count;
+                }
+                y.push(format!("{}", count));
             }
-            y.push(format!("{}", count));
         }
 
         let _exact = format!("{}", n);
@@ -480,30 +484,34 @@ pub fn proc_lvar_auto(
     } else if var == "sec" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                n += count;
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
+                    n += count;
+                }
+                y.push(format!("{}", count));
             }
-            y.push(format!("{}", count));
         }
 
         (format!("{}", n), y, "cell-exact".to_string())
     } else if var == "sec_cell" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                n += count;
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
+                    n += count;
+                }
+                y.push(format!("{}", count));
             }
-            y.push(format!("{}", count));
         }
 
         let _exact = format!("{}", n);
