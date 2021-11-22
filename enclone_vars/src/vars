@@ -920,19 +920,6 @@ code:     let mut credsx = Vec::<f64>::new();
           cell: r
           exact: format!("{:.1}", median_f64(&credsx))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     cred_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      float
-doc:      TBD
-brief:    credibility assessed using GEX data
-page:     enclone help lvars
-avail:    public
-notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     d1_name
 inputs:   cvar_vdj
 limits:
