@@ -152,35 +152,7 @@ pub fn proc_lvar2(
 
     // Proceed.
 
-    if x == "sec" && ctl.gen_opt.using_secmem {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                n += count;
-            }
-            y.push(format!("{}", count));
-        }
-        lvar_stats![i, x, format!("{}", n), y];
-    } else if x == "mem" && ctl.gen_opt.using_secmem {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = &ex.clones[l][0].barcode;
-            let mut count = 0;
-            if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                n += count;
-            }
-            y.push(format!("{}", count));
-        }
-        lvar_stats![i, x, format!("{}", n), y];
-    } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
+    if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr1_") {
             x = x.before(":count_cdr1_").to_string();
