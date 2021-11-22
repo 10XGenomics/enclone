@@ -581,7 +581,11 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     if pass == 2 {
                         speak!(u, var.to_string(), exact.to_string());
                     }
-                    stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+                    if cell.len() == 0 {
+                        stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+                    } else {
+                        stats.push((var.to_string(), cell.to_vec()));
+                    }
                 } else if cell.len() > 0 {
                     if pass == 2 {
                         speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));

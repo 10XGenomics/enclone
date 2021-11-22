@@ -309,6 +309,88 @@ pub fn proc_lvar_auto(
         }
 
         (d, Vec::new(), "exact".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("")
+        && var.between2("fb", "").parse::<i64>().is_ok()
+        && var.between2("fb", "").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let fb = if n < ncols {
+            gex_info.fb_top_matrices[0].col_label(n)
+        } else {
+            String::new()
+        };
+
+        ((*fb).to_string(), Vec::new(), "exact".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("_n")
+        && var.between2("fb", "_n").parse::<i64>().is_ok()
+        && var.between2("fb", "_n").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "_n").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let median;
+        let mut counts;
+        if n >= ncols {
+            median = 0;
+            counts = vec!["0".to_string(); ex.ncells()];
+        } else {
+            counts = Vec::<String>::new();
+            let mut counts_sorted = Vec::<usize>::new();
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                    counts_sorted.push(0);
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                    counts_sorted.push(x);
+                }
+            }
+            counts_sorted.sort_unstable();
+            median = rounded_median(&counts_sorted);
+        }
+
+        (format!("{}", median), counts, "cell-exact".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("_n_cell")
+        && var.between2("fb", "_n_cell").parse::<i64>().is_ok()
+        && var.between2("fb", "_n_cell").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "_n_cell").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let median;
+        let mut counts;
+        if n >= ncols {
+            median = 0;
+            counts = vec!["0".to_string(); ex.ncells()];
+        } else {
+            counts = Vec::<String>::new();
+            let mut counts_sorted = Vec::<usize>::new();
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                    counts_sorted.push(0);
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                    counts_sorted.push(x);
+                }
+            }
+            counts_sorted.sort_unstable();
+            median = rounded_median(&counts_sorted);
+        }
+
+        let _exact = format!("{}", median);
+        (String::new(), counts, "cell-exact".to_string())
     } else if var == "filter" {
         let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -543,7 +625,11 @@ pub fn proc_lvar_auto(
             if pass == 2 {
                 speak!(u, var.to_string(), exact.to_string());
             }
-            stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+            if cell.len() == 0 {
+                stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+            } else {
+                stats.push((var.to_string(), cell.to_vec()));
+            }
         } else if cell.len() > 0 {
             if pass == 2 {
                 speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
