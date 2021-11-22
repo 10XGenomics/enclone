@@ -1299,7 +1299,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1415,7 +1415,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.20.0",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1690,7 +1690,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.20.0",
+ "nix 0.22.0",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -2417,7 +2417,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2628,7 +2628,7 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -3985,7 +3985,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.22.0",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5365,7 +5365,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#6b85f527a148ca379121c3f4a50dad4ce7d75ddd"
 dependencies = [
  "align_tools",
  "amino",
@@ -5387,7 +5387,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#6b85f527a148ca379121c3f4a50dad4ce7d75ddd"
 dependencies = [
  "debruijn",
  "exons",

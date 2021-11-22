@@ -237,6 +237,7 @@ pub struct GeneralOpt {
     pub fb_show: String,
     pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
     pub nospaces: bool,
+    pub gamma_delta: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -566,7 +567,7 @@ pub struct TigData {
     pub full_quals: Vec<u8>, // quality scores
     pub barcode: String, // barcode
     pub tigname: String, // name of contig
-    pub left: bool,      // true if this is IGH or TRB
+    pub left: bool,      // true if this is IGH or TRB (or TRD in gamma/delta mode)
     pub dataset_index: usize, // index of dataset
     pub origin_index: Option<usize>, // index of origin (sample)
     pub donor_index: Option<usize>, // index of donor
@@ -647,12 +648,12 @@ pub struct TigData1 {
     pub fr3_start: Option<usize>,            // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
-    pub left: bool,                          // true if this is IGH or TRB
-    pub chain_type: String,                  // e.g. IGH
+    pub left: bool,         // true if this is IGH or TRB (or TRD in gamma/delta mode)
+    pub chain_type: String, // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub vs: DnaString,                       // reference V segment (possibly donor allele)
-    pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
-    pub js: DnaString,     // reference J segment
+    pub vs: DnaString,      // reference V segment (possibly donor allele)
+    pub vs_notesx: String,  // notes on reference V segment (probably to be replaced)
+    pub js: DnaString,      // reference J segment
     pub inkt_alpha_chain_gene_match: bool,
     pub inkt_alpha_chain_junction_match: bool,
     pub inkt_beta_chain_gene_match: bool,

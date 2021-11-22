@@ -247,14 +247,26 @@ fn parse_vector_entry_from_json(
             print!("\n{}", strme(&log));
         }
         let mut log = Vec::<u8>::new();
-        if ctl.gen_opt.trace_barcode == *barcode {
-            if !is_valid(&x, refdata, &ann, true, &mut log) {
-                print!("{}", strme(&log));
-                println!("invalid");
+        if ctl.gen_opt.gamma_delta {
+            if ctl.gen_opt.trace_barcode == *barcode {
+                if !is_valid(&x, refdata, &ann, true, &mut log, Some(true)) {
+                    print!("{}", strme(&log));
+                    println!("invalid");
+                    return Ok(());
+                }
+            } else if !is_valid(&x, refdata, &ann, false, &mut log, Some(true)) {
                 return Ok(());
             }
-        } else if !is_valid(&x, refdata, &ann, false, &mut log) {
-            return Ok(());
+        } else {
+            if ctl.gen_opt.trace_barcode == *barcode {
+                if !is_valid(&x, refdata, &ann, true, &mut log, None) {
+                    print!("{}", strme(&log));
+                    println!("invalid");
+                    return Ok(());
+                }
+            } else if !is_valid(&x, refdata, &ann, false, &mut log, None) {
+                return Ok(());
+            }
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, refdata, &ann, &mut cdr3);
@@ -272,8 +284,14 @@ fn parse_vector_entry_from_json(
                 v_ref_id = t;
                 annv.push(ann[i]);
                 chain_type = refdata.name[t][0..3].to_string();
-                if chain_type == *"IGH" || chain_type == *"TRB" {
-                    left = true;
+                if ctl.gen_opt.gamma_delta {
+                    if chain_type == *"IGH" || chain_type == *"TRB" || chain_type == *"TRD" {
+                        left = true;
+                    }
+                } else {
+                    if chain_type == *"IGH" || chain_type == *"TRB" {
+                        left = true;
+                    }
                 }
                 if ann[i].3 == 0 {
                     tig_start = ann[i].0 as isize;
@@ -363,8 +381,14 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-                if chain == *"IGH" || chain == *"TRB" {
-                    left = true;
+                if ctl.gen_opt.gamma_delta {
+                    if chain == *"IGH" || chain == *"TRB" {
+                        left = true;
+                    }
+                } else {
+                    if chain == *"IGH" || chain == *"TRB" || chain == *"TRD" {
+                        left = true;
+                    }
                 }
                 v_ref_id = feature_idx;
                 cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
