@@ -1298,7 +1298,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1308,7 +1308,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1332,7 +1332,7 @@ dependencies = [
  "serde_json",
  "string_utils",
  "tilde-expand",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1361,7 +1361,7 @@ dependencies = [
  "string_utils",
  "superslice",
  "tables",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
  "zstd",
 ]
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1392,8 +1392,8 @@ dependencies = [
  "string_utils",
  "superslice",
  "tables",
- "vdj_ann",
- "vdj_ann_ref",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
+ "vdj_ann_ref 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1466,8 +1466,8 @@ dependencies = [
  "string_utils",
  "tables",
  "tilde-expand",
- "vdj_ann",
- "vdj_ann_ref",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
+ "vdj_ann_ref 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1511,7 +1511,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "tables",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1527,7 +1527,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "thiserror",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
 ]
 
 [[package]]
@@ -1545,7 +1545,7 @@ dependencies = [
  "itertools",
  "rayon",
  "string_utils",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1571,7 +1571,7 @@ dependencies = [
  "stirling_numbers",
  "string_utils",
  "tables",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
  "vector_utils",
 ]
 
@@ -1613,7 +1613,7 @@ dependencies = [
  "tar",
  "tiny-skia",
  "usvg",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd)",
  "vector_utils",
 ]
 
@@ -1647,8 +1647,8 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
- "vdj_ann",
- "vdj_ann_ref",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd)",
+ "vdj_ann_ref 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd)",
  "vector_utils",
 ]
 
@@ -2420,7 +2420,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2628,7 +2628,7 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -5300,7 +5300,29 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#6b85f527a148ca379121c3f4a50dad4ce7d75ddd"
+dependencies = [
+ "align_tools",
+ "amino",
+ "bio_edit",
+ "debruijn",
+ "fasta_tools",
+ "hyperbase",
+ "io_utils",
+ "itertools",
+ "kmer_lookup",
+ "serde",
+ "serde_json",
+ "stats_utils",
+ "string_utils",
+ "vdj_types",
+ "vector_utils",
+]
+
+[[package]]
+name = "vdj_ann"
+version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
 dependencies = [
  "align_tools",
  "amino",
@@ -5322,7 +5344,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#6b85f527a148ca379121c3f4a50dad4ce7d75ddd"
 dependencies = [
  "debruijn",
  "exons",
@@ -5333,7 +5355,25 @@ dependencies = [
  "pretty_trace",
  "sha2",
  "string_utils",
- "vdj_ann",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support)",
+ "vector_utils",
+]
+
+[[package]]
+name = "vdj_ann_ref"
+version = "0.2.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd#f730ca1570e9b2416a470bc60d6bab301a62c0dd"
+dependencies = [
+ "debruijn",
+ "exons",
+ "fasta_tools",
+ "flate2",
+ "io_utils",
+ "kmer_lookup",
+ "pretty_trace",
+ "sha2",
+ "string_utils",
+ "vdj_ann 0.2.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f730ca1570e9b2416a470bc60d6bab301a62c0dd)",
  "vector_utils",
 ]
 
