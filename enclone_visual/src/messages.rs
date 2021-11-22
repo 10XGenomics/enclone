@@ -93,6 +93,8 @@ pub enum Message {
     CompleteClonotypesSnapshot(Result<(), String>),
     SummarySnapshot,
     CompleteSummarySnapshot(Result<(), String>),
+    ArchiveSnapshot,
+    CompleteArchiveSnapshot(Result<(), String>),
     Recompute,
     CopyLastNarrative,
     Sleep(u64),

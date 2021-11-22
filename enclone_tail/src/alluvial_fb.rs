@@ -44,10 +44,8 @@ pub fn description_table(ctl: &EncloneControl, logx: &mut Vec<u8>) {
             let mut display_text = String::new();
             print_tabular_vbox(&mut display_text, &rows, 0, &b"l|l".to_vec(), false, false);
             let mut spreadsheet_text = String::new();
-            for (i, r) in csv_rows.iter().enumerate() {
-                if i % 2 == 0 {
-                    spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
-                }
+            for r in csv_rows.iter() {
+                spreadsheet_text += &mut format!("{}\n", r.iter().format("\t "));
             }
             let f = DescriptionTable {
                 display_text: display_text.clone(),

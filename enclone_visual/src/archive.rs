@@ -14,6 +14,11 @@ use messages::Message;
 
 pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let archive_title = Text::new(&format!("Archive")).size(30);
+    let archive_snapshot_button = Button::new(
+        &mut slf.archive_snapshot_button,
+        Text::new("Snapshot").color(slf.archive_snapshot_button_color),
+    )
+    .on_press(Message::ArchiveSnapshot);
     let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
         .on_press(Message::ArchiveClose);
     let archive_save_close_button = Button::new(
@@ -53,6 +58,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let mut top_bar = Row::new()
         .push(archive_title)
         .push(Space::with_width(Length::Fill));
+    top_bar = top_bar
+        .push(archive_snapshot_button)
+        .push(Space::with_width(Units(8)));
     if !is_restore_requested {
         top_bar = top_bar
             .push(refresh_button)

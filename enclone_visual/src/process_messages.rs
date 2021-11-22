@@ -20,6 +20,18 @@ impl EncloneVisual {
             .unwrap()
             .push(format!("{:?}", message));
         match message {
+            Message::ArchiveSnapshot => {
+                self.archive_snapshot_start = Some(Instant::now());
+                self.archive_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                Command::perform(noop0(), Message::CompleteArchiveSnapshot)
+            }
+
+            Message::CompleteArchiveSnapshot(_) => {
+                snapshot(&self.archive_snapshot_start);
+                self.archive_snapshot_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::ClonotypesSnapshot => {
                 self.clonotypes_snapshot_start = Some(Instant::now());
                 self.clonotypes_snapshot_button_color = Color::from_rgb(1.0, 0.0, 0.0);

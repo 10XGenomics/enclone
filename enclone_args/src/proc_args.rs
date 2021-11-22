@@ -158,9 +158,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let mut metaxs = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
-        if args[i].starts_with("BI=") {
+        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") {
             have_bcr = true;
-            have_gex = true;
         } else if args[i].starts_with("TCR=") {
             have_tcr = true;
         } else if args[i].starts_with("BCR=") {
@@ -197,14 +196,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     }
     let mut using_plot = false;
 
-    // Preprocess BI argument.
+    // Preprocess BI and BIB arguments.
 
     for i in 1..args.len() {
-        if args[i].starts_with("BI=") {
+        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") {
+            let bix = format!("{}=", args[i].before("="));
             if !ctl.gen_opt.internal_run {
                 return Err(format!("\nUnrecognized argument {}.\n", args[i]));
             }
-            let x = args[i].after("BI=").split(',').collect::<Vec<&str>>();
+            let x = args[i].after(&bix).split(',').collect::<Vec<&str>>();
             let mut y = Vec::<String>::new();
             for j in 0..x.len() {
                 if x[j].contains('-') {
@@ -231,18 +231,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
             for n in y.iter() {
                 if *n != "m1" {
-                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 12 {
+                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 39 {
                         return Err(
-                            "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
+                            "\nBI and BIB only work for values n with if 1 <= n <= 39, or n = m1.\n"
                                 .to_string(),
                         );
                     }
                 } else if y.len() > 1 {
                     return Err(
-                        "\nFor BI, if you specify m1, you can only specify m1.\n".to_string()
+                        "\nFor BI and BIB , if you specify m1, you can only specify m1.\n"
+                            .to_string(),
                     );
                 }
                 let mut found = false;
+                let mut bcr_seen = false;
                 for s in f.lines() {
                     if s == format!("DONOR={}", n) {
                         found = true;
@@ -251,7 +253,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     }
                     if found {
                         if s.starts_with("BCR=") {
-                            bcrv.push(s.after("BCR=").to_string());
+                            if bcr_seen {
+                                if args[i].starts_with("BIB=") {
+                                    let n = bcrv.len();
+                                    bcrv[n - 1] += &mut format!(",{}", s.after("BCR="));
+                                }
+                            } else {
+                                bcrv.push(s.after("BCR=").to_string());
+                            }
+                            bcr_seen = true;
                         }
                         if s.starts_with("GEX=") {
                             gexv.push(s.after("GEX=").to_string());
@@ -263,8 +273,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
             }
             args2.push(format!("BCR={}", bcrv.iter().format(";")));
-            args2.push(format!("GEX={}", gexv.iter().format(";")));
-            gex = format!("{}", gexv.iter().format(";"));
+            if !gexv.is_empty() && args[i].starts_with("BI=") {
+                have_gex = true;
+                args2.push(format!("GEX={}", gexv.iter().format(";")));
+                gex = format!("{}", gexv.iter().format(";"));
+            }
             for j in i + 1..args.len() {
                 args2.push(args[j].clone());
             }
