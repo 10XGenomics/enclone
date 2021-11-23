@@ -1898,8 +1898,9 @@ doc:      TBD
 brief:    exact subclonotype group, by Hamming distance
 page:     enclone help lvars
 avail:    public
-notes:    0.. or 1.. and is it positive_integer or nonnegative_integer?
-code:
+notes:
+code:     // if groups.contains_key(&arg1) {
+          exact: format!("{}", groups[&arg1][u] + 1)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   lvar_vdj

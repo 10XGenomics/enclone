@@ -187,14 +187,6 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
-        let d = x.after("g").force_usize();
-        if groups.contains_key(&d) {
-            lvar_stats1![i, x, format!("{}", groups[&d][u] + 1)];
-            return true;
-        }
-    }
-
     if x == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];
