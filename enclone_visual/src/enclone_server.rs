@@ -637,7 +637,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     //
     // let version = env!("CARGO_PKG_VERSION");
     //
-    // but that wasn't right either, because enclone_client.rs would read that back and do 
+    // but that wasn't right either, because enclone_client.rs would read that back and do
     // the wrong thing.
     //
     // So finally we changed it to what is below.  Note that this suffers from the defect that
