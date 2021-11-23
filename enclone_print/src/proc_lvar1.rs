@@ -57,7 +57,7 @@ pub fn proc_lvar1(
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
-    groups: &HashMap<usize, Vec<usize>>,
+    _groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
     _n_vdj_gex: &Vec<usize>,
