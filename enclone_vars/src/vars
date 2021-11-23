@@ -1889,7 +1889,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     g{0..}
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1899,8 +1899,8 @@ brief:    exact subclonotype group, by Hamming distance
 page:     enclone help lvars
 avail:    public
 notes:
-code:     // if groups.contains_key(&arg1) {
-          exact: format!("{}", groups[&arg1][u] + 1)
+code:     let d = arg1 as usize;
+          exact: format!("{}", groups[&d][u] + 1)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   lvar_vdj
