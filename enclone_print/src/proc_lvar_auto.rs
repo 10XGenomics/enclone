@@ -413,12 +413,13 @@ pub fn proc_lvar_auto(
     {
         let arg1 = var.between2("g", "").force_i64();
         let d = arg1 as usize;
+        let answer = if groups.contains_key(&d) {
+            format!("{}", groups[&d][u] + 1)
+        } else {
+            String::new()
+        };
 
-        (
-            format!("{}", groups[&d][u] + 1),
-            Vec::new(),
-            "exact".to_string(),
-        )
+        (answer, Vec::new(), "exact".to_string())
     } else if var == "inkt" {
         let mut s = String::new();
         let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;

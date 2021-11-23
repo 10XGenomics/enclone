@@ -1900,7 +1900,12 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:     let d = arg1 as usize;
-          exact: format!("{}", groups[&d][u] + 1)
+          let answer = if groups.contains_key(&d) { 
+              format!("{}", groups[&d][u] + 1) 
+          } else { 
+              String::new()
+          };
+          exact: answer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   lvar_vdj
