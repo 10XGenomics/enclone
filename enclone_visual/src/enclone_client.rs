@@ -645,12 +645,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     xprintln!("😱 PROCEED AT RISK.................😱");
                     xprintln!("----------------------------------------------------------------------------------");
                     xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
-                } else if verbose {
-                    xprintln!("local version = {}", local);
-                    xprintln!("remote version = {}", remote);
                     if require_compatible {
                         std::process::exit(1);
                     }
+                } else if verbose {
+                    xprintln!("local version = {}", local);
+                    xprintln!("remote version = {}", remote);
                 }
             }
         }
