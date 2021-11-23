@@ -645,6 +645,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     xprintln!("😱 PROCEED AT RISK.................😱");
                     xprintln!("----------------------------------------------------------------------------------");
                     xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                    xprintln!("\nNote that this could be a false positive.  If you touch the \
+                        right local and remote\nfiles, you can ensure that the reported \
+                        versions are correct.");
                     if require_compatible {
                         std::process::exit(1);
                     }
