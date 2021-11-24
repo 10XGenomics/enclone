@@ -25,11 +25,9 @@ pub fn slurp_h5(
     let feature_id_loc = h.dataset("matrix/features/id").unwrap();
     let feature_ids: Vec<FixedAscii<256>> = feature_id_loc.as_reader().read_raw().unwrap();
     let feature_name_loc = h.dataset("matrix/features/name").unwrap();
-    let feature_names: Vec<FixedAscii<256>> =
-        feature_name_loc.as_reader().read_raw().unwrap();
+    let feature_names: Vec<FixedAscii<256>> = feature_name_loc.as_reader().read_raw().unwrap();
     let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
-    let feature_types: Vec<FixedAscii<256>> =
-        feature_type_loc.as_reader().read_raw().unwrap();
+    let feature_types: Vec<FixedAscii<256>> = feature_type_loc.as_reader().read_raw().unwrap();
     for i in 0..feature_ids.len() {
         features.push(format!(
             "{}\t{}\t{}",
