@@ -11,6 +11,7 @@ use enclone_core::combine_group_pics::*;
 use enclone_core::enclone_structs::*;
 use enclone_core::logging::*;
 use enclone_core::parse_bsv;
+use enclone_core::version_string;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
 use enclone_stuff::start::main_enclone_start;
@@ -626,17 +627,23 @@ pub async fn enclone_server() -> Result<(), Box<dyn std::error::Error>> {
     // 2. it seems like we set version, and then sometimes set version to the same thing.
     //
     // Therefore, this code is commented out.  But perhaps something in it needs to be salvaged.
+    //
+    // let mut version = current_version_string();
+    // if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
+    //     version = current_version_string();
+    // }
+    //
+    // Subsequently we changed this to
+    //
+    // let version = env!("CARGO_PKG_VERSION");
+    //
+    // but that wasn't right either, because enclone_client.rs would read that back and do
+    // the wrong thing.
+    //
+    // So finally we changed it to what is below.  Note that this suffers from the defect that
+    // it is not properly updated.
 
-    /*
-    let mut version = current_version_string();
-    if format!("{}", current_executable) == format!("{}/target/debug/enclone", current_dir) {
-        version = current_version_string();
-    }
-    */
-
-    // Get version.
-
-    let version = env!("CARGO_PKG_VERSION");
+    let version = version_string();
 
     // Announce.
 

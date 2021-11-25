@@ -75,6 +75,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
     let mut monitor_threads = false;
     let mut config_name = String::new();
     let mut fixed_port = None;
+    let mut require_compatible = false;
     for i in 1..args.len() {
         let arg = &args[i];
 
@@ -110,6 +111,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             META.store(arg.after("META=").force_usize() - 1, SeqCst);
         } else if arg.starts_with("EXEC=") {
             EXEC.lock().unwrap().push(arg.after("EXEC=").to_string());
+        } else if arg == "REQUIRE_COMPATIBLE" {
+            require_compatible = true;
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
@@ -504,7 +507,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         let mut ebuffer = [0; BYTES_TO_READ];
         let server_stderr = server_process.stderr.as_mut().unwrap();
         let tread = Instant::now();
-        server_stderr.read_exact(&mut ebuffer).unwrap();
+        let res = server_stderr.read_exact(&mut ebuffer);
+        if res.is_err() {
+            eprintln!(
+                "\nWeird internal error: {}.\nMaybe the server is not working, ask for help.\n",
+                res.err().unwrap(),
+            );
+            std::process::exit(1);
+        }
         if ebuffer.len() != BYTES_TO_READ {
             xprintln!(
                 "\nWeird internal error: read {} bytes from server rather than the expected \
@@ -642,6 +652,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     xprintln!("😱 PROCEED AT RISK.................😱");
                     xprintln!("----------------------------------------------------------------------------------");
                     xprintln!("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴");
+                    xprintln!(
+                        "\nNote that this could be a false positive.  If you touch the \
+                        right local and remote\nfiles, you can ensure that the reported \
+                        versions are correct."
+                    );
+                    if require_compatible {
+                        std::process::exit(1);
+                    }
                 } else if verbose {
                     xprintln!("local version = {}", local);
                     xprintln!("remote version = {}", remote);

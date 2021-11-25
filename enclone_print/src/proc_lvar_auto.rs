@@ -39,6 +39,7 @@ pub fn proc_lvar_auto(
     n_vdj_gex: &Vec<usize>,
     vdj_cells: &Vec<Vec<String>>,
     gex_info: &GexInfo,
+    groups: &HashMap<usize, Vec<usize>>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -405,6 +406,20 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), fates, "cell".to_string())
+    } else if var.starts_with("g")
+        && var.ends_with("")
+        && var.between2("g", "").parse::<i64>().is_ok()
+        && var.between2("g", "").force_i64() >= 0
+    {
+        let arg1 = var.between2("g", "").force_i64();
+        let d = arg1 as usize;
+        let answer = if groups.contains_key(&d) {
+            format!("{}", groups[&d][u] + 1)
+        } else {
+            String::new()
+        };
+
+        (answer, Vec::new(), "exact".to_string())
     } else if var == "inkt" {
         let mut s = String::new();
         let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;

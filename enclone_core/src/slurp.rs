@@ -15,7 +15,7 @@ pub fn slurp_h5(
 
     let h = hdf5::File::open(&h5_path).unwrap();
     let barcode_loc = h.dataset("matrix/barcodes").unwrap();
-    let barcodes0: Vec<FixedAscii<[u8; 18]>> = barcode_loc.as_reader().read_raw().unwrap();
+    let barcodes0: Vec<FixedAscii<18>> = barcode_loc.as_reader().read_raw().unwrap();
     for i in 0..barcodes0.len() {
         barcodes.push(barcodes0[i].to_string());
     }
@@ -23,13 +23,11 @@ pub fn slurp_h5(
     // Read features from the h5 file.
 
     let feature_id_loc = h.dataset("matrix/features/id").unwrap();
-    let feature_ids: Vec<FixedAscii<[u8; 256]>> = feature_id_loc.as_reader().read_raw().unwrap();
+    let feature_ids: Vec<FixedAscii<256>> = feature_id_loc.as_reader().read_raw().unwrap();
     let feature_name_loc = h.dataset("matrix/features/name").unwrap();
-    let feature_names: Vec<FixedAscii<[u8; 256]>> =
-        feature_name_loc.as_reader().read_raw().unwrap();
+    let feature_names: Vec<FixedAscii<256>> = feature_name_loc.as_reader().read_raw().unwrap();
     let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
-    let feature_types: Vec<FixedAscii<[u8; 256]>> =
-        feature_type_loc.as_reader().read_raw().unwrap();
+    let feature_types: Vec<FixedAscii<256>> = feature_type_loc.as_reader().read_raw().unwrap();
     for i in 0..feature_ids.len() {
         features.push(format!(
             "{}\t{}\t{}",

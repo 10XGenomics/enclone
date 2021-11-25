@@ -1889,7 +1889,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     g{0..}
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1898,8 +1898,14 @@ doc:      TBD
 brief:    exact subclonotype group, by Hamming distance
 page:     enclone help lvars
 avail:    public
-notes:    0.. or 1.. and is it positive_integer or nonnegative_integer?
-code:
+notes:
+code:     let d = arg1 as usize;
+          let answer = if groups.contains_key(&d) { 
+              format!("{}", groups[&d][u] + 1) 
+          } else { 
+              String::new()
+          };
+          exact: answer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   lvar_vdj

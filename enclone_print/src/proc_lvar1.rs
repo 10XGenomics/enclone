@@ -57,7 +57,7 @@ pub fn proc_lvar1(
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
-    groups: &HashMap<usize, Vec<usize>>,
+    _groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
     _n_vdj_gex: &Vec<usize>,
@@ -186,14 +186,6 @@ pub fn proc_lvar1(
     }
 
     // Proceed.
-
-    if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
-        let d = x.after("g").force_usize();
-        if groups.contains_key(&d) {
-            lvar_stats1![i, x, format!("{}", groups[&d][u] + 1)];
-            return true;
-        }
-    }
 
     if x == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];

@@ -251,6 +251,7 @@ fn main() {
         let o = Command::new("enclone")
             .arg(&"VIS=b")
             .arg(&"META=2")
+            .arg(&"REQUIRE_COMPATIBLE")
             .arg(&"VISUAL_DIR=enclone_visual/outputs/sample_visual")
             .output()
             .expect("failed to execute enclone visual metatest 2");

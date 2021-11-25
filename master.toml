@@ -48,7 +48,7 @@ fontdb = "0.6"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
 iced = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
@@ -75,7 +75,7 @@ png-decoder = "0.1"
 pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.9", default_features = false }
-prost = { version = ">=0.8,<0.10", default_features = false }
+prost = { version = "0.9", default_features = false }
 prost-build = "0.9"
 rand = "0.8"
 rayon = "1"
@@ -96,8 +96,8 @@ tilde-expand = "0.1"
 tiny-skia = "0.6"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
-tonic = { version = "0.5", default-features = false, features = ["transport", "codegen", "prost"] }
-tonic-build = { version = "0.5", default-features = false, features = ["transport", "prost"] }
+tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
+tonic-build = { version = "0.6", default-features = false, features = ["transport", "prost"] }
 users = "0.11"
 usvg = { version = "0.17", features = ["text"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
