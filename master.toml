@@ -49,8 +49,8 @@ fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b" }
+iced = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a", features = ["canvas", "image", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.3"
