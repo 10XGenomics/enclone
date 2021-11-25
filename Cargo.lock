@@ -438,7 +438,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
- "rand 0.7.3",
+ "rand 0.8.4",
  "regex",
  "serde",
  "serde_derive",
