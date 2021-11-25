@@ -31,7 +31,7 @@ evalexpr = "6"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
-ndarray = ">=0.14, <0.16"
+ndarray = "0.15"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"

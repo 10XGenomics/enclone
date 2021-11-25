@@ -33,19 +33,19 @@ enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1"
 float-ord = "0.3"
-fontdb = "0.6"
+fontdb = "0.7"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
 lazy_static = "1"
 mirror_sparse_matrix = "0.1"
-ndarray = ">=0.14, <0.16"
+ndarray = "0.15"
 palette = "0.6"
 perf_stats = "0.1"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 pretty_trace = "0.5"
 rayon = "1"
-resvg = { version = "0.17", default-features = false }
+resvg = { version = "0.19", default-features = false }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
@@ -55,7 +55,7 @@ superslice = "1"
 tables = "0.1"
 tar = "0.4"
 tiny-skia = "0.6"
-usvg = { version = "0.17", features = ["text"] }
+usvg = { version = "0.19", features = ["text"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
 vector_utils = "0.1"
 # to replace by this after bumping version
