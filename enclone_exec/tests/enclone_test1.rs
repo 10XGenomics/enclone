@@ -619,7 +619,7 @@ fn test_cpu() {
 // Test licenses of included packages and their dependencies.
 //
 // The following rules are applied:
-// 1.  If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0
+// 1.  If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0 or 0BSD
 //     or CC0-1.0 or BSL-1.0, or is a logical expression for which one of those is sufficient, then
 //     there is no problem.  Note that for MPL-2.0, we inform people how to get the source code for
 //     dependent crates.
@@ -648,8 +648,8 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
-    const ACCEPTABLE_LICENSE_TYPES: [&str; 8] = [
-        "MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "OFL-1.1",
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 9] = [
+        "MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "0BSD", "OFL-1.1",
     ];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
