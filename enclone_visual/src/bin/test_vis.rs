@@ -359,7 +359,7 @@ fn main() {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     let mut fail = false;
-    const MAX_DIFFS: usize = 220;
+    const MAX_DIFFS: usize = 450;
     for i in 0..all_testnames.len() {
         let mut image_new = Vec::<u8>::new();
         let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);

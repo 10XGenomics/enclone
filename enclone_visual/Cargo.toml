@@ -36,8 +36,8 @@ enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
 flate2 = "1"
 fs_extra = "1"
-iced = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b" }
+iced = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a", features = ["canvas", "image", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.3"
@@ -46,7 +46,7 @@ jpeg-decoder = "0.1"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
-nix = ">=0.20, <0.23"
+nix = "0.23"
 perf_stats = "0.1"
 png-decoder = "0.1"
 pretty_trace = "0.5"
@@ -64,7 +64,7 @@ vector_utils = "0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"
-procfs = { version = "0.9", default_features = false }
+procfs = { version = "0.11", default_features = false }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 clipboard = "0.5"

@@ -39,7 +39,7 @@ hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f
 io_utils = "0.3"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
-ndarray = ">=0.14, <0.16"
+ndarray = "0.15"
 permutation = "0.2"
 pretty_trace = "0.5"
 rayon = "1"
