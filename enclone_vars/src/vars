@@ -2089,7 +2089,7 @@ code:     let mut n = 0;
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n
-inputs:   ?
+inputs:   lvar_vdj
 limits:   <code>PER_CELL</code> values are not displayed because they are all <code>1</code>, 
           which would be distracting; also there is no <code>_cell</code> version
 class:    lvar
@@ -2100,7 +2100,9 @@ brief:    number of cells
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let counts = vec!["1.0".to_string(); mults[u]];
+          cell: counts
+          exact: format!("{}", mults[u])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_NAME
 inputs:   ?
