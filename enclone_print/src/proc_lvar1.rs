@@ -57,7 +57,7 @@ pub fn proc_lvar1(
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
     stats: &mut Vec<(String, Vec<String>)>,
-    nd_fields: &Vec<String>,
+    _nd_fields: &Vec<String>,
     lvars: &Vec<String>,
     alt_bcs: &Vec<String>,
     _n_gex: usize,
@@ -183,27 +183,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "n_other" {
-        let mut n = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let mut found = false;
-            let di = ex.clones[j][0].dataset_index;
-            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
-            for i in 0..nd_fields.len() {
-                if f == nd_fields[i] {
-                    found = true;
-                }
-            }
-            if !found {
-                n += 1;
-                ns.push("1.0".to_string());
-            } else {
-                ns.push("0.0".to_string());
-            }
-        }
-        lvar_stats![i, x, format!("{}", n), ns];
-    } else if x == "n_b" {
+    if x == "n_b" {
         let mut n_b = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {

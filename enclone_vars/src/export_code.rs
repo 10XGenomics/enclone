@@ -512,6 +512,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             gex_info: &GexInfo,
             groups: &HashMap<usize, Vec<usize>>,
             mults: &Vec<usize>,
+            nd_fields: &Vec<String>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];

@@ -513,6 +513,7 @@ pub fn row_fill(
             gex_info,
             groups,
             mults,
+            nd_fields,
         )? {
             if !proc_lvar1(
                 i,

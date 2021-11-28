@@ -41,6 +41,7 @@ pub fn proc_lvar_auto(
     gex_info: &GexInfo,
     groups: &HashMap<usize, Vec<usize>>,
     mults: &Vec<usize>,
+    nd_fields: &Vec<String>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -534,6 +535,27 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
+    } else if var == "n_other" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        (format!("{}", n), ns, "exact".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),
