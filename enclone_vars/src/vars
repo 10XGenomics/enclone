@@ -2147,6 +2147,34 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_b
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of B cells
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut n_b = 0;
+          let mut ns = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                  if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                      n_b += 1;
+                      ns.push("1.0".to_string());
+                  } else {
+                      ns.push("0.0".to_string());
+                  }
+              }
+          }
+          cell: ns
+          exact: format!("{}", n_b)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_gex
 inputs:   ?
 limits:
@@ -2177,7 +2205,7 @@ name:     n_other
 inputs:   lvar_vdj
 limits:
 class:    lvar
-level:    exact
+level:    cell-exact
 val:      nonnegative_integer
 doc:      TBD
 brief:    when using nd<k>, the number of cells assigned to another dataset

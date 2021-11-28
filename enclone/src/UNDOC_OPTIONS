@@ -174,8 +174,6 @@ PRINT_CPU_INFO: print info about cpu usage
 
 PLOT_BY_MARK
 
-n_b as LVAR = number of B cells
-
 MAX_SCORE: was public, now deprecated, do not remove
 
 REQUIRE_UNBROKEN_OK: require that if a V reference sequence is not marked as broken, then all

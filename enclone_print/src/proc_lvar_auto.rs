@@ -535,6 +535,41 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
+    } else if var == "n_b" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
+                }
+            }
+        }
+
+        (format!("{}", n_b), ns, "cell-exact".to_string())
+    } else if var == "n_b_cell" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
+                }
+            }
+        }
+
+        let _exact = format!("{}", n_b);
+        (String::new(), ns, "cell-exact".to_string())
     } else if var == "n_other" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();
@@ -555,7 +590,29 @@ pub fn proc_lvar_auto(
             }
         }
 
-        (format!("{}", n), ns, "exact".to_string())
+        (format!("{}", n), ns, "cell-exact".to_string())
+    } else if var == "n_other_cell" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (String::new(), ns, "cell-exact".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),

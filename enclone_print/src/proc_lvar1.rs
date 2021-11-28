@@ -51,7 +51,7 @@ pub fn proc_lvar1(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    gex_info: &GexInfo,
+    _gex_info: &GexInfo,
     row: &mut Vec<String>,
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
@@ -183,23 +183,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "n_b" {
-        let mut n_b = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                    n_b += 1;
-                    ns.push("1.0".to_string());
-                } else {
-                    ns.push("0.0".to_string());
-                }
-            }
-        }
-        lvar_stats![i, x, format!("{}", n_b), ns];
-    } else if x == "type" {
+    if x == "type" {
         let mut cell_types = Vec::<String>::new();
         /*
         for j in 0..ex.clones.len() {
