@@ -6,7 +6,7 @@
 use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::{abbrev_list, strme, TextUtils};
+use string_utils::{strme, TextUtils};
 use vector_utils::bin_member;
 
 pub fn get_gex_matrix_entry(
@@ -183,22 +183,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "type" {
-        let mut cell_types = Vec::<String>::new();
-        /*
-        for j in 0..ex.clones.len() {
-            let mut cell_type = "".to_string();
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                cell_type = gex_info.cell_type[li][&bc.clone()].clone();
-            }
-            cell_types.push(cell_type);
-        }
-        */
-        cell_types.sort();
-        lvar![i, x, abbrev_list(&cell_types)];
-    } else if x == "mark" {
+    if x == "mark" {
         let mut n = 0;
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].marked {
