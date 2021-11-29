@@ -71,8 +71,8 @@ pub fn proc_lvar2(
     gex_sum: f64,
     _gex_median: usize,
     _gex_counts_unsorted: &Vec<usize>,
-    entropy: f64,
-    entropies_unsorted: &Vec<f64>,
+    _entropy: f64,
+    _entropies_unsorted: &Vec<f64>,
     gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
@@ -354,18 +354,6 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x == "entropy" {
-        let mut e = Vec::<String>::new();
-        for x in entropies_unsorted.iter() {
-            e.push(format!("{}", x));
-        }
-        lvar_stats![i, x, format!("{:.2}", entropy), e];
-    } else if x == "entropy_cell" {
-        let mut e = Vec::<String>::new();
-        for x in entropies_unsorted.iter() {
-            e.push(format!("{:.2}", x));
-        }
-        speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();

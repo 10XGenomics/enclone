@@ -517,6 +517,9 @@ pub fn row_fill(
             &gex_counts_unsorted,
             &gex_fcounts_unsorted,
             &n_gexs,
+            d_readers,
+            ind_readers,
+            h5_data,
         )? {
             if !proc_lvar1(
                 i,
