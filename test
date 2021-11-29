@@ -141,7 +141,9 @@ if ( $elapsed_times > $expected_plus_times ) then
     echo "\nThe expected time for the test is $expected seconds, with an allowed fudge factor of"
     echo "10%, but the test actually took $elapsed seconds.  If something has been done to make"
     echo "the test actually slower, this is a real failure.  However it may be that the failure"
-    echo "is due simply to server load, or bad luck, and in that case it is not a failure."
+    echo "is due simply to server load, or bad luck, and in that case it is not a failure.  In"
+    echo "addition, because executable generation is stochastic, it is possible that forcing"
+    echo "recompilation of all enclone crates will make the problem go away."
     echo "FAILED"
     echo
     exit 1
