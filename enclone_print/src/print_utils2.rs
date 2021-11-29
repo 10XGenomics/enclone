@@ -515,6 +515,7 @@ pub fn row_fill(
             mults,
             nd_fields,
             &gex_counts_unsorted,
+            &gex_fcounts_unsorted,
         )? {
             if !proc_lvar1(
                 i,

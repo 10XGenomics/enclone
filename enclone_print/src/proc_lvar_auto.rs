@@ -43,6 +43,7 @@ pub fn proc_lvar_auto(
     mults: &Vec<usize>,
     nd_fields: &Vec<String>,
     gex_counts_unsorted: &Vec<usize>,
+    gex_fcounts_unsorted: &Vec<f64>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -435,6 +436,22 @@ pub fn proc_lvar_auto(
     } else if var == "gex_min" {
         (
             format!("{}", gex_counts_unsorted.iter().min().unwrap()),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_sum" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+
+        (
+            format!("{}", gex_sum.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_Σ" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+
+        (
+            format!("{}", gex_sum.round() as usize),
             Vec::new(),
             "exact".to_string(),
         )

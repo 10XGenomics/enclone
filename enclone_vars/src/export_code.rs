@@ -514,6 +514,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             mults: &Vec<usize>,
             nd_fields: &Vec<String>,
             gex_counts_unsorted: &Vec<usize>,
+            gex_fcounts_unsorted: &Vec<f64>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];

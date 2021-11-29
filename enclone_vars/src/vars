@@ -1853,7 +1853,7 @@ notes:
 code:     exact: format!("{}", gex_counts_unsorted.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_sum
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1863,10 +1863,11 @@ brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          exact: format!("{}", gex_sum.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_Σ
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1876,7 +1877,8 @@ brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          exact: format!("{}", gex_sum.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_μ
 inputs:   ?
