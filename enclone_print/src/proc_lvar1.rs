@@ -70,7 +70,7 @@ pub fn proc_lvar1(
     _gex_counts_unsorted: &Vec<usize>,
     _entropy: f64,
     _entropies_unsorted: &Vec<f64>,
-    _fcounts: &Vec<f64>,
+    _gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
     let clonotype_id = exacts[u];

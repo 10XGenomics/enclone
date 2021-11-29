@@ -149,7 +149,7 @@ pub fn row_fill(
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
     let mut gex_counts_unsorted = Vec::<usize>::new();
-    let mut fcounts = Vec::<f64>::new();
+    let mut gex_fcounts_unsorted = Vec::<f64>::new();
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
@@ -330,7 +330,7 @@ pub fn row_fill(
                     }
                 }
                 counts.push(count);
-                fcounts.push(fcount);
+                gex_fcounts_unsorted.push(fcount);
                 entropies.push(entropy);
             }
         }
@@ -345,8 +345,8 @@ pub fn row_fill(
             gex_median = rounded_median(&counts);
             gex_min = counts[0];
             gex_max = counts[counts.len() - 1];
-            gex_sum = fcounts.iter().sum::<f64>();
-            gex_mean = gex_sum / fcounts.len() as f64;
+            gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+            gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
         }
     }
     let entropies_unsorted = entropies.clone();
@@ -543,7 +543,7 @@ pub fn row_fill(
                 &gex_counts_unsorted,
                 entropy,
                 &entropies_unsorted,
-                &fcounts,
+                &gex_fcounts_unsorted,
                 extra_args,
             ) {
                 let _ = proc_lvar2(
@@ -573,7 +573,7 @@ pub fn row_fill(
                     &gex_counts_unsorted,
                     entropy,
                     &entropies_unsorted,
-                    &fcounts,
+                    &gex_fcounts_unsorted,
                     extra_args,
                 );
             }

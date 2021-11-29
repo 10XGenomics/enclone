@@ -73,7 +73,7 @@ pub fn proc_lvar2(
     gex_counts_unsorted: &Vec<usize>,
     entropy: f64,
     entropies_unsorted: &Vec<f64>,
-    fcounts: &Vec<f64>,
+    gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
     let clonotype_id = exacts[u];
@@ -356,7 +356,7 @@ pub fn proc_lvar2(
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x == "gex" {
         let mut f = Vec::<String>::new();
-        for x in fcounts.iter() {
+        for x in gex_fcounts_unsorted.iter() {
             f.push(format!("{}", *x));
         }
         lvar_stats![i, x, format!("{}", gex_median), f];
@@ -483,7 +483,10 @@ pub fn proc_lvar2(
                 if pass == 2 {
                     let mut c = Vec::<String>::new();
                     for j in 0..counts_sub.len() {
-                        c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
+                        c.push(format!(
+                            "{:.2}",
+                            100.0 * counts_sub[j] as f64 / gex_fcounts_unsorted[j]
+                        ));
                     }
                     let val = format!("{}", c.iter().format(POUT_SEP));
                     speak!(u, x, val);
