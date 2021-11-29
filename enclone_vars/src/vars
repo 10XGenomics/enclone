@@ -1827,7 +1827,7 @@ notes:
 code:     exact: format!("{}", gex_counts_unsorted.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_mean
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1837,7 +1837,9 @@ brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+          exact: format!("{}", gex_mean.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_min
 inputs:   lvar_vdj
@@ -1881,7 +1883,7 @@ code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
           exact: format!("{}", gex_sum.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_μ
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1891,7 +1893,9 @@ brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+          exact: format!("{}", gex_mean.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     group_id
 inputs:   ?

@@ -433,6 +433,15 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
+    } else if var == "gex_mean" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+
+        (
+            format!("{}", gex_mean.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
+        )
     } else if var == "gex_min" {
         (
             format!("{}", gex_counts_unsorted.iter().min().unwrap()),
@@ -452,6 +461,15 @@ pub fn proc_lvar_auto(
 
         (
             format!("{}", gex_sum.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_μ" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+
+        (
+            format!("{}", gex_mean.round() as usize),
             Vec::new(),
             "exact".to_string(),
         )

@@ -397,8 +397,6 @@ pub fn proc_lvar2(
             e.push(format!("{:.2}", x));
         }
         speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
-    } else if x == "gex_μ" {
-        lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
