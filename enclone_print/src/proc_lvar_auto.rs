@@ -428,6 +428,27 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), fates, "cell".to_string())
+    } else if var == "gex" {
+        let mut f = Vec::<String>::new();
+        for x in gex_fcounts_unsorted.iter() {
+            f.push(format!("{}", *x));
+        }
+        let mut counts = gex_counts_unsorted.clone();
+        counts.sort_unstable();
+        let gex_median = rounded_median(&counts);
+
+        (format!("{}", gex_median), f, "cell-exact".to_string())
+    } else if var == "gex_cell" {
+        let mut f = Vec::<String>::new();
+        for x in gex_fcounts_unsorted.iter() {
+            f.push(format!("{}", *x));
+        }
+        let mut counts = gex_counts_unsorted.clone();
+        counts.sort_unstable();
+        let gex_median = rounded_median(&counts);
+
+        let _exact = format!("{}", gex_median);
+        (String::new(), f, "cell-exact".to_string())
     } else if var == "gex_max" {
         (
             format!("{}", gex_counts_unsorted.iter().max().unwrap()),

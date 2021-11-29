@@ -1788,30 +1788,25 @@ code:     let x = &ex.share[mid];
           exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
 val:      float
 doc:      TBD
-brief:    median number of GEX UMIs
+brief:    number of GEX UMIs (or median)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     gex_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of GEX UMIs
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut f = Vec::<String>::new();
+          for x in gex_fcounts_unsorted.iter() {
+              f.push(format!("{}", *x));
+          }   
+          let mut counts = gex_counts_unsorted.clone();
+          counts.sort_unstable();
+          let gex_median = rounded_median(&counts);
+          cell: f
+          exact: format!("{}", gex_median)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_max
 inputs:   lvar_vdj

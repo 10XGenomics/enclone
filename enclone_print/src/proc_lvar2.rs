@@ -69,8 +69,8 @@ pub fn proc_lvar2(
     _gex_max: usize,
     gex_mean: f64,
     gex_sum: f64,
-    gex_median: usize,
-    gex_counts_unsorted: &Vec<usize>,
+    _gex_median: usize,
+    _gex_counts_unsorted: &Vec<usize>,
     entropy: f64,
     entropies_unsorted: &Vec<f64>,
     gex_fcounts_unsorted: &Vec<f64>,
@@ -354,20 +354,6 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x == "gex" {
-        let mut f = Vec::<String>::new();
-        for x in gex_fcounts_unsorted.iter() {
-            f.push(format!("{}", *x));
-        }
-        lvar_stats![i, x, format!("{}", gex_median), f];
-    } else if x == "gex_cell" {
-        if pass == 2 {
-            speak!(
-                u,
-                x,
-                format!("{}", gex_counts_unsorted.iter().format(POUT_SEP))
-            );
-        }
     } else if x == "entropy" {
         let mut e = Vec::<String>::new();
         for x in entropies_unsorted.iter() {
