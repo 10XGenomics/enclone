@@ -44,6 +44,7 @@ pub fn proc_lvar_auto(
     nd_fields: &Vec<String>,
     gex_counts_unsorted: &Vec<usize>,
     gex_fcounts_unsorted: &Vec<f64>,
+    n_gexs: &Vec<usize>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -627,6 +628,25 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n_b);
         (String::new(), ns, "cell-exact".to_string())
+    } else if var == "n_gex" {
+        let mut n = Vec::<String>::new();
+        let mut n_gex = 0;
+        for x in n_gexs.iter() {
+            n.push(format!("{}", *x));
+            n_gex += *x;
+        }
+
+        (format!("{}", n_gex), n, "cell-exact".to_string())
+    } else if var == "n_gex_cell" {
+        let mut n = Vec::<String>::new();
+        let mut n_gex = 0;
+        for x in n_gexs.iter() {
+            n.push(format!("{}", *x));
+            n_gex += *x;
+        }
+
+        let _exact = format!("{}", n_gex);
+        (String::new(), n, "cell-exact".to_string())
     } else if var == "n_other" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();

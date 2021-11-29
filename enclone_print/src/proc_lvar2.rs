@@ -63,8 +63,8 @@ pub fn proc_lvar2(
     _nd_fields: &Vec<String>,
     lvars: &Vec<String>,
     _alt_bcs: &Vec<String>,
-    n_gex: usize,
-    n_gexs: &Vec<usize>,
+    _n_gex: usize,
+    _n_gexs: &Vec<usize>,
     _gex_min: usize,
     _gex_max: usize,
     gex_mean: f64,
@@ -366,23 +366,6 @@ pub fn proc_lvar2(
                 u,
                 x,
                 format!("{}", gex_counts_unsorted.iter().format(POUT_SEP))
-            );
-        }
-    } else if x == "n_gex" {
-        let mut n = Vec::<String>::new();
-        for x in n_gexs.iter() {
-            n.push(format!("{}", *x));
-        }
-        lvar_stats![i, x, format!("{}", n_gex), n];
-    } else if x == "n_gex_cell" {
-        if i < lvars.len() {
-            row.push("".to_string());
-        }
-        if pass == 2 {
-            speak!(
-                u,
-                "n_gex_cell".to_string(),
-                format!("{}", n_gexs.iter().format(POUT_SEP))
             );
         }
     } else if x == "entropy" {

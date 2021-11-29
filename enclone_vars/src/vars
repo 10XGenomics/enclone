@@ -2201,7 +2201,7 @@ code:     let mut n_b = 0;
           exact: format!("{}", n_b)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_gex
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
@@ -2211,20 +2211,14 @@ brief:    median number of cells seen by GEX pipeline
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     n_gex_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      positive_integer
-doc:      TBD
-brief:    number of cells seen by GEX pipeline
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut n = Vec::<String>::new();
+          let mut n_gex = 0;
+          for x in n_gexs.iter() {
+              n.push(format!("{}", *x));
+              n_gex += *x;
+          }
+          cell: n
+          exact: format!("{}", n_gex)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_other
 inputs:   lvar_vdj
