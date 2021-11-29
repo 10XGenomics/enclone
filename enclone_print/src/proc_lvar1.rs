@@ -169,13 +169,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x.starts_with("pe") {
-        lvar_stats1![i, x, format!("")];
-    } else if x.starts_with("npe") {
-        lvar_stats1![i, x, format!("")];
-    } else if x.starts_with("ppe") {
-        lvar_stats1![i, x, format!("")];
-    } else if bin_member(alt_bcs, x) {
+    if bin_member(alt_bcs, x) {
         let mut r = Vec::<String>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;

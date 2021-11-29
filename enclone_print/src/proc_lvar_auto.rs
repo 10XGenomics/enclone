@@ -658,6 +658,8 @@ pub fn proc_lvar_auto(
         }
 
         (near, Vec::new(), "exact".to_string())
+    } else if var == "npe" {
+        (String::new(), Vec::new(), "cell".to_string())
     } else if var == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -693,6 +695,10 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", origins.iter().format(","));
         (String::new(), origins_unsorted, "cell-exact".to_string())
+    } else if var == "pe" {
+        (String::new(), Vec::new(), "cell".to_string())
+    } else if var == "ppe" {
+        (String::new(), Vec::new(), "cell".to_string())
     } else if var == "sec" {
         let mut n = 0;
         let mut y = Vec::<String>::new();

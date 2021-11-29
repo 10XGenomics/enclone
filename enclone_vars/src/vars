@@ -2398,6 +2398,19 @@ avail:    public
 notes:
 code:     exact: ex.share[mid].vs_notesx.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     npe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    # of clonotype cells within PCA distance n of this cell
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nval
 inputs:   cvar_vdj
 limits:
@@ -2499,6 +2512,32 @@ code:     let mut origins = Vec::<String>::new();
           unique_sort(&mut origins);
           cell: origins_unsorted
           exact: format!("{}", origins.iter().format(","))
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     pe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    PCA equivalence class at distance ≤ n
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ppe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    % of gex cells within PCA dist n of this cell that are in this clonotype
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     q{0..}_
 inputs:   cvar_vdj
