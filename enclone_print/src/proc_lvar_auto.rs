@@ -89,6 +89,43 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), Vec::new(), "clono".to_string())
+    } else if var == "clust" {
+        let mut clust = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            let mut cid = 0;
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cluster[li].contains_key(&bc.clone()) {
+                cid = gex_info.cluster[li][&bc.clone()];
+            }
+            clust.push(cid);
+        }
+        let mut clustf = Vec::<String>::new();
+        for x in clust.iter() {
+            clustf.push(format!("{}", x));
+        }
+        clust.sort_unstable();
+
+        (abbrev_list(&clust), clustf, "cell-exact".to_string())
+    } else if var == "clust_cell" {
+        let mut clust = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            let mut cid = 0;
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cluster[li].contains_key(&bc.clone()) {
+                cid = gex_info.cluster[li][&bc.clone()];
+            }
+            clust.push(cid);
+        }
+        let mut clustf = Vec::<String>::new();
+        for x in clust.iter() {
+            clustf.push(format!("{}", x));
+        }
+        clust.sort_unstable();
+
+        let _exact = abbrev_list(&clust);
+        (String::new(), clustf, "cell-exact".to_string())
     } else if var == "cred" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {

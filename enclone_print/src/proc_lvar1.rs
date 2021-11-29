@@ -187,24 +187,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "clust" {
-        let mut clust = Vec::<usize>::new();
-        for j in 0..ex.clones.len() {
-            let mut cid = 0;
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if gex_info.cluster[li].contains_key(&bc.clone()) {
-                cid = gex_info.cluster[li][&bc.clone()];
-            }
-            clust.push(cid);
-        }
-        let mut clustf = Vec::<String>::new();
-        for x in clust.iter() {
-            clustf.push(format!("{}", x));
-        }
-        clust.sort_unstable();
-        lvar_stats![i, x, abbrev_list(&clust), clustf];
-    } else if x == "n_other" {
+    if x == "n_other" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
