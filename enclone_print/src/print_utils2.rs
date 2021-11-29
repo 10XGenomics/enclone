@@ -135,7 +135,7 @@ pub fn row_fill(
     }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
-    // n_gex_cell, n_gex, entropy.
+    // n_gex_cell, n_gex.
 
     let mut dataset_indices = Vec::<usize>::new();
     for l in 0..ex.clones.len() {
@@ -152,7 +152,6 @@ pub fn row_fill(
     let mut gex_fcounts_unsorted = Vec::<f64>::new();
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
-    let mut total_counts = Vec::<usize>::new();
 
     // It may not make any sense at all for this code to be here.
 
@@ -200,63 +199,8 @@ pub fn row_fill(
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
 
-    let have_entropy = lvarsh.contains(&"entropy".to_string());
-    // Isn't this duplicating code with the next section?
-    if have_entropy {
-        for l in 0..ex.clones.len() {
-            let li = ex.clones[l][0].dataset_index;
-            let bc = ex.clones[l][0].barcode.clone();
-            if !gex_info.gex_barcodes.is_empty() {
-                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                if p >= 0 {
-                    let mut raw_count = 0;
-                    if gex_info.gex_matrices[li].initialized() {
-                        let row = gex_info.gex_matrices[li].row(p as usize);
-                        for j in 0..row.len() {
-                            let f = row[j].0;
-                            let n = row[j].1;
-                            if gex_info.is_gex[li][f] {
-                                raw_count += n;
-                            }
-                        }
-                    } else {
-                        let z1 = gex_info.h5_indptr[li][p as usize] as usize;
-                        let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                        let d: Vec<u32>;
-                        let ind: Vec<u32>;
-                        if ctl.gen_opt.h5_pre {
-                            d = h5_data[li].1[z1..z2].to_vec();
-                            ind = h5_data[li].2[z1..z2].to_vec();
-                        } else {
-                            d = d_readers[li]
-                                .as_ref()
-                                .unwrap()
-                                .read_slice(s![z1..z2])
-                                .unwrap()
-                                .to_vec();
-                            ind = ind_readers[li]
-                                .as_ref()
-                                .unwrap()
-                                .read_slice(s![z1..z2])
-                                .unwrap()
-                                .to_vec();
-                        }
-                        for j in 0..d.len() {
-                            if gex_info.is_gex[li][ind[j] as usize] {
-                                raw_count += d[j] as usize;
-                            }
-                        }
-                        d_all[l] = d;
-                        ind_all[l] = ind;
-                    }
-                    total_counts.push(raw_count);
-                }
-            }
-        }
-    }
-    let mut entropies = Vec::<f64>::new();
     let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
-    if have_entropy || need_gex {
+    if need_gex {
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
             let bc = ex.clones[l][0].barcode.clone();
@@ -269,7 +213,6 @@ pub fn row_fill(
                 }
                 let mut count = 0;
                 let mut fcount = 0.0;
-                let mut entropy = 0.0;
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
                     let mut raw_count = 0;
@@ -279,10 +222,6 @@ pub fn row_fill(
                             let f = row[j].0;
                             let n = row[j].1;
                             if gex_info.is_gex[li][f] {
-                                if have_entropy {
-                                    let q = n as f64 / total_counts[l] as f64;
-                                    entropy -= q * q.log2();
-                                }
                                 raw_count += n;
                             }
                         }
@@ -311,10 +250,6 @@ pub fn row_fill(
                         for j in 0..d.len() {
                             if gex_info.is_gex[li][ind[j] as usize] {
                                 let n = d[j] as usize;
-                                if lvarsh.contains(&"entropy".to_string()) {
-                                    let q = n as f64 / total_counts[l] as f64;
-                                    entropy -= q * q.log2();
-                                }
                                 raw_count += n;
                             }
                         }
@@ -331,7 +266,6 @@ pub fn row_fill(
                 }
                 counts.push(count);
                 gex_fcounts_unsorted.push(fcount);
-                entropies.push(entropy);
             }
         }
         gex_counts_unsorted = counts.clone();
@@ -348,12 +282,6 @@ pub fn row_fill(
             gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
             gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
         }
-    }
-    let entropies_unsorted = entropies.clone();
-    entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    let mut entropy = 0.0;
-    if !entropies.is_empty() {
-        entropy = median_f64(&entropies);
     }
 
     // Output lead variable columns.
@@ -546,8 +474,6 @@ pub fn row_fill(
                 gex_sum,
                 gex_median,
                 &gex_counts_unsorted,
-                entropy,
-                &entropies_unsorted,
                 &gex_fcounts_unsorted,
                 extra_args,
             ) {
@@ -576,8 +502,6 @@ pub fn row_fill(
                     gex_sum,
                     gex_median,
                     &gex_counts_unsorted,
-                    entropy,
-                    &entropies_unsorted,
                     &gex_fcounts_unsorted,
                     extra_args,
                 );

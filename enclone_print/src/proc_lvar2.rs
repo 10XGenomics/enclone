@@ -71,8 +71,6 @@ pub fn proc_lvar2(
     gex_sum: f64,
     _gex_median: usize,
     _gex_counts_unsorted: &Vec<usize>,
-    _entropy: f64,
-    _entropies_unsorted: &Vec<f64>,
     gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
