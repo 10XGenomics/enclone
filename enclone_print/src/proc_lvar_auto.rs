@@ -40,6 +40,7 @@ pub fn proc_lvar_auto(
     vdj_cells: &Vec<Vec<String>>,
     gex_info: &GexInfo,
     groups: &HashMap<usize, Vec<usize>>,
+    mults: &Vec<usize>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -225,7 +226,6 @@ pub fn proc_lvar_auto(
         (String::new(), donors_unsorted, "cell-exact".to_string())
     } else if var == "dref" {
         let mut diffs = 0;
-
         for m in 0..cols {
             if mat[m][u].is_some() {
                 let r = mat[m][u].unwrap();
@@ -507,6 +507,15 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), y, "cell-exact".to_string())
+    } else if var == "n" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        (format!("{}", mults[u]), counts, "cell-exact".to_string())
+    } else if var == "n_cell" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        let _exact = format!("{}", mults[u]);
+        (String::new(), counts, "cell-exact".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),

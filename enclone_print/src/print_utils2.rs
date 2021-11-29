@@ -512,6 +512,7 @@ pub fn row_fill(
             vdj_cells,
             gex_info,
             groups,
+            mults,
         )? {
             if !proc_lvar1(
                 i,

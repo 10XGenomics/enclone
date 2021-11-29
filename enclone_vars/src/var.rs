@@ -99,7 +99,7 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
         // Weird fix to code.
         let mut code = g[11].clone();
         if code.contains(';') {
-            code = format!("{};\n{}", code.before(";"), code.after(";"));
+            code = format!("{};\n{}", code.rev_before(";"), code.rev_after(";"));
         }
         vars.push(Variable {
             name: g[0].clone(),

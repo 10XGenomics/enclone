@@ -50,7 +50,7 @@ pub fn proc_lvar1(
     u: usize,
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
-    mults: &Vec<usize>,
+    _mults: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     gex_info: &GexInfo,
     row: &mut Vec<String>,
@@ -187,10 +187,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "n" {
-        let counts = vec!["1.0".to_string(); mults[u]];
-        lvar_stats![i, x, format!("{}", mults[u]), counts];
-    } else if x == "clust" {
+    if x == "clust" {
         let mut clust = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             let mut cid = 0;
