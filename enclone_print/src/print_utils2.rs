@@ -150,7 +150,6 @@ pub fn row_fill(
     let mut counts = Vec::<usize>::new();
     let mut gex_counts_unsorted = Vec::<usize>::new();
     let mut gex_fcounts_unsorted = Vec::<f64>::new();
-    let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
 
     // It may not make any sense at all for this code to be here.
@@ -206,7 +205,6 @@ pub fn row_fill(
             let bc = ex.clones[l][0].barcode.clone();
             if !gex_info.gex_barcodes.is_empty() {
                 if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
-                    n_gex += 1;
                     n_gexs.push(1);
                 } else {
                     n_gexs.push(0);
@@ -463,17 +461,13 @@ pub fn row_fill(
                 d_all,
                 ind_all,
                 stats,
-                nd_fields,
                 &lvars,
                 &alt_bcs,
-                n_gex,
-                &n_gexs,
                 gex_min,
                 gex_max,
                 gex_mean,
                 gex_sum,
                 gex_median,
-                &gex_counts_unsorted,
                 &gex_fcounts_unsorted,
                 extra_args,
             ) {
@@ -491,17 +485,13 @@ pub fn row_fill(
                     d_all,
                     ind_all,
                     stats,
-                    nd_fields,
                     &lvars,
                     &alt_bcs,
-                    n_gex,
-                    &n_gexs,
                     gex_min,
                     gex_max,
                     gex_mean,
                     gex_sum,
                     gex_median,
-                    &gex_counts_unsorted,
                     &gex_fcounts_unsorted,
                     extra_args,
                 );
