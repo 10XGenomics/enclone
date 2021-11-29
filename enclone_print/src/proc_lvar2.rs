@@ -65,12 +65,12 @@ pub fn proc_lvar2(
     _alt_bcs: &Vec<String>,
     n_gex: usize,
     n_gexs: &Vec<usize>,
-    gex_min: usize,
-    gex_max: usize,
+    _gex_min: usize,
+    _gex_max: usize,
     gex_mean: f64,
     gex_sum: f64,
     gex_median: usize,
-    count_unsorted: &Vec<usize>,
+    gex_count_unsorted: &Vec<usize>,
     entropy: f64,
     entropies_unsorted: &Vec<f64>,
     fcounts: &Vec<f64>,
@@ -362,7 +362,11 @@ pub fn proc_lvar2(
         lvar_stats![i, x, format!("{}", gex_median), f];
     } else if x == "gex_cell" {
         if pass == 2 {
-            speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
+            speak!(
+                u,
+                x,
+                format!("{}", gex_count_unsorted.iter().format(POUT_SEP))
+            );
         }
     } else if x == "n_gex" {
         let mut n = Vec::<String>::new();
@@ -393,10 +397,6 @@ pub fn proc_lvar2(
             e.push(format!("{:.2}", x));
         }
         speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
-    } else if x == "gex_min" {
-        lvar_stats1![i, x, format!("{}", gex_min)];
-    } else if x == "gex_max" {
-        lvar_stats1![i, x, format!("{}", gex_max)];
     } else if x == "gex_μ" {
         lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
     } else if x == "gex_Σ" {

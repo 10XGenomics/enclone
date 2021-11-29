@@ -148,7 +148,7 @@ pub fn row_fill(
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
-    let mut count_unsorted = Vec::<usize>::new();
+    let mut gex_count_unsorted = Vec::<usize>::new();
     let mut fcounts = Vec::<f64>::new();
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
@@ -334,7 +334,7 @@ pub fn row_fill(
                 entropies.push(entropy);
             }
         }
-        count_unsorted = counts.clone();
+        gex_count_unsorted = counts.clone();
         counts.sort_unstable();
         for n in counts.iter() {
             if *n < 100 {
@@ -514,6 +514,7 @@ pub fn row_fill(
             groups,
             mults,
             nd_fields,
+            &gex_count_unsorted,
         )? {
             if !proc_lvar1(
                 i,
@@ -539,7 +540,7 @@ pub fn row_fill(
                 gex_mean,
                 gex_sum,
                 gex_median,
-                &count_unsorted,
+                &gex_count_unsorted,
                 entropy,
                 &entropies_unsorted,
                 &fcounts,
@@ -569,7 +570,7 @@ pub fn row_fill(
                     gex_mean,
                     gex_sum,
                     gex_median,
-                    &count_unsorted,
+                    &gex_count_unsorted,
                     entropy,
                     &entropies_unsorted,
                     &fcounts,

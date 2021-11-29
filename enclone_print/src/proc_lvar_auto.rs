@@ -42,6 +42,7 @@ pub fn proc_lvar_auto(
     groups: &HashMap<usize, Vec<usize>>,
     mults: &Vec<usize>,
     nd_fields: &Vec<String>,
+    gex_count_unsorted: &Vec<usize>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -425,6 +426,18 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), fates, "cell".to_string())
+    } else if var == "gex_max" {
+        (
+            format!("{}", gex_count_unsorted.iter().max().unwrap()),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_min" {
+        (
+            format!("{}", gex_count_unsorted.iter().min().unwrap()),
+            Vec::new(),
+            "exact".to_string(),
+        )
     } else if var.starts_with("g")
         && var.ends_with("")
         && var.between2("g", "").parse::<i64>().is_ok()

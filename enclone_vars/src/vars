@@ -1814,7 +1814,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_max
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1824,7 +1824,7 @@ brief:    maximum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", gex_count_unsorted.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_mean
 inputs:   ?
@@ -1840,7 +1840,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_min
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1850,7 +1850,7 @@ brief:    minimum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", gex_count_unsorted.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_sum
 inputs:   ?

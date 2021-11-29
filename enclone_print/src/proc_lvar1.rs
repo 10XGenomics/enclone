@@ -67,7 +67,7 @@ pub fn proc_lvar1(
     _gex_mean: f64,
     _gex_sum: f64,
     _gex_median: usize,
-    _count_unsorted: &Vec<usize>,
+    _gex_count_unsorted: &Vec<usize>,
     _entropy: f64,
     _entropies_unsorted: &Vec<f64>,
     _fcounts: &Vec<f64>,
