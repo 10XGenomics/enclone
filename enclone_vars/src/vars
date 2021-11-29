@@ -1824,7 +1824,7 @@ brief:    maximum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:     exact: format!("{}", gex_count_unsorted.iter().max().unwrap())
+code:     exact: format!("{}", gex_counts_unsorted.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_mean
 inputs:   ?
@@ -1850,7 +1850,7 @@ brief:    minimum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:     exact: format!("{}", gex_count_unsorted.iter().min().unwrap())
+code:     exact: format!("{}", gex_counts_unsorted.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_sum
 inputs:   ?

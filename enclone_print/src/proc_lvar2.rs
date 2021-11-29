@@ -70,7 +70,7 @@ pub fn proc_lvar2(
     gex_mean: f64,
     gex_sum: f64,
     gex_median: usize,
-    gex_count_unsorted: &Vec<usize>,
+    gex_counts_unsorted: &Vec<usize>,
     entropy: f64,
     entropies_unsorted: &Vec<f64>,
     fcounts: &Vec<f64>,
@@ -365,7 +365,7 @@ pub fn proc_lvar2(
             speak!(
                 u,
                 x,
-                format!("{}", gex_count_unsorted.iter().format(POUT_SEP))
+                format!("{}", gex_counts_unsorted.iter().format(POUT_SEP))
             );
         }
     } else if x == "n_gex" {
