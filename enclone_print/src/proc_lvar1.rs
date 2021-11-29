@@ -59,11 +59,8 @@ pub fn proc_lvar1(
     stats: &mut Vec<(String, Vec<String>)>,
     lvars: &Vec<String>,
     alt_bcs: &Vec<String>,
-    _gex_min: usize,
-    _gex_max: usize,
     _gex_mean: f64,
     _gex_sum: f64,
-    _gex_median: usize,
     _gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {

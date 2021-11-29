@@ -11,7 +11,7 @@ use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
 use enclone_core::allowed_vars::LVARS_ALLOWED;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
-use enclone_core::median::{median_f64, rounded_median};
+use enclone_core::median::median_f64;
 use enclone_proto::types::DonorReferenceItem;
 use enclone_vars::decode_arith;
 use expr_tools::*;
@@ -134,7 +134,7 @@ pub fn row_fill(
         eprintln!();
     }
 
-    // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
+    // Compute dataset indices, gex, gex_mean, gex_sum,
     // n_gex_cell, n_gex.
 
     let mut dataset_indices = Vec::<usize>::new();
@@ -198,7 +198,7 @@ pub fn row_fill(
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
 
-    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
+    let (mut gex_mean, mut gex_sum) = (0.0, 0.0);
     if need_gex {
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -274,9 +274,6 @@ pub fn row_fill(
             }
         }
         if !counts.is_empty() {
-            gex_median = rounded_median(&counts);
-            gex_min = counts[0];
-            gex_max = counts[counts.len() - 1];
             gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
             gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
         }
@@ -463,11 +460,8 @@ pub fn row_fill(
                 stats,
                 &lvars,
                 &alt_bcs,
-                gex_min,
-                gex_max,
                 gex_mean,
                 gex_sum,
-                gex_median,
                 &gex_fcounts_unsorted,
                 extra_args,
             ) {
@@ -487,11 +481,8 @@ pub fn row_fill(
                     stats,
                     &lvars,
                     &alt_bcs,
-                    gex_min,
-                    gex_max,
                     gex_mean,
                     gex_sum,
-                    gex_median,
                     &gex_fcounts_unsorted,
                     extra_args,
                 );
