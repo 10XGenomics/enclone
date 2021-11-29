@@ -35,7 +35,7 @@ enclone_vars = { path = "../enclone_vars" }
 equiv = "0.1"
 evalexpr = "6"
 expr_tools = "0.1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "lh/conda-static", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"

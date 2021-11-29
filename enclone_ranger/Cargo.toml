@@ -26,7 +26,7 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_stuff = { path = "../enclone_stuff" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1336b7cf8f8e7738799548bb418ae5c73a6cbf01", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "lh/conda-static", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
 rayon = "1"

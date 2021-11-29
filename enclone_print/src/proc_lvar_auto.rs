@@ -40,6 +40,8 @@ pub fn proc_lvar_auto(
     vdj_cells: &Vec<Vec<String>>,
     gex_info: &GexInfo,
     groups: &HashMap<usize, Vec<usize>>,
+    mults: &Vec<usize>,
+    nd_fields: &Vec<String>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -88,6 +90,24 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), Vec::new(), "clono".to_string())
+    } else if var == "clust" {
+        let mut clust = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            let mut cid = 0;
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cluster[li].contains_key(&bc.clone()) {
+                cid = gex_info.cluster[li][&bc.clone()];
+            }
+            clust.push(cid);
+        }
+        let mut clustf = Vec::<String>::new();
+        for x in clust.iter() {
+            clustf.push(format!("{}", x));
+        }
+        clust.sort_unstable();
+
+        (abbrev_list(&clust), clustf, "cell-exect".to_string())
     } else if var == "cred" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {
@@ -225,7 +245,6 @@ pub fn proc_lvar_auto(
         (String::new(), donors_unsorted, "cell-exact".to_string())
     } else if var == "dref" {
         let mut diffs = 0;
-
         for m in 0..cols {
             if mat[m][u].is_some() {
                 let r = mat[m][u].unwrap();
@@ -507,6 +526,93 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), y, "cell-exact".to_string())
+    } else if var == "n" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        (format!("{}", mults[u]), counts, "cell-exact".to_string())
+    } else if var == "n_cell" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        let _exact = format!("{}", mults[u]);
+        (String::new(), counts, "cell-exact".to_string())
+    } else if var == "n_b" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
+                }
+            }
+        }
+
+        (format!("{}", n_b), ns, "cell-exact".to_string())
+    } else if var == "n_b_cell" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
+                }
+            }
+        }
+
+        let _exact = format!("{}", n_b);
+        (String::new(), ns, "cell-exact".to_string())
+    } else if var == "n_other" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        (format!("{}", n), ns, "cell-exact".to_string())
+    } else if var == "n_other_cell" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (String::new(), ns, "cell-exact".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),
@@ -613,6 +719,21 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), y, "cell-exact".to_string())
+    } else if var == "type" {
+        let mut cell_types = Vec::<String>::new(); /*
+                                                   for j in 0..ex.clones.len() {
+                                                       let mut cell_type = "".to_string();
+                                                       let bc = &ex.clones[j][0].barcode;
+                                                       let li = ex.clones[j][0].dataset_index;
+                                                       if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                                           cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+                                                       }
+                                                       cell_types.push(cell_type);
+                                                   }
+                                                   */
+        cell_types.sort();
+
+        (abbrev_list(&cell_types), Vec::new(), "exact".to_string())
     } else {
         (
             "$UNDEFINED".to_string(),

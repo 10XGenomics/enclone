@@ -805,6 +805,35 @@ code:     let mut n = 0;
           }
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     clust
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell-exect
+val:      positive_integer
+doc:      TBD
+brief:    cluster id
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut clust = Vec::<usize>::new();
+          for j in 0..ex.clones.len() {
+              let mut cid = 0;
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if gex_info.cluster[li].contains_key(&bc.clone()) {
+                  cid = gex_info.cluster[li][&bc.clone()];
+              }
+              clust.push(cid);
+          }
+          let mut clustf = Vec::<String>::new();
+          for x in clust.iter() {
+              clustf.push(format!("{}", x));
+          }
+          clust.sort_unstable();
+          cell: clustf
+          exact: abbrev_list(&clust)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     comp
 inputs:   cvar_vdj
 limits:
@@ -2089,7 +2118,7 @@ code:     let mut n = 0;
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n
-inputs:   ?
+inputs:   lvar_vdj
 limits:   <code>PER_CELL</code> values are not displayed because they are all <code>1</code>, 
           which would be distracting; also there is no <code>_cell</code> version
 class:    lvar
@@ -2100,7 +2129,9 @@ brief:    number of cells
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let counts = vec!["1.0".to_string(); mults[u]];
+          cell: counts
+          exact: format!("{}", mults[u])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_NAME
 inputs:   ?
@@ -2115,6 +2146,34 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_b
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of B cells
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut n_b = 0;
+          let mut ns = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                  if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                      n_b += 1;
+                      ns.push("1.0".to_string());
+                  } else {
+                      ns.push("0.0".to_string());
+                  }
+              }
+          }
+          cell: ns
+          exact: format!("{}", n_b)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_gex
 inputs:   ?
@@ -2141,6 +2200,38 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     n_other
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    when using nd<k>, the number of cells assigned to another dataset
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut n = 0;
+          let mut ns = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let mut found = false;
+              let di = ex.clones[j][0].dataset_index;
+              let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+              for i in 0..nd_fields.len() {
+                  if f == nd_fields[i] {
+                      found = true;
+                  }
+              }
+              if !found {
+                  n += 1;
+                  ns.push("1.0".to_string());
+              } else {
+                  ns.push("0.0".to_string());
+              }
+          }
+          cell: ns
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains
 inputs:   lvar_vdj
@@ -2606,6 +2697,32 @@ page:     enclone help parseable
 avail:    public
 notes:
 code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     type
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      string
+doc:      TBD
+brief:    cell type
+page:     UNDOCUMENTED
+avail:    public
+notes:
+code:     let mut cell_types = Vec::<String>::new();
+          /*
+          for j in 0..ex.clones.len() {
+              let mut cell_type = "".to_string();
+              let bc = &ex.clones[j][0].barcode;
+              let li = ex.clones[j][0].dataset_index;
+              if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                  cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+              }       
+              cell_types.push(cell_type);
+          }       
+          */          
+          cell_types.sort();
+          exact: abbrev_list(&cell_types)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     u
 inputs:   cvar_vdj
