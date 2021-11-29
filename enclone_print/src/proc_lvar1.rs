@@ -98,20 +98,6 @@ pub fn proc_lvar1(
     // Set up lead variable macros.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
 
-    macro_rules! lvar {
-        ($i: expr, $var:expr, $val:expr) => {
-            if verbose {
-                eprint!("lvar {} ==> {}; ", $var, $val);
-                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-            }
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-        };
-    }
     macro_rules! lvar_stats1 {
         ($i: expr, $var:expr, $val:expr) => {
             if verbose {
@@ -183,15 +169,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "mark" {
-        let mut n = 0;
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].marked {
-                n += 1;
-            }
-        }
-        lvar![i, x, format!("{}", n)];
-    } else if x.starts_with("pe") {
+    if x.starts_with("pe") {
         lvar_stats1![i, x, format!("")];
     } else if x.starts_with("npe") {
         lvar_stats1![i, x, format!("")];

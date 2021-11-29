@@ -2089,6 +2089,25 @@ code:     let mut s = String::new();
           }
           exact: s
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     mark
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative integer
+doc:      TBD
+brief:    is cell marked
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut n = 0;
+          for j in 0..ex.clones.len() {
+              if ex.clones[j][0].marked {
+                  n += 1;
+              }
+          }
+          exact: format!("{}", n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mem
 inputs:   lvar_vdj
 limits:

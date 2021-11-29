@@ -491,6 +491,15 @@ pub fn proc_lvar_auto(
         }
 
         (s, Vec::new(), "exact".to_string())
+    } else if var == "mark" {
+        let mut n = 0;
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].marked {
+                n += 1;
+            }
+        }
+
+        (format!("{}", n), Vec::new(), "exact".to_string())
     } else if var == "mem" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
