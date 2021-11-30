@@ -76,9 +76,16 @@ mkdir -p enclone_exec/testx/outputs
 # run rustfmt
 
 echo "formatting"
-cargo fmt --all
-if ( $status != 0 ) then
-    exit 1
+if (`where rustfmt_del` == "") then
+    cargo fmt --all
+    if ( $status != 0 ) then
+        exit 1
+    endif
+else
+    rustfmt_del
+    if ( $status != 0 ) then
+        exit 1
+    endif
 endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
