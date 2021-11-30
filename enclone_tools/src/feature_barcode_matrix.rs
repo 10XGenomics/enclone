@@ -418,7 +418,7 @@ pub fn feature_barcode_matrix(
 
         // Build data structure for the degenerate reads.
     
-        if pass == 2 {
+        if pass == 1 {
             println!("parallel sorting");
             degen.par_sort();
             println!("build data structure for degenerate reads");
