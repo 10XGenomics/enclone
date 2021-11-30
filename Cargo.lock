@@ -1298,7 +1298,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "pretty_trace",
  "rayon",
  "regex",
@@ -2411,7 +2411,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "vector_utils",
 ]
 
@@ -2619,7 +2619,7 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "vector_utils",
 ]
 
@@ -5291,7 +5291,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#0a05d3d4815cd4c58f60111eaa9e7e891e6e2c38"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3291629be47fd99b9c4169023d6d7552113b4b28#3291629be47fd99b9c4169023d6d7552113b4b28"
 dependencies = [
  "align_tools",
  "amino",
@@ -5335,7 +5335,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/new-gamma-delta-support#0a05d3d4815cd4c58f60111eaa9e7e891e6e2c38"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3291629be47fd99b9c4169023d6d7552113b4b28#3291629be47fd99b9c4169023d6d7552113b4b28"
 dependencies = [
  "debruijn",
  "exons",
