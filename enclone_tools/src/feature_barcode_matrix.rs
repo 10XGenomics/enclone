@@ -10,6 +10,7 @@
 //
 // Also compute several other statistical entities.
 
+use chrono::prelude::*;
 use enclone_core::defs::get_config;
 use enclone_core::fetch_url;
 use flate2::read::MultiGzDecoder;
@@ -307,7 +308,17 @@ pub fn feature_barcode_matrix(
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
     for (i, rf) in read_files.iter().enumerate() {
-        println!("- processing dataset {} of {}", i + 1, read_files.len());
+        let local: DateTime<Local> = Local::now();
+        let local = format!("{:?}", local);
+        let time = local.after("T");
+        println!(
+            "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
+            time,
+            i + 1,
+            read_files.len(),
+            buf.len(),
+            degen.len()
+        );
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
@@ -585,6 +596,7 @@ pub fn feature_barcode_matrix(
         }
         i = j;
     }
+    drop(buf);
     bfu.par_sort();
 
     // Make table of all barcodes, and for each, the number of reference and nonreference UMIs.
