@@ -50,5 +50,9 @@ serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
 tables = "0.1"
+<<<<<<< HEAD
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "da3d903f24decd329e51f820faa1176caf0e944b" }
+=======
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3291629be47fd99b9c4169023d6d7552113b4b28" }
+>>>>>>> 51775b8a (updating vdj_ann to use merged git hash)
 vector_utils = "0.1"
