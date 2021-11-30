@@ -306,7 +306,8 @@ pub fn feature_barcode_matrix(
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-    for rf in read_files.iter() {
+    for (i, rf) in read_files.iter().enumerate() {
+        println!("- processing dataset {} of {}", i + 1, read_files.len());
         let f = format!("{}/{}", seq_def.read_path, rf);
         let gz = MultiGzDecoder::new(File::open(&f).unwrap());
         let b = BufReader::new(gz);
