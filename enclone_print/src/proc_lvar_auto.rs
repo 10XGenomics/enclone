@@ -944,6 +944,27 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), ns, "cell-exact".to_string())
+    } else if var == "nbc" {
+        let mut nbc = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = ex.clones[j][0].barcode.before("-").as_bytes();
+            let mut n = 0 as u64;
+            for k in 0..bc.len() {
+                if k > 0 {
+                    n *= 4;
+                }
+                if bc[k] == b'C' {
+                    n += 1;
+                } else if bc[k] == b'G' {
+                    n += 2;
+                } else if bc[k] == b'T' {
+                    n += 3;
+                }
+            }
+            nbc.push(format!("{:010}", n));
+        }
+
+        (String::new(), nbc, "cell".to_string())
     } else if var == "nchains" {
         (
             format!("{}", rsi.mat.len()),
