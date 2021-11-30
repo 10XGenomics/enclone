@@ -306,156 +306,162 @@ pub fn feature_barcode_matrix(
 
     println!("start parsing reads for {}", id);
     let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
-    let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-    for (i, rf) in read_files.iter().enumerate() {
-        let local: DateTime<Local> = Local::now();
-        let local = format!("{:?}", local);
-        let time = local.between("T", ".");
-        println!(
-            "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
-            time,
-            i + 1,
-            read_files.len(),
-            buf.len(),
-            degen.len()
-        );
-        let f = format!("{}/{}", seq_def.read_path, rf);
-        let gz = MultiGzDecoder::new(File::open(&f).unwrap());
-        let b = BufReader::new(gz);
-
-        // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
-        // and line 6 is the read that contains the feature barcode.
-
-        let mut count = 0;
-        let mut barcode = Vec::<u8>::new();
-        let mut umi = Vec::<u8>::new();
-        let mut read1 = Vec::<u8>::new();
-        let mut fb;
-        for line in b.lines() {
-            count += 1;
-            if count % 8 == 2 || count % 8 == 6 {
-                let s = line.unwrap();
-                let s = s.as_bytes();
-                if count % 8 == 2 {
-                    if s.len() < 28 {
-                        return Err(format!(
-                            "\nencountered read of length {} < 28 in {}\n",
-                            s.len(),
-                            f
-                        ));
-                    }
-                    assert!(s.len() >= 28);
-                    barcode = s[0..16].to_vec();
-                    umi = s[16..28].to_vec();
-                    read1 = s.to_vec();
-                } else {
-                    fb = s[10..25].to_vec();
-                    let mut degenerate = true;
-                    for i in 0..10 {
-                        if s[i] != b'G' {
-                            degenerate = false;
-                            break;
+    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
+    let (mut ncanonical, mut nsemicanonical) = (0, 0);
+    let mut ndegen = 0;
+    for pass in 1..=2 {
+        let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
+        println!("megapass {}", pass);
+        for (i, rf) in read_files.iter().enumerate() {
+            let local: DateTime<Local> = Local::now();
+            let local = format!("{:?}", local);
+            let time = local.between("T", ".");
+            println!(
+                "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
+                time,
+                i + 1,
+                read_files.len(),
+                buf.len(),
+                degen.len()
+            );
+            let f = format!("{}/{}", seq_def.read_path, rf);
+            let gz = MultiGzDecoder::new(File::open(&f).unwrap());
+            let b = BufReader::new(gz);
+    
+            // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
+            // and line 6 is the read that contains the feature barcode.
+    
+            let mut count = 0;
+            let mut barcode = Vec::<u8>::new();
+            let mut umi = Vec::<u8>::new();
+            let mut read1 = Vec::<u8>::new();
+            let mut fb;
+            for line in b.lines() {
+                count += 1;
+                if count % 8 == 2 || count % 8 == 6 {
+                    let s = line.unwrap();
+                    let s = s.as_bytes();
+                    if count % 8 == 2 {
+                        if s.len() < 28 {
+                            return Err(format!(
+                                "\nencountered read of length {} < 28 in {}\n",
+                                s.len(),
+                                f
+                            ));
                         }
-                    }
-
-                    // Save.
-
-                    if verbosity == 2 {
-                        let (mut is_canonical, mut is_semicanonical) = (false, false);
-                        if degenerate {
-                            for j in 0..=read1.len() - canonical.len() {
-                                if read1[j..j + canonical.len()] == canonical {
-                                    is_canonical = true;
-                                    break;
-                                }
+                        assert!(s.len() >= 28);
+                        barcode = s[0..16].to_vec();
+                        umi = s[16..28].to_vec();
+                        read1 = s.to_vec();
+                    } else {
+                        fb = s[10..25].to_vec();
+                        let mut degenerate = true;
+                        for i in 0..10 {
+                            if s[i] != b'G' {
+                                degenerate = false;
+                                break;
                             }
                         }
-                        if degenerate && !is_canonical {
-                            for i in 0..18 {
-                                let mut w = true;
-                                for j in 0..10 {
-                                    if read1[i + j] != canonical[j] {
-                                        w = false;
+    
+                        // Save.
+    
+                        if verbosity == 2 {
+                            let (mut is_canonical, mut is_semicanonical) = (false, false);
+                            if degenerate {
+                                for j in 0..=read1.len() - canonical.len() {
+                                    if read1[j..j + canonical.len()] == canonical {
+                                        is_canonical = true;
                                         break;
                                     }
                                 }
-                                if w {
-                                    is_semicanonical = true;
-                                    break;
+                            }
+                            if degenerate && !is_canonical {
+                                for i in 0..18 {
+                                    let mut w = true;
+                                    for j in 0..10 {
+                                        if read1[i + j] != canonical[j] {
+                                            w = false;
+                                            break;
+                                        }
+                                    }
+                                    if w {
+                                        is_semicanonical = true;
+                                        break;
+                                    }
                                 }
                             }
+                            print!(
+                                "r: {} {} {} {} {} {}",
+                                strme(&barcode),
+                                strme(&umi),
+                                strme(&s[0..10]),
+                                strme(&fb),
+                                strme(&s[25..35]),
+                                strme(&s[35..55]),
+                            );
+                            if is_canonical {
+                                print!(" = canon");
+                            } else if is_semicanonical {
+                                print!(" = semi");
+                            }
+                            println!("");
                         }
-                        print!(
-                            "r: {} {} {} {} {} {}",
-                            strme(&barcode),
-                            strme(&umi),
-                            strme(&s[0..10]),
-                            strme(&fb),
-                            strme(&s[25..35]),
-                            strme(&s[35..55]),
-                        );
-                        if is_canonical {
-                            print!(" = canon");
-                        } else if is_semicanonical {
-                            print!(" = semi");
+                        if degenerate && pass == 1 {
+                            degen.push((barcode.clone(), umi.clone()));
+                        } else if pass == 2 {
+                            buf.push((barcode.clone(), umi.clone(), fb.clone()));
                         }
-                        println!("");
-                    }
-                    if degenerate {
-                        degen.push((barcode.clone(), umi.clone()));
-                    } else {
-                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
                     }
                 }
             }
         }
-    }
 
-    // Build data structure for the degenerate reads.
-
-    println!("parallel sorting");
-    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
-    degen.par_sort();
-    println!("build data structure for degenerate reads");
-    let (mut ncanonical, mut nsemicanonical) = (0, 0);
-    let mut i = 0;
-    while i < degen.len() {
-        let j = next_diff1_2(&degen, i as i32) as usize;
-        let (mut canon, mut semi) = (0, 0);
-        for k in i..j {
-            let mut read1 = degen[k].0.clone();
-            read1.append(&mut degen[k].1.clone());
-            let mut is_canonical = false;
-            for j in 0..=read1.len() - canonical.len() {
-                if read1[j..j + canonical.len()] == canonical {
-                    is_canonical = true;
-                    canon += 1;
-                    ncanonical += 1;
-                    break;
-                }
-            }
-            if !is_canonical {
-                for i in 0..18 {
-                    let mut w = true;
-                    for j in 0..10 {
-                        if read1[i + j] != canonical[j] {
-                            w = false;
+        // Build data structure for the degenerate reads.
+    
+        if pass == 2 {
+            println!("parallel sorting");
+            degen.par_sort();
+            println!("build data structure for degenerate reads");
+            let mut i = 0;
+            while i < degen.len() {
+                let j = next_diff1_2(&degen, i as i32) as usize;
+                let (mut canon, mut semi) = (0, 0);
+                for k in i..j {
+                    let mut read1 = degen[k].0.clone();
+                    read1.append(&mut degen[k].1.clone());
+                    let mut is_canonical = false;
+                    for j in 0..=read1.len() - canonical.len() {
+                        if read1[j..j + canonical.len()] == canonical {
+                            is_canonical = true;
+                            canon += 1;
+                            ncanonical += 1;
                             break;
                         }
                     }
-                    if w {
-                        semi += 1;
-                        nsemicanonical += 1;
-                        break;
+                    if !is_canonical {
+                        for i in 0..18 {
+                            let mut w = true;
+                            for j in 0..10 {
+                                if read1[i + j] != canonical[j] {
+                                    w = false;
+                                    break;
+                                }
+                            }
+                            if w {
+                                semi += 1;
+                                nsemicanonical += 1;
+                                break;
+                            }
+                        }
                     }
                 }
+                bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
+                i = j;
             }
+            ndegen = degen.len();
+            drop(degen);
         }
-        bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
-        i = j;
     }
-    let ndegen = degen.len();
-    drop(degen);
 
     // Print summary stats.
 
