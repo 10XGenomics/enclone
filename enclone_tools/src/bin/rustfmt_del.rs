@@ -26,15 +26,25 @@ fn main() {
             }
         }
     }
-    paths.par_iter_mut().for_each(|path| {
+    let mut groups = Vec::<Vec<String>>::new();
+    let batch = 10;
+    for i in (0..paths.len()).step_by(batch) {
+        let j = std::cmp::min(i + batch, paths.len());
+        let mut batch = Vec::<String>::new();
+        for k in i..j {
+            batch.push(paths[k].clone());
+        }
+        groups.push(batch);
+    }
+    groups.par_iter_mut().for_each(|group| {
         let new = Command::new("rustfmt")
             .arg("--edition")
             .arg("2018")
-            .arg(&path)
+            .args(&*group)
             .output()
             .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt"));
         if new.status.code() != Some(0) {
-            eprintln!("\nrustfmt of {} failed", path);
+            eprintln!("\nrustfmt failed");
             std::process::exit(1);
         }
     });
