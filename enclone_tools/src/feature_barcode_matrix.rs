@@ -488,6 +488,7 @@ pub fn feature_barcode_matrix(
     fbs.par_sort();
     let mut fb_freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbs, &mut fb_freq);
+    drop(fbs);
     const TOP_FEATURE_BARCODES: usize = 100;
     if fb_freq.len() > TOP_FEATURE_BARCODES {
         fb_freq.truncate(TOP_FEATURE_BARCODES);
@@ -551,6 +552,7 @@ pub fn feature_barcode_matrix(
         brnr.push((stringme(&bf[i].0), refx, nrefx));
         i = j;
     }
+    drop(bf);
     let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("after making m_reads, used {:.1} seconds", elapsed(&t));
