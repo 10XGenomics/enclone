@@ -48,15 +48,9 @@ fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
-<<<<<<< HEAD
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
 iced = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a" }
-=======
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "1a6d49ff5cd9fff3fb3d53550ad9f5c1fe1a3fe3", default-features=false, features = ["conda", "const_generics"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "d165b789df603e3b93cc9f92184afa6aa6aaf64b" }
->>>>>>> 98565281... fixing dependency issues
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.3"
@@ -82,7 +76,7 @@ pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.11", default_features = false }
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
-prost-build = "0.9"
+gprost-build = "0.9"
 rand = "0.8"
 rayon = "1"
 resvg = { version = "0.19", default-features = false }
