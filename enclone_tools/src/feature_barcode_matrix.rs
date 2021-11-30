@@ -401,8 +401,10 @@ pub fn feature_barcode_matrix(
 
     // Build data structure for the degenerate reads.
 
+    println!("parallel sorting");
     let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
     degen.par_sort();
+    println!("build data structure for degenerate reads");
     let (mut ncanonical, mut nsemicanonical) = (0, 0);
     let mut i = 0;
     while i < degen.len() {
@@ -440,15 +442,17 @@ pub fn feature_barcode_matrix(
         bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
         i = j;
     }
+    let ndegen = degen.len();
+    drop(degen);
 
     // Print summary stats.
 
-    let total_reads = degen.len() + buf.len();
+    let total_reads = ndegen + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
         println!(
             "of which {:.1}% are degenerate",
-            percent_ratio(degen.len(), total_reads)
+            percent_ratio(ndegen, total_reads)
         );
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
