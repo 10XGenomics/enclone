@@ -32,7 +32,7 @@ expr_tools = "0.1"
 fasta_tools = "0.1"
 flate2 = "1"
 fs_extra = "1"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "lh/conda-static", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
 lz4 = "1"
