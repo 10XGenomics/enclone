@@ -12,7 +12,7 @@ fn main() {
     let mut paths = Vec::<String>::new();
     let all = dir_list(".");
     for d in all.iter() {
-        let subs = ["src", "src/bin"];
+        let subs = ["src", "src/bin", "tests"];
         for sub in subs.iter() {
             let s = format!("{}/{}", d, sub);
             if path_exists(&s) {
