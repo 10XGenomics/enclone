@@ -310,7 +310,7 @@ pub fn feature_barcode_matrix(
     for (i, rf) in read_files.iter().enumerate() {
         let local: DateTime<Local> = Local::now();
         let local = format!("{:?}", local);
-        let time = local.after("T");
+        let time = local.between("T", ".");
         println!(
             "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
             time,
