@@ -78,6 +78,8 @@ mkdir -p enclone_exec/testx/outputs
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # run rustfmt
+#
+# The second form does not test all files!
 
 echo "formatting"
 if (`where rustfmt_del` == "") then
