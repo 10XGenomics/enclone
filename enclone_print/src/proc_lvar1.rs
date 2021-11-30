@@ -57,20 +57,11 @@ pub fn proc_lvar1(
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
     stats: &mut Vec<(String, Vec<String>)>,
-    _nd_fields: &Vec<String>,
     lvars: &Vec<String>,
     alt_bcs: &Vec<String>,
-    _n_gex: usize,
-    _n_gexs: &Vec<usize>,
-    _gex_min: usize,
-    _gex_max: usize,
     _gex_mean: f64,
     _gex_sum: f64,
-    _gex_median: usize,
-    _count_unsorted: &Vec<usize>,
-    _entropy: f64,
-    _entropies_unsorted: &Vec<f64>,
-    _fcounts: &Vec<f64>,
+    _gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
     let clonotype_id = exacts[u];
@@ -98,20 +89,6 @@ pub fn proc_lvar1(
     // Set up lead variable macros.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
 
-    macro_rules! lvar {
-        ($i: expr, $var:expr, $val:expr) => {
-            if verbose {
-                eprint!("lvar {} ==> {}; ", $var, $val);
-                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-            }
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-        };
-    }
     macro_rules! lvar_stats1 {
         ($i: expr, $var:expr, $val:expr) => {
             if verbose {
@@ -183,21 +160,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    if x == "mark" {
-        let mut n = 0;
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].marked {
-                n += 1;
-            }
-        }
-        lvar![i, x, format!("{}", n)];
-    } else if x.starts_with("pe") {
-        lvar_stats1![i, x, format!("")];
-    } else if x.starts_with("npe") {
-        lvar_stats1![i, x, format!("")];
-    } else if x.starts_with("ppe") {
-        lvar_stats1![i, x, format!("")];
-    } else if bin_member(alt_bcs, x) {
+    if bin_member(alt_bcs, x) {
         let mut r = Vec::<String>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;

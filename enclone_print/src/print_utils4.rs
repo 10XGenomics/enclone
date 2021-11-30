@@ -518,6 +518,9 @@ pub fn compute_bu(
                         in_var_def = true;
                     }
                 }
+                if var == "nbc" {
+                    in_var_def = true;
+                }
                 if in_var_def && p >= 0 {
                     let stats_me = &these_stats[p as usize].1;
                     row.push(stats_me[bcl.2].clone());

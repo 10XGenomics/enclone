@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 276] = [
+pub const TESTS: [&str; 277] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -693,4 +693,6 @@ pub const TESTS: [&str; 276] = [
          PCOLS=cdr3_aa1,cdr3_aa_-1_-2_ext1"###,
     // 276. this failed at one time
     r###"BCR=40970_subset NCELL NOPRINT EXPECT_OK"###,
+    // 277. test nbc
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW LVARSP=nbc PER_CELL CVARS= FOLD_HEADERS"###,
 ];

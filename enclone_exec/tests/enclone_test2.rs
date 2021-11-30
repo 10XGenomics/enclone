@@ -48,6 +48,8 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 //
 // If you ever need to change the output of all tests, use the main program
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
+//
+// If this code is modified to also include the DTESTS, the test time is almost exactly the same.
 
 #[cfg(not(feature = "cpu"))]
 #[test]

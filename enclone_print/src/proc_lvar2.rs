@@ -60,20 +60,11 @@ pub fn proc_lvar2(
     d_all: &mut Vec<Vec<u32>>,
     ind_all: &mut Vec<Vec<u32>>,
     stats: &mut Vec<(String, Vec<String>)>,
-    _nd_fields: &Vec<String>,
     lvars: &Vec<String>,
     _alt_bcs: &Vec<String>,
-    n_gex: usize,
-    n_gexs: &Vec<usize>,
-    gex_min: usize,
-    gex_max: usize,
     gex_mean: f64,
     gex_sum: f64,
-    gex_median: usize,
-    count_unsorted: &Vec<usize>,
-    entropy: f64,
-    entropies_unsorted: &Vec<f64>,
-    fcounts: &Vec<f64>,
+    gex_fcounts_unsorted: &Vec<f64>,
     extra_args: &Vec<String>,
 ) -> bool {
     let clonotype_id = exacts[u];
@@ -354,53 +345,6 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x == "gex" {
-        let mut f = Vec::<String>::new();
-        for x in fcounts.iter() {
-            f.push(format!("{}", *x));
-        }
-        lvar_stats![i, x, format!("{}", gex_median), f];
-    } else if x == "gex_cell" {
-        if pass == 2 {
-            speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
-        }
-    } else if x == "n_gex" {
-        let mut n = Vec::<String>::new();
-        for x in n_gexs.iter() {
-            n.push(format!("{}", *x));
-        }
-        lvar_stats![i, x, format!("{}", n_gex), n];
-    } else if x == "n_gex_cell" {
-        if i < lvars.len() {
-            row.push("".to_string());
-        }
-        if pass == 2 {
-            speak!(
-                u,
-                "n_gex_cell".to_string(),
-                format!("{}", n_gexs.iter().format(POUT_SEP))
-            );
-        }
-    } else if x == "entropy" {
-        let mut e = Vec::<String>::new();
-        for x in entropies_unsorted.iter() {
-            e.push(format!("{}", x));
-        }
-        lvar_stats![i, x, format!("{:.2}", entropy), e];
-    } else if x == "entropy_cell" {
-        let mut e = Vec::<String>::new();
-        for x in entropies_unsorted.iter() {
-            e.push(format!("{:.2}", x));
-        }
-        speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
-    } else if x == "gex_min" {
-        lvar_stats1![i, x, format!("{}", gex_min)];
-    } else if x == "gex_max" {
-        lvar_stats1![i, x, format!("{}", gex_max)];
-    } else if x == "gex_μ" {
-        lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
-    } else if x == "gex_Σ" {
-        lvar_stats1![i, x, format!("{}", gex_sum.round() as usize)];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
@@ -483,7 +427,10 @@ pub fn proc_lvar2(
                 if pass == 2 {
                     let mut c = Vec::<String>::new();
                     for j in 0..counts_sub.len() {
-                        c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
+                        c.push(format!(
+                            "{:.2}",
+                            100.0 * counts_sub[j] as f64 / gex_fcounts_unsorted[j]
+                        ));
                     }
                     let val = format!("{}", c.iter().format(POUT_SEP));
                     speak!(u, x, val);

@@ -647,6 +647,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             exploratory tool.",
             75,
         )?;
+        h.ldoc(
+            "nbc",
+            "numerically encoded barcode: a ten-digit number, padded with zeros",
+        );
+        h.doc2("on the left, which represents the base four encoding of the barcode DNA");
+        h.doc2("sequence, with A ==> 0, C => 1, G ==> 2 and T ==> 3; only defined for cells");
         h.print_tab2()?;
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \

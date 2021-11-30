@@ -834,6 +834,7 @@ pub fn justification(x: &str) -> u8 {
         || x == "cigar"
         || x.contains("valumis")
         || x.contains("valbcumis")
+        || x == "nbc"
     {
         b'l'
     } else {

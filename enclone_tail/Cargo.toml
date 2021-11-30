@@ -34,7 +34,7 @@ enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1"
 float-ord = "0.3"
 fontdb = "0.7"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "lh/conda-static", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
 lazy_static = "1"

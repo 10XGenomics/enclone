@@ -1317,6 +1317,10 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │                  │  actual effect with all default filters on may be significantly different.    │
 │                  │  Note also that use of NALL_CELL will typically result in peculiar            │
 │                  │  artifacts, so this should only be used as an exploratory tool.               │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│nbc               │  numerically encoded barcode: a ten-digit number, padded with zeros           │
+│                  │  on the left, which represents the base four encoding of the barcode DNA      │
+│                  │  sequence, with A ==> 0, C => 1, G ==> 2 and T ==> 3; only defined for cells  │
 └──────────────────┴───────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 

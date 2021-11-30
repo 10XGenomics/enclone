@@ -481,6 +481,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         // use enclone_core::opt_d::*;
         use enclone_proto::types::*;
         use itertools::Itertools;
+        use ndarray::s;
         // use stats_utils::*;
         use std::cmp::{max, min};
         use std::collections::HashMap;
@@ -513,6 +514,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             groups: &HashMap<usize, Vec<usize>>,
             mults: &Vec<usize>,
             nd_fields: &Vec<String>,
+            gex_counts_unsorted: &Vec<usize>,
+            gex_fcounts_unsorted: &Vec<f64>,
+            n_gexs: &Vec<usize>,
+            d_readers: &Vec<Option<hdf5::Reader>>,
+            ind_readers: &Vec<Option<hdf5::Reader>>,
+            h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];

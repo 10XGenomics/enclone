@@ -1463,6 +1463,131 @@ notes:
 code:     let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
           exact: edit
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     entropy
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell-exact
+val:      float
+doc:      TBD
+brief:    entropy of gene expression values
+page:     UNDOCUMENTED
+avail:    private
+notes:    
+code:     let mut total_counts = Vec::<usize>::new();
+          for l in 0..ex.clones.len() {
+              let li = ex.clones[l][0].dataset_index;
+              let bc = ex.clones[l][0].barcode.clone();
+              if !gex_info.gex_barcodes.is_empty() {
+                  let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                  if p >= 0 {
+                      let mut raw_count = 0;
+                      if gex_info.gex_matrices[li].initialized() {
+                          let row = gex_info.gex_matrices[li].row(p as usize);
+                          for j in 0..row.len() {
+                              let f = row[j].0;
+                              let n = row[j].1;
+                              if gex_info.is_gex[li][f] {
+                                  raw_count += n;
+                              }
+                          }
+                      } else {
+                          let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                          let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
+                          let d: Vec<u32>;
+                          let ind: Vec<u32>;
+                          if ctl.gen_opt.h5_pre {
+                              d = h5_data[li].1[z1..z2].to_vec();
+                              ind = h5_data[li].2[z1..z2].to_vec();
+                          } else {
+                              d = d_readers[li]
+                                  .as_ref()
+                                  .unwrap()
+                                  .read_slice(s![z1..z2])
+                                  .unwrap()
+                                  .to_vec();
+                              ind = ind_readers[li]
+                                  .as_ref()
+                                  .unwrap()
+                                  .read_slice(s![z1..z2])
+                                  .unwrap()
+                                  .to_vec();
+                          }
+                          for j in 0..d.len() {
+                              if gex_info.is_gex[li][ind[j] as usize] {
+                                  raw_count += d[j] as usize;
+                              }
+                          }
+                      }
+                      total_counts.push(raw_count);
+                  }
+              }
+          }
+          let mut entropies = Vec::<f64>::new();
+          for l in 0..ex.clones.len() {
+              let li = ex.clones[l][0].dataset_index;
+              let bc = ex.clones[l][0].barcode.clone();
+              if !gex_info.gex_barcodes.is_empty() {
+                  let mut entropy = 0.0;
+                  let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                  if p >= 0 {
+                      if gex_info.gex_matrices[li].initialized() {
+                          let row = gex_info.gex_matrices[li].row(p as usize);
+                          for j in 0..row.len() {
+                              let f = row[j].0;
+                              let n = row[j].1;
+                              if gex_info.is_gex[li][f] {
+                                  let q = n as f64 / total_counts[l] as f64;
+                                  entropy -= q * q.log2();
+                              }
+                          }
+                      } else {
+                          let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                          let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
+                          let d: Vec<u32>;
+                          let ind: Vec<u32>;
+                          if ctl.gen_opt.h5_pre {
+                              d = h5_data[li].1[z1..z2].to_vec();
+                              ind = h5_data[li].2[z1..z2].to_vec();
+                          } else {
+                              d = d_readers[li]
+                                  .as_ref()
+                                  .unwrap()
+                                  .read_slice(s![z1..z2])
+                                  .unwrap()
+                                  .to_vec();
+                              ind = ind_readers[li]
+                                  .as_ref()
+                                  .unwrap()
+                                  .read_slice(s![z1..z2])
+                                  .unwrap()
+                                  .to_vec();
+                          }
+                          for j in 0..d.len() {
+                              if gex_info.is_gex[li][ind[j] as usize] {
+                                  let n = d[j] as usize;
+                                  let q = n as f64 / total_counts[l] as f64;
+                                  entropy -= q * q.log2();
+                              }
+                          }
+                      }
+                  }
+                  entropies.push(entropy);
+              }
+          }
+          let entropies_unsorted = entropies.clone();
+          entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
+          let mut entropy = 0.0;
+          if !entropies.is_empty() {
+              entropy = median_f64(&entropies);
+          }
+          let mut e = Vec::<String>::new();
+          for x in entropies_unsorted.iter() {
+              e.push(format!("{:.2}", x));
+          }
+          cell: e
+          exact: format!("{:.2}", entropy)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     exact_subclonotype_id
 inputs:   ?
 limits:
@@ -1788,33 +1913,28 @@ code:     let x = &ex.share[mid];
           exact: y
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
 val:      float
 doc:      TBD
-brief:    median number of GEX UMIs
+brief:    number of GEX UMIs (or median)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     gex_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      nonnegative_integer
-doc:      TBD
-brief:    number of GEX UMIs
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut f = Vec::<String>::new();
+          for x in gex_fcounts_unsorted.iter() {
+              f.push(format!("{}", *x));
+          }   
+          let mut counts = gex_counts_unsorted.clone();
+          counts.sort_unstable();
+          let gex_median = rounded_median(&counts);
+          cell: f
+          exact: format!("{}", gex_median)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_max
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1824,10 +1944,10 @@ brief:    maximum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", gex_counts_unsorted.iter().max().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_mean
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1837,10 +1957,12 @@ brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+          exact: format!("{}", gex_mean.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_min
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1850,10 +1972,10 @@ brief:    minimum number of GEX UMIs across exact subclonotype
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     exact: format!("{}", gex_counts_unsorted.iter().min().unwrap())
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_sum
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1863,10 +1985,11 @@ brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          exact: format!("{}", gex_sum.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_Σ
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1876,10 +1999,11 @@ brief:    sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          exact: format!("{}", gex_sum.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     gex_μ
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -1889,7 +2013,9 @@ brief:    mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+          let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+          exact: format!("{}", gex_mean.round() as usize)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     group_id
 inputs:   ?
@@ -2089,6 +2215,25 @@ code:     let mut s = String::new();
           }
           exact: s
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     mark
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative integer
+doc:      TBD
+brief:    is cell marked
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     let mut n = 0;
+          for j in 0..ex.clones.len() {
+              if ex.clones[j][0].marked {
+                  n += 1;
+              }
+          }
+          exact: format!("{}", n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mem
 inputs:   lvar_vdj
 limits:
@@ -2176,7 +2321,7 @@ code:     let mut n_b = 0;
           exact: format!("{}", n_b)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_gex
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
@@ -2186,20 +2331,14 @@ brief:    median number of cells seen by GEX pipeline
 page:     enclone help lvars
 avail:    public
 notes:
-code:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     n_gex_cell
-inputs:   ?
-limits:
-class:    lvar
-level:    cell
-val:      positive_integer
-doc:      TBD
-brief:    number of cells seen by GEX pipeline
-page:     enclone help lvars
-avail:    public
-notes:
-code:
+code:     let mut n = Vec::<String>::new();
+          let mut n_gex = 0;
+          for x in n_gexs.iter() {
+              n.push(format!("{}", *x));
+              n_gex += *x;
+          }
+          cell: n
+          exact: format!("{}", n_gex)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_other
 inputs:   lvar_vdj
@@ -2232,6 +2371,37 @@ code:     let mut n = 0;
           }
           cell: ns
           exact: format!("{}", n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     nbc
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    numeric barcode
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut nbc = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let bc = ex.clones[j][0].barcode.before("-").as_bytes();
+              let mut n = 0 as u64;
+              for k in 0..bc.len() {
+                  if k > 0 {
+                      n *= 4;
+                  }
+                  if bc[k] == b'C' {
+                      n += 1;
+                  } else if bc[k] == b'G' {
+                      n += 2;
+                  } else if bc[k] == b'T' {
+                      n += 3;
+                  }
+              }
+              nbc.push(format!("{:010}", n));
+          }
+          cell: nbc
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nchains
 inputs:   lvar_vdj
@@ -2379,6 +2549,19 @@ avail:    public
 notes:
 code:     exact: ex.share[mid].vs_notesx.clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     npe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    # of clonotype cells within PCA distance n of this cell
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     nval
 inputs:   cvar_vdj
 limits:
@@ -2480,6 +2663,32 @@ code:     let mut origins = Vec::<String>::new();
           unique_sort(&mut origins);
           cell: origins_unsorted
           exact: format!("{}", origins.iter().format(","))
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     pe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    PCA equivalence class at distance ≤ n
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     ppe
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    cell
+val:      string
+doc:      TBD
+brief:    % of gex cells within PCA dist n of this cell that are in this clonotype
+page:     UNDOCUMENTED
+avail:    private
+notes:
+code:     exact: String::new()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     q{0..}_
 inputs:   cvar_vdj
