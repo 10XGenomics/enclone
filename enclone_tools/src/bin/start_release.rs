@@ -4,6 +4,7 @@
 //
 // See enclone/release_instructions.
 
+use chrono::prelude::*;
 use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
 use pretty_trace::PrettyTrace;
@@ -280,7 +281,10 @@ fn main() {
 
     // Step 12. Done.
 
-    println!("\nAll done, looks like it worked!\n");
+    let local: DateTime<Local> = Local::now();
+    let local = format!("{:?}", local);
+    let time = local.after("T");
+    println!("\nAll done at {}, looks like it worked!\n", time);
     println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
     println!(

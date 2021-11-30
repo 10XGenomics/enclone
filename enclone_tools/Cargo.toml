@@ -23,6 +23,7 @@ publish = false
 ansi_escape = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 bio_edit = "0.1"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
