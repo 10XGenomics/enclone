@@ -234,8 +234,7 @@ and on rare occasions may involve breaking syntax that previously worked. See
 
 <p>
 You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see 
-<a href="pages/auto/windows.html">here</a> for <b>Windows</b> options; 
-see <a href="pages/auto/install_issues.html">here</a> if you have a problem.
+<a href="pages/auto/windows.html">here</a> for <b>Windows</b> options.
 </p>
 
 <table>
@@ -333,6 +332,15 @@ see <a href="pages/auto/install_issues.html">here</a> if you have a problem.
 Additional details can be found <a href="pages/auto/installation_details.html">here</a>.
 
 Restart your terminal session; you can now run #enclone.</p>
+
+<table>
+<tr>
+<th align=left style="padding: 3px; font-weight: normal; border: 2px solid black">
+Please see 
+<a href="pages/auto/install_issues.html">here</a> if you have an installation problem.
+</th>
+</tr>
+</table>
 
 <p><span style="color:red; font-weight:bold">To update, type the same command!</span>
 <span style="font-weight:bold">
