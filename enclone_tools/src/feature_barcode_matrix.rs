@@ -17,7 +17,7 @@ use flate2::read::MultiGzDecoder;
 use io_utils::{dir_list, path_exists};
 use itertools::Itertools;
 use mirror_sparse_matrix::MirrorSparseMatrix;
-use perf_stats::elapsed;
+use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use stats_utils::*;
@@ -748,5 +748,6 @@ pub fn feature_barcode_matrix(
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
+    println!("peak mem usage for feature barcode matrix = {:.1} GB", peak_mem_usage_gb());
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }
