@@ -327,10 +327,10 @@ pub fn feature_barcode_matrix(
             let f = format!("{}/{}", seq_def.read_path, rf);
             let gz = MultiGzDecoder::new(File::open(&f).unwrap());
             let b = BufReader::new(gz);
-    
+
             // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
             // and line 6 is the read that contains the feature barcode.
-    
+
             let mut count = 0;
             let mut barcode = Vec::<u8>::new();
             let mut umi = Vec::<u8>::new();
@@ -362,9 +362,9 @@ pub fn feature_barcode_matrix(
                                 break;
                             }
                         }
-    
+
                         // Save.
-    
+
                         if verbosity == 2 {
                             let (mut is_canonical, mut is_semicanonical) = (false, false);
                             if degenerate {
@@ -417,7 +417,7 @@ pub fn feature_barcode_matrix(
         }
 
         // Build data structure for the degenerate reads.
-    
+
         if pass == 1 {
             println!("parallel sorting");
             degen.par_sort();
@@ -674,9 +674,11 @@ pub fn feature_barcode_matrix(
     for i in 0..bfu.len() {
         fbx.push(bfu[i].1.clone());
     }
+    drop(bfu);
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
+    drop(fbx);
     if verbosity > 0 {
         for i in 0..10 {
             println!("{} = {}", strme(&freq[i].1), freq[i].0);
@@ -723,6 +725,7 @@ pub fn feature_barcode_matrix(
         }
         i = j;
     }
+    drop(bfn);
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
