@@ -312,19 +312,23 @@ pub fn feature_barcode_matrix(
     let mut ndegen = 0;
     for pass in 1..=2 {
         let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-        println!("megapass {}", pass);
+        if verbosity > 0 {
+            println!("megapass {}", pass);
+        }
         for (i, rf) in read_files.iter().enumerate() {
             let local: DateTime<Local> = Local::now();
             let local = format!("{:?}", local);
             let time = local.between("T", ".");
-            println!(
-                "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
-                time,
-                i + 1,
-                read_files.len(),
-                buf.len(),
-                degen.len()
-            );
+            if verbosity > 0 {
+                println!(
+                    "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
+                    time,
+                    i + 1,
+                    read_files.len(),
+                    buf.len(),
+                    degen.len()
+                );
+            }
             let f = format!("{}/{}", seq_def.read_path, rf);
             let gz = MultiGzDecoder::new(File::open(&f).unwrap());
             let b = BufReader::new(gz);
@@ -423,9 +427,13 @@ pub fn feature_barcode_matrix(
         // Build data structure for the degenerate reads.
 
         if pass == 1 {
-            println!("parallel sorting");
+            if verbosity > 0 {
+                println!("parallel sorting");
+            }
             degen.par_sort();
-            println!("build data structure for degenerate reads");
+            if verbosity > 0 {
+                println!("build data structure for degenerate reads");
+            }
             let mut i = 0;
             while i < degen.len() {
                 let j = next_diff1_2(&degen, i as i32) as usize;
@@ -709,7 +717,9 @@ pub fn feature_barcode_matrix(
         fbx.push(bfu[i][16..31].to_vec());
     }
     drop(bfu);
-    println!("parallel sorting fbx");
+    if verbosity > 0 {
+        println!("parallel sorting fbx");
+    }
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
@@ -761,14 +771,16 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     drop(bfn);
-    println!("building last mirror sparse matrix");
+    if verbosity > 0 {
+        println!("building last mirror sparse matrix");
+    }
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
+        println!(
+            "peak mem usage for feature barcode matrix = {:.1} GB\n",
+            peak_mem_usage_gb()
+        );
     }
-    println!(
-        "peak mem usage for feature barcode matrix = {:.1} GB\n",
-        peak_mem_usage_gb()
-    );
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }

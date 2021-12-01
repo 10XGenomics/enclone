@@ -285,10 +285,7 @@ fn main() {
 
             // Keep going.
 
-            let mut verb = verbosity;
-            if verb == 0 && (fb_info || fb_info_write) {
-                verb = 1;
-            }
+            let verb = std::cmp::max(1, verbosity);
             let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), verb, &ref_fb);
             if fb_info {
                 std::process::exit(0);
