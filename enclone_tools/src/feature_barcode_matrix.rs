@@ -709,6 +709,7 @@ pub fn feature_barcode_matrix(
         fbx.push(bfu[i][16..31].to_vec());
     }
     drop(bfu);
+    println!("parallel sorting fbx");
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
@@ -760,10 +761,14 @@ pub fn feature_barcode_matrix(
         i = j;
     }
     drop(bfn);
+    println!("building last mirror sparse matrix");
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    println!("peak mem usage for feature barcode matrix = {:.1} GB\n", peak_mem_usage_gb());
+    println!(
+        "peak mem usage for feature barcode matrix = {:.1} GB\n",
+        peak_mem_usage_gb()
+    );
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }
