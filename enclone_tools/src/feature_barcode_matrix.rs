@@ -568,7 +568,7 @@ pub fn feature_barcode_matrix(
 
     // Reduce buf to UMI counts.
 
-    let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
+    let mut bfu = Vec::<Vec<u8>>::new(); // {barcode_fb_umi}
     let mut singletons = 0;
     let mut i = 0;
     while i < buf.len() {
@@ -600,11 +600,10 @@ pub fn feature_barcode_matrix(
             }
         }
         if uniq {
-            bfu.push((
-                buf[i][0..16].to_vec(),
-                buf[i][28..43].to_vec(),
-                buf[i][16..28].to_vec(),
-            ));
+            let mut x = buf[i][0..16].to_vec();
+            x.append(&mut buf[i][28..43].to_vec());
+            x.append(&mut buf[i][16..28].to_vec());
+            bfu.push(x);
         } else {
             // Sloppy, just take the most frequent feature barcode, ignoring quality scores.
             let mut fs = Vec::<Vec<u8>>::new();
@@ -614,11 +613,10 @@ pub fn feature_barcode_matrix(
             fs.sort();
             let mut freq = Vec::<(u32, Vec<u8>)>::new();
             make_freq(&fs, &mut freq);
-            bfu.push((
-                buf[i][0..16].to_vec(),
-                freq[0].1.clone(),
-                buf[i][16..28].to_vec(),
-            ));
+            let mut x = buf[i][0..16].to_vec();
+            x.append(&mut freq[0].1.clone());
+            x.append(&mut buf[i][16..28].to_vec());
+            bfu.push(x);
         }
         i = j;
     }
@@ -630,17 +628,23 @@ pub fn feature_barcode_matrix(
     let mut brn = Vec::<(String, u32, u32)>::new();
     let mut i = 0;
     while i < bfu.len() {
-        let j = next_diff1_3(&bfu, i as i32) as usize;
+        let mut j = i + 1;
+        while j < bfu.len() {
+            if bfu[j][0..16] != bfu[i][0..16] {
+                break;
+            }
+            j += 1;
+        }
         let mut refx = 0;
         let mut nrefx = 0;
         for k in i..j {
-            if bin_member(ref_fb, &stringme(&bfu[k].1)) {
+            if bin_member(ref_fb, &stringme(&bfu[k][16..31])) {
                 refx += 1;
             } else {
                 nrefx += 1;
             }
         }
-        brn.push((stringme(&bfu[i].0), refx, nrefx));
+        brn.push((stringme(&bfu[i][0..16]), refx, nrefx));
         i = j;
     }
 
@@ -652,7 +656,13 @@ pub fn feature_barcode_matrix(
         let mut bc = 0;
         let mut i = 0;
         while i < bfu.len() {
-            let j = next_diff1_3(&bfu, i as i32) as usize;
+            let mut j = i + 1;
+            while j < bfu.len() {
+                if bfu[j][0..16] != bfu[i][0..16] {
+                    break;
+                }
+                j += 1;
+            }
             bc += 1;
             i = j;
         }
@@ -661,14 +671,20 @@ pub fn feature_barcode_matrix(
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
     while i < bfu.len() {
-        let j = next_diff12_3(&bfu, i as i32) as usize;
+        let mut j = i + 1;
+        while j < bfu.len() {
+            if bfu[j][0..31] != bfu[i][0..31] {
+                break;
+            }
+            j += 1;
+        }
         let mut n = 1;
         for k in i + 1..j {
-            if bfu[k].2 != bfu[k - 1].2 {
+            if bfu[k][31..43] != bfu[k - 1][31..43] {
                 n += 1;
             }
         }
-        bfn.push((bfu[i].0.clone(), bfu[i].1.clone(), n));
+        bfn.push((bfu[i][0..16].to_vec(), bfu[i][16..31].to_vec(), n));
         i = j;
     }
     if verbosity > 0 {
@@ -690,7 +706,7 @@ pub fn feature_barcode_matrix(
     }
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
-        fbx.push(bfu[i].1.clone());
+        fbx.push(bfu[i][16..31].to_vec());
     }
     drop(bfu);
     fbx.par_sort();
@@ -748,6 +764,6 @@ pub fn feature_barcode_matrix(
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
     }
-    println!("peak mem usage for feature barcode matrix = {:.1} GB", peak_mem_usage_gb());
+    println!("peak mem usage for feature barcode matrix = {:.1} GB\n", peak_mem_usage_gb());
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }
