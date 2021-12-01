@@ -305,7 +305,8 @@ pub fn feature_barcode_matrix(
     // Traverse the reads.
 
     println!("start parsing reads for {}", id);
-    let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
+    let mut buf = Vec::<Vec<u8>>::new(); // {barcode_umi_fb}
+                                         // let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
     let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
     let (mut ncanonical, mut nsemicanonical) = (0, 0);
     let mut ndegen = 0;
@@ -409,7 +410,10 @@ pub fn feature_barcode_matrix(
                         if degenerate && pass == 1 {
                             degen.push((barcode.clone(), umi.clone()));
                         } else if pass == 2 {
-                            buf.push((barcode.clone(), umi.clone(), fb.clone()));
+                            let mut x = barcode.clone();
+                            x.append(&mut umi.clone());
+                            x.append(&mut fb.clone());
+                            buf.push(x);
                         }
                     }
                 }
@@ -483,7 +487,7 @@ pub fn feature_barcode_matrix(
 
     let mut fbs = Vec::<Vec<u8>>::new();
     for i in 0..buf.len() {
-        fbs.push(buf[i].2.clone());
+        fbs.push(buf[i][28..43].to_vec());
     }
     fbs.par_sort();
     let mut fb_freq = Vec::<(u32, Vec<u8>)>::new();
@@ -511,7 +515,7 @@ pub fn feature_barcode_matrix(
     }
     let mut bf = Vec::<(Vec<u8>, Vec<u8>)>::new();
     for i in 0..buf.len() {
-        bf.push((buf[i].0.clone(), buf[i].2.clone()));
+        bf.push((buf[i][0..16].to_vec(), buf[i][28..43].to_vec()));
     }
     bf.par_sort();
     let mut brnr = Vec::<(String, u32, u32)>::new();
@@ -568,12 +572,18 @@ pub fn feature_barcode_matrix(
     let mut singletons = 0;
     let mut i = 0;
     while i < buf.len() {
-        let j = next_diff12_3(&buf, i as i32) as usize;
+        let mut j = i + 1;
+        while j < buf.len() {
+            if buf[j][0..28] != buf[i][0..28] {
+                break;
+            }
+            j += 1;
+        }
         let mut sing = true;
-        if i > 0 && buf[i].0 == buf[i - 1].0 {
+        if i > 0 && buf[i][0..16] == buf[i - 1][0..16] {
             sing = false;
         }
-        if i < buf.len() - 1 && buf[i].0 == buf[i + 1].0 {
+        if i < buf.len() - 1 && buf[i][0..16] == buf[i + 1][0..16] {
             sing = false;
         }
         if sing {
@@ -581,26 +591,34 @@ pub fn feature_barcode_matrix(
         }
         let mut bfs = Vec::<String>::new();
         for k in i..j {
-            bfs.push(stringme(&buf[k].2));
+            bfs.push(stringme(&buf[k][28..43].to_vec()));
         }
         let mut uniq = true;
         for k in i + 1..j {
-            if buf[k].2 != buf[k - 1].2 {
+            if buf[k][28..43] != buf[k - 1][28..43] {
                 uniq = false;
             }
         }
         if uniq {
-            bfu.push((buf[i].0.clone(), buf[i].2.clone(), buf[i].1.clone()));
+            bfu.push((
+                buf[i][0..16].to_vec(),
+                buf[i][28..43].to_vec(),
+                buf[i][16..28].to_vec(),
+            ));
         } else {
             // Sloppy, just take the most frequent feature barcode, ignoring quality scores.
             let mut fs = Vec::<Vec<u8>>::new();
             for k in i..j {
-                fs.push(buf[k].2.clone());
+                fs.push(buf[k][28..43].to_vec());
             }
             fs.sort();
             let mut freq = Vec::<(u32, Vec<u8>)>::new();
             make_freq(&fs, &mut freq);
-            bfu.push((buf[i].0.clone(), freq[0].1.clone(), buf[i].1.clone()));
+            bfu.push((
+                buf[i][0..16].to_vec(),
+                freq[0].1.clone(),
+                buf[i][16..28].to_vec(),
+            ));
         }
         i = j;
     }
