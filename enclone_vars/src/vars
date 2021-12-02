@@ -892,14 +892,20 @@ name:     count_REG
 inputs:   ?
 limits:
 class:    lvar
-level:    exact
+level:    cell-exact
 val:      nonnegative_integer
 doc:      TBD
 brief:    count amino acid motifs
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          for j in 0..ex.share.len() {
+              let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
+              n += reg.find_iter(strme(&aa)).count();
+          }
+          cell: vec![format!("{}", n); ex.ncells()]
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cred
 inputs:   lvar_vdj
