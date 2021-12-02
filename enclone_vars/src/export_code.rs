@@ -15,14 +15,31 @@ use string_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &mut BufWriter<W>) {
+    let mut reg = false;
     let mut upper = false;
     let var = &v.name;
+    if var.len() >= 3 {
+        let mut chars = Vec::<char>::new();
+        for c in var.chars() {
+            chars.push(c);
+        }
+        for i in 0..chars.len() - 3 {
+            if chars[i] == 'R' && chars[i + 1] == 'E' && chars[i + 2] == 'G' {
+                if i > 0 && !chars[i - 1].is_ascii_uppercase() {
+                    reg = true;
+                }
+                if i + 3 < chars.len() && !chars[i + 1].is_ascii_uppercase() {
+                    reg = true;
+                }
+            }
+        }
+    }
     for c in var.chars() {
         if c.is_ascii_uppercase() {
             upper = true;
         }
     }
-    if !upper {
+    if !upper || reg {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -100,11 +117,47 @@ fn run_rustfmt(f: &str) {
 // in the variable.
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
+    let mut reg = None;
+    if var.len() >= 3 {
+        let mut chars = Vec::<char>::new();
+        for c in var.chars() {
+            chars.push(c);
+        }
+        for i in 0..chars.len() - 3 {
+            if chars[i] == 'R' && chars[i + 1] == 'E' && chars[i + 2] == 'G' {
+                if i > 0 && !chars[i - 1].is_ascii_uppercase() {
+                    reg = Some(i);
+                }
+                if i + 3 < chars.len() && !chars[i + 1].is_ascii_uppercase() {
+                    reg = Some(i);
+                }
+            }
+        }
+    }
     let nranges = var.matches('{').count();
     assert_eq!(nranges, var.matches('}').count());
     assert!(nranges <= 3);
     if nranges == 0 {
-        fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
+        if reg.is_none() {
+            fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
+        } else {
+            let start = var.before("REG");
+            let stop = var.after("REG");
+            fwriteln!(
+                f,
+                r###"}} else if var.starts_with(&"{start}") 
+                    && var.after(&"{start}").ends_with(&"{start}")
+                    && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
+                start = start,
+                stop = stop,
+            );
+            fwriteln!(
+                f,
+                r###"let reg = Regex::new(&var.between2(&"{}", &"{}")).unwrap();"###,
+                start,
+                stop
+            );
+        }
     } else if nranges == 1 {
         let begin = var.before("{");
         let end = var.after("}").to_string();
