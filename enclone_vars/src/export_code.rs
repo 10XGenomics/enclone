@@ -151,6 +151,8 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
                 start = start,
                 stop = stop,
             );
+            // Note inefficiency here, as we are instantiating the regular expression for every
+            // exact subclonotype, whereas it only needs to be done once (in principle).
             fwriteln!(
                 f,
                 r###"let reg = Regex::new(&var.between2(&"{}", &"{}")).unwrap();"###,
