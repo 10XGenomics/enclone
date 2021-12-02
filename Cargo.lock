@@ -438,7 +438,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
- "rand 0.7.3",
+ "rand 0.8.4",
  "regex",
  "serde",
  "serde_derive",
@@ -1299,7 +1299,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1415,7 +1415,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.20.0",
+ "nix 0.22.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1513,7 +1513,7 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "prost 0.8.0",
+ "prost 0.9.0",
  "prost-build 0.9.0",
  "serde",
  "serde_derive",
@@ -1690,7 +1690,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.20.0",
+ "nix 0.22.0",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -2417,7 +2417,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2628,14 +2628,14 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
 [[package]]
 name = "iced"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "iced_core",
  "iced_futures",
@@ -2648,7 +2648,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "bitflags",
 ]
@@ -2656,7 +2656,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "async-std",
  "futures",
@@ -2667,7 +2667,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.2.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "bytemuck",
  "font-kit",
@@ -2682,11 +2682,10 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "iced_core",
  "iced_futures",
- "iced_style",
  "num-traits",
  "twox-hash",
  "unicode-segmentation",
@@ -2695,7 +2694,7 @@ dependencies = [
 [[package]]
 name = "iced_style"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "iced_core",
 ]
@@ -2703,7 +2702,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "base64 0.13.0",
  "dodrio",
@@ -2720,7 +2719,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "bitflags",
  "bytemuck",
@@ -2740,7 +2739,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=d165b789df603e3b93cc9f92184afa6aa6aaf64b#d165b789df603e3b93cc9f92184afa6aa6aaf64b"
+source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
 dependencies = [
  "iced_futures",
  "iced_graphics",
@@ -3986,7 +3985,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.22.0",
  "pprof",
  "stats_utils",
  "string_utils",
