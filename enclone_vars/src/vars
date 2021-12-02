@@ -889,13 +889,71 @@ code:     let mut const_id = String::new();
           exact: const_id
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_REG
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
-level:    exact
+level:    cell-exact
 val:      nonnegative_integer
 doc:      TBD
 brief:    count amino acid motifs
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut n = 0;
+          for j in 0..ex.share.len() {
+              let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
+              n += reg.find_iter(strme(&aa)).count();
+          }
+          cell: vec![format!("{}", n); ex.ncells()]
+          exact: format!("{}", n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     count_cdr_REG
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    count amino acid motifs using only cdr
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     count_cdr{1..3}_REG
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    count amino acid motifs using only the given CDR
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     count_fwr_REG
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    count amino acid motifs using only FWR
+page:     enclone help lvars
+avail:    public
+notes:
+code:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     count_fwr{1..4}_REG
+inputs:   ?
+limits:
+class:    lvar
+level:    cell-exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    count amino acid motifs using only the given FWR
 page:     enclone help lvars
 avail:    public
 notes:

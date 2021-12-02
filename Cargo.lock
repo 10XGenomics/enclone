@@ -1614,6 +1614,7 @@ dependencies = [
  "ansi_escape",
  "attohttpc",
  "bio_edit",
+ "chrono",
  "debruijn",
  "enclone",
  "enclone_core",

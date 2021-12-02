@@ -10,13 +10,14 @@
 //
 // Also compute several other statistical entities.
 
+use chrono::prelude::*;
 use enclone_core::defs::get_config;
 use enclone_core::fetch_url;
 use flate2::read::MultiGzDecoder;
 use io_utils::{dir_list, path_exists};
 use itertools::Itertools;
 use mirror_sparse_matrix::MirrorSparseMatrix;
-use perf_stats::elapsed;
+use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use stats_utils::*;
@@ -304,151 +305,184 @@ pub fn feature_barcode_matrix(
     // Traverse the reads.
 
     println!("start parsing reads for {}", id);
-    let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
-    let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
-    for rf in read_files.iter() {
-        let f = format!("{}/{}", seq_def.read_path, rf);
-        let gz = MultiGzDecoder::new(File::open(&f).unwrap());
-        let b = BufReader::new(gz);
+    let mut buf = Vec::<Vec<u8>>::new(); // {barcode_umi_fb}
+                                         // let mut buf = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi, fb)}
+    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
+    let (mut ncanonical, mut nsemicanonical) = (0, 0);
+    let mut ndegen = 0;
+    for pass in 1..=2 {
+        let mut degen = Vec::<(Vec<u8>, Vec<u8>)>::new(); // {(barcode, umi)}
+        if verbosity > 0 {
+            println!("megapass {}", pass);
+        }
+        for (i, rf) in read_files.iter().enumerate() {
+            let local: DateTime<Local> = Local::now();
+            let local = format!("{:?}", local);
+            let time = local.between("T", ".");
+            if verbosity > 0 {
+                println!(
+                    "- at {}, processing dataset {} of {}; buf has size {} and degen has size {}",
+                    time,
+                    i + 1,
+                    read_files.len(),
+                    buf.len(),
+                    degen.len()
+                );
+            }
+            let f = format!("{}/{}", seq_def.read_path, rf);
+            let gz = MultiGzDecoder::new(File::open(&f).unwrap());
+            let b = BufReader::new(gz);
 
-        // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
-        // and line 6 is the read that contains the feature barcode.
+            // Paired reads are in groups of eight lines.  Line 2 is the cell barcode-umi read,
+            // and line 6 is the read that contains the feature barcode.
 
-        let mut count = 0;
-        let mut barcode = Vec::<u8>::new();
-        let mut umi = Vec::<u8>::new();
-        let mut read1 = Vec::<u8>::new();
-        let mut fb;
-        for line in b.lines() {
-            count += 1;
-            if count % 8 == 2 || count % 8 == 6 {
-                let s = line.unwrap();
-                let s = s.as_bytes();
-                if count % 8 == 2 {
-                    if s.len() < 28 {
-                        return Err(format!(
-                            "\nencountered read of length {} < 28 in {}\n",
-                            s.len(),
-                            f
-                        ));
-                    }
-                    assert!(s.len() >= 28);
-                    barcode = s[0..16].to_vec();
-                    umi = s[16..28].to_vec();
-                    read1 = s.to_vec();
-                } else {
-                    fb = s[10..25].to_vec();
-                    let mut degenerate = true;
-                    for i in 0..10 {
-                        if s[i] != b'G' {
-                            degenerate = false;
-                            break;
+            let mut count = 0;
+            let mut barcode = Vec::<u8>::new();
+            let mut umi = Vec::<u8>::new();
+            let mut read1 = Vec::<u8>::new();
+            let mut fb;
+            for line in b.lines() {
+                count += 1;
+                if count % 8 == 2 || count % 8 == 6 {
+                    let s = line.unwrap();
+                    let s = s.as_bytes();
+                    if count % 8 == 2 {
+                        if s.len() < 28 {
+                            return Err(format!(
+                                "\nencountered read of length {} < 28 in {}\n",
+                                s.len(),
+                                f
+                            ));
                         }
-                    }
-
-                    // Save.
-
-                    if verbosity == 2 {
-                        let (mut is_canonical, mut is_semicanonical) = (false, false);
-                        if degenerate {
-                            for j in 0..=read1.len() - canonical.len() {
-                                if read1[j..j + canonical.len()] == canonical {
-                                    is_canonical = true;
-                                    break;
-                                }
+                        assert!(s.len() >= 28);
+                        barcode = s[0..16].to_vec();
+                        umi = s[16..28].to_vec();
+                        read1 = s.to_vec();
+                    } else {
+                        fb = s[10..25].to_vec();
+                        let mut degenerate = true;
+                        for i in 0..10 {
+                            if s[i] != b'G' {
+                                degenerate = false;
+                                break;
                             }
                         }
-                        if degenerate && !is_canonical {
-                            for i in 0..18 {
-                                let mut w = true;
-                                for j in 0..10 {
-                                    if read1[i + j] != canonical[j] {
-                                        w = false;
+
+                        // Save.
+
+                        if verbosity == 2 {
+                            let (mut is_canonical, mut is_semicanonical) = (false, false);
+                            if degenerate {
+                                for j in 0..=read1.len() - canonical.len() {
+                                    if read1[j..j + canonical.len()] == canonical {
+                                        is_canonical = true;
                                         break;
                                     }
                                 }
-                                if w {
-                                    is_semicanonical = true;
-                                    break;
+                            }
+                            if degenerate && !is_canonical {
+                                for i in 0..18 {
+                                    let mut w = true;
+                                    for j in 0..10 {
+                                        if read1[i + j] != canonical[j] {
+                                            w = false;
+                                            break;
+                                        }
+                                    }
+                                    if w {
+                                        is_semicanonical = true;
+                                        break;
+                                    }
                                 }
                             }
+                            print!(
+                                "r: {} {} {} {} {} {}",
+                                strme(&barcode),
+                                strme(&umi),
+                                strme(&s[0..10]),
+                                strme(&fb),
+                                strme(&s[25..35]),
+                                strme(&s[35..55]),
+                            );
+                            if is_canonical {
+                                print!(" = canon");
+                            } else if is_semicanonical {
+                                print!(" = semi");
+                            }
+                            println!("");
                         }
-                        print!(
-                            "r: {} {} {} {} {} {}",
-                            strme(&barcode),
-                            strme(&umi),
-                            strme(&s[0..10]),
-                            strme(&fb),
-                            strme(&s[25..35]),
-                            strme(&s[35..55]),
-                        );
-                        if is_canonical {
-                            print!(" = canon");
-                        } else if is_semicanonical {
-                            print!(" = semi");
+                        if degenerate && pass == 1 {
+                            degen.push((barcode.clone(), umi.clone()));
+                        } else if pass == 2 {
+                            let mut x = barcode.clone();
+                            x.append(&mut umi.clone());
+                            x.append(&mut fb.clone());
+                            buf.push(x);
                         }
-                        println!("");
-                    }
-                    if degenerate {
-                        degen.push((barcode.clone(), umi.clone()));
-                    } else {
-                        buf.push((barcode.clone(), umi.clone(), fb.clone()));
                     }
                 }
             }
         }
-    }
 
-    // Build data structure for the degenerate reads.
+        // Build data structure for the degenerate reads.
 
-    let mut bdcs = Vec::<(String, u32, u32, u32)>::new();
-    degen.par_sort();
-    let (mut ncanonical, mut nsemicanonical) = (0, 0);
-    let mut i = 0;
-    while i < degen.len() {
-        let j = next_diff1_2(&degen, i as i32) as usize;
-        let (mut canon, mut semi) = (0, 0);
-        for k in i..j {
-            let mut read1 = degen[k].0.clone();
-            read1.append(&mut degen[k].1.clone());
-            let mut is_canonical = false;
-            for j in 0..=read1.len() - canonical.len() {
-                if read1[j..j + canonical.len()] == canonical {
-                    is_canonical = true;
-                    canon += 1;
-                    ncanonical += 1;
-                    break;
-                }
+        if pass == 1 {
+            if verbosity > 0 {
+                println!("parallel sorting");
             }
-            if !is_canonical {
-                for i in 0..18 {
-                    let mut w = true;
-                    for j in 0..10 {
-                        if read1[i + j] != canonical[j] {
-                            w = false;
+            degen.par_sort();
+            if verbosity > 0 {
+                println!("build data structure for degenerate reads");
+            }
+            let mut i = 0;
+            while i < degen.len() {
+                let j = next_diff1_2(&degen, i as i32) as usize;
+                let (mut canon, mut semi) = (0, 0);
+                for k in i..j {
+                    let mut read1 = degen[k].0.clone();
+                    read1.append(&mut degen[k].1.clone());
+                    let mut is_canonical = false;
+                    for j in 0..=read1.len() - canonical.len() {
+                        if read1[j..j + canonical.len()] == canonical {
+                            is_canonical = true;
+                            canon += 1;
+                            ncanonical += 1;
                             break;
                         }
                     }
-                    if w {
-                        semi += 1;
-                        nsemicanonical += 1;
-                        break;
+                    if !is_canonical {
+                        for i in 0..18 {
+                            let mut w = true;
+                            for j in 0..10 {
+                                if read1[i + j] != canonical[j] {
+                                    w = false;
+                                    break;
+                                }
+                            }
+                            if w {
+                                semi += 1;
+                                nsemicanonical += 1;
+                                break;
+                            }
+                        }
                     }
                 }
+                bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
+                i = j;
             }
+            ndegen = degen.len();
+            drop(degen);
         }
-        bdcs.push((stringme(&degen[i].0), (j - i) as u32, canon, semi));
-        i = j;
     }
 
     // Print summary stats.
 
-    let total_reads = degen.len() + buf.len();
+    let total_reads = ndegen + buf.len();
     if verbosity > 0 {
         println!("there are {} read pairs", total_reads);
         println!(
             "of which {:.1}% are degenerate",
-            percent_ratio(degen.len(), total_reads)
+            percent_ratio(ndegen, total_reads)
         );
         let canonical_percent = 100.0 * ncanonical as f64 / total_reads as f64;
         println!("canonical fraction = {:.1}%", canonical_percent);
@@ -461,11 +495,12 @@ pub fn feature_barcode_matrix(
 
     let mut fbs = Vec::<Vec<u8>>::new();
     for i in 0..buf.len() {
-        fbs.push(buf[i].2.clone());
+        fbs.push(buf[i][28..43].to_vec());
     }
     fbs.par_sort();
     let mut fb_freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbs, &mut fb_freq);
+    drop(fbs);
     const TOP_FEATURE_BARCODES: usize = 100;
     if fb_freq.len() > TOP_FEATURE_BARCODES {
         fb_freq.truncate(TOP_FEATURE_BARCODES);
@@ -488,7 +523,7 @@ pub fn feature_barcode_matrix(
     }
     let mut bf = Vec::<(Vec<u8>, Vec<u8>)>::new();
     for i in 0..buf.len() {
-        bf.push((buf[i].0.clone(), buf[i].2.clone()));
+        bf.push((buf[i][0..16].to_vec(), buf[i][28..43].to_vec()));
     }
     bf.par_sort();
     let mut brnr = Vec::<(String, u32, u32)>::new();
@@ -529,6 +564,7 @@ pub fn feature_barcode_matrix(
         brnr.push((stringme(&bf[i].0), refx, nrefx));
         i = j;
     }
+    drop(bf);
     let m_reads = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("after making m_reads, used {:.1} seconds", elapsed(&t));
@@ -540,16 +576,22 @@ pub fn feature_barcode_matrix(
 
     // Reduce buf to UMI counts.
 
-    let mut bfu = Vec::<(Vec<u8>, Vec<u8>, Vec<u8>)>::new(); // {(barcode, fb, umi)}
+    let mut bfu = Vec::<Vec<u8>>::new(); // {barcode_fb_umi}
     let mut singletons = 0;
     let mut i = 0;
     while i < buf.len() {
-        let j = next_diff12_3(&buf, i as i32) as usize;
+        let mut j = i + 1;
+        while j < buf.len() {
+            if buf[j][0..28] != buf[i][0..28] {
+                break;
+            }
+            j += 1;
+        }
         let mut sing = true;
-        if i > 0 && buf[i].0 == buf[i - 1].0 {
+        if i > 0 && buf[i][0..16] == buf[i - 1][0..16] {
             sing = false;
         }
-        if i < buf.len() - 1 && buf[i].0 == buf[i + 1].0 {
+        if i < buf.len() - 1 && buf[i][0..16] == buf[i + 1][0..16] {
             sing = false;
         }
         if sing {
@@ -557,29 +599,36 @@ pub fn feature_barcode_matrix(
         }
         let mut bfs = Vec::<String>::new();
         for k in i..j {
-            bfs.push(stringme(&buf[k].2));
+            bfs.push(stringme(&buf[k][28..43].to_vec()));
         }
         let mut uniq = true;
         for k in i + 1..j {
-            if buf[k].2 != buf[k - 1].2 {
+            if buf[k][28..43] != buf[k - 1][28..43] {
                 uniq = false;
             }
         }
         if uniq {
-            bfu.push((buf[i].0.clone(), buf[i].2.clone(), buf[i].1.clone()));
+            let mut x = buf[i][0..16].to_vec();
+            x.append(&mut buf[i][28..43].to_vec());
+            x.append(&mut buf[i][16..28].to_vec());
+            bfu.push(x);
         } else {
             // Sloppy, just take the most frequent feature barcode, ignoring quality scores.
             let mut fs = Vec::<Vec<u8>>::new();
             for k in i..j {
-                fs.push(buf[k].2.clone());
+                fs.push(buf[k][28..43].to_vec());
             }
             fs.sort();
             let mut freq = Vec::<(u32, Vec<u8>)>::new();
             make_freq(&fs, &mut freq);
-            bfu.push((buf[i].0.clone(), freq[0].1.clone(), buf[i].1.clone()));
+            let mut x = buf[i][0..16].to_vec();
+            x.append(&mut freq[0].1.clone());
+            x.append(&mut buf[i][16..28].to_vec());
+            bfu.push(x);
         }
         i = j;
     }
+    drop(buf);
     bfu.par_sort();
 
     // Make table of all barcodes, and for each, the number of reference and nonreference UMIs.
@@ -587,17 +636,23 @@ pub fn feature_barcode_matrix(
     let mut brn = Vec::<(String, u32, u32)>::new();
     let mut i = 0;
     while i < bfu.len() {
-        let j = next_diff1_3(&bfu, i as i32) as usize;
+        let mut j = i + 1;
+        while j < bfu.len() {
+            if bfu[j][0..16] != bfu[i][0..16] {
+                break;
+            }
+            j += 1;
+        }
         let mut refx = 0;
         let mut nrefx = 0;
         for k in i..j {
-            if bin_member(ref_fb, &stringme(&bfu[k].1)) {
+            if bin_member(ref_fb, &stringme(&bfu[k][16..31])) {
                 refx += 1;
             } else {
                 nrefx += 1;
             }
         }
-        brn.push((stringme(&bfu[i].0), refx, nrefx));
+        brn.push((stringme(&bfu[i][0..16]), refx, nrefx));
         i = j;
     }
 
@@ -609,7 +664,13 @@ pub fn feature_barcode_matrix(
         let mut bc = 0;
         let mut i = 0;
         while i < bfu.len() {
-            let j = next_diff1_3(&bfu, i as i32) as usize;
+            let mut j = i + 1;
+            while j < bfu.len() {
+                if bfu[j][0..16] != bfu[i][0..16] {
+                    break;
+                }
+                j += 1;
+            }
             bc += 1;
             i = j;
         }
@@ -618,14 +679,20 @@ pub fn feature_barcode_matrix(
     let mut bfn = Vec::<(Vec<u8>, Vec<u8>, usize)>::new(); // {(barcode, fb, numis)}
     let mut i = 0;
     while i < bfu.len() {
-        let j = next_diff12_3(&bfu, i as i32) as usize;
+        let mut j = i + 1;
+        while j < bfu.len() {
+            if bfu[j][0..31] != bfu[i][0..31] {
+                break;
+            }
+            j += 1;
+        }
         let mut n = 1;
         for k in i + 1..j {
-            if bfu[k].2 != bfu[k - 1].2 {
+            if bfu[k][31..43] != bfu[k - 1][31..43] {
                 n += 1;
             }
         }
-        bfn.push((bfu[i].0.clone(), bfu[i].1.clone(), n));
+        bfn.push((bfu[i][0..16].to_vec(), bfu[i][16..31].to_vec(), n));
         i = j;
     }
     if verbosity > 0 {
@@ -647,11 +714,16 @@ pub fn feature_barcode_matrix(
     }
     let mut fbx = Vec::<Vec<u8>>::new();
     for i in 0..bfu.len() {
-        fbx.push(bfu[i].1.clone());
+        fbx.push(bfu[i][16..31].to_vec());
+    }
+    drop(bfu);
+    if verbosity > 0 {
+        println!("parallel sorting fbx");
     }
     fbx.par_sort();
     let mut freq = Vec::<(u32, Vec<u8>)>::new();
     make_freq(&fbx, &mut freq);
+    drop(fbx);
     if verbosity > 0 {
         for i in 0..10 {
             println!("{} = {}", strme(&freq[i].1), freq[i].0);
@@ -698,9 +770,17 @@ pub fn feature_barcode_matrix(
         }
         i = j;
     }
+    drop(bfn);
+    if verbosity > 0 {
+        println!("building last mirror sparse matrix");
+    }
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
+        println!(
+            "peak mem usage for feature barcode matrix = {:.1} GB\n",
+            peak_mem_usage_gb()
+        );
     }
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }

@@ -792,15 +792,34 @@ fn test_licenses() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_formatting() {
-    let new = Command::new("cargo-fmt")
-        .arg("--all")
-        .arg("--")
-        .arg("--check")
-        .output()
-        .expect(&format!("failed to execute test_formatting"));
-    if new.status.code().unwrap() != 0 {
-        eprintln!("\nYou need to run rustfmt.\n");
-        eprintln!("{}\n", strme(&new.stdout));
-        std::process::exit(1);
+    let mut paths = Vec::<String>::new();
+    let all = dir_list("..");
+    for d in all.iter() {
+        let subs = ["src", "src/bin", "tests"];
+        for sub in subs.iter() {
+            let s = format!("../{}/{}", d, sub);
+            if path_exists(&s) {
+                let all = dir_list(&s);
+                for f in all.iter() {
+                    if f.ends_with(".rs") {
+                        let path = format!("{}/{}", s, f);
+                        paths.push(path);
+                    }
+                }
+            }
+        }
     }
+    paths.par_iter_mut().for_each(|path| {
+        let new = Command::new("rustfmt")
+            .arg("--edition")
+            .arg("2018")
+            .arg("--check")
+            .arg(&path)
+            .output()
+            .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt"));
+        if new.status.code() != Some(0) {
+            eprintln!("\nrustfmt of {} failed", path);
+            std::process::exit(1);
+        }
+    });
 }

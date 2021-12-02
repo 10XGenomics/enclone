@@ -8,13 +8,25 @@ use io_utils::*;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
-
 use std::io::Write;
 use std::os::unix::fs::PermissionsExt;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 use string_utils::{strme, TextUtils};
+
+fn mail(address: &str, title: &str) {
+    let process = std::process::Command::new("mail")
+        .arg("-s")
+        .arg(&title)
+        .arg(&address)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn();
+    let process = process.unwrap();
+    let msg = String::new();
+    process.stdin.unwrap().write_all(msg.as_bytes()).unwrap();
+}
 
 fn main() {
     PrettyTrace::new().on();
@@ -25,6 +37,20 @@ fn main() {
         eprintln!("\nrelease_nanny should not be run from a Mac\n");
         std::process::exit(1);
     }
+
+    // Determine email address.
+
+    let mut user = None;
+    for (key, value) in env::vars() {
+        if key == "USER" {
+            user = Some(value.clone());
+        }
+    }
+    if user.is_none() {
+        eprintln!("\nrelease nanny unable to determine user name\n");
+        std::process::exit(1);
+    }
+    let address = format!("{}@10xgenomics.com", user.unwrap());
 
     // Loop until enclone executable updates.
 
@@ -76,6 +102,11 @@ fn main() {
         // Test for change.
 
         if github_version != remote_version {
+            let msg = format!(
+                "release nanny start update from {} to {}",
+                github_version, remote_version,
+            );
+            mail(&address, &msg);
             let bin = &config["enclone_linux_bin"];
             let mut f = open_for_write_new![&remote_version_file];
             fwrite!(f, "{}\n", github_version);
@@ -107,6 +138,12 @@ fn main() {
             }
             let perms = std::fs::Permissions::from_mode(0o775);
             std::fs::set_permissions(&current, perms).unwrap();
+            let msg = format!(
+                "release nanny end update from {} to {}",
+                github_version, remote_version,
+            );
+            mail(&address, &msg);
+
             break;
         }
     }

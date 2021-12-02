@@ -23,13 +23,17 @@
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # partially check prerequisites
-#
-# other dependencies that should be checked: dot
 
 foreach pkg (sweep fmt license depgraph)
     cargo $pkg --help >& /dev/null
     if ( $status != 0 ) then
         echo "looks like the prereq cargo $pkg is missing; try cargo install cargo-$pkg"
+        exit 1
+    endif
+end
+foreach prog (dot samtools)
+    if (`where $prog` == "") then
+        echo "Please run brew install $prog or equivalent."
         exit 1
     endif
 end
@@ -74,11 +78,20 @@ mkdir -p enclone_exec/testx/outputs
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # run rustfmt
+#
+# The second form does not test all files!
 
 echo "formatting"
-cargo fmt --all
-if ( $status != 0 ) then
-    exit 1
+if (`where rustfmt_del` == "") then
+    cargo fmt --all
+    if ( $status != 0 ) then
+        exit 1
+    endif
+else
+    rustfmt_del
+    if ( $status != 0 ) then
+        exit 1
+    endif
 endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

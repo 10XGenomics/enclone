@@ -332,11 +332,9 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_") || x.contains(":count_") {
+    } else if x.contains(":count_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_") {
-            x = x.before(":count_").to_string();
-        }
+        x = x.before(":count_").to_string();
         y = y.after("count_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;

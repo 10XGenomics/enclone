@@ -25,6 +25,7 @@ use enclone_tools::feature_barcode_matrix::{
     feature_barcode_matrix, feature_barcode_matrix_seq_def, SequencingDef,
 };
 use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
+use itertools::Itertools;
 use mirror_sparse_matrix::write_to_file;
 use pretty_trace::PrettyTrace;
 use serde_json::Value;
@@ -38,6 +39,7 @@ use string_utils::{parse_csv, TextUtils};
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
+    println!("in import_data, args = {}", args[1..].iter().format(" "));
     let mut fb_info = false;
     let mut fb_info_write = false;
     let mut verbosity = 0;
@@ -285,10 +287,7 @@ fn main() {
 
             // Keep going.
 
-            let mut verb = verbosity;
-            if verb == 0 && (fb_info || fb_info_write) {
-                verb = 1;
-            }
+            let verb = std::cmp::max(1, verbosity);
             let x = feature_barcode_matrix(&seq_def.unwrap(), id.force_usize(), verb, &ref_fb);
             if fb_info {
                 std::process::exit(0);
