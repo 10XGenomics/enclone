@@ -90,228 +90,557 @@ pub fn proc_lvar_auto(
 
     let val = if false {
         (String::new(), Vec::<String>::new(), String::new())
-    } else if var == "clonotype_ncells" {
+    } else if var == "type" {
+        let mut cell_types = Vec::<String>::new(); /*
+                                                   for j in 0..ex.clones.len() {
+                                                       let mut cell_type = "".to_string();
+                                                       let bc = &ex.clones[j][0].barcode;
+                                                       let li = ex.clones[j][0].dataset_index;
+                                                       if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                                           cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+                                                       }
+                                                       cell_types.push(cell_type);
+                                                   }
+                                                   */
+        cell_types.sort();
+
+        (abbrev_list(&cell_types), Vec::new(), "exact".to_string())
+    } else if var == "sec" {
         let mut n = 0;
-        for u in exacts.iter() {
-            n += exact_clonotypes[*u].ncells();
+        let mut y = Vec::<String>::new();
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
+                    n += count;
+                }
+                y.push(format!("{}", count));
+            }
         }
 
-        (format!("{}", n), Vec::new(), "clono".to_string())
-    } else if var == "clust" {
-        let mut clust = Vec::<usize>::new();
+        (format!("{}", n), y, "cell-exact".to_string())
+    } else if var == "sec_cell" {
+        let mut n = 0;
+        let mut y = Vec::<String>::new();
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
+                    n += count;
+                }
+                y.push(format!("{}", count));
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (String::new(), y, "cell-exact".to_string())
+    } else if var == "ppe" {
+        (String::new(), Vec::new(), "cell".to_string())
+    } else if var == "pe" {
+        (String::new(), Vec::new(), "cell".to_string())
+    } else if var == "origins" {
+        let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
-            let mut cid = 0;
+            if ex.clones[j][0].origin_index.is_some() {
+                origins.push(
+                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                );
+            } else {
+                origins.push("?".to_string());
+            }
+        }
+        let origins_unsorted = origins.clone();
+        unique_sort(&mut origins);
+
+        (
+            format!("{}", origins.iter().format(",")),
+            origins_unsorted,
+            "cell-exact".to_string(),
+        )
+    } else if var == "origins_cell" {
+        let mut origins = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].origin_index.is_some() {
+                origins.push(
+                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                );
+            } else {
+                origins.push("?".to_string());
+            }
+        }
+        let origins_unsorted = origins.clone();
+        unique_sort(&mut origins);
+
+        let _exact = format!("{}", origins.iter().format(","));
+        (String::new(), origins_unsorted, "cell-exact".to_string())
+    } else if var == "npe" {
+        (String::new(), Vec::new(), "cell".to_string())
+    } else if var == "near" {
+        let near;
+        let mut dist = 1_000_000;
+        for i2 in 0..varmat.len() {
+            if i2 == u || fp[i2] != fp[u] {
+                continue;
+            }
+            let mut d = 0;
+            for c in fp[u].iter() {
+                for j in 0..varmat[u][*c].len() {
+                    if varmat[u][*c][j] != varmat[i2][*c][j] {
+                        d += 1;
+                    }
+                }
+            }
+            dist = min(dist, d);
+        }
+        if dist == 1_000_000 {
+            near = "".to_string()
+        } else {
+            near = format!("{}", dist)
+        }
+
+        (near, Vec::new(), "exact".to_string())
+    } else if var == "nchains_present" {
+        (
+            format!("{}", exact_clonotypes[exacts[u]].share.len()),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "nchains" {
+        (
+            format!("{}", rsi.mat.len()),
+            Vec::new(),
+            "clono".to_string(),
+        )
+    } else if var == "nbc" {
+        let mut nbc = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = ex.clones[j][0].barcode.before("-").as_bytes();
+            let mut n = 0 as u64;
+            for k in 0..bc.len() {
+                if k > 0 {
+                    n *= 4;
+                }
+                if bc[k] == b'C' {
+                    n += 1;
+                } else if bc[k] == b'G' {
+                    n += 2;
+                } else if bc[k] == b'T' {
+                    n += 3;
+                }
+            }
+            nbc.push(format!("{:010}", n));
+        }
+
+        (String::new(), nbc, "cell".to_string())
+    } else if var == "n_other" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        (format!("{}", n), ns, "cell-exact".to_string())
+    } else if var == "n_other_cell" {
+        let mut n = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut found = false;
+            let di = ex.clones[j][0].dataset_index;
+            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
+            for i in 0..nd_fields.len() {
+                if f == nd_fields[i] {
+                    found = true;
+                }
+            }
+            if !found {
+                n += 1;
+                ns.push("1.0".to_string());
+            } else {
+                ns.push("0.0".to_string());
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (String::new(), ns, "cell-exact".to_string())
+    } else if var == "n_gex" {
+        let mut n = Vec::<String>::new();
+        let mut n_gex = 0;
+        for x in n_gexs.iter() {
+            n.push(format!("{}", *x));
+            n_gex += *x;
+        }
+
+        (format!("{}", n_gex), n, "cell-exact".to_string())
+    } else if var == "n_gex_cell" {
+        let mut n = Vec::<String>::new();
+        let mut n_gex = 0;
+        for x in n_gexs.iter() {
+            n.push(format!("{}", *x));
+            n_gex += *x;
+        }
+
+        let _exact = format!("{}", n_gex);
+        (String::new(), n, "cell-exact".to_string())
+    } else if var == "n_b" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
             let bc = &ex.clones[j][0].barcode;
             let li = ex.clones[j][0].dataset_index;
-            if gex_info.cluster[li].contains_key(&bc.clone()) {
-                cid = gex_info.cluster[li][&bc.clone()];
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
+                }
             }
-            clust.push(cid);
         }
-        let mut clustf = Vec::<String>::new();
-        for x in clust.iter() {
-            clustf.push(format!("{}", x));
-        }
-        clust.sort_unstable();
 
-        (abbrev_list(&clust), clustf, "cell-exect".to_string())
-    } else if var == "cred" {
-        let mut credsx = Vec::<f64>::new();
-        for l in 0..ex.clones.len() {
-            let bc = &ex.clones[l][0].barcode;
-            let li = ex.clones[l][0].dataset_index;
-            if gex_info.pca[li].contains_key(&bc.clone()) {
-                let mut creds = 0;
-                let mut z = Vec::<(f64, String)>::new();
-                let x = &gex_info.pca[li][&bc.clone()];
-                for y in gex_info.pca[li].iter() {
-                    let mut dist2 = 0.0;
-                    for m in 0..x.len() {
-                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
-                    }
-                    z.push((dist2, y.0.clone()));
+        (format!("{}", n_b), ns, "cell-exact".to_string())
+    } else if var == "n_b_cell" {
+        let mut n_b = 0;
+        let mut ns = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                    n_b += 1;
+                    ns.push("1.0".to_string());
+                } else {
+                    ns.push("0.0".to_string());
                 }
-                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let top = n_vdj_gex[li];
-                for i in 0..top {
-                    if bin_member(&vdj_cells[li], &z[i].1) {
-                        creds += 1;
-                    }
-                }
-                let pc = 100.0 * creds as f64 / top as f64;
-                credsx.push(pc);
-            } else {
-                credsx.push(0.0);
             }
         }
-        let credsx_unsorted = credsx.clone();
-        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        let mut r = Vec::<String>::new();
-        for j in 0..credsx_unsorted.len() {
-            r.push(format!("{:.1}", credsx_unsorted[j]));
+
+        let _exact = format!("{}", n_b);
+        (String::new(), ns, "cell-exact".to_string())
+    } else if var == "n" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        (format!("{}", mults[u]), counts, "cell-exact".to_string())
+    } else if var == "n_cell" {
+        let counts = vec!["1.0".to_string(); mults[u]];
+
+        let _exact = format!("{}", mults[u]);
+        (String::new(), counts, "cell-exact".to_string())
+    } else if var == "mem" {
+        let mut n = 0;
+        let mut y = Vec::<String>::new();
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
+                    n += count;
+                }
+                y.push(format!("{}", count));
+            }
         }
+
+        (format!("{}", n), y, "cell-exact".to_string())
+    } else if var == "mem_cell" {
+        let mut n = 0;
+        let mut y = Vec::<String>::new();
+        if ctl.gen_opt.using_secmem {
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
+                    n += count;
+                }
+                y.push(format!("{}", count));
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (String::new(), y, "cell-exact".to_string())
+    } else if var == "mark" {
+        let mut n = 0;
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].marked {
+                n += 1;
+            }
+        }
+
+        (format!("{}", n), Vec::new(), "exact".to_string())
+    } else if var == "mait" {
+        let mut s = String::new();
+        let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
+        let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
+        let beta_g = ex.share[0].mait_beta_chain_gene_match;
+        let beta_j = ex.share[0].mait_beta_chain_junction_match;
+        if alpha_g || alpha_j {
+            s += "𝝰";
+            if alpha_g {
+                s += "g";
+            }
+            if alpha_j {
+                s += "j";
+            }
+        }
+        if beta_g || beta_j {
+            s += "𝝱";
+            if beta_g {
+                s += "g";
+            }
+            if beta_j {
+                s += "j";
+            }
+        }
+
+        (s, Vec::new(), "exact".to_string())
+    } else if var == "inkt" {
+        let mut s = String::new();
+        let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
+        let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
+        let beta_g = ex.share[0].inkt_beta_chain_gene_match;
+        let beta_j = ex.share[0].inkt_beta_chain_junction_match;
+        if alpha_g || alpha_j {
+            s += "𝝰";
+            if alpha_g {
+                s += "g";
+            }
+            if alpha_j {
+                s += "j";
+            }
+        }
+        if beta_g || beta_j {
+            s += "𝝱";
+            if beta_g {
+                s += "g";
+            }
+            if beta_j {
+                s += "j";
+            }
+        }
+
+        (s, Vec::new(), "exact".to_string())
+    } else if var.starts_with("g")
+        && var.ends_with("")
+        && var.between2("g", "").parse::<i64>().is_ok()
+        && var.between2("g", "").force_i64() >= 0
+    {
+        let arg1 = var.between2("g", "").force_i64();
+        let d = arg1 as usize;
+        let answer = if groups.contains_key(&d) {
+            format!("{}", groups[&d][u] + 1)
+        } else {
+            String::new()
+        };
+
+        (answer, Vec::new(), "exact".to_string())
+    } else if var == "gex_μ" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
 
         (
-            format!("{:.1}", median_f64(&credsx)),
-            r,
-            "cell-exact".to_string(),
+            format!("{}", gex_mean.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
         )
-    } else if var == "cred_cell" {
-        let mut credsx = Vec::<f64>::new();
-        for l in 0..ex.clones.len() {
-            let bc = &ex.clones[l][0].barcode;
-            let li = ex.clones[l][0].dataset_index;
-            if gex_info.pca[li].contains_key(&bc.clone()) {
-                let mut creds = 0;
-                let mut z = Vec::<(f64, String)>::new();
-                let x = &gex_info.pca[li][&bc.clone()];
-                for y in gex_info.pca[li].iter() {
-                    let mut dist2 = 0.0;
-                    for m in 0..x.len() {
-                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
-                    }
-                    z.push((dist2, y.0.clone()));
-                }
-                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let top = n_vdj_gex[li];
-                for i in 0..top {
-                    if bin_member(&vdj_cells[li], &z[i].1) {
-                        creds += 1;
-                    }
-                }
-                let pc = 100.0 * creds as f64 / top as f64;
-                credsx.push(pc);
-            } else {
-                credsx.push(0.0);
-            }
-        }
-        let credsx_unsorted = credsx.clone();
-        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        let mut r = Vec::<String>::new();
-        for j in 0..credsx_unsorted.len() {
-            r.push(format!("{:.1}", credsx_unsorted[j]));
-        }
-
-        let _exact = format!("{:.1}", median_f64(&credsx));
-        (String::new(), r, "cell-exact".to_string())
-    } else if var == "datasets" {
-        let mut datasets = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
-        }
-        let mut datasets_unique = datasets.clone();
-        unique_sort(&mut datasets_unique);
+    } else if var == "gex_Σ" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
 
         (
-            format!("{}", datasets_unique.iter().format(",")),
-            datasets,
-            "cell-exact".to_string(),
+            format!("{}", gex_sum.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
         )
-    } else if var == "datasets_cell" {
-        let mut datasets = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
-        }
-        let mut datasets_unique = datasets.clone();
-        unique_sort(&mut datasets_unique);
-
-        let _exact = format!("{}", datasets_unique.iter().format(","));
-        (String::new(), datasets, "cell-exact".to_string())
-    } else if var == "donors" {
-        let mut donors = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
-            }
-        }
-        let donors_unsorted = donors.clone();
-        unique_sort(&mut donors);
+    } else if var == "gex_sum" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
 
         (
-            format!("{}", donors.iter().format(",")),
-            donors_unsorted,
-            "cell-exact".to_string(),
+            format!("{}", gex_sum.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
         )
-    } else if var == "donors_cell" {
-        let mut donors = Vec::<String>::new();
+    } else if var == "gex_min" {
+        (
+            format!("{}", gex_counts_unsorted.iter().min().unwrap()),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_mean" {
+        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
+        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
+
+        (
+            format!("{}", gex_mean.round() as usize),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex_max" {
+        (
+            format!("{}", gex_counts_unsorted.iter().max().unwrap()),
+            Vec::new(),
+            "exact".to_string(),
+        )
+    } else if var == "gex" {
+        let mut f = Vec::<String>::new();
+        for x in gex_fcounts_unsorted.iter() {
+            f.push(format!("{}", *x));
+        }
+        let mut counts = gex_counts_unsorted.clone();
+        counts.sort_unstable();
+        let gex_median = rounded_median(&counts);
+
+        (format!("{}", gex_median), f, "cell-exact".to_string())
+    } else if var == "gex_cell" {
+        let mut f = Vec::<String>::new();
+        for x in gex_fcounts_unsorted.iter() {
+            f.push(format!("{}", *x));
+        }
+        let mut counts = gex_counts_unsorted.clone();
+        counts.sort_unstable();
+        let gex_median = rounded_median(&counts);
+
+        let _exact = format!("{}", gex_median);
+        (String::new(), f, "cell-exact".to_string())
+    } else if var == "filter" {
+        let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {
-            if ex.clones[j][0].donor_index.is_some() {
-                donors
-                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
-            } else {
-                donors.push("?".to_string());
+            let mut f = String::new();
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if fate[li].contains_key(&bc.clone()) {
+                f = fate[li][&bc.clone()].clone();
+                f = f.between(" ", " ").to_string();
             }
-        }
-        let donors_unsorted = donors.clone();
-        unique_sort(&mut donors);
-
-        let _exact = format!("{}", donors.iter().format(","));
-        (String::new(), donors_unsorted, "cell-exact".to_string())
-    } else if var == "dref" {
-        let mut diffs = 0;
-        for m in 0..cols {
-            if mat[m][u].is_some() {
-                let r = mat[m][u].unwrap();
-                let seq = &ex.share[r].seq_del_amino;
-                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                if rsi.vpids[m].is_some() {
-                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                }
-                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                let z = seq.len();
-                for p in 0..z {
-                    let b = seq[p];
-                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
-                        diffs += 1;
-                    }
-                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
-                        && b != jref[jref.len() - (z - p)]
-                    {
-                        diffs += 1;
-                    }
-                }
-            }
+            fates.push(f);
         }
 
-        (format!("{}", diffs), Vec::new(), "exact".to_string())
-    } else if var == "dref_aa" {
-        let mut diffs = 0;
-        for m in 0..cols {
-            if mat[m][u].is_some() {
-                let r = mat[m][u].unwrap();
-                let aa_seq = &ex.share[r].aa_mod_indel;
-                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                if rsi.vpids[m].is_some() {
-                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+        (String::new(), fates, "cell".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("_n")
+        && var.between2("fb", "_n").parse::<i64>().is_ok()
+        && var.between2("fb", "_n").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "_n").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let median;
+        let mut counts;
+        if n >= ncols {
+            median = 0;
+            counts = vec!["0".to_string(); ex.ncells()];
+        } else {
+            counts = Vec::<String>::new();
+            let mut counts_sorted = Vec::<usize>::new();
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                    counts_sorted.push(0);
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                    counts_sorted.push(x);
                 }
-                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                let z = 3 * aa_seq.len() + 1;
-                for p in 0..aa_seq.len() {
-                    if aa_seq[p] == b'-' {
-                        diffs += 1;
-                        continue;
-                    }
-                    if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
-                        && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
-                    {
-                        diffs += 1;
-                    }
-                    if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
-                        && aa_seq[p]
-                            != codon_to_aa(
-                                &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
-                            )
-                    {
-                        diffs += 1;
+            }
+            counts_sorted.sort_unstable();
+            median = rounded_median(&counts_sorted);
+        }
+
+        (format!("{}", median), counts, "cell-exact".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("_n_cell")
+        && var.between2("fb", "_n_cell").parse::<i64>().is_ok()
+        && var.between2("fb", "_n_cell").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "_n_cell").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let median;
+        let mut counts;
+        if n >= ncols {
+            median = 0;
+            counts = vec!["0".to_string(); ex.ncells()];
+        } else {
+            counts = Vec::<String>::new();
+            let mut counts_sorted = Vec::<usize>::new();
+            for l in 0..ex.clones.len() {
+                let bc = ex.clones[l][0].barcode.clone();
+                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
+                if p < 0 {
+                    counts.push("0".to_string());
+                    counts_sorted.push(0);
+                } else {
+                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
+                    counts.push(format!("{}", x));
+                    counts_sorted.push(x);
+                }
+            }
+            counts_sorted.sort_unstable();
+            median = rounded_median(&counts_sorted);
+        }
+
+        let _exact = format!("{}", median);
+        (String::new(), counts, "cell-exact".to_string())
+    } else if var.starts_with("fb")
+        && var.ends_with("")
+        && var.between2("fb", "").parse::<i64>().is_ok()
+        && var.between2("fb", "").force_i64() >= 1
+    {
+        let arg1 = var.between2("fb", "").force_i64();
+        let ncols = gex_info.fb_top_matrices[0].ncols();
+        let n = (arg1 - 1) as usize;
+        let fb = if n < ncols {
+            gex_info.fb_top_matrices[0].col_label(n)
+        } else {
+            String::new()
+        };
+
+        ((*fb).to_string(), Vec::new(), "exact".to_string())
+    } else if var == "far" {
+        let mut dist = -1_isize;
+        for i2 in 0..varmat.len() {
+            if i2 == u || fp[i2] != fp[u] {
+                continue;
+            }
+            let mut d = 0_isize;
+            for c in fp[u].iter() {
+                for j in 0..varmat[u][*c].len() {
+                    if varmat[u][*c][j] != varmat[i2][*c][j] {
+                        d += 1;
                     }
                 }
             }
+            dist = max(dist, d);
+        }
+        let d;
+        if dist == -1_isize {
+            d = "".to_string();
+        } else {
+            d = format!("{}", dist);
         }
 
-        (format!("{}", diffs), Vec::new(), "exact".to_string())
+        (d, Vec::new(), "exact".to_string())
     } else if var == "entropy" {
         let mut total_counts = Vec::<usize>::new();
         for l in 0..ex.clones.len() {
@@ -541,557 +870,228 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{:.2}", entropy);
         (String::new(), e, "cell-exact".to_string())
-    } else if var == "far" {
-        let mut dist = -1_isize;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0_isize;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
+    } else if var == "dref_aa" {
+        let mut diffs = 0;
+        for m in 0..cols {
+            if mat[m][u].is_some() {
+                let r = mat[m][u].unwrap();
+                let aa_seq = &ex.share[r].aa_mod_indel;
+                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                if rsi.vpids[m].is_some() {
+                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                let z = 3 * aa_seq.len() + 1;
+                for p in 0..aa_seq.len() {
+                    if aa_seq[p] == b'-' {
+                        diffs += 1;
+                        continue;
+                    }
+                    if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
+                        && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
+                    {
+                        diffs += 1;
+                    }
+                    if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
+                        && aa_seq[p]
+                            != codon_to_aa(
+                                &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
+                            )
+                    {
+                        diffs += 1;
                     }
                 }
             }
-            dist = max(dist, d);
-        }
-        let d;
-        if dist == -1_isize {
-            d = "".to_string();
-        } else {
-            d = format!("{}", dist);
         }
 
-        (d, Vec::new(), "exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("")
-        && var.between2("fb", "").parse::<i64>().is_ok()
-        && var.between2("fb", "").force_i64() >= 1
-    {
-        let arg1 = var.between2("fb", "").force_i64();
-        let ncols = gex_info.fb_top_matrices[0].ncols();
-        let n = (arg1 - 1) as usize;
-        let fb = if n < ncols {
-            gex_info.fb_top_matrices[0].col_label(n)
-        } else {
-            String::new()
-        };
-
-        ((*fb).to_string(), Vec::new(), "exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("_n")
-        && var.between2("fb", "_n").parse::<i64>().is_ok()
-        && var.between2("fb", "_n").force_i64() >= 1
-    {
-        let arg1 = var.between2("fb", "_n").force_i64();
-        let ncols = gex_info.fb_top_matrices[0].ncols();
-        let n = (arg1 - 1) as usize;
-        let median;
-        let mut counts;
-        if n >= ncols {
-            median = 0;
-            counts = vec!["0".to_string(); ex.ncells()];
-        } else {
-            counts = Vec::<String>::new();
-            let mut counts_sorted = Vec::<usize>::new();
-            for l in 0..ex.clones.len() {
-                let bc = ex.clones[l][0].barcode.clone();
-                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
-                if p < 0 {
-                    counts.push("0".to_string());
-                    counts_sorted.push(0);
-                } else {
-                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
-                    counts.push(format!("{}", x));
-                    counts_sorted.push(x);
+        (format!("{}", diffs), Vec::new(), "exact".to_string())
+    } else if var == "dref" {
+        let mut diffs = 0;
+        for m in 0..cols {
+            if mat[m][u].is_some() {
+                let r = mat[m][u].unwrap();
+                let seq = &ex.share[r].seq_del_amino;
+                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                if rsi.vpids[m].is_some() {
+                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
                 }
-            }
-            counts_sorted.sort_unstable();
-            median = rounded_median(&counts_sorted);
-        }
-
-        (format!("{}", median), counts, "cell-exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("_n_cell")
-        && var.between2("fb", "_n_cell").parse::<i64>().is_ok()
-        && var.between2("fb", "_n_cell").force_i64() >= 1
-    {
-        let arg1 = var.between2("fb", "_n_cell").force_i64();
-        let ncols = gex_info.fb_top_matrices[0].ncols();
-        let n = (arg1 - 1) as usize;
-        let median;
-        let mut counts;
-        if n >= ncols {
-            median = 0;
-            counts = vec!["0".to_string(); ex.ncells()];
-        } else {
-            counts = Vec::<String>::new();
-            let mut counts_sorted = Vec::<usize>::new();
-            for l in 0..ex.clones.len() {
-                let bc = ex.clones[l][0].barcode.clone();
-                let p = bin_position(&gex_info.fb_top_barcodes[0], &bc);
-                if p < 0 {
-                    counts.push("0".to_string());
-                    counts_sorted.push(0);
-                } else {
-                    let x = gex_info.fb_top_matrices[0].value(p as usize, n);
-                    counts.push(format!("{}", x));
-                    counts_sorted.push(x);
-                }
-            }
-            counts_sorted.sort_unstable();
-            median = rounded_median(&counts_sorted);
-        }
-
-        let _exact = format!("{}", median);
-        (String::new(), counts, "cell-exact".to_string())
-    } else if var == "filter" {
-        let mut fates = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let mut f = String::new();
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if fate[li].contains_key(&bc.clone()) {
-                f = fate[li][&bc.clone()].clone();
-                f = f.between(" ", " ").to_string();
-            }
-            fates.push(f);
-        }
-
-        (String::new(), fates, "cell".to_string())
-    } else if var == "gex" {
-        let mut f = Vec::<String>::new();
-        for x in gex_fcounts_unsorted.iter() {
-            f.push(format!("{}", *x));
-        }
-        let mut counts = gex_counts_unsorted.clone();
-        counts.sort_unstable();
-        let gex_median = rounded_median(&counts);
-
-        (format!("{}", gex_median), f, "cell-exact".to_string())
-    } else if var == "gex_cell" {
-        let mut f = Vec::<String>::new();
-        for x in gex_fcounts_unsorted.iter() {
-            f.push(format!("{}", *x));
-        }
-        let mut counts = gex_counts_unsorted.clone();
-        counts.sort_unstable();
-        let gex_median = rounded_median(&counts);
-
-        let _exact = format!("{}", gex_median);
-        (String::new(), f, "cell-exact".to_string())
-    } else if var == "gex_max" {
-        (
-            format!("{}", gex_counts_unsorted.iter().max().unwrap()),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "gex_mean" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
-
-        (
-            format!("{}", gex_mean.round() as usize),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "gex_min" {
-        (
-            format!("{}", gex_counts_unsorted.iter().min().unwrap()),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "gex_sum" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-
-        (
-            format!("{}", gex_sum.round() as usize),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "gex_Σ" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-
-        (
-            format!("{}", gex_sum.round() as usize),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "gex_μ" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-        let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
-
-        (
-            format!("{}", gex_mean.round() as usize),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var.starts_with("g")
-        && var.ends_with("")
-        && var.between2("g", "").parse::<i64>().is_ok()
-        && var.between2("g", "").force_i64() >= 0
-    {
-        let arg1 = var.between2("g", "").force_i64();
-        let d = arg1 as usize;
-        let answer = if groups.contains_key(&d) {
-            format!("{}", groups[&d][u] + 1)
-        } else {
-            String::new()
-        };
-
-        (answer, Vec::new(), "exact".to_string())
-    } else if var == "inkt" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
-        let beta_g = ex.share[0].inkt_beta_chain_gene_match;
-        let beta_j = ex.share[0].inkt_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-
-        (s, Vec::new(), "exact".to_string())
-    } else if var == "mait" {
-        let mut s = String::new();
-        let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
-        let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
-        let beta_g = ex.share[0].mait_beta_chain_gene_match;
-        let beta_j = ex.share[0].mait_beta_chain_junction_match;
-        if alpha_g || alpha_j {
-            s += "𝝰";
-            if alpha_g {
-                s += "g";
-            }
-            if alpha_j {
-                s += "j";
-            }
-        }
-        if beta_g || beta_j {
-            s += "𝝱";
-            if beta_g {
-                s += "g";
-            }
-            if beta_j {
-                s += "j";
-            }
-        }
-
-        (s, Vec::new(), "exact".to_string())
-    } else if var == "mark" {
-        let mut n = 0;
-        for j in 0..ex.clones.len() {
-            if ex.clones[j][0].marked {
-                n += 1;
-            }
-        }
-
-        (format!("{}", n), Vec::new(), "exact".to_string())
-    } else if var == "mem" {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        if ctl.gen_opt.using_secmem {
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                    n += count;
-                }
-                y.push(format!("{}", count));
-            }
-        }
-
-        (format!("{}", n), y, "cell-exact".to_string())
-    } else if var == "mem_cell" {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        if ctl.gen_opt.using_secmem {
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                    n += count;
-                }
-                y.push(format!("{}", count));
-            }
-        }
-
-        let _exact = format!("{}", n);
-        (String::new(), y, "cell-exact".to_string())
-    } else if var == "n" {
-        let counts = vec!["1.0".to_string(); mults[u]];
-
-        (format!("{}", mults[u]), counts, "cell-exact".to_string())
-    } else if var == "n_cell" {
-        let counts = vec!["1.0".to_string(); mults[u]];
-
-        let _exact = format!("{}", mults[u]);
-        (String::new(), counts, "cell-exact".to_string())
-    } else if var == "n_b" {
-        let mut n_b = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                    n_b += 1;
-                    ns.push("1.0".to_string());
-                } else {
-                    ns.push("0.0".to_string());
-                }
-            }
-        }
-
-        (format!("{}", n_b), ns, "cell-exact".to_string())
-    } else if var == "n_b_cell" {
-        let mut n_b = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let bc = &ex.clones[j][0].barcode;
-            let li = ex.clones[j][0].dataset_index;
-            if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                    n_b += 1;
-                    ns.push("1.0".to_string());
-                } else {
-                    ns.push("0.0".to_string());
-                }
-            }
-        }
-
-        let _exact = format!("{}", n_b);
-        (String::new(), ns, "cell-exact".to_string())
-    } else if var == "n_gex" {
-        let mut n = Vec::<String>::new();
-        let mut n_gex = 0;
-        for x in n_gexs.iter() {
-            n.push(format!("{}", *x));
-            n_gex += *x;
-        }
-
-        (format!("{}", n_gex), n, "cell-exact".to_string())
-    } else if var == "n_gex_cell" {
-        let mut n = Vec::<String>::new();
-        let mut n_gex = 0;
-        for x in n_gexs.iter() {
-            n.push(format!("{}", *x));
-            n_gex += *x;
-        }
-
-        let _exact = format!("{}", n_gex);
-        (String::new(), n, "cell-exact".to_string())
-    } else if var == "n_other" {
-        let mut n = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let mut found = false;
-            let di = ex.clones[j][0].dataset_index;
-            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
-            for i in 0..nd_fields.len() {
-                if f == nd_fields[i] {
-                    found = true;
-                }
-            }
-            if !found {
-                n += 1;
-                ns.push("1.0".to_string());
-            } else {
-                ns.push("0.0".to_string());
-            }
-        }
-
-        (format!("{}", n), ns, "cell-exact".to_string())
-    } else if var == "n_other_cell" {
-        let mut n = 0;
-        let mut ns = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let mut found = false;
-            let di = ex.clones[j][0].dataset_index;
-            let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
-            for i in 0..nd_fields.len() {
-                if f == nd_fields[i] {
-                    found = true;
-                }
-            }
-            if !found {
-                n += 1;
-                ns.push("1.0".to_string());
-            } else {
-                ns.push("0.0".to_string());
-            }
-        }
-
-        let _exact = format!("{}", n);
-        (String::new(), ns, "cell-exact".to_string())
-    } else if var == "nbc" {
-        let mut nbc = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let bc = ex.clones[j][0].barcode.before("-").as_bytes();
-            let mut n = 0 as u64;
-            for k in 0..bc.len() {
-                if k > 0 {
-                    n *= 4;
-                }
-                if bc[k] == b'C' {
-                    n += 1;
-                } else if bc[k] == b'G' {
-                    n += 2;
-                } else if bc[k] == b'T' {
-                    n += 3;
-                }
-            }
-            nbc.push(format!("{:010}", n));
-        }
-
-        (String::new(), nbc, "cell".to_string())
-    } else if var == "nchains" {
-        (
-            format!("{}", rsi.mat.len()),
-            Vec::new(),
-            "clono".to_string(),
-        )
-    } else if var == "nchains_present" {
-        (
-            format!("{}", exact_clonotypes[exacts[u]].share.len()),
-            Vec::new(),
-            "exact".to_string(),
-        )
-    } else if var == "near" {
-        let near;
-        let mut dist = 1_000_000;
-        for i2 in 0..varmat.len() {
-            if i2 == u || fp[i2] != fp[u] {
-                continue;
-            }
-            let mut d = 0;
-            for c in fp[u].iter() {
-                for j in 0..varmat[u][*c].len() {
-                    if varmat[u][*c][j] != varmat[i2][*c][j] {
-                        d += 1;
+                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                let z = seq.len();
+                for p in 0..z {
+                    let b = seq[p];
+                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                        diffs += 1;
+                    }
+                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (z - p)]
+                    {
+                        diffs += 1;
                     }
                 }
             }
-            dist = min(dist, d);
-        }
-        if dist == 1_000_000 {
-            near = "".to_string()
-        } else {
-            near = format!("{}", dist)
         }
 
-        (near, Vec::new(), "exact".to_string())
-    } else if var == "npe" {
-        (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "origins" {
-        let mut origins = Vec::<String>::new();
+        (format!("{}", diffs), Vec::new(), "exact".to_string())
+    } else if var == "donors" {
+        let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
+            if ex.clones[j][0].donor_index.is_some() {
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
             } else {
-                origins.push("?".to_string());
+                donors.push("?".to_string());
             }
         }
-        let origins_unsorted = origins.clone();
-        unique_sort(&mut origins);
+        let donors_unsorted = donors.clone();
+        unique_sort(&mut donors);
 
         (
-            format!("{}", origins.iter().format(",")),
-            origins_unsorted,
+            format!("{}", donors.iter().format(",")),
+            donors_unsorted,
             "cell-exact".to_string(),
         )
-    } else if var == "origins_cell" {
-        let mut origins = Vec::<String>::new();
+    } else if var == "donors_cell" {
+        let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
-            if ex.clones[j][0].origin_index.is_some() {
-                origins.push(
-                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                );
+            if ex.clones[j][0].donor_index.is_some() {
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
             } else {
-                origins.push("?".to_string());
+                donors.push("?".to_string());
             }
         }
-        let origins_unsorted = origins.clone();
-        unique_sort(&mut origins);
+        let donors_unsorted = donors.clone();
+        unique_sort(&mut donors);
 
-        let _exact = format!("{}", origins.iter().format(","));
-        (String::new(), origins_unsorted, "cell-exact".to_string())
-    } else if var == "pe" {
-        (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "ppe" {
-        (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "sec" {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        if ctl.gen_opt.using_secmem {
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                    n += count;
+        let _exact = format!("{}", donors.iter().format(","));
+        (String::new(), donors_unsorted, "cell-exact".to_string())
+    } else if var == "datasets" {
+        let mut datasets = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
+        }
+        let mut datasets_unique = datasets.clone();
+        unique_sort(&mut datasets_unique);
+
+        (
+            format!("{}", datasets_unique.iter().format(",")),
+            datasets,
+            "cell-exact".to_string(),
+        )
+    } else if var == "datasets_cell" {
+        let mut datasets = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
+        }
+        let mut datasets_unique = datasets.clone();
+        unique_sort(&mut datasets_unique);
+
+        let _exact = format!("{}", datasets_unique.iter().format(","));
+        (String::new(), datasets, "cell-exact".to_string())
+    } else if var == "cred" {
+        let mut credsx = Vec::<f64>::new();
+        for l in 0..ex.clones.len() {
+            let bc = &ex.clones[l][0].barcode;
+            let li = ex.clones[l][0].dataset_index;
+            if gex_info.pca[li].contains_key(&bc.clone()) {
+                let mut creds = 0;
+                let mut z = Vec::<(f64, String)>::new();
+                let x = &gex_info.pca[li][&bc.clone()];
+                for y in gex_info.pca[li].iter() {
+                    let mut dist2 = 0.0;
+                    for m in 0..x.len() {
+                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                    }
+                    z.push((dist2, y.0.clone()));
                 }
-                y.push(format!("{}", count));
-            }
-        }
-
-        (format!("{}", n), y, "cell-exact".to_string())
-    } else if var == "sec_cell" {
-        let mut n = 0;
-        let mut y = Vec::<String>::new();
-        if ctl.gen_opt.using_secmem {
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                    n += count;
+                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let top = n_vdj_gex[li];
+                for i in 0..top {
+                    if bin_member(&vdj_cells[li], &z[i].1) {
+                        creds += 1;
+                    }
                 }
-                y.push(format!("{}", count));
+                let pc = 100.0 * creds as f64 / top as f64;
+                credsx.push(pc);
+            } else {
+                credsx.push(0.0);
             }
         }
+        let credsx_unsorted = credsx.clone();
+        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut r = Vec::<String>::new();
+        for j in 0..credsx_unsorted.len() {
+            r.push(format!("{:.1}", credsx_unsorted[j]));
+        }
 
-        let _exact = format!("{}", n);
-        (String::new(), y, "cell-exact".to_string())
-    } else if var == "type" {
-        let mut cell_types = Vec::<String>::new(); /*
-                                                   for j in 0..ex.clones.len() {
-                                                       let mut cell_type = "".to_string();
-                                                       let bc = &ex.clones[j][0].barcode;
-                                                       let li = ex.clones[j][0].dataset_index;
-                                                       if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                                                           cell_type = gex_info.cell_type[li][&bc.clone()].clone();
-                                                       }
-                                                       cell_types.push(cell_type);
-                                                   }
-                                                   */
-        cell_types.sort();
+        (
+            format!("{:.1}", median_f64(&credsx)),
+            r,
+            "cell-exact".to_string(),
+        )
+    } else if var == "cred_cell" {
+        let mut credsx = Vec::<f64>::new();
+        for l in 0..ex.clones.len() {
+            let bc = &ex.clones[l][0].barcode;
+            let li = ex.clones[l][0].dataset_index;
+            if gex_info.pca[li].contains_key(&bc.clone()) {
+                let mut creds = 0;
+                let mut z = Vec::<(f64, String)>::new();
+                let x = &gex_info.pca[li][&bc.clone()];
+                for y in gex_info.pca[li].iter() {
+                    let mut dist2 = 0.0;
+                    for m in 0..x.len() {
+                        dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                    }
+                    z.push((dist2, y.0.clone()));
+                }
+                z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let top = n_vdj_gex[li];
+                for i in 0..top {
+                    if bin_member(&vdj_cells[li], &z[i].1) {
+                        creds += 1;
+                    }
+                }
+                let pc = 100.0 * creds as f64 / top as f64;
+                credsx.push(pc);
+            } else {
+                credsx.push(0.0);
+            }
+        }
+        let credsx_unsorted = credsx.clone();
+        credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut r = Vec::<String>::new();
+        for j in 0..credsx_unsorted.len() {
+            r.push(format!("{:.1}", credsx_unsorted[j]));
+        }
 
-        (abbrev_list(&cell_types), Vec::new(), "exact".to_string())
+        let _exact = format!("{:.1}", median_f64(&credsx));
+        (String::new(), r, "cell-exact".to_string())
+    } else if var == "clust" {
+        let mut clust = Vec::<usize>::new();
+        for j in 0..ex.clones.len() {
+            let mut cid = 0;
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if gex_info.cluster[li].contains_key(&bc.clone()) {
+                cid = gex_info.cluster[li][&bc.clone()];
+            }
+            clust.push(cid);
+        }
+        let mut clustf = Vec::<String>::new();
+        for x in clust.iter() {
+            clustf.push(format!("{}", x));
+        }
+        clust.sort_unstable();
+
+        (abbrev_list(&clust), clustf, "cell-exect".to_string())
+    } else if var == "clonotype_ncells" {
+        let mut n = 0;
+        for u in exacts.iter() {
+            n += exact_clonotypes[*u].ncells();
+        }
+
+        (format!("{}", n), Vec::new(), "clono".to_string())
     } else {
         (
             "$UNDEFINED".to_string(),
