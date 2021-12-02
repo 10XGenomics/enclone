@@ -247,6 +247,8 @@ fn parse_vector_entry_from_json(
             print!("\n{}", strme(&log));
         }
         let mut log = Vec::<u8>::new();
+        assert!(ctl.gen_opt.gamma_delta);
+        assert_eq!(12, 13);
         if ctl.gen_opt.trace_barcode == *barcode {
             if !is_valid(
                 &x,
