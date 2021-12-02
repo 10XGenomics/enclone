@@ -15,30 +15,41 @@ use string_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &mut BufWriter<W>) {
-    let mut reg = false;
-    let mut upper = false;
     let var = &v.name;
-    if var.len() >= 3 {
+
+    // Find upper case strings in var.
+
+    let mut uppers = Vec::<String>::new();
+    {
         let mut chars = Vec::<char>::new();
         for c in var.chars() {
             chars.push(c);
         }
-        for i in 0..chars.len() - 3 {
-            if chars[i] == 'R' && chars[i + 1] == 'E' && chars[i + 2] == 'G' {
-                if i > 0 && !chars[i - 1].is_ascii_uppercase() {
-                    reg = true;
-                }
-                if i + 3 < chars.len() && !chars[i + 1].is_ascii_uppercase() {
-                    reg = true;
-                }
+        let mut s = String::new();
+        for i in 0..chars.len() {
+            if chars[i].is_ascii_uppercase() {
+                s.push(chars[i]);
+            } else if s.len() > 0 {
+                uppers.push(s.clone());
+                s.clear();
             }
         }
-    }
-    for c in var.chars() {
-        if c.is_ascii_uppercase() {
-            upper = true;
+        if s.len() > 0 {
+            uppers.push(s);
         }
     }
+    if uppers.len() > 1 {
+        eprintln!(
+            "\nIllegal variable {}, has more than one uppercase string in it.\n",
+            var
+        );
+        std::process::exit(1);
+    }
+
+    // Proceed.
+
+    let reg = uppers.contains(&"REG".to_string());
+    let upper = uppers.len() > 0;
     if !upper || reg {
         let mut passes = 1;
         if v.level == "cell-exact" {
