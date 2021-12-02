@@ -381,22 +381,11 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-<<<<<<< HEAD
                 if chain == *"IGH"
                     || chain == *"TRB"
                     || (chain == *"TRD" && ctl.gen_opt.gamma_delta)
                 {
                     left = true;
-=======
-                if ctl.gen_opt.gamma_delta {
-                    if chain == *"IGH" || chain == *"TRB" {
-                        left = true;
-                    }
-                } else {
-                    if chain == *"IGH" || chain == *"TRB" || chain == *"TRD" {
-                        left = true;
-                    }
->>>>>>> d1ffa444 (adding gamma_delta support)
                 }
                 v_ref_id = feature_idx;
                 cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
