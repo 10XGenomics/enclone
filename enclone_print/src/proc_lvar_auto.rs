@@ -336,12 +336,8 @@ pub fn proc_lvar_auto(
         let _exact = format!("{}", n_b);
         (String::new(), ns, "cell-exact".to_string())
     } else if var == "n" {
-        let counts = vec!["1.0".to_string(); mults[u]];
-
         (format!("{}", mults[u]), counts, "cell-exact".to_string())
     } else if var == "n_cell" {
-        let counts = vec!["1.0".to_string(); mults[u]];
-
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
     } else if var == "mem" {
@@ -464,16 +460,12 @@ pub fn proc_lvar_auto(
             "exact".to_string(),
         )
     } else if var == "gex_Σ" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-
         (
             format!("{}", gex_sum.round() as usize),
             Vec::new(),
             "exact".to_string(),
         )
     } else if var == "gex_sum" {
-        let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
-
         (
             format!("{}", gex_sum.round() as usize),
             Vec::new(),
@@ -1067,6 +1059,35 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{:.1}", median_f64(&credsx));
         (String::new(), r, "cell-exact".to_string())
+    } else if var == "count_REG" {
+        let mut n = 0;
+        for j in 0..ex.share.len() {
+            let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
+            n += reg.find_iter(strme(&aa)).count();
+        }
+
+        (
+            format!("{}", n),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if var.starts_with(&"count_")
+        && var.after(&"count_").ends_with(&"count_")
+        && Regex::new(&var.between2(&"count_", &"_cell")).is_ok()
+    {
+        let reg = Regex::new(&var.between2(&"count_", &"_cell")).unwrap();
+        let mut n = 0;
+        for j in 0..ex.share.len() {
+            let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
+            n += reg.find_iter(strme(&aa)).count();
+        }
+
+        let _exact = format!("{}", n);
+        (
+            String::new(),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
     } else if var == "clust" {
         let mut clust = Vec::<usize>::new();
         for j in 0..ex.clones.len() {

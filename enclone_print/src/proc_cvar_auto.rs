@@ -446,8 +446,6 @@ pub fn proc_cvar_auto(
             "exact".to_string(),
         )
     } else if var == "comp" {
-        let (comp, _edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-
         (format!("{}", comp), Vec::new(), "exact".to_string())
     } else if var == "const" {
         let mut constx = Vec::<String>::new();
@@ -458,7 +456,6 @@ pub fn proc_cvar_auto(
             constx.push("?".to_string());
         }
         unique_sort(&mut constx);
-
         // This is overcomplicated because there is now at most one
         // const entry per exact subclonotype.
 
@@ -694,8 +691,6 @@ pub fn proc_cvar_auto(
             "exact".to_string(),
         )
     } else if var == "edit" {
-        let (_comp, edit) = comp_edit(&ex, mid, col, &refdata, &dref, &rsi);
-
         (edit, Vec::new(), "exact".to_string())
     } else if var.starts_with("fwr")
         && var.ends_with("_aa")
