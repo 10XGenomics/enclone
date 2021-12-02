@@ -34,7 +34,14 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
         "PROTO",
         "REF",
     ];
-    const ALLOWED_ARGS: [&str; 5] = ["BCR", "META", "NOPRETTY", "PROTO_METADATA", "TCR"];
+    const ALLOWED_ARGS: [&str; 5] = [
+        "BCR",
+        "META",
+        "NOPRETTY",
+        "PROTO_METADATA",
+        "TCR",
+        "GAMMA_DELTA",
+    ];
     let mut found = vec![false; REQUIRED_ARGS.len()];
     for i in 1..args.len() {
         let mut arg = args[i].clone();
