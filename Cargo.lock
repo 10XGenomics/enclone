@@ -438,7 +438,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
- "rand 0.8.4",
+ "rand 0.7.3",
  "regex",
  "serde",
  "serde_derive",
@@ -1299,7 +1299,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1383,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1415,7 +1415,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
- "nix 0.22.0",
+ "nix 0.20.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1513,7 +1513,7 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "prost 0.9.0",
+ "prost 0.8.0",
  "prost-build 0.9.0",
  "serde",
  "serde_derive",
@@ -1690,7 +1690,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.22.0",
+ "nix 0.20.0",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -2417,7 +2417,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "vector_utils",
 ]
 
@@ -2628,7 +2628,7 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.6.0",
+ "petgraph 0.5.1",
  "vector_utils",
 ]
 
@@ -3985,7 +3985,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.22.0",
+ "nix 0.20.0",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5365,7 +5365,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3291629be47fd99b9c4169023d6d7552113b4b28#3291629be47fd99b9c4169023d6d7552113b4b28"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#8937191c1938af37361f412c8d97e0f353a5d983"
 dependencies = [
  "align_tools",
  "amino",
@@ -5387,7 +5387,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3291629be47fd99b9c4169023d6d7552113b4b28#3291629be47fd99b9c4169023d6d7552113b4b28"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#8937191c1938af37361f412c8d97e0f353a5d983"
 dependencies = [
  "debruijn",
  "exons",

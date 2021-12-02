@@ -42,7 +42,7 @@ serde_derive = "1"
 serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "3291629be47fd99b9c4169023d6d7552113b4b28" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "nmmsv/debugging-gd" }
 vector_utils = "0.1"
 
 [dev-dependencies]
