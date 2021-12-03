@@ -685,11 +685,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         fwrite!(f, "{}", lvar_vdj_start);
         let vars = std::fs::read_to_string(&vars_loc).unwrap();
         let vars = parse_variables(&vars);
-
-        // Traverse variables in reverse order.  This is quite flaky, but is there because
-        // the count_ variables need to be processed in a particular order.
-
-        for v in vars.iter().rev() {
+        for v in vars.iter() {
             if v.inputs == "lvar_vdj" {
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
