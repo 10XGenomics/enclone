@@ -263,11 +263,9 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_cdr_") || x.contains(":count_cdr_") {
+    } else if x.contains(":count_cdr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_cdr_") {
-            x = x.before(":count_cdr_").to_string();
-        }
+        x = x.before(":count_cdr_").to_string();
         y = y.after("count_cdr_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -294,11 +292,9 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_fwr_") || x.contains(":count_fwr_") {
+    } else if x.contains(":count_fwr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_fwr_") {
-            x = x.before(":count_fwr_").to_string();
-        }
+        x = x.before(":count_fwr_").to_string();
         y = y.after("count_fwr_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;

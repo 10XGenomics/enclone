@@ -50,6 +50,8 @@ fn test_executable_size() {
 
 // 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
 // single-threaded and measures total instructions used.
+//
+// Using BUILT_IN because it increases code coverage.
 
 // NOT BASIC
 
@@ -64,6 +66,7 @@ fn test_cpu_usage() {
         "instructions:u",
         "enclone",
         "BCR=123085",
+        "BUILT_IN",
         "NOPRINT",
         "MAX_CORES=1",
     ];
@@ -91,7 +94,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.5000;
+    const REQUIRED_GI: f64 = 56.7080;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \

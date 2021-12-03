@@ -458,7 +458,6 @@ pub fn proc_cvar_auto(
             constx.push("?".to_string());
         }
         unique_sort(&mut constx);
-
         // This is overcomplicated because there is now at most one
         // const entry per exact subclonotype.
 
