@@ -129,7 +129,7 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
 
     // Test upper-case rule.
 
-    let classes = ["BC", "DATASET", "FEATURE", "INFO", "NAME", "REG", "VARDEF"];
+    let classes = ["BC", "DATASET", "FEATURE", "INFO", "NAME", "REGA", "VARDEF"];
     for i in 0..vars.len() {
         let n = &vars[i].name;
         let mut chars = Vec::<char>::new();

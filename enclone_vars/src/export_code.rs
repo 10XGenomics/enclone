@@ -53,14 +53,14 @@ fn get_uppers(var: &str) -> Vec<(String, usize)> {
 fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &mut BufWriter<W>) {
     let var = &v.name;
     let uppers = get_uppers(&var);
-    let mut reg = false;
+    let mut rega = false;
     for i in 0..uppers.len() {
-        if uppers[i].0 == "REG" {
-            reg = true;
+        if uppers[i].0 == "REGA" {
+            rega = true;
         }
     }
     let upper = uppers.len() > 0;
-    if !upper || reg {
+    if !upper || rega {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -139,26 +139,26 @@ fn run_rustfmt(f: &str) {
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     let uppers = get_uppers(&var);
-    let mut reg = None;
+    let mut rega = None;
     for i in 0..uppers.len() {
-        if uppers[i].0 == "REG" {
-            reg = Some(uppers[i].1);
+        if uppers[i].0 == "REGA" {
+            rega = Some(uppers[i].1);
         }
     }
-    // let upper = uppers.len() > 0;
     let nranges = var.matches('{').count();
     assert_eq!(nranges, var.matches('}').count());
     assert!(nranges <= 3);
     if nranges == 0 {
-        if reg.is_none() {
+        if rega.is_none() {
             fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
         } else {
-            let start = var.before("REG");
-            let stop = var.after("REG");
+            let start = var.before("REGA");
+            let stop = var.after("REGA");
             fwriteln!(
                 f,
                 r###"}} else if var.starts_with(&"{start}") 
                     && var.after(&"{start}").ends_with(&"{stop}")
+                    && !var.between2(&"{start}", &"{stop}").contains("_")
                     && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
                 start = start,
                 stop = stop,

@@ -687,25 +687,29 @@ pub fn check_one_lvar(
     // Check for [abbr:]count_<regex> and similar.
 
     if x.starts_with("count_") || x.contains(":count_") {
-        let mut class = "count_".to_string();
-        if x.starts_with("count_cdr1_")
-            || x.starts_with("count_cdr2_")
-            || x.starts_with("count_cdr3_")
-            || x.starts_with("count_fwr1_")
-            || x.starts_with("count_fwr2_")
-            || x.starts_with("count_fwr3_")
-            || x.starts_with("count_fwr4_")
-            || x.starts_with("count_cdr_")
-            || x.starts_with("count_fwr_")
-        {
-            class = format!("count_{}_", x.between("_", "_"));
+        let mut z = x.to_string();
+        if x.contains(":count_") {
+            z = x.after(":").to_string();
         }
-        let y = x.after(&class);
+        let mut class = "count_".to_string();
+        if z.starts_with("count_cdr1_")
+            || z.starts_with("count_cdr2_")
+            || z.starts_with("count_cdr3_")
+            || z.starts_with("count_fwr1_")
+            || z.starts_with("count_fwr2_")
+            || z.starts_with("count_fwr3_")
+            || z.starts_with("count_fwr4_")
+            || z.starts_with("count_cdr_")
+            || z.starts_with("count_fwr_")
+        {
+            class = format!("count_{}_", z.between("_", "_"));
+        }
+        let y = z.after(&class);
         let reg = Regex::new(y);
-        if reg.is_err() {
+        if reg.is_err() || y.contains("_") {
             return Err(format!(
                 "\nThe string after {} in your lead or parseable variable {} is not a valid \
-                regular expression.\n",
+                regular expression for amino acids.\n",
                 class, x
             ));
         }

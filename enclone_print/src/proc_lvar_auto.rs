@@ -1066,6 +1066,7 @@ pub fn proc_lvar_auto(
         (String::new(), r, "cell-exact".to_string())
     } else if var.starts_with(&"count_cdr_")
         && var.after(&"count_cdr_").ends_with(&"")
+        && !var.between2(&"count_cdr_", &"").contains("_")
         && Regex::new(&var.between2(&"count_cdr_", &"")).is_ok()
     {
         let reg = Regex::new(&var.between2(&"count_cdr_", &"")).unwrap();
@@ -1100,6 +1101,7 @@ pub fn proc_lvar_auto(
         )
     } else if var.starts_with(&"count_cdr_")
         && var.after(&"count_cdr_").ends_with(&"_cell")
+        && !var.between2(&"count_cdr_", &"_cell").contains("_")
         && Regex::new(&var.between2(&"count_cdr_", &"_cell")).is_ok()
     {
         let reg = Regex::new(&var.between2(&"count_cdr_", &"_cell")).unwrap();
@@ -1135,6 +1137,7 @@ pub fn proc_lvar_auto(
         )
     } else if var.starts_with(&"count_")
         && var.after(&"count_").ends_with(&"")
+        && !var.between2(&"count_", &"").contains("_")
         && Regex::new(&var.between2(&"count_", &"")).is_ok()
     {
         let reg = Regex::new(&var.between2(&"count_", &"")).unwrap();
@@ -1151,6 +1154,7 @@ pub fn proc_lvar_auto(
         )
     } else if var.starts_with(&"count_")
         && var.after(&"count_").ends_with(&"_cell")
+        && !var.between2(&"count_", &"_cell").contains("_")
         && Regex::new(&var.between2(&"count_", &"_cell")).is_ok()
     {
         let reg = Regex::new(&var.between2(&"count_", &"_cell")).unwrap();

@@ -16,7 +16,7 @@
 #           FEATURE    name of a feature
 #           INFO       user-defined variable from INFO
 #           NAME       name, see n_<name> at enclone help lvars
-#           REG        regular expression.
+#           REGA       regular expression for amino acids
 #           VARDEF     user-defined variable from VAR_DEF
 #
 #           Inclusive integer ranges: these have the form {a..b} or {a..} or {..b} or {..}.  Up to
@@ -888,7 +888,7 @@ code:     let mut const_id = String::new();
           }
           exact: const_id
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_REG
+name:     count_REGA
 inputs:   lvar_vdj
 limits:
 class:    lvar
@@ -907,7 +907,7 @@ code:     let mut n = 0;
           cell: vec![format!("{}", n); ex.ncells()]
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_cdr_REG
+name:     count_cdr_REGA
 inputs:   lvar_vdj
 limits:
 class:    lvar
@@ -944,7 +944,7 @@ code:     let mut n = 0;
           cell: vec![format!("{}", n); ex.ncells()]
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_cdr{1..3}_REG
+name:     count_cdr{1..3}_REGA
 inputs:   ?
 limits:
 class:    lvar
@@ -957,7 +957,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_fwr_REG
+name:     count_fwr_REGA
 inputs:   ?
 limits:
 class:    lvar
@@ -970,7 +970,7 @@ avail:    public
 notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-name:     count_fwr{1..4}_REG
+name:     count_fwr{1..4}_REGA
 inputs:   ?
 limits:
 class:    lvar
