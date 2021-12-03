@@ -1064,6 +1064,91 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{:.1}", median_f64(&credsx));
         (String::new(), r, "cell-exact".to_string())
+    } else if var.starts_with(&"count_fwr_")
+        && var.after(&"count_fwr_").ends_with(&"")
+        && !var.between2(&"count_fwr_", &"").contains("_")
+        && Regex::new(&var.between2(&"count_fwr_", &"")).is_ok()
+    {
+        let reg = Regex::new(&var.between2(&"count_fwr_", &"")).unwrap();
+        let mut n = 0;
+        for j in 0..ex.share.len() {
+            if ex.share[j].cdr1_start.is_some() {
+                let fwr1 = ex.share[j].fr1_start;
+                let cdr1 = ex.share[j].cdr1_start.unwrap();
+                if fwr1 < cdr1 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                let fwr2 = ex.share[j].fr2_start.unwrap();
+                let cdr2 = ex.share[j].cdr2_start.unwrap();
+                if fwr2 < cdr2 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            if ex.share[j].fr3_start.is_some() {
+                let fwr3 = ex.share[j].fr3_start.unwrap();
+                let cdr3 = ex.share[j].cdr3_start;
+                if fwr3 < cdr3 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+            let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+            n += reg.find_iter(strme(&aa)).count();
+        }
+
+        (
+            format!("{}", n),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if var.starts_with(&"count_fwr_")
+        && var.after(&"count_fwr_").ends_with(&"_cell")
+        && !var.between2(&"count_fwr_", &"_cell").contains("_")
+        && Regex::new(&var.between2(&"count_fwr_", &"_cell")).is_ok()
+    {
+        let reg = Regex::new(&var.between2(&"count_fwr_", &"_cell")).unwrap();
+        let mut n = 0;
+        for j in 0..ex.share.len() {
+            if ex.share[j].cdr1_start.is_some() {
+                let fwr1 = ex.share[j].fr1_start;
+                let cdr1 = ex.share[j].cdr1_start.unwrap();
+                if fwr1 < cdr1 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                let fwr2 = ex.share[j].fr2_start.unwrap();
+                let cdr2 = ex.share[j].cdr2_start.unwrap();
+                if fwr2 < cdr2 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            if ex.share[j].fr3_start.is_some() {
+                let fwr3 = ex.share[j].fr3_start.unwrap();
+                let cdr3 = ex.share[j].cdr3_start;
+                if fwr3 < cdr3 {
+                    let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                    n += reg.find_iter(strme(&aa)).count();
+                }
+            }
+            let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+            let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+            n += reg.find_iter(strme(&aa)).count();
+        }
+
+        let _exact = format!("{}", n);
+        (
+            String::new(),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
     } else if var.starts_with(&"count_cdr_")
         && var.after(&"count_cdr_").ends_with(&"")
         && !var.between2(&"count_cdr_", &"").contains("_")
