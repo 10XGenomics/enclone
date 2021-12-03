@@ -22,7 +22,7 @@ MAX_CORES=""
 cat /proc/sys/kernel/hostname | grep "jenkins"
 if [ $? -eq 0 ]
 then
-   MAX_CORES=8
+   MAX_CORES="MAX_CORES=8"
 fi
 
 enclone \
