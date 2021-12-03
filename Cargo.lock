@@ -437,15 +437,7 @@ dependencies = [
  "num-traits",
  "ordered-float 1.1.1",
  "petgraph 0.5.1",
-<<<<<<< HEAD
-<<<<<<< HEAD
  "rand",
-=======
- "rand 0.8.4",
->>>>>>> 66dd0cea... Revert iced changes
-=======
- "rand 0.7.3",
->>>>>>> 27d5f97e... updated vdj_ann to follow debug branch
  "regex",
  "serde",
  "serde_derive",
@@ -1306,7 +1298,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
  "rayon",
@@ -1391,7 +1383,7 @@ dependencies = [
  "kmer_lookup",
  "perf_stats",
  "permutation",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "pretty_trace",
  "rayon",
  "regex",
@@ -1423,15 +1415,7 @@ dependencies = [
  "fs_extra",
  "io_utils",
  "itertools",
-<<<<<<< HEAD
-<<<<<<< HEAD
  "nix 0.23.0",
-=======
- "nix 0.22.0",
->>>>>>> 66dd0cea... Revert iced changes
-=======
- "nix 0.20.0",
->>>>>>> 27d5f97e... updated vdj_ann to follow debug branch
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1538,17 +1522,8 @@ dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
-<<<<<<< HEAD
-<<<<<<< HEAD
  "prost",
  "prost-build",
-=======
- "prost 0.9.0",
-=======
- "prost 0.8.0",
->>>>>>> 27d5f97e... updated vdj_ann to follow debug branch
- "prost-build 0.9.0",
->>>>>>> 66dd0cea... Revert iced changes
  "serde",
  "serde_derive",
  "thiserror",
@@ -1728,15 +1703,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
-<<<<<<< HEAD
-<<<<<<< HEAD
  "nix 0.23.0",
-=======
- "nix 0.22.0",
->>>>>>> 66dd0cea... Revert iced changes
-=======
- "nix 0.20.0",
->>>>>>> 27d5f97e... updated vdj_ann to follow debug branch
  "objc",
  "perf_stats",
  "png-decoder",
@@ -2453,7 +2420,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
@@ -2661,18 +2628,14 @@ dependencies = [
  "equiv",
  "graph_simple",
  "kmer_lookup",
- "petgraph 0.5.1",
+ "petgraph 0.6.0",
  "vector_utils",
 ]
 
 [[package]]
 name = "iced"
 version = "0.3.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "iced_core",
  "iced_futures",
@@ -2685,11 +2648,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.4.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "bitflags",
 ]
@@ -2697,11 +2656,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.3.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "async-std",
  "futures",
@@ -2712,11 +2667,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.2.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "bytemuck",
  "font-kit",
@@ -2731,11 +2682,7 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.4.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "iced_core",
  "iced_futures",
@@ -2747,11 +2694,7 @@ dependencies = [
 [[package]]
 name = "iced_style"
 version = "0.3.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "iced_core",
 ]
@@ -2759,11 +2702,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.4.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "base64 0.13.0",
  "dodrio",
@@ -2780,11 +2719,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.4.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "bitflags",
  "bytemuck",
@@ -2804,11 +2739,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.3.0"
-<<<<<<< HEAD
 source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d0db9311a#aeec0375f0897b2ef0897c4c54476b2d0db9311a"
-=======
-source = "git+https://github.com/hecrj/iced?rev=20177e423cd2bdc08f8060b31c379a6f764e3df6#20177e423cd2bdc08f8060b31c379a6f764e3df6"
->>>>>>> 66dd0cea... Revert iced changes
 dependencies = [
  "iced_futures",
  "iced_graphics",
@@ -4040,15 +3971,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
-<<<<<<< HEAD
-<<<<<<< HEAD
  "nix 0.23.0",
-=======
- "nix 0.22.0",
->>>>>>> 66dd0cea... Revert iced changes
-=======
- "nix 0.20.0",
->>>>>>> 27d5f97e... updated vdj_ann to follow debug branch
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5376,7 +5299,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#8937191c1938af37361f412c8d97e0f353a5d983"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#97ce2f4d2d26140c64b5d0a8b7598dff260edae7"
 dependencies = [
  "align_tools",
  "amino",
@@ -5420,7 +5343,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#8937191c1938af37361f412c8d97e0f353a5d983"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=nmmsv/debugging-gd#97ce2f4d2d26140c64b5d0a8b7598dff260edae7"
 dependencies = [
  "debruijn",
  "exons",
