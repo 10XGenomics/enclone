@@ -158,7 +158,7 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             fwriteln!(
                 f,
                 r###"}} else if var.starts_with(&"{start}") 
-                    && var.after(&"{start}").ends_with(&"{start}")
+                    && var.after(&"{start}").ends_with(&"{stop}")
                     && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
                 start = start,
                 stop = stop,
