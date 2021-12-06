@@ -955,7 +955,39 @@ brief:    count amino acid motifs using only the given CDR
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          if arg1 == 1 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                      let cdr1 = ex.share[j].cdr1_start.unwrap();
+                      let fwr2 = ex.share[j].fr2_start.unwrap();
+                      if cdr1 < fwr2 {
+                          let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else if arg1 == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                      let cdr2 = ex.share[j].cdr2_start.unwrap();
+                      let fwr3 = ex.share[j].fr3_start.unwrap();
+                      if cdr2 < fwr3 {
+                          let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else {
+              for j in 0..ex.share.len() {
+                  let cdr3 = ex.share[j].cdr3_start;
+                  let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                  let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                  n += reg.find_iter(strme(&aa)).count();
+              }
+          }
+          cell: vec![format!("{}", n); ex.ncells()]
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_fwr_REGA
 inputs:   lvar_vdj
