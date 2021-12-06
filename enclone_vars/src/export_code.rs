@@ -218,6 +218,10 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             conditions.push(format!(r###"var.starts_with("{}")"###, begin));
             conditions.push(format!(r###"var.ends_with("{}")"###, stop));
             conditions.push(format!(
+                r###"var.between2("}}", "{}").contains("{}")"###,
+                stop, start,
+            ));
+            conditions.push(format!(
                 r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
                 begin, start,
             ));
@@ -234,14 +238,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
                 ));
             }
             conditions.push(format!(
-                r###"}} else if var.starts_with(&"{start}") 
-                    && var.after(&"{start}").ends_with(&"{stop}")
-                    && !var.between2(&"{start}", &"{stop}").contains("_")
-                    && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
-                start = start,
-                stop = stop,
+                r###"var.between2(&"{}", &"{}").contains("_")"###,
+                start, stop,
             ));
-
+            conditions.push(format!(
+                r###"Regex::new(&var.between2(&"{}", &"{}")).is_ok()"###,
+                start, stop,
+            ));
             fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
             fwriteln!(
                 f,

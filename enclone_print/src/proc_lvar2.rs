@@ -139,11 +139,9 @@ pub fn proc_lvar2(
 
     // Proceed.
 
-    if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
+    if x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_cdr1_") {
-            x = x.before(":count_cdr1_").to_string();
-        }
+        x = x.before(":count_cdr1_").to_string();
         y = y.after("count_cdr1_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -158,11 +156,9 @@ pub fn proc_lvar2(
             }
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_cdr2_") || x.contains(":count_cdr2_") {
+    } else if x.contains(":count_cdr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_cdr2_") {
-            x = x.before(":count_cdr2_").to_string();
-        }
+        x = x.before(":count_cdr2_").to_string();
         y = y.after("count_cdr2_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -177,11 +173,9 @@ pub fn proc_lvar2(
             }
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_cdr3_") || x.contains(":count_cdr3_") {
+    } else if x.contains(":count_cdr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_cdr3_") {
-            x = x.before(":count_cdr3_").to_string();
-        }
+        x = x.before(":count_cdr3_").to_string();
         y = y.after("count_cdr3_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
