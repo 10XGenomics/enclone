@@ -664,22 +664,6 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 };
             }
 
-            macro_rules! lvar_stats {
-                ($i: expr, $var:expr, $val:expr, $stats: expr) => {
-                    if verbose {
-                        eprint!("lvar {} ==> {}; ", $var, $val);
-                        eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-                    }
-                    if $i < lvars.len() {
-                        row.push($val)
-                    }
-                    if pass == 2 {
-                        speak!(u, $var.to_string(), $val);
-                    }
-                    stats.push(($var.to_string(), $stats.clone()));
-                };
-            }
-
             let val =
             if false {
                 (String::new(), Vec::<String>::new(), String::new())
@@ -696,7 +680,17 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             } else {
                 let (exact, cell, level) = &val;
                 if level == "cell" && !var.ends_with("_cell") {
-                    lvar_stats![i, var, String::new(), cell];
+                    if verbose {
+                        eprint!("lvar {} ==> {}; ", var, String::new());
+                        eprintln!("i = {}, lvars.len() = {}", i, lvars.len());
+                    }
+                    if i < lvars.len() {
+                        row.push(String::new())
+                    }
+                    if pass == 2 {
+                        speak!(u, var.to_string(), String::new());
+                    }
+                    stats.push((var.to_string(), cell.clone()));
                     if pass == 2 {
                         speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
                     }
