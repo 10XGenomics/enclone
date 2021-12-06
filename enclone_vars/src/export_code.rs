@@ -136,6 +136,9 @@ fn run_rustfmt(f: &str) {
 
 // Emit code that tests for a given variable, allowing for up to three bracket expressions
 // in the variable.
+// also
+// ...REGA...
+// ...{}...REGA...
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     let uppers = get_uppers(&var);
@@ -173,36 +176,86 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             );
         }
     } else if nranges == 1 {
-        let begin = var.before("{");
-        let end = var.after("}").to_string();
-        let low = var.after("{").before("..");
-        let high = var.after("{").between("..", "}");
-        let mut conditions = Vec::<String>::new();
-        conditions.push(format!(r###"var.starts_with("{}")"###, begin));
-        conditions.push(format!(r###"var.ends_with("{}")"###, end));
-        conditions.push(format!(
-            r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
-            begin, end,
-        ));
-        if low.len() > 0 {
+        if rega.is_none() {
+            let begin = var.before("{");
+            let end = var.after("}").to_string();
+            let low = var.after("{").before("..");
+            let high = var.after("{").between("..", "}");
+            let mut conditions = Vec::<String>::new();
+            conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+            conditions.push(format!(r###"var.ends_with("{}")"###, end));
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() >= {}"###,
-                begin, end, low,
+                r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
+                begin, end,
             ));
-        }
-        if high.len() > 0 {
+            if low.len() > 0 {
+                conditions.push(format!(
+                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                    begin, end, low,
+                ));
+            }
+            if high.len() > 0 {
+                conditions.push(format!(
+                    r###"var.between2("{}", "{}").force_i64() <= {}"###,
+                    begin, end, high,
+                ));
+            }
+            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+            fwriteln!(
+                f,
+                r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
+                begin,
+                end,
+            );
+        } else {
+            // <begin>{}<start>REGA<stop>
+            let begin = var.before("{");
+            let start = var.between("}", "REGA");
+            let stop = var.after("REGA");
+            let low = var.after("{").before("..");
+            let high = var.after("{").between("..", "}");
+            let mut conditions = Vec::<String>::new();
+            conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+            conditions.push(format!(r###"var.ends_with("{}")"###, stop));
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() <= {}"###,
-                begin, end, high,
+                r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
+                begin, start,
             ));
+            if low.len() > 0 {
+                conditions.push(format!(
+                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                    begin, start, low,
+                ));
+            }
+            if high.len() > 0 {
+                conditions.push(format!(
+                    r###"var.between2("{}", "{}").force_i64() <= {}"###,
+                    begin, start, high,
+                ));
+            }
+            conditions.push(format!(
+                r###"}} else if var.starts_with(&"{start}") 
+                    && var.after(&"{start}").ends_with(&"{stop}")
+                    && !var.between2(&"{start}", &"{stop}").contains("_")
+                    && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
+                start = start,
+                stop = stop,
+            ));
+
+            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+            fwriteln!(
+                f,
+                r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
+                begin,
+                start,
+            );
+            fwriteln!(
+                f,
+                r###"let reg = Regex::new(&var.between2(&"{}", &"{}")).unwrap();"###,
+                start,
+                stop
+            );
         }
-        fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
-        fwriteln!(
-            f,
-            r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
-            begin,
-            end,
-        );
     } else if nranges == 2 {
         // This code has not been exercised.
         let begin = var.before("{");
