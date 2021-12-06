@@ -218,8 +218,8 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             conditions.push(format!(r###"var.starts_with("{}")"###, begin));
             conditions.push(format!(r###"var.ends_with("{}")"###, stop));
             conditions.push(format!(
-                r###"var.between2("}}", "{}").contains("{}")"###,
-                stop, start,
+                r###"var.between2("{}", "{}").contains("{}")"###,
+                begin, stop, start,
             ));
             conditions.push(format!(
                 r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
@@ -227,19 +227,19 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             ));
             if low.len() > 0 {
                 conditions.push(format!(
-                    r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                    r###"var.between("{}", "{}").force_i64() >= {}"###,
                     begin, start, low,
                 ));
             }
             if high.len() > 0 {
                 conditions.push(format!(
-                    r###"var.between2("{}", "{}").force_i64() <= {}"###,
+                    r###"var.between("{}", "{}").force_i64() <= {}"###,
                     begin, start, high,
                 ));
             }
             conditions.push(format!(
-                r###"var.between2(&"{}", &"{}").contains("_")"###,
-                start, stop,
+                r###"!var.after("{}").between2(&"{}", &"{}").contains("_")"###,
+                begin, start, stop,
             ));
             conditions.push(format!(
                 r###"Regex::new(&var.between2(&"{}", &"{}")).is_ok()"###,
@@ -248,13 +248,14 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
             fwriteln!(
                 f,
-                r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
+                r###"let arg1 = var.between("{}", "{}").force_i64();"###,
                 begin,
                 start,
             );
             fwriteln!(
                 f,
-                r###"let reg = Regex::new(&var.between2(&"{}", &"{}")).unwrap();"###,
+                r###"let reg = Regex::new(&var.after("{}").between2(&"{}", &"{}")).unwrap();"###,
+                begin,
                 start,
                 stop
             );

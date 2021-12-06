@@ -186,11 +186,9 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_fwr1_") || x.contains(":count_fwr1_") {
+    } else if x.contains(":count_fwr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_fwr1_") {
-            x = x.before(":count_fwr1_").to_string();
-        }
+        x = x.before(":count_fwr1_").to_string();
         y = y.after("count_fwr1_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -205,11 +203,9 @@ pub fn proc_lvar2(
             }
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_fwr2_") || x.contains(":count_fwr2_") {
+    } else if x.contains(":count_fwr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_fwr2_") {
-            x = x.before(":count_fwr2_").to_string();
-        }
+        x = x.before(":count_fwr2_").to_string();
         y = y.after("count_fwr2_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -224,11 +220,9 @@ pub fn proc_lvar2(
             }
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_fwr3_") || x.contains(":count_fwr3_") {
+    } else if x.contains(":count_fwr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_fwr3_") {
-            x = x.before(":count_fwr3_").to_string();
-        }
+        x = x.before(":count_fwr3_").to_string();
         y = y.after("count_fwr3_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;
@@ -243,11 +237,9 @@ pub fn proc_lvar2(
             }
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
-    } else if x.starts_with("count_fwr4_") || x.contains(":count_fwr4_") {
+    } else if x.contains(":count_fwr4_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
-        if x.contains(":count_fwr4_") {
-            x = x.before(":count_fwr4_").to_string();
-        }
+        x = x.before(":count_fwr4_").to_string();
         y = y.after("count_fwr4_").to_string();
         let reg = Regex::new(&y).unwrap(); // seems inefficient
         let mut n = 0;

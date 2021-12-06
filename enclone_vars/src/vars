@@ -1034,7 +1034,7 @@ code:     let mut n = 0;
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_fwr{1..4}_REGA
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact

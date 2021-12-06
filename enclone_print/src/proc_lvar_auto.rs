@@ -219,15 +219,15 @@ pub fn proc_lvar_auto(
         )
     } else if var.starts_with("count_cdr")
         && var.ends_with("")
-        && var.between2("}", "").contains("_")
+        && var.between2("count_cdr", "").contains("_")
         && var.between("count_cdr", "_").parse::<i64>().is_ok()
-        && var.between2("count_cdr", "_").force_i64() >= 1
-        && var.between2("count_cdr", "_").force_i64() <= 3
-        && var.between2(&"_", &"").contains("_")
+        && var.between("count_cdr", "_").force_i64() >= 1
+        && var.between("count_cdr", "_").force_i64() <= 3
+        && !var.after("count_cdr").between2(&"_", &"").contains("_")
         && Regex::new(&var.between2(&"_", &"")).is_ok()
     {
-        let arg1 = var.between2("count_cdr", "_").force_i64();
-        let reg = Regex::new(&var.between2(&"_", &"")).unwrap();
+        let arg1 = var.between("count_cdr", "_").force_i64();
+        let reg = Regex::new(&var.after("count_cdr").between2(&"_", &"")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -267,15 +267,18 @@ pub fn proc_lvar_auto(
         )
     } else if var.starts_with("count_cdr")
         && var.ends_with("_cell")
-        && var.between2("}", "_cell").contains("_")
+        && var.between2("count_cdr", "_cell").contains("_")
         && var.between("count_cdr", "_").parse::<i64>().is_ok()
-        && var.between2("count_cdr", "_").force_i64() >= 1
-        && var.between2("count_cdr", "_").force_i64() <= 3
-        && var.between2(&"_", &"_cell").contains("_")
+        && var.between("count_cdr", "_").force_i64() >= 1
+        && var.between("count_cdr", "_").force_i64() <= 3
+        && !var
+            .after("count_cdr")
+            .between2(&"_", &"_cell")
+            .contains("_")
         && Regex::new(&var.between2(&"_", &"_cell")).is_ok()
     {
-        let arg1 = var.between2("count_cdr", "_").force_i64();
-        let reg = Regex::new(&var.between2(&"_", &"_cell")).unwrap();
+        let arg1 = var.between("count_cdr", "_").force_i64();
+        let reg = Regex::new(&var.after("count_cdr").between2(&"_", &"_cell")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -391,6 +394,126 @@ pub fn proc_lvar_auto(
             let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
             n += reg.find_iter(strme(&aa)).count();
+        }
+
+        let _exact = format!("{}", n);
+        (
+            String::new(),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if var.starts_with("count_fwr")
+        && var.ends_with("")
+        && var.between2("count_fwr", "").contains("_")
+        && var.between("count_fwr", "_").parse::<i64>().is_ok()
+        && var.between("count_fwr", "_").force_i64() >= 1
+        && var.between("count_fwr", "_").force_i64() <= 4
+        && !var.after("count_fwr").between2(&"_", &"").contains("_")
+        && Regex::new(&var.between2(&"_", &"")).is_ok()
+    {
+        let arg1 = var.between("count_fwr", "_").force_i64();
+        let reg = Regex::new(&var.after("count_fwr").between2(&"_", &"")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 3 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
+        }
+
+        (
+            format!("{}", n),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if var.starts_with("count_fwr")
+        && var.ends_with("_cell")
+        && var.between2("count_fwr", "_cell").contains("_")
+        && var.between("count_fwr", "_").parse::<i64>().is_ok()
+        && var.between("count_fwr", "_").force_i64() >= 1
+        && var.between("count_fwr", "_").force_i64() <= 4
+        && !var
+            .after("count_fwr")
+            .between2(&"_", &"_cell")
+            .contains("_")
+        && Regex::new(&var.between2(&"_", &"_cell")).is_ok()
+    {
+        let arg1 = var.between("count_fwr", "_").force_i64();
+        let reg = Regex::new(&var.after("count_fwr").between2(&"_", &"_cell")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 3 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
         }
 
         let _exact = format!("{}", n);
