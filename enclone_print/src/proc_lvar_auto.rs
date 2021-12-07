@@ -1244,6 +1244,93 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
+    } else if vname.starts_with(&"n_")
+        && vname.after(&"n_").ends_with(&"")
+        && (bin_member(
+            &ctl.origin_info.dataset_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.origin_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.donor_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.tag_list,
+            &vname.between2("n_", "").to_string(),
+        ))
+    {
+        let name = vname.between2("n_", "");
+        let mut count = 0;
+        let mut counts = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let x = &ex.clones[j][0];
+            if ctl.origin_info.dataset_id[x.dataset_index] == name {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.origin_index.is_some()
+                && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.donor_index.is_some()
+                && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.tag_index.is_some()
+                && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            }
+        }
+
+        (format!("{}", count), counts, "cell-exact".to_string())
+    } else if vname.starts_with(&"n_")
+        && vname.after(&"n_").ends_with(&"_cell")
+        && (bin_member(
+            &ctl.origin_info.dataset_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.origin_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.donor_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.tag_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ))
+    {
+        let name = vname.between2("n_", "_cell");
+        let mut count = 0;
+        let mut counts = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let x = &ex.clones[j][0];
+            if ctl.origin_info.dataset_id[x.dataset_index] == name {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.origin_index.is_some()
+                && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.donor_index.is_some()
+                && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.tag_index.is_some()
+                && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            }
+        }
+
+        let _exact = format!("{}", count);
+        (String::new(), counts, "cell-exact".to_string())
     } else if vname == "n_b" {
         let mut n_b = 0;
         let mut ns = Vec::<String>::new();

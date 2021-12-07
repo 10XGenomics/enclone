@@ -6,7 +6,7 @@
 use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use itertools::Itertools;
 use std::collections::HashMap;
-use string_utils::{strme, TextUtils};
+use string_utils::strme;
 use vector_utils::bin_member;
 
 pub fn get_gex_matrix_entry(
@@ -178,33 +178,6 @@ pub fn proc_lvar1(
         if pass == 2 {
             speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
         }
-    } else if x.starts_with("n_") && !x.starts_with("n_gex") {
-        let name = x.after("n_");
-        let mut count = 0;
-        let mut counts = Vec::<String>::new();
-        for j in 0..ex.clones.len() {
-            let x = &ex.clones[j][0];
-            if ctl.origin_info.dataset_id[x.dataset_index] == name {
-                count += 1;
-                counts.push("1.0".to_string());
-            } else if x.origin_index.is_some()
-                && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
-            {
-                count += 1;
-                counts.push("1.0".to_string());
-            } else if x.donor_index.is_some()
-                && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
-            {
-                count += 1;
-                counts.push("1.0".to_string());
-            } else if x.tag_index.is_some()
-                && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
-            {
-                count += 1;
-                counts.push("1.0".to_string());
-            }
-        }
-        lvar_stats![i, x, format!("{}", count), counts];
     } else {
         return false;
     }

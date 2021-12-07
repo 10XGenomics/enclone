@@ -183,20 +183,20 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
                 r###"}} else if vname.starts_with(&"{start}") 
                     && vname.after(&"{start}").ends_with(&"{stop}")
                     && ( bin_member(&ctl.origin_info.dataset_list, 
-                        vname.between2("{start}", "{stop}"))
-                        || ( bin_member(&ctl.origin_info.origin_list, 
-                        vname.between2("{start}", "{stop}")
-                        || ( bin_member(&ctl.origin_info.donor_list, 
-                        vname.between2("{start}", "{stop}"))
-                        || ( bin_member(&ctl.origin_info.tag_list, 
-                        vname.between2("{start}", "{stop}")) 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.origin_list, 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.donor_list, 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.tag_list, 
+                        &vname.between2("{start}", "{stop}").to_string()) 
                        ) {{"###,
                 start = start,
                 stop = stop,
             );
             fwriteln!(
                 f,
-                r###"let name = vname.between2("{}", "{}"));"###,
+                r###"let name = vname.between2("{}", "{}");"###,
                 start,
                 stop
             );
