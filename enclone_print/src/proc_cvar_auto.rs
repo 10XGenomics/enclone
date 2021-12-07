@@ -39,9 +39,9 @@ pub fn proc_cvar_auto(
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> Result<bool, String> {
     let mut vname = var.clone();
-    let mut _abbr = var.clone();
+    let mut abbr = var.clone();
     if var.contains(":") {
-        _abbr = var.before(":").to_string();
+        abbr = var.before(":").to_string();
         vname = var.after(":").to_string();
     }
     let cvars = &ctl.clono_print_opt.cvars;
@@ -1381,6 +1381,8 @@ pub fn proc_cvar_auto(
     } else {
         let (exact, cell, _level) = &val;
         let varc = format!("{}{}", var, col + 1);
+        let mut _vnamec = format!("{}{}", vname, col + 1);
+        let mut abbrc = format!("{}{}", abbr, col + 1);
         if exact.len() > 0 {
             if j < rsi.cvars[col].len() && cvars.contains(&var) {
                 cx[col][j] = exact.clone();
@@ -1391,9 +1393,14 @@ pub fn proc_cvar_auto(
                         || col < ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
-                let mut v = var.clone();
+                let mut v = vname.clone();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
+                // let mut abbrc = abbrc.clone();
+                abbrc = abbrc.replace("_Σ", "_sum");
+                abbrc = abbrc.replace("_μ", "_mean");
+                _vnamec = _vnamec.replace("_Σ", "_sum");
+                _vnamec = _vnamec.replace("_μ", "_mean");
 
                 // Strip escape character sequences from exact.  Can happen in notes,
                 // maybe other places.
@@ -1425,13 +1432,13 @@ pub fn proc_cvar_auto(
                     || bin_member(&pcols_sort, &varc)
                     || bin_member(&extra_args, &varc)
                 {
-                    out_data[u].insert(varc, val_clean);
+                    out_data[u].insert(abbrc.clone(), val_clean);
                 }
             }
             if val.1.is_empty() {
-                stats.push((varc, vec![exact.to_string(); ex.ncells()]));
+                stats.push((abbrc, vec![exact.to_string(); ex.ncells()]));
             } else {
-                stats.push((varc, cell.to_vec()));
+                stats.push((abbrc, cell.to_vec()));
             }
         } else if cell.len() > 0 {
             if pass == 2
