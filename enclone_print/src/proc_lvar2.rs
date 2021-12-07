@@ -3,13 +3,14 @@
 // This file contains the single function proc_lvar,
 // plus a small helper function get_gex_matrix_entry.
 
-use amino::aa_seq;
+// use amino::aa_seq;
 use enclone_core::defs::{EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::rounded_median;
 use itertools::Itertools;
-use regex::Regex;
+// use regex::Regex;
 use std::collections::HashMap;
-use string_utils::{strme, TextUtils};
+// use string_utils::{strme, TextUtils};
+use string_utils::TextUtils;
 use vector_utils::{bin_member, bin_position};
 
 pub fn get_gex_matrix_entry(
@@ -121,6 +122,7 @@ pub fn proc_lvar2(
             stats.push(($var.to_string(), vec![$val; ex.ncells()]));
         };
     }
+    /*
     macro_rules! lvar_stats {
         ($i: expr, $var:expr, $val:expr, $stats: expr) => {
             if verbose {
@@ -136,9 +138,11 @@ pub fn proc_lvar2(
             stats.push(($var.to_string(), $stats.clone()));
         };
     }
+    */
 
     // Proceed.
 
+    /*
     if x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         x = x.before(":count_cdr1_").to_string();
@@ -325,6 +329,8 @@ pub fn proc_lvar2(
             n += reg.find_iter(strme(&aa)).count();
         }
         lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
+    */
+    if false {
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
