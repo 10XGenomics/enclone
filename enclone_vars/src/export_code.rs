@@ -55,15 +55,18 @@ fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &
     let uppers = get_uppers(&var);
     let mut rega = false;
     let mut dataset = false;
+    let mut name = false;
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = true;
         } else if uppers[i].0 == "DATASET" {
             dataset = true;
+        } else if uppers[i].0 == "NAME" {
+            name = true;
         }
     }
     let upper = uppers.len() > 0;
-    if !upper || rega || dataset {
+    if !upper || rega || dataset || name {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -147,11 +150,14 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     let uppers = get_uppers(&var);
     let mut rega = None;
     let mut dataset = None;
+    let mut name = None;
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = Some(uppers[i].1);
         } else if uppers[i].0 == "DATASET" {
             dataset = Some(uppers[i].1);
+        } else if uppers[i].0 == "NAME" {
+            name = Some(uppers[i].1);
         }
     }
     let nranges = var.matches('{').count();
@@ -159,17 +165,42 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     // Test for implemented.
 
     assert_eq!(nranges, var.matches('}').count());
-    assert!(dataset.is_none() || rega.is_none());
+    assert!(uppers.len() <= 1);
     assert!(nranges <= 1 || rega.is_none());
     assert!(nranges == 0 || dataset.is_none());
+    assert!(nranges == 0 || name.is_none());
     assert!(nranges <= 3);
 
     // Proceed.
 
     if nranges == 0 {
-        if rega.is_none() && dataset.is_none() {
+        if rega.is_none() && dataset.is_none() && name.is_none() {
             fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
-        } else if rega.is_none() {
+        } else if name.is_some() {
+            let (start, stop) = (var.before("NAME"), var.after("NAME"));
+            fwriteln!(
+                f,
+                r###"}} else if vname.starts_with(&"{start}") 
+                    && vname.after(&"{start}").ends_with(&"{stop}")
+                    && ( bin_member(&ctl.origin_info.dataset_list, 
+                        vname.between2("{start}", "{stop}"))
+                        || ( bin_member(&ctl.origin_info.origin_list, 
+                        vname.between2("{start}", "{stop}")
+                        || ( bin_member(&ctl.origin_info.donor_list, 
+                        vname.between2("{start}", "{stop}"))
+                        || ( bin_member(&ctl.origin_info.tag_list, 
+                        vname.between2("{start}", "{stop}")) 
+                       ) {{"###,
+                start = start,
+                stop = stop,
+            );
+            fwriteln!(
+                f,
+                r###"let name = vname.between2("{}", "{}"));"###,
+                start,
+                stop
+            );
+        } else if dataset.is_some() {
             let (start, stop) = (var.before("DATASET"), var.after("DATASET"));
             fwriteln!(
                 f,
