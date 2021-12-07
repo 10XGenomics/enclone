@@ -593,6 +593,10 @@ pub fn check_one_lvar(
             return Ok(true);
         }
     }
+    let mut x = x.to_string();
+    if x.contains(":") {
+        x = x.after(":").to_string();
+    }
 
     // See if type is ok.
 
@@ -637,7 +641,7 @@ pub fn check_one_lvar(
     // Check names defined by VAR_DEF.
 
     for i in 0..ctl.gen_opt.var_def.len() {
-        if x == &ctl.gen_opt.var_def[i].0 {
+        if x == ctl.gen_opt.var_def[i].0 {
             return Ok(true);
         }
     }
@@ -754,7 +758,7 @@ pub fn check_one_lvar(
     if gpvar {
         return Ok(true);
     }
-    if !LVARS_ALLOWED.contains(&x) {
+    if !LVARS_ALLOWED.contains(&x.as_str()) {
         let mut end_ok = false;
         for i in 0..ends.len() {
             if x.ends_with(&ends[i]) {
