@@ -412,8 +412,9 @@ fn main() {
 
         if image_data_old.len() != image_data_new.len() {
             eprintln!(
-                "\nimage size for test {} changed from {} to {}",
+                "\nimage size for {} = {} changed from {} to {}",
                 i,
+                all_testnames[i],
                 image_data_old.len(),
                 image_data_new.len()
             );
