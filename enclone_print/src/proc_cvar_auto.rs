@@ -39,9 +39,7 @@ pub fn proc_cvar_auto(
     stats: &mut Vec<(String, Vec<String>)>,
 ) -> Result<bool, String> {
     let mut vname = var.clone();
-    // let mut abbr = var.clone();
     if var.contains(":") {
-        // abbr = var.before(":").to_string();
         vname = var.after(":").to_string();
     }
     let cvars = &ctl.clono_print_opt.cvars;
@@ -1385,8 +1383,6 @@ pub fn proc_cvar_auto(
     } else {
         let (exact, cell, _level) = &val;
         let mut varc = format!("{}{}", var, col + 1);
-        // let mut vnamec = format!("{}{}", vname, col + 1);
-        // let mut abbrc = format!("{}{}", abbr, col + 1);
         if exact.len() > 0 {
             if j < rsi.cvars[col].len() && cvars.contains(&var) {
                 cx[col][j] = exact.clone();
@@ -1397,18 +1393,10 @@ pub fn proc_cvar_auto(
                         || col < ctl.parseable_opt.pchains.force_usize()))
                     || extra_args.len() > 0)
             {
-                // let mut v = vname.clone();
-                // v = v.replace("_Σ", "_sum");
-                // v = v.replace("_μ", "_mean");
-                // let mut abbrc = abbrc.clone();
                 abbrc = abbrc.replace("_Σ", "_sum");
                 abbrc = abbrc.replace("_μ", "_mean");
-                // vnamec = vnamec.replace("_Σ", "_sum");
-                // vnamec = vnamec.replace("_μ", "_mean");
                 varc = varc.replace("_Σ", "_sum");
                 varc = varc.replace("_μ", "_mean");
-                // abbr = abbr.replace("_Σ", "_sum");
-                // abbr = abbr.replace("_μ", "_mean");
 
                 // Strip escape character sequences from exact.  Can happen in notes,
                 // maybe other places.
