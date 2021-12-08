@@ -269,7 +269,7 @@ notes:
 code:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     INFO
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    exact
@@ -281,7 +281,7 @@ avail:    public
 notes:
 code:     let mut val = String::new();
           for q in 0..ctl.gen_opt.info_fields.len() {
-              if var == ctl.gen_opt.info_fields[q] {
+              if *var == ctl.gen_opt.info_fields[q] {
                   if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
                       let mut tag = String::new();
                       for j in 0..ex.share.len() {

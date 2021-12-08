@@ -93,6 +93,31 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), r, "cell".to_string())
+    } else if bin_member(&ctl.gen_opt.info_fields, var) {
+        let mut val = String::new();
+        for q in 0..ctl.gen_opt.info_fields.len() {
+            if *var == ctl.gen_opt.info_fields[q] {
+                if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
+                    let mut tag = String::new();
+                    for j in 0..ex.share.len() {
+                        if ex.share[j].left {
+                            tag += strme(&ex.share[j].seq);
+                        }
+                    }
+                    tag += "_";
+                    for j in 0..ex.share.len() {
+                        if !ex.share[j].left {
+                            tag += strme(&ex.share[j].seq);
+                        }
+                    }
+                    if ctl.gen_opt.info_data.contains_key(&tag) {
+                        val = ctl.gen_opt.info_data[&tag][q].clone();
+                    }
+                }
+            }
+        }
+
+        (val, Vec::new(), "exact".to_string())
     } else if vname == "clonotype_ncells" {
         let mut n = 0;
         for u in exacts.iter() {

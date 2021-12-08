@@ -185,7 +185,7 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
     // Proceed.
 
     if nranges == 0 {
-        if rega.is_none() && dataset.is_none() && name.is_none() && !bc {
+        if rega.is_none() && dataset.is_none() && name.is_none() && !bc && !info {
             fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
         } else if info && class == "lvar" {
             fwriteln!(
