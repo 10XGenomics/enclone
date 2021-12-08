@@ -59,7 +59,7 @@
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     BC
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell
@@ -69,7 +69,20 @@ brief:    user-defined variable from BC or META/bc
 page:     enclone help input
 avail:    public
 notes:
-code:
+code:     let mut r = Vec::<String>::new();
+          for l in 0..ex.clones.len() {
+              let li = ex.clones[l][0].dataset_index;
+              let bc = ex.clones[l][0].barcode.clone();
+              let mut val = String::new();
+              let alt = &ctl.origin_info.alt_bc_fields[li];
+              for j in 0..alt.len() {
+                  if alt[j].0 == *var && alt[j].1.contains_key(&bc.clone()) {
+                      val = alt[j].1[&bc.clone()].clone();
+                  }
+              }
+              r.push(val);
+          }
+          cell: r
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     DATASET_barcode
 inputs:   ?

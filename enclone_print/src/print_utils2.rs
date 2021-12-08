@@ -443,6 +443,7 @@ pub fn row_fill(
             d_readers,
             ind_readers,
             h5_data,
+            &alt_bcs,
         )? {
             if !proc_lvar1(
                 i,

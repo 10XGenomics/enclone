@@ -45,6 +45,7 @@ pub fn proc_lvar_auto(
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
+    alt_bcs: &Vec<String>,
 ) -> Result<bool, String> {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -76,6 +77,22 @@ pub fn proc_lvar_auto(
 
     let val = if false {
         (String::new(), Vec::<String>::new(), String::new())
+    } else if bin_member(alt_bcs, var) {
+        let mut r = Vec::<String>::new();
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = ex.clones[l][0].barcode.clone();
+            let mut val = String::new();
+            let alt = &ctl.origin_info.alt_bc_fields[li];
+            for j in 0..alt.len() {
+                if alt[j].0 == *var && alt[j].1.contains_key(&bc.clone()) {
+                    val = alt[j].1[&bc.clone()].clone();
+                }
+            }
+            r.push(val);
+        }
+
+        (String::new(), r, "cell".to_string())
     } else if vname == "clonotype_ncells" {
         let mut n = 0;
         for u in exacts.iter() {
