@@ -1,6 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils1::get_gex_matrix_entry;
 use amino::codon_to_aa;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_proto::types::DonorReferenceItem;
@@ -10,6 +9,42 @@ use std::collections::HashMap;
 use string_utils::TextUtils;
 use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, bin_position, bin_position1_2, unique_sort};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn get_gex_matrix_entry(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    fid: usize,
+    d_all: &Vec<Vec<u32>>,
+    ind_all: &Vec<Vec<u32>>,
+    li: usize,
+    l: usize,
+    p: usize,
+    y: &str,
+) -> f64 {
+    let mut raw_count = 0 as f64;
+    if gex_info.gex_matrices[li].initialized() {
+        raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+    } else {
+        for j in 0..d_all[l].len() {
+            if ind_all[l][j] == fid as u32 {
+                raw_count = d_all[l][j] as f64;
+                break;
+            }
+        }
+    }
+    let mult: f64;
+    if y.ends_with("_g") {
+        mult = gex_info.gex_mults[li];
+    } else {
+        mult = gex_info.fb_mults[li];
+    }
+    if !ctl.gen_opt.full_counts {
+        raw_count *= mult;
+    }
+    raw_count
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
