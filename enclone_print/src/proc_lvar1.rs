@@ -106,7 +106,7 @@ pub fn proc_lvar1(
 
     // Check INFO.
 
-    if ctl.gen_opt.info.is_some() {
+    if bin_member(&ctl.gen_opt.info_fields, &*x) {
         for q in 0..ctl.gen_opt.info_fields.len() {
             if *x == ctl.gen_opt.info_fields[q] {
                 let mut found = false;
