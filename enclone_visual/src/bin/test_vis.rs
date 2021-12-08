@@ -411,7 +411,12 @@ fn main() {
         // Test for differences.
 
         if image_data_old.len() != image_data_new.len() {
-            eprintln!("\nimage size for test {} changed", i);
+            eprintln!(
+                "\nimage size for test {} changed from {} to {}",
+                i,
+                image_data_old.len(),
+                image_data_new.len()
+            );
             std::process::exit(1);
         }
         let diffs = compare_images(&image_data_old, &image_data_new, width, height, verbose);
