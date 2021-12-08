@@ -63,7 +63,8 @@ fn process_var<W: Write>(
     let mut rega = false;
     let mut dataset = false;
     let mut name = false;
-    let mut bc = var == "BC";
+    let bc = var == "BC";
+    let info = var == "INFO";
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = true;
@@ -71,12 +72,10 @@ fn process_var<W: Write>(
             dataset = true;
         } else if uppers[i].0 == "NAME" {
             name = true;
-        } else if uppers[i].0 == "BC" {
-            bc = true;
         }
     }
     let upper = uppers.len() > 0;
-    if !upper || rega || dataset || name || bc {
+    if !upper || rega || dataset || name || bc || info {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -162,6 +161,7 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
     let mut dataset = None;
     let mut name = None;
     let bc = var == "BC";
+    let info = var == "INFO";
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = Some(uppers[i].1);
@@ -187,6 +187,8 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
     if nranges == 0 {
         if rega.is_none() && dataset.is_none() && name.is_none() && !bc {
             fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
+        } else if info && class == "lvar" {
+            fwriteln!(f, r###"}} else if bin_member(&ctl.gen_opt.info_fields, var) {{"###);
         } else if bc && class == "lvar" {
             fwriteln!(f, r###"}} else if bin_member(alt_bcs, var) {{"###);
         } else if name.is_some() {
