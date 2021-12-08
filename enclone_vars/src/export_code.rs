@@ -188,7 +188,10 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
         if rega.is_none() && dataset.is_none() && name.is_none() && !bc {
             fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
         } else if info && class == "lvar" {
-            fwriteln!(f, r###"}} else if bin_member(&ctl.gen_opt.info_fields, var) {{"###);
+            fwriteln!(
+                f,
+                r###"}} else if bin_member(&ctl.gen_opt.info_fields, var) {{"###
+            );
         } else if bc && class == "lvar" {
             fwriteln!(f, r###"}} else if bin_member(alt_bcs, var) {{"###);
         } else if name.is_some() {
