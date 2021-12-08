@@ -1,6 +1,6 @@
 [package]
 name = "scroll_crash"
-version = "0.5.131"
+version = "0.5.132"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
