@@ -25,6 +25,9 @@
 // and this could fail and mess things up if someone else happened to send a share.
 //
 // See also show_diffs.
+//
+// The regression images changed when we updated from Catalina to Big Sur and it is quite possible
+// that other version changes (and Mac hardware changes) could also affect the images.
 
 use enclone_visual::compare_images::*;
 use enclone_visual::messages::*;
