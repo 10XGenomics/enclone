@@ -30,7 +30,7 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<p><b>11/30/21</b>: Add lvar <code>nbc</code> which is the numerically encoded barcode.
+<p><b>12/8/21</b>: Add lvar <code>nbc</code> which is the numerically encoded barcode.
 See <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.</li>
 </p>
 
