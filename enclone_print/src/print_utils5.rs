@@ -377,7 +377,7 @@ pub fn delete_weaks(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Build the diff row.
+// Build the diff row.  This also has the variable names!
 
 pub fn build_diff_row(
     ctl: &EncloneControl,
@@ -491,7 +491,11 @@ pub fn build_diff_row(
                     }
                     row.push(xdots);
                 } else {
-                    row.push(rsi.cvars[col][m].clone());
+                    let mut v = rsi.cvars[col][m].clone();
+                    if v.contains(":") {
+                        v = v.before(":").to_string();
+                    }
+                    row.push(v);
                 }
             }
             for i in 0..row.len() {

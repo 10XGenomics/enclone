@@ -183,6 +183,10 @@ fn check_gene_fb(
         }
     }
     for x in to_check.iter() {
+        let mut x = x.to_string();
+        if x.contains(":") {
+            x = x.after(":").to_string();
+        }
         if !gex_info.have_gex
             && !gex_info.have_fb
             && (*x == "n_gex".to_string() || *x == "n_gex_cell".to_string())
@@ -431,6 +435,10 @@ pub fn check_pcols(
     let ends = build_ends();
     let mut nd_used = false;
     for x in cols.iter() {
+        let mut x = x.to_string();
+        if x.contains(':') {
+            x = x.after(":").to_string();
+        }
         let mut ok = false;
         // Note that the following test is probably redundant with some of the testing below.
         if check_one_lvar(&*x, ctl, gex_info, &mut nd_used, &ends, false)? {
@@ -441,7 +449,7 @@ pub fn check_pcols(
                 ok = true;
             }
         }
-        if bin_member(&alt_bcs, x) {
+        if bin_member(&alt_bcs, &x) {
             ok = true;
         }
         for y in ctl.clono_print_opt.lvars.iter() {
@@ -453,7 +461,7 @@ pub fn check_pcols(
             }
         }
         for y in PLVARS_ALLOWED.iter() {
-            if *x == *y {
+            if x == *y {
                 ok = true;
             }
         }
@@ -463,7 +471,7 @@ pub fn check_pcols(
             }
         }
         if ctl.parseable_opt.pbarcode {
-            if *x == "barcode" {
+            if x == "barcode" {
                 ok = true;
             }
             for y in ctl.origin_info.dataset_list.iter() {
@@ -490,7 +498,7 @@ pub fn check_pcols(
         }
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
-        } else if is_pattern(x, true) {
+        } else if is_pattern(&x, true) {
             ok = true;
         } else {
             let mut y = Vec::<u8>::new();
@@ -531,7 +539,7 @@ pub fn check_pcols(
             }
         }
         if !ok {
-            to_check.push(x.clone());
+            to_check.push(x.to_string());
         }
     }
     if !to_check.is_empty() {
@@ -546,7 +554,11 @@ pub fn check_pcols(
 
 pub fn check_cvars(ctl: &EncloneControl) -> Result<(), String> {
     for x in ctl.clono_print_opt.cvars.iter() {
-        let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
+        let mut x = x.to_string();
+        if x.contains(":") {
+            x = x.after(":").to_string();
+        }
+        let mut ok = CVARS_ALLOWED.contains(&x.as_str());
         if x.starts_with("ndiff")
             && x.ends_with("vj")
             && x.between("ndiff", "vj").parse::<usize>().is_ok()
@@ -593,6 +605,10 @@ pub fn check_one_lvar(
             return Ok(true);
         }
     }
+    let mut x = x.to_string();
+    if x.contains(":") {
+        x = x.after(":").to_string();
+    }
 
     // See if type is ok.
 
@@ -637,7 +653,7 @@ pub fn check_one_lvar(
     // Check names defined by VAR_DEF.
 
     for i in 0..ctl.gen_opt.var_def.len() {
-        if x == &ctl.gen_opt.var_def[i].0 {
+        if x == ctl.gen_opt.var_def[i].0 {
             return Ok(true);
         }
     }
@@ -754,7 +770,7 @@ pub fn check_one_lvar(
     if gpvar {
         return Ok(true);
     }
-    if !LVARS_ALLOWED.contains(&x) {
+    if !LVARS_ALLOWED.contains(&x.as_str()) {
         let mut end_ok = false;
         for i in 0..ends.len() {
             if x.ends_with(&ends[i]) {

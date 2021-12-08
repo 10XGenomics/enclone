@@ -54,13 +54,19 @@ fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &
     let var = &v.name;
     let uppers = get_uppers(&var);
     let mut rega = false;
+    let mut dataset = false;
+    let mut name = false;
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = true;
+        } else if uppers[i].0 == "DATASET" {
+            dataset = true;
+        } else if uppers[i].0 == "NAME" {
+            name = true;
         }
     }
     let upper = uppers.len() > 0;
-    if !upper || rega {
+    if !upper || rega || dataset || name {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -135,31 +141,91 @@ fn run_rustfmt(f: &str) {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Emit code that tests for a given variable, allowing for up to three bracket expressions
-// in the variable.
+// in the variable.  See "Test for implemented" before for precisely what is supported.
+// also
+// ...REGA...
+// ...{}...REGA...
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     let uppers = get_uppers(&var);
     let mut rega = None;
+    let mut dataset = None;
+    let mut name = None;
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = Some(uppers[i].1);
+        } else if uppers[i].0 == "DATASET" {
+            dataset = Some(uppers[i].1);
+        } else if uppers[i].0 == "NAME" {
+            name = Some(uppers[i].1);
         }
     }
     let nranges = var.matches('{').count();
+
+    // Test for implemented.
+
     assert_eq!(nranges, var.matches('}').count());
+    assert!(uppers.len() <= 1);
+    assert!(nranges <= 1 || rega.is_none());
+    assert!(nranges == 0 || dataset.is_none());
+    assert!(nranges == 0 || name.is_none());
     assert!(nranges <= 3);
+
+    // Proceed.
+
     if nranges == 0 {
-        if rega.is_none() {
-            fwriteln!(f, r###"}} else if var == "{}" {{"###, var);
+        if rega.is_none() && dataset.is_none() && name.is_none() {
+            fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
+        } else if name.is_some() {
+            let (start, stop) = (var.before("NAME"), var.after("NAME"));
+            fwriteln!(
+                f,
+                r###"}} else if vname.starts_with(&"{start}") 
+                    && vname.after(&"{start}").ends_with(&"{stop}")
+                    && ( bin_member(&ctl.origin_info.dataset_list, 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.origin_list, 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.donor_list, 
+                        &vname.between2("{start}", "{stop}").to_string())
+                        || bin_member(&ctl.origin_info.tag_list, 
+                        &vname.between2("{start}", "{stop}").to_string()) 
+                       ) {{"###,
+                start = start,
+                stop = stop,
+            );
+            fwriteln!(
+                f,
+                r###"let name = vname.between2("{}", "{}");"###,
+                start,
+                stop
+            );
+        } else if dataset.is_some() {
+            let (start, stop) = (var.before("DATASET"), var.after("DATASET"));
+            fwriteln!(
+                f,
+                r###"}} else if vname.starts_with(&"{start}") 
+                    && vname.after(&"{start}").ends_with(&"{stop}")
+                    && bin_member(&ctl.origin_info.dataset_list, 
+                        vname.between2("{start}", "{stop}")) {{"###,
+                start = start,
+                stop = stop,
+            );
+            fwriteln!(
+                f,
+                r###"let dataset = vname.between2("{}", "{}"));"###,
+                start,
+                stop
+            );
         } else {
             let start = var.before("REGA");
             let stop = var.after("REGA");
             fwriteln!(
                 f,
-                r###"}} else if var.starts_with(&"{start}") 
-                    && var.after(&"{start}").ends_with(&"{stop}")
-                    && !var.between2(&"{start}", &"{stop}").contains("_")
-                    && Regex::new(&var.between2(&"{start}", &"{stop}")).is_ok() {{"###,
+                r###"}} else if vname.starts_with(&"{start}") 
+                    && vname.after(&"{start}").ends_with(&"{stop}")
+                    && !vname.between2(&"{start}", &"{stop}").contains("_")
+                    && Regex::new(&vname.between2(&"{start}", &"{stop}")).is_ok() {{"###,
                 start = start,
                 stop = stop,
             );
@@ -167,42 +233,96 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
             // exact subclonotype, whereas it only needs to be done once (in principle).
             fwriteln!(
                 f,
-                r###"let reg = Regex::new(&var.between2(&"{}", &"{}")).unwrap();"###,
+                r###"let reg = Regex::new(&vname.between2(&"{}", &"{}")).unwrap();"###,
                 start,
                 stop
             );
         }
     } else if nranges == 1 {
-        let begin = var.before("{");
-        let end = var.after("}").to_string();
-        let low = var.after("{").before("..");
-        let high = var.after("{").between("..", "}");
-        let mut conditions = Vec::<String>::new();
-        conditions.push(format!(r###"var.starts_with("{}")"###, begin));
-        conditions.push(format!(r###"var.ends_with("{}")"###, end));
-        conditions.push(format!(
-            r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
-            begin, end,
-        ));
-        if low.len() > 0 {
+        if rega.is_none() {
+            let begin = var.before("{");
+            let end = var.after("}").to_string();
+            let low = var.after("{").before("..");
+            let high = var.after("{").between("..", "}");
+            let mut conditions = Vec::<String>::new();
+            conditions.push(format!(r###"vname.starts_with("{}")"###, begin));
+            conditions.push(format!(r###"vname.ends_with("{}")"###, end));
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() >= {}"###,
-                begin, end, low,
+                r###"vname.between2("{}", "{}").parse::<i64>().is_ok()"###,
+                begin, end,
             ));
-        }
-        if high.len() > 0 {
+            if low.len() > 0 {
+                conditions.push(format!(
+                    r###"vname.between2("{}", "{}").force_i64() >= {}"###,
+                    begin, end, low,
+                ));
+            }
+            if high.len() > 0 {
+                conditions.push(format!(
+                    r###"vname.between2("{}", "{}").force_i64() <= {}"###,
+                    begin, end, high,
+                ));
+            }
+            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+            fwriteln!(
+                f,
+                r###"let arg1 = vname.between2("{}", "{}").force_i64();"###,
+                begin,
+                end,
+            );
+        } else {
+            // <begin>{}<start>REGA<stop>
+            let begin = var.before("{");
+            let start = var.between("}", "REGA");
+            let stop = var.after("REGA");
+            let low = var.after("{").before("..");
+            let high = var.after("{").between("..", "}");
+            let mut conditions = Vec::<String>::new();
+            conditions.push(format!(r###"vname.starts_with("{}")"###, begin));
+            conditions.push(format!(r###"vname.ends_with("{}")"###, stop));
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() <= {}"###,
-                begin, end, high,
+                r###"vname.between2("{}", "{}").contains("{}")"###,
+                begin, stop, start,
             ));
+            conditions.push(format!(
+                r###"vname.between("{}", "{}").parse::<i64>().is_ok()"###,
+                begin, start,
+            ));
+            if low.len() > 0 {
+                conditions.push(format!(
+                    r###"vname.between("{}", "{}").force_i64() >= {}"###,
+                    begin, start, low,
+                ));
+            }
+            if high.len() > 0 {
+                conditions.push(format!(
+                    r###"vname.between("{}", "{}").force_i64() <= {}"###,
+                    begin, start, high,
+                ));
+            }
+            conditions.push(format!(
+                r###"!vname.after("{}").between2(&"{}", &"{}").contains("_")"###,
+                begin, start, stop,
+            ));
+            conditions.push(format!(
+                r###"Regex::new(&vname.between2(&"{}", &"{}")).is_ok()"###,
+                start, stop,
+            ));
+            fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
+            fwriteln!(
+                f,
+                r###"let arg1 = vname.between("{}", "{}").force_i64();"###,
+                begin,
+                start,
+            );
+            fwriteln!(
+                f,
+                r###"let reg = Regex::new(&vname.after("{}").between2(&"{}", &"{}")).unwrap();"###,
+                begin,
+                start,
+                stop
+            );
         }
-        fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
-        fwriteln!(
-            f,
-            r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
-            begin,
-            end,
-        );
     } else if nranges == 2 {
         // This code has not been exercised.
         let begin = var.before("{");
@@ -213,57 +333,57 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
         let low2 = var.rev_after("{").before("..");
         let high2 = var.rev_after("{").between("..", "}");
         let mut conditions = Vec::<String>::new();
-        conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+        conditions.push(format!(r###"vname.starts_with("{}")"###, begin));
         conditions.push(format!(
-            r###"var.after("{}").contains("{}")"###,
+            r###"vname.after("{}").contains("{}")"###,
             begin, middle,
         ));
         conditions.push(format!(
-            r###"var.after("{}").after("{}").ends_with("{}")"###,
+            r###"vname.after("{}").after("{}").ends_with("{}")"###,
             begin, middle, end,
         ));
         conditions.push(format!(
-            r###"var.between2("{}", "{}").parse::<i64>().is_ok()"###,
+            r###"vname.between2("{}", "{}").parse::<i64>().is_ok()"###,
             begin, middle,
         ));
         if low1.len() > 0 {
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() >= {}"###,
+                r###"vname.between2("{}", "{}").force_i64() >= {}"###,
                 begin, middle, low1,
             ));
         }
         if high1.len() > 0 {
             conditions.push(format!(
-                r###"var.between2("{}", "{}").force_i64() <= {}"###,
+                r###"vname.between2("{}", "{}").force_i64() <= {}"###,
                 begin, middle, high1,
             ));
         }
         conditions.push(format!(
-            r###"var.after("{}").between2("{}", "{}").parse::<i64>().is_ok()"###,
+            r###"vname.after("{}").between2("{}", "{}").parse::<i64>().is_ok()"###,
             begin, middle, end,
         ));
         if low2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between2("{}", "{}").force_i64() >= {}"###,
+                r###"vname.after("{}").between2("{}", "{}").force_i64() >= {}"###,
                 begin, middle, end, low2,
             ));
         }
         if high2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between2("{}", "{}").force_i64() <= {}"###,
+                r###"vname.after("{}").between2("{}", "{}").force_i64() <= {}"###,
                 begin, middle, end, high2,
             ));
         }
         fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
         fwriteln!(
             f,
-            r###"let arg1 = var.between2("{}", "{}").force_i64();"###,
+            r###"let arg1 = vname.between2("{}", "{}").force_i64();"###,
             begin,
             middle,
         );
         fwriteln!(
             f,
-            r###"let arg2 = var.after("{}"),between2("{}", "{}").force_i64();"###,
+            r###"let arg2 = vname.after("{}"),between2("{}", "{}").force_i64();"###,
             begin,
             middle,
             end,
@@ -280,80 +400,80 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
         let low3 = var.rev_after("{").before("..");
         let high3 = var.rev_after("{").between("..", "}");
         let mut conditions = Vec::<String>::new();
-        conditions.push(format!(r###"var.starts_with("{}")"###, begin));
+        conditions.push(format!(r###"vname.starts_with("{}")"###, begin));
         conditions.push(format!(
-            r###"var.after("{}").contains("{}")"###,
+            r###"vname.after("{}").contains("{}")"###,
             begin, mid1,
         ));
         conditions.push(format!(
-            r###"var.after("{}").after("{}").contains("{}")"###,
+            r###"vname.after("{}").after("{}").contains("{}")"###,
             begin, mid1, mid2,
         ));
         conditions.push(format!(
-            r###"var.after("{}").after("{}").after("{}").ends_with("{}")"###,
+            r###"vname.after("{}").after("{}").after("{}").ends_with("{}")"###,
             begin, mid1, mid2, end,
         ));
         conditions.push(format!(
-            r###"var.between("{}", "{}").parse::<i64>().is_ok()"###,
+            r###"vname.between("{}", "{}").parse::<i64>().is_ok()"###,
             begin, mid1,
         ));
         if low1.len() > 0 {
             conditions.push(format!(
-                r###"var.between("{}", "{}").force_i64() >= {}"###,
+                r###"vname.between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, low1,
             ));
         }
         if high1.len() > 0 {
             conditions.push(format!(
-                r###"var.between("{}", "{}").force_i64() <= {}"###,
+                r###"vname.between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, high1,
             ));
         }
         if low2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between("{}", "{}").force_i64() >= {}"###,
+                r###"vname.after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, low2,
             ));
         }
         if high2.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").between("{}", "{}").force_i64() <= {}"###,
+                r###"vname.after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, high2,
             ));
         }
         conditions.push(format!(
-            r###"var.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
+            r###"vname.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
             begin, mid1, mid2, end,
         ));
         if low3.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
+                r###"vname.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, end, low3,
             ));
         }
         if high3.len() > 0 {
             conditions.push(format!(
-                r###"var.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
+                r###"vname.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, end, high3,
             ));
         }
         fwriteln!(f, "}} else if {} {{ ", conditions.iter().format(" && "));
         fwriteln!(
             f,
-            r###"let arg1 = var.between("{}", "{}").force_i64();"###,
+            r###"let arg1 = vname.between("{}", "{}").force_i64();"###,
             begin,
             mid1,
         );
         fwriteln!(
             f,
-            r###"let arg2 = var.after("{}").between("{}", "{}").force_i64();"###,
+            r###"let arg2 = vname.after("{}").between("{}", "{}").force_i64();"###,
             begin,
             mid1,
             mid2,
         );
         fwriteln!(
             f,
-            r###"let arg3 = var.after("{}").after("{}").between("{}", "{}").force_i64();"###,
+            r###"let arg3 = vname.after("{}").after("{}").between("{}", "{}").force_i64();"###,
             begin,
             mid1,
             mid2,
@@ -414,7 +534,15 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             stats: &mut Vec<(String, Vec<String>)>,
         ) -> Result<bool, String> {
 
+            let mut vname = var.clone();
+            if var.contains(":") {
+                vname = var.after(":").to_string();
+            }
             let cvars = &ctl.clono_print_opt.cvars;
+            let mut abbrc = format!("{}{}", var, col + 1);
+            if var.contains(":") {
+                abbrc = var.before(":").to_string();
+            }
             let val =
             if false {
                 (String::new(), Vec::<String>::new(), String::new())
@@ -430,7 +558,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 return Ok(false);
             } else {
                 let (exact, cell, _level) = &val;
-                let varc = format!("{}{}", var, col + 1);
+                let mut varc = format!("{}{}", var, col + 1);
                 if exact.len() > 0 {
                     if j < rsi.cvars[col].len() && cvars.contains(&var) {
                         cx[col][j] = exact.clone();
@@ -441,9 +569,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 || col < ctl.parseable_opt.pchains.force_usize()))
                             || extra_args.len() > 0)
                     {
-                        let mut v = var.clone();
-                        v = v.replace("_Σ", "_sum");
-                        v = v.replace("_μ", "_mean");
+                        abbrc = abbrc.replace("_Σ", "_sum");
+                        abbrc = abbrc.replace("_μ", "_mean");
+                        varc = varc.replace("_Σ", "_sum");
+                        varc = varc.replace("_μ", "_mean");
         
                         // Strip escape character sequences from exact.  Can happen in notes, 
                         // maybe other places.
@@ -470,18 +599,18 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         
                         // Proceed.
         
-                        let varc = format!("{}{}", v, col + 1);
+                        // let varc = format!("{}{}", v, col + 1);
                         if pcols_sort.is_empty()
                             || bin_member(&pcols_sort, &varc)
                             || bin_member(&extra_args, &varc)
                         {
-                            out_data[u].insert(varc, val_clean);
+                            out_data[u].insert(abbrc.clone(), val_clean);
                         }
                     }
                     if val.1.is_empty() {
-                        stats.push((varc, vec![exact.to_string(); ex.ncells()]));
+                        stats.push((abbrc, vec![exact.to_string(); ex.ncells()]));
                     } else {
-                        stats.push((varc, cell.to_vec()));
+                        stats.push((abbrc, cell.to_vec()));
                     }
                 } else if cell.len() > 0 {
                     if pass == 2
@@ -491,7 +620,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     {
                         if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
                             let vals = format!("{}", cell.iter().format(&POUT_SEP));
-                            out_data[u].insert(varc, vals);
+                            out_data[u].insert(abbrc, vals);
                         }
                     }
                 }
@@ -590,6 +719,12 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             let mat = &rsi.mat;
             let cols = varmat[0].len();
             let verbose = ctl.gen_opt.row_fill_verbose;
+            let mut vname = var.clone();
+            let mut abbr = var.clone();
+            if var.contains(":") {
+                abbr = var.before(":").to_string();
+                vname = var.after(":").to_string();
+            }
 
             macro_rules! speak {
                 ($u:expr, $var:expr, $val:expr) => {
@@ -604,22 +739,6 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                             out_data[$u].insert(v, $val);
                         }
                     }
-                };
-            }
-
-            macro_rules! lvar_stats {
-                ($i: expr, $var:expr, $val:expr, $stats: expr) => {
-                    if verbose {
-                        eprint!("lvar {} ==> {}; ", $var, $val);
-                        eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-                    }
-                    if $i < lvars.len() {
-                        row.push($val)
-                    }
-                    if pass == 2 {
-                        speak!(u, $var.to_string(), $val);
-                    }
-                    stats.push(($var.to_string(), $stats.clone()));
                 };
             }
 
@@ -639,9 +758,19 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             } else {
                 let (exact, cell, level) = &val;
                 if level == "cell" && !var.ends_with("_cell") {
-                    lvar_stats![i, var, String::new(), cell];
+                    if verbose {
+                        eprint!("lvar {} ==> {}; ", var, String::new());
+                        eprintln!("i = {}, lvars.len() = {}", i, lvars.len());
+                    }
+                    if i < lvars.len() {
+                        row.push(String::new())
+                    }
                     if pass == 2 {
-                        speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+                        speak!(u, abbr.to_string(), String::new());
+                    }
+                    stats.push((abbr.to_string(), cell.clone()));
+                    if pass == 2 {
+                        speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
                     }
                 } else if ( exact.len() > 0 && !var.ends_with("_cell") ) || cell.len() == 0 {
                     if verbose {
@@ -652,18 +781,18 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                         row.push(exact.clone())
                     }
                     if pass == 2 {
-                        speak!(u, var.to_string(), exact.to_string());
+                        speak!(u, abbr.to_string(), exact.to_string());
                     }
                     if cell.len() == 0 {
-                        stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+                        stats.push((abbr.to_string(), vec![exact.to_string(); ex.ncells()]));
                     } else {
-                        stats.push((var.to_string(), cell.to_vec()));
+                        stats.push((abbr.to_string(), cell.to_vec()));
                     }
                 } else if cell.len() > 0 {
                     if pass == 2 {
-                        speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+                        speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
                     }
-                    stats.push((var.to_string(), cell.to_vec()));
+                    stats.push((abbr.to_string(), cell.to_vec()));
                 }
                 return Ok(true);
             }

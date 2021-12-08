@@ -25,6 +25,9 @@
 // and this could fail and mess things up if someone else happened to send a share.
 //
 // See also show_diffs.
+//
+// The regression images changed when we updated from Catalina to Big Sur and it is quite possible
+// that other version changes (and Mac hardware changes) could also affect the images.
 
 use enclone_visual::compare_images::*;
 use enclone_visual::messages::*;
@@ -411,54 +414,61 @@ fn main() {
         // Test for differences.
 
         if image_data_old.len() != image_data_new.len() {
-            eprintln!("\nimage size for test {} changed", i);
-            std::process::exit(1);
-        }
-        let diffs = compare_images(&image_data_old, &image_data_new, width, height, verbose);
-        if diffs > MAX_DIFFS {
             eprintln!(
-                "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
-                joint.{}.jpg.",
-                diffs, all_testnames[i], all_testnames[i]
+                "\nimage size for {} = {} changed from {} to {}",
+                i,
+                all_testnames[i],
+                image_data_old.len(),
+                image_data_new.len()
             );
-
-            // Create and save concatenated image.  Note that we're depending on the png
-            // in regression_images as being current.  We could do the same thing with the jpg
-            // versions, which would be guaranteed to be correct, but of lower quality.  We did
-            // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go back
-            // to that.
-
-            let mut f =
-                File::open(&old_png_file).expect(&format!("\nCan't find {}.\n", old_png_file));
-            let mut image_old = Vec::<u8>::new();
-            f.read_to_end(&mut image_old).unwrap();
-            let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
-            let mut joint = Vec::<u8>::new();
-            for i in 0..height {
-                let start = i * width * 4;
-                let stop = (i + 1) * width * 4;
-                joint.append(&mut image_data_old0[start..stop].to_vec());
-                joint.append(&mut image_data_new0[start..stop].to_vec());
-                for j in start..stop {
-                    let diff = image_data_new0[j].wrapping_sub(image_data_old0[j]);
-                    joint.push(255 - diff);
-                }
-            }
-            let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", all_testnames[i]);
-            let quality = 80 as u8;
-            let mut f = open_for_write_new![&new_jpg_file];
-            let mut buff = BufWriter::new(&mut f);
-            let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
-            encoder
-                .encode(&joint, (width * 3) as u32, height as u32, Rgba8)
-                .unwrap();
-
-            // Keep going.
-
             fail = true;
-            if update {
-                copy(&new_png_file, &old_png_file).unwrap();
-                copy(&new_jpg_file, &old_jpg_file).unwrap();
+        } else {
+            let diffs = compare_images(&image_data_old, &image_data_new, width, height, verbose);
+            if diffs > MAX_DIFFS {
+                eprintln!(
+                    "\nThere are {} diffs for {}.  Please open enclone_visual/outputs/\
+                    joint.{}.jpg.",
+                    diffs, all_testnames[i], all_testnames[i]
+                );
+
+                // Create and save concatenated image.  Note that we're depending on the png
+                // in regression_images as being current.  We could do the same thing with the jpg
+                // versions, which would be guaranteed to be correct, but of lower quality.  We did
+                // this in 8949a053552c478af5c952ee407416d0e52ab8a0 of dj/189, if you want to go
+                // back to that.
+
+                let mut f =
+                    File::open(&old_png_file).expect(&format!("\nCan't find {}.\n", old_png_file));
+                let mut image_old = Vec::<u8>::new();
+                f.read_to_end(&mut image_old).unwrap();
+                let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
+                let mut joint = Vec::<u8>::new();
+                for i in 0..height {
+                    let start = i * width * 4;
+                    let stop = (i + 1) * width * 4;
+                    joint.append(&mut image_data_old0[start..stop].to_vec());
+                    joint.append(&mut image_data_new0[start..stop].to_vec());
+                    for j in start..stop {
+                        let diff = image_data_new0[j].wrapping_sub(image_data_old0[j]);
+                        joint.push(255 - diff);
+                    }
+                }
+                let new_jpg_file = format!("enclone_visual/outputs/joint.{}.jpg", all_testnames[i]);
+                let quality = 80 as u8;
+                let mut f = open_for_write_new![&new_jpg_file];
+                let mut buff = BufWriter::new(&mut f);
+                let mut encoder = JpegEncoder::new_with_quality(&mut buff, quality);
+                encoder
+                    .encode(&joint, (width * 3) as u32, height as u32, Rgba8)
+                    .unwrap();
+
+                // Keep going.
+
+                fail = true;
+                if update {
+                    copy(&new_png_file, &old_png_file).unwrap();
+                    copy(&new_jpg_file, &old_jpg_file).unwrap();
+                }
             }
         }
     }

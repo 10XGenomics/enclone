@@ -945,7 +945,7 @@ code:     let mut n = 0;
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_cdr{1..3}_REGA
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
@@ -955,7 +955,39 @@ brief:    count amino acid motifs using only the given CDR
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          if arg1 == 1 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                      let cdr1 = ex.share[j].cdr1_start.unwrap();
+                      let fwr2 = ex.share[j].fr2_start.unwrap();
+                      if cdr1 < fwr2 {
+                          let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else if arg1 == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                      let cdr2 = ex.share[j].cdr2_start.unwrap();
+                      let fwr3 = ex.share[j].fr3_start.unwrap();
+                      if cdr2 < fwr3 {
+                          let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else {
+              for j in 0..ex.share.len() {
+                  let cdr3 = ex.share[j].cdr3_start;
+                  let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                  let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                  n += reg.find_iter(strme(&aa)).count();
+              }
+          }
+          cell: vec![format!("{}", n); ex.ncells()]
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_fwr_REGA
 inputs:   lvar_vdj
@@ -1002,7 +1034,7 @@ code:     let mut n = 0;
           exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     count_fwr{1..4}_REGA
-inputs:   ?
+inputs:   lvar_vdj
 limits:
 class:    lvar
 level:    cell-exact
@@ -1012,7 +1044,49 @@ brief:    count amino acid motifs using only the given FWR
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut n = 0;
+          if arg1 == 1 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].cdr1_start.is_some() {
+                      let fwr1 = ex.share[j].fr1_start;
+                      let cdr1 = ex.share[j].cdr1_start.unwrap();
+                      if fwr1 < cdr1 {
+                          let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else if arg1 == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                      let fwr2 = ex.share[j].fr2_start.unwrap();
+                      let cdr2 = ex.share[j].cdr2_start.unwrap();
+                      if fwr2 < cdr2 {
+                          let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else if arg1 == 3 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].fr3_start.is_some() {
+                      let fwr3 = ex.share[j].fr3_start.unwrap();
+                      let cdr3 = ex.share[j].cdr3_start;
+                      if fwr3 < cdr3 {
+                          let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                          n += reg.find_iter(strme(&aa)).count();
+                      }
+                  }
+              }
+          } else {
+              for j in 0..ex.share.len() {
+                  let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                  let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                  n += reg.find_iter(strme(&aa)).count();
+              }
+          }
+          cell: vec![format!("{}", n); ex.ncells()]
+          exact: format!("{}", n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     cred
 inputs:   lvar_vdj
@@ -2392,7 +2466,7 @@ code:     let counts = vec!["1.0".to_string(); mults[u]];
           exact: format!("{}", mults[u])
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_NAME
-inputs:   ?
+inputs:   lvar_vdj
 limits:   <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
           which would be distracting; also there is no <code>_cell</code> version</td></tr>
 class:    lvar
@@ -2403,7 +2477,32 @@ brief:    number of cells associated to the given name
 page:     enclone help lvars
 avail:    public
 notes:
-code:
+code:     let mut count = 0;
+          let mut counts = Vec::<String>::new();
+          for j in 0..ex.clones.len() {
+              let x = &ex.clones[j][0];
+              if ctl.origin_info.dataset_id[x.dataset_index] == name {
+                  count += 1;
+                  counts.push("1.0".to_string());
+              } else if x.origin_index.is_some()
+                  && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
+              {
+                  count += 1;
+                  counts.push("1.0".to_string());
+              } else if x.donor_index.is_some()
+                  && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
+              {
+                  count += 1;
+                  counts.push("1.0".to_string());
+              } else if x.tag_index.is_some()
+                  && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
+              {
+                  count += 1;
+                  counts.push("1.0".to_string());
+              }
+          }
+          cell: counts
+          exact: format!("{}", count)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     n_b
 inputs:   lvar_vdj

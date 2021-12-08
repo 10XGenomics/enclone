@@ -51,6 +51,12 @@ pub fn proc_lvar_auto(
     let mat = &rsi.mat;
     let cols = varmat[0].len();
     let verbose = ctl.gen_opt.row_fill_verbose;
+    let mut vname = var.clone();
+    let mut abbr = var.clone();
+    if var.contains(":") {
+        abbr = var.before(":").to_string();
+        vname = var.after(":").to_string();
+    }
 
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
@@ -68,32 +74,16 @@ pub fn proc_lvar_auto(
         };
     }
 
-    macro_rules! lvar_stats {
-        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
-            if verbose {
-                eprint!("lvar {} ==> {}; ", $var, $val);
-                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-            }
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-            stats.push(($var.to_string(), $stats.clone()));
-        };
-    }
-
     let val = if false {
         (String::new(), Vec::<String>::new(), String::new())
-    } else if var == "clonotype_ncells" {
+    } else if vname == "clonotype_ncells" {
         let mut n = 0;
         for u in exacts.iter() {
             n += exact_clonotypes[*u].ncells();
         }
 
         (format!("{}", n), Vec::new(), "clono".to_string())
-    } else if var == "clust" {
+    } else if vname == "clust" {
         let mut clust = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
             let mut cid = 0;
@@ -111,12 +101,12 @@ pub fn proc_lvar_auto(
         clust.sort_unstable();
 
         (abbrev_list(&clust), clustf, "cell-exect".to_string())
-    } else if var.starts_with(&"count_")
-        && var.after(&"count_").ends_with(&"")
-        && !var.between2(&"count_", &"").contains("_")
-        && Regex::new(&var.between2(&"count_", &"")).is_ok()
+    } else if vname.starts_with(&"count_")
+        && vname.after(&"count_").ends_with(&"")
+        && !vname.between2(&"count_", &"").contains("_")
+        && Regex::new(&vname.between2(&"count_", &"")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_", &"")).unwrap();
+        let reg = Regex::new(&vname.between2(&"count_", &"")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
@@ -128,12 +118,12 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var.starts_with(&"count_")
-        && var.after(&"count_").ends_with(&"_cell")
-        && !var.between2(&"count_", &"_cell").contains("_")
-        && Regex::new(&var.between2(&"count_", &"_cell")).is_ok()
+    } else if vname.starts_with(&"count_")
+        && vname.after(&"count_").ends_with(&"_cell")
+        && !vname.between2(&"count_", &"_cell").contains("_")
+        && Regex::new(&vname.between2(&"count_", &"_cell")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_", &"_cell")).unwrap();
+        let reg = Regex::new(&vname.between2(&"count_", &"_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
@@ -146,12 +136,12 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var.starts_with(&"count_cdr_")
-        && var.after(&"count_cdr_").ends_with(&"")
-        && !var.between2(&"count_cdr_", &"").contains("_")
-        && Regex::new(&var.between2(&"count_cdr_", &"")).is_ok()
+    } else if vname.starts_with(&"count_cdr_")
+        && vname.after(&"count_cdr_").ends_with(&"")
+        && !vname.between2(&"count_cdr_", &"").contains("_")
+        && Regex::new(&vname.between2(&"count_cdr_", &"")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_cdr_", &"")).unwrap();
+        let reg = Regex::new(&vname.between2(&"count_cdr_", &"")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
@@ -181,12 +171,12 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var.starts_with(&"count_cdr_")
-        && var.after(&"count_cdr_").ends_with(&"_cell")
-        && !var.between2(&"count_cdr_", &"_cell").contains("_")
-        && Regex::new(&var.between2(&"count_cdr_", &"_cell")).is_ok()
+    } else if vname.starts_with(&"count_cdr_")
+        && vname.after(&"count_cdr_").ends_with(&"_cell")
+        && !vname.between2(&"count_cdr_", &"_cell").contains("_")
+        && Regex::new(&vname.between2(&"count_cdr_", &"_cell")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_cdr_", &"_cell")).unwrap();
+        let reg = Regex::new(&vname.between2(&"count_cdr_", &"_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
@@ -217,12 +207,112 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var.starts_with(&"count_fwr_")
-        && var.after(&"count_fwr_").ends_with(&"")
-        && !var.between2(&"count_fwr_", &"").contains("_")
-        && Regex::new(&var.between2(&"count_fwr_", &"")).is_ok()
+    } else if vname.starts_with("count_cdr")
+        && vname.ends_with("")
+        && vname.between2("count_cdr", "").contains("_")
+        && vname.between("count_cdr", "_").parse::<i64>().is_ok()
+        && vname.between("count_cdr", "_").force_i64() >= 1
+        && vname.between("count_cdr", "_").force_i64() <= 3
+        && !vname.after("count_cdr").between2(&"_", &"").contains("_")
+        && Regex::new(&vname.between2(&"_", &"")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_fwr_", &"")).unwrap();
+        let arg1 = vname.between("count_cdr", "_").force_i64();
+        let reg = Regex::new(&vname.after("count_cdr").between2(&"_", &"")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    if cdr1 < fwr2 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    if cdr2 < fwr3 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let cdr3 = ex.share[j].cdr3_start;
+                let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
+        }
+
+        (
+            format!("{}", n),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if vname.starts_with("count_cdr")
+        && vname.ends_with("_cell")
+        && vname.between2("count_cdr", "_cell").contains("_")
+        && vname.between("count_cdr", "_").parse::<i64>().is_ok()
+        && vname.between("count_cdr", "_").force_i64() >= 1
+        && vname.between("count_cdr", "_").force_i64() <= 3
+        && !vname
+            .after("count_cdr")
+            .between2(&"_", &"_cell")
+            .contains("_")
+        && Regex::new(&vname.between2(&"_", &"_cell")).is_ok()
+    {
+        let arg1 = vname.between("count_cdr", "_").force_i64();
+        let reg = Regex::new(&vname.after("count_cdr").between2(&"_", &"_cell")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    if cdr1 < fwr2 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    if cdr2 < fwr3 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let cdr3 = ex.share[j].cdr3_start;
+                let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (
+            String::new(),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if vname.starts_with(&"count_fwr_")
+        && vname.after(&"count_fwr_").ends_with(&"")
+        && !vname.between2(&"count_fwr_", &"").contains("_")
+        && Regex::new(&vname.between2(&"count_fwr_", &"")).is_ok()
+    {
+        let reg = Regex::new(&vname.between2(&"count_fwr_", &"")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() {
@@ -259,12 +349,12 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var.starts_with(&"count_fwr_")
-        && var.after(&"count_fwr_").ends_with(&"_cell")
-        && !var.between2(&"count_fwr_", &"_cell").contains("_")
-        && Regex::new(&var.between2(&"count_fwr_", &"_cell")).is_ok()
+    } else if vname.starts_with(&"count_fwr_")
+        && vname.after(&"count_fwr_").ends_with(&"_cell")
+        && !vname.between2(&"count_fwr_", &"_cell").contains("_")
+        && Regex::new(&vname.between2(&"count_fwr_", &"_cell")).is_ok()
     {
-        let reg = Regex::new(&var.between2(&"count_fwr_", &"_cell")).unwrap();
+        let reg = Regex::new(&vname.between2(&"count_fwr_", &"_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() {
@@ -302,7 +392,127 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if var == "cred" {
+    } else if vname.starts_with("count_fwr")
+        && vname.ends_with("")
+        && vname.between2("count_fwr", "").contains("_")
+        && vname.between("count_fwr", "_").parse::<i64>().is_ok()
+        && vname.between("count_fwr", "_").force_i64() >= 1
+        && vname.between("count_fwr", "_").force_i64() <= 4
+        && !vname.after("count_fwr").between2(&"_", &"").contains("_")
+        && Regex::new(&vname.between2(&"_", &"")).is_ok()
+    {
+        let arg1 = vname.between("count_fwr", "_").force_i64();
+        let reg = Regex::new(&vname.after("count_fwr").between2(&"_", &"")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 3 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
+        }
+
+        (
+            format!("{}", n),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if vname.starts_with("count_fwr")
+        && vname.ends_with("_cell")
+        && vname.between2("count_fwr", "_cell").contains("_")
+        && vname.between("count_fwr", "_").parse::<i64>().is_ok()
+        && vname.between("count_fwr", "_").force_i64() >= 1
+        && vname.between("count_fwr", "_").force_i64() <= 4
+        && !vname
+            .after("count_fwr")
+            .between2(&"_", &"_cell")
+            .contains("_")
+        && Regex::new(&vname.between2(&"_", &"_cell")).is_ok()
+    {
+        let arg1 = vname.between("count_fwr", "_").force_i64();
+        let reg = Regex::new(&vname.after("count_fwr").between2(&"_", &"_cell")).unwrap();
+        let mut n = 0;
+        if arg1 == 1 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else if arg1 == 3 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(strme(&aa)).count();
+                    }
+                }
+            }
+        } else {
+            for j in 0..ex.share.len() {
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(strme(&aa)).count();
+            }
+        }
+
+        let _exact = format!("{}", n);
+        (
+            String::new(),
+            vec![format!("{}", n); ex.ncells()],
+            "cell-exact".to_string(),
+        )
+    } else if vname == "cred" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {
             let bc = &ex.clones[l][0].barcode;
@@ -343,7 +553,7 @@ pub fn proc_lvar_auto(
             r,
             "cell-exact".to_string(),
         )
-    } else if var == "cred_cell" {
+    } else if vname == "cred_cell" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {
             let bc = &ex.clones[l][0].barcode;
@@ -381,7 +591,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{:.1}", median_f64(&credsx));
         (String::new(), r, "cell-exact".to_string())
-    } else if var == "datasets" {
+    } else if vname == "datasets" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
@@ -394,7 +604,7 @@ pub fn proc_lvar_auto(
             datasets,
             "cell-exact".to_string(),
         )
-    } else if var == "datasets_cell" {
+    } else if vname == "datasets_cell" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             datasets.push(ctl.origin_info.dataset_id[ex.clones[j][0].dataset_index].clone());
@@ -404,7 +614,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", datasets_unique.iter().format(","));
         (String::new(), datasets, "cell-exact".to_string())
-    } else if var == "donors" {
+    } else if vname == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].donor_index.is_some() {
@@ -422,7 +632,7 @@ pub fn proc_lvar_auto(
             donors_unsorted,
             "cell-exact".to_string(),
         )
-    } else if var == "donors_cell" {
+    } else if vname == "donors_cell" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].donor_index.is_some() {
@@ -437,7 +647,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", donors.iter().format(","));
         (String::new(), donors_unsorted, "cell-exact".to_string())
-    } else if var == "dref" {
+    } else if vname == "dref" {
         let mut diffs = 0;
         for m in 0..cols {
             if mat[m][u].is_some() {
@@ -464,7 +674,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", diffs), Vec::new(), "exact".to_string())
-    } else if var == "dref_aa" {
+    } else if vname == "dref_aa" {
         let mut diffs = 0;
         for m in 0..cols {
             if mat[m][u].is_some() {
@@ -499,7 +709,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", diffs), Vec::new(), "exact".to_string())
-    } else if var == "entropy" {
+    } else if vname == "entropy" {
         let mut total_counts = Vec::<usize>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -613,7 +823,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{:.2}", entropy), e, "cell-exact".to_string())
-    } else if var == "entropy_cell" {
+    } else if vname == "entropy_cell" {
         let mut total_counts = Vec::<usize>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
@@ -728,7 +938,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{:.2}", entropy);
         (String::new(), e, "cell-exact".to_string())
-    } else if var == "far" {
+    } else if vname == "far" {
         let mut dist = -1_isize;
         for i2 in 0..varmat.len() {
             if i2 == u || fp[i2] != fp[u] {
@@ -752,12 +962,12 @@ pub fn proc_lvar_auto(
         }
 
         (d, Vec::new(), "exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("")
-        && var.between2("fb", "").parse::<i64>().is_ok()
-        && var.between2("fb", "").force_i64() >= 1
+    } else if vname.starts_with("fb")
+        && vname.ends_with("")
+        && vname.between2("fb", "").parse::<i64>().is_ok()
+        && vname.between2("fb", "").force_i64() >= 1
     {
-        let arg1 = var.between2("fb", "").force_i64();
+        let arg1 = vname.between2("fb", "").force_i64();
         let ncols = gex_info.fb_top_matrices[0].ncols();
         let n = (arg1 - 1) as usize;
         let fb = if n < ncols {
@@ -767,12 +977,12 @@ pub fn proc_lvar_auto(
         };
 
         ((*fb).to_string(), Vec::new(), "exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("_n")
-        && var.between2("fb", "_n").parse::<i64>().is_ok()
-        && var.between2("fb", "_n").force_i64() >= 1
+    } else if vname.starts_with("fb")
+        && vname.ends_with("_n")
+        && vname.between2("fb", "_n").parse::<i64>().is_ok()
+        && vname.between2("fb", "_n").force_i64() >= 1
     {
-        let arg1 = var.between2("fb", "_n").force_i64();
+        let arg1 = vname.between2("fb", "_n").force_i64();
         let ncols = gex_info.fb_top_matrices[0].ncols();
         let n = (arg1 - 1) as usize;
         let median;
@@ -800,12 +1010,12 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", median), counts, "cell-exact".to_string())
-    } else if var.starts_with("fb")
-        && var.ends_with("_n_cell")
-        && var.between2("fb", "_n_cell").parse::<i64>().is_ok()
-        && var.between2("fb", "_n_cell").force_i64() >= 1
+    } else if vname.starts_with("fb")
+        && vname.ends_with("_n_cell")
+        && vname.between2("fb", "_n_cell").parse::<i64>().is_ok()
+        && vname.between2("fb", "_n_cell").force_i64() >= 1
     {
-        let arg1 = var.between2("fb", "_n_cell").force_i64();
+        let arg1 = vname.between2("fb", "_n_cell").force_i64();
         let ncols = gex_info.fb_top_matrices[0].ncols();
         let n = (arg1 - 1) as usize;
         let median;
@@ -834,7 +1044,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", median);
         (String::new(), counts, "cell-exact".to_string())
-    } else if var == "filter" {
+    } else if vname == "filter" {
         let mut fates = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let mut f = String::new();
@@ -848,7 +1058,7 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), fates, "cell".to_string())
-    } else if var == "gex" {
+    } else if vname == "gex" {
         let mut f = Vec::<String>::new();
         for x in gex_fcounts_unsorted.iter() {
             f.push(format!("{}", *x));
@@ -858,7 +1068,7 @@ pub fn proc_lvar_auto(
         let gex_median = rounded_median(&counts);
 
         (format!("{}", gex_median), f, "cell-exact".to_string())
-    } else if var == "gex_cell" {
+    } else if vname == "gex_cell" {
         let mut f = Vec::<String>::new();
         for x in gex_fcounts_unsorted.iter() {
             f.push(format!("{}", *x));
@@ -869,13 +1079,13 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", gex_median);
         (String::new(), f, "cell-exact".to_string())
-    } else if var == "gex_max" {
+    } else if vname == "gex_max" {
         (
             format!("{}", gex_counts_unsorted.iter().max().unwrap()),
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "gex_mean" {
+    } else if vname == "gex_mean" {
         let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
         let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
 
@@ -884,13 +1094,13 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "gex_min" {
+    } else if vname == "gex_min" {
         (
             format!("{}", gex_counts_unsorted.iter().min().unwrap()),
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "gex_sum" {
+    } else if vname == "gex_sum" {
         let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
 
         (
@@ -898,7 +1108,7 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "gex_Σ" {
+    } else if vname == "gex_Σ" {
         let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
 
         (
@@ -906,7 +1116,7 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "gex_μ" {
+    } else if vname == "gex_μ" {
         let gex_sum = gex_fcounts_unsorted.iter().sum::<f64>();
         let gex_mean = gex_sum / gex_fcounts_unsorted.len() as f64;
 
@@ -915,12 +1125,12 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var.starts_with("g")
-        && var.ends_with("")
-        && var.between2("g", "").parse::<i64>().is_ok()
-        && var.between2("g", "").force_i64() >= 0
+    } else if vname.starts_with("g")
+        && vname.ends_with("")
+        && vname.between2("g", "").parse::<i64>().is_ok()
+        && vname.between2("g", "").force_i64() >= 0
     {
-        let arg1 = var.between2("g", "").force_i64();
+        let arg1 = vname.between2("g", "").force_i64();
         let d = arg1 as usize;
         let answer = if groups.contains_key(&d) {
             format!("{}", groups[&d][u] + 1)
@@ -929,7 +1139,7 @@ pub fn proc_lvar_auto(
         };
 
         (answer, Vec::new(), "exact".to_string())
-    } else if var == "inkt" {
+    } else if vname == "inkt" {
         let mut s = String::new();
         let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
         let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
@@ -955,7 +1165,7 @@ pub fn proc_lvar_auto(
         }
 
         (s, Vec::new(), "exact".to_string())
-    } else if var == "mait" {
+    } else if vname == "mait" {
         let mut s = String::new();
         let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
         let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
@@ -981,7 +1191,7 @@ pub fn proc_lvar_auto(
         }
 
         (s, Vec::new(), "exact".to_string())
-    } else if var == "mark" {
+    } else if vname == "mark" {
         let mut n = 0;
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].marked {
@@ -990,7 +1200,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), Vec::new(), "exact".to_string())
-    } else if var == "mem" {
+    } else if vname == "mem" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
         if ctl.gen_opt.using_secmem {
@@ -1007,7 +1217,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), y, "cell-exact".to_string())
-    } else if var == "mem_cell" {
+    } else if vname == "mem_cell" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
         if ctl.gen_opt.using_secmem {
@@ -1025,16 +1235,103 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), y, "cell-exact".to_string())
-    } else if var == "n" {
+    } else if vname == "n" {
         let counts = vec!["1.0".to_string(); mults[u]];
 
         (format!("{}", mults[u]), counts, "cell-exact".to_string())
-    } else if var == "n_cell" {
+    } else if vname == "n_cell" {
         let counts = vec!["1.0".to_string(); mults[u]];
 
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
-    } else if var == "n_b" {
+    } else if vname.starts_with(&"n_")
+        && vname.after(&"n_").ends_with(&"")
+        && (bin_member(
+            &ctl.origin_info.dataset_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.origin_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.donor_list,
+            &vname.between2("n_", "").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.tag_list,
+            &vname.between2("n_", "").to_string(),
+        ))
+    {
+        let name = vname.between2("n_", "");
+        let mut count = 0;
+        let mut counts = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let x = &ex.clones[j][0];
+            if ctl.origin_info.dataset_id[x.dataset_index] == name {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.origin_index.is_some()
+                && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.donor_index.is_some()
+                && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.tag_index.is_some()
+                && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            }
+        }
+
+        (format!("{}", count), counts, "cell-exact".to_string())
+    } else if vname.starts_with(&"n_")
+        && vname.after(&"n_").ends_with(&"_cell")
+        && (bin_member(
+            &ctl.origin_info.dataset_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.origin_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.donor_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ) || bin_member(
+            &ctl.origin_info.tag_list,
+            &vname.between2("n_", "_cell").to_string(),
+        ))
+    {
+        let name = vname.between2("n_", "_cell");
+        let mut count = 0;
+        let mut counts = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let x = &ex.clones[j][0];
+            if ctl.origin_info.dataset_id[x.dataset_index] == name {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.origin_index.is_some()
+                && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.donor_index.is_some()
+                && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            } else if x.tag_index.is_some()
+                && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
+            {
+                count += 1;
+                counts.push("1.0".to_string());
+            }
+        }
+
+        let _exact = format!("{}", count);
+        (String::new(), counts, "cell-exact".to_string())
+    } else if vname == "n_b" {
         let mut n_b = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -1051,7 +1348,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n_b), ns, "cell-exact".to_string())
-    } else if var == "n_b_cell" {
+    } else if vname == "n_b_cell" {
         let mut n_b = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -1069,7 +1366,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n_b);
         (String::new(), ns, "cell-exact".to_string())
-    } else if var == "n_gex" {
+    } else if vname == "n_gex" {
         let mut n = Vec::<String>::new();
         let mut n_gex = 0;
         for x in n_gexs.iter() {
@@ -1078,7 +1375,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n_gex), n, "cell-exact".to_string())
-    } else if var == "n_gex_cell" {
+    } else if vname == "n_gex_cell" {
         let mut n = Vec::<String>::new();
         let mut n_gex = 0;
         for x in n_gexs.iter() {
@@ -1088,7 +1385,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n_gex);
         (String::new(), n, "cell-exact".to_string())
-    } else if var == "n_other" {
+    } else if vname == "n_other" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -1109,7 +1406,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), ns, "cell-exact".to_string())
-    } else if var == "n_other_cell" {
+    } else if vname == "n_other_cell" {
         let mut n = 0;
         let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -1131,7 +1428,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), ns, "cell-exact".to_string())
-    } else if var == "nbc" {
+    } else if vname == "nbc" {
         let mut nbc = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let bc = ex.clones[j][0].barcode.before("-").as_bytes();
@@ -1152,19 +1449,19 @@ pub fn proc_lvar_auto(
         }
 
         (String::new(), nbc, "cell".to_string())
-    } else if var == "nchains" {
+    } else if vname == "nchains" {
         (
             format!("{}", rsi.mat.len()),
             Vec::new(),
             "clono".to_string(),
         )
-    } else if var == "nchains_present" {
+    } else if vname == "nchains_present" {
         (
             format!("{}", exact_clonotypes[exacts[u]].share.len()),
             Vec::new(),
             "exact".to_string(),
         )
-    } else if var == "near" {
+    } else if vname == "near" {
         let near;
         let mut dist = 1_000_000;
         for i2 in 0..varmat.len() {
@@ -1188,9 +1485,9 @@ pub fn proc_lvar_auto(
         }
 
         (near, Vec::new(), "exact".to_string())
-    } else if var == "npe" {
+    } else if vname == "npe" {
         (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "origins" {
+    } else if vname == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].origin_index.is_some() {
@@ -1209,7 +1506,7 @@ pub fn proc_lvar_auto(
             origins_unsorted,
             "cell-exact".to_string(),
         )
-    } else if var == "origins_cell" {
+    } else if vname == "origins_cell" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].origin_index.is_some() {
@@ -1225,11 +1522,11 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", origins.iter().format(","));
         (String::new(), origins_unsorted, "cell-exact".to_string())
-    } else if var == "pe" {
+    } else if vname == "pe" {
         (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "ppe" {
+    } else if vname == "ppe" {
         (String::new(), Vec::new(), "cell".to_string())
-    } else if var == "sec" {
+    } else if vname == "sec" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
         if ctl.gen_opt.using_secmem {
@@ -1246,7 +1543,7 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", n), y, "cell-exact".to_string())
-    } else if var == "sec_cell" {
+    } else if vname == "sec_cell" {
         let mut n = 0;
         let mut y = Vec::<String>::new();
         if ctl.gen_opt.using_secmem {
@@ -1264,7 +1561,7 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", n);
         (String::new(), y, "cell-exact".to_string())
-    } else if var == "type" {
+    } else if vname == "type" {
         let mut cell_types = Vec::<String>::new();
         /*
         for j in 0..ex.clones.len() {
@@ -1292,9 +1589,19 @@ pub fn proc_lvar_auto(
     } else {
         let (exact, cell, level) = &val;
         if level == "cell" && !var.ends_with("_cell") {
-            lvar_stats![i, var, String::new(), cell];
+            if verbose {
+                eprint!("lvar {} ==> {}; ", var, String::new());
+                eprintln!("i = {}, lvars.len() = {}", i, lvars.len());
+            }
+            if i < lvars.len() {
+                row.push(String::new())
+            }
             if pass == 2 {
-                speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+                speak!(u, abbr.to_string(), String::new());
+            }
+            stats.push((abbr.to_string(), cell.clone()));
+            if pass == 2 {
+                speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
             }
         } else if (exact.len() > 0 && !var.ends_with("_cell")) || cell.len() == 0 {
             if verbose {
@@ -1305,18 +1612,18 @@ pub fn proc_lvar_auto(
                 row.push(exact.clone())
             }
             if pass == 2 {
-                speak!(u, var.to_string(), exact.to_string());
+                speak!(u, abbr.to_string(), exact.to_string());
             }
             if cell.len() == 0 {
-                stats.push((var.to_string(), vec![exact.to_string(); ex.ncells()]));
+                stats.push((abbr.to_string(), vec![exact.to_string(); ex.ncells()]));
             } else {
-                stats.push((var.to_string(), cell.to_vec()));
+                stats.push((abbr.to_string(), cell.to_vec()));
             }
         } else if cell.len() > 0 {
             if pass == 2 {
-                speak!(u, var, format!("{}", cell.iter().format(POUT_SEP)));
+                speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
             }
-            stats.push((var.to_string(), cell.to_vec()));
+            stats.push((abbr.to_string(), cell.to_vec()));
         }
         return Ok(true);
     }
