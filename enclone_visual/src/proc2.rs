@@ -319,18 +319,21 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
         Command::none()
     } else {
         if group_spec {
+            if slf.h.input1_history.is_empty() & slf.h.input2_history.is_empty()
+                && slf.h.inputn_history.is_empty()
+            {
+                // This is flaky, as it does not create a history entry.  However it's a weird
+                // rare case.
+                slf.output_value = "Group identifier can only be supplied if another \
+                    command has already been run."
+                    .to_string();
+                return Command::none();
+            }
             slf.translated_input_value = slf.input_value.clone();
             let mut reply_text;
             let new = slf.translated_input_current();
             let args = new.split(' ').collect::<Vec<&str>>();
-            if slf.h.input1_history.is_empty()
-                && slf.h.input2_history.is_empty()
-                && slf.h.inputn_history.is_empty()
-            {
-                reply_text = "Group identifier can only be supplied if another \
-                    command has already been run."
-                    .to_string();
-            } else if group_ids[group_ids.len() - 1] > slf.current_tables.len() {
+            if group_ids[group_ids.len() - 1] > slf.current_tables.len() {
                 reply_text = "Group identifier is too large.".to_string();
             } else {
                 let mut group_pics = Vec::<String>::new();
