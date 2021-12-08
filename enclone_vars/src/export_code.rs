@@ -535,12 +535,16 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         ) -> Result<bool, String> {
 
             let mut vname = var.clone();
-            let mut abbr = var.clone();
+            // let mut abbr = var.clone();
             if var.contains(":") {
-                abbr = var.before(":").to_string();
+                // abbr = var.before(":").to_string();
                 vname = var.after(":").to_string();
             }
             let cvars = &ctl.clono_print_opt.cvars;
+            let mut abbrc = format!("{}{}", var, col + 1);
+            if var.contains(":") {
+                abbrc = var.before(":").to_string();
+            }
             let val =
             if false {
                 (String::new(), Vec::<String>::new(), String::new())
@@ -556,9 +560,9 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 return Ok(false);
             } else {
                 let (exact, cell, _level) = &val;
-                let varc = format!("{}{}", var, col + 1);
-                let mut _vnamec = format!("{}{}", vname, col + 1);
-                let mut abbrc = format!("{}{}", abbr, col + 1);
+                let mut varc = format!("{}{}", var, col + 1);
+                // let mut vnamec = format!("{}{}", vname, col + 1);
+                // let mut abbrc = format!("{}{}", abbr, col + 1);
                 if exact.len() > 0 {
                     if j < rsi.cvars[col].len() && cvars.contains(&var) {
                         cx[col][j] = exact.clone();
@@ -569,14 +573,18 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                                 || col < ctl.parseable_opt.pchains.force_usize()))
                             || extra_args.len() > 0)
                     {
-                        let mut v = vname.clone();
-                        v = v.replace("_Σ", "_sum");
-                        v = v.replace("_μ", "_mean");
+                        // let mut v = vname.clone();
+                        // v = v.replace("_Σ", "_sum");
+                        // v = v.replace("_μ", "_mean");
                         // let mut abbrc = abbrc.clone();
                         abbrc = abbrc.replace("_Σ", "_sum");
                         abbrc = abbrc.replace("_μ", "_mean");
-                        _vnamec = _vnamec.replace("_Σ", "_sum");
-                        _vnamec = _vnamec.replace("_μ", "_mean");
+                        // vnamec = vnamec.replace("_Σ", "_sum");
+                        // vnamec = vnamec.replace("_μ", "_mean");
+                        varc = varc.replace("_Σ", "_sum");
+                        varc = varc.replace("_μ", "_mean");
+                        // abbr = abbr.replace("_Σ", "_sum");
+                        // abbr = abbr.replace("_μ", "_mean");
         
                         // Strip escape character sequences from exact.  Can happen in notes, 
                         // maybe other places.
@@ -603,7 +611,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         
                         // Proceed.
         
-                        let varc = format!("{}{}", v, col + 1);
+                        // let varc = format!("{}{}", v, col + 1);
                         if pcols_sort.is_empty()
                             || bin_member(&pcols_sort, &varc)
                             || bin_member(&extra_args, &varc)
@@ -624,7 +632,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                     {
                         if pcols_sort.is_empty() || bin_member(pcols_sort, &varc) {
                             let vals = format!("{}", cell.iter().format(&POUT_SEP));
-                            out_data[u].insert(varc, vals);
+                            out_data[u].insert(abbrc, vals);
                         }
                     }
                 }
