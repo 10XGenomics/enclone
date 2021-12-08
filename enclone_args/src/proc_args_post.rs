@@ -13,7 +13,7 @@ use std::io::BufRead;
 use std::time::Instant;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
-use vector_utils::{bin_member, next_diff, unique_sort};
+use vector_utils::{bin_member, next_diff, sort_sync2, unique_sort};
 
 pub fn proc_args_post(
     mut ctl: &mut EncloneControl,
@@ -94,6 +94,7 @@ pub fn proc_args_post(
                 continue;
             }
             tags.push(tag.clone());
+            sort_sync2(&mut ctl.gen_opt.info_fields, &mut other);
             ctl.gen_opt.info_data.insert(tag, other);
         }
         tags.sort();
