@@ -19,7 +19,7 @@ pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), S
     let drefs = &inter.ex.drefs;
     let gex_info = &inter.setup.gex_info;
     let sr = &inter.ex.sr;
-    let mut fate = &mut inter.ex.fate;
+    let fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
 
@@ -85,7 +85,7 @@ pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), S
         &mut out_datas,
         &mut tests,
         &mut controls,
-        &mut fate,
+        fate,
     )?;
     Ok(())
 }

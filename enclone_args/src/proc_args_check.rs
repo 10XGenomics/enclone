@@ -184,7 +184,7 @@ fn check_gene_fb(
     }
     for x in to_check.iter() {
         let mut x = x.to_string();
-        if x.contains(":") {
+        if x.contains(':') {
             x = x.after(":").to_string();
         }
         if !gex_info.have_gex
@@ -555,7 +555,7 @@ pub fn check_pcols(
 pub fn check_cvars(ctl: &EncloneControl) -> Result<(), String> {
     for x in ctl.clono_print_opt.cvars.iter() {
         let mut x = x.to_string();
-        if x.contains(":") {
+        if x.contains(':') {
             x = x.after(":").to_string();
         }
         let mut ok = CVARS_ALLOWED.contains(&x.as_str());
@@ -606,7 +606,7 @@ pub fn check_one_lvar(
         }
     }
     let mut x = x.to_string();
-    if x.contains(":") {
+    if x.contains(':') {
         x = x.after(":").to_string();
     }
 
@@ -722,7 +722,7 @@ pub fn check_one_lvar(
         }
         let y = z.after(&class);
         let reg = Regex::new(y);
-        if reg.is_err() || y.contains("_") {
+        if reg.is_err() || y.contains('_') {
             return Err(format!(
                 "\nThe string after {} in your lead or parseable variable {} is not a valid \
                 regular expression for amino acids.\n",
@@ -746,7 +746,7 @@ pub fn check_one_lvar(
 
     // Check for patterns.
 
-    if is_pattern(&x.to_string(), false) {
+    if is_pattern(&x, false) {
         return Ok(true);
     }
 

@@ -883,7 +883,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         }
         process_special_arg(
             &args[i],
-            &mut ctl,
+            ctl,
             &mut metas,
             &mut metaxs,
             &mut xcrs,
@@ -909,7 +909,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         );
     }
     proc_args_post(
-        &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
+        ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     )?;
     Ok(())
 }

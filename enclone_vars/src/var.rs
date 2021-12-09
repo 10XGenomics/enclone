@@ -84,7 +84,7 @@ pub fn parse_variables(input: &str) -> Vec<Variable> {
                     std::process::exit(1);
                 }
                 let n = this_group.len();
-                if !this_group[n - 1].ends_with("\n") {
+                if !this_group[n - 1].ends_with('\n') {
                     this_group[n - 1] += "\n";
                 }
                 this_group[n - 1] += &mut format!(" {}", line.after(INDENT));

@@ -649,7 +649,7 @@ pub fn proc_xcr(
                 if !bc.is_empty() {
                     bcx = datasets_bc[ix].to_string();
                 }
-                parse_bc(bcx, &mut ctl, "BC")?;
+                parse_bc(bcx, ctl, "BC")?;
             }
         }
     }
@@ -837,7 +837,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
 
             // Parse bc and finish up.
 
-            parse_bc(bc.clone(), &mut ctl, "META")?;
+            parse_bc(bc.clone(), ctl, "META")?;
             let current_ref = false;
             let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
             path = get_path_or_internal_id(&path, ctl, "META", &spinlock)?;
@@ -854,7 +854,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 path = format!("{}/multi/vdj_t", path);
             }
             if !gpath.is_empty() {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock)?;
+                gpath = get_path_or_internal_id(&gpath, ctl, "META", &spinlock)?;
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
                 }
@@ -887,7 +887,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
     Ok(())
 }
 
-pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) -> Result<(), String> {
+pub fn proc_meta(f: &str, ctl: &mut EncloneControl) -> Result<(), String> {
     if !path_exists(f) {
         return Err("\nCan't find the file referenced by your META argument.\n".to_string());
     }
@@ -906,5 +906,5 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) -> Result<(), String> {
         let s = line.unwrap();
         lines.push(s);
     }
-    proc_meta_core(&lines, &mut ctl)
+    proc_meta_core(&lines, ctl)
 }

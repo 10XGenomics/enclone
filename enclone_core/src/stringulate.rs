@@ -22,7 +22,7 @@ use string_utils::*;
 const DOUBLE: &str = "";
 
 pub fn flatten_vec_string(v: &[String]) -> String {
-    format!("{}{}{}", DOUBLE, v.iter().format(&DOUBLE), DOUBLE)
+    format!("{}{}{}", DOUBLE, v.iter().format(DOUBLE), DOUBLE)
 }
 
 pub fn unflatten_string(s: &str) -> Vec<String> {
@@ -47,7 +47,7 @@ pub fn unpack_to_het_string(s: &str) -> Vec<HetString> {
     let fields: Vec<String> = s.split(&DOUBLE).map(str::to_owned).collect();
     let mut i = 0;
     while i < fields.len() {
-        if fields[i].len() > 0 {
+        if !fields[i].is_empty() {
             v.push(HetString {
                 name: "String".to_string(),
                 content: fields[i].to_string(),
@@ -84,7 +84,7 @@ impl DescriptionTable {
         flatten_vec_string(&v)
     }
     pub fn from_string(x: &str) -> Self {
-        let v = unflatten_string(&x);
+        let v = unflatten_string(x);
         DescriptionTable {
             display_text: v[2].clone(),
             spreadsheet_text: v[3].clone(),
@@ -117,7 +117,7 @@ impl FeatureBarcodeAlluvialTableSet {
         flatten_vec_string(&v)
     }
     pub fn from_string(x: &str) -> Self {
-        let v = unflatten_string(&x);
+        let v = unflatten_string(x);
         let n = v[1].force_usize() / 3;
         let mut s = Vec::new();
         for i in 0..n {
@@ -127,7 +127,7 @@ impl FeatureBarcodeAlluvialTableSet {
                 spreadsheet_text: v[2 + 3 * i + 2].clone(),
             });
         }
-        FeatureBarcodeAlluvialTableSet { s: s }
+        FeatureBarcodeAlluvialTableSet { s }
     }
 }
 
@@ -156,7 +156,7 @@ impl FeatureBarcodeAlluvialReadsTableSet {
         flatten_vec_string(&v)
     }
     pub fn from_string(x: &str) -> Self {
-        let v = unflatten_string(&x);
+        let v = unflatten_string(x);
         let n = v[1].force_usize() / 3;
         let mut s = Vec::new();
         for i in 0..n {
@@ -166,6 +166,6 @@ impl FeatureBarcodeAlluvialReadsTableSet {
                 spreadsheet_text: v[2 + 3 * i + 2].clone(),
             });
         }
-        FeatureBarcodeAlluvialReadsTableSet { s: s }
+        FeatureBarcodeAlluvialReadsTableSet { s }
     }
 }

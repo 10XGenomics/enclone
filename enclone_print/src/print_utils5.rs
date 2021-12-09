@@ -492,7 +492,7 @@ pub fn build_diff_row(
                     row.push(xdots);
                 } else {
                     let mut v = rsi.cvars[col][m].clone();
-                    if v.contains(":") {
+                    if v.contains(':') {
                         v = v.before(":").to_string();
                     }
                     row.push(v);

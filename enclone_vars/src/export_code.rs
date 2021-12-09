@@ -28,13 +28,13 @@ fn get_uppers(var: &str) -> Vec<(String, usize)> {
         for i in 0..chars.len() {
             if chars[i].is_ascii_uppercase() {
                 s.push(chars[i]);
-            } else if s.len() > 0 {
+            } else if !s.is_empty() {
                 uppers.push((s.clone(), start));
                 start = i + 1;
                 s.clear();
             }
         }
-        if s.len() > 0 {
+        if !s.is_empty() {
             uppers.push((s, start));
         }
     }
@@ -59,7 +59,7 @@ fn process_var<W: Write>(
     class: &str,
 ) {
     let var = &v.name;
-    let uppers = get_uppers(&var);
+    let uppers = get_uppers(var);
     let mut rega = false;
     let mut dataset = false;
     let mut name = false;
@@ -74,7 +74,7 @@ fn process_var<W: Write>(
             name = true;
         }
     }
-    let upper = uppers.len() > 0;
+    let upper = !uppers.is_empty();
     if !upper || rega || dataset || name || bc || info {
         let mut passes = 1;
         if v.level == "cell-exact" {
@@ -156,7 +156,7 @@ fn run_rustfmt(f: &str) {
 // ...{}...REGA...
 
 fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &str) {
-    let uppers = get_uppers(&var);
+    let uppers = get_uppers(var);
     let mut rega = None;
     let mut dataset = None;
     let mut name = None;
@@ -269,13 +269,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
                 r###"vname.between2("{}", "{}").parse::<i64>().is_ok()"###,
                 begin, end,
             ));
-            if low.len() > 0 {
+            if !low.is_empty() {
                 conditions.push(format!(
                     r###"vname.between2("{}", "{}").force_i64() >= {}"###,
                     begin, end, low,
                 ));
             }
-            if high.len() > 0 {
+            if !high.is_empty() {
                 conditions.push(format!(
                     r###"vname.between2("{}", "{}").force_i64() <= {}"###,
                     begin, end, high,
@@ -306,13 +306,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
                 r###"vname.between("{}", "{}").parse::<i64>().is_ok()"###,
                 begin, start,
             ));
-            if low.len() > 0 {
+            if !low.is_empty() {
                 conditions.push(format!(
                     r###"vname.between("{}", "{}").force_i64() >= {}"###,
                     begin, start, low,
                 ));
             }
-            if high.len() > 0 {
+            if !high.is_empty() {
                 conditions.push(format!(
                     r###"vname.between("{}", "{}").force_i64() <= {}"###,
                     begin, start, high,
@@ -364,13 +364,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
             r###"vname.between2("{}", "{}").parse::<i64>().is_ok()"###,
             begin, middle,
         ));
-        if low1.len() > 0 {
+        if !low1.is_empty() {
             conditions.push(format!(
                 r###"vname.between2("{}", "{}").force_i64() >= {}"###,
                 begin, middle, low1,
             ));
         }
-        if high1.len() > 0 {
+        if !high1.is_empty() {
             conditions.push(format!(
                 r###"vname.between2("{}", "{}").force_i64() <= {}"###,
                 begin, middle, high1,
@@ -380,13 +380,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
             r###"vname.after("{}").between2("{}", "{}").parse::<i64>().is_ok()"###,
             begin, middle, end,
         ));
-        if low2.len() > 0 {
+        if !low2.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").between2("{}", "{}").force_i64() >= {}"###,
                 begin, middle, end, low2,
             ));
         }
-        if high2.len() > 0 {
+        if !high2.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").between2("{}", "{}").force_i64() <= {}"###,
                 begin, middle, end, high2,
@@ -435,25 +435,25 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
             r###"vname.between("{}", "{}").parse::<i64>().is_ok()"###,
             begin, mid1,
         ));
-        if low1.len() > 0 {
+        if !low1.is_empty() {
             conditions.push(format!(
                 r###"vname.between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, low1,
             ));
         }
-        if high1.len() > 0 {
+        if !high1.is_empty() {
             conditions.push(format!(
                 r###"vname.between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, high1,
             ));
         }
-        if low2.len() > 0 {
+        if !low2.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, low2,
             ));
         }
-        if high2.len() > 0 {
+        if !high2.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, high2,
@@ -463,13 +463,13 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &
             r###"vname.after("{}").after("{}").between("{}", "{}").parse::<i64>().is_ok()"###,
             begin, mid1, mid2, end,
         ));
-        if low3.len() > 0 {
+        if !low3.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").after("{}").between("{}", "{}").force_i64() >= {}"###,
                 begin, mid1, mid2, end, low3,
             ));
         }
-        if high3.len() > 0 {
+        if !high3.is_empty() {
             conditions.push(format!(
                 r###"vname.after("{}").after("{}").between("{}", "{}").force_i64() <= {}"###,
                 begin, mid1, mid2, end, high3,
@@ -667,7 +667,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-                process_var(&v, &exact, &cell, &code, &mut f, "cvar");
+                process_var(v, &exact, &cell, &code, &mut f, "cvar");
             }
         }
         fwrite!(f, "{}", cvar_vdj_stop);
@@ -838,7 +838,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-                process_var(&v, &exact, &cell, &code, &mut f, "lvar");
+                process_var(v, &exact, &cell, &code, &mut f, "lvar");
             }
         }
         fwrite!(f, "{}", lvar_vdj_stop);

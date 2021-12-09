@@ -32,7 +32,7 @@ pub fn join_exacts(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
-    mut join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
+    join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
     sr: &Vec<Vec<f64>>,
 ) -> EquivRel {
@@ -457,5 +457,5 @@ pub fn join_exacts(
             raw_joins.push((results[l].5[j].0 as i32, results[l].5[j].1 as i32));
         }
     }
-    finish_join(ctl, info, &results, &mut join_info)
+    finish_join(ctl, info, &results, join_info)
 }

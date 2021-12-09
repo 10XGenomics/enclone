@@ -29,7 +29,7 @@ use vector_utils::{
 
 pub fn filter_gelbead_contamination(
     ctl: &EncloneControl,
-    mut clones: &mut Vec<Vec<TigData0>>,
+    clones: &mut Vec<Vec<TigData0>>,
     fate: &mut Vec<(usize, String, String)>,
 ) {
     const GB_UMI_MULT: usize = 10;
@@ -81,7 +81,7 @@ pub fn filter_gelbead_contamination(
         }
     }
     if !ctl.gen_opt.nwhitef {
-        erase_if(&mut clones, &bad);
+        erase_if(clones, &bad);
     }
 }
 

@@ -31,7 +31,7 @@ use vector_utils::{bin_member, bin_position, erase_if, lower_bound, next_diff12_
 
 pub fn graph_filter(
     ctl: &EncloneControl,
-    mut tig_bc: &mut Vec<Vec<TigData>>,
+    tig_bc: &mut Vec<Vec<TigData>>,
     graph: bool,
     fate: &mut Vec<HashMap<String, String>>,
 ) {
@@ -386,7 +386,7 @@ pub fn graph_filter(
         }
     }
     if !ctl.gen_opt.ngraph_filter {
-        erase_if(&mut tig_bc, &to_delete);
+        erase_if(tig_bc, &to_delete);
     }
     if graph {
         fwriteln!(log, "");
