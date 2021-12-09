@@ -3,7 +3,7 @@
 // Filter using constraints imposed by FCELL.
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, GexInfo};
-use enclone_print::proc_lvar1::get_gex_matrix_entry;
+use enclone_print::print_utils4::get_gex_matrix_entry;
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use io_utils::{dir_list, path_exists};
 use ndarray::s;

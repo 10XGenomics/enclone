@@ -102,9 +102,33 @@ fn main() {
         // Test for change.
 
         if github_version != remote_version {
+            // Test for weird error.
+
+            let g = github_version.split('.').collect::<Vec<&str>>();
+            let mut gn = Vec::<usize>::new();
+            for x in g.iter() {
+                gn.push(x.force_usize());
+            }
+            let r = remote_version.split('.').collect::<Vec<&str>>();
+            let mut rn = Vec::<usize>::new();
+            for x in r.iter() {
+                rn.push(x.force_usize());
+            }
+            if gn < rn {
+                let msg = format!(
+                    "release nanny sees github at {} BEHIND remote {}, which is wrong, giving up",
+                    github_version, remote_version
+                );
+                mail(&address, &msg);
+                eprintln!("{}\n", msg);
+                std::process::exit(1);
+            }
+
+            // Start update.
+
             let msg = format!(
                 "release nanny start update from {} to {}",
-                github_version, remote_version,
+                remote_version, github_version,
             );
             mail(&address, &msg);
             let bin = &config["enclone_linux_bin"];
@@ -140,7 +164,7 @@ fn main() {
             std::fs::set_permissions(&current, perms).unwrap();
             let msg = format!(
                 "release nanny end update from {} to {}",
-                github_version, remote_version,
+                remote_version, github_version,
             );
             mail(&address, &msg);
 

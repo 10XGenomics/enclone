@@ -5,7 +5,6 @@
 
 use crate::print_utils1::color_codon;
 use crate::proc_cvar_auto::proc_cvar_auto;
-use crate::proc_lvar1::proc_lvar1;
 use crate::proc_lvar2::proc_lvar2;
 use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
@@ -443,8 +442,9 @@ pub fn row_fill(
             d_readers,
             ind_readers,
             h5_data,
+            &alt_bcs,
         )? {
-            if !proc_lvar1(
+            let _ = proc_lvar2(
                 i,
                 x,
                 pass,
@@ -464,29 +464,7 @@ pub fn row_fill(
                 gex_sum,
                 &gex_fcounts_unsorted,
                 extra_args,
-            ) {
-                let _ = proc_lvar2(
-                    i,
-                    x,
-                    pass,
-                    u,
-                    ctl,
-                    exacts,
-                    exact_clonotypes,
-                    gex_info,
-                    row,
-                    out_data,
-                    d_all,
-                    ind_all,
-                    stats,
-                    &lvars,
-                    &alt_bcs,
-                    gex_mean,
-                    gex_sum,
-                    &gex_fcounts_unsorted,
-                    extra_args,
-                );
-            }
+            );
         }
     }
 

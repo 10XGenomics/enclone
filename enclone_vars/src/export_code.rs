@@ -50,12 +50,21 @@ fn get_uppers(var: &str) -> Vec<(String, usize)> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &mut BufWriter<W>) {
+fn process_var<W: Write>(
+    v: &Variable,
+    exact: &str,
+    cell: &str,
+    code: &str,
+    f: &mut BufWriter<W>,
+    class: &str,
+) {
     let var = &v.name;
     let uppers = get_uppers(&var);
     let mut rega = false;
     let mut dataset = false;
     let mut name = false;
+    let bc = var == "BC";
+    let info = var == "INFO";
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = true;
@@ -66,7 +75,7 @@ fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &
         }
     }
     let upper = uppers.len() > 0;
-    if !upper || rega || dataset || name {
+    if !upper || rega || dataset || name || bc || info {
         let mut passes = 1;
         if v.level == "cell-exact" {
             passes = 2;
@@ -76,7 +85,7 @@ fn process_var<W: Write>(v: &Variable, exact: &str, cell: &str, code: &str, f: &
             if pass == 2 {
                 var += "_cell";
             }
-            emit_code_to_test_for_var(&var, f);
+            emit_code_to_test_for_var(&var, f, class);
             fwriteln!(f, "{}", code);
             if pass == 1 {
                 fwriteln!(f, "({}, {}, \"{}\".to_string())", exact, cell, v.level);
@@ -146,11 +155,13 @@ fn run_rustfmt(f: &str) {
 // ...REGA...
 // ...{}...REGA...
 
-fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
+fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>, class: &str) {
     let uppers = get_uppers(&var);
     let mut rega = None;
     let mut dataset = None;
     let mut name = None;
+    let bc = var == "BC";
+    let info = var == "INFO";
     for i in 0..uppers.len() {
         if uppers[i].0 == "REGA" {
             rega = Some(uppers[i].1);
@@ -174,8 +185,15 @@ fn emit_code_to_test_for_var<W: Write>(var: &str, f: &mut BufWriter<W>) {
     // Proceed.
 
     if nranges == 0 {
-        if rega.is_none() && dataset.is_none() && name.is_none() {
+        if rega.is_none() && dataset.is_none() && name.is_none() && !bc && !info {
             fwriteln!(f, r###"}} else if vname == "{}" {{"###, var);
+        } else if info && class == "lvar" {
+            fwriteln!(
+                f,
+                r###"}} else if bin_member(&ctl.gen_opt.info_fields, var) {{"###
+            );
+        } else if bc && class == "lvar" {
+            fwriteln!(f, r###"}} else if bin_member(alt_bcs, var) {{"###);
         } else if name.is_some() {
             let (start, stop) = (var.before("NAME"), var.after("NAME"));
             fwriteln!(
@@ -649,7 +667,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-                process_var(&v, &exact, &cell, &code, &mut f);
+                process_var(&v, &exact, &cell, &code, &mut f, "cvar");
             }
         }
         fwrite!(f, "{}", cvar_vdj_stop);
@@ -712,6 +730,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             d_readers: &Vec<Option<hdf5::Reader>>,
             ind_readers: &Vec<Option<hdf5::Reader>>,
             h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
+            alt_bcs: &Vec<String>,
         ) -> Result<bool, String> {
 
             let clonotype_id = exacts[u];
@@ -819,7 +838,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
                 let (mut exact, mut cell) = (String::new(), String::new());
                 let mut code = v.code.clone();
                 parse_value_return_lines(&mut code, &v.level, &mut exact, &mut cell);
-                process_var(&v, &exact, &cell, &code, &mut f);
+                process_var(&v, &exact, &cell, &code, &mut f, "lvar");
             }
         }
         fwrite!(f, "{}", lvar_vdj_stop);
