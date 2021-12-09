@@ -61,7 +61,7 @@ pub fn proc_lvar_auto(
 
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
+            if pass == 2 && (!ctl.parseable_opt.pout.is_empty() || !extra_args.is_empty()) {
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
@@ -144,8 +144,8 @@ pub fn proc_lvar_auto(
         clust.sort_unstable();
 
         (abbrev_list(&clust), clustf, "cell-exect".to_string())
-    } else if vname.starts_with(&"count_")
-        && vname.after("count_").ends_with(&"")
+    } else if vname.starts_with("count_")
+        && vname.after("count_").ends_with("")
         && !vname.between2("count_", "").contains('_')
         && Regex::new(vname.between2("count_", "")).is_ok()
     {
@@ -161,8 +161,8 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if vname.starts_with(&"count_")
-        && vname.after("count_").ends_with(&"_cell")
+    } else if vname.starts_with("count_")
+        && vname.after("count_").ends_with("_cell")
         && !vname.between2("count_", "_cell").contains('_')
         && Regex::new(vname.between2("count_", "_cell")).is_ok()
     {
@@ -179,8 +179,8 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if vname.starts_with(&"count_cdr_")
-        && vname.after("count_cdr_").ends_with(&"")
+    } else if vname.starts_with("count_cdr_")
+        && vname.after("count_cdr_").ends_with("")
         && !vname.between2("count_cdr_", "").contains('_')
         && Regex::new(vname.between2("count_cdr_", "")).is_ok()
     {
@@ -214,8 +214,8 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if vname.starts_with(&"count_cdr_")
-        && vname.after("count_cdr_").ends_with(&"_cell")
+    } else if vname.starts_with("count_cdr_")
+        && vname.after("count_cdr_").ends_with("_cell")
         && !vname.between2("count_cdr_", "_cell").contains('_')
         && Regex::new(vname.between2("count_cdr_", "_cell")).is_ok()
     {
@@ -350,8 +350,8 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if vname.starts_with(&"count_fwr_")
-        && vname.after("count_fwr_").ends_with(&"")
+    } else if vname.starts_with("count_fwr_")
+        && vname.after("count_fwr_").ends_with("")
         && !vname.between2("count_fwr_", "").contains('_')
         && Regex::new(vname.between2("count_fwr_", "")).is_ok()
     {
@@ -392,8 +392,8 @@ pub fn proc_lvar_auto(
             vec![format!("{}", n); ex.ncells()],
             "cell-exact".to_string(),
         )
-    } else if vname.starts_with(&"count_fwr_")
-        && vname.after("count_fwr_").ends_with(&"_cell")
+    } else if vname.starts_with("count_fwr_")
+        && vname.after("count_fwr_").ends_with("_cell")
         && !vname.between2("count_fwr_", "_cell").contains('_')
         && Regex::new(vname.between2("count_fwr_", "_cell")).is_ok()
     {
@@ -1287,8 +1287,8 @@ pub fn proc_lvar_auto(
 
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
-    } else if vname.starts_with(&"n_")
-        && vname.after("n_").ends_with(&"")
+    } else if vname.starts_with("n_")
+        && vname.after("n_").ends_with("")
         && (bin_member(
             &ctl.origin_info.dataset_list,
             &vname.between2("n_", "").to_string(),
@@ -1330,8 +1330,8 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", count), counts, "cell-exact".to_string())
-    } else if vname.starts_with(&"n_")
-        && vname.after("n_").ends_with(&"_cell")
+    } else if vname.starts_with("n_")
+        && vname.after("n_").ends_with("_cell")
         && (bin_member(
             &ctl.origin_info.dataset_list,
             &vname.between2("n_", "_cell").to_string(),
