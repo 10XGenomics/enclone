@@ -22,7 +22,7 @@ jobs:
         run: >
           docker run -v ${{github.workspace}}:/root
           -e GITHUB_SHA -e GITHUB_REF -e DEBIAN_FRONTEND=noninteractive
-          docker pull ghcr.io/10xdev/toolchain:latest
+          ghcr.io/10xdev/toolchain:latest
           /bin/bash -leuxc '
           apt-get update
           && apt-get install -y libfreetype6-dev pkg-config
