@@ -650,8 +650,8 @@ pub fn read_json(
     reannotate: bool,
     cr_version: &mut String,
     ctl: &EncloneControl,
-    mut vdj_cells: &mut Vec<String>,
-    mut gex_cells: &mut Vec<String>,
+    vdj_cells: &mut Vec<String>,
+    gex_cells: &mut Vec<String>,
     gex_cells_specified: &mut bool,
 ) -> Result<Vec<Vec<TigData>>, String> {
     *gex_cells_specified = false;
@@ -752,7 +752,7 @@ pub fn read_json(
         }
         tigs.append(&mut results[i].5);
     }
-    unique_sort(&mut gex_cells);
+    unique_sort(gex_cells);
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut r = 0;
     while r < tigs.len() {
@@ -776,7 +776,7 @@ pub fn read_json(
         }
         r = s;
     }
-    unique_sort(&mut vdj_cells);
+    unique_sort(vdj_cells);
     Ok(tig_bc)
 }
 

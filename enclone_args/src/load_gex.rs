@@ -15,7 +15,7 @@ use vector_utils::{bin_position, unique_sort};
 
 // Get gene expression and feature barcoding counts.
 
-pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
+pub fn get_gex_info(ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut gex_features = Vec::<Vec<String>>::new();
     let mut gex_barcodes = Vec::<Vec<String>>::new();
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
@@ -43,7 +43,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> Result<GexInfo, String> {
     let mut json_metrics = Vec::<HashMap<String, f64>>::new();
     let mut metrics = Vec::<String>::new();
     load_gex(
-        &mut ctl,
+        ctl,
         &mut gex_features,
         &mut gex_barcodes,
         &mut gex_matrices,

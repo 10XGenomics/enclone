@@ -194,7 +194,7 @@ pub fn lookup_heavy_chain_reuse(
 
 pub fn cross_filter(
     ctl: &EncloneControl,
-    mut tig_bc: &mut Vec<Vec<TigData>>,
+    tig_bc: &mut Vec<Vec<TigData>>,
     fate: &mut Vec<HashMap<String, String>>,
 ) {
     // Get the list of dataset origins.  Here we allow the same origin name to have been used
@@ -299,5 +299,5 @@ pub fn cross_filter(
             }
         }
     }
-    erase_if(&mut tig_bc, &to_delete);
+    erase_if(tig_bc, &to_delete);
 }

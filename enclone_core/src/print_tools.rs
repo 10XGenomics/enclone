@@ -60,7 +60,7 @@ pub fn emit_codon_color_escape(c: &[u8], log: &mut Vec<u8>) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn color_by_property(c: &[u8], mut log: &mut Vec<u8>) {
+pub fn color_by_property(c: &[u8], log: &mut Vec<u8>) {
     for i in 0..c.len() {
         let mut color = 7;
         if c[i] == b'A'
@@ -89,7 +89,7 @@ pub fn color_by_property(c: &[u8], mut log: &mut Vec<u8>) {
         }
         fwrite!(log, "{}", c[i] as char);
         if color < 7 {
-            emit_end_escape(&mut log);
+            emit_end_escape(log);
         }
     }
 }

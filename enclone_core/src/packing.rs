@@ -12,12 +12,12 @@ use zstd::block::{Compressor, Decompressor};
 // that it's a good tradeoff.
 
 pub fn compress_bytes(x: &Vec<u8>) -> Vec<u8> {
-    Compressor::new().compress(&x, 0).unwrap()
+    Compressor::new().compress(x, 0).unwrap()
 }
 
 pub fn uncompress_bytes(x: &[u8], uncompressed_size: usize) -> Vec<u8> {
     Decompressor::new()
-        .decompress(&x, uncompressed_size)
+        .decompress(x, uncompressed_size)
         .unwrap()
 }
 
@@ -107,7 +107,7 @@ pub fn restore_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<String>, (
 
 pub fn save_vec_string_comp(x: &Vec<String>) -> Vec<u8> {
     let mut bytes = Vec::<u8>::new();
-    let z = save_vec_string(&x);
+    let z = save_vec_string(x);
     let mut y = compress_bytes(&z);
     bytes.append(&mut u32_bytes(y.len()));
     bytes.append(&mut u32_bytes(z.len()));
@@ -151,7 +151,7 @@ pub fn restore_vec_vec_string(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<Vec<St
     *pos += 4;
     let mut y = vec![Vec::<String>::new(); n];
     for j in 0..n {
-        y[j] = restore_vec_string(&x, pos)?;
+        y[j] = restore_vec_string(x, pos)?;
     }
     Ok(y)
 }
@@ -250,7 +250,7 @@ pub fn restore_vec_bool(x: &Vec<u8>, pos: &mut usize) -> Result<Vec<bool>, ()> {
     }
     let mut y = vec![false; n];
     for j in 0..n {
-        y[j] = if x[*pos] == 1 { true } else { false };
+        y[j] = x[*pos] == 1;
         *pos += 1;
     }
     Ok(y)

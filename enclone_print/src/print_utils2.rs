@@ -680,45 +680,45 @@ pub fn row_fill(
                 varmat,
                 out_data,
                 stats,
-            )? {
-                if *var == "amino" && col_var {
-                    let mut last_color = "black".to_string();
-                    for k in 0..show_aa[col].len() {
-                        let p = show_aa[col][k];
-                        if k > 0
-                            && field_types[col][k] != field_types[col][k - 1]
-                            && !ctl.gen_opt.nospaces
-                        {
-                            cx[col][jj] += " ";
-                        }
-                        if 3 * p + 3 <= seq_amino.len()
-                            && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()
-                        {
-                            cx[col][jj] += "-";
-                        } else if 3 * p + 3 > seq_amino.len()
-                            || seq_amino[3 * p..3 * p + 3].contains(&b'-')
-                        {
-                            cx[col][jj] += "*";
-                        } else {
-                            let x = &peer_groups[rsi.vids[col]];
-                            let last = k == show_aa[col].len() - 1;
-                            let log = color_codon(
-                                ctl,
-                                &seq_amino,
-                                ref_diff_pos,
-                                x,
-                                col,
-                                mid,
-                                p,
-                                u,
-                                &mut last_color,
-                                last,
-                                cdr3_con,
-                                exacts,
-                                exact_clonotypes,
-                            );
-                            cx[col][jj] += strme(&log);
-                        }
+            )? && *var == "amino"
+                && col_var
+            {
+                let mut last_color = "black".to_string();
+                for k in 0..show_aa[col].len() {
+                    let p = show_aa[col][k];
+                    if k > 0
+                        && field_types[col][k] != field_types[col][k - 1]
+                        && !ctl.gen_opt.nospaces
+                    {
+                        cx[col][jj] += " ";
+                    }
+                    if 3 * p + 3 <= seq_amino.len()
+                        && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()
+                    {
+                        cx[col][jj] += "-";
+                    } else if 3 * p + 3 > seq_amino.len()
+                        || seq_amino[3 * p..3 * p + 3].contains(&b'-')
+                    {
+                        cx[col][jj] += "*";
+                    } else {
+                        let x = &peer_groups[rsi.vids[col]];
+                        let last = k == show_aa[col].len() - 1;
+                        let log = color_codon(
+                            ctl,
+                            &seq_amino,
+                            ref_diff_pos,
+                            x,
+                            col,
+                            mid,
+                            p,
+                            u,
+                            &mut last_color,
+                            last,
+                            cdr3_con,
+                            exacts,
+                            exact_clonotypes,
+                        );
+                        cx[col][jj] += strme(&log);
                     }
                 }
             }

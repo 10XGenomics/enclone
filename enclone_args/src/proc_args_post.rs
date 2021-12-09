@@ -351,7 +351,7 @@ pub fn proc_args_post(
     if !metas.is_empty() {
         let f = &metas[metas.len() - 1];
         let f = get_path_fail(f, ctl, "META")?;
-        proc_meta(&f, &mut ctl)?;
+        proc_meta(&f, ctl)?;
     }
     if !metaxs.is_empty() {
         let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();
@@ -359,12 +359,12 @@ pub fn proc_args_post(
         for i in 0..lines0.len() {
             lines.push(lines0[i].to_string());
         }
-        proc_meta_core(&lines, &mut ctl)?;
+        proc_meta_core(&lines, ctl)?;
     }
     ctl.perf_stats(&t, "in proc_meta");
     if !xcrs.is_empty() {
         let arg = &xcrs[xcrs.len() - 1];
-        proc_xcr(arg, gex, bc, have_gex, &mut ctl)?;
+        proc_xcr(arg, gex, bc, have_gex, ctl)?;
     }
 
     // More argument sanity checking.
@@ -499,7 +499,7 @@ pub fn proc_args_post(
         }
     }
     ctl.perf_stats(&t, "after main args loop 2");
-    proc_args_tail(&mut ctl, args)?;
+    proc_args_tail(ctl, args)?;
 
     // Sort chains_to_align.
 

@@ -564,7 +564,7 @@ pub fn start_gen(
         }
         fwrite!(&mut mlog, "██");
         if ctl.pretty {
-            emit_end_escape(&mut mlog);
+            emit_end_escape(mlog);
         }
         fwriteln!(
             &mut mlog,

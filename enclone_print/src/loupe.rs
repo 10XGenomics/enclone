@@ -76,10 +76,7 @@ pub fn make_donor_refs(
 }
 
 fn amino_acid(seq: &[u8], start: usize) -> Vec<u8> {
-    seq[start..]
-        .chunks_exact(3)
-        .map(|codon| codon_to_aa(codon))
-        .collect()
+    seq[start..].chunks_exact(3).map(codon_to_aa).collect()
 }
 
 pub fn make_loupe_clonotype(

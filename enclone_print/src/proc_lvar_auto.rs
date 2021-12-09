@@ -54,7 +54,7 @@ pub fn proc_lvar_auto(
     let verbose = ctl.gen_opt.row_fill_verbose;
     let mut vname = var.clone();
     let mut abbr = var.clone();
-    if var.contains(":") {
+    if var.contains(':') {
         abbr = var.before(":").to_string();
         vname = var.after(":").to_string();
     }
@@ -96,23 +96,24 @@ pub fn proc_lvar_auto(
     } else if bin_member(&ctl.gen_opt.info_fields, var) {
         let mut val = String::new();
         for q in 0..ctl.gen_opt.info_fields.len() {
-            if *var == ctl.gen_opt.info_fields[q] {
-                if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
-                    let mut tag = String::new();
-                    for j in 0..ex.share.len() {
-                        if ex.share[j].left {
-                            tag += strme(&ex.share[j].seq);
-                        }
+            if *var == ctl.gen_opt.info_fields[q]
+                && ex.share.len() == 2
+                && ex.share[0].left != ex.share[1].left
+            {
+                let mut tag = String::new();
+                for j in 0..ex.share.len() {
+                    if ex.share[j].left {
+                        tag += strme(&ex.share[j].seq);
                     }
-                    tag += "_";
-                    for j in 0..ex.share.len() {
-                        if !ex.share[j].left {
-                            tag += strme(&ex.share[j].seq);
-                        }
+                }
+                tag += "_";
+                for j in 0..ex.share.len() {
+                    if !ex.share[j].left {
+                        tag += strme(&ex.share[j].seq);
                     }
-                    if ctl.gen_opt.info_data.contains_key(&tag) {
-                        val = ctl.gen_opt.info_data[&tag][q].clone();
-                    }
+                }
+                if ctl.gen_opt.info_data.contains_key(&tag) {
+                    val = ctl.gen_opt.info_data[&tag][q].clone();
                 }
             }
         }
@@ -144,11 +145,11 @@ pub fn proc_lvar_auto(
 
         (abbrev_list(&clust), clustf, "cell-exect".to_string())
     } else if vname.starts_with(&"count_")
-        && vname.after(&"count_").ends_with(&"")
-        && !vname.between2(&"count_", &"").contains("_")
-        && Regex::new(&vname.between2(&"count_", &"")).is_ok()
+        && vname.after("count_").ends_with(&"")
+        && !vname.between2("count_", "").contains('_')
+        && Regex::new(vname.between2("count_", "")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_", &"")).unwrap();
+        let reg = Regex::new(vname.between2("count_", "")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
@@ -161,11 +162,11 @@ pub fn proc_lvar_auto(
             "cell-exact".to_string(),
         )
     } else if vname.starts_with(&"count_")
-        && vname.after(&"count_").ends_with(&"_cell")
-        && !vname.between2(&"count_", &"_cell").contains("_")
-        && Regex::new(&vname.between2(&"count_", &"_cell")).is_ok()
+        && vname.after("count_").ends_with(&"_cell")
+        && !vname.between2("count_", "_cell").contains('_')
+        && Regex::new(vname.between2("count_", "_cell")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_", &"_cell")).unwrap();
+        let reg = Regex::new(vname.between2("count_", "_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
@@ -179,11 +180,11 @@ pub fn proc_lvar_auto(
             "cell-exact".to_string(),
         )
     } else if vname.starts_with(&"count_cdr_")
-        && vname.after(&"count_cdr_").ends_with(&"")
-        && !vname.between2(&"count_cdr_", &"").contains("_")
-        && Regex::new(&vname.between2(&"count_cdr_", &"")).is_ok()
+        && vname.after("count_cdr_").ends_with(&"")
+        && !vname.between2("count_cdr_", "").contains('_')
+        && Regex::new(vname.between2("count_cdr_", "")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_cdr_", &"")).unwrap();
+        let reg = Regex::new(vname.between2("count_cdr_", "")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
@@ -214,11 +215,11 @@ pub fn proc_lvar_auto(
             "cell-exact".to_string(),
         )
     } else if vname.starts_with(&"count_cdr_")
-        && vname.after(&"count_cdr_").ends_with(&"_cell")
-        && !vname.between2(&"count_cdr_", &"_cell").contains("_")
-        && Regex::new(&vname.between2(&"count_cdr_", &"_cell")).is_ok()
+        && vname.after("count_cdr_").ends_with(&"_cell")
+        && !vname.between2("count_cdr_", "_cell").contains('_')
+        && Regex::new(vname.between2("count_cdr_", "_cell")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_cdr_", &"_cell")).unwrap();
+        let reg = Regex::new(vname.between2("count_cdr_", "_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
@@ -251,15 +252,15 @@ pub fn proc_lvar_auto(
         )
     } else if vname.starts_with("count_cdr")
         && vname.ends_with("")
-        && vname.between2("count_cdr", "").contains("_")
+        && vname.between2("count_cdr", "").contains('_')
         && vname.between("count_cdr", "_").parse::<i64>().is_ok()
         && vname.between("count_cdr", "_").force_i64() >= 1
         && vname.between("count_cdr", "_").force_i64() <= 3
-        && !vname.after("count_cdr").between2(&"_", &"").contains("_")
-        && Regex::new(&vname.between2(&"_", &"")).is_ok()
+        && !vname.after("count_cdr").between2("_", "").contains('_')
+        && Regex::new(vname.between2("_", "")).is_ok()
     {
         let arg1 = vname.between("count_cdr", "_").force_i64();
-        let reg = Regex::new(&vname.after("count_cdr").between2(&"_", &"")).unwrap();
+        let reg = Regex::new(vname.after("count_cdr").between2("_", "")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -299,18 +300,18 @@ pub fn proc_lvar_auto(
         )
     } else if vname.starts_with("count_cdr")
         && vname.ends_with("_cell")
-        && vname.between2("count_cdr", "_cell").contains("_")
+        && vname.between2("count_cdr", "_cell").contains('_')
         && vname.between("count_cdr", "_").parse::<i64>().is_ok()
         && vname.between("count_cdr", "_").force_i64() >= 1
         && vname.between("count_cdr", "_").force_i64() <= 3
         && !vname
             .after("count_cdr")
-            .between2(&"_", &"_cell")
-            .contains("_")
-        && Regex::new(&vname.between2(&"_", &"_cell")).is_ok()
+            .between2("_", "_cell")
+            .contains('_')
+        && Regex::new(vname.between2("_", "_cell")).is_ok()
     {
         let arg1 = vname.between("count_cdr", "_").force_i64();
-        let reg = Regex::new(&vname.after("count_cdr").between2(&"_", &"_cell")).unwrap();
+        let reg = Regex::new(vname.after("count_cdr").between2("_", "_cell")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -350,11 +351,11 @@ pub fn proc_lvar_auto(
             "cell-exact".to_string(),
         )
     } else if vname.starts_with(&"count_fwr_")
-        && vname.after(&"count_fwr_").ends_with(&"")
-        && !vname.between2(&"count_fwr_", &"").contains("_")
-        && Regex::new(&vname.between2(&"count_fwr_", &"")).is_ok()
+        && vname.after("count_fwr_").ends_with(&"")
+        && !vname.between2("count_fwr_", "").contains('_')
+        && Regex::new(vname.between2("count_fwr_", "")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_fwr_", &"")).unwrap();
+        let reg = Regex::new(vname.between2("count_fwr_", "")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() {
@@ -392,11 +393,11 @@ pub fn proc_lvar_auto(
             "cell-exact".to_string(),
         )
     } else if vname.starts_with(&"count_fwr_")
-        && vname.after(&"count_fwr_").ends_with(&"_cell")
-        && !vname.between2(&"count_fwr_", &"_cell").contains("_")
-        && Regex::new(&vname.between2(&"count_fwr_", &"_cell")).is_ok()
+        && vname.after("count_fwr_").ends_with(&"_cell")
+        && !vname.between2("count_fwr_", "_cell").contains('_')
+        && Regex::new(vname.between2("count_fwr_", "_cell")).is_ok()
     {
-        let reg = Regex::new(&vname.between2(&"count_fwr_", &"_cell")).unwrap();
+        let reg = Regex::new(vname.between2("count_fwr_", "_cell")).unwrap();
         let mut n = 0;
         for j in 0..ex.share.len() {
             if ex.share[j].cdr1_start.is_some() {
@@ -436,15 +437,15 @@ pub fn proc_lvar_auto(
         )
     } else if vname.starts_with("count_fwr")
         && vname.ends_with("")
-        && vname.between2("count_fwr", "").contains("_")
+        && vname.between2("count_fwr", "").contains('_')
         && vname.between("count_fwr", "_").parse::<i64>().is_ok()
         && vname.between("count_fwr", "_").force_i64() >= 1
         && vname.between("count_fwr", "_").force_i64() <= 4
-        && !vname.after("count_fwr").between2(&"_", &"").contains("_")
-        && Regex::new(&vname.between2(&"_", &"")).is_ok()
+        && !vname.after("count_fwr").between2("_", "").contains('_')
+        && Regex::new(vname.between2("_", "")).is_ok()
     {
         let arg1 = vname.between("count_fwr", "_").force_i64();
-        let reg = Regex::new(&vname.after("count_fwr").between2(&"_", &"")).unwrap();
+        let reg = Regex::new(vname.after("count_fwr").between2("_", "")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -494,18 +495,18 @@ pub fn proc_lvar_auto(
         )
     } else if vname.starts_with("count_fwr")
         && vname.ends_with("_cell")
-        && vname.between2("count_fwr", "_cell").contains("_")
+        && vname.between2("count_fwr", "_cell").contains('_')
         && vname.between("count_fwr", "_").parse::<i64>().is_ok()
         && vname.between("count_fwr", "_").force_i64() >= 1
         && vname.between("count_fwr", "_").force_i64() <= 4
         && !vname
             .after("count_fwr")
-            .between2(&"_", &"_cell")
-            .contains("_")
-        && Regex::new(&vname.between2(&"_", &"_cell")).is_ok()
+            .between2("_", "_cell")
+            .contains('_')
+        && Regex::new(vname.between2("_", "_cell")).is_ok()
     {
         let arg1 = vname.between("count_fwr", "_").force_i64();
-        let reg = Regex::new(&vname.after("count_fwr").between2(&"_", &"_cell")).unwrap();
+        let reg = Regex::new(vname.after("count_fwr").between2("_", "_cell")).unwrap();
         let mut n = 0;
         if arg1 == 1 {
             for j in 0..ex.share.len() {
@@ -1167,7 +1168,7 @@ pub fn proc_lvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
-    } else if vname.starts_with("g")
+    } else if vname.starts_with('g')
         && vname.ends_with("")
         && vname.between2("g", "").parse::<i64>().is_ok()
         && vname.between2("g", "").force_i64() >= 0
@@ -1287,7 +1288,7 @@ pub fn proc_lvar_auto(
         let _exact = format!("{}", mults[u]);
         (String::new(), counts, "cell-exact".to_string())
     } else if vname.starts_with(&"n_")
-        && vname.after(&"n_").ends_with(&"")
+        && vname.after("n_").ends_with(&"")
         && (bin_member(
             &ctl.origin_info.dataset_list,
             &vname.between2("n_", "").to_string(),
@@ -1330,7 +1331,7 @@ pub fn proc_lvar_auto(
 
         (format!("{}", count), counts, "cell-exact".to_string())
     } else if vname.starts_with(&"n_")
-        && vname.after(&"n_").ends_with(&"_cell")
+        && vname.after("n_").ends_with(&"_cell")
         && (bin_member(
             &ctl.origin_info.dataset_list,
             &vname.between2("n_", "_cell").to_string(),
@@ -1474,7 +1475,7 @@ pub fn proc_lvar_auto(
         let mut nbc = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let bc = ex.clones[j][0].barcode.before("-").as_bytes();
-            let mut n = 0 as u64;
+            let mut n = 0_u64;
             for k in 0..bc.len() {
                 if k > 0 {
                     n *= 4;
@@ -1627,7 +1628,7 @@ pub fn proc_lvar_auto(
         )
     };
     if val.0 == "$UNDEFINED" {
-        return Ok(false);
+        Ok(false)
     } else {
         let (exact, cell, level) = &val;
         if level == "cell" && !var.ends_with("_cell") {
@@ -1639,13 +1640,13 @@ pub fn proc_lvar_auto(
                 row.push(String::new())
             }
             if pass == 2 {
-                speak!(u, abbr.to_string(), String::new());
+                speak!(u, abbr, String::new());
             }
             stats.push((abbr.to_string(), cell.clone()));
             if pass == 2 {
                 speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
             }
-        } else if (exact.len() > 0 && !var.ends_with("_cell")) || cell.len() == 0 {
+        } else if (!exact.is_empty() && !var.ends_with("_cell")) || cell.is_empty() {
             if verbose {
                 eprint!("lvar {} ==> {}; ", var, exact);
                 eprintln!("i = {}, lvars.len() = {}", i, lvars.len());
@@ -1654,19 +1655,19 @@ pub fn proc_lvar_auto(
                 row.push(exact.clone())
             }
             if pass == 2 {
-                speak!(u, abbr.to_string(), exact.to_string());
+                speak!(u, abbr, exact.to_string());
             }
-            if cell.len() == 0 {
-                stats.push((abbr.to_string(), vec![exact.to_string(); ex.ncells()]));
+            if cell.is_empty() {
+                stats.push((abbr, vec![exact.to_string(); ex.ncells()]));
             } else {
-                stats.push((abbr.to_string(), cell.to_vec()));
+                stats.push((abbr, cell.to_vec()));
             }
-        } else if cell.len() > 0 {
+        } else if !cell.is_empty() {
             if pass == 2 {
                 speak!(u, abbr, format!("{}", cell.iter().format(POUT_SEP)));
             }
-            stats.push((abbr.to_string(), cell.to_vec()));
+            stats.push((abbr, cell.to_vec()));
         }
-        return Ok(true);
+        Ok(true)
     }
 }
