@@ -306,7 +306,13 @@ pub fn join_one(
     }
     let mult = partial_bernoulli_sum(3 * cn, cd as usize);
     assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
-    let score = p1 * mult;
+    let mut score = p1 * mult;
+
+    // Test for concentration of SHM in the junction regions.
+
+    if cd as f64 >= ctl.join_alg_opt.cdr3_mult * std::cmp::max(1, *min_indeps) as f64 {
+        score = ctl.join_alg_opt.max_score + 1.0;
+    }
 
     // Threshold on score.
 

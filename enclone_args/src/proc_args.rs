@@ -141,6 +141,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
     ctl.join_alg_opt.merge_onesies_ctl = true;
     ctl.join_alg_opt.max_cdr3_diffs = 15;
+    ctl.join_alg_opt.cdr3_mult = 5.0;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -494,7 +495,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Define arguments that set something to an f64.
 
-    let set_f64 = [("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier)];
+    let set_f64 = [
+        ("CDR3_MULT", &mut ctl.join_alg_opt.cdr3_mult),
+        ("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier)
+    ];
 
     // Define arguments that set something to a string.
 
