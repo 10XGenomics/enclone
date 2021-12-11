@@ -300,12 +300,24 @@ pub fn join_one(
     // Multiply by the number of DNA sequences that differ from the given CDR3
     // sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
 
+    /*
     let mut cn = 0;
     for l in 0..x1.len() {
         cn += x1[l].len();
     }
     let mult = partial_bernoulli_sum(3 * cn, cd as usize);
     assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
+    */
+
+    /*
+    let mut mult = 1.0;
+    for _ in 0..cd {
+        mult *= 80.0;
+    }
+    */
+
+    let mult = 80_f64.powi(cd as i32);
+
     let mut score = p1 * mult;
 
     // Test for concentration of SHM in the junction regions.
