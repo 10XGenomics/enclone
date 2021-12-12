@@ -129,6 +129,8 @@ pub fn print_stats(
     let mut nreads_adjusted = 0.0;
     let mut numis2 = 0;
     let mut ncells2 = 0;
+    let mut cells_by_donor = vec![0; ctl.origin_info.donor_list.len()];
+
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             *two_chain += 1;
@@ -147,6 +149,9 @@ pub fn print_stats(
             for k in 0..ex.clones.len() {
                 let x = &ex.clones[k][0];
                 sd.push((x.origin_index, x.donor_index));
+                if x.donor_index.is_some() {
+                    cells_by_donor[x.donor_index.unwrap()] += 1;
+                }
                 for m in 0..ex.clones[k].len() {
                     numis += ex.clones[k][m].umi_count;
                     if ex.share.len() == 2 {
@@ -444,6 +449,19 @@ pub fn print_stats(
             "   • number of cell-cell merges = {}",
             add_commas(merges)
         );
+        if cells_by_donor.len() > 1 {
+            let mut cross = 0;
+            for i1 in 0..cells_by_donor.len() {
+                for i2 in i1 + 1..cells_by_donor.len() {
+                    cross += cells_by_donor[i1] * cells_by_donor[i2];
+                }
+            }
+            fwriteln!(
+                logx,
+                "   • number of cross-donor comparisons = {}",
+                add_commas(cross)
+            );
+        }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         let mut doublet_rate = 0.0;
