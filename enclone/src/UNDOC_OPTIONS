@@ -291,5 +291,3 @@ SIM_MAT_PLOT=filename,v1,...,vn
 generate a plot of the all-vs-all per cell cosine similarity for the variables vi
 
 NO_BUG_REPORTS: don't automatically report bugs
-
-PRINT_MERGES: print all intradonor cell-cell merges
