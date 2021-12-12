@@ -487,6 +487,12 @@ pub fn print_stats(
                 "   • number of cross-donor comparisons that mix donors = {}",
                 add_commas(mixes)
             );
+            let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
+            fwriteln!(
+                logx,
+                "   • rate of cross donor mixing = {:.2} x 10^-9",
+                rate
+            );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
