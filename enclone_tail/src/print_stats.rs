@@ -130,7 +130,7 @@ pub fn print_stats(
     let mut numis2 = 0;
     let mut ncells2 = 0;
     let mut cells_by_donor = vec![0; ctl.origin_info.donor_list.len()];
-
+    let mut mixes = 0;
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             *two_chain += 1;
@@ -164,6 +164,27 @@ pub fn print_stats(
                         x /= ex.clones[k][0].frac_reads_used.unwrap() as f64 / 1_000_000.0;
                     }
                     nreads_adjusted += x;
+                }
+            }
+        }
+        if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
+            for j1 in 0..exacts[i].len() {
+                let ex1 = &exact_clonotypes[exacts[i][j1]];
+                for j2 in j1..exacts[i].len() {
+                    let ex2 = &exact_clonotypes[exacts[i][j2]];
+                    for k1 in 0..ex1.clones.len() {
+                        let x1 = &ex1.clones[k1][0];
+                        for k2 in 0..ex2.clones.len() {
+                            if (j1, k1) < (j2, k2) {
+                                let x2 = &ex2.clones[k2][0];
+                                if x1.donor_index.is_some() && x2.donor_index.is_some() {
+                                    if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                        mixes += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -449,7 +470,7 @@ pub fn print_stats(
             "   • number of cell-cell merges = {}",
             add_commas(merges)
         );
-        if cells_by_donor.len() > 1 {
+        if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
             let mut cross = 0;
             for i1 in 0..cells_by_donor.len() {
                 for i2 in i1 + 1..cells_by_donor.len() {
@@ -460,6 +481,11 @@ pub fn print_stats(
                 logx,
                 "   • number of cross-donor comparisons = {}",
                 add_commas(cross)
+            );
+            fwriteln!(
+                logx,
+                "   • number of cross-donor comparisons that mix donors = {}",
+                add_commas(mixes)
             );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
