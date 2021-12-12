@@ -309,7 +309,7 @@ pub fn join_one(
         mult = partial_bernoulli_sum(3 * cn, cd as usize);
         assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
     } else {
-        mult = 80_f64.powi(cd as i32);
+        mult = ctl.join_alg_opt.mult_pow.powi(cd as i32);
     }
 
     // Compute score.

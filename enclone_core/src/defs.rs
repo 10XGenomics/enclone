@@ -308,6 +308,7 @@ pub struct JoinAlgOpt {
     pub max_cdr3_diffs: usize,
     pub cdr3_mult: f64, // multiplier for checking CDR3 SHM concentration
     pub old_mult: bool,
+    pub mult_pow: f64,
 }
 
 // Clonotype filtering options.

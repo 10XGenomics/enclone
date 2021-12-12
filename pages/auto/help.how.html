@@ -136,13 +136,14 @@ size is the total number of bases in the V..J segments, yields at most k – d d
 The probability is an approximation, for the method please see
 <span style="color:#25bc24;">https://docs.rs/stirling_numbers/0.1.0/stirling_numbers</span>.
 
-<span style="color:#c23621;font-weight:bold;">9</span>.  Are there too many CDR3 mutations?  After Cell Ranger version 6.1, we set N to 80^cd.  The
-parameter 80 is accessible as <span style="font-weight:bold;">MULT_POW</span>.  The remainder of this section describes the behavior for
-earlier versions.  Let N be "the number of DNA sequences that differ from the given CDR3 sequences
-by at most the number of observed differences".  More specifically, if cd is the number of
-differences between the given CDR3 nucleotide sequences, and n is the total length in nucleotides
-of the CDR3 sequences (for the two chains), we compute the total number N of strings of length n
-that are obtainable by perturbing a given string of length n, which is
+<span style="color:#c23621;font-weight:bold;">9</span>.  Are there too many CDR3 mutations?  We define a constant N that is used below.  After Cell
+Ranger version 6.1, we set N to 80^cd.  The parameter 80 is accessible as <span style="font-weight:bold;">MULT_POW</span>.  The remainder
+of this section describes the behavior for earlier versions.  Let N be "the number of DNA
+sequences that differ from the given CDR3 sequences by at most the number of observed
+differences".  More specifically, if cd is the number of differences between the given CDR3
+nucleotide sequences, and n is the total length in nucleotides of the CDR3 sequences (for the two
+chains), we compute the total number N of strings of length n that are obtainable by perturbing a
+given string of length n, which is
 sum( choose(n,m), m = 0..=cd) ).
 
 <span style="color:#c23621;font-weight:bold;">10</span>.  We also require that cd is at most 15 (and this bound is adjustable via the command-line
