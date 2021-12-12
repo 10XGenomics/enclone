@@ -132,6 +132,7 @@ pub fn print_stats(
     let mut cells_by_donor = vec![0; ctl.origin_info.donor_list.len()];
     let mut mixes = 0;
     for i in 0..nclono {
+        let mut cells_by_donor_this = vec![0; ctl.origin_info.donor_list.len()];
         if rsi[i].mat.len() == 2 {
             *two_chain += 1;
         } else if rsi[i].mat.len() == 3 {
@@ -151,6 +152,7 @@ pub fn print_stats(
                 sd.push((x.origin_index, x.donor_index));
                 if x.donor_index.is_some() {
                     cells_by_donor[x.donor_index.unwrap()] += 1;
+                    cells_by_donor_this[x.donor_index.unwrap()] += 1;
                 }
                 for m in 0..ex.clones[k].len() {
                     numis += ex.clones[k][m].umi_count;
@@ -191,9 +193,10 @@ pub fn print_stats(
         if n >= 2 {
             *nclono2 += 1;
         }
-        if n >= 1 {
-            // not sure how n = 0 can happen but it does, maybe should trap this
-            merges += n - 1;
+        for j in 0..cells_by_donor_this.len() {
+            if cells_by_donor_this[j] > 1 {
+                merges += cells_by_donor_this[j] - 1;
+            }
         }
         ncells += n;
         ncc.push((rsi[i].mat.len(), n));
@@ -467,7 +470,7 @@ pub fn print_stats(
         );
         fwriteln!(
             logx,
-            "   • number of cell-cell merges = {}",
+            "   • number of intradonor cell-cell merges = {}",
             add_commas(merges)
         );
         if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
