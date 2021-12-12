@@ -328,11 +328,13 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              sensitivity and specificity across a large collection of datasets.  See results \
              described at \\green{bit.ly/enclone}.\n\n\
              \
-             \\boldred{11}.  Other join criteria.  We do not join two clonotypes which were \
+             \\boldred{11}.  Other join criteria.\n\
+             • We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
              at most \\bold{2} positions.  This value can be controlled using the \
              command-line argument \\bold{MAX_DEGRADATION}.  (Note that for Cell Ranger 5.0, \
-             the value is instead \\bold{3}.)  There is an additional restriction \
+             the value is instead \\bold{3}.)\n\
+             • There is an additional restriction \
              imposed when creating two-cell clonotypes: we require that that \
              cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
              mutations, as above.  This filter may be turned off \

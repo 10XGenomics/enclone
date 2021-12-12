@@ -154,13 +154,13 @@ value may be adjusted using the command-line argument <span style="font-weight:b
 <span style="font-weight:bold;">MAX_LOG_SCORE</span>.  This constant was arrived at by empirically balancing sensitivity and specificity
 across a large collection of datasets.  See results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
-<span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.  We do not join two clonotypes which were assigned different reference
-sequences unless those reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be
-controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  (Note that for Cell Ranger 5.0, the
-value is instead <span style="font-weight:bold;">3</span>.)  There is an additional restriction imposed when creating two-cell
-clonotypes: we require that that cd ≤ d, where cd is the number of CDR3 differences and d is the
-number of shared mutations, as above.  This filter may be turned off using the command-line
-argument <span style="font-weight:bold;">EASY</span>.
+<span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.
+• We do not join two clonotypes which were assigned different reference sequences unless those
+reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be controlled using the
+command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  (Note that for Cell Ranger 5.0, the value is instead <span style="font-weight:bold;">3</span>.)
+• There is an additional restriction imposed when creating two-cell clonotypes: we require that
+that cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared mutations,
+as above.  This filter may be turned off using the command-line argument <span style="font-weight:bold;">EASY</span>.
 
 <span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.
