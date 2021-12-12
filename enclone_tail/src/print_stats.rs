@@ -198,6 +198,35 @@ pub fn print_stats(
                 merges += cells_by_donor_this[j] - 1;
             }
         }
+        if ctl.gen_opt.print_merges {
+            for j1 in 0..exacts[i].len() {
+                let ex1 = &exact_clonotypes[exacts[i][j1]];
+                for j2 in j1..exacts[i].len() {
+                    let ex2 = &exact_clonotypes[exacts[i][j2]];
+                    for k1 in 0..ex1.clones.len() {
+                        let x1 = &ex1.clones[k1][0];
+                        for k2 in 0..ex2.clones.len() {
+                            if (j1, k1) < (j2, k2) {
+                                let x2 = &ex2.clones[k2][0];
+                                if x1.donor_index.is_some() && x2.donor_index.is_some() {
+                                    if x1.donor_index.unwrap() == x2.donor_index.unwrap() {
+                                        println!("merge: {}.{}, {}.{}",
+                                            ctl.origin_info.dataset_list[x1.dataset_index],
+                                            x1.barcode,
+                                            ctl.origin_info.dataset_list[x2.dataset_index],
+                                            x2.barcode,
+                                        );
+                                        mixes += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         ncells += n;
         ncc.push((rsi[i].mat.len(), n));
     }
