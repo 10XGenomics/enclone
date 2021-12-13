@@ -322,6 +322,19 @@ pub fn join_one(
         score = ctl.join_alg_opt.max_score + 1.0;
     }
 
+    // Do not merge cells if they were assigned different light chain constant regions.
+
+    for i in 0..info[k1].cdr3s.len() {
+        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+        if !ex1.share[j1].left {
+            if ex1.share[j1].c_ref_id.is_some() && ex2.share[j2].c_ref_id.is_some() {
+                if ex1.share[j1].c_ref_id.unwrap() != ex2.share[j2].c_ref_id.unwrap() {
+                    score = ctl.join_alg_opt.max_score + 1.0;
+                }
+            }
+        }
+    }
+
     // Threshold on score.
 
     if score > ctl.join_alg_opt.max_score {
