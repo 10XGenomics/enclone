@@ -346,7 +346,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              mutations, as above.  This filter may be turned off \
              using the command-line argument \\bold{EASY}.\n\
              • We do not join in cases where light chain constant regions are different.  This \
-             filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.\
+             filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.  \
              This criterion was added after Cell Ranger 6.1.\n\
              • We do not join in cases where there is too high a concentration of changes in the \
              junction region.  More specifically, if the number of mutations in CDR3 is at least \
