@@ -492,6 +492,10 @@ fn test_authors() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 35. Test HONEY_OUT and HONEY_IN.
+//
+// Do this to rebuild if needed:
+// enclone BCR=123085:123089 PLOT="gui_stdout,s1->blue,s2->red" HONEY_OUT=enclone_exec/testx/outputs/honey NOPRINT
+// enclone BCR=123085:123089 PLOT_BY_ISOTYPE=gui_stdout HONEY_IN=enclone_exec/testx/outputs/honey NOPRINT > enclone_exec/testx/inputs/outputs/test_honey.svg
 
 // NOT BASIC
 
