@@ -100,7 +100,7 @@ tonic = { version = "0.6", default-features = false, features = ["transport", "c
 tonic-build = { version = "0.6", default-features = false, features = ["transport", "prost"] }
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "24ade971646424f70b65250325a96d5701848dd9" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "24ade971646424f70b65250325a96d5701848dd9" }
 vector_utils = "0.1"
 yaml-rust = "0.4"
