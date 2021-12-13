@@ -297,16 +297,45 @@ pub fn join_one(
     let p1 = p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, sr);
     assert!(!p1.is_infinite()); // TODO: IS THIS SAFE?
 
-    // Multiply by the number of DNA sequences that differ from the given CDR3
-    // sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
+    // Multiply by 80^cd, or if using old version, the number of DNA sequences that differ from
+    // the given CDR3 sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
 
-    let mut cn = 0;
-    for l in 0..x1.len() {
-        cn += x1[l].len();
+    let mult;
+    if ctl.join_alg_opt.old_mult {
+        let mut cn = 0;
+        for l in 0..x1.len() {
+            cn += x1[l].len();
+        }
+        mult = partial_bernoulli_sum(3 * cn, cd as usize);
+        assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
+    } else {
+        mult = ctl.join_alg_opt.mult_pow.powi(cd as i32);
     }
-    let mult = partial_bernoulli_sum(3 * cn, cd as usize);
-    assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
-    let score = p1 * mult;
+
+    // Compute score.
+
+    let mut score = p1 * mult;
+
+    // Test for concentration of SHM in the junction regions.
+
+    if cd as f64 >= ctl.join_alg_opt.cdr3_mult * std::cmp::max(1, *min_indeps) as f64 {
+        score = ctl.join_alg_opt.max_score + 1.0;
+    }
+
+    // Do not merge cells if they were assigned different light chain constant regions.
+
+    if !ctl.join_alg_opt.old_light {
+        for i in 0..info[k1].cdr3s.len() {
+            let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+            if !ex1.share[j1].left {
+                if ex1.share[j1].c_ref_id.is_some() && ex2.share[j2].c_ref_id.is_some() {
+                    if ex1.share[j1].c_ref_id.unwrap() != ex2.share[j2].c_ref_id.unwrap() {
+                        score = ctl.join_alg_opt.max_score + 1.0;
+                    }
+                }
+            }
+        }
+    }
 
     // Threshold on score.
 

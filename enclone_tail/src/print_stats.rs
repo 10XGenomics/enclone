@@ -129,7 +129,10 @@ pub fn print_stats(
     let mut nreads_adjusted = 0.0;
     let mut numis2 = 0;
     let mut ncells2 = 0;
+    let mut cells_by_donor = vec![0; ctl.origin_info.donor_list.len()];
+    let mut mixes = 0;
     for i in 0..nclono {
+        let mut cells_by_donor_this = vec![0; ctl.origin_info.donor_list.len()];
         if rsi[i].mat.len() == 2 {
             *two_chain += 1;
         } else if rsi[i].mat.len() == 3 {
@@ -147,6 +150,10 @@ pub fn print_stats(
             for k in 0..ex.clones.len() {
                 let x = &ex.clones[k][0];
                 sd.push((x.origin_index, x.donor_index));
+                if x.donor_index.is_some() {
+                    cells_by_donor[x.donor_index.unwrap()] += 1;
+                    cells_by_donor_this[x.donor_index.unwrap()] += 1;
+                }
                 for m in 0..ex.clones[k].len() {
                     numis += ex.clones[k][m].umi_count;
                     if ex.share.len() == 2 {
@@ -162,12 +169,34 @@ pub fn print_stats(
                 }
             }
         }
+        if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
+            for j1 in 0..exacts[i].len() {
+                let ex1 = &exact_clonotypes[exacts[i][j1]];
+                for j2 in j1..exacts[i].len() {
+                    let ex2 = &exact_clonotypes[exacts[i][j2]];
+                    for k1 in 0..ex1.clones.len() {
+                        let x1 = &ex1.clones[k1][0];
+                        for k2 in 0..ex2.clones.len() {
+                            if (j1, k1) < (j2, k2) {
+                                let x2 = &ex2.clones[k2][0];
+                                if x1.donor_index.is_some() && x2.donor_index.is_some() {
+                                    if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                        mixes += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if n >= 2 {
             *nclono2 += 1;
         }
-        if n >= 1 {
-            // not sure how n = 0 can happen but it does, maybe should trap this
-            merges += n - 1;
+        for j in 0..cells_by_donor_this.len() {
+            if cells_by_donor_this[j] > 1 {
+                merges += cells_by_donor_this[j] - 1;
+            }
         }
         ncells += n;
         ncc.push((rsi[i].mat.len(), n));
@@ -441,9 +470,33 @@ pub fn print_stats(
         );
         fwriteln!(
             logx,
-            "   • number of cell-cell merges = {}",
+            "   • number of intradonor cell-cell merges = {}",
             add_commas(merges)
         );
+        if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
+            let mut cross = 0;
+            for i1 in 0..cells_by_donor.len() {
+                for i2 in i1 + 1..cells_by_donor.len() {
+                    cross += cells_by_donor[i1] * cells_by_donor[i2];
+                }
+            }
+            fwriteln!(
+                logx,
+                "   • number of cross-donor comparisons = {}",
+                add_commas(cross)
+            );
+            fwriteln!(
+                logx,
+                "   • number of cross-donor comparisons that mix donors = {}",
+                add_commas(mixes)
+            );
+            let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
+            fwriteln!(
+                logx,
+                "   • rate of cross donor mixing = {:.2} x 10^-9",
+                rate
+            );
+        }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         let mut doublet_rate = 0.0;

@@ -306,6 +306,10 @@ pub struct JoinAlgOpt {
     pub merge_onesies_ctl: bool, // restriction on onesie merger
     pub bcjoin: bool,            // join only by barcode identity
     pub max_cdr3_diffs: usize,
+    pub cdr3_mult: f64, // multiplier for checking CDR3 SHM concentration
+    pub old_mult: bool,
+    pub mult_pow: f64,
+    pub old_light: bool,
 }
 
 // Clonotype filtering options.

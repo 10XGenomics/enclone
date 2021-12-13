@@ -25,7 +25,7 @@ SUMMARY STATISTICS
    │total   │                  4796  │            4874  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 66
-   • number of cell-cell merges = 78
+   • number of intradonor cell-cell merges = 78
    • number of cells having 1 chain = 1514
    • number of cells having 2 or 3 chains = 3310
    • estimated T-T doublet rate = 1.7% = 50/2939 = cells with 4 chains / cells with 2 or 4 chains

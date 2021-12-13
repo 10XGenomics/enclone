@@ -562,7 +562,7 @@ fn test_for_broken_links_and_spellcheck() {
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
         googletagmanager grok gz html \
         hypermutation hypermutations igblast igh igk igl ighm igkc imgt immunoglobulins \
-        indel indels inkt jsdelivr json krh levenshtein lgc linux loh lvar lvars \
+        indel indels inkt intradonor jsdelivr json krh levenshtein lgc linux loh lvar lvars \
         macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nospaces nqual nseg nsegn nsig nwhitef oligos onesie onesies parseable \

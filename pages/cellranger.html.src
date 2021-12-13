@@ -71,6 +71,26 @@ Please see <a href="../../pages/auto/default_filters.html">enclone default filte
 </td>
 </tr>
 
+<tr>
+<td> Dec. 13, 2021 </td>
+<td> <code>******</code> </td>
+<td> 
+Make three changes to clonotyping that increase its specificity:
+<ol>
+<li>Reject joins where the number of differences in CDR3
+is at least <code>CDR3_MULT</code> times the number of non-shared differences outside CDR3.  The
+default value of <code>CDR3_MULT</code> is <code>5</code>.  This algorithmic change may be
+overridden by using a large value instead, e.g. by <code>CDR3_MULT=100</code>.</li>
+<li>Compute the number <code>N</code> in a different and
+simpler fashion, as <code>80^cd</code>.  The old behavior may be obtained by adding the argument
+<code>OLD_MULT</code>.</li>
+<li>Prevent merger in cases where light chain constant
+regions are different.  The old behavior maybe be obtained by adding the argument
+<code>OLD_LIGHT</code>.</li>
+</ol>
+</td>
+</tr>
+
 </tbody>
 </table>
 </p>
