@@ -345,6 +345,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
              mutations, as above.  This filter may be turned off \
              using the command-line argument \\bold{EASY}.\n\
+             • We do not join in cases where light chain constant regions are different.  This \
+             filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.\
+             This criterion was added after Cell Ranger 6.1.\n\
              • We do not join in cases where there is too high a concentration of changes in the \
              junction region.  More specifically, if the number of mutations in CDR3 is at least \
              5 times the number of non-shared mutations outside CDR3 (maxed with 1), the join is \
