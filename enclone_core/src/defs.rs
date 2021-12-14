@@ -237,7 +237,10 @@ pub struct GeneralOpt {
     pub fb_show: String,
     pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
     pub nospaces: bool,
+<<<<<<< HEAD
     pub subsample: f64,
+=======
+>>>>>>> 113c4345c214f654c7792a83e998633b5e38d6c3
     pub gamma_delta: bool,
 }
 
