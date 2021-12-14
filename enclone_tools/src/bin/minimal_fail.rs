@@ -59,17 +59,6 @@ fn fails(
         fwriteln!(f, "]");
     }
 
-    // Execute new enclone.  Require OK.
-
-    let o = Command::new("enclone")
-        .arg(&format!("BCR={}", work))
-        .args(&*extra)
-        .output()
-        .expect("failed to execute new enclone");
-    if o.status.code() != Some(0) {
-        return false;
-    }
-
     // Execute old enclone.
 
     let o = Command::new("enclone.old")
