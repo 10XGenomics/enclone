@@ -104,12 +104,12 @@ fn main() {
         if github_version != remote_version {
             // Test for weird error.
 
-            let g = github_version.split('.').collect::<Vec<&str>>();
+            let g = github_version.after("v").split('.').collect::<Vec<&str>>();
             let mut gn = Vec::<usize>::new();
             for x in g.iter() {
                 gn.push(x.force_usize());
             }
-            let r = remote_version.split('.').collect::<Vec<&str>>();
+            let r = remote_version.after("v").split('.').collect::<Vec<&str>>();
             let mut rn = Vec::<usize>::new();
             for x in r.iter() {
                 rn.push(x.force_usize());
