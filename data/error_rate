@@ -1,0 +1,97 @@
+#!/bin/csh
+
+foreach rate (0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
+    echo "\nrate = $rate\n"
+    foreach pass (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+        enclone BIB=1-3,5-39 BUILT_IN MIX_DONORS NOPRINT SUMMARY ACCEPT_REUSE SUBSAMPLE=$rate | \
+            grep -A1 comparisons
+    end
+end
+
+===================================================================================================
+
+0.1 ==> 0.25
+
+   • number of cross-donor comparisons = 6,229,491,043
+   • number of cross-donor comparisons that mix donors = 11
+   • rate of cross donor mixing = 1.77 x 10^-9
+
+   • number of cross-donor comparisons = 6,133,765,850
+   • number of cross-donor comparisons that mix donors = 1
+   • rate of cross donor mixing = 0.16 x 10^-9
+
+   • number of cross-donor comparisons = 6,218,899,674
+   • number of cross-donor comparisons that mix donors = 3
+   • rate of cross donor mixing = 0.48 x 10^-9
+
+   • number of cross-donor comparisons = 6,197,861,293
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,226,644,541
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,263,093,094
+   • number of cross-donor comparisons that mix donors = 2
+   • rate of cross donor mixing = 0.32 x 10^-9
+
+   • number of cross-donor comparisons = 6,136,006,379
+   • number of cross-donor comparisons that mix donors = 1
+   • rate of cross donor mixing = 0.16 x 10^-9
+
+   • number of cross-donor comparisons = 6,247,220,265
+   • number of cross-donor comparisons that mix donors = 2
+   • rate of cross donor mixing = 0.32 x 10^-9
+
+   • number of cross-donor comparisons = 6,244,891,736
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,240,907,473
+   • number of cross-donor comparisons that mix donors = 3
+   • rate of cross donor mixing = 0.48 x 10^-9
+
+   • number of cross-donor comparisons = 6,232,262,853
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,218,807,565
+   • number of cross-donor comparisons that mix donors = 2
+   • rate of cross donor mixing = 0.32 x 10^-9
+
+   • number of cross-donor comparisons = 6,242,723,802
+   • number of cross-donor comparisons that mix donors = 3
+   • rate of cross donor mixing = 0.48 x 10^-9
+
+   • number of cross-donor comparisons = 6,190,622,829
+   • number of cross-donor comparisons that mix donors = 1
+   • rate of cross donor mixing = 0.16 x 10^-9
+
+   • number of cross-donor comparisons = 6,232,784,173
+   • number of cross-donor comparisons that mix donors = 2
+   • rate of cross donor mixing = 0.32 x 10^-9
+
+   • number of cross-donor comparisons = 6,221,114,522
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,226,801,909
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,215,932,202
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,222,614,716
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+   • number of cross-donor comparisons = 6,236,832,020
+   • number of cross-donor comparisons that mix donors = 0
+   • rate of cross donor mixing = 0.00 x 10^-9
+
+===================================================================================================
+
+0.2
