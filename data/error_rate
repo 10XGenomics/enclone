@@ -64,7 +64,7 @@ end
 0.4 ==> 0.60
 0.5 ==> 0.57
 0.6 ==> 0.72
-0.7 ==> 0.81 (prelim)
+0.7 ==> 0.81
 0.8 ==> TBD
 0.9 ==> TBD
 1.0 ==> 0.90
@@ -575,7 +575,7 @@ end
 
 ===================================================================================================
 
-0.7
+0.7 ==> 0.81
 
    • number of cross-donor comparisons = 292,716,919,075
    • number of cross-donor comparisons that mix donors = 256
@@ -605,21 +605,63 @@ end
    • number of cross-donor comparisons that mix donors = 232
    • rate of cross donor mixing = 0.80 x 10^-9
 
-
-
    • number of cross-donor comparisons = 291,475,686,209
    • number of cross-donor comparisons that mix donors = 205
    • rate of cross donor mixing = 0.70 x 10^-9
+
    • number of cross-donor comparisons = 291,347,986,129
    • number of cross-donor comparisons that mix donors = 271
    • rate of cross donor mixing = 0.93 x 10^-9
+
    • number of cross-donor comparisons = 291,998,790,110
    • number of cross-donor comparisons that mix donors = 165
    • rate of cross donor mixing = 0.57 x 10^-9
+
    • number of cross-donor comparisons = 292,006,731,738
    • number of cross-donor comparisons that mix donors = 332
    • rate of cross donor mixing = 1.14 x 10^-9
+
    • number of cross-donor comparisons = 291,754,310,632
    • number of cross-donor comparisons that mix donors = 117
    • rate of cross donor mixing = 0.40 x 10^-9
 
+   • number of cross-donor comparisons = 292,476,768,560
+   • number of cross-donor comparisons that mix donors = 299
+   • rate of cross donor mixing = 1.02 x 10^-9
+
+   • number of cross-donor comparisons = 292,573,943,243
+   • number of cross-donor comparisons that mix donors = 235
+   • rate of cross donor mixing = 0.80 x 10^-9
+
+   • number of cross-donor comparisons = 292,064,838,727
+   • number of cross-donor comparisons that mix donors = 246
+   • rate of cross donor mixing = 0.84 x 10^-9
+
+   • number of cross-donor comparisons = 292,168,438,534
+   • number of cross-donor comparisons that mix donors = 277
+   • rate of cross donor mixing = 0.95 x 10^-9
+
+   • number of cross-donor comparisons = 292,648,291,006
+   • number of cross-donor comparisons that mix donors = 244
+   • rate of cross donor mixing = 0.83 x 10^-9
+
+   • number of cross-donor comparisons = 290,870,303,556
+   • number of cross-donor comparisons that mix donors = 175
+   • rate of cross donor mixing = 0.60 x 10^-9
+
+   • number of cross-donor comparisons = 291,488,003,182
+   • number of cross-donor comparisons that mix donors = 261
+   • rate of cross donor mixing = 0.90 x 10^-9
+
+   • number of cross-donor comparisons = 291,298,133,702
+   • number of cross-donor comparisons that mix donors = 224
+   • rate of cross donor mixing = 0.77 x 10^-9
+
+rate = 0.8
+
+   • number of cross-donor comparisons = 378,839,000,819
+   • number of cross-donor comparisons that mix donors = 429
+   • rate of cross donor mixing = 1.13 x 10^-9
+   • number of cross-donor comparisons = 379,757,059,106
+   • number of cross-donor comparisons that mix donors = 317
+   • rate of cross donor mixing = 0.83 x 10^-9
