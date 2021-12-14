@@ -35,8 +35,7 @@ pub fn plot_points(
 
     // Define parameters of the plot.
 
-    // let title = format!("{} versus {}", xvar, yvar);
-    let title = "clonotyping accuracy";
+    let title = format!("{} versus {}", xvar, yvar);
 
     // Possibly universal constants.
 
@@ -45,13 +44,13 @@ pub fn plot_points(
     let tic_font_size = 20;
     let axis_ticks = 5;
     let point_size = 4;
-    let margin = 35;
+    let margin = 25;
     let mut xsize = 800;
     let ysize = 600;
     if symmetric {
         xsize = ysize;
     }
-    let point_color = RGBColor(255,153,51);
+    let point_color = RED;
     let range_ext = 0.02;
 
     // Determine the plot ranges using the extreme values of the points, extended a little bit.
@@ -76,8 +75,6 @@ pub fn plot_points(
     } else {
         xhigh *= 1.0 - range_ext;
     }
-    xlow = 0.0;
-    xhigh = 1500000.0;
     if ylow > 0.0 && ylow / (yhigh - ylow) < range_ext {
         ylow = 0.0;
     } else if ylow > 0.0 {
@@ -90,8 +87,6 @@ pub fn plot_points(
     } else {
         yhigh *= 1.0 - range_ext;
     }
-    ylow = 0.0;
-    yhigh = 1.4;
     if symmetric {
         xlow = xlow.min(ylow);
         ylow = xlow;
@@ -166,34 +161,5 @@ pub fn plot_points(
             &|c, s, st| EmptyElement::at(c) + Circle::new((0, 0), s, st.filled()),
         ))
         .unwrap();
-
-    let point_color2 = BLUE;
-    let points2 = vec![
-        (652537.0, 0.66), 
-        (672653.0, 1.23),
-        (405168.0, 0.75),
-        (245629.0, 0.43),
-        (301997.0, 0.68),
-    ];
-    chart
-        .draw_series(PointSeries::of_element(
-            points2.clone(),
-            point_size,
-            &point_color2,
-            &|c, s, st| EmptyElement::at(c) + Circle::new((0, 0), s, st.filled()),
-        ))
-        .unwrap();
-
-    let point_color3 = RED;
-    let points3 = vec![(1325190.0, 0.90)];
-    chart
-        .draw_series(PointSeries::of_element(
-            points3.clone(),
-            point_size,
-            &point_color3,
-            &|c, s, st| EmptyElement::at(c) + Circle::new((0, 0), s, st.filled()),
-        ))
-        .unwrap();
-
     Ok(())
 }
