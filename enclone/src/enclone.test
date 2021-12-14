@@ -14,17 +14,6 @@
 
 rootdir=$(dirname $0)
 
-# On jenkins build machines, e.g. `jenkins-test-centos610-2` using too many threads appears
-# To lead to contention and slow downs, we should better understand the rules around how
-# we'd wind up in a situation where X threads was too many, but for now we limit to ~14 if
-# on a jenkins machine
-MAX_CORES=""
-cat /proc/sys/kernel/hostname | grep "jenkins"
-if [ $? -eq 0 ]
-then
-   MAX_CORES="MAX_CORES=8"
-fi
-
 enclone \
     BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
@@ -33,7 +22,6 @@ enclone \
     PRE=/mnt/assembly/vdj/current15 \
     MIX_DONORS \
     NOPAGER \
-    $MAX_CORES \
     \
     BUILT_IN \
     \
