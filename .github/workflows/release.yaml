@@ -17,7 +17,7 @@ jobs:
       - name: Checkout git repository
         uses: actions/checkout@master
       - name: Login to GitHub Package Registry
-        run: docker login docker.pkg.github.com -u 10xbuild -p ${{secrets.GH_PAT}}
+        run: docker login ghcr.io -u 10xbuild -p ${{secrets.GH_PAT}}
       - name: Make release build
         run: >
           docker run -v ${{github.workspace}}:/root
