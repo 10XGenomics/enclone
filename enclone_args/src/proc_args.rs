@@ -152,7 +152,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
-    let (mut have_tcr, mut have_bcr) = (false, false);
+    let (mut have_tcr, mut have_bcr, mut have_tcrgd) = (false, false, false);
     let mut have_gex = false;
     let mut have_meta = false;
     let mut gex = String::new();
@@ -165,7 +165,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             have_bcr = true;
         } else if args[i].starts_with("TCR=") {
             have_tcr = true;
-        } else if args[i].starts_with("BCR=") {
+        } else if args[i].starts_with("TCRGD=") {
+            have_tcrgd = true;
+        }else if args[i].starts_with("BCR=") {
             have_bcr = true;
         } else if args[i].starts_with("GEX=") {
             have_gex = true;
@@ -188,14 +190,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             ctl.clono_filt_opt_def.marked_b = true;
         }
     }
-    if have_meta && (have_tcr || have_bcr || have_gex || !bc.is_empty()) {
+    if have_meta && (have_tcr || have_bcr || have_tcrgd || have_gex || !bc.is_empty()) {
         return Err(
-            "\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n"
+            "\nIf META is specified, then none of TCR, TCRGD, BCR, GEX or BC can be specified.\n"
                 .to_string(),
         );
     }
-    if have_tcr && have_bcr {
-        return Err("\nKindly please do not specify both TCR and BCR.\n".to_string());
+    if have_tcr && have_bcr && have_tcrgd {
+        return Err("\nKindly please do not specify a combination of TCR, TCRGD, and BCR.\n".to_string());
     }
     let mut using_plot = false;
 
@@ -917,6 +919,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     if ctl.gen_opt.internal_run && ctl.gen_opt.config.is_empty() {
         return Err(
             "\nYou need to set up your configuration file, please ask for help.\n".to_string(),
+        );
+    }
+    if ctl.gen_opt.gamma_delta && !have_tcrgd || !ctl.gen_opt.gamma_delta && have_tcrgd {
+        return Err(
+            "\n. GAMMA_DELTA flag has to be enabled for using TCRGD= and vice versa.\n"
+                .to_string(),
+        );
+    }
+    if ctl.gen_opt.gamma_delta && (have_bcr || have_gex || have_meta || have_tcr) {
+        return Err(
+            "\n. Unsupported input type in GAMMA_DELTA mode. Only TCRGD= input is supported.\n"
+                .to_string(),
         );
     }
     proc_args_post(
