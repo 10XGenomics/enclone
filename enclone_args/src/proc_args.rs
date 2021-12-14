@@ -167,7 +167,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             have_tcr = true;
         } else if args[i].starts_with("TCRGD=") {
             have_tcrgd = true;
-        }else if args[i].starts_with("BCR=") {
+        } else if args[i].starts_with("BCR=") {
             have_bcr = true;
         } else if args[i].starts_with("GEX=") {
             have_gex = true;
@@ -197,7 +197,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         );
     }
     if have_tcr && have_bcr && have_tcrgd {
-        return Err("\nKindly please do not specify a combination of TCR, TCRGD, and BCR.\n".to_string());
+        return Err(
+            "\nKindly please do not specify a combination of TCR, TCRGD, and BCR.\n".to_string(),
+        );
     }
     let mut using_plot = false;
 
@@ -923,8 +925,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     }
     if ctl.gen_opt.gamma_delta && !have_tcrgd || !ctl.gen_opt.gamma_delta && have_tcrgd {
         return Err(
-            "\n. GAMMA_DELTA flag has to be enabled for using TCRGD= and vice versa.\n"
-                .to_string(),
+            "\n. GAMMA_DELTA flag has to be enabled for using TCRGD= and vice versa.\n".to_string(),
         );
     }
     if ctl.gen_opt.gamma_delta && (have_bcr || have_gex || have_meta || have_tcr) {

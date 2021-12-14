@@ -2677,6 +2677,7 @@ source = "git+https://github.com/hecrj/iced?rev=aeec0375f0897b2ef0897c4c54476b2d
 dependencies = [
  "iced_core",
  "iced_futures",
+ "iced_style",
  "num-traits",
  "twox-hash",
  "unicode-segmentation",
