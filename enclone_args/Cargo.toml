@@ -33,6 +33,7 @@ hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_n
 io_utils = "0.3"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
+rand = "0.8"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
