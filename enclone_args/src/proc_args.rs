@@ -103,6 +103,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.gen_opt.jscore_gap_extend = -20;
     ctl.gen_opt.jscore_bits_multiplier = 2.2;
     ctl.gen_opt.max_heavies = 1000000;
+    ctl.gen_opt.subsample = -1.0;
 
     // Set up clonotyping control parameters.
 
@@ -502,6 +503,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("CDR3_MULT", &mut ctl.join_alg_opt.cdr3_mult),
         ("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier),
         ("MULT_POW", &mut ctl.join_alg_opt.mult_pow),
+        ("SUBSAMPLE", &mut ctl.gen_opt.subsample),
     ];
 
     // Define arguments that set something to a string.

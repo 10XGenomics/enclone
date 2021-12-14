@@ -6,6 +6,7 @@ use self::transcript::is_valid;
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::{EncloneControl, OriginInfo, TigData};
 use io_utils::{open_maybe_compressed, path_exists, read_vector_entry_from_json};
+use rand::Rng;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::sync::atomic::AtomicBool;
@@ -13,7 +14,7 @@ use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader};
 use string_utils::{stringme, strme, TextUtils};
 use vdj_ann::{annotate, refx, transcript};
-use vector_utils::{bin_position, unique_sort};
+use vector_utils::{bin_position, erase_if, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -777,6 +778,36 @@ pub fn read_json(
         r = s;
     }
     unique_sort(vdj_cells);
+
+    // Subsample.
+
+    if ctl.gen_opt.subsample >= 0.0 {
+        let mut rng = rand::thread_rng();
+        let mut to_delete1 = vec![false; tig_bc.len()];
+        let mut to_delete2 = vec![false; vdj_cells.len()];
+        let mut to_delete3 = vec![false; gex_cells.len()];
+        for i in 0..tig_bc.len() {
+            let y: f64 = rng.gen();
+            if y < 1.0 - ctl.gen_opt.subsample {
+                to_delete1[i] = true;
+                let bc = &tig_bc[i][0].barcode;
+                let p = bin_position(&vdj_cells, &bc);
+                if p >= 0 {
+                    to_delete2[p as usize] = true;
+                }
+                let p = bin_position(&gex_cells, &bc);
+                if p >= 0 {
+                    to_delete3[p as usize] = true;
+                }
+            }
+        }
+        erase_if(&mut tig_bc, &to_delete1);
+        erase_if(vdj_cells, &to_delete2);
+        erase_if(gex_cells, &to_delete3);
+    }
+
+    // Done.
+
     Ok(tig_bc)
 }
 
