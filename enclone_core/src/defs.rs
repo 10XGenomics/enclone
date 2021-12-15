@@ -113,6 +113,7 @@ pub struct GeneralOpt {
     pub weak: bool,
     pub tcr: bool,
     pub bcr: bool,
+    pub tcrgd: bool,
     pub reuse: bool,
     pub fasta: String,
     pub fasta_filename: String,
