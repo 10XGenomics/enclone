@@ -41,6 +41,6 @@ serde_json = "1"
 stats_utils = "0.1"
 string_utils = "0.1"
 tilde-expand = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "b5179fe5fc526ff141a3a039f44a5ed06b6511cf" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "b5179fe5fc526ff141a3a039f44a5ed06b6511cf" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "d6cfff9f29e7d2cc27944b1e949ae2deabea867e" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "d6cfff9f29e7d2cc27944b1e949ae2deabea867e" }
 vector_utils = "0.1"
