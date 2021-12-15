@@ -10,7 +10,7 @@ use crate::clustal::print_clustal;
 use crate::fasta::generate_fasta;
 use crate::phylip::print_phylip;
 use crate::plot::plot_clonotypes;
-use crate::plot_points::plot_points;
+use crate::plot_points_gen::plot_points_gen;
 use crate::print_stats::print_stats;
 use crate::requirements::test_requirements;
 use crate::sim_mat_plot::sim_mat_plot;
@@ -252,7 +252,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
-    let mut plot_xy_vals = Vec::<(f32, f32)>::new();
+    let mut plot_xy_vals = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
     let mut plot_xy_comments = Vec::<String>::new();
     for i in 0..groups.len() {
         let mut o = Vec::<i32>::new();
@@ -333,7 +333,7 @@ pub fn group_and_print_clonotypes(
                                         }
                                         y = y.log10();
                                     }
-                                    plot_xy_vals.push((x as f32, y as f32));
+                                    plot_xy_vals.push((4, (255, 0, 0), x as f32, y as f32));
                                     let group_id = i;
                                     let clonotype_id = j;
                                     let com = format!(
@@ -818,12 +818,18 @@ pub fn group_and_print_clonotypes(
         }
         let filename = ctl.plot_opt.plot_xy_filename.clone();
         let mut svg = String::new();
-        plot_points(
+        plot_points_gen(
             &plot_xy_vals,
             &xvar,
             &yvar,
             &mut svg,
             ctl.plot_opt.plot_xy_sym,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
         )?;
         if filename == "stdout" || filename == "gui_stdout" {
             for line in svg.lines() {
