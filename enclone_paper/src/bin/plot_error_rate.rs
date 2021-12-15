@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use enclone_tail::plot_points::plot_points;
+use enclone_paper::plot_points_gen::plot_points_gen;
 
 // ================================================================================================
 
@@ -26,6 +26,20 @@ use enclone_tail::plot_points::plot_points;
 // ================================================================================================
 
 fn main() {
+
+    // Define constants.
+
+
+    // Set up.
+
+    let mut points = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
+    let large = 5;
+    let small = 2;
+
+    // Plot individual data points for cellwise subsampling.
+
+    let orange = (255, 153, 51);
+    let cells = 1325190.0 as f32;
     #[rustfmt::skip]
     let srx = [
         (0.1, [1.77, 0.16, 0.48, 0.00, 0.00, 0.32, 0.16, 0.32, 0.00, 0.48, 
@@ -47,26 +61,68 @@ fn main() {
         (0.9, [0.93, 0.82, 0.97, 0.79, 0.86, 0.97, 0.85, 0.96, 0.99, 0.77, 
                0.70, 0.66, 0.88, 0.76, 0.97, 0.91, 0.87, 0.86, 0.80, 0.88]),
     ];
-
-    let cells = 1325190.0 as f32;
-
-    let mut points = Vec::<(f32, f32)>::new();
     for i in 0..srx.len() {
         for j in 0..srx[i].1.len() {
-            points.push((srx[i].0 as f32 * cells, srx[i].1[j]));
+            points.push((small, orange, srx[i].0 as f32 * cells, srx[i].1[j]));
         }
     }
 
-    let mut svg = String::new();
+    // Plot points for dataset-level sampling.
 
-    plot_points(
+    let blue = (0, 0, 255);
+    let points2 = vec![
+        (652537.0, 0.66),
+        (672653.0, 1.23),
+        (405168.0, 0.75),
+        (245629.0, 0.43),
+        (301997.0, 0.68),
+    ];
+    for i in 0..points2.len() {
+        points.push((large, blue, points2[i].0, points2[i].1));
+    }
+
+    // Plot point for all the data.
+
+    let red = (255, 0, 0);
+    let points3 = vec![(1325190.0, 0.90)];
+    for i in 0..points3.len() {
+        points.push((large, red, points3[i].0, points3[i].1));
+    }
+
+    // Plot mean points for cellwise sampling.
+
+    let sr = [
+        (0.1, 0.25),
+        (0.2, 0.42),
+        (0.3, 0.45),
+        (0.4, 0.60),
+        (0.5, 0.57),
+        (0.6, 0.72),
+        (0.7, 0.81),
+        (0.8, 0.76), // preliminary
+    ];
+    let mut points4 = Vec::<(f32, f32)>::new();
+    for i in 0..sr.len() {
+        points4.push((sr[i].0 as f32 * cells, sr[i].1));
+    }
+    for i in 0..points4.len() {
+        points.push((large, orange, points4[i].0, points4[i].1));
+    }
+
+    // Make the plot.
+
+    let mut svg = String::new();
+    plot_points_gen(
         &points,
         "number of cells",
         "p(two unrelated cells are co-clonotyped) x 10^9",
         &mut svg,
         false,
+        None,
+        None,
+        None,
+        None,
     )
     .unwrap();
-
     print!("{}", svg);
 }
