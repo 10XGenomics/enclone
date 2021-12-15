@@ -34,7 +34,7 @@ pub fn main_enclone_ranger(args: &Vec<String>) -> Result<(), String> {
         "PROTO",
         "REF",
     ];
-    const ALLOWED_ARGS: [&str; 6] = [
+    const ALLOWED_ARGS: [&str; 7] = [
         "BCR",
         "META",
         "NOPRETTY",
