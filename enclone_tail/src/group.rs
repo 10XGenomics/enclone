@@ -10,7 +10,7 @@ use crate::clustal::print_clustal;
 use crate::fasta::generate_fasta;
 use crate::phylip::print_phylip;
 use crate::plot::plot_clonotypes;
-use crate::plot_points_gen::plot_points_gen;
+use crate::plot_points::plot_points;
 use crate::print_stats::print_stats;
 use crate::requirements::test_requirements;
 use crate::sim_mat_plot::sim_mat_plot;
@@ -818,7 +818,7 @@ pub fn group_and_print_clonotypes(
         }
         let filename = ctl.plot_opt.plot_xy_filename.clone();
         let mut svg = String::new();
-        plot_points_gen(
+        plot_points(
             &plot_xy_vals,
             &xvar,
             &yvar,

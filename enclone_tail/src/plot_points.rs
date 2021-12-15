@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
 // Plot a given set of points, which come with sizes and colors.  This provides a function
-// plot_points_gen, built on top of the crate
+// plot_points, built on top of the crate
 // plotters 0.3.0.  That crate provides some useful capabilities, but does not include the
 // full fledged ability to plot points.  The devil is in the details, and specifically in how
 // exactly one sets the precision of tick mark labels, and how one positions axis labels so as
@@ -19,7 +19,7 @@ use crate::ticks::ticks;
 use plotters::prelude::*;
 use std::cmp::max;
 
-pub fn plot_points_gen(
+pub fn plot_points(
     points: &Vec<(u32, (u8, u8, u8), f32, f32)>,
     xvar: &str,
     yvar: &str,

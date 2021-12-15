@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use enclone_tail::plot_points_gen::plot_points_gen;
+use enclone_tail::plot_points::plot_points;
 
 // ================================================================================================
 
@@ -18,10 +18,6 @@ use enclone_tail::plot_points_gen::plot_points_gen;
 // * Orange points: combined dataset was cellwise subsampled at 10%, 20%, ..., 90%,
 //                  mean of 20 replicates is shown.
 // * Blue points: each point represents all data from some of the individuals.
-
-// ================================================================================================
-
-// Special plot_points.rs ==> copy file into place.
 
 // ================================================================================================
 
@@ -105,7 +101,7 @@ fn main() {
         points[i].3 /= 1_000_000_000.0;
     }
     let mut svg = String::new();
-    plot_points_gen(
+    plot_points(
         &points,
         "number of cells",
         "p(two unrelated cells are co-clonotyped)",
