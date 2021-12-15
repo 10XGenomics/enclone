@@ -103,11 +103,11 @@ fn main() {
     let mut svg = String::new();
     plot_points(
         &points,
-        "number of cells",
+        "Number of cells",
         "p(two unrelated cells are co-clonotyped)",
         &mut svg,
         false,
-        Some("clonotyping accuracy".to_string()),
+        Some("Clonotyping accuracy".to_string()),
         Some(0.0),
         Some(1500000.0),
         Some(0.0),
