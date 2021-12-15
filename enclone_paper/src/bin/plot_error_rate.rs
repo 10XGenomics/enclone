@@ -4,7 +4,7 @@ use enclone_paper::plot_points_gen::plot_points_gen;
 
 // ================================================================================================
 
-// LEGEND
+// APPROXIMATE LEGEND
 // Clonotyping accuracy.  The probability that the clonotyping algorithm places two unrelated
 // cells in the same clonotype is roughly 10^-9.  This probability varies stochastically as input
 // data vary and increases with the number of cells.  Our observed value is 0.9 x 10^-9
@@ -70,14 +70,15 @@ fn main() {
     // Plot points for dataset-level sampling.
 
     let blue = (0, 0, 255);
-    for i in 0..srx.len() {
-        let x = srx[i].0 as f32 * cells;
-        let mut y = 0.0;
-        for j in 0..srx[i].1.len() {
-            y += srx[i].1[j];
-        }
-        y /= srx[i].1.len() as f32;
-        points.push((large, blue, x, y));
+    let points2 = vec![
+        (652537.0, 0.66),
+        (672653.0, 1.23),
+        (405168.0, 0.75),
+        (245629.0, 0.43),
+        (301997.0, 0.68),
+    ];
+    for i in 0..points2.len() {
+        points.push((large, blue, points2[i].0, points2[i].1));
     }
 
     // Plot point for all the data.
@@ -90,22 +91,14 @@ fn main() {
 
     // Plot mean points for cellwise sampling.
 
-    let sr = [
-        (0.1, 0.25),
-        (0.2, 0.42),
-        (0.3, 0.45),
-        (0.4, 0.60),
-        (0.5, 0.57),
-        (0.6, 0.72),
-        (0.7, 0.81),
-        (0.8, 0.76), // preliminary
-    ];
-    let mut points4 = Vec::<(f32, f32)>::new();
-    for i in 0..sr.len() {
-        points4.push((sr[i].0 as f32 * cells, sr[i].1));
-    }
-    for i in 0..points4.len() {
-        points.push((large, orange, points4[i].0, points4[i].1));
+    for i in 0..srx.len() {
+        let x = srx[i].0 as f32 * cells;
+        let mut y = 0.0;
+        for j in 0..srx[i].1.len() {
+            y += srx[i].1[j];
+        }
+        y /= srx[i].1.len() as f32;
+        points.push((large, orange, x, y));
     }
 
     // Make the plot.
