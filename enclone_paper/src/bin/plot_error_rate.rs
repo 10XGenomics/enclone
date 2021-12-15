@@ -9,7 +9,7 @@ use enclone_tail::plot_points::plot_points;
 // cells in the same clonotype is roughly 10^-9.  This probability varies stochastically as input
 // data vary and increases with the number of cells.  Our observed value is 0.9 x 10^-9
 // for 1.3M cells.
-// * Two B cells are called unrelated if they arose from different fully recombined ancestors. 
+// * Two B cells are called unrelated if they arose from different fully recombined ancestors.
 // * The probability that two unrelated cells are co-clonotyped
 //   was estimated by clonotyping a combined dataset, containing cells from multiple
 //   individuals, and determining the probability that two cells from different individuals are
@@ -26,7 +26,7 @@ use enclone_tail::plot_points::plot_points;
 // ================================================================================================
 
 fn main() {
-
+    #[rustfmt::skip]
     let srx = [
         (0.1, [1.77, 0.16, 0.48, 0.00, 0.00, 0.32, 0.16, 0.32, 0.00, 0.48, 
                0.00, 0.32, 0.48, 0.16, 0.32, 0.00, 0.00, 0.00, 0.00, 0.00]),
@@ -60,13 +60,13 @@ fn main() {
     let mut svg = String::new();
 
     plot_points(
-        &points, 
+        &points,
         "number of cells",
         "p(two unrelated cells are co-clonotyped) x 10^9",
         &mut svg,
-        false
-    ).unwrap();
+        false,
+    )
+    .unwrap();
 
     print!("{}", svg);
-
 }

@@ -24,7 +24,6 @@ pub fn plot_points(
     svg: &mut String,
     symmetric: bool,
 ) -> Result<(), String> {
-
     // Requirements.
 
     if points.is_empty() {
@@ -53,7 +52,7 @@ pub fn plot_points(
     if symmetric {
         xsize = ysize;
     }
-    let point_color = RGBColor(255,153,51);
+    let point_color = RGBColor(255, 153, 51);
 
     // Determine the plot ranges using the extreme values of the points, extended a little bit.
 
@@ -147,7 +146,7 @@ pub fn plot_points(
 
     let point_color2 = BLUE;
     let points2 = vec![
-        (652537.0, 0.66), 
+        (652537.0, 0.66),
         (672653.0, 1.23),
         (405168.0, 0.75),
         (245629.0, 0.43),
@@ -173,7 +172,7 @@ pub fn plot_points(
         ))
         .unwrap();
 
-    let point_color4 = RGBColor(255,153,51);
+    let point_color4 = RGBColor(255, 153, 51);
     let sr = [
         (0.1, 0.25),
         (0.2, 0.42),
