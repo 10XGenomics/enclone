@@ -54,7 +54,6 @@ pub fn plot_points(
         xsize = ysize;
     }
     let point_color = RGBColor(255,153,51);
-    let range_ext = 0.02;
 
     // Determine the plot ranges using the extreme values of the points, extended a little bit.
 
@@ -66,32 +65,8 @@ pub fn plot_points(
         ylow = ylow.min(points[i].1);
         yhigh = yhigh.max(points[i].1);
     }
-    if xlow > 0.0 && xlow / (xhigh - xlow) < range_ext {
-        xlow = 0.0;
-    } else if xlow > 0.0 {
-        xlow *= 1.0 - range_ext;
-    } else {
-        xlow *= 1.0 + range_ext;
-    }
-    if xhigh > 0.0 {
-        xhigh *= 1.0 + range_ext;
-    } else {
-        xhigh *= 1.0 - range_ext;
-    }
     xlow = 0.0;
     xhigh = 1500000.0;
-    if ylow > 0.0 && ylow / (yhigh - ylow) < range_ext {
-        ylow = 0.0;
-    } else if ylow > 0.0 {
-        ylow *= 1.0 - range_ext;
-    } else if ylow < 0.0 {
-        ylow *= 1.0 + range_ext;
-    }
-    if yhigh > 0.0 {
-        yhigh *= 1.0 + range_ext;
-    } else {
-        yhigh *= 1.0 - range_ext;
-    }
     ylow = 0.0;
     yhigh = 2.0;
     if symmetric {
