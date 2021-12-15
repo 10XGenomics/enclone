@@ -1,5 +1,0 @@
-Remove `vdj_asm_asm` as dependency of `cr_vdj`, make `vdj_asm_asm` binary actually do something.
-
-Inspired by https://github.com/10XDev/cellranger/pull/7629, and annoyed by some long compilations I was observing, I noticed that cr_vdj takes about 20 seconds to compile, and the vdj_asm_asm binary also takes about 20 seconds.  I wondered if I could remove the dependency of one on the other, and then also noticed that the vdj_asm_asm binary doesn't appear to be used anywhere.
-
-So this PR removes the dependency and makes the binary useful.
