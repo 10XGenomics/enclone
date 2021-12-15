@@ -20,6 +20,7 @@ pub mod pack_circles;
 pub mod phylip;
 pub mod plot;
 pub mod plot_points;
+pub mod plot_points_gen;
 pub mod plot_utils;
 pub mod polygon;
 pub mod print_stats;

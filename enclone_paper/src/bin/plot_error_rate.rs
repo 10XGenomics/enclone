@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use enclone_paper::plot_points_gen::plot_points_gen;
+use enclone_tail::plot_points_gen::plot_points_gen;
 
 // ================================================================================================
 
