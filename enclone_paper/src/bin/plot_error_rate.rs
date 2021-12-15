@@ -70,15 +70,14 @@ fn main() {
     // Plot points for dataset-level sampling.
 
     let blue = (0, 0, 255);
-    let points2 = vec![
-        (652537.0, 0.66),
-        (672653.0, 1.23),
-        (405168.0, 0.75),
-        (245629.0, 0.43),
-        (301997.0, 0.68),
-    ];
-    for i in 0..points2.len() {
-        points.push((large, blue, points2[i].0, points2[i].1));
+    for i in 0..srx.len() {
+        let x = srx[i].0 as f32 * cells;
+        let mut y = 0.0;
+        for j in 0..srx[i].1.len() {
+            y += srx[i].1[j];
+        }
+        y /= srx[i].1.len() as f32;
+        points.push((large, blue, x, y));
     }
 
     // Plot point for all the data.
