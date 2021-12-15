@@ -101,18 +101,21 @@ fn main() {
 
     // Make the plot.
 
+    for i in 0..points.len() {
+        points[i].3 /= 1_000_000_000.0;
+    }
     let mut svg = String::new();
     plot_points_gen(
         &points,
         "number of cells",
-        "p(two unrelated cells are co-clonotyped) x 10^9",
+        "p(two unrelated cells are co-clonotyped)",
         &mut svg,
         false,
         Some("clonotyping accuracy".to_string()),
         Some(0.0),
         Some(1500000.0),
         Some(0.0),
-        Some(2.0),
+        Some(2.0 / 1_000_000_000.0),
         Some(35),
     )
     .unwrap();
