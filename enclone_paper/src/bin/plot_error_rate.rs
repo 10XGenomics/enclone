@@ -1,3 +1,5 @@
+// Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
+
 use enclone_tail::plot_points::plot_points;
 
 // ================================================================================================
