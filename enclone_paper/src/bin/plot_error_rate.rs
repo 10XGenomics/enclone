@@ -118,10 +118,11 @@ fn main() {
         "p(two unrelated cells are co-clonotyped) x 10^9",
         &mut svg,
         false,
-        None,
-        None,
-        None,
-        None,
+        Some("clonotyping accuracy".to_string()),
+        Some(0.0),
+        Some(1500000.0),
+        Some(0.0),
+        Some(2.0),
     )
     .unwrap();
     print!("{}", svg);

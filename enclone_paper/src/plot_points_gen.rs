@@ -25,6 +25,8 @@ pub fn plot_points_gen(
     yvar: &str,
     svg: &mut String,
     symmetric: bool,
+    // title may be specified:
+    title: Option<String>,
     // plot boundaries may be specified:
     xlow: Option<f32>,
     xhigh: Option<f32>,
@@ -43,11 +45,14 @@ pub fn plot_points_gen(
 
     // Define parameters of the plot.
 
-    let title = format!("{} versus {}", xvar, yvar);
+    let mut titlex = format!("{} versus {}", xvar, yvar);
+    if title.is_some() {
+        titlex = title.unwrap().clone();
+    }
 
     // Possibly universal constants.
 
-    let title_font_size = 30;
+    let titlex_font_size = 30;
     let font = "arial";
     let tic_font_size = 20;
     let axis_ticks = 5;
@@ -155,7 +160,7 @@ pub fn plot_points_gen(
     let root = SVGBackend::with_string(svg, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
     let mut chart = ChartBuilder::on(&root)
-        .caption(&title, (font, title_font_size).into_font())
+        .caption(&titlex, (font, titlex_font_size).into_font())
         .x_label_area_size(x_label_area_size)
         .y_label_area_size(y_label_area_size)
         .build_cartesian_2d(xlowx..xhighx, ylowx..yhighx)
