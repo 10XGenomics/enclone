@@ -123,6 +123,7 @@ fn main() {
         Some(1500000.0),
         Some(0.0),
         Some(2.0),
+        Some(35),
     )
     .unwrap();
     print!("{}", svg);

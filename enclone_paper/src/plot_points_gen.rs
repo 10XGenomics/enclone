@@ -32,6 +32,9 @@ pub fn plot_points_gen(
     xhigh: Option<f32>,
     ylow: Option<f32>,
     yhigh: Option<f32>,
+    // optional margin:
+    // It is a bug that this has to be passed sometimes.
+    margin: Option<u32>,
 ) -> Result<(), String> {
     // Requirements.
 
@@ -49,6 +52,10 @@ pub fn plot_points_gen(
     if title.is_some() {
         titlex = title.unwrap().clone();
     }
+    let mut marginx = 25;
+    if margin.is_some() {
+        marginx = margin.unwrap();
+    }
 
     // Possibly universal constants.
 
@@ -56,7 +63,6 @@ pub fn plot_points_gen(
     let font = "arial";
     let tic_font_size = 20;
     let axis_ticks = 5;
-    let margin = 25;
     let mut xsize = 800;
     let ysize = 600;
     if symmetric {
@@ -158,7 +164,7 @@ pub fn plot_points_gen(
     // Make the plot.
 
     let root = SVGBackend::with_string(svg, (xsize, ysize)).into_drawing_area();
-    let root = root.margin(margin, margin, margin, margin);
+    let root = root.margin(marginx, marginx, marginx, marginx);
     let mut chart = ChartBuilder::on(&root)
         .caption(&titlex, (font, titlex_font_size).into_font())
         .x_label_area_size(x_label_area_size)
