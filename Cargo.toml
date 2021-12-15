@@ -8,6 +8,7 @@ members = [
     "enclone_exec",
     "enclone_help",
     "enclone_main",
+    "enclone_paper",
     "enclone_print",
     "enclone_proto",
     "enclone_ranger",
