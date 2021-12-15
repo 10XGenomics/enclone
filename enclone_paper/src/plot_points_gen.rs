@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Plot a given set of points, which come with sizes and colors.  This provides a function 
+// Plot a given set of points, which come with sizes and colors.  This provides a function
 // plot_points_gen, built on top of the crate
 // plotters 0.3.0.  That crate provides some useful capabilities, but does not include the
 // full fledged ability to plot points.  The devil is in the details, and specifically in how
@@ -200,7 +200,7 @@ pub fn plot_points_gen(
             .draw_series(PointSeries::of_element(
                 pts,
                 points[i].0,
-                &RGBColor(points[i].1.0, points[i].1.1, points[i].1.2),
+                &RGBColor(points[i].1 .0, points[i].1 .1, points[i].1 .2),
                 &|c, s, st| EmptyElement::at(c) + Circle::new((0, 0), s, st.filled()),
             ))
             .unwrap();

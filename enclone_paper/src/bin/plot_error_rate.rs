@@ -26,9 +26,7 @@ use enclone_paper::plot_points_gen::plot_points_gen;
 // ================================================================================================
 
 fn main() {
-
     // Define constants.
-
 
     // Set up.
 
