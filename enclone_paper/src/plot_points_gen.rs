@@ -10,6 +10,8 @@
 // The string_width and ticks crates we have now might be part of this.
 //
 // If symmetric = true, produce a square plot having the same range and tic marks on both axes.
+//
+// points = {(point size, point color, x, y)}
 
 use enclone_tail::string_width::arial_width;
 use enclone_tail::ticks::ticks;
