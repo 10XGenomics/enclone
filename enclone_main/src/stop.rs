@@ -129,7 +129,9 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         let mut rows = Vec::<Vec<String>>::new();
         let mut header = vec!["dataset".to_string(), "barcode".to_string()];
         header.append(&mut ctl.gen_opt.all_bc_fields_orig.clone());
-        fwriteln!(f, "{}", header.iter().format(","));
+        if !ctl.gen_opt.all_bc_human {
+            fwriteln!(f, "{}", header.iter().format(","));
+        }
         rows.push(header);
         for li in 0..ctl.origin_info.n() {
             for bc in gex_info.gex_barcodes[li].iter() {
@@ -215,11 +217,11 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                     rows.push(fields);
                 }
             }
-            if ctl.gen_opt.all_bc_human {
-                let mut log = Vec::<u8>::new();
-                print_tabular(&mut log, &rows, 2, None);
-                fwrite!(f, "{}", strme(&log));
-            }
+        }
+        if ctl.gen_opt.all_bc_human {
+            let mut log = Vec::<u8>::new();
+            print_tabular(&mut log, &rows, 2, None);
+            fwrite!(f, "{}", strme(&log));
         }
         ctl.perf_stats(&tallbc, "carrying out ALL_BC");
     }
