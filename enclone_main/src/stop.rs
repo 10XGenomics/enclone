@@ -160,11 +160,34 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                         } else {
                             fields.push("none".to_string());
                         }
+                    } else if var == "gex" {
+                        let mut count = 0;
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            let row = gex_info.gex_matrices[li].row(p as usize);
+                            for j in 0..row.len() {
+                                let f = row[j].0;
+                                let n = row[j].1;
+                                if gex_info.is_gex[li][f] {
+                                    count += n;
+                                }
+                            }
+                        }
+                        fields.push(format!("{}", count));
+                    } else {
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        let mut count = 0;
+                        if p >= 0 {
+                            let fid = gex_info.feature_id[li][&var.clone()];
+                            count = gex_info.gex_matrices[li].value(p as usize, fid);
+                        }
+                        fields.push(format!("{}", count));
                     }
                 }
                 fwriteln!(f, "{}", fields.iter().format(","));
             }
             for bc in vdj_cells[li].iter() {
+                // We would expect the following code to be executed only rarely.
                 if !bin_member(&gex_info.gex_barcodes[li], bc) {
                     let mut fields = Vec::<String>::new();
                     fields.push(ctl.origin_info.dataset_id[li].clone());
@@ -174,6 +197,8 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                             fields.push("vdj".to_string());
                         } else if var == "type" || var == "none" {
                             fields.push("unknown".to_string());
+                        } else {
+                            fields.push("0".to_string());
                         }
                     }
                     fwriteln!(f, "{}", fields.iter().format(","));

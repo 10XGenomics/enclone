@@ -269,6 +269,16 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Check ALL_BC arguments.
 
     if ctl.gen_opt.all_bc_filename.len() > 0 {
+        if gex_info.gex_barcodes.is_empty() {
+            return Err(format!("\nYou can't use ALL_BC with VDJ data alone.\n"));
+        }
+        for li in 0..ctl.origin_info.n() {
+            if !gex_info.gex_matrices[li].initialized() {
+                return Err(format!("\nALL_BC only works if feature_barcode_matrix.bin has been \
+                    generated.\nPlease type \"enclone help input\" for more information.\n"
+                ));
+            }
+        }
         let known_features = get_known_features(&gex_info)?;
         let extras = ["gex", "type", "clust", "cell"];
         for i in 0..ctl.gen_opt.all_bc_fields.len() {
