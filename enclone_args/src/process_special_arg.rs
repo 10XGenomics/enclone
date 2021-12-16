@@ -76,6 +76,7 @@ pub fn process_special_arg(
         for i in 1..parts.len() {
            ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
         }
+        ctl.gen_opt.all_bc_fields_orig = ctl.gen_opt.all_bc_fields.clone();
     } else if arg.starts_with("HONEY=") {
         let mut parts = Vec::<Vec<String>>::new();
         {
@@ -247,7 +248,7 @@ pub fn process_special_arg(
                 err,
             ));
         }
-        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled));
+        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled, expr.to_string()));
     } else if arg.starts_with("MIN_DONORS") {
         let n = arg.after("MIN_DONORS=");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {

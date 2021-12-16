@@ -200,6 +200,17 @@ pub fn proc_args_post(
         }
     }
 
+    // Substitute VAR_DEF into ALL_BC.
+
+    for i in 0..ctl.gen_opt.all_bc_fields.len() {
+        for j in 0..ctl.gen_opt.var_def.len() {
+            if ctl.gen_opt.all_bc_fields[i] == ctl.gen_opt.var_def[j].0 {
+                ctl.gen_opt.all_bc_fields[i] = ctl.gen_opt.var_def[j].3.clone();
+                break;
+            }
+        }
+    }
+
     // Sanity check grouping arguments.
 
     if ctl.clono_group_opt.style == "asymmetric"

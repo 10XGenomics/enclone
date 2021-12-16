@@ -125,7 +125,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     if ctl.gen_opt.all_bc_filename.len() > 0 {
         let tallbc = Instant::now();
         let mut f = open_for_write_new![&ctl.gen_opt.all_bc_filename];
-        fwriteln!(f, "dataset,barcode,{}", ctl.gen_opt.all_bc_fields.iter().format(","));
+        fwriteln!(f, "dataset,barcode,{}", ctl.gen_opt.all_bc_fields_orig.iter().format(","));
         for li in 0..ctl.origin_info.n() {
             for bc in gex_info.gex_barcodes[li].iter() {
                 let mut fields = Vec::<String>::new();
