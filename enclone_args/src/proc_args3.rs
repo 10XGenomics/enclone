@@ -503,7 +503,7 @@ pub fn proc_xcr(
     }
     let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
-    ctl.gen_opt.tcrgd = f.starts_with("TCGD=");
+    ctl.gen_opt.tcrgd = f.starts_with("TCRGD=");
     ctl.gen_opt.bcr = f.starts_with("BCR=");
     let mut val: String;
     if ctl.gen_opt.tcr {
