@@ -1464,6 +1464,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
+ "tables",
  "tilde-expand",
  "vdj_ann",
  "vdj_ann_ref",

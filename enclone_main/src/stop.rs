@@ -7,14 +7,15 @@ use enclone_core::enclone_structs::*;
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
-use io_utils::{dir_list, fwriteln, open_for_read, open_for_write_new, path_exists};
+use io_utils::{dir_list, fwrite, fwriteln, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
 use perf_stats::{elapsed, peak_mem_usage_gb};
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
 use std::{collections::HashMap, env, io::{BufRead, Write}, thread, time, time::Instant};
-use string_utils::TextUtils;
+use string_utils::{strme, TextUtils};
+use tables::print_tabular;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -125,7 +126,11 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     if ctl.gen_opt.all_bc_filename.len() > 0 {
         let tallbc = Instant::now();
         let mut f = open_for_write_new![&ctl.gen_opt.all_bc_filename];
-        fwriteln!(f, "dataset,barcode,{}", ctl.gen_opt.all_bc_fields_orig.iter().format(","));
+        let mut rows = Vec::<Vec<String>>::new();
+        let mut header = vec!["dataset".to_string(), "barcode".to_string()];
+        header.append(&mut ctl.gen_opt.all_bc_fields_orig.clone());
+        fwriteln!(f, "{}", header.iter().format(","));
+        rows.push(header);
         for li in 0..ctl.origin_info.n() {
             for bc in gex_info.gex_barcodes[li].iter() {
                 let mut fields = Vec::<String>::new();
@@ -184,7 +189,10 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                         fields.push(format!("{}", count));
                     }
                 }
-                fwriteln!(f, "{}", fields.iter().format(","));
+                if !ctl.gen_opt.all_bc_human {
+                    fwriteln!(f, "{}", fields.iter().format(","));
+                }
+                rows.push(fields);
             }
             for bc in vdj_cells[li].iter() {
                 // We would expect the following code to be executed only rarely.
@@ -201,8 +209,16 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                             fields.push("0".to_string());
                         }
                     }
-                    fwriteln!(f, "{}", fields.iter().format(","));
+                    if !ctl.gen_opt.all_bc_human {
+                        fwriteln!(f, "{}", fields.iter().format(","));
+                    }
+                    rows.push(fields);
                 }
+            }
+            if ctl.gen_opt.all_bc_human {
+                let mut log = Vec::<u8>::new();
+                print_tabular(&mut log, &rows, 2, None);
+                fwrite!(f, "{}", strme(&log));
             }
         }
         ctl.perf_stats(&tallbc, "carrying out ALL_BC");

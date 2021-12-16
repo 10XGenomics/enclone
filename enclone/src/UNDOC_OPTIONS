@@ -316,4 +316,6 @@ Only certain other fields are allowed:
 
 This may also be used with VAR_DEF.
 
+ALL_BCH: same but human readable instead of CSV
+
 ===================================================================================================
