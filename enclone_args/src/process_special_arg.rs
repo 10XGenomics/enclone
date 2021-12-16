@@ -63,6 +63,19 @@ pub fn process_special_arg(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
+    } else if arg.starts_with("ALL_BC=") {
+        let parts = arg.after("ALL_BC=").split(',').collect::<Vec<&str>>();
+        if parts.is_empty() || parts[0].len() == 0 {
+            return Err("\nFor ALL_BC, at a minimum, a filename must be provided.\n".to_string());
+        }
+        if ctl.gen_opt.all_bc_filename.len() > 0 {
+            return Err("\nThe argument ALL_BC may only be used once.\n".to_string());
+        }
+        // should check file for writable, but don't
+        ctl.gen_opt.all_bc_filename = parts[0].to_string();
+        for i in 1..parts.len() {
+           ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
+        }
     } else if arg.starts_with("HONEY=") {
         let mut parts = Vec::<Vec<String>>::new();
         {

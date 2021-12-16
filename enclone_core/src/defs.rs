@@ -238,6 +238,8 @@ pub struct GeneralOpt {
     pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
     pub nospaces: bool,
     pub subsample: f64,
+    pub all_bc_filename: String,
+    pub all_bc_fields: Vec<String>,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.

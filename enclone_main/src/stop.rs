@@ -7,12 +7,13 @@ use enclone_core::enclone_structs::*;
 use enclone_print::print_clonotypes::print_clonotypes;
 use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
-use io_utils::{dir_list, open_for_read, path_exists};
+use io_utils::{dir_list, fwriteln, open_for_read, open_for_write_new, path_exists};
+use itertools::Itertools;
 use perf_stats::{elapsed, peak_mem_usage_gb};
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::{collections::HashMap, env, io::BufRead, thread, time, time::Instant};
+use std::{collections::HashMap, env, io::{BufRead, Write}, thread, time, time::Instant};
 use string_utils::TextUtils;
 use vector_utils::*;
 
@@ -118,6 +119,69 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         }
     });
     ctl.perf_stats(&tdi, "setting up readers");
+
+    // Execute ALL_BC.
+
+    if ctl.gen_opt.all_bc_filename.len() > 0 {
+        let tallbc = Instant::now();
+        let mut f = open_for_write_new![&ctl.gen_opt.all_bc_filename];
+        fwriteln!(f, "dataset,barcode,{}", ctl.gen_opt.all_bc_fields.iter().format(","));
+        for li in 0..ctl.origin_info.n() {
+            for bc in gex_info.gex_barcodes[li].iter() {
+                let mut fields = Vec::<String>::new();
+                fields.push(ctl.origin_info.dataset_id[li].clone());
+                fields.push(bc.to_string());
+                for var in ctl.gen_opt.all_bc_fields.iter() {
+                    let is_gex_cell = bin_member(&gex_info.gex_cell_barcodes[li], bc);
+                    if var == "cell" {
+                        let is_vdj_cell = bin_member(&vdj_cells[li], bc);
+                        if is_gex_cell && is_vdj_cell {
+                            fields.push("gex_vdj".to_string());
+                        } else if is_gex_cell {
+                            fields.push("gex".to_string());
+                        } else if is_vdj_cell {
+                            fields.push("vdj".to_string());
+                        } else {
+                            fields.push("empty".to_string());
+                        }
+                    } else if var == "type" {
+                        if is_gex_cell {
+                            let mut typex = gex_info.cell_type[li][bc].clone();
+                            if typex.contains(",") {
+                                typex = typex.before(",").to_string();
+                            }
+                            fields.push(typex);
+                        } else {
+                            fields.push("unknown".to_string());
+                        }
+                    } else if var == "clust" {
+                        if gex_info.cluster[li].contains_key(&bc.clone()) {
+                            fields.push(format!("{}", gex_info.cluster[li][&bc.clone()]));
+                        } else {
+                            fields.push("none".to_string());
+                        }
+                    }
+                }
+                fwriteln!(f, "{}", fields.iter().format(","));
+            }
+            for bc in vdj_cells[li].iter() {
+                if !bin_member(&gex_info.gex_barcodes[li], bc) {
+                    let mut fields = Vec::<String>::new();
+                    fields.push(ctl.origin_info.dataset_id[li].clone());
+                    fields.push(bc.to_string());
+                    for var in ctl.gen_opt.all_bc_fields.iter() {
+                        if var == "cell" {
+                            fields.push("vdj".to_string());
+                        } else if var == "type" || var == "none" {
+                            fields.push("unknown".to_string());
+                        }
+                    }
+                    fwriteln!(f, "{}", fields.iter().format(","));
+                }
+            }
+        }
+        ctl.perf_stats(&tallbc, "carrying out ALL_BC");
+    }
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
