@@ -13,7 +13,13 @@ use perf_stats::{elapsed, peak_mem_usage_gb};
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::{collections::HashMap, env, io::{BufRead, Write}, thread, time, time::Instant};
+use std::{
+    collections::HashMap,
+    env,
+    io::{BufRead, Write},
+    thread, time,
+    time::Instant,
+};
 use string_utils::{strme, TextUtils};
 use tables::print_tabular;
 use vector_utils::*;

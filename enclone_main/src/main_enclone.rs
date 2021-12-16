@@ -12,7 +12,9 @@ use enclone::innate::species;
 use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
-use enclone_args::proc_args_check::{check_gvars, check_lvars, check_one_lvar, check_pcols, get_known_features};
+use enclone_args::proc_args_check::{
+    check_gvars, check_lvars, check_one_lvar, check_pcols, get_known_features,
+};
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
@@ -274,7 +276,8 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
         for li in 0..ctl.origin_info.n() {
             if !gex_info.gex_matrices[li].initialized() {
-                return Err(format!("\nALL_BC only works if feature_barcode_matrix.bin has been \
+                return Err(format!(
+                    "\nALL_BC only works if feature_barcode_matrix.bin has been \
                     generated.\nPlease type \"enclone help input\" for more information.\n"
                 ));
             }
@@ -291,7 +294,14 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             for j in 0..extras.len() {
                 if *var == extras[j] {
                     if *var != "cell" {
-                        check_one_lvar(var, &ctl, &gex_info, &mut nd_var, &Vec::<String>::new(), true)?;
+                        check_one_lvar(
+                            var,
+                            &ctl,
+                            &gex_info,
+                            &mut nd_var,
+                            &Vec::<String>::new(),
+                            true,
+                        )?;
                     }
                     ok = true;
                 }

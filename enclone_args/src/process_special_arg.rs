@@ -72,7 +72,9 @@ pub fn process_special_arg(
             ctl.gen_opt.all_bc_human = true;
         }
         if parts.is_empty() || parts[0].len() == 0 {
-            return Err("\nFor ALL_BC/ALL_BCH, at a minimum, a filename must be provided.\n".to_string());
+            return Err(
+                "\nFor ALL_BC/ALL_BCH, at a minimum, a filename must be provided.\n".to_string(),
+            );
         }
         if ctl.gen_opt.all_bc_filename.len() > 0 {
             return Err("\nThe argument ALL_BC/ALL_BCH may only be used once.\n".to_string());
@@ -80,7 +82,7 @@ pub fn process_special_arg(
         // should check file for writable, but don't
         ctl.gen_opt.all_bc_filename = parts[0].to_string();
         for i in 1..parts.len() {
-           ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
+            ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
         }
         ctl.gen_opt.all_bc_fields_orig = ctl.gen_opt.all_bc_fields.clone();
     } else if arg.starts_with("HONEY=") {
@@ -254,7 +256,9 @@ pub fn process_special_arg(
                 err,
             ));
         }
-        ctl.gen_opt.var_def.push((name.to_string(), eval, compiled, expr.to_string()));
+        ctl.gen_opt
+            .var_def
+            .push((name.to_string(), eval, compiled, expr.to_string()));
     } else if arg.starts_with("MIN_DONORS") {
         let n = arg.after("MIN_DONORS=");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {
