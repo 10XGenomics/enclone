@@ -294,3 +294,28 @@ NO_BUG_REPORTS: don't automatically report bugs
 
 SUBSAMPLE: subsample barcodes at the indicated fraction; at present this is deliberately
            randomly seeded and so nonreproducible
+
+===================================================================================================
+
+ALL_BC=filename,field1,...,fieldn
+
+Dump a CSV file with fields
+
+    dataset,barcode,field1,...,fieldn
+
+to filename, with one line for each barcode.  All barcodes in the data files are included, whether
+or not they correspond to VDJ cells.  This would correspond (at least approximately) to all
+whitelisted barcodes in the raw data.
+
+Only certain other fields are allowed:
+1. feature variables, e.g. CDR3_ab, representing the UMI count
+2. gex = total gene expression UMI count
+3. type = the cell type
+4. clust = cluster id, from analysis_csv/clustering/graphclust/clusters.csv
+5. cell = vdj or gex or gex_vdj or empty.
+
+This may also be used with VAR_DEF.
+
+ALL_BCH: same but human readable instead of CSV
+
+===================================================================================================

@@ -2,7 +2,8 @@
 
 use crate::proc_args2::{is_f64_arg, is_i32_arg, is_simple_arg, is_string_arg, is_usize_arg};
 use crate::proc_args_post::proc_args_post;
-use crate::process_special_arg::process_special_arg;
+use crate::process_special_arg1::process_special_arg1;
+use crate::process_special_arg2::process_special_arg2;
 use enclone_core::defs::{ClonotypeHeuristics, EncloneControl};
 use enclone_core::require_readable_file;
 use io_utils::path_exists;
@@ -891,14 +892,23 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         if processed[i] {
             continue;
         }
-        process_special_arg(
+        if !process_special_arg1(
             &args[i],
             ctl,
             &mut metas,
             &mut metaxs,
             &mut xcrs,
             &mut using_plot,
-        )?;
+        )? {
+            process_special_arg2(
+                &args[i],
+                ctl,
+                &mut metas,
+                &mut metaxs,
+                &mut xcrs,
+                &mut using_plot,
+            )?;
+        }
     }
 
     // Force visual mode if plot file is gui.

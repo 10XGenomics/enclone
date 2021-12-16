@@ -12,7 +12,9 @@ use enclone::innate::species;
 use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
-use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
+use enclone_args::proc_args_check::{
+    check_gvars, check_lvars, check_one_lvar, check_pcols, get_known_features,
+};
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
@@ -265,6 +267,50 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
     }
     check_pcols(&ctl, &gex_info, &var_def_vars, ctl.parseable_opt.pbarcode)?;
+
+    // Check ALL_BC arguments.
+
+    if ctl.gen_opt.all_bc_filename.len() > 0 {
+        if gex_info.gex_barcodes.is_empty() {
+            return Err(format!("\nYou can't use ALL_BC with VDJ data alone.\n"));
+        }
+        for li in 0..ctl.origin_info.n() {
+            if !gex_info.gex_matrices[li].initialized() {
+                return Err(format!(
+                    "\nALL_BC only works if feature_barcode_matrix.bin has been \
+                    generated.\nPlease type \"enclone help input\" for more information.\n"
+                ));
+            }
+        }
+        let known_features = get_known_features(&gex_info)?;
+        let extras = ["gex", "type", "clust", "cell"];
+        for i in 0..ctl.gen_opt.all_bc_fields.len() {
+            let var = &ctl.gen_opt.all_bc_fields[i];
+            let mut ok = false;
+            if bin_member(&known_features, &var) {
+                ok = true;
+            }
+            let mut nd_var = false;
+            for j in 0..extras.len() {
+                if *var == extras[j] {
+                    if *var != "cell" {
+                        check_one_lvar(
+                            var,
+                            &ctl,
+                            &gex_info,
+                            &mut nd_var,
+                            &Vec::<String>::new(),
+                            true,
+                        )?;
+                    }
+                    ok = true;
+                }
+            }
+            if !ok {
+                return Err(format!("\nIllegal variable {} in ALL_BC.\n", var));
+            }
+        }
+    }
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Check DVARS.

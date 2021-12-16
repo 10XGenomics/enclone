@@ -9,7 +9,8 @@ pub mod proc_args2;
 pub mod proc_args3;
 pub mod proc_args_check;
 pub mod proc_args_post;
-pub mod process_special_arg;
+pub mod process_special_arg1;
+pub mod process_special_arg2;
 pub mod read_json;
 
 // parse_csv_pure: same as parse_csv, but don't strip out quotes

@@ -235,9 +235,13 @@ pub struct GeneralOpt {
     pub group_post_filter: Option<Vec<usize>>,
     pub no_newline: bool,
     pub fb_show: String,
-    pub var_def: Vec<(String, String, Node)>, // {(variable, value, compiled value)}
+    pub var_def: Vec<(String, String, Node, String)>, // {(variable, value, compiled value, expr)}
     pub nospaces: bool,
     pub subsample: f64,
+    pub all_bc_filename: String,
+    pub all_bc_human: bool,
+    pub all_bc_fields: Vec<String>,
+    pub all_bc_fields_orig: Vec<String>,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
