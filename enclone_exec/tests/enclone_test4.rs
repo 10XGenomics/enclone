@@ -67,6 +67,7 @@ fn test_cpu_usage() {
         "enclone",
         "BCR=123085",
         "BUILT_IN",
+        "TREE",
         "NOPRINT",
         "MAX_CORES=1",
     ];
@@ -94,7 +95,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 56.7080;
+    const REQUIRED_GI: f64 = 56.8580;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -300,7 +301,11 @@ fn test_dependency_structure() {
 
     let top = dir_list("..");
     for d in top.iter() {
-        if d.starts_with("enclone") && d != "enclone_main" && d != "enclone_visual" {
+        if d.starts_with("enclone")
+            && d != "enclone_main"
+            && d != "enclone_visual"
+            && d != "enclone_paper"
+        {
             let toml = format!("../{}/Cargo.toml", d);
             if path_exists(&toml) {
                 let f = open_for_read![&toml];
@@ -332,7 +337,7 @@ fn test_dependency_structure() {
                     let s = line.unwrap();
                     if s.starts_with("enclone_help =") {
                         eprintln!(
-                            "\nThe crate {} has the crate enclone_tail as a dependency.  In an \
+                            "\nThe crate {} has the crate enclone_help as a dependency.  In an \
                             attempt to reduce\ncompile time, we only allow this for certain \
                             crates.\n",
                             d

@@ -8,12 +8,15 @@
 // We follow https://en.wikipedia.org/wiki/Neighbor_joining.
 //
 // Tweak: negative edge lengths are replaced by zero as suggested by Kuhner and Felsenstein (1994).
-// Kuhner M.K., Felsenstein J. (1994). A simulation comparison of phylogeny algorithms under equal and unequal evolutionary rates. Molecular Biology and Evolution 11(3): 459-468. PMID 8015439.
+// Kuhner M.K., Felsenstein J. (1994). A simulation comparison of phylogeny algorithms under equal
+// and unequal evolutionary rates. Molecular Biology and Evolution 11(3): 459-468. PMID 8015439.
 //
 // The single input argument should be a symmetric n x n matrix, n >= 1.
 // The output is a vector of 2n-3 edges, represented as (v, w, distance).
 //
-// Note that this algorithm is O(n^3).
+// Note that this algorithm is O(n^4).
+
+use rayon::prelude::*;
 
 pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
     let (mut d, mut d2) = (d.clone(), d.clone());
@@ -39,15 +42,45 @@ pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
     let mut edges = vec![(0, 0, 0.0); 2 * n0 - 3];
     let mut q = vec![vec![0.0; n0]; n0];
     for n in (3..=n0).rev() {
-        for i in 0..n {
-            for j in i + 1..n {
-                q[i][j] = (n - 2) as f64 * d[i][j];
-                for k in 0..n {
-                    q[i][j] -= d[i][k] + d[j][k];
+        // Do the big part of the calculation, which drives the overall complexity.  We parallelize
+        // if n is large.  Possibly it would be just as good to always parallelize, and the
+        // boundary condition (n <= 100) has not been optimized.
+
+        if n <= 100 {
+            for i in 0..n {
+                for j in i + 1..n {
+                    q[i][j] = (n - 2) as f64 * d[i][j];
+                    for k in 0..n {
+                        q[i][j] -= d[i][k] + d[j][k];
+                    }
+                    q[j][i] = q[i][j];
                 }
-                q[j][i] = q[i][j];
+            }
+        } else {
+            let mut z = vec![(0, vec![0.0; n]); n];
+            for i in 0..n {
+                z[i].0 = i;
+            }
+            z.par_iter_mut().for_each(|res| {
+                let i = res.0;
+                for j in i + 1..n {
+                    res.1[j] = (n - 2) as f64 * d[i][j];
+                    // This loop drives the overall complexity of the algorithm.
+                    for k in 0..n {
+                        res.1[j] -= d[i][k] + d[j][k];
+                    }
+                }
+            });
+            for i in 0..n {
+                for j in i + 1..n {
+                    q[i][j] = z[i].1[j];
+                    q[j][i] = q[i][j];
+                }
             }
         }
+
+        // Proceed.
+
         let (mut f, mut g) = (0, 1);
         let mut m = q[0][1];
         for i in 0..n {

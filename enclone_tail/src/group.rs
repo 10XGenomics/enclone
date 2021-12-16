@@ -252,7 +252,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
-    let mut plot_xy_vals = Vec::<(f32, f32)>::new();
+    let mut plot_xy_vals = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
     let mut plot_xy_comments = Vec::<String>::new();
     for i in 0..groups.len() {
         let mut o = Vec::<i32>::new();
@@ -333,7 +333,7 @@ pub fn group_and_print_clonotypes(
                                         }
                                         y = y.log10();
                                     }
-                                    plot_xy_vals.push((x as f32, y as f32));
+                                    plot_xy_vals.push((4, (255, 0, 0), x as f32, y as f32));
                                     let group_id = i;
                                     let clonotype_id = j;
                                     let com = format!(
@@ -824,6 +824,12 @@ pub fn group_and_print_clonotypes(
             &yvar,
             &mut svg,
             ctl.plot_opt.plot_xy_sym,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
         )?;
         if filename == "stdout" || filename == "gui_stdout" {
             for line in svg.lines() {

@@ -1471,6 +1471,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_paper"
+version = "0.5.135"
+dependencies = [
+ "enclone_tail",
+ "plotters",
+]
+
+[[package]]
 name = "enclone_print"
 version = "0.5.135"
 dependencies = [
