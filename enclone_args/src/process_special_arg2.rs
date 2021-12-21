@@ -536,6 +536,7 @@ pub fn process_special_arg2(
         metaxs.push(f);
     } else if arg.starts_with("TCR=")
         || arg.starts_with("BCR=")
+        || arg.starts_with("TCRGD=")
         || (!arg.is_empty() && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
     {
         xcrs.push(arg.to_string());

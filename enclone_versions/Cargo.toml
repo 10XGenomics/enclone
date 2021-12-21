@@ -29,7 +29,7 @@ pager = "0.16"
 permutation = "0.2"
 petgraph = "0.6"
 pretty_trace = "0.5"
-prost = { version = "0.9", default_features = false }
+prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
