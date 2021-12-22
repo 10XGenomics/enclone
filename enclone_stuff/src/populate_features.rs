@@ -4,11 +4,11 @@
 
 use amino::aa_seq;
 use enclone_core::defs::EncloneControl;
-use enclone_core::vdj_features::{cdr1_start, cdr2_start, fr1_start, fr2_start, fr3_start};
 use io_utils::fwriteln;
 use std::io::Write;
 use string_utils::{stringme, strme};
 use tables::print_tabular_vbox;
+use vdj_ann::vdj_features::{cdr1_start, cdr2_start, fr1_start, fr2_start, fr3_start};
 use vdj_ann::refx::RefData;
 
 pub fn populate_features(

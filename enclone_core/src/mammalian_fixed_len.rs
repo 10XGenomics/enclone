@@ -1,10 +1,10 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::vdj_features::{cdr1_start, cdr2_start, cdr3_start, fr1_start, fr2_start, fr3_start};
 use amino::aa_seq;
 use std::collections::HashMap;
 use string_utils::TextUtils;
 use superslice::Ext;
+use vdj_ann::vdj_features::{cdr1_start, cdr2_start, cdr3_start, fr1_start, fr2_start, fr3_start};
 use vdj_ann::refx::RefData;
 
 // {chain, feature, len, {{(count, amino_acid)}}}
