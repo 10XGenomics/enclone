@@ -56,7 +56,7 @@ tables = "0.1"
 tar = "0.4"
 tiny-skia = "0.6"
 usvg = { version = "0.19", features = ["text"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "f730ca1570e9b2416a470bc60d6bab301a62c0dd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "da3d903f24decd329e51f820faa1176caf0e944b" }
 vector_utils = "0.1"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"

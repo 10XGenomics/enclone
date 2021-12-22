@@ -67,6 +67,7 @@ fn main() {
     let mut ext = false;
     let mut d = false;
     let mut rc = false;
+    let mut gamma_delta = false;
     let mut ref_fasta = String::new();
     for j in 3..args.len() {
         if args[j] == "IMGT" {
@@ -92,6 +93,9 @@ fn main() {
         }
         if args[j].starts_with("REF=") {
             ref_fasta = args[j].after("REF=").to_string();
+        }
+        if args[j].starts_with("TCRGD=") || args[j] == "GAMMA_DELTA" {
+            gamma_delta = true;
         }
     }
 
@@ -129,7 +133,7 @@ fn main() {
         annotate_seq(&seq, &refdata, &mut ann, true, false, true);
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log);
         print_start_codon_positions(&seq, &mut log);
-        if is_valid(&seq, &refdata, &ann, true, &mut log) {
+        if is_valid(&seq, &refdata, &ann, true, &mut log, Some(gamma_delta)) {
             fwriteln!(log, "VALID");
         }
 

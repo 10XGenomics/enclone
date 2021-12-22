@@ -249,12 +249,26 @@ fn parse_vector_entry_from_json(
         }
         let mut log = Vec::<u8>::new();
         if ctl.gen_opt.trace_barcode == *barcode {
-            if !is_valid(&x, refdata, &ann, true, &mut log) {
+            if !is_valid(
+                &x,
+                refdata,
+                &ann,
+                true,
+                &mut log,
+                Some(ctl.gen_opt.gamma_delta),
+            ) {
                 print!("{}", strme(&log));
                 println!("invalid");
                 return Ok(());
             }
-        } else if !is_valid(&x, refdata, &ann, false, &mut log) {
+        } else if !is_valid(
+            &x,
+            refdata,
+            &ann,
+            false,
+            &mut log,
+            Some(ctl.gen_opt.gamma_delta),
+        ) {
             return Ok(());
         }
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
@@ -273,7 +287,10 @@ fn parse_vector_entry_from_json(
                 v_ref_id = t;
                 annv.push(ann[i]);
                 chain_type = refdata.name[t][0..3].to_string();
-                if chain_type == *"IGH" || chain_type == *"TRB" {
+                if chain_type == *"IGH"
+                    || chain_type == *"TRB"
+                    || (chain_type == *"TRD" && ctl.gen_opt.gamma_delta)
+                {
                     left = true;
                 }
                 if ann[i].3 == 0 {
@@ -364,7 +381,10 @@ fn parse_vector_entry_from_json(
                 tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
                 cdr3_start -= tig_start as usize;
                 chain_type = chain.clone();
-                if chain == *"IGH" || chain == *"TRB" {
+                if chain == *"IGH"
+                    || chain == *"TRB"
+                    || (chain == *"TRD" && ctl.gen_opt.gamma_delta)
+                {
                     left = true;
                 }
                 v_ref_id = feature_idx;

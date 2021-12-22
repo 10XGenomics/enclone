@@ -492,17 +492,26 @@ pub fn proc_xcr(
     mut ctl: &mut EncloneControl,
 ) -> Result<(), String> {
     ctl.origin_info = OriginInfo::default();
-    if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
-        return Err("\nOnly one of TCR or BCR can be specified.\n".to_string());
+    if (ctl.gen_opt.tcr && f.starts_with("BCR="))
+        || (ctl.gen_opt.tcr && f.starts_with("TCRGD="))
+        || (ctl.gen_opt.tcrgd && f.starts_with("BCR="))
+        || (ctl.gen_opt.tcrgd && f.starts_with("TCR="))
+        || (ctl.gen_opt.bcr && f.starts_with("TCR="))
+        || (ctl.gen_opt.bcr && f.starts_with("TCRGD="))
+    {
+        return Err("\nOnly one of TCR, BCR, or TCRGD can be specified.\n".to_string());
     }
     let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
+    ctl.gen_opt.tcrgd = f.starts_with("TCRGD=");
     ctl.gen_opt.bcr = f.starts_with("BCR=");
     let mut val: String;
     if ctl.gen_opt.tcr {
         val = f.after("TCR=").to_string();
     } else if ctl.gen_opt.bcr {
         val = f.after("BCR=").to_string();
+    } else if ctl.gen_opt.tcrgd {
+        val = f.after("TCRGD=").to_string();
     } else {
         val = f.to_string();
     }
@@ -533,6 +542,8 @@ pub fn proc_xcr(
     let mut xcr = "TCR".to_string();
     if ctl.gen_opt.bcr {
         xcr = "BCR".to_string();
+    } else if ctl.gen_opt.tcrgd {
+        xcr = "TCRGD".to_string();
     }
     if have_gex && donor_groups_gex.len() != donor_groups.len() {
         return Err(format!(
