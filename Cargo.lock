@@ -1308,7 +1308,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1332,7 +1332,7 @@ dependencies = [
  "serde_json",
  "string_utils",
  "tilde-expand",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1361,7 +1361,7 @@ dependencies = [
  "string_utils",
  "superslice",
  "tables",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
  "zstd",
 ]
@@ -1392,7 +1392,7 @@ dependencies = [
  "string_utils",
  "superslice",
  "tables",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vdj_ann_ref",
  "vector_utils",
 ]
@@ -1466,7 +1466,7 @@ dependencies = [
  "string_utils",
  "tables",
  "tilde-expand",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vdj_ann_ref",
  "vector_utils",
 ]
@@ -1511,7 +1511,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "tables",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1527,7 +1527,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "thiserror",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
 ]
 
 [[package]]
@@ -1545,7 +1545,7 @@ dependencies = [
  "itertools",
  "rayon",
  "string_utils",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1571,7 +1571,7 @@ dependencies = [
  "stirling_numbers",
  "string_utils",
  "tables",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1613,7 +1613,7 @@ dependencies = [
  "tar",
  "tiny-skia",
  "usvg",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -1647,7 +1647,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
- "vdj_ann 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vdj_ann",
  "vdj_ann_ref",
  "vector_utils",
 ]
@@ -5321,31 +5321,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "vdj_ann"
-version = "0.3.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=bc36790aac35add685464d952659341d8a2b00b0#bc36790aac35add685464d952659341d8a2b00b0"
-dependencies = [
- "align_tools",
- "amino",
- "bio_edit",
- "debruijn",
- "fasta_tools",
- "hyperbase",
- "io_utils",
- "itertools",
- "kmer_lookup",
- "serde",
- "serde_json",
- "stats_utils",
- "string_utils",
- "vdj_types",
- "vector_utils",
-]
-
-[[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=bc36790aac35add685464d952659341d8a2b00b0#bc36790aac35add685464d952659341d8a2b00b0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=277f6d9708b05587a737535fa9869f58edd6bad7#277f6d9708b05587a737535fa9869f58edd6bad7"
 dependencies = [
  "debruijn",
  "exons",
@@ -5356,7 +5334,7 @@ dependencies = [
  "pretty_trace",
  "sha2",
  "string_utils",
- "vdj_ann 0.3.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=bc36790aac35add685464d952659341d8a2b00b0)",
+ "vdj_ann",
  "vector_utils",
 ]
 
