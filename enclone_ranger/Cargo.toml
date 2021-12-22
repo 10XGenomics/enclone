@@ -31,5 +31,5 @@ io_utils = "0.3"
 itertools = "0.10"
 rayon = "1"
 string_utils = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "da3d903f24decd329e51f820faa1176caf0e944b" }
+vdj_ann = "0.3"
 vector_utils = "0.1"

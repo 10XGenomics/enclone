@@ -21,7 +21,6 @@ pub mod slurp;
 pub mod stringulate;
 pub mod testlist;
 pub mod var_reg;
-pub mod vdj_features;
 
 use lazy_static::lazy_static;
 use std::env;
