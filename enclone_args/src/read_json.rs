@@ -787,7 +787,7 @@ pub fn read_json(
 
         // For now we require at most four contigs (but we don't yet merge foursies).
 
-        if s - r <= 4 {
+        if s - r <= 4 || ctl.clono_filt_opt_def.nmax {
             let mut bc_tigs = Vec::<TigData>::new();
             for u in r..s {
                 bc_tigs.push(tigs[u].clone());

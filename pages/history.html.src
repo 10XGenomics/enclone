@@ -30,6 +30,11 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>12/24/21</b>: Add filter option <code>NMAX</code> to allow barcodes having more than four
+contigs.  Also, this is now turned on by <code>NALL</code> and <code>NALL_CELL</code>.  This 
+does not affect default behavior.
+</p>
+
 <p><b>12/13/21</b>: 
 This version includes three changes that substantially improve clonotyping specificity.  See 
 below and <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.

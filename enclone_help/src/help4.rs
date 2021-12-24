@@ -44,6 +44,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.doc(
+            "NMAX",
+            "Allow barcodes for which more than four contigs were identified.",
+        );
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NGEX",
             "If gene expression and/or feature barcode data are provided, if a barcode \

@@ -54,91 +54,97 @@ examples, and add others as needed as protection against accidental deterioratio
 
 <tr>
 <td align="left"> 2                                                                        </td>
+<td align="left"> maximum contigs filter                                                   </td>
+<td align="left"> remove barcodes having more than four productive contigs                 </td>
+</tr>
+
+<tr>
+<td align="left"> 3                                                                        </td>
 <td align="left"> graph filter                                                             </td>
 <td align="left"> remove some exact subclonotypes that appear to be background             </td>
 </tr>
 
 <tr>
-<td align="left"> 3                                                                        </td>
+<td align="left"> 4                                                                        </td>
 <td align="left"> cross filter                                                             </td>
 <td align="left"> use cross-library information to remove spurious exact subclonotypes     </td>
 </tr>
 
 <tr>
-<td align="left"> 4                                                                        </td>
+<td align="left"> 5                                                                        </td>
 <td align="left"> barcode duplication filter                                               </td>
 <td align="left"> remove duplicated barcodes within an exact subclonotype                  </td>
 </tr>
 
 <tr>
-<td align="left"> 5                                                                        </td>
+<td align="left"> 6                                                                        </td>
 <td align="left"> whitelist filter                                                         </td>
 <td align="left"> remove rare artifacts arising from gel bead contamination                </td>
 </tr>
 
 <tr>
-<td align="left"> 6                                                                        </td>
+<td align="left"> 7                                                                        </td>
 <td align="left"> foursie filter                                                           </td>
 <td align="left"> remove some four-chain clonotypes that might represent doublets          </td>
 </tr>
 
 <tr>
-<td align="left"> 7                                                                        </td>
+<td align="left"> 8                                                                        </td>
 <td align="left"> improper filter                                                          </td>
 <td align="left"> remove exact subclonotypes having multiple chains, all of the same type  </td>
 </tr>
 
 <tr>
-<td align="left"> 8                                                                        </td>
+<td align="left"> 9                                                                        </td>
 <td align="left"> weak onesie filter                                                       </td>
 <td align="left"> disintegrate some single-chain clonotypes into single cells              </td>
 </tr>
 
 <tr>
-<td align="left"> 9                                                                        </td>
+<td align="left"> 10                                                                       </td>
 <td align="left"> UMI filter                                                               </td>
 <td align="left"> remove some B cells having very low UMI counts                           </td>
 </tr>
 
 <tr>
-<td align="left"> 10                                                                       </td>
+<td align="left"> 11                                                                       </td>
 <td align="left"> UMI ratio filter                                                         </td>
 <td align="left"> remove some B cells having very low UMI counts,  relative to clonotype   </td>
 </tr>
 
 <tr>
-<td align="left"> 11                                                                       </td>
+<td align="left"> 12                                                                       </td>
 <td align="left"> GEX filter                                                               </td>
 <td align="left"> remove cells called by VDJ pipeline but not by GEX pipeline              </td>
 </tr>
 
 <tr>
-<td align="left"> 12                                                                       </td>
+<td align="left"> 13                                                                       </td>
 <td align="left"> doublet filter                                                           </td>
 <td align="left"> remove some barcodes that appear to represent doublets                   </td>
 </tr>
 
 <tr>
-<td align="left"> 13                                                                       </td>
+<td align="left"> 14                                                                       </td>
 <td align="left"> signature filter                                                         </td>
 <td align="left"> remove some barcodes that appear to be contaminants, based on their      
                   chain signature                                                          </td>
 </tr>
 
 <tr>
-<td align="left"> 14                                                                       </td>
+<td align="left"> 15                                                                       </td>
 <td align="left"> onesie merger                                                            </td>
 <td align="left"> prevent merger of some single-chain clonotypes into other clonotypes     </td>
 </tr>
 
 <tr>
-<td align="left"> 15                                                                       </td>
+<td align="left"> 16                                                                       </td>
 <td align="left"> weak chain filter                                                        </td>
 <td align="left"> remove cells having a chain that is probably spurious                    </td>
 </tr>
 
 <tr>
-<td align="left"> 16                                                                       </td>
+<td align="left"> 17                                                                       </td>
 <td align="left"> quality merger                                                           </td>
 <td align="left"> filter out exact subclonotypes having a position with low quality scores </td>
 </tr>
@@ -149,6 +155,15 @@ examples, and add others as needed as protection against accidental deterioratio
 <a href="../../pages/auto/help.special.html">enclone help special</a>
 provide more details about the filters.</p>
 
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Maximum contigs filtering.</b>  Remove barcodes that were assigned more than four productive
+contigs.  Specifying <code>NMAX</code> turns off this filter.
+This only has an effect if cell filtering is also turned off.  Also deletion of cells by this
+filter is not tracked by the <code>SUMMARY</code> option or the lvar <code>filter</code>.
+</p>
 <hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
