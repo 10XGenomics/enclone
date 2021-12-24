@@ -281,6 +281,13 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.clono_print_opt.amino.is_empty() && ctl.clono_print_opt.cvars.is_empty() {
+        return Err(
+            "\nSorry, use of both CVARS= and AMINO= (setting both to null) is not \
+            supported.\n"
+                .to_string(),
+        );
+    }
     if ctl.parseable_opt.pchains.parse::<usize>().is_err() && ctl.parseable_opt.pchains != "max" {
         return Err(
             "\nThe only allowed values for PCHAINS are a positive integer and max.\n".to_string(),
