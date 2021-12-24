@@ -44,6 +44,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.doc(
+            "NMAX",
+            "Allow barcodes for which more than four contigs were identified.",
+        );
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NGEX",
             "If gene expression and/or feature barcode data are provided, if a barcode \
@@ -640,7 +646,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "See \"enclone help special\".  Use with PER_CELL.  If you turn off some default \
             filters (or all default filters, e.g. with NALL_CELL), and this cell would have been \
             deleted by one of the default filters, then this will show the name of \
-            the last filter that would have been applied to delete the cell.  Note that there \
+            the last filter that would have been applied to delete the cell.  (There are \
+            exceptions, please see \"enclone help special\".)  Note that there \
             are complex interactions between filters, so the actual effect with all default \
             filters on may be significantly different.  Note also that use of NALL_CELL will \
             typically result in peculiar artifacts, so this should only be used as an \

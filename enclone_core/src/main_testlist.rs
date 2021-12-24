@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 278] = [
+pub const TESTS: [&str; 280] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -698,4 +698,8 @@ pub const TESTS: [&str; 278] = [
     r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW LVARSP=nbc PER_CELL CVARS= FOLD_HEADERS"###,
     // 278. test some count_fwr variables
     r###"BCR=85333 LVARS=count_fwr1_C,count_fwr_C CDR3=CARGGFSHAFDIW AMINO=cdr3"###,
+    // 279. barcode having five contigs
+    r###"BCR=123085 NALL CDR3=CAKKHYRYYDSSGYNPLGYYYYGMDVW CVARS=u AMINO= FOLD_HEADERS"###,
+    // 280. this asserted at one point
+    r###"BCR=86237 CDR3=CARRGPRFRPRFLRGRKTGNWFDPW CVARS= AMINO= EXPECT_FAIL"###,
 ];
