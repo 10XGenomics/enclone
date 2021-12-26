@@ -65,6 +65,12 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+
+<p><b>12/26/21</b>: Fix bug in computation of the cvars <code>vj_seq_nl</code> and 
+<code>vj_aa_nl</code>.  These were not correctly handling the case where there is an indel in the 
+leader sequence.
+</p>
+
 <p><b>12/24/21</b>: Add filter option <code>NMAX</code> to allow barcodes having more than four
 contigs.  Also, this is now turned on by <code>NALL</code> and <code>NALL_CELL</code>.  This 
 does not affect default behavior.
