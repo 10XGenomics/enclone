@@ -573,19 +573,21 @@ pub fn row_fill(
 
         let xm = &ex.share[mid];
         speakc!(u, col, "vj_aa".to_string(), stringme(&aa_seq(&xm.seq, 0)));
-        speakc!(
-            u,
-            col,
-            "vj_aa_nl".to_string(),
-            stringme(&aa_seq(&xm.seq, xm.fr1_start))
-        );
         speakc!(u, col, "vj_seq".to_string(), stringme(&xm.seq));
-        speakc!(
-            u,
-            col,
-            "vj_seq_nl".to_string(),
-            stringme(&xm.seq[xm.fr1_start..])
-        );
+        let mut dna = Vec::<u8>::new();
+        for p in xm.fr1_start..xm.seq_del_amino.len() {
+            for j in 0..xm.ins.len() {
+                if xm.ins[j].0 == p {
+                    let mut z = xm.ins[j].1.clone();
+                    dna.append(&mut z);
+                }
+            }
+            if xm.seq_del_amino[p] != b'-' {
+                dna.push(xm.seq_del_amino[p]);
+            }
+        }
+        speakc!(u, col, "vj_aa_nl".to_string(), stringme(&aa_seq(&dna, 0)));
+        speakc!(u, col, "vj_seq_nl".to_string(), stringme(&dna));
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
