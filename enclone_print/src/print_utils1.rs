@@ -171,9 +171,16 @@ pub fn get_fwr2(x: &TigData1) -> Option<String> {
 }
 
 pub fn get_fwr3(x: &TigData1) -> Option<String> {
+    // not sure if it makes sense to substract x.ins.len() in two places
     if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
         let mut dna = Vec::<u8>::new();
-        for p in x.fr3_start.unwrap()..x.cdr3_start - x.ins_len() {
+        let mut cdr3_start = x.cdr3_start;
+        for p in 0..x.cdr3_start {
+            if x.seq_del_amino[p] == b'-' {
+                cdr3_start += 1;
+            }
+        }
+        for p in x.fr3_start.unwrap()..cdr3_start - x.ins_len() {
             for j in 0..x.ins.len() {
                 if x.ins[j].0 == p {
                     let mut z = x.ins[j].1.clone();
