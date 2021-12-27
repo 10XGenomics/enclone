@@ -66,9 +66,15 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 
-<p><b>12/26/21</b>: Fix bug in computation of the cvars <code>vj_seq_nl</code> and 
+<p><b>12/27/21</b>: 
+<ul>
+<li>Fix bug in computation of the cvars <code>vj_seq_nl</code> and 
 <code>vj_aa_nl</code>.  These were not correctly handling the case where there is an indel in the 
-leader sequence.
+leader sequence.</li>
+<li>Fix bug in computation of cvars <code>fwr3_dna</code> and <code>fwr3_aa</code>.  These were
+not correctly handling the case where there was a deletion in the sequence before the CDR3 start.
+</li>
+</ul>
 </p>
 
 <p><b>12/24/21</b>: Add filter option <code>NMAX</code> to allow barcodes having more than four
