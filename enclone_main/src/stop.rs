@@ -247,7 +247,8 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
-                    println!("\nfound {} in an exact subclonotype having {} cells",
+                    println!(
+                        "\nfound {} in an exact subclonotype having {} cells",
                         ctl.gen_opt.trace_barcode,
                         ex.ncells(),
                     );

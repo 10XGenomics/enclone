@@ -158,7 +158,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
-                    println!("\nfound {} in an initial exact subclonotype having {} cells",
+                    println!(
+                        "\nfound {} in an initial exact subclonotype having {} cells",
                         ctl.gen_opt.trace_barcode,
                         ex.ncells(),
                     );
@@ -381,7 +382,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
-                    println!("\nfound {} in a pre-filter exact subclonotype having {} cells",
+                    println!(
+                        "\nfound {} in a pre-filter exact subclonotype having {} cells",
                         ctl.gen_opt.trace_barcode,
                         ex.ncells(),
                     );
@@ -408,7 +410,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
-                    println!("\nfound {} in an post-umi-filter exact subclonotype having {} cells",
+                    println!(
+                        "\nfound {} in an post-umi-filter exact subclonotype having {} cells",
                         ctl.gen_opt.trace_barcode,
                         ex.ncells(),
                     );
@@ -498,7 +501,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
-                    println!("\nfound {} in an intermediate exact subclonotype having {} cells",
+                    println!(
+                        "\nfound {} in an intermediate exact subclonotype having {} cells",
                         ctl.gen_opt.trace_barcode,
                         ex.ncells(),
                     );
