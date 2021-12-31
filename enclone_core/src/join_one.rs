@@ -56,6 +56,33 @@ pub fn join_one(
         return false;
     }
 
+    // Test for BASIC_H.
+
+    if ctl.join_alg_opt.basic_h {
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        if x1[0].len() != x2[0].len() {
+            return false;
+        }
+        if info[k1].vs[0] != info[k2].vs[0] || info[k1].js[0] != info[k2].js[0] {
+            return false;
+        }
+        let mut cd = 0;
+        for m in 0..x1[0].len() {
+            if x1[0].as_bytes()[m] != x2[0].as_bytes()[m] {
+                cd += 1;
+            }
+        }
+        if cd as f64 / (x1[0].len() as f64) > 0.1 {
+            return false;
+        }
+        pot.push(PotentialJoin {
+            k1,
+            k2,
+            ..Default::default()
+        });
+        return true;
+    }
+
     // Require that CDR3s have the same length.  Ugly.
     // First part should be a tautology.
 

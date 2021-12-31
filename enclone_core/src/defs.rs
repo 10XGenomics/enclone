@@ -317,6 +317,7 @@ pub struct JoinAlgOpt {
     pub old_mult: bool,
     pub mult_pow: f64,
     pub old_light: bool,
+    pub basic_h: bool,
 }
 
 // Clonotype filtering options.
@@ -865,6 +866,7 @@ pub const POUT_SEP: &str = "\x07";
 
 // Potential join structure.
 
+#[derive(Default)]
 pub struct PotentialJoin {
     pub k1: usize,
     pub k2: usize,
