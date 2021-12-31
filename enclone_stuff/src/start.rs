@@ -153,6 +153,19 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         return Ok(EncloneIntermediates::default());
     }
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!("found {} in an exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
 
     // Test for consistency between VDJ cells and GEX cells.
 
