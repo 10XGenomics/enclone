@@ -42,6 +42,7 @@ mirror_sparse_matrix = "0.1"
 ndarray = "0.15"
 permutation = "0.2"
 pretty_trace = "0.5"
+qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"

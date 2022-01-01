@@ -1301,6 +1301,7 @@ dependencies = [
  "petgraph 0.6.0",
  "pprof",
  "pretty_trace",
+ "qd",
  "rayon",
  "regex",
  "serde",
@@ -1355,6 +1356,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "perf_stats",
  "pretty_trace",
+ "qd",
  "regex",
  "stats_utils",
  "stirling_numbers",
@@ -1503,6 +1505,7 @@ dependencies = [
  "ndarray",
  "permutation",
  "pretty_trace",
+ "qd",
  "rayon",
  "regex",
  "serde",
@@ -1565,10 +1568,10 @@ dependencies = [
  "io_utils",
  "itertools",
  "ndarray",
+ "qd",
  "rayon",
  "regex",
  "stats_utils",
- "stirling_numbers",
  "string_utils",
  "tables",
  "vdj_ann",
@@ -4110,6 +4113,11 @@ dependencies = [
  "bytes",
  "prost",
 ]
+
+[[package]]
+name = "qd"
+version = "0.2.0-alpha"
+source = "git+https://github.com/Barandis/qd#0fb276d70346f11f4b2a5b30568d8a26d0dd88df"
 
 [[package]]
 name = "quote"

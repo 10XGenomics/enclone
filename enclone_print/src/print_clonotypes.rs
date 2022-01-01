@@ -22,6 +22,7 @@ use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
 use enclone_core::set_speakers::set_speakers;
 use enclone_proto::types::{Clonotype, DonorReferenceItem};
 use equiv::EquivRel;
+use qd::Double;
 use rayon::prelude::*;
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
@@ -45,7 +46,7 @@ use vector_utils::{bin_member, bin_position, erase_if, next_diff12_3, unique_sor
 pub fn print_clonotypes(
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,

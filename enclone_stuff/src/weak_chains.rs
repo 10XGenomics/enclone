@@ -5,6 +5,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
+use qd::Double;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use vector_utils::{erase_if, next_diff12_3};
@@ -13,7 +14,7 @@ pub fn weak_chains(
     orbits: &mut Vec<Vec<i32>>,
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,

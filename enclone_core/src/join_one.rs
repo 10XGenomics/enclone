@@ -5,10 +5,41 @@ use debruijn::{
     dna_string::{ndiffs, DnaString},
     Mer,
 };
+use qd::{dd, Double};
 use stats_utils::abs_diff;
 use std::collections::HashMap;
-use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
+// use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
 use vector_utils::{meet, unique_sort};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This is a copy of p_at_most_m_distinct_in_sample_of_x_from_n from the stirling_numbers crate,
+// that has been modified to use higher precision internal math.
+
+pub fn p_at_most_m_distinct_in_sample_of_x_from_n_quad(
+    m: usize,
+    x: usize,
+    n: usize,
+    sr: &[Vec<Double>],
+) -> f64 {
+    let mut p = dd![1.0];
+    for u in m + 1..=x {
+        let mut z = dd![sr[x][u]];
+        for _ in 0..x {
+            z *= dd![u as f64] / dd![n as f64];
+        }
+        for v in 1..=u {
+            z *= dd![(n - v + 1) as f64] / dd![(u - v + 1) as f64];
+        }
+        p -= z;
+    }
+    if p < dd![0.0] {
+        p = dd![0.0];
+    }
+    f64::from(p)
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
 //
@@ -27,6 +58,8 @@ pub fn partial_bernoulli_sum(n: usize, k: usize) -> f64 {
     sum
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn join_one(
     is_bcr: bool,
     k1: usize,
@@ -35,7 +68,7 @@ pub fn join_one(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
@@ -324,7 +357,7 @@ pub fn join_one(
     let n = 3 * (info[k1].tigs[0].len() + info[k1].tigs[1].len());
     let k = *min_indeps + 2 * *min_shares;
     let d = *min_shares;
-    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, sr);
+    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n_quad((k - d) as usize, k as usize, n, sr);
     assert!(!p1.is_infinite()); // TODO: IS THIS SAFE?
 
     // Multiply by 80^cd, or if using old version, the number of DNA sequences that differ from

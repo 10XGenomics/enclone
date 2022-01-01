@@ -36,6 +36,7 @@ lazy_static = "1"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
+qd = { git = "https://github.com/Barandis/qd" }
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"
 stirling_numbers = "0.1"

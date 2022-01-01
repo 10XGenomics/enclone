@@ -18,6 +18,7 @@ use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoi
 use equiv::EquivRel;
 use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
+use qd::Double;
 use rayon::prelude::*;
 use std::cmp::min;
 use std::collections::HashMap;
@@ -34,7 +35,7 @@ pub fn join_exacts(
     info: &Vec<CloneInfo>,
     join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
 ) -> EquivRel {
     // Run special option for joining by barcode identity.
 

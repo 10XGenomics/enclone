@@ -3,6 +3,7 @@
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
 use equiv::EquivRel;
+use qd::Double;
 use std::collections::HashMap;
 use vector_utils::{bin_position, next_diff12_3, unique_sort, VecUtils};
 
@@ -12,7 +13,7 @@ pub fn split_orbits(
     orbits: &mut Vec<Vec<i32>>,
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
