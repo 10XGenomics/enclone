@@ -360,6 +360,13 @@ pub fn join_exacts(
                 "p1 = prob of getting so many shares by accident = {}",
                 p1
             );
+            fwriteln!( 
+                log, 
+                "computed using k = {}, d = {}, n = {}", 
+                pot[pj].k, 
+                pot[pj].d, 
+                pot[pj].n
+            );
             fwriteln!(
                 log,
                 "mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = {}",

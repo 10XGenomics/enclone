@@ -885,6 +885,9 @@ pub struct PotentialJoin {
     pub err: bool,
     pub p1: f64,
     pub mult: f64,
+    pub k: isize,
+    pub d: isize,
+    pub n: usize,
 }
 
 pub fn get_config(config_file: &str, config: &mut HashMap<String, String>) -> bool {

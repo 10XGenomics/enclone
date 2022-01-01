@@ -398,6 +398,9 @@ pub fn join_one(
         err,
         p1,
         mult,
+        k,
+        d,
+        n,
     });
     true
 }
