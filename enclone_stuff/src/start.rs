@@ -58,16 +58,18 @@ pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
     for k in 1..n_max {
         k1k[k] = Double::from((k - 1) as u32) / Double::from(k as u32);
     }
-    let mut nj = Vec::<(usize, Vec<Double>)>::new();
+    let mut njn = Vec::<(usize, Double)>::new();
     for i in 0..n_max + 1 {
-        nj.push((i, vec![dd![0.0]; n_max + 1]));
+        njn.push((i, dd![0.0]));
     }
-    nj.par_iter_mut().for_each(|res| {
+    njn.par_iter_mut().for_each(|res| {
         let n = res.0;
         if n >= 1 {
+            let mut p = one;
             for j in 1..=n {
-                res.1[j] = Double::from(j as u32) / Double::from(n as u32);
+                p *= Double::from(j as u32) / Double::from(n as u32);
             }
+            res.1 = p;
         }
     });
 
@@ -85,10 +87,7 @@ pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
             let x = z[k - 1]; // = ((k-1)/k)^(n-1)
             s[n][k] = s[n - 1][k] + s[n - 1][k - 1] * x;
         }
-        s[n][n] = one; // now set to n! / n^n
-        for j in 1..=n {
-            s[n][n] *= nj[n].1[j];
-        }
+        s[n][n] = njn[n].1;
     }
     s
 }
