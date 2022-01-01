@@ -34,8 +34,8 @@ use vector_utils::{bin_member, erase_if, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This is a copy of stirling2_ratio_table from the stirling_numbers crate,
-// that has been modified to use higher precision internal math.
+// This is a copy of stirling2_ratio_table from the stirling_numbers crate, that has been modified 
+// to use higher precision internal math, and also speeded up.
 
 use qd::Double;
 
