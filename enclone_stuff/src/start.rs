@@ -35,9 +35,11 @@ use vector_utils::{bin_member, erase_if, unique_sort};
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // This is a copy of stirling2_ratio_table from the stirling_numbers crate, that has been modified
-// to use higher precision internal math, and also speeded up.
+// to use higher precision internal math.  This has also been speeded up, and in the process
+// made less readable.
 
 use qd::Double;
+use rayon::prelude::*;
 
 pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
     let mut s = Vec::<Vec<Double>>::new();
@@ -56,6 +58,18 @@ pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
     for k in 1..n_max {
         k1k[k] = Double::from((k - 1) as u32) / Double::from(k as u32);
     }
+    let mut nj = Vec::<(usize, Vec<Double>)>::new();
+    for i in 0..n_max + 1 {
+        nj.push((i, vec![dd![0.0]; n_max + 1]));
+    }
+    nj.par_iter_mut().for_each(|res| {
+        let n = res.0;
+        if n >= 1 {
+            for j in 1..=n {
+                res.1[j] = Double::from(j as u32) / Double::from(n as u32);
+            }
+        }
+    });
 
     // This is the slow part of the function.
 
@@ -73,7 +87,7 @@ pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
         }
         s[n][n] = one; // now set to n! / n^n
         for j in 1..=n {
-            s[n][n] *= Double::from(j as u32) / Double::from(n as u32);
+            s[n][n] *= nj[n].1[j];
         }
     }
     s
