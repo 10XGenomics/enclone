@@ -279,10 +279,11 @@ of the two exact subclonotypes, for which V..J has the same length for the corre
 and the CDR3 segments have the same length for the corresponding chains, enclone considers joining
 the exact subclonotypes into the same clonotype.
 
-<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most <span style="font-weight:bold;">55</span> total
+<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most <span style="font-weight:bold;">100</span> total
 mismatches between the two exact subclonotypes, within the given two V..J segments.
 This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.  (Note
-             that for CellRanger version 5.0, the value is instead <span style="font-weight:bold;">50</span>.)
+             that for CellRanger version 5.0, the value is instead <span style="font-weight:bold;">50</span>, and the value was
+subsequently raised from <span style="font-weight:bold;">55</span> before going to <span style="font-weight:bold;">100</span>.)
 
 <span style="color:#c23621;font-weight:bold;">7</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
 for two exact subclonotypes, common mutations from the reference sequence, using the donor

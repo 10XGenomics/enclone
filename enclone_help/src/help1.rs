@@ -283,10 +283,11 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
              \\boldred{6}.  Error bounding.  \
-             To proceed, as a minimum requirement, there must be at most \\bold{55} total \
+             To proceed, as a minimum requirement, there must be at most \\bold{100} total \
              mismatches between the two exact subclonotypes, within the given two V..J segments.\n\
              This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.  (Note
-             that for CellRanger version 5.0, the value is instead \\bold{50}.)\n\n\
+             that for CellRanger version 5.0, the value is instead \\bold{50}, and the value \
+             was subsequently raised from \\bold{55} before going to \\bold{100}.)\n\n\
              \
              \\boldred{7}.  Shared mutations.  \
              enclone next finds shared mutations betweens exact subclonotypes, that is, for \
