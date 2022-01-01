@@ -16,7 +16,7 @@ use vector_utils::{meet, unique_sort};
 // This is a copy of p_at_most_m_distinct_in_sample_of_x_from_n from the stirling_numbers crate,
 // that has been modified to use higher precision internal math.
 
-pub fn p_at_most_m_distinct_in_sample_of_x_from_n_quad(
+pub fn p_at_most_m_distinct_in_sample_of_x_from_n_double(
     m: usize,
     x: usize,
     n: usize,
@@ -378,7 +378,7 @@ pub fn join_one(
     let n = 3 * (info[k1].tigs[0].len() + info[k1].tigs[1].len());
     let k = *min_indeps + 2 * *min_shares;
     let d = *min_shares;
-    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n_quad((k - d) as usize, k as usize, n, sr);
+    let p1 = p_at_most_m_distinct_in_sample_of_x_from_n_double((k - d) as usize, k as usize, n, sr);
     assert!(!p1.is_infinite()); // TODO: IS THIS SAFE?
 
     // Multiply by 80^cd, or if using old version, the number of DNA sequences that differ from

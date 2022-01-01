@@ -39,7 +39,7 @@ use vector_utils::{bin_member, erase_if, unique_sort};
 
 use qd::Double;
 
-pub fn stirling2_ratio_table_quad(n_max: usize) -> Vec<Vec<Double>> {
+pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
     let mut s = Vec::<Vec<Double>>::new();
     let zero = dd![0.0];
     let one = dd![1.0];
@@ -351,7 +351,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Make stirling ratio table.  Not sure that fixing the size of this is safe.
 
     let tsr = Instant::now();
-    let sr = stirling2_ratio_table_quad(3000);
+    let sr = stirling2_ratio_table_double(3000);
     ctl.perf_stats(&tsr, "computing stirling number table");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
