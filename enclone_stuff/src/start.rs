@@ -34,7 +34,7 @@ use vector_utils::{bin_member, erase_if, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This is a copy of stirling2_ratio_table from the stirling_numbers crate, that has been modified 
+// This is a copy of stirling2_ratio_table from the stirling_numbers crate, that has been modified
 // to use higher precision internal math, and also speeded up.
 
 use qd::Double;
@@ -65,11 +65,7 @@ pub fn stirling2_ratio_table_quad(n_max: usize) -> Vec<Vec<Double>> {
             z[k - 1] *= k1k[k];
         }
         if n >= 2 {
-            let mut u = one.clone();
-            for _ in 0..n - 1 {
-                u *= n2n1[n];
-            }
-            z.push(u);
+            z.push(n2n1[n].powi((n - 1) as i32));
         }
         for k in 1..n {
             let x = z[k - 1].clone(); // = ((k-1)/k)^(n-1)
