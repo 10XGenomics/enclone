@@ -68,8 +68,8 @@ pub fn stirling2_ratio_table_quad(n_max: usize) -> Vec<Vec<Double>> {
             z.push(n2n1[n].powi((n - 1) as i32));
         }
         for k in 1..n {
-            let x = z[k - 1].clone(); // = ((k-1)/k)^(n-1)
-            s[n][k] = s[n - 1][k].clone() + s[n - 1][k - 1].clone() * x;
+            let x = z[k - 1]; // = ((k-1)/k)^(n-1)
+            s[n][k] = s[n - 1][k] + s[n - 1][k - 1] * x;
         }
         s[n][n] = one.clone(); // now set to n! / n^n
         for j in 1..=n {
