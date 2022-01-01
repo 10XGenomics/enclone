@@ -48,15 +48,26 @@ pub fn stirling2_ratio_table_quad(n_max: usize) -> Vec<Vec<Double>> {
     }
     s[0][0] = one.clone();
     let mut z = Vec::<Double>::new();
+    let mut n2n1 = vec![dd![0.0]; n_max + 1];
+    for n in 2..=n_max {
+        n2n1[n] = Double::from((n - 2) as u32) / Double::from((n - 1) as u32);
+    }
+    let mut k1k = vec![dd![0.0]; n_max];
+    for k in 1..n_max {
+        k1k[k] = Double::from((k - 1) as u32) / Double::from(k as u32);
+    }
+
+    // This is the slow part of the function.
+
     for n in 1..=n_max {
         s[n][0] = zero.clone();
         for k in 1..n - 1 {
-            z[k - 1] *= Double::from((k - 1) as u32) / Double::from(k as u32);
+            z[k - 1] *= k1k[k];
         }
         if n >= 2 {
             let mut u = one.clone();
             for _ in 0..n - 1 {
-                u *= Double::from((n - 2) as u32) / Double::from((n - 1) as u32);
+                u *= n2n1[n];
             }
             z.push(u);
         }
