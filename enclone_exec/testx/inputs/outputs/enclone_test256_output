@@ -44,6 +44,7 @@ in amino acid space:
 IGK:CMQSTHWPTWTF;IGH:CAFDFW
 IGK:CMQTTHWPTWTL;IGH:CAFDFW
 p1 = prob of getting so many shares by accident = 0.0000016600942143174535
+computed using k = 33, d = 5, n = 2373
 mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = 6400
 score = p1 * mult = 0.010624602971631703
 difference pattern for chain 1
