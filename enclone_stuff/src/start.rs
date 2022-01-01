@@ -153,6 +153,20 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         return Ok(EncloneIntermediates::default());
     }
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!(
+                        "\nfound {} in an initial exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
 
     // Test for consistency between VDJ cells and GEX cells.
 
@@ -363,6 +377,20 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     if ctl.gen_opt.heavy_chain_reuse {
         return Ok(EncloneIntermediates::default());
     }
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!(
+                        "\nfound {} in a pre-filter exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
     ctl.perf_stats(&txxx, "in some odds and ends");
 
     // Filter B cells based on UMI counts.
@@ -377,6 +405,20 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         info,
         &mut fate,
     );
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!(
+                        "\nfound {} in an post-umi-filter exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
 
     // Remove cells that are not called cells by GEX or feature barcodes.
 
@@ -454,6 +496,20 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
     }
     ctl.perf_stats(&tmark, "marking vdj noncells");
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!(
+                        "\nfound {} in an intermediate exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
     Ok(EncloneIntermediates {
         setup,
         ex: EncloneExacts {

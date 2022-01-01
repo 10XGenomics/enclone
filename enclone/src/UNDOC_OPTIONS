@@ -319,3 +319,9 @@ This may also be used with VAR_DEF.
 ALL_BCH: same but human readable instead of CSV
 
 ===================================================================================================
+
+BASIC_H: use a special join heuristic as follows (for demonstration purposes only)
+    same heavy chain V, same heavy chain J, 
+    same heavy chain CDR3 length, 
+    90% identity on nucleotides within heavy chain CDR3
+BASIC: same but use both chains

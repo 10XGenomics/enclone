@@ -164,7 +164,11 @@ pub fn join_exacts(
 
                 // Impose more stringent conditions if number of cells is two.
 
-                if ncells == 2 && x.len() == 2 {
+                if ncells == 2
+                    && x.len() == 2
+                    && !ctl.join_alg_opt.basic_h
+                    && !ctl.join_alg_opt.basic
+                {
                     let (k1, k2) = (x[0] as usize + i, x[1] as usize + i);
                     let k = min(k1, k2);
                     for pj in to_pot[k - i].iter() {
@@ -355,6 +359,13 @@ pub fn join_exacts(
                 log,
                 "p1 = prob of getting so many shares by accident = {}",
                 p1
+            );
+            fwriteln!(
+                log,
+                "computed using k = {}, d = {}, n = {}",
+                pot[pj].k,
+                pot[pj].d,
+                pot[pj].n
             );
             fwriteln!(
                 log,

@@ -56,6 +56,36 @@ pub fn join_one(
         return false;
     }
 
+    // Test for BASIC and BASIC_H.
+
+    if ctl.join_alg_opt.basic || ctl.join_alg_opt.basic_h {
+        let chains = if ctl.join_alg_opt.basic { 2 } else { 1 };
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        for z in 0..chains {
+            if x1[z].len() != x2[z].len() {
+                return false;
+            }
+            if info[k1].vs[z] != info[k2].vs[z] || info[k1].js[z] != info[k2].js[z] {
+                return false;
+            }
+            let mut cd = 0;
+            for m in 0..x1[z].len() {
+                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
+                    cd += 1;
+                }
+            }
+            if cd as f64 / (x1[z].len() as f64) > 0.1 {
+                return false;
+            }
+        }
+        pot.push(PotentialJoin {
+            k1,
+            k2,
+            ..Default::default()
+        });
+        return true;
+    }
+
     // Require that CDR3s have the same length.  Ugly.
     // First part should be a tautology.
 
@@ -368,6 +398,9 @@ pub fn join_one(
         err,
         p1,
         mult,
+        k,
+        d,
+        n,
     });
     true
 }

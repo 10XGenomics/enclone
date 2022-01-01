@@ -242,6 +242,20 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     let mut tests = Vec::<usize>::new();
     let mut controls = Vec::<usize>::new();
+    if ctl.gen_opt.trace_barcode.len() > 0 {
+        for u in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[u];
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].barcode == ctl.gen_opt.trace_barcode {
+                    println!(
+                        "\nfound {} in an exact subclonotype having {} cells",
+                        ctl.gen_opt.trace_barcode,
+                        ex.ncells(),
+                    );
+                }
+            }
+        }
+    }
     print_clonotypes(
         is_bcr,
         to_bc,
