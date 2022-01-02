@@ -135,35 +135,37 @@ pub fn join_one(
 
     // Compute number of differences.
 
-    let mut diffs = 0_usize;
-    for x in 0..info[k1].lens.len() {
-        if !info[k1].has_del[x] && !info[k2].has_del[x] {
-            // A great deal of time is spent in the call to ndiffs.  Notes on this:
-            // 1. It is slower than if the computation is done outside
-            //    the ndiffs function.  This is mysterious but must have something to
-            //    do with the storage of the 256-byte lookup table.
-            // 2. Adding #[inline(always)] in front of the ndiffs function definition
-            //    doesn't help.
-            // 3. Adding a bounds test for diffs > ctl.heur.max_diffs inside the ndiffs
-            //    function doesn't help, whether placed in the inner loop or the other
-            //    loop.
-            diffs += ndiffs(&info[k1].tigsp[x], &info[k2].tigsp[x]);
-        } else {
-            for j in 0..info[k1].tigs[x].len() {
-                if info[k1].tigs[x][j] != info[k2].tigs[x][j] {
-                    diffs += 1;
+    if !is_bcr || ctl.heur.max_diffs < 1_000_000 {
+        let mut diffs = 0_usize;
+        for x in 0..info[k1].lens.len() {
+            if !info[k1].has_del[x] && !info[k2].has_del[x] {
+                // A great deal of time is spent in the call to ndiffs.  Notes on this:
+                // 1. It is slower than if the computation is done outside
+                //    the ndiffs function.  This is mysterious but must have something to
+                //    do with the storage of the 256-byte lookup table.
+                // 2. Adding #[inline(always)] in front of the ndiffs function definition
+                //    doesn't help.
+                // 3. Adding a bounds test for diffs > ctl.heur.max_diffs inside the ndiffs
+                //    function doesn't help, whether placed in the inner loop or the other
+                //    loop.
+                diffs += ndiffs(&info[k1].tigsp[x], &info[k2].tigsp[x]);
+            } else {
+                for j in 0..info[k1].tigs[x].len() {
+                    if info[k1].tigs[x][j] != info[k2].tigs[x][j] {
+                        diffs += 1;
+                    }
                 }
             }
         }
-    }
-
-    // Another test for acceptable join.
-
-    if diffs > ctl.heur.max_diffs {
-        return false;
-    }
-    if !is_bcr && diffs > 5 {
-        return false;
+    
+        // Another test for acceptable join.
+    
+        if diffs > ctl.heur.max_diffs {
+            return false;
+        }
+        if !is_bcr && diffs > 5 {
+            return false;
+        }
     }
 
     // Compute junction diffs.  Ugly.
@@ -415,6 +417,7 @@ pub fn join_one(
         bcs1.clear();
         bcs2.clear();
     }
+    let diffs = 0; // no longer computed
     pot.push(PotentialJoin {
         k1,
         k2,
