@@ -371,6 +371,10 @@ pub fn join_one(
         }
     }
 
+    if cd + *min_indeps > 10 * std::cmp::max(1, *min_shares) {
+        return false;
+    }
+
     // Estimate the probability p1 that drawing k = min_indeps + 2 * min_shares
     // objects from n = 3 * (sum of VJ contig lengths) yields d = min_shares or
     // more duplicates.
