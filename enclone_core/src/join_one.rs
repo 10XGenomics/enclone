@@ -166,6 +166,23 @@ pub fn join_one(
         return false;
     }
 
+    // Compute junction diffs.  Ugly.
+
+    let mut cd = 0_isize;
+    for l in 0..x1.len() {
+        for m in 0..x1[l].len() {
+            if x1[l].as_bytes()[m] != x2[l].as_bytes()[m] {
+                cd += 1;
+            }
+        }
+    }
+
+    // Cap CDR3 diffs.
+
+    if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
+        return false;
+    }
+
     // Unless MIX_DONORS specified, do not join across donors.
     // And test for error.
     //
@@ -312,23 +329,6 @@ pub fn join_one(
                 return false;
             }
         }
-    }
-
-    // Compute junction diffs.  Ugly.
-
-    let mut cd = 0_isize;
-    for l in 0..x1.len() {
-        for m in 0..x1[l].len() {
-            if x1[l].as_bytes()[m] != x2[l].as_bytes()[m] {
-                cd += 1;
-            }
-        }
-    }
-
-    // Cap CDR3 diffs.
-
-    if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
-        return false;
     }
 
     // Another test for acceptable join.  (not fully documented)
