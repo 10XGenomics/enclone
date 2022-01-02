@@ -325,9 +325,6 @@ u1
 <circle cx="170" cy="299" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="148" cy="331" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="116" cy="505" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="125" cy="340" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="117" cy="474" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="111" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="116" cy="513" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -342,9 +339,6 @@ u1
 <circle cx="113" cy="509" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="212" cy="248" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="204" cy="300" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="278" cy="326" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="218" cy="324" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="113" cy="517" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="113" cy="520" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -377,8 +371,6 @@ u1
 <circle cx="227" cy="397" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="368" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="177" cy="264" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="160" cy="315" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="141" cy="439" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="172" cy="267" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -387,6 +379,8 @@ u1
 <circle cx="112" cy="516" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="114" cy="500" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="125" cy="340" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="111" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="129" cy="331" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="215" cy="258" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="207" cy="113" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -407,6 +401,8 @@ u1
 <circle cx="157" cy="412" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="123" cy="417" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="218" cy="324" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="520" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="132" cy="426" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -458,6 +454,8 @@ u1
 <circle cx="135" cy="112" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="115" cy="486" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="177" cy="264" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="116" cy="455" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="147" cy="182" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="520" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -500,6 +498,7 @@ u1
 <circle cx="122" cy="381" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="163" cy="369" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="168" cy="436" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="117" cy="474" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="389" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -537,6 +536,7 @@ u1
 <circle cx="111" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="203" cy="203" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="119" cy="365" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="278" cy="326" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="519" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="111" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
