@@ -125,6 +125,7 @@ pub fn print_stats(
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
+    let mut merges2 = 0;
     let (mut numis, mut nreads) = (0, 0);
     let mut nreads_adjusted = 0.0;
     let mut numis2 = 0;
@@ -194,8 +195,10 @@ pub fn print_stats(
             *nclono2 += 1;
         }
         for j in 0..cells_by_donor_this.len() {
-            if cells_by_donor_this[j] > 1 {
-                merges += cells_by_donor_this[j] - 1;
+            let n = cells_by_donor_this[j];
+            if n > 1 {
+                merges += n - 1;
+                merges2 += (n * (n - 1)) / 2;
             }
         }
         ncells += n;
@@ -472,6 +475,11 @@ pub fn print_stats(
             logx,
             "   • number of intradonor cell-cell merges = {}",
             add_commas(merges)
+        );
+        fwriteln!(
+            logx,
+            "   • number of intradonor cell-cell merges (quadratic) = {}",
+            add_commas(merges2)
         );
         if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
             let mut cross = 0;
