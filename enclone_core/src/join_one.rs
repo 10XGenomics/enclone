@@ -133,7 +133,7 @@ pub fn join_one(
         }
     }
 
-    // Compute number of differences.
+    // Compute number of differences.  The default behavior is that this is applied only to TCR.
 
     if !is_bcr || ctl.heur.max_diffs < 1_000_000 {
         let mut diffs = 0_usize;
@@ -157,9 +157,6 @@ pub fn join_one(
                 }
             }
         }
-    
-        // Another test for acceptable join.
-    
         if diffs > ctl.heur.max_diffs {
             return false;
         }
