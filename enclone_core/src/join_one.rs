@@ -14,7 +14,8 @@ use vector_utils::{meet, unique_sort};
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // This is a copy of p_at_most_m_distinct_in_sample_of_x_from_n from the stirling_numbers crate,
-// that has been modified to use higher precision internal math.
+// that has been modified to use higher precision internal math.  This should go into that crate
+// (along with the stirling numbers ratio table code) when and if the qr crate is published.
 
 pub fn p_at_most_m_distinct_in_sample_of_x_from_n_double(
     m: usize,
