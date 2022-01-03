@@ -319,6 +319,7 @@ pub struct JoinAlgOpt {
     pub old_light: bool,
     pub basic_h: bool,
     pub basic: bool,
+    pub join_full_diff: bool,
 }
 
 // Clonotype filtering options.
