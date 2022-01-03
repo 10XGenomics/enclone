@@ -17,7 +17,7 @@ format('truetype');
 <text x="10" y="73" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">CDKN1A_g     3.0  1</text>
 <text x="10" y="173" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">CDKN1B_g     0.5  2</text>
 <text x="10" y="273" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">RBX1_g       1.0  3</text>
-<text x="10" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">IGLC1_g     18.7  4</text>
+<text x="10" y="373" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">IGLC1_g     18.8  4</text>
 <text x="10" y="473" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="start" fill="black">IGLV3-21_g  16.4  5</text>
 <text x="375.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">1</text>
 <text x="475.76" y="546" font-family="DejaVu LGC Sans Mono" font-size="26" text-anchor="middle" fill="black">2</text>

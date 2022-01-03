@@ -27,7 +27,7 @@ donor 2: flaky8b
 
 JOIN ERROR
 
-[0] = flaky8b.clono1 * flaky8a.clono0
+[24] = flaky8b.clono1 * flaky8a.clono0
 ref v segs1 = 121=ENST00000390609, 266=ENST00000468494
 ref v segs2 = 121=ENST00000390609, 266=ENST00000468494
 flaky8b = flaky8b

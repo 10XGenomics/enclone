@@ -296,6 +296,9 @@ HLA-A_g
 <circle cx="254" cy="515" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="224" cy="504" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="160" cy="518" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="217" cy="513" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="116" cy="516" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="106" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="113" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="110" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="123" cy="508" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -312,6 +315,9 @@ HLA-A_g
 <circle cx="341" cy="499" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="150" cy="510" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="140" cy="512" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="529" cy="459" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="210" cy="500" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
+<circle cx="314" cy="488" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="153" cy="519" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="136" cy="518" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="136" cy="513" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -342,8 +348,6 @@ HLA-A_g
 <circle cx="133" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="120" cy="519" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="482" cy="466" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="217" cy="513" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="106" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="482" cy="478" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="234" cy="483" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="180" cy="494" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -364,8 +368,6 @@ HLA-A_g
 <circle cx="160" cy="511" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="116" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="136" cy="518" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="210" cy="500" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="314" cy="488" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="116" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="106" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="177" cy="518" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -462,7 +464,6 @@ HLA-A_g
 <circle cx="113" cy="518" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="133" cy="517" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="130" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="116" cy="516" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="103" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="160" cy="507" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="106" cy="522" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
@@ -501,7 +502,6 @@ HLA-A_g
 <circle cx="113" cy="521" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="123" cy="516" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="147" cy="519" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
-<circle cx="529" cy="459" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="251" cy="448" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="120" cy="523" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
 <circle cx="479" cy="337" r="4" opacity="1" fill="#FF0000" stroke="none" stroke-width="1"/>
