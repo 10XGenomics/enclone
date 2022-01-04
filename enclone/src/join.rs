@@ -169,6 +169,7 @@ pub fn join_exacts(
                     && x.len() == 2
                     && !ctl.join_alg_opt.basic_h
                     && !ctl.join_alg_opt.basic
+                    && !ctl.join_alg_opt.basicx
                 {
                     let (k1, k2) = (x[0] as usize + i, x[1] as usize + i);
                     let k = min(k1, k2);
