@@ -117,8 +117,6 @@ pub fn join_one(
     if ctl.join_alg_opt.basic || ctl.join_alg_opt.basic_h {
         let chains = if ctl.join_alg_opt.basic { 2 } else { 1 };
         let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
-        let mut diffs = 0;
-        let mut total = 0;
         for z in 0..chains {
             if x1[z].len() != x2[z].len() {
                 return false;
