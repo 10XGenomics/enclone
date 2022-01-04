@@ -321,6 +321,7 @@ pub struct JoinAlgOpt {
     pub basic: Option<f64>,
     pub basicx: bool,
     pub join_full_diff: bool,
+    pub join_cdr3_ident: f64,
 }
 
 // Clonotype filtering options.

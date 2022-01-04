@@ -107,7 +107,7 @@ pub fn join_one(
             }
             total += x1[z].len();
         }
-        if cd as f64 / total as f64 > 0.2 {
+        if cd as f64 / total as f64 > 1.0 - ctl.join_alg_opt.join_cdr3_ident / 100.0 {
             return false;
         }
     }
