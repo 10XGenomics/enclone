@@ -427,7 +427,7 @@ pub fn join_one(
     // Multiply by 80^cd, or if using old version, the number of DNA sequences that differ from
     // the given CDR3 sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
 
-    let mult;
+    let mut mult;
     if ctl.join_alg_opt.old_mult {
         let mut cn = 0;
         for l in 0..x1.len() {
@@ -436,7 +436,25 @@ pub fn join_one(
         mult = partial_bernoulli_sum(3 * cn, cd as usize);
         assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
     } else {
-        mult = ctl.join_alg_opt.mult_pow.powi(cd as i32);
+        // mult = ctl.join_alg_opt.mult_pow.powi(cd as i32);
+
+        let mut cd1 = 0;
+        let n1 = x1[0].len();
+        for m in 0..x1[0].len() {
+            if x1[0].as_bytes()[m] != x2[0].as_bytes()[m] {
+                cd1 += 1;
+            }
+        }
+        let mut cd2 = 0;
+        let n2 = x1[1].len();
+        for m in 0..x1[1].len() {
+            if x1[1].as_bytes()[m] != x2[1].as_bytes()[m] {
+                cd2 += 1;
+            }
+        }
+        let cdx = 42;
+        mult = ctl.join_alg_opt.mult_pow.powf(cdx as f64 * cd1 as f64 / n1 as f64);
+        mult *= ctl.join_alg_opt.mult_pow.powf(cdx as f64 * cd2 as f64 / n2 as f64);
     }
 
     // Compute score.
