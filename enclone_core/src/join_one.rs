@@ -442,6 +442,7 @@ pub fn join_one(
     }
 
     // Do not merge cells if they were assigned different light chain constant regions.
+    // Unless cd = 0.
 
     if !ctl.join_alg_opt.old_light {
         for i in 0..info[k1].cdr3s.len() {
