@@ -495,8 +495,14 @@ pub fn join_one(
             }
         }
         let cdx = 42;
-        mult = ctl.join_alg_opt.mult_pow.powf(cdx as f64 * cd1 as f64 / n1 as f64);
-        mult *= ctl.join_alg_opt.mult_pow.powf(cdx as f64 * cd2 as f64 / n2 as f64);
+        mult = ctl
+            .join_alg_opt
+            .mult_pow
+            .powf(cdx as f64 * cd1 as f64 / n1 as f64);
+        mult *= ctl
+            .join_alg_opt
+            .mult_pow
+            .powf(cdx as f64 * cd2 as f64 / n2 as f64);
     }
 
     // Compute score.
