@@ -449,7 +449,9 @@ pub fn join_one(
             if !ex1.share[j1].left {
                 if ex1.share[j1].c_ref_id.is_some() && ex2.share[j2].c_ref_id.is_some() {
                     if ex1.share[j1].c_ref_id.unwrap() != ex2.share[j2].c_ref_id.unwrap() {
-                        return false;
+                        if cd > 0 {
+                            return false;
+                        }
                     }
                 }
             }
