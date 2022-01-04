@@ -90,6 +90,28 @@ pub fn join_one(
         return false;
     }
 
+    // Put identiy filter on CDR3s for BCR.
+
+    if is_bcr {
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        let mut cd = 0;
+        let mut total = 0;
+        for z in 0..2 {
+            if x1[z].len() != x2[z].len() {
+                return false;
+            }
+            for m in 0..x1[z].len() {
+                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
+                    cd += 1;
+                }
+            }
+            total += x1[z].len();
+        }
+        if cd as f64 / total as f64 > 0.2 {
+            return false;
+        }
+    }
+
     // Test for BASIC and BASIC_H.
 
     if ctl.join_alg_opt.basic || ctl.join_alg_opt.basic_h {
@@ -104,7 +126,6 @@ pub fn join_one(
             if info[k1].vs[z] != info[k2].vs[z] || info[k1].js[z] != info[k2].js[z] {
                 return false;
             }
-            /*
             let mut cd = 0;
             for m in 0..x1[z].len() {
                 if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
@@ -114,16 +135,6 @@ pub fn join_one(
             if cd as f64 / (x1[z].len() as f64) > 0.1 {
                 return false;
             }
-            */
-            for p in 0..info[k1].tigs_amino[z].len() {
-                total += 1;
-                if info[k1].tigs_amino[z][p] != info[k2].tigs_amino[z][p] {
-                    diffs += 1;
-                }
-            }
-        }
-        if diffs as f64 / total as f64 > 0.1 {
-            return false;
         }
         pot.push(PotentialJoin {
             k1,
@@ -208,7 +219,7 @@ pub fn join_one(
         }
     }
 
-    // Compute junction diffs.  Ugly.
+    // Compute junction diffs.
 
     let mut cd = 0_isize;
     for l in 0..x1.len() {
@@ -219,10 +230,12 @@ pub fn join_one(
         }
     }
 
-    // Cap CDR3 diffs.
+    // Cap CDR3 diffs for TCR or as requested.
 
-    if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
-        return false;
+    if ctl.join_alg_opt.max_cdr3_diffs < 1000 {
+        if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
+            return false;
+        }
     }
 
     // Unless MIX_DONORS specified, do not join across donors.
