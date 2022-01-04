@@ -115,7 +115,11 @@ pub fn join_one(
     // Test for JOIN_BASIC and BASIC_H.
 
     if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h {
-        let chains = if ctl.join_alg_opt.basic.is_some() { 2 } else { 1 };
+        let chains = if ctl.join_alg_opt.basic.is_some() {
+            2
+        } else {
+            1
+        };
         let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
         for z in 0..chains {
             if x1[z].len() != x2[z].len() {
