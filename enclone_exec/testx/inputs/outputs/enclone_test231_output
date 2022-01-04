@@ -22,6 +22,7 @@ SUMMARY STATISTICS
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 2
    • number of intradonor cell-cell merges = 3
+   • number of intradonor cell-cell merges (quadratic) = 4
    • number of cells having 1 chain = 3
    • number of cells having 2 or 3 chains = 252
    • estimated B-B doublet rate = 1.2% = 3/248 = cells with 4 chains / cells with 2 or 4 chains
