@@ -90,7 +90,7 @@ pub fn join_one(
         return false;
     }
 
-    // Put identiy filter on CDR3s for BCR.
+    // Put identity filter on CDR3s for BCR.
 
     if is_bcr {
         let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
