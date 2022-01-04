@@ -142,6 +142,37 @@ pub fn join_one(
         return true;
     }
 
+    // Test for BASICX.
+
+    if ctl.join_alg_opt.basicx {
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        let mut cd = 0;
+        let mut total = 0;
+        for z in 0..2 {
+            if x1[z].len() != x2[z].len() {
+                return false;
+            }
+            if info[k1].vs[z] != info[k2].vs[z] || info[k1].js[z] != info[k2].js[z] {
+                return false;
+            }
+            for m in 0..x1[z].len() {
+                total += 1;
+                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
+                    cd += 1;
+                }
+            }
+        }
+        if cd as f64 / total as f64 > 0.1 {
+            return false;
+        }
+        pot.push(PotentialJoin {
+            k1,
+            k2,
+            ..Default::default()
+        });
+        return true;
+    }
+
     // Test for JOIN_FULL_DIFF.
 
     if ctl.join_alg_opt.join_full_diff {
