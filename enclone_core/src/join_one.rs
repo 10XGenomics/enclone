@@ -479,6 +479,7 @@ pub fn join_one(
 
     // Multiply by 80^cd, or if using old version, the number of DNA sequences that differ from
     // the given CDR3 sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
+    // Changed to take into account CDR3 length.
 
     let mut mult;
     if ctl.join_alg_opt.old_mult {
@@ -505,7 +506,7 @@ pub fn join_one(
                 cd2 += 1;
             }
         }
-        let cdx = 42;
+        let cdx = ctl.join_alg_opt.cdr3_normal_len;
         mult = ctl
             .join_alg_opt
             .mult_pow

@@ -91,6 +91,40 @@ regions are different.  The old behavior maybe be obtained by adding the argumen
 </td>
 </tr>
 
+<tr>
+<td> Jan. 6, 2022 </td>
+<td> <code>******</code> </td>
+<td> 
+Make five changes to BCR clonotyping that increase its sensitivity and specificity:
+<ol>
+<li>Increase the precision of the calculation that computes
+the probability <code>p</code> that shared mutations occur by chance.  This was returning the
+wrong answer in some cases.  The old behavior is no longer available.</li>
+<li>Remove the cap on total differences between two exact subclonotypes in order for them to be
+joined.  The old behavior may now be obtained by adding the argument <code>MAX_DIFFS=55</code>.
+</li>
+<li>Rather than impose a bound of <code>15</code> on the maximum number of nucleotide differences 
+between CDR3 sequences, we now require at least <code>80%</code> identity (out of the total CDR3 
+length).  For both of these, the measurement first computes the total number of differences, taking 
+into account one heavy and one light chain.  The number <code>80</code> can be set to an alternate 
+value using <code>JOIN_CDR3_IDENT=...</code>.  The old behavior can be obtained by setting
+<code>JOIN_CDR3_IDENT=0</code> and <code>MAX_CDR3_DIFFS=15</code>.</li>
+<li>Now compute the number <code>N</code> in a manner that takes into account CDR3 length.  To
+do this, we first set <code>cd1</code> to the number of heavy chain CDR3 nucleotide differences,
+and <code>cd2</code> to the number of light chain CDR3 nucleotide differences.  Let <code>n1</code>
+be the nucleotide length of the heavy chain CDR3, and likewise <code>n2</code> for the light
+chain.  Then <code>N</code> is set to 
+<br>
+<code>80^(42 * (cd1/n1 + cd2/n2))</code>.  The number 
+<code>42</code> can be changed using the variable <code>CDR3_NORMAL_LEN</code>.  The behavior 
+preceding Dec. 13 is still available by via the argument <code>OLD_MULT</code>.</li>
+<li>The light chain constant region identity requirement is now relaxed to apply only when
+<code>cd = 0</code>.  The relaxation cannot be turned off but the light chain requirement can
+still be turned off entirely using <code>OLD_LIGHT</code>.</li>
+</ol>
+</td>
+</tr>
+
 </tbody>
 </table>
 </p>
