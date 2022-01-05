@@ -27,7 +27,7 @@ itertools = "0.10"
 ndarray = "0.15"
 pager = "0.16"
 permutation = "0.2"
-petgraph = "0.6"
+petgraph = ">=0.5,<0.7"
 pretty_trace = "0.5"
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"

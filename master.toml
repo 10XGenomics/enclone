@@ -69,7 +69,7 @@ pager = "0.16"
 palette = "0.6"
 perf_stats = "0.1"
 permutation = "0.2"
-petgraph = "0.6"
+petgraph = ">=0.5,<0.7"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
 pprof = "0.6"
