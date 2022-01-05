@@ -345,7 +345,13 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              \
              \\boldred{12}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
-             \"enclone help special\" for a description of the filters.\n\n",
+             \"enclone help special\" for a description of the filters.\n\n\
+             \
+             \\boldred{13}.  Alternate algorithm.  \
+             An alternate and much simpler clonotyping algorithm can be invoked by specifying \
+             \\bold{JOIN_BASIC=90}.  This causes two exact subclonotypes to be joined if they \
+             have the same V and J gene assigments, the same CDR3 lengths, and CDR3 nucleotide \
+             identity of at least 90% on each chain.  The number 90 can be changed.\n\n",
         )?;
         h.print(
             "We are actively working to improve the algorithm.  Test results for the current \
