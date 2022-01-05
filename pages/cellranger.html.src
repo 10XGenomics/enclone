@@ -43,6 +43,7 @@ execute permission, then run with e.g. <code>enclone_macos</code>.
 <tr>
 <th align="left"> date          </th>
 <th align="left"> git hash      </th>
+<th align="left"> first Cell Ranger version </th>
 <th align="left"> change        </th>
 </tr>
 </thead>
@@ -51,6 +52,7 @@ execute permission, then run with e.g. <code>enclone_macos</code>.
 <tr>
 <td> June 4, 2021 </td>
 <td> <code>635832</code> </td>
+<td> </td>
 <td> 
 Tweak the order of default filters so as to increase the likelihood that clonotypes
 that are held together tenuously (or not at all) will be pulled apart.  This has a tiny effect
@@ -62,6 +64,7 @@ some user datasets disproportionally.
 <tr>
 <td> Sept. 20, 2021 </td>
 <td> <code>95c951</code> </td>
+<td> </td>
 <td> 
 Add a new default filter called <i>signature filtering</i> that under certain rare circumstances
 will decompose complex clonotypes that are incorrectly glued together.  This filter can 
@@ -74,6 +77,7 @@ Please see <a href="../../pages/auto/default_filters.html">enclone default filte
 <tr>
 <td> Dec. 13, 2021 </td>
 <td> <code>803b05</code> </td>
+<td> TBD </td>
 <td> 
 Make three changes to clonotyping that increase its specificity:
 <ol>
@@ -94,6 +98,7 @@ regions are different.  The old behavior maybe be obtained by adding the argumen
 <tr>
 <td> Jan. 6, 2022 </td>
 <td> <code>******</code> </td>
+<td> TBD </td>
 <td> 
 Make five changes to BCR clonotyping that increase its sensitivity and specificity:
 <ol>
