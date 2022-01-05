@@ -136,7 +136,7 @@ pub fn join_one(
             }
             let mut limit = 0.1;
             if ctl.join_alg_opt.basic.is_some() {
-                limit = 1.0 - ctl.join_alg_opt.basic.unwrap() / 100.0;
+                limit = (100.0 - ctl.join_alg_opt.basic.unwrap()) / 100.0;
             }
             if cd as f64 / (x1[z].len() as f64) > limit {
                 return false;
