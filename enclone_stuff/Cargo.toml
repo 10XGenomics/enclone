@@ -32,10 +32,10 @@ hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_n
 io_utils = "0.3"
 itertools = "0.10"
 ndarray = "0.15"
+qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"
-stirling_numbers = "0.1"
 string_utils = "0.1"
 tables = "0.1"
 vdj_ann = "0.3"

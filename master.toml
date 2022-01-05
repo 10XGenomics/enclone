@@ -78,6 +78,7 @@ procfs = { version = "0.11", default_features = false }
 # enclone will compile without the std and prost-derive features, but other things (such as enclone_proto) break.
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
+qd = { git = "https://github.com/Barandis/qd" }
 rand = "0.8"
 rayon = "1"
 resvg = { version = "0.19", default-features = false }

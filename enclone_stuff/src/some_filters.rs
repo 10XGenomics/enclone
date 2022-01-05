@@ -7,6 +7,7 @@ use crate::weak_chains::weak_chains;
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
 use equiv::EquivRel;
+use qd::Double;
 use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
@@ -16,7 +17,7 @@ pub fn some_filters(
     orbits: &mut Vec<Vec<i32>>,
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<f64>>,
+    sr: &Vec<Vec<Double>>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,

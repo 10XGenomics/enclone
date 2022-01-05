@@ -23,7 +23,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     }
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
-        max_diffs: 55,
+        max_diffs: 1_000_000,
         max_degradation: 2,
         ref_v_trim: 15,
         ref_j_trim: 15,
@@ -145,6 +145,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.max_cdr3_diffs = 15;
     ctl.join_alg_opt.cdr3_mult = 5.0;
     ctl.join_alg_opt.mult_pow = 80.0;
+    ctl.join_alg_opt.join_cdr3_ident = 80.0;
+    ctl.join_alg_opt.cdr3_normal_len = 42;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -348,7 +350,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("ANN0", &mut ctl.join_print_opt.ann0),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
         ("BASELINE", &mut ctl.gen_opt.baseline),
-        ("BASIC", &mut ctl.join_alg_opt.basic),
+        ("BASICX", &mut ctl.join_alg_opt.basicx),
         ("BASIC_H", &mut ctl.join_alg_opt.basic_h),
         ("BCJOIN", &mut ctl.join_alg_opt.bcjoin),
         ("BUILT_IN", &mut ctl.gen_opt.built_in),
@@ -384,6 +386,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("INSERTIONS", &mut ctl.gen_opt.insertions),
         ("INTERNAL", &mut ctl.gen_opt.internal_run),
         ("JC1", &mut ctl.gen_opt.jc1),
+        ("JOIN_FULL_DIFF", &mut ctl.join_alg_opt.join_full_diff),
         ("MAIT", &mut ctl.clono_filt_opt.mait),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
         ("MEAN", &mut ctl.clono_print_opt.mean),
@@ -472,6 +475,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Define arguments that set something to a usize.
 
     let set_usize = [
+        ("CDR3_NORMAL_LEN", &mut ctl.join_alg_opt.cdr3_normal_len),
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),

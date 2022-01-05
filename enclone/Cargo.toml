@@ -35,6 +35,7 @@ perf_stats = "0.1"
 petgraph = "0.6"
 pprof = "0.6"
 pretty_trace = "0.5"
+qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"

@@ -23,14 +23,74 @@ use enclone_core::enclone_structs::*;
 use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
 use io_utils::fwriteln;
+use qd::dd;
 use std::{
     collections::HashMap,
     fs::File,
     io::{BufWriter, Write},
     time::Instant,
 };
-use stirling_numbers::stirling2_ratio_table;
 use vector_utils::{bin_member, erase_if, unique_sort};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This is a copy of stirling2_ratio_table from the stirling_numbers crate, that has been modified
+// to use higher precision internal math.  This has also been speeded up, and in the process
+// made less readable.
+
+use qd::Double;
+use rayon::prelude::*;
+
+pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
+    let mut s = Vec::<Vec<Double>>::new();
+    let zero = dd![0.0];
+    let one = dd![1.0];
+    for n in 0..=n_max {
+        s.push(vec![zero; n + 1]);
+    }
+    s[0][0] = one;
+    let mut z = Vec::<Double>::new();
+    let mut n2n1 = vec![dd![0.0]; n_max + 1];
+    for n in 2..=n_max {
+        n2n1[n] = Double::from((n - 2) as u32) / Double::from((n - 1) as u32);
+    }
+    let mut k1k = vec![dd![0.0]; n_max];
+    for k in 1..n_max {
+        k1k[k] = Double::from((k - 1) as u32) / Double::from(k as u32);
+    }
+    let mut njn = Vec::<(usize, Double)>::new();
+    for i in 0..n_max + 1 {
+        njn.push((i, dd![0.0]));
+    }
+    njn.par_iter_mut().for_each(|res| {
+        let n = res.0;
+        if n >= 1 {
+            let mut p = one;
+            for j in 1..=n {
+                p *= Double::from(j as u32) / Double::from(n as u32);
+            }
+            res.1 = p;
+        }
+    });
+
+    // This is the slow part of the function.
+
+    for n in 1..=n_max {
+        s[n][0] = zero;
+        for k in 1..n - 1 {
+            z[k - 1] *= k1k[k];
+        }
+        if n >= 2 {
+            z.push(n2n1[n].powi((n - 1) as i32));
+        }
+        for k in 1..n {
+            let x = z[k - 1]; // = ((k-1)/k)^(n-1)
+            s[n][k] = s[n - 1][k] + s[n - 1][k - 1] * x;
+        }
+        s[n][n] = njn[n].1;
+    }
+    s
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -304,7 +364,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Make stirling ratio table.  Not sure that fixing the size of this is safe.
 
     let tsr = Instant::now();
-    let sr = stirling2_ratio_table::<f64>(3000);
+    let sr = stirling2_ratio_table_double(3000);
     ctl.perf_stats(&tsr, "computing stirling number table");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting

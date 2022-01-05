@@ -77,14 +77,62 @@ execute permission, then run with e.g. <code>enclone_macos</code>.
 <tr>
 <th align="left"> date          </th>
 <th align="left"> git hash      </th>
+<th align="left"> first Cell Ranger version </th>
 <th align="left"> change        </th>
 </tr>
 </thead>
 <tbody>
 
 <tr>
+<td> Dec. 9, 2020 </td>
+<td> <code>f50783</code> </td>
+<td> 6.0 </td>
+<td> 
+<ul>
+<li>Change the algorithm for deciding to use a donor reference allele, so that it checks all
+    donor reference alleles for all V genes having the same name as the one originally assigned to
+    a contig.</li>
+<li>Change default <code>MAX_DIFFS</code> from 50 to 55.  Change default 
+    <code>MAX_DEGRADATION</code> from 3 to 2.  Change default <code>MAX_SCORE</code> from 
+    1,000,000 to 500,000.  Change default <code>MAX_CDR3_DIFFS</code> from 10 to 15.</li>
+<li>Allow up to 5 (instead of 4) amino acid differences when joining chains.  This results in less 
+    spurious chains in clonotypes.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td> Dec. 9, 2020 </td>
+<td> <code>1e1ef9</code> </td>
+<td> 6.0 </td>
+<td> 
+<ul>
+<li>Add a doublet test, which removes some exact subclonotypes that appear to represent doublets.
+</li>
+<li>Improve the disjoint orbit test.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td> Feb. 13, 2021 </td>
+<td> <code>a43c8c</code> </td>
+<td> 6.1 </td>
+<td> 
+<ul>
+<li> To determine assignment of chains to columns in a clonotype table, we now rely primarily on 
+     the column information implied by the original joins of exact subclonotypes.  This eliminates 
+     some artifactual behavior.</li>
+<li> Change weak chain filtering to permit deletion of chains supported by up to 20 cells, rather
+     than 5.  This fixes some pathological cases involving clonotypes having many chains.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
 <td> June 4, 2021 </td>
 <td> <code>635832</code> </td>
+<td> 6.1 </td>
 <td> 
 Tweak the order of default filters so as to increase the likelihood that clonotypes
 that are held together tenuously (or not at all) will be pulled apart.  This has a tiny effect
@@ -96,6 +144,7 @@ some user datasets disproportionally.
 <tr>
 <td> Sept. 20, 2021 </td>
 <td> <code>95c951</code> </td>
+<td> TBD </td>
 <td> 
 Add a new default filter called <i>signature filtering</i> that under certain rare circumstances
 will decompose complex clonotypes that are incorrectly glued together.  This filter can 
@@ -108,6 +157,7 @@ Please see <a href="../../pages/auto/default_filters.html">enclone default filte
 <tr>
 <td> Dec. 13, 2021 </td>
 <td> <code>803b05</code> </td>
+<td> TBD </td>
 <td> 
 Make three changes to clonotyping that increase its specificity:
 <ol>
@@ -121,6 +171,41 @@ simpler fashion, as <code>80^cd</code>.  The old behavior may be obtained by add
 <li>Prevent merger in cases where light chain constant
 regions are different.  The old behavior maybe be obtained by adding the argument
 <code>OLD_LIGHT</code>.</li>
+</ol>
+</td>
+</tr>
+
+<tr>
+<td> Jan. 5, 2022 </td>
+<td> <code>******</code> </td>
+<td> TBD </td>
+<td> 
+Make five changes to BCR clonotyping that increase its sensitivity and specificity:
+<ol>
+<li>Increase the precision of the calculation that computes
+the probability <code>p</code> that shared mutations occur by chance.  This was returning the
+wrong answer in some cases.  The old behavior is no longer available.</li>
+<li>Remove the cap on total differences between two exact subclonotypes in order for them to be
+joined.  The old behavior may now be obtained by adding the argument <code>MAX_DIFFS=55</code>.
+</li>
+<li>Rather than impose a bound of <code>15</code> on the maximum number of nucleotide differences 
+between CDR3 sequences, we now require at least <code>80%</code> identity (out of the total CDR3 
+length).  For both of these, the measurement first computes the total number of differences, taking 
+into account one heavy and one light chain.  The number <code>80</code> can be set to an alternate 
+value using <code>JOIN_CDR3_IDENT=...</code>.  The old behavior can be obtained by setting
+<code>JOIN_CDR3_IDENT=0</code> and <code>MAX_CDR3_DIFFS=15</code>.</li>
+<li>Now compute the number <code>N</code> in a manner that takes into account CDR3 length.  To
+do this, we first set <code>cd1</code> to the number of heavy chain CDR3 nucleotide differences,
+and <code>cd2</code> to the number of light chain CDR3 nucleotide differences.  Let <code>n1</code>
+be the nucleotide length of the heavy chain CDR3, and likewise <code>n2</code> for the light
+chain.  Then <code>N</code> is set to 
+<br>
+<code>80^(42 * (cd1/n1 + cd2/n2))</code>.  The number 
+<code>42</code> can be changed using the variable <code>CDR3_NORMAL_LEN</code>.  The behavior 
+preceding Dec. 13 is still available by via the argument <code>OLD_MULT</code>.</li>
+<li>The light chain constant region identity requirement is now relaxed to apply only when
+<code>cd = 0</code>.  The relaxation cannot be turned off but the light chain requirement can
+still be turned off entirely using <code>OLD_LIGHT</code>.</li>
 </ol>
 </td>
 </tr>

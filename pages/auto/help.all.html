@@ -279,65 +279,61 @@ of the two exact subclonotypes, for which V..J has the same length for the corre
 and the CDR3 segments have the same length for the corresponding chains, enclone considers joining
 the exact subclonotypes into the same clonotype.
 
-<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most <span style="font-weight:bold;">55</span> total
-mismatches between the two exact subclonotypes, within the given two V..J segments.
-This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.  (Note
-             that for CellRanger version 5.0, the value is instead <span style="font-weight:bold;">50</span>.)
-
-<span style="color:#c23621;font-weight:bold;">7</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
+<span style="color:#c23621;font-weight:bold;">6</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
 for two exact subclonotypes, common mutations from the reference sequence, using the donor
 reference for the V segments and the universal reference for the J segments.  Shared mutations are
 supposed to be somatic hypermutations, that would be evidence of common ancestry.  By using the
 donor reference sequences, most shared germline mutations are excluded, and this is critical for
 the algorithm's success.
 
-<span style="color:#c23621;font-weight:bold;">8</span>.  Are there enough shared mutations?  We find the probability p that “the shared mutations occur
+<span style="color:#c23621;font-weight:bold;">7</span>.  Are there enough shared mutations?  We find the probability p that “the shared mutations occur
 by chance”.  More specifically, given d shared mutations, and k total mutations (across the two
 cells), we compute the probability p that a sample with replacement of k items from a set whose
 size is the total number of bases in the V..J segments, yields at most k – d distinct elements. 
 The probability is an approximation, for the method please see
 <span style="color:#25bc24;">https://docs.rs/stirling_numbers/0.1.0/stirling_numbers</span>.
 
-<span style="color:#c23621;font-weight:bold;">9</span>.  Are there too many CDR3 mutations?  We define a constant N that is used below.  After Cell
-Ranger version 6.1, we set N to 80^cd.  The parameter 80 is accessible as <span style="font-weight:bold;">MULT_POW</span>.  The remainder
-of this section describes the behavior for earlier versions.  Let N be "the number of DNA
-sequences that differ from the given CDR3 sequences by at most the number of observed
-differences".  More specifically, if cd is the number of differences between the given CDR3
-nucleotide sequences, and n is the total length in nucleotides of the CDR3 sequences (for the two
-chains), we compute the total number N of strings of length n that are obtainable by perturbing a
-given string of length n, which is
-sum( choose(n,m), m = 0..=cd) ).
+<span style="color:#c23621;font-weight:bold;">8</span>.  Are there too many CDR3 mutations?  We define a constant N that is used below.  We first set
+cd1 to the number of heavy chain CDR3 nucleotide differences, and cd2 to the number of light chain
+CDR3 nucleotide differences.  Let n1 be the nucleotide length of the heavy chain CDR3, and
+likewise n2 for the light chain.  Then N = 80^(42 * (cd1/n1 + cd2/n2)).  The number 80 may be
+alternately specified via <span style="font-weight:bold;">MULT_POW</span> and the number 42 via <span style="font-weight:bold;">CDR3_NORMAL_LEN</span>.
 
-<span style="color:#c23621;font-weight:bold;">10</span>.  We also require that cd is at most 15 (and this bound is adjustable via the command-line
-argument <span style="font-weight:bold;">MAX_CDR3_DIFFS</span>).  (The value for Cell Ranger 5.0 is 10.)
+<span style="color:#c23621;font-weight:bold;">9</span>.  We also require CDR3 nucleotide identity of at least 80%.  The number 80 may be alternately
+set using <span style="font-weight:bold;">JOIN_CDR3_IDENT=...</span>.  The nucleotide identity is computed by dividing cd by the total
+nucleotide length of the heavy and light chains.
 
-<span style="color:#c23621;font-weight:bold;">11</span>.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
+<span style="color:#c23621;font-weight:bold;">10</span>.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
 few CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, and the
 lower N is, the more likely it is that the shared mutations represent bona fide shared ancestry. 
 Accordingly, the smaller p*N is, the more likely it is that two cells lie in the same true
 clonotype.  To join two cells into the same clonotype, we require that the bound p*n ≤ C is
-satisfied, where C is the constant 500,000.  (The value for Cell Ranger 5.0 is 1,000,000.) The
-value may be adjusted using the command-line argument <span style="font-weight:bold;">MAX_SCORE</span>, or the log10 of this,
+satisfied, where C is the constant 500,000.  The value may be adjusted using the command-line
+argument <span style="font-weight:bold;">MAX_SCORE</span>, or the log10 of this,
 <span style="font-weight:bold;">MAX_LOG_SCORE</span>.  This constant was arrived at by empirically balancing sensitivity and specificity
 across a large collection of datasets.  See results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
-<span style="color:#c23621;font-weight:bold;">12</span>.  Other join criteria.
+<span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.
 • We do not join two clonotypes which were assigned different reference sequences unless those
 reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be controlled using the
-command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  (Note that for Cell Ranger 5.0, the value is instead <span style="font-weight:bold;">3</span>.)
+command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.
 • There is an additional restriction imposed when creating two-cell clonotypes: we require that
 that cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared mutations,
 as above.  This filter may be turned off using the command-line argument <span style="font-weight:bold;">EASY</span>.
-• We do not join in cases where light chain constant regions are different.  This filter may be
-turned off using the command-line argument <span style="font-weight:bold;">OLD_LIGHT</span>.  This criterion was added after Cell Ranger
-6.1.
+• We do not join in cases where light chain constant regions are different and cd > 0.  This
+filter may be turned off using the command-line argument <span style="font-weight:bold;">OLD_LIGHT</span>.
 • We do not join in cases where there is too high a concentration of changes in the junction
 region.  More specifically, if the number of mutations in CDR3 is at least 5 times the number of
 non-shared mutations outside CDR3 (maxed with 1), the join is rejected.  The number 5 is the
-parameter <span style="font-weight:bold;">CDR3_MULT</span>.  This criterion was added after Cell Ranger 6.1.
+parameter <span style="font-weight:bold;">CDR3_MULT</span>.
 
-<span style="color:#c23621;font-weight:bold;">13</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
+<span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.
+
+<span style="color:#c23621;font-weight:bold;">13</span>.  Alternate algorithm.  An alternate and much simpler clonotyping algorithm can be invoked by
+specifying <span style="font-weight:bold;">JOIN_BASIC=90</span>.  This causes two exact subclonotypes to be joined if they have the same
+V and J gene assignments, the same CDR3 lengths, and CDR3 nucleotide identity of at least 90% on
+each chain.  The number 90 can be changed.
 
 We are actively working to improve the algorithm.  Test results for the current version may be
 found at <span style="color:#25bc24;">bit.ly/enclone</span>.
@@ -509,12 +505,12 @@ Shown below is the output of the command:
 
 <span style="font-weight:bold;">enclone BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW</span>
 
-<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 5 CELLS</span>
+<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 6 CELLS</span>
 
-[1.1] CLONOTYPE = 5 CELLS
+[1.1] CLONOTYPE = 6 CELLS
 ┌──────────────────────────┬───────────────────────────────────────┬─────────────────────────────┐
 │                          │  <span style="font-weight:bold;">CHAIN 1</span>                              │  CHAIN 2                    │
-│                          │  <span style="font-weight:bold;">98|IGHV2-5 ◆ 57|IGHJ5</span>                │  349|IGLV3-1 ◆ 311|IGLJ2    │
+│                          │  <span style="font-weight:bold;">98|IGHV2-5 ◆ 13|IGHD2-15 ◆ 57|IGHJ5</span>  │  349|IGLV3-1 ◆ 311|IGLJ2    │
 │                          ├───────────────────────────────────────┼─────────────────────────────┤
 │                          │    11111111111111111111               │    11111111111              │
 │                          │  8 11111222222222233333               │  6 00000111111              │
@@ -523,10 +519,11 @@ Shown below is the output of the command:
 │reference                 │  <span style="color:#3e7dd1;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">D</span>◦◦◦◦◦◦              │
 │donor ref                 │  <span style="color:#3e7dd1;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">D</span>◦◦◦◦◦◦              │
 ├──────────────────────────┼───────────────────────────────────────┼─────────────────────────────┤
-│<span style="font-weight:bold;">#  n    gex  IGHV2-5_g_μ  </span>│<span style="font-weight:bold;">  x ....................     u  const  </span>│<span style="font-weight:bold;">  . ...........      u  const</span>│
+│<span style="font-weight:bold;">#  n    gex  IGHV2-5_g_μ  </span>│<span style="font-weight:bold;">  x ..x.......xx........     u  const  </span>│<span style="font-weight:bold;">  x ...........      u  const</span>│
 │1  3   9011         1849  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>   592  IGHM   │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   2995  IGLC2│
 │2  1  29846         6515  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  6218  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  15182  IGLC2│
 │3  1  14995         3326  │  <span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  4033  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   6777  IGLC2│
+│4  1   3250            2  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#e7bd20;">H</span><span style="color:#31c39a;">M</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">GG</span><span style="color:#3e7dd1;">S</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>    18  IGHG1  │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>    592  IGLC2│
 └──────────────────────────┴───────────────────────────────────────┴─────────────────────────────┘
 
 This shows an invocation of enclone that takes VDJ, and gene expression data as input, and

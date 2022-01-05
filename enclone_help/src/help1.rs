@@ -282,13 +282,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              chains, and the CDR3 segments have the same length for the corresponding chains, \
              enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
-             \\boldred{6}.  Error bounding.  \
-             To proceed, as a minimum requirement, there must be at most \\bold{55} total \
-             mismatches between the two exact subclonotypes, within the given two V..J segments.\n\
-             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.  (Note
-             that for CellRanger version 5.0, the value is instead \\bold{50}.)\n\n\
-             \
-             \\boldred{7}.  Shared mutations.  \
+             \\boldred{6}.  Shared mutations.  \
              enclone next finds shared mutations betweens exact subclonotypes, that is, for \
              two exact subclonotypes, common mutations from the reference sequence, using the \
              donor reference for the V segments and the universal reference for the J segments.  \
@@ -296,7 +290,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              of common ancestry.  By using the donor reference sequences, most shared germline \
              mutations are excluded, and this is critical for the algorithm's success.\n\n\
              \
-             \\boldred{8}.  Are there enough shared mutations?  \
+             \\boldred{7}.  Are there enough shared mutations?  \
              We find the probability p that “the shared mutations occur by chance”.  More \
              specifically, given d shared mutations, and k total mutations (across the two cells), \
              we compute the probability p that a sample with replacement of k items from a set \
@@ -304,59 +298,60 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              distinct elements.  The probability is an approximation, for the method please see\n\
              \\green{https://docs.rs/stirling_numbers/0.1.0/stirling_numbers}.\n\n\
              \
-             \\boldred{9}.  Are there too many CDR3 mutations?  \
+             \\boldred{8}.  Are there too many CDR3 mutations?  \
              We define a constant N that is used below.  \
-             After Cell Ranger version 6.1, we set N to 80^cd.  The parameter 80 is accessible \
-             as \\bold{MULT_POW}.  The remainder of this section \
-             describes the behavior for earlier versions.  \
-             Let N be \"the number of DNA sequences that differ from the given CDR3 \
-             sequences by at most the number of observed differences\".  More specifically, if \
-             cd is the number of differences between the given CDR3 nucleotide sequences, and n \
-             is the total length in nucleotides of the CDR3 sequences (for the two chains), we \
-             compute the total number N of strings of length n that are obtainable by perturbing \
-             a given string of length n, which is\nsum( choose(n,m), m = 0..=cd) ).\n\n\
+             We first set cd1 to the number of heavy chain CDR3 nucleotide differences, and cd2 \
+             to the number of light chain CDR3 nucleotide differences.  Let n1 be the nucleotide \
+             length of the heavy chain CDR3, and likewise n2 for the light chain.  Then \
+             N = 80^(42 * (cd1/n1 + cd2/n2)).  The number 80 may be alternately specified via \
+             \\bold{MULT_POW} and the number 42 via \\bold{CDR3_NORMAL_LEN}.\n\n\
              \
-             \\boldred{10}.  We also \
-             require that cd is at most 15 (and this bound is adjustable via the command-line \
-             argument \\bold{MAX_CDR3_DIFFS}).  (The value for Cell Ranger 5.0 is 10.)\n\n\
+             \\boldred{9}.  We also require CDR3 nucleotide identity of at least 80%.  The number \
+             80 may be alternately set using \\bold{JOIN_CDR3_IDENT=...}.  The nucleotide identity \
+             is computed by dividing cd by the total nucleotide length of the heavy and light \
+             chains.\n\n\
              \
-             \\boldred{11}.  Key join criteria.  \
+             \\boldred{10}.  Key join criteria.  \
              Two cells sharing sufficiently many shared differences and sufficiently few \
              CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, \
              and the lower N is, the more likely it is that the shared mutations represent bona \
              fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
              two cells lie in the same true clonotype.  To join two cells into the same \
              clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
-             constant 500,000.  (The value for Cell Ranger 5.0 is 1,000,000.) \
+             constant 500,000.  \
              The value may be adjusted using the command-line argument \\bold{MAX_SCORE}, or the \
              log10 of this,\n\
              \\bold{MAX_LOG_SCORE}.  This constant was arrived at by empirically balancing \
              sensitivity and specificity across a large collection of datasets.  See results \
              described at \\green{bit.ly/enclone}.\n\n\
              \
-             \\boldred{12}.  Other join criteria.\n\
+             \\boldred{11}.  Other join criteria.\n\
              • We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
              at most \\bold{2} positions.  This value can be controlled using the \
-             command-line argument \\bold{MAX_DEGRADATION}.  (Note that for Cell Ranger 5.0, \
-             the value is instead \\bold{3}.)\n\
+             command-line argument \\bold{MAX_DEGRADATION}.\n\
              • There is an additional restriction \
              imposed when creating two-cell clonotypes: we require that that \
              cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
              mutations, as above.  This filter may be turned off \
              using the command-line argument \\bold{EASY}.\n\
-             • We do not join in cases where light chain constant regions are different.  This \
-             filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.  \
-             This criterion was added after Cell Ranger 6.1.\n\
+             • We do not join in cases where light chain constant regions are different and \
+             cd > 0.  This \
+             filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.\n\
              • We do not join in cases where there is too high a concentration of changes in the \
              junction region.  More specifically, if the number of mutations in CDR3 is at least \
              5 times the number of non-shared mutations outside CDR3 (maxed with 1), the join is \
-             rejected.  The number 5 is the parameter \\bold{CDR3_MULT}.  \
-             This criterion was added after Cell Ranger 6.1.\n\n\
+             rejected.  The number 5 is the parameter \\bold{CDR3_MULT}.\n\n\
              \
-             \\boldred{13}.  Junk.  \
+             \\boldred{12}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
-             \"enclone help special\" for a description of the filters.\n\n",
+             \"enclone help special\" for a description of the filters.\n\n\
+             \
+             \\boldred{13}.  Alternate algorithm.  \
+             An alternate and much simpler clonotyping algorithm can be invoked by specifying \
+             \\bold{JOIN_BASIC=90}.  This causes two exact subclonotypes to be joined if they \
+             have the same V and J gene assignments, the same CDR3 lengths, and CDR3 nucleotide \
+             identity of at least 90% on each chain.  The number 90 can be changed.\n\n",
         )?;
         h.print(
             "We are actively working to improve the algorithm.  Test results for the current \
