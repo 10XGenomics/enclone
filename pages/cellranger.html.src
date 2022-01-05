@@ -50,6 +50,21 @@ execute permission, then run with e.g. <code>enclone_macos</code>.
 <tbody>
 
 <tr>
+<td> Feb 13, 2021 </td>
+<td> <code>a43c8c</code> </td>
+<td> 6.1 </td>
+<td> 
+<ul>
+<li> To determine assignment of chains to columns in a clonotype table, we now rely primarily on 
+     the column information implied by the original joins of exact subclonotypes.  This eliminates 
+     some artifactual behavior.</li>
+<li> Change weak chain filtering to permit deletion of chains supported by up to 20 cells, rather
+     than 5.  This fixes some pathological cases involving clonotypes having many chains.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
 <td> June 4, 2021 </td>
 <td> <code>635832</code> </td>
 <td> 6.1 </td>
