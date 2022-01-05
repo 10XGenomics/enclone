@@ -50,7 +50,38 @@ execute permission, then run with e.g. <code>enclone_macos</code>.
 <tbody>
 
 <tr>
-<td> Feb 13, 2021 </td>
+<td> Dec. 9, 2020 </td>
+<td> <code>f50783</code> </td>
+<td> 6.0 </td>
+<td> 
+<ul>
+<li>Change the algorithm for deciding to use a donor reference allele, so that it checks all
+    donor reference alleles for all V genes having the same name as the one originally assigned to
+    a contig.</li>
+<li>Change default <code>MAX_DIFFS</code> from 50 to 55.  Change default 
+    <code>MAX_DEGRADATION</code> from 3 to 2.  Change default <code>MAX_SCORE</code> from 
+    1,000,000 to 500,000.  Change default <code>MAX_CDR3_DIFFS</code> from 10 to 15.</li>
+<li>Allow up to 5 (instead of 4) amino acid differences when joining chains.  This results in less 
+    spurious chains in clonotypes.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td> Dec. 9, 2020 </td>
+<td> <code>1e1ef9</code> </td>
+<td> 6.0 </td>
+<td> 
+<ul>
+<li>Add a doublet test, which removes some exact subclonotypes that appear to represent doublets.
+</li>
+<li>Improve the disjoint orbit test.</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td> Feb. 13, 2021 </td>
 <td> <code>a43c8c</code> </td>
 <td> 6.1 </td>
 <td> 
