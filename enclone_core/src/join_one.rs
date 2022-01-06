@@ -112,7 +112,7 @@ pub fn join_one(
         }
     }
 
-    // Test for JOIN_BASIC and BASIC_H.
+    // Test for JOIN_BASIC and JOIN_BASIC_H.
 
     if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h {
         let chains = if ctl.join_alg_opt.basic.is_some() {
