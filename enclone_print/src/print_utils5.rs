@@ -273,6 +273,7 @@ pub fn delete_weaks(
     // doesn't occur as Q40 twice, and disagrees with the reference.
 
     let cols = mat.len();
+    /*
     // (column, pos, base, qual, row)
     let mut vquals = Vec::<(usize, usize, u8, u8, usize)>::new();
     for u in 0..nexacts {
@@ -348,6 +349,7 @@ pub fn delete_weaks(
         }
         j = k;
     }
+    */
 
     // Remove onesies that do not have an exact match.
 

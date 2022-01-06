@@ -539,6 +539,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &eq,
         &disintegrated,
         &mut fate,
+        refdata,
     );
 
     // Mark VDJ noncells.
