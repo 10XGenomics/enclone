@@ -75,8 +75,14 @@ pub fn join_exacts(
     while i < info.len() {
         let mut j = i + 1;
         while j < info.len() {
-            if info[j].lens != info[i].lens {
-                break;
+            if ctl.join_alg_opt.basic_h {
+                if info[j].lens[0] != info[i].lens[0] {
+                    break;
+                }
+            } else {
+                if info[j].lens != info[i].lens {
+                    break;
+                }
             }
             j += 1;
         }
