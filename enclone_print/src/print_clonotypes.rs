@@ -413,14 +413,7 @@ pub fn print_clonotypes(
                 // Mark some weak exact subclonotypes for deletion.
 
                 if pass == 1 {
-                    delete_weaks(
-                        ctl,
-                        &exacts,
-                        exact_clonotypes,
-                        mat,
-                        refdata,
-                        &mut bads,
-                    );
+                    delete_weaks(ctl, &exacts, exact_clonotypes, mat, refdata, &mut bads);
                 }
 
                 // Done unless on second pass.  Unless there are bounds or COMPLETE specified
