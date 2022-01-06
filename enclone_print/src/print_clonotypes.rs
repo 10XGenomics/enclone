@@ -104,6 +104,7 @@ pub fn print_clonotypes(
 
     let mut parseable_fields = Vec::<String>::new();
     let mut max_chains = 4;
+    // This seems like a bug, since rsi is uninitialized upon entry to print_clonotypes.
     for i in 0..rsi.len() {
         max_chains = max(max_chains, rsi[i].mat.len());
     }
@@ -135,13 +136,6 @@ pub fn print_clonotypes(
         if !rsi_vars.contains(x) {
             all_vars.push(x.clone());
         }
-    }
-
-    // Compute total cells.
-
-    let mut total_cells = 0;
-    for i in 0..exact_clonotypes.len() {
-        total_cells += exact_clonotypes[i].ncells();
     }
 
     // Test for presence of GEX/FB data.
@@ -419,17 +413,7 @@ pub fn print_clonotypes(
                 // Mark some weak exact subclonotypes for deletion.
 
                 if pass == 1 {
-                    delete_weaks(
-                        ctl,
-                        &exacts,
-                        exact_clonotypes,
-                        total_cells,
-                        mat,
-                        refdata,
-                        &vars,
-                        &mut bads,
-                        &mut res.11,
-                    );
+                    delete_weaks(ctl, &exacts, exact_clonotypes, mat, refdata, &mut bads);
                 }
 
                 // Done unless on second pass.  Unless there are bounds or COMPLETE specified
