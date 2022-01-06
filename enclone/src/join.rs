@@ -75,6 +75,10 @@ pub fn join_exacts(
     while i < info.len() {
         let mut j = i + 1;
         while j < info.len() {
+            // Note that the organization of the loop here separates info entries by their
+            // contig lengths.  One could rejigger the code to also separate by CDR3 lengths,
+            // but surprisingly this doesn't help much if any.  It does perturb results very
+            // slightly.
             if ctl.join_alg_opt.basic_h {
                 if info[j].lens[0] != info[i].lens[0] {
                     break;
