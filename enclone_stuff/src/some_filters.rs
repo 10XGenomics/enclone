@@ -309,11 +309,42 @@ pub fn some_filters(
             vars.push(v);
         }
 
+        // Pretest if using JOIN_BASIC_H.  The code would crash without this.
+
+        let mut neuter = false;
+        if ctl.join_alg_opt.basic_h {
+            let mut ns = vec![Vec::<usize>::new(); cols];
+            for u in 0..exacts.len() {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for col in 0..cols {
+                    let m = mat[col][u];
+                    if m.is_some() {
+                        let m = m.unwrap();
+                        if ex.share[m].annv.len() > 1 {
+                            continue;
+                        }
+                        let n = ex.share[m].seq_del.len();
+                        ns[col].push(n);
+                    }
+                }
+            }
+            for col in 0..cols {
+                unique_sort(&mut ns[col]);
+                if ns[col].len() > 1 {
+                    neuter = true;
+                }
+            }
+        }
+
         // Proceed.
 
         // (column, pos, base, qual, row)
         let mut vquals = Vec::<(usize, usize, u8, u8, usize)>::new();
         for u in 0..exacts.len() {
+            if neuter {
+                continue;
+            }
             let clonotype_id = exacts[u];
             let ex = &exact_clonotypes[clonotype_id];
             for col in 0..cols {
