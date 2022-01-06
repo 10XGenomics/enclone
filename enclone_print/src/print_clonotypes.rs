@@ -104,6 +104,7 @@ pub fn print_clonotypes(
 
     let mut parseable_fields = Vec::<String>::new();
     let mut max_chains = 4;
+    // This seems like a bug, since rsi is uninitialized upon entry to print_clonotypes.
     for i in 0..rsi.len() {
         max_chains = max(max_chains, rsi[i].mat.len());
     }
