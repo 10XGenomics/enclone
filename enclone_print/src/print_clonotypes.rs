@@ -138,13 +138,6 @@ pub fn print_clonotypes(
         }
     }
 
-    // Compute total cells.
-
-    let mut total_cells = 0;
-    for i in 0..exact_clonotypes.len() {
-        total_cells += exact_clonotypes[i].ncells();
-    }
-
     // Test for presence of GEX/FB data.
 
     let mut have_gex = false;
@@ -424,12 +417,9 @@ pub fn print_clonotypes(
                         ctl,
                         &exacts,
                         exact_clonotypes,
-                        total_cells,
                         mat,
                         refdata,
-                        &vars,
                         &mut bads,
-                        &mut res.11,
                     );
                 }
 

@@ -193,12 +193,9 @@ pub fn delete_weaks(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    _total_cells: usize,
     mat: &Vec<Vec<Option<usize>>>,
     refdata: &RefData,
-    _vars: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
-    _fate: &mut Vec<(usize, String, String)>,
 ) {
     // Mark for deletion exact subclonotypes that fail the MIN_CELLS_EXACT or MIN_CHAINS_EXACT
     // or CHAINS_EXACT tests.
