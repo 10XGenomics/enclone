@@ -359,6 +359,11 @@ pub fn some_filters(
                     let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
                     for z in 0..vars[col].len() {
                         let p = vars[col][z];
+                        // not sure how this can happen
+                        if ctl.join_alg_opt.basic_h && p >= ex.share[m].seq_del.len() {
+                            neuter = true;
+                            continue;
+                        }
                         let b = ex.share[m].seq_del[p];
                         let mut refdiff = false;
                         if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
@@ -378,6 +383,9 @@ pub fn some_filters(
                     }
                 }
             }
+        }
+        if neuter {
+            vquals.clear();
         }
         vquals.sort_unstable();
         let mut j = 0;
