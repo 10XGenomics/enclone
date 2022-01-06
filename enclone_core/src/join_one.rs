@@ -90,28 +90,6 @@ pub fn join_one(
         return false;
     }
 
-    // Put identity filter on CDR3s for BCR.
-
-    if is_bcr {
-        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
-        let mut cd = 0;
-        let mut total = 0;
-        for z in 0..2 {
-            if x1[z].len() != x2[z].len() {
-                return false;
-            }
-            for m in 0..x1[z].len() {
-                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
-                    cd += 1;
-                }
-            }
-            total += x1[z].len();
-        }
-        if cd as f64 / total as f64 > 1.0 - ctl.join_alg_opt.join_cdr3_ident / 100.0 {
-            return false;
-        }
-    }
-
     // Test for JOIN_BASIC and JOIN_BASIC_H.
 
     if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h {
@@ -209,6 +187,28 @@ pub fn join_one(
             ..Default::default()
         });
         return true;
+    }
+
+    // Put identity filter on CDR3s for BCR.
+
+    if is_bcr {
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        let mut cd = 0;
+        let mut total = 0;
+        for z in 0..2 {
+            if x1[z].len() != x2[z].len() {
+                return false;
+            }
+            for m in 0..x1[z].len() {
+                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
+                    cd += 1;
+                }
+            }
+            total += x1[z].len();
+        }
+        if cd as f64 / total as f64 > 1.0 - ctl.join_alg_opt.join_cdr3_ident / 100.0 {
+            return false;
+        }
     }
 
     // Require that CDR3s have the same length.  Ugly.
