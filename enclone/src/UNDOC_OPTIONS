@@ -324,6 +324,7 @@ JOIN_BASIC_H: use a special join heuristic as follows (for demonstration purpose
     same heavy chain V, same heavy chain J, 
     same heavy chain CDR3 length, 
     90% identity on nucleotides within heavy chain CDR3
+automatically invokes PRE_EVAL
 
 PRE_EVAL: evaluate sensitivity and specificity before calling print_clonotypes
 
