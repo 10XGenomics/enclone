@@ -211,21 +211,9 @@ pub fn join_one(
         }
     }
 
-    // Require that CDR3s have the same length.  Ugly.
-    // First part should be a tautology.
-
-    let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
-    if x1.len() != x2.len() {
-        return false;
-    }
-    for i in 0..x1.len() {
-        if x1[i].len() != x2[i].len() {
-            return false;
-        }
-    }
-
     // Compute number of differences.  The default behavior is that this is applied only to TCR.
 
+    let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
     if !is_bcr || ctl.heur.max_diffs < 1_000_000 {
         let mut diffs = 0_usize;
         for x in 0..info[k1].lens.len() {
