@@ -513,6 +513,12 @@ pub fn print_stats(
                 "   • rate of cross donor mixing = {:.2} x 10^-9",
                 rate
             );
+            let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+            fwriteln!(
+                logx,
+                "   • estimated number of false intradonor merges = {}",
+                add_commas(bogus.round() as usize)
+            );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
