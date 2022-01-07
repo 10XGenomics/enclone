@@ -483,11 +483,20 @@ pub fn print_stats(
         );
         if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
             let mut cross = 0;
+            let mut intra = 0;
             for i1 in 0..cells_by_donor.len() {
+                if cells_by_donor[i1] > 1 {
+                    intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+                }
                 for i2 in i1 + 1..cells_by_donor.len() {
                     cross += cells_by_donor[i1] * cells_by_donor[i2];
                 }
             }
+            fwriteln!(
+                logx,
+                "   • number of intradonor comparisons = {}",
+                add_commas(intra)
+            );
             fwriteln!(
                 logx,
                 "   • number of cross-donor comparisons = {}",
