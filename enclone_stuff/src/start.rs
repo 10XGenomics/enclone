@@ -615,18 +615,32 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 }
             }
         }
-        println!(
-            "\nnumber of intradonor cell-cell merges (quadratic) = {}",
-            add_commas(merges2)
-        );
         let mut cross = 0;
+        let mut intra = 0;
         for i1 in 0..cells_by_donor.len() {
+            if cells_by_donor[i1] > 1 {
+                intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+            }
             for i2 in i1 + 1..cells_by_donor.len() {
                 cross += cells_by_donor[i1] * cells_by_donor[i2];
             }
         }
+        println!("\nnumber of intradonor comparisons = {}", add_commas(intra));
+        println!(
+            "number of intradonor cell-cell merges (quadratic) = {}",
+            add_commas(merges2)
+        );
+        println!(
+            "number of cross-donor comparisons that mix donors = {}",
+            add_commas(mixes)
+        );
         let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
         println!("rate of cross donor mixing = {:.2} x 10^-9\n", rate);
+        let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+        println!(
+            "estimated number of false intradonor merges = {}",
+            add_commas(bogus.round() as usize)
+        );
         std::process::exit(0);
     }
 
