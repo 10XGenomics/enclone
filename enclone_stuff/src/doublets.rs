@@ -130,10 +130,12 @@ pub fn delete_doublets(
             shares.par_sort();
             shares.dedup();
         }
+        ctl.perf_stats(&t, "doublet filtering shares");
 
         // Find triples of pure subclonotypes in which the first two have no share, but both
         // of the first two share with the third.
 
+        let t = Instant::now();
         const MIN_MULT_DOUBLET: usize = 5;
         let mut trips = Vec::<(usize, usize, usize)>::new();
         {
@@ -183,9 +185,11 @@ pub fn delete_doublets(
                 trips.append(&mut results[j].1.clone());
             }
         }
+        ctl.perf_stats(&t, "doublet filtering trips");
 
         // Delete some of the third members of the triples.
 
+        let t = Instant::now();
         let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
             let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
