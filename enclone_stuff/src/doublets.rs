@@ -10,6 +10,7 @@ use itertools::Itertools;
 use qd::Double;
 use rayon::prelude::*;
 use std::collections::HashMap;
+use std::time::Instant;
 use vector_utils::{bin_member, erase_if, next_diff, next_diff12_3, next_diff1_2, sort_sync2};
 
 pub fn delete_doublets(
@@ -23,6 +24,7 @@ pub fn delete_doublets(
     raw_joins: &Vec<Vec<usize>>,
 ) {
     if ctl.clono_filt_opt_def.doublet {
+        let t = Instant::now();
         // Define pure subclonotypes.  To do this we break each clonotype up by chain signature.
         // Note duplication of code with print_clonotypes.rs.  And this is doing some
         // superfluous compute.
@@ -32,6 +34,8 @@ pub fn delete_doublets(
             results.push((i, Vec::new()));
         }
         let mut pures = Vec::<Vec<usize>>::new();
+        ctl.perf_stats(&t, "doublet filtering setup");
+        let t = Instant::now();
         results.par_iter_mut().for_each(|res| {
             let i = res.0;
             let o = orbits[i].clone();
@@ -82,6 +86,8 @@ pub fn delete_doublets(
                 j = k;
             }
         });
+        ctl.perf_stats(&t, "doublet filtering main");
+        let t = Instant::now();
         for i in 0..results.len() {
             pures.append(&mut results[i].1);
         }
@@ -235,5 +241,6 @@ pub fn delete_doublets(
             orbits2.push(o);
         }
         *orbits = orbits2;
+        ctl.perf_stats(&t, "doublet filtering tail");
     }
 }

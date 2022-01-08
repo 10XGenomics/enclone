@@ -32,7 +32,6 @@ pub fn some_filters(
 ) {
     // Delete exact subclonotypes that appear to represent doublets.
 
-    let tdoublet = Instant::now();
     delete_doublets(
         orbits,
         is_bcr,
@@ -43,7 +42,6 @@ pub fn some_filters(
         info,
         raw_joins,
     );
-    ctl.perf_stats(&tdoublet, "doublet filtering");
 
     // Given a signature s having at least two chains, if the total cells in the two-chain
     // signatures that are different from it but share a chain with it is at least 20 times
