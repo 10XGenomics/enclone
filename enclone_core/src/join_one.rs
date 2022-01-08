@@ -92,7 +92,7 @@ pub fn join_one(
 
     // Test for JOIN_BASIC and JOIN_BASIC_H.
 
-    if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h {
+    if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h.is_some() {
         let chains = if ctl.join_alg_opt.basic.is_some() {
             2
         } else {
@@ -112,9 +112,11 @@ pub fn join_one(
                     cd += 1;
                 }
             }
-            let mut limit = 0.1;
+            let limit;
             if ctl.join_alg_opt.basic.is_some() {
                 limit = (100.0 - ctl.join_alg_opt.basic.unwrap()) / 100.0;
+            } else {
+                limit = (100.0 - ctl.join_alg_opt.basic_h.unwrap()) / 100.0;
             }
             if cd as f64 / (x1[z].len() as f64) > limit {
                 return false;

@@ -79,7 +79,7 @@ pub fn join_exacts(
             // contig lengths.  One could rejigger the code to also separate by CDR3 lengths,
             // but surprisingly this doesn't help much if any.  It does perturb results very
             // slightly.
-            if ctl.join_alg_opt.basic_h {
+            if ctl.join_alg_opt.basic_h.is_some() {
                 if info[j].lens[0] != info[i].lens[0] {
                     break;
                 }
@@ -177,7 +177,7 @@ pub fn join_exacts(
 
                 if ncells == 2
                     && x.len() == 2
-                    && !ctl.join_alg_opt.basic_h
+                    && ctl.join_alg_opt.basic_h.is_none()
                     && ctl.join_alg_opt.basic.is_none()
                     && !ctl.join_alg_opt.basicx
                 {

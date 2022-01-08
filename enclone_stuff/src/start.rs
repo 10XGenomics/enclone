@@ -545,7 +545,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Pre evaluate (PRE_EVAL).
 
-    if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h {
+    if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h.is_some() {
         let mut exacts = Vec::<Vec<usize>>::new();
         {
             let mut results = Vec::<(usize, Vec<usize>)>::new();

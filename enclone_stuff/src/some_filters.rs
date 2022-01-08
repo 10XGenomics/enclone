@@ -312,7 +312,7 @@ pub fn some_filters(
         // Pretest if using JOIN_BASIC_H.  The code would crash without this.
 
         let mut neuter = false;
-        if ctl.join_alg_opt.basic_h {
+        if ctl.join_alg_opt.basic_h.is_some() {
             let mut ns = vec![Vec::<usize>::new(); cols];
             for u in 0..exacts.len() {
                 let clonotype_id = exacts[u];
@@ -360,7 +360,7 @@ pub fn some_filters(
                     for z in 0..vars[col].len() {
                         let p = vars[col][z];
                         // not sure how this can happen
-                        if ctl.join_alg_opt.basic_h && p >= ex.share[m].seq_del.len() {
+                        if ctl.join_alg_opt.basic_h.is_some() && p >= ex.share[m].seq_del.len() {
                             neuter = true;
                             continue;
                         }
