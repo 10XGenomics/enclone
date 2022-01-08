@@ -630,6 +630,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             "number of intradonor cell-cell merges (quadratic) = {}",
             add_commas(merges2)
         );
+        println!("number of cross-donor comparisons = {}", add_commas(cross));
         println!(
             "number of cross-donor comparisons that mix donors = {}",
             add_commas(mixes)
