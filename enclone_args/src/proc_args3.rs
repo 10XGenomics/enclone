@@ -772,6 +772,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 "gex".to_string(),
                 "origin".to_string(),
                 "tcr".to_string(),
+                "tcrgd".to_string(),
                 "color".to_string(),
             ];
             for x in fields.iter() {
@@ -784,11 +785,12 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 }
             }
             ctl.gen_opt.tcr = fields.contains(&"tcr".to_string());
+            ctl.gen_opt.tcrgd = fields.contains(&"tcrgd".to_string());
             ctl.gen_opt.bcr = fields.contains(&"bcr".to_string());
-            if !ctl.gen_opt.tcr && !ctl.gen_opt.bcr {
+            if !ctl.gen_opt.tcr && !ctl.gen_opt.bcr && !ctl.gen_opt.tcrgd {
                 return Err(
                     "\nThe CSV file that you specified using the META or METAX argument \
-                     has neither the field tcr or bcr in its first line.\n"
+                     has neither the field tcr, tcrgd, or bcr in its first line.\n"
                         .to_string(),
                 );
             }
@@ -796,6 +798,20 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 return Err(
                     "\nThe CSV file that you specified using the META or METAX argument \
                      has both the fields tcr and bcr in its first line.\n"
+                        .to_string(),
+                );
+            }
+            if ctl.gen_opt.tcr && ctl.gen_opt.tcrgd {
+                return Err(
+                    "\nThe CSV file that you specified using the META or METAX argument \
+                     has both the fields tcr and tcrgd in its first line.\n"
+                        .to_string(),
+                );
+            }
+            if ctl.gen_opt.bcr && ctl.gen_opt.tcrgd {
+                return Err(
+                    "\nThe CSV file that you specified using the META or METAX argument \
+                     has both the fields tcrgd and bcr in its first line.\n"
                         .to_string(),
                 );
             }
@@ -821,7 +837,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                 if y.starts_with('"') && y.ends_with('"') {
                     y = y.after("\"").rev_before("\"").to_string();
                 }
-                if *x == "tcr" || *x == "bcr" {
+                if *x == "tcr" || *x == "bcr" || *x == "tcrgd" {
                     if y.contains(':') {
                         path = y.after(":").to_string();
                         abbr = y.before(":").to_string();
@@ -863,6 +879,12 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
             }
             if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", path)) {
                 path = format!("{}/multi/vdj_t", path);
+            }
+            if ctl.gen_opt.tcrgd && path_exists(&format!("{}/vdj_t_gd", path)) {
+                path = format!("{}/vdj_t_gd", path);
+            }
+            if ctl.gen_opt.tcrgd && path_exists(&format!("{}/multi/vdj_t_gd", path)) {
+                path = format!("{}/multi/vdj_t_gd", path);
             }
             if !gpath.is_empty() {
                 gpath = get_path_or_internal_id(&gpath, ctl, "META", &spinlock)?;
