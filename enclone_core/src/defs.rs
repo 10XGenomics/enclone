@@ -244,6 +244,7 @@ pub struct GeneralOpt {
     pub all_bc_fields: Vec<String>,
     pub all_bc_fields_orig: Vec<String>,
     pub gamma_delta: bool,
+    pub pre_eval: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -317,7 +318,7 @@ pub struct JoinAlgOpt {
     pub old_mult: bool,
     pub mult_pow: f64,
     pub old_light: bool,
-    pub basic_h: bool,
+    pub basic_h: Option<f64>,
     pub basic: Option<f64>,
     pub basicx: bool,
     pub join_full_diff: bool,

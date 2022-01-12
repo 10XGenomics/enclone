@@ -30,7 +30,8 @@ use std::{
     io::{BufWriter, Write},
     time::Instant,
 };
-use vector_utils::{bin_member, erase_if, unique_sort};
+use string_utils::add_commas;
+use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -541,6 +542,108 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut fate,
         refdata,
     );
+
+    // Pre evaluate (PRE_EVAL).
+
+    if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h.is_some() {
+        let mut exacts = Vec::<Vec<usize>>::new();
+        {
+            let mut results = Vec::<(usize, Vec<usize>)>::new();
+            for i in 0..orbits.len() {
+                results.push((i, Vec::<usize>::new()));
+            }
+            results.par_iter_mut().for_each(|res| {
+                let i = res.0;
+                let o = &orbits[i];
+                let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
+                for id in o.iter() {
+                    let x: &CloneInfo = &info[*id as usize];
+                    od.push((x.origin.clone(), x.clonotype_id, *id));
+                }
+                od.sort();
+                let mut j = 0;
+                while j < od.len() {
+                    let k = next_diff12_3(&od, j as i32) as usize;
+                    res.1.push(od[j].1);
+                    j = k;
+                }
+            });
+            for i in 0..results.len() {
+                exacts.push(results[i].1.clone());
+            }
+        }
+        let mut merges2 = 0;
+        let mut mixes = 0;
+        let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
+        for i in 0..exacts.len() {
+            let mut cells_by_donor_this = vec![0; ctl.origin_info.donor_list.len()];
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                for k in 0..ex.clones.len() {
+                    let x = &ex.clones[k][0];
+                    if x.donor_index.is_some() {
+                        cells_by_donor[x.donor_index.unwrap()] += 1;
+                        cells_by_donor_this[x.donor_index.unwrap()] += 1;
+                    }
+                }
+            }
+            if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
+                for j1 in 0..exacts[i].len() {
+                    let ex1 = &exact_clonotypes[exacts[i][j1]];
+                    for j2 in j1..exacts[i].len() {
+                        let ex2 = &exact_clonotypes[exacts[i][j2]];
+                        for k1 in 0..ex1.clones.len() {
+                            let x1 = &ex1.clones[k1][0];
+                            for k2 in 0..ex2.clones.len() {
+                                if (j1, k1) < (j2, k2) {
+                                    let x2 = &ex2.clones[k2][0];
+                                    if x1.donor_index.is_some() && x2.donor_index.is_some() {
+                                        if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                            mixes += 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            for j in 0..cells_by_donor_this.len() {
+                let n = cells_by_donor_this[j];
+                if n > 1 {
+                    merges2 += (n * (n - 1)) / 2;
+                }
+            }
+        }
+        let mut cross = 0;
+        let mut intra = 0;
+        for i1 in 0..cells_by_donor.len() {
+            if cells_by_donor[i1] > 1 {
+                intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+            }
+            for i2 in i1 + 1..cells_by_donor.len() {
+                cross += cells_by_donor[i1] * cells_by_donor[i2];
+            }
+        }
+        println!("\nnumber of intradonor comparisons = {}", add_commas(intra));
+        println!(
+            "number of intradonor cell-cell merges (quadratic) = {}",
+            add_commas(merges2)
+        );
+        println!("number of cross-donor comparisons = {}", add_commas(cross));
+        println!(
+            "number of cross-donor comparisons that mix donors = {}",
+            add_commas(mixes)
+        );
+        let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
+        println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
+        let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+        println!(
+            "estimated number of false intradonor merges = {}\n",
+            add_commas(bogus.round() as usize)
+        );
+        std::process::exit(0);
+    }
 
     // Mark VDJ noncells.
 

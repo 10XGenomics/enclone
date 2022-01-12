@@ -483,11 +483,20 @@ pub fn print_stats(
         );
         if cells_by_donor.len() > 1 && ctl.clono_filt_opt_def.donor {
             let mut cross = 0;
+            let mut intra = 0;
             for i1 in 0..cells_by_donor.len() {
+                if cells_by_donor[i1] > 1 {
+                    intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+                }
                 for i2 in i1 + 1..cells_by_donor.len() {
                     cross += cells_by_donor[i1] * cells_by_donor[i2];
                 }
             }
+            fwriteln!(
+                logx,
+                "   • number of intradonor comparisons = {}",
+                add_commas(intra)
+            );
             fwriteln!(
                 logx,
                 "   • number of cross-donor comparisons = {}",
@@ -503,6 +512,12 @@ pub fn print_stats(
                 logx,
                 "   • rate of cross donor mixing = {:.2} x 10^-9",
                 rate
+            );
+            let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+            fwriteln!(
+                logx,
+                "   • estimated number of false intradonor merges = {}",
+                add_commas(bogus.round() as usize)
             );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);

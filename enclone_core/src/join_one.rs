@@ -90,31 +90,9 @@ pub fn join_one(
         return false;
     }
 
-    // Put identity filter on CDR3s for BCR.
+    // Test for JOIN_BASIC and JOIN_BASIC_H.
 
-    if is_bcr {
-        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
-        let mut cd = 0;
-        let mut total = 0;
-        for z in 0..2 {
-            if x1[z].len() != x2[z].len() {
-                return false;
-            }
-            for m in 0..x1[z].len() {
-                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
-                    cd += 1;
-                }
-            }
-            total += x1[z].len();
-        }
-        if cd as f64 / total as f64 > 1.0 - ctl.join_alg_opt.join_cdr3_ident / 100.0 {
-            return false;
-        }
-    }
-
-    // Test for JOIN_BASIC and BASIC_H.
-
-    if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h {
+    if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h.is_some() {
         let chains = if ctl.join_alg_opt.basic.is_some() {
             2
         } else {
@@ -134,9 +112,11 @@ pub fn join_one(
                     cd += 1;
                 }
             }
-            let mut limit = 0.1;
+            let limit;
             if ctl.join_alg_opt.basic.is_some() {
                 limit = (100.0 - ctl.join_alg_opt.basic.unwrap()) / 100.0;
+            } else {
+                limit = (100.0 - ctl.join_alg_opt.basic_h.unwrap()) / 100.0;
             }
             if cd as f64 / (x1[z].len() as f64) > limit {
                 return false;
@@ -211,21 +191,31 @@ pub fn join_one(
         return true;
     }
 
-    // Require that CDR3s have the same length.  Ugly.
-    // First part should be a tautology.
+    // Put identity filter on CDR3s for BCR.
 
-    let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
-    if x1.len() != x2.len() {
-        return false;
-    }
-    for i in 0..x1.len() {
-        if x1[i].len() != x2[i].len() {
+    if is_bcr {
+        let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+        let mut cd = 0;
+        let mut total = 0;
+        for z in 0..2 {
+            if x1[z].len() != x2[z].len() {
+                return false;
+            }
+            for m in 0..x1[z].len() {
+                if x1[z].as_bytes()[m] != x2[z].as_bytes()[m] {
+                    cd += 1;
+                }
+            }
+            total += x1[z].len();
+        }
+        if cd as f64 / total as f64 > 1.0 - ctl.join_alg_opt.join_cdr3_ident / 100.0 {
             return false;
         }
     }
 
     // Compute number of differences.  The default behavior is that this is applied only to TCR.
 
+    let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
     if !is_bcr || ctl.heur.max_diffs < 1_000_000 {
         let mut diffs = 0_usize;
         for x in 0..info[k1].lens.len() {

@@ -32,7 +32,6 @@ pub fn some_filters(
 ) {
     // Delete exact subclonotypes that appear to represent doublets.
 
-    let tdoublet = Instant::now();
     delete_doublets(
         orbits,
         is_bcr,
@@ -43,7 +42,6 @@ pub fn some_filters(
         info,
         raw_joins,
     );
-    ctl.perf_stats(&tdoublet, "doublet filtering");
 
     // Given a signature s having at least two chains, if the total cells in the two-chain
     // signatures that are different from it but share a chain with it is at least 20 times
@@ -309,11 +307,42 @@ pub fn some_filters(
             vars.push(v);
         }
 
+        // Pretest if using JOIN_BASIC_H.  The code would crash without this.
+
+        let mut neuter = false;
+        if ctl.join_alg_opt.basic_h.is_some() {
+            let mut ns = vec![Vec::<usize>::new(); cols];
+            for u in 0..exacts.len() {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for col in 0..cols {
+                    let m = mat[col][u];
+                    if m.is_some() {
+                        let m = m.unwrap();
+                        if ex.share[m].annv.len() > 1 {
+                            continue;
+                        }
+                        let n = ex.share[m].seq_del.len();
+                        ns[col].push(n);
+                    }
+                }
+            }
+            for col in 0..cols {
+                unique_sort(&mut ns[col]);
+                if ns[col].len() > 1 {
+                    neuter = true;
+                }
+            }
+        }
+
         // Proceed.
 
         // (column, pos, base, qual, row)
         let mut vquals = Vec::<(usize, usize, u8, u8, usize)>::new();
         for u in 0..exacts.len() {
+            if neuter {
+                continue;
+            }
             let clonotype_id = exacts[u];
             let ex = &exact_clonotypes[clonotype_id];
             for col in 0..cols {
@@ -328,6 +357,11 @@ pub fn some_filters(
                     let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
                     for z in 0..vars[col].len() {
                         let p = vars[col][z];
+                        // not sure how this can happen
+                        if ctl.join_alg_opt.basic_h.is_some() && p >= ex.share[m].seq_del.len() {
+                            neuter = true;
+                            continue;
+                        }
                         let b = ex.share[m].seq_del[p];
                         let mut refdiff = false;
                         if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
@@ -347,6 +381,9 @@ pub fn some_filters(
                     }
                 }
             }
+        }
+        if neuter {
+            vquals.clear();
         }
         vquals.sort_unstable();
         let mut j = 0;

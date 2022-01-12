@@ -320,8 +320,14 @@ ALL_BCH: same but human readable instead of CSV
 
 ===================================================================================================
 
-BASIC_H: use a special join heuristic as follows (for demonstration purposes only)
+PRE_EVAL: evaluate sensitivity and specificity before calling print_clonotypes
+
+JOIN_BASIC_H=n: use a special join heuristic as follows (for demonstration purposes only)
     same heavy chain V, same heavy chain J, 
     same heavy chain CDR3 length, 
-    90% identity on nucleotides within heavy chain CDR3
-BASIC: same but use both chains
+    n% identity on nucleotides within heavy chain CDR3
+This automatically invokes PRE_EVAL because otherwise it would crash.
+This option is particularly slow because it forces more comparisons in the join step.
+Uses very high memory.  Time and memory use increase as n is reduced.
+
+===================================================================================================

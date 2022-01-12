@@ -75,8 +75,18 @@ pub fn join_exacts(
     while i < info.len() {
         let mut j = i + 1;
         while j < info.len() {
-            if info[j].lens != info[i].lens {
-                break;
+            // Note that the organization of the loop here separates info entries by their
+            // contig lengths.  One could rejigger the code to also separate by CDR3 lengths,
+            // but surprisingly this doesn't help much if any.  It does perturb results very
+            // slightly.
+            if ctl.join_alg_opt.basic_h.is_some() {
+                if info[j].lens[0] != info[i].lens[0] {
+                    break;
+                }
+            } else {
+                if info[j].lens != info[i].lens {
+                    break;
+                }
             }
             j += 1;
         }
@@ -167,7 +177,7 @@ pub fn join_exacts(
 
                 if ncells == 2
                     && x.len() == 2
-                    && !ctl.join_alg_opt.basic_h
+                    && ctl.join_alg_opt.basic_h.is_none()
                     && ctl.join_alg_opt.basic.is_none()
                     && !ctl.join_alg_opt.basicx
                 {
