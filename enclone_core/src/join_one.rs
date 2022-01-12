@@ -5,7 +5,7 @@ use debruijn::{
     dna_string::{ndiffs, DnaString},
     Mer,
 };
-use qd::{dd, Double};
+use qd::{qd, Quad};
 use stats_utils::abs_diff;
 use std::collections::HashMap;
 // use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
@@ -21,21 +21,21 @@ pub fn p_at_most_m_distinct_in_sample_of_x_from_n_double(
     m: usize,
     x: usize,
     n: usize,
-    sr: &[Vec<Double>],
+    sr: &[Vec<Quad>],
 ) -> f64 {
-    let mut p = dd![1.0];
+    let mut p = qd![1.0];
     for u in m + 1..=x {
-        let mut z = dd![sr[x][u]];
+        let mut z = qd![sr[x][u]];
         for _ in 0..x {
-            z *= dd![u as f64] / dd![n as f64];
+            z *= qd![u as f64] / qd![n as f64];
         }
         for v in 1..=u {
-            z *= dd![(n - v + 1) as f64] / dd![(u - v + 1) as f64];
+            z *= qd![(n - v + 1) as f64] / qd![(u - v + 1) as f64];
         }
         p -= z;
     }
-    if p < dd![0.0] {
-        p = dd![0.0];
+    if p < qd![0.0] {
+        p = qd![0.0];
     }
     f64::from(p)
 }
@@ -69,7 +69,7 @@ pub fn join_one(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<Double>>,
+    sr: &Vec<Vec<Quad>>,
     pot: &mut Vec<PotentialJoin>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
@@ -513,7 +513,7 @@ pub fn join_one(
 
     // Threshold on score.
 
-    if score > ctl.join_alg_opt.max_score {
+    if score > ctl.join_alg_opt.max_score && p1 > 0.000001 {
         return false;
     }
 

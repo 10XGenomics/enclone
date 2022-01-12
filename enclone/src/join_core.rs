@@ -3,7 +3,7 @@
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
 use enclone_core::join_one::join_one;
 use equiv::EquivRel;
-use qd::Double;
+use qd::Quad;
 use std::collections::HashMap;
 
 pub fn join_core(
@@ -14,7 +14,7 @@ pub fn join_core(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<Double>>,
+    sr: &Vec<Vec<Quad>>,
     pot: &mut Vec<PotentialJoin>,
 ) {
     let mut eq: EquivRel = EquivRel::new((j - i) as i32);

@@ -23,7 +23,7 @@ use enclone_core::enclone_structs::*;
 use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
 use io_utils::fwriteln;
-use qd::dd;
+use qd::qd;
 use std::{
     collections::HashMap,
     fs::File,
@@ -39,36 +39,36 @@ use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
 // to use higher precision internal math.  This has also been speeded up, and in the process
 // made less readable.
 
-use qd::Double;
+use qd::Quad;
 use rayon::prelude::*;
 
-pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Double>> {
-    let mut s = Vec::<Vec<Double>>::new();
-    let zero = dd![0.0];
-    let one = dd![1.0];
+pub fn stirling2_ratio_table_double(n_max: usize) -> Vec<Vec<Quad>> {
+    let mut s = Vec::<Vec<Quad>>::new();
+    let zero = qd![0.0];
+    let one = qd![1.0];
     for n in 0..=n_max {
         s.push(vec![zero; n + 1]);
     }
     s[0][0] = one;
-    let mut z = Vec::<Double>::new();
-    let mut n2n1 = vec![dd![0.0]; n_max + 1];
+    let mut z = Vec::<Quad>::new();
+    let mut n2n1 = vec![qd![0.0]; n_max + 1];
     for n in 2..=n_max {
-        n2n1[n] = Double::from((n - 2) as u32) / Double::from((n - 1) as u32);
+        n2n1[n] = Quad::from((n - 2) as u32) / Quad::from((n - 1) as u32);
     }
-    let mut k1k = vec![dd![0.0]; n_max];
+    let mut k1k = vec![qd![0.0]; n_max];
     for k in 1..n_max {
-        k1k[k] = Double::from((k - 1) as u32) / Double::from(k as u32);
+        k1k[k] = Quad::from((k - 1) as u32) / Quad::from(k as u32);
     }
-    let mut njn = Vec::<(usize, Double)>::new();
+    let mut njn = Vec::<(usize, Quad)>::new();
     for i in 0..n_max + 1 {
-        njn.push((i, dd![0.0]));
+        njn.push((i, qd![0.0]));
     }
     njn.par_iter_mut().for_each(|res| {
         let n = res.0;
         if n >= 1 {
             let mut p = one;
             for j in 1..=n {
-                p *= Double::from(j as u32) / Double::from(n as u32);
+                p *= Quad::from(j as u32) / Quad::from(n as u32);
             }
             res.1 = p;
         }

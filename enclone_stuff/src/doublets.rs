@@ -7,7 +7,7 @@
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
 use itertools::Itertools;
-use qd::Double;
+use qd::Quad;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::time::Instant;
@@ -17,7 +17,7 @@ pub fn delete_doublets(
     orbits: &mut Vec<Vec<i32>>,
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<Double>>,
+    sr: &Vec<Vec<Quad>>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,

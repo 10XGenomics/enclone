@@ -8,7 +8,7 @@ use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
 use enclone_print::print_utils3::define_column_info;
 use equiv::EquivRel;
-use qd::Double;
+use qd::Quad;
 use rayon::prelude::*;
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
@@ -20,7 +20,7 @@ pub fn some_filters(
     orbits: &mut Vec<Vec<i32>>,
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
-    sr: &Vec<Vec<Double>>,
+    sr: &Vec<Vec<Quad>>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,

@@ -3,7 +3,7 @@
 use self::refx::RefData;
 use crate::defs::{CloneInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_proto::types::DonorReferenceItem;
-use qd::Double;
+use qd::Quad;
 use std::{collections::HashMap, time::Instant};
 use vdj_ann::refx;
 
@@ -56,7 +56,7 @@ pub struct EncloneExacts {
     pub vdj_cells: Vec<Vec<String>>,
     pub join_info: Vec<(usize, usize, bool, Vec<u8>)>,
     pub drefs: Vec<DonorReferenceItem>,
-    pub sr: Vec<Vec<Double>>,
+    pub sr: Vec<Vec<Quad>>,
     pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
     pub is_bcr: bool,
 }
