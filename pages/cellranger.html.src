@@ -143,7 +143,7 @@ regions are different.  The old behavior maybe be obtained by adding the argumen
 
 <tr>
 <td> Jan. 5, 2022 </td>
-<td> <code>******</code> </td>
+<td> <code>7e3d7b</code> </td>
 <td> TBD </td>
 <td> 
 Make five changes to BCR clonotyping that increase its sensitivity and specificity:
@@ -172,6 +172,21 @@ preceding Dec. 13 is still available by via the argument <code>OLD_MULT</code>.<
 <li>The light chain constant region identity requirement is now relaxed to apply only when
 <code>cd = 0</code>.  The relaxation cannot be turned off but the light chain requirement can
 still be turned off entirely using <code>OLD_LIGHT</code>.</li>
+</ol>
+</td>
+</tr>
+
+<tr>
+<td> Jan. 13, 2022 </td>
+<td> <code>******</code> </td>
+<td> TBD </td>
+<td> 
+Make three small changes to BCR clonotyping:
+<ol>
+<li>Change the default value for <code>MAX_SCORE</code> to <code>100000</code>.</li>
+<li>Fix bug that resulted in the constraint <code>cd ≤ 15</code> still being imposed.</li>
+<li>Allow joins with high score to pass so long as they have at least <code>15</code> shared
+mutations.  The parameter <code>15</code> is accessible as <code>AUTO_SHARE</code>.</li>
 </ol>
 </td>
 </tr>
