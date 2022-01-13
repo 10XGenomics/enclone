@@ -349,7 +349,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
-        ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
         ("BASELINE", &mut ctl.gen_opt.baseline),
         ("BASICX", &mut ctl.join_alg_opt.basicx),
@@ -477,6 +476,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Define arguments that set something to a usize.
 
     let set_usize = [
+        ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("CDR3_NORMAL_LEN", &mut ctl.join_alg_opt.cdr3_normal_len),
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
