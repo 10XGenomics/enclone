@@ -139,14 +139,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.allele_alg_opt.min_mult = 4;
     ctl.allele_alg_opt.min_alt = 4;
 
-    ctl.join_alg_opt.max_score = 500_000.0;
+    ctl.join_alg_opt.max_score = 100_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
     ctl.join_alg_opt.merge_onesies_ctl = true;
-    ctl.join_alg_opt.max_cdr3_diffs = 15;
+    ctl.join_alg_opt.max_cdr3_diffs = 1000;
     ctl.join_alg_opt.cdr3_mult = 5.0;
     ctl.join_alg_opt.mult_pow = 80.0;
     ctl.join_alg_opt.join_cdr3_ident = 80.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
+    ctl.join_alg_opt.auto_share = 15;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -475,6 +476,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Define arguments that set something to a usize.
 
     let set_usize = [
+        ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("CDR3_NORMAL_LEN", &mut ctl.join_alg_opt.cdr3_normal_len),
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),

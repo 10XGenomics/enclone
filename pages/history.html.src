@@ -30,6 +30,16 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>1/13/22</b>: Make three small changes to BCR clonotyping:
+<ul>
+<ol>
+<li>Change the default value for <code>MAX_SCORE</code> to <code>100000</code>.</li>
+<li>Fix bug that resulted in the constraint <code>cd ≤ 15</code> still being imposed.</li>
+<li>Allow joins with high score to pass so long as they have at least <code>15</code> shared
+mutations.  The parameter <code>15</code> is accessible as <code>AUTO_SHARE</code>.</li>
+</ul>
+</p>
+
 <p><b>1/5/22</b>: 
 <ul>
 <li>Several changes that improve clonotyping sensitivity and specificity.  Details are

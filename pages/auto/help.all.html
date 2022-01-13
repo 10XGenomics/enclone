@@ -308,12 +308,14 @@ few CDR3 differences are deemed to be in the same clonotype.  That is, The lower
 lower N is, the more likely it is that the shared mutations represent bona fide shared ancestry. 
 Accordingly, the smaller p*N is, the more likely it is that two cells lie in the same true
 clonotype.  To join two cells into the same clonotype, we require that the bound p*n ≤ C is
-satisfied, where C is the constant 500,000.  The value may be adjusted using the command-line
-argument <span style="font-weight:bold;">MAX_SCORE</span>, or the log10 of this,
-<span style="font-weight:bold;">MAX_LOG_SCORE</span>.  This constant was arrived at by empirically balancing sensitivity and specificity
-across a large collection of datasets.  See results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
+satisfied, where C is the constant 100,000.  The value may be adjusted using the command-line
+argument <span style="font-weight:bold;">MAX_SCORE</span>, or the log10 of this, <span style="font-weight:bold;">MAX_LOG_SCORE</span>.  This constant was arrived at by
+empirically balancing sensitivity and specificity across a large collection of datasets.  See
+results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
 <span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.
+• As an exception to the key join criterion, we allow a join which has at least 15 shares, even if
+p*N > C.  The constant 15 is modifiable via the argument <span style="font-weight:bold;">AUTO_SHARES</span>.
 • We do not join two clonotypes which were assigned different reference sequences unless those
 reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be controlled using the
 command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.
