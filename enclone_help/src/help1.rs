@@ -318,14 +318,17 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
              two cells lie in the same true clonotype.  To join two cells into the same \
              clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
-             constant 500,000.  \
+             constant 100,000.  \
              The value may be adjusted using the command-line argument \\bold{MAX_SCORE}, or the \
-             log10 of this,\n\
+             log10 of this, \
              \\bold{MAX_LOG_SCORE}.  This constant was arrived at by empirically balancing \
              sensitivity and specificity across a large collection of datasets.  See results \
              described at \\green{bit.ly/enclone}.\n\n\
              \
              \\boldred{11}.  Other join criteria.\n\
+             • As an exception to the key join criterion, we allow a join which has at least 15 \
+             shares, even if p*N > C.  The constant 15 is modifiable via the argument \
+             \\bold{AUTO_SHARES}.\n\
              • We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
              at most \\bold{2} positions.  This value can be controlled using the \
