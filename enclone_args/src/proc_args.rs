@@ -147,6 +147,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.mult_pow = 80.0;
     ctl.join_alg_opt.join_cdr3_ident = 80.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
+    ctl.join_alg_opt.auto_share = 15;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -348,6 +349,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
+        ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
         ("BASELINE", &mut ctl.gen_opt.baseline),
         ("BASICX", &mut ctl.join_alg_opt.basicx),

@@ -513,7 +513,7 @@ pub fn join_one(
 
     // Threshold on score.
 
-    if score > ctl.join_alg_opt.max_score && *min_shares < 15 {
+    if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share {
         return false;
     }
 
