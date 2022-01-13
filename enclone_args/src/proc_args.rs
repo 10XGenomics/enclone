@@ -139,7 +139,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.allele_alg_opt.min_mult = 4;
     ctl.allele_alg_opt.min_alt = 4;
 
-    ctl.join_alg_opt.max_score = 500_000.0;
+    ctl.join_alg_opt.max_score = 100_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
     ctl.join_alg_opt.merge_onesies_ctl = true;
     ctl.join_alg_opt.max_cdr3_diffs = 1000;
