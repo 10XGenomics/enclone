@@ -32,7 +32,7 @@ io_utils = "0.3"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
-petgraph = ">=0.5,<0.7"
+petgraph = "0.6"
 pprof = "0.6"
 pretty_trace = "0.5"
 qd = { git = "https://github.com/Barandis/qd" }

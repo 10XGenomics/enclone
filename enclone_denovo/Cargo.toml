@@ -18,7 +18,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 binary_vec_io = "0.1"
-bio = ">=0.35"
+bio = "0.39"
 debruijn = "0.3"
 equiv = "0.1"
 fasta_tools = "0.1"
@@ -30,7 +30,7 @@ kmer_lookup = "0.1.1"
 # poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
 perf_stats = "0.1"
 permutation = "0.2"
-petgraph = ">=0.5,<0.7"
+petgraph = "0.6"
 pretty_trace = "0.5"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }

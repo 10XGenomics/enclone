@@ -167,7 +167,7 @@ pub const EXTENDED_TESTS: [&str; 15] = [
     r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
          NOPRINT RE NO_PRE NFORCE"###,
     // 7. test MIN_GROUP_DONORS
-    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NFORCE
+    r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NO_PRE NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
     // 8. test on PD multi pipestance; failed before bug fix
     // THIS TEST IS SUPERCEDED AND CAN BE DELETED.
