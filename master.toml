@@ -14,6 +14,7 @@ async-trait = "0.1"
 attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
 binary_vec_io = "0.1"
+bio = "0.39"
 bio_edit = "0.1"
 byteorder = "1"
 bytes = "1"
