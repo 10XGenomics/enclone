@@ -64,7 +64,10 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         println!("testing for internal run");
     }
     for (key, value) in env::vars() {
-        if key.contains("USER") && value.ends_with("10xgenomics.com") {
+        if ctl.gen_opt.evil_eye {
+            println!("see env {} = {}", key, value);
+        }
+        if key.ends_with("USER") && value.ends_with("10xgenomics.com") {
             if ctl.gen_opt.evil_eye {
                 println!("getting config");
             }
