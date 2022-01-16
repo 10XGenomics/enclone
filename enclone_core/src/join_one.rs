@@ -259,7 +259,7 @@ pub fn join_one(
 
     // Cap CDR3 diffs for TCR or as requested.
 
-    if ctl.join_alg_opt.max_cdr3_diffs < 1000 {
+    if ctl.join_alg_opt.max_cdr3_diffs < 1000 || !is_bcr {
         if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
             return false;
         }
