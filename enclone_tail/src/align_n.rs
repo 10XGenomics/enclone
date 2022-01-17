@@ -7,7 +7,7 @@ use amino::codon_to_aa;
 use ansi_escape::{emit_end_escape, print_color};
 use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use enclone_core::opt_d::{jflank, opt_d, vflank};
+use enclone_core::opt_d::{jflank, opt_d};
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use rayon::prelude::*;
@@ -215,7 +215,7 @@ pub fn align_n(
                             } else {
                                 vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                             }
-                            let vstart = vref.len() - vflank(&seq, &vref);
+                            let vstart = ex.share[r].cdr3_start - 2;
                             if jun {
                                 vref = vref[vstart..vref.len()].to_vec();
                             }
