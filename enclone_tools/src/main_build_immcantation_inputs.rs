@@ -1,6 +1,9 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 
 // Build input files for Immcantation.  This is for experimental purposes only.
+//
+// Pass one argument, a list of numerical ids of internal datasets, allowing hyphenated ranges.
+//
 // Creates two files:
 // filtered_contig.fasta
 // filtered_contig_annotations.csv.
@@ -16,6 +19,24 @@ use string_utils::*;
 
 pub fn main_build_immcantation_inputs() {
     PrettyTrace::new().on();
+
+    // Get list of ids.
+
+    let args: Vec<String> = env::args().collect();
+    let ids0 = args[0].split(',').collect::<Vec<&str>>();
+    let mut ids = Vec::<usize>::new();
+    for id in ids0.iter() {
+        if id.contains('-') {
+            let start = id.before("-").force_usize();
+            let stop = id.after("-").force_usize();
+            for p in start..=stop {
+                ids.push(p);
+            }
+        } else {
+            ids.push(id.force_usize());
+        }
+    }
+    ids.sort();
 
     // Get configuration.
 
@@ -35,37 +56,12 @@ pub fn main_build_immcantation_inputs() {
 
     let pre = format!("{}/current{}", config["cloud"], TEST_FILES_VERSION);
 
-    // Get the list of lena ids.
-
-    let testlines = enclone_testdata();
-    let testlines = testlines.split('\n').collect::<Vec<&str>>();
-    let mut lenas = Vec::<usize>::new();
-    for x in testlines.iter() {
-        if !x.starts_with('#') {
-            let xx = x.replace(" ", "");
-            let y = xx.split(',').collect::<Vec<&str>>();
-            for z in y.iter() {
-                if *z == "" {
-                } else if !z.contains('-') {
-                    lenas.push(z.force_usize());
-                } else {
-                    let l1 = z.before("-").force_usize();
-                    let l2 = z.after("-").force_usize();
-                    for l in l1..=l2 {
-                        lenas.push(l);
-                    }
-                }
-            }
-        }
-    }
-    lenas.sort();
-
     // Concatenate the fasta files, prepending the lena id to the contig name.
     // Also concatenate the csv files, prepending the lena id to the contig name.
 
     let mut g1 = open_for_write_new!["filtered_contig.fasta"];
     let mut g = open_for_write_new!["filtered_contig_annotations.csv"];
-    for (i, l) in lenas.iter().enumerate() {
+    for (i, l) in ids.iter().enumerate() {
         let mut count1 = 0;
         let f1 = open_for_read![&format!("{}//{}/outs/filtered_contig.fasta", pre, l)];
         for line in f1.lines() {
