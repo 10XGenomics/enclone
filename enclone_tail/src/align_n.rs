@@ -223,7 +223,8 @@ pub fn align_n(
                             }
                             let mut vstart = ex.share[r].cdr3_start - 2;
 
-                            // Compensate for indel.
+                            // Compensate for indel.  Code here and next work imperfectly and
+                            // there would be value in investigating the error cases.
 
                             if ex.share[r].ins.len() > 0 {
                                 vstart -= ex.share[r].ins[0].1.len();
