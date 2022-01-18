@@ -5,18 +5,35 @@
 // filtered_contig.fasta
 // filtered_contig_annotations.csv.
 
+use enclone_core::defs::get_config;
 use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;
+use std::collections::HashMap;
+use std::env;
 use std::io::{BufRead, Write};
 use string_utils::*;
 
 pub fn main_build_immcantation_inputs() {
     PrettyTrace::new().on();
 
+    // Get configuration.
+
+    let mut config = HashMap::<String, String>::new();
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+            if config_file.contains(',') {
+                config_file = config_file.after(",").to_string();
+            }
+        }
+    }
+    let _ = get_config(&config_file, &mut config);
+
     // Location of files.
 
-    let pre = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
+    let pre = format!("{}/current{}", config["cloud"], TEST_FILES_VERSION);
 
     // Get the list of lena ids.
 
