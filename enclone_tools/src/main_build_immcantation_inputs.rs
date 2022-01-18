@@ -23,7 +23,7 @@ pub fn main_build_immcantation_inputs() {
     // Get list of ids.
 
     let args: Vec<String> = env::args().collect();
-    let ids0 = args[0].split(',').collect::<Vec<&str>>();
+    let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<usize>::new();
     for id in ids0.iter() {
         if id.contains('-') {
