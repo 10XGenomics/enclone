@@ -18,8 +18,8 @@
 └───────────┴───────────────────────────────────────┴───────────────────────────┘
 
 CHAIN 2 OF #1  •  CONCATENATED [1m[38;5;25mV[0m[38;5;178mJ[0m REFERENCE
- Y  T  L  N       V  F  G   
-        ** |||||            
-TACACTTTAAA     TGTCTTCGGAAC
-[1m[38;5;25mTACACTTTCCACA[0m[38;5;178mTTATGTCTTCGGAAC[0m
+   C  C  S  Y  A  G  S  Y  T  L  N       V  F  G   
+                      *        ** |||||            
+ACTGCTGCTCATATGCAGGCAGTTACACTTTAAA     TGTCTTCGGAAC
+[1m[38;5;25mACTGCTGCTCATATGCAGGCAGCTACACTTTCCACA[0m[38;5;178mTTATGTCTTCGGAAC[0m
 

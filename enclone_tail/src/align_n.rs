@@ -7,7 +7,7 @@ use amino::codon_to_aa;
 use ansi_escape::{emit_end_escape, print_color};
 use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
-use enclone_core::opt_d::{jflank, opt_d, vflank};
+use enclone_core::opt_d::{jflank, opt_d};
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use rayon::prelude::*;
@@ -136,7 +136,13 @@ fn print_vis_align(
         let s = lines[1].as_bytes();
         for c in s.iter() {
             if (*c as char).is_ascii_alphabetic() {
-                if (count + frame) % 3 == 1 && count > 0 && count + 1 < seq.len() {
+                if (count + frame) % 3 == 1
+                    && count > 0
+                    && count + 1 < seq.len()
+                    && seq[count - 1] != b'-'
+                    && seq[count] != b'-'
+                    && seq[count + 1] != b'-'
+                {
                     let aa = codon_to_aa(&[seq[count - 1], seq[count], seq[count + 1]]);
                     aaline.push(aa);
                 } else {
@@ -215,7 +221,25 @@ pub fn align_n(
                             } else {
                                 vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                             }
-                            let vstart = vref.len() - vflank(&seq, &vref);
+                            let mut vstart = ex.share[r].cdr3_start - 2;
+
+                            // Compensate for indel.  Code here and next work imperfectly and
+                            // there would be value in investigating the error cases.
+
+                            if ex.share[r].ins.len() > 0 {
+                                vstart -= ex.share[r].ins[0].1.len();
+                            } else if ex.share[r].seq.len() < ex.share[r].seq_del.len() {
+                                vstart += ex.share[r].seq_del.len() - ex.share[r].seq.len();
+                            }
+
+                            // Prevent crash (working around bug).
+
+                            if vstart > vref.len() {
+                                vstart = vref.len();
+                            }
+
+                            // Keep going.
+
                             if jun {
                                 vref = vref[vstart..vref.len()].to_vec();
                             }
