@@ -1,7 +1,7 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
 // Assess immcantation clonotyping.  Pass a single argument, which is to be a directory.
-// The code looks for an immcantation output file filtered_contig_igblast_db-pass_clone-pass.tsv 
+// The code looks for an immcantation output file filtered_contig_igblast_db-pass_clone-pass.tsv
 // in that directory.
 //
 // 1. First run build_immcantation_inputs.
@@ -65,7 +65,10 @@ pub fn main() {
         eprintln!("\nPlease run with a single argument which is a directory name.\n");
         std::process::exit(1);
     }
-    let f = open_for_read![&format!("{}/filtered_contig_igblast_db-pass_clone-pass.tsv", args[1])];
+    let f = open_for_read![&format!(
+        "{}/filtered_contig_igblast_db-pass_clone-pass.tsv",
+        args[1]
+    )];
     let mut n_seq = None;
     let mut n_clone = None;
     let mut assignments = Vec::<(usize, String, String)>::new();
@@ -92,7 +95,7 @@ pub fn main() {
     }
     unique_sort(&mut datasets);
     use itertools::Itertools;
-    println!("\ndatasets: {}\n", datasets.iter().format(","));
+    println!("\ndatasets: {}", datasets.iter().format(","));
     unique_sort(&mut assignments);
     println!("\n{} cells assigned to clonotypes\n", assignments.len());
     println!("top clonotype sizes:\n");
@@ -108,5 +111,4 @@ pub fn main() {
         println!("{}", sizes[i]);
     }
     println!("");
-
 }
