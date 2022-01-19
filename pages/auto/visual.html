@@ -152,7 +152,7 @@ Now if you push the <code>Dismiss</code> button, you'll be back to the main page
 
 <p>When you run a series of commands in 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
-you create a series of <i>states</i>, and you can navigate instantaneously betweeen those states 
+you create a series of <i>states</i>, and you can navigate instantaneously between those states 
 using the up and down arrows on the right side of the window, which become visible only as you 
 create multiple states.  You can also delete states that you're not interested in, and you can
 annotate them with comments.</p>
@@ -166,6 +166,36 @@ If you saved your session, then you can restart
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
 later, push the <code>Archive</code> button, and then restore your previously named sessions.  
 These session can also have names and narratives associated to them.</p>
+
+<h2>Recompute computation (unreleased)</h2>
+
+<p>There is unreleased code in 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
+that enables running on a Mac and doing "back end" computations on a server.  This is something
+that we could make public if there was sufficient demand.
+</p>
+
+<p>There are three motivations for this capability:
+<ol>
+<li>You may have datasets on the server, and not want to have to manually move them to your Mac.
+We believe this is the most compelling reason for remote computation.</li>
+<li>Computation on the remote server <i>might</i> be faster.</li>
+<li>Remote computation enables direct sharing of sessions between users who can access the same
+server, just by pushing a button.  This can be a powerful enabler of collaboration.</li>
+</ol>
+</p>
+
+<p>The catch with the remote computation is that for most system configurations, a "magic
+incantation" is needed to "jump over" a firewall between your Mac and the server.  We only know
+what this incantation is for our system, and thus some experimentation would be required for yours.
+</p>
+
+<h2>Feedback</h2>
+
+<p>You can send your thoughts to us here:
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>.  Importantly, you may
+have a good idea, but we may not have resources to implement it.  It is also possible for you
+to contribute directly to the code and thereby extend capabilities yourself.</p>
 
 </body>
 </html>
