@@ -53,7 +53,7 @@ several other features that you may find convenient.
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
 padding: 8px; width: 900px; font-size: 110%">
 
-<span style="font-size:140%">
+<span style="font-size:130%">
 <b>Please note that <span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
 is alpha (α) software!</b>
 </span>
@@ -61,13 +61,87 @@ is alpha (α) software!</b>
 <br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
 part because different versions of the OSX (Mac) operating system may yield different behavior,
 and we are unlikely to be able to replicate problems on other versions.
+
 <br>• There are a few features of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> that are not properly delivered in
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  Notably, clonotype
 tables are in black and white rather than color.  To fix this, we are waiting on code changes
 from developers outside 10x, and we do not have a timeline for those changes.
+
 <br>• At present we only support the Mac platform.  We think it likely that the code could
 be generalized to Linux and Windows platforms, but we're not sure how difficult this would be.
 </p>
+
+<h2>Getting started</h2>
+
+<p><b>1.</b> To use <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+follow the installation instructions for <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Choose the <code>medium</code> or
+<code>large</code> option.  Then open a terminal window, and type <code>enclone VIS</code>.  An 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
+window should appear.</p>
+
+<p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
+access.  We have observed it ask for permission to capture the screen.  You should provide
+this permission.  This <i>should</i> be one-time operation.  Upon pushing certain buttons,
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
+will do a screen capture of the 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+window and copy that to your clipboard.</p>
+
+<p><b>3.</b> 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+is primarily <b>command driven</b>.  This means that you still need to formulate an
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> command!  It also means that 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+commands can be reproduced in <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and, for example, scripted.  The commands for 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+are similar to, but not identical to <span style="color:rgb(120,123,175);font-weight:900">enclone</span> commands.  There are two differences:
+<ul>
+<li>In a plot argument, instead of putting in the name of an image file, you put in the text
+<code>gui</code>.</li>
+<li>For
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+you do not have to quote (<code>"..."</code>) special characters, although arguments containing
+blanks still do need to be quoted.</li>
+</ul>
+
+<h2>Read the help!</h2>
+
+<p>In the 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+window, you will see a <code>Help</code> button.  Push that button and read the help text there.
+This will take you about five minutes, and then you'll understand how the system works.  Otherwise,
+you're going to suffer.
+</p>
+
+<h2>Read the cookbook!</h2>
+
+<p>Push the <code>Archive</code> button.  Ultimately this page will show sessions that you save,
+but for now, you will see only one entry on the page, which is a built-in cookbook.  Push the
+<code>restore</code> button, and then <code>Dismiss</code> the page to get back to the main page.
+Now work your way through the cookbook.</p>
+
+<h2>An example</h2>
+
+<p>Here we show an example.  You would have seen this in the cookbook, but we show it here too.
+(Note that the outputs here will change slightly over time and we are not updating them
+accordingly.)
+Enter this command
+<code>enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,u_cell2</code> in the command box.
+</p>
+
+<p>
+You will see something like this:
+<br><br>
+<img src="../../img/visual1.png" style="max-width: 80%" lt="enclone visual example" title="enclone visual example">
+</p>
+
+<p>This is the basic view.  Now suppose that you want to see only part of this view, for example
+just the plot.  Push the <code>Pic</code> button.
+<br><br>
+<img src="../../img/visual2.png" style="max-width: 80%" lt="enclone visual example 2" title="enclone visual example 2">
+</p>.
+
+<p>Now if you push the <code>Dismiss</code> button, you'll be back to the main page.</p>
 
 </body>
 </html>
