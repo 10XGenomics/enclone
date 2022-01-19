@@ -103,16 +103,35 @@ you could arrange to instead color by almost any variable that you can imagine!
 <p>
 You will see something like this:
 <br><br>
-<img src="../../img/visual1.png" style="max-width: 80%" lt="enclone visual example" title="enclone visual example">
+<img src="../../img/visual1.png" style="max-width: 70%" lt="enclone visual example" title="enclone visual example">
 </p>
 
 <p>This is the basic view.  Now suppose that you want to see only part of this view, for example
 just the plot.  Push the <code>Pic</code> button.
 <br><br>
-<img src="../../img/visual2.png" style="max-width: 80%" lt="enclone visual example 2" title="enclone visual example 2">
+<img src="../../img/visual2.png" style="max-width: 70%" lt="enclone visual example 2" title="enclone visual example 2">
 
 <br><br>
 Now if you push the <code>Dismiss</code> button, you'll be back to the main page.</p>
+
+<h2>States and sessions</h2>
+
+<p>When you run a series of commands in 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+you create a series of <i>states</i>, and you can navigate instantaneously betweeen those states 
+using the up and down arrows on the right side of the window, which become visible only as you 
+create multiple states.  You can also delete states that you're not interested in, and you can
+annotate them with comments.</p>
+
+<p>All these states comprise a <i>session</i>.  You can save your session by clicking on the
+<code>Save</code> button.</p>
+
+<p>When you're done, you can push the <code>Exit</code> button to leave 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.
+If you saved your session, then you can restart 
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
+later, push the <code>Archive</code> button, and then restore your previously named sessions.  
+These session can also have names and narratives associated to them.</p>
 
 </body>
 </html>
