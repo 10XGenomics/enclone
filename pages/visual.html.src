@@ -147,7 +147,8 @@ something that we could make public if there was sufficient demand.
 We believe this is the most compelling reason for remote computation.</li>
 <li>Computation on the remote server <i>might</i> be faster.</li>
 <li>Remote computation enables direct sharing of sessions between users who can access the same
-server, just by pushing a button.  This can be a powerful enabler of collaboration.</li>
+server, instantaneously and just by pushing a button.  This can be a powerful enabler of 
+collaboration.</li>
 </ol>
 </p>
 
