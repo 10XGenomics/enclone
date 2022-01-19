@@ -47,7 +47,7 @@ window should appear.</p>
 
 <p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
 access.  We have observed it ask for permission to capture the screen.  You should provide
-this permission.  This <i>should</i> be one-time operation.  Upon pushing certain buttons,
+this permission.  This <i>should</i> be a one-time operation.  Upon pushing certain buttons,
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
 will do a screen capture of the 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
@@ -83,8 +83,8 @@ you're going to suffer.
 <h2>Read the cookbook!</h2>
 
 <p>Push the <code>Archive</code> button.  Ultimately this page will show sessions that you save,
-but for now, you will see only one entry on the page, which is a built-in cookbook.  Push the
-<code>restore</code> button, and then <code>Dismiss</code> the page to get back to the main page.
+but for now, you will see only one entry on the page, which is a built-in cookbook.  Check the
+<code>restore</code> box, and then <code>Dismiss</code> the page to get back to the main page.
 Now work your way through the cookbook.</p>
 
 <h2>An example</h2>
@@ -130,15 +130,15 @@ annotate them with comments.</p>
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.
 If you saved your session, then you can restart 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
-later, push the <code>Archive</code> button, and then restore your previously named sessions.  
-These session can also have names and narratives associated to them.</p>
+later, push the <code>Archive</code> button, and then restore your previously saved session.  
+These saved sessions can also have names and narratives associated to them.</p>
 
-<h2>Recompute computation (unreleased)</h2>
+<h2>Remote computation (unreleased)</h2>
 
 <p>There is unreleased code in 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
-that enables running on a Mac and doing "back end" computations on a server.  This is something
-that we could make public if there was sufficient demand.
+that enables running on a Mac and doing "back end" computations on a remote server.  This is 
+something that we could make public if there was sufficient demand.
 </p>
 
 <p>There are three motivations for this capability:
@@ -161,7 +161,11 @@ what this incantation is for our system, and thus some experimentation would be 
 <p>You can send your thoughts to us here:
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.  Importantly, you may
 have a good idea, but we may not have resources to implement it.  It is also possible for you
-to contribute directly to the code and thereby extend capabilities yourself.</p>
+to contribute directly to the code and thereby extend capabilities yourself.  Regardless, please
+let us know if and how you are using
+<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  We are very
+interested in your experiences!
+</p>
 
 </body>
 </html>
