@@ -90,8 +90,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let text2 =
         Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
     let text3 = Text::new(
-        "▒ restore - Restore a saved session by checking the restore box.  \
-            This automatically saves your current session, if started.",
+        "▒ restore - Restore a saved session or cookbook by checking the restore box, and then \
+            pushing Dismiss.  If you want your current session to be saved first (rather than \
+            deleted), you should instead push Save and dismiss.",
     );
     let text4 = Text::new("▒ delete - Delete a saved session by checking the delete box.");
     let text5 = Text::new(
