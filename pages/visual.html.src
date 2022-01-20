@@ -24,7 +24,7 @@ padding: 8px; width: 900px; font-size: 110%">
 </span>
 
 <br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
-part because different versions of the OSX (Mac) operating system may yield different behavior,
+part because different versions of the OS X (Mac) operating system may yield different behavior,
 and may be unable to replicate such problems.
 
 <br>• There are a few features of #enclone that are not properly delivered in
@@ -44,8 +44,9 @@ follow the installation instructions for #enclone.  Choose the <code>medium</cod
 #enclone_visual window should appear.</p>
 
 <p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
-access.  We have observed it ask for permission to capture the screen.  You should provide
-this permission.  This <i>should</i> be a one-time operation.  The reason for needing access is
+access.  This may include asking for permission to capture the screen, which you should allow, and 
+then restart your Terminal.
+This <i>should</i> be a one-time operation.  The reason for needing access is
 that upon pushing certain buttons, #enclone_visual will do a screen capture of the 
 #enclone_visual window and copy that to your clipboard.</p>
 
@@ -83,8 +84,7 @@ Now work your way through the cookbook.</p>
 <h2>An example</h2>
 
 <p>Here we show an example.  You would have seen this in the cookbook, but we show it here too.
-(Note that the outputs here will change slightly over time and we are not updating them
-accordingly.)
+(Note that the outputs here may change over time as #enclone is updated.)
 Enter this command
 <code>enclone BCR=123085 HONEY=out=gui,color=var,u_cell2</code> in the command box.
 This will display a honeycomb plot showing all cells, colored by the variable <code>u_cell2</code>,
