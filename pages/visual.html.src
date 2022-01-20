@@ -10,7 +10,7 @@
 <h1>enclone visual</h1>
 
 <p>
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span> is a graphical user
+#enclone_visual is a graphical user
 interface (GUI) for #enclone that can be run on a Mac.  It allows for simultaneous viewing of
 clonotype tables and graphical objects such as honeycomb plots that #enclone can create, and has
 several other features that you may find convenient.
@@ -20,8 +20,7 @@ several other features that you may find convenient.
 padding: 8px; width: 900px; font-size: 110%">
 
 <span style="font-size:130%">
-<b>Please note that <span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-is alpha (α) software!</b>
+<b>Please note that #enclone_visual is alpha (α) software!</b>
 </span>
 
 <br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
@@ -29,7 +28,7 @@ part because different versions of the OSX (Mac) operating system may yield diff
 and may be unable to replicate such problems.
 
 <br>• There are a few features of #enclone that are not properly delivered in
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  Notably, clonotype
+#enclone_visual.  Notably, clonotype
 tables are in black and white rather than color.  To fix this, we are waiting on code changes
 from developers outside 10x, and do not have a timeline for those changes.
 
@@ -39,47 +38,35 @@ be generalized to Linux and Windows platforms, but we're not sure how difficult 
 
 <h2>Getting started</h2>
 
-<p><b>1.</b> To use <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+<p><b>1.</b> To use #enclone_visual,
 follow the installation instructions for #enclone.  Choose the <code>medium</code> or
 <code>large</code> option.  Then open a terminal window, and type <code>enclone VIS</code>.  An 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
-window should appear.</p>
+#enclone_visual window should appear.</p>
 
 <p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
 access.  We have observed it ask for permission to capture the screen.  You should provide
 this permission.  This <i>should</i> be a one-time operation.  The reason for needing access is
-that upon pushing certain buttons,
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
-will do a screen capture of the 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-window and copy that to your clipboard.</p>
+that upon pushing certain buttons, #enclone_visual will do a screen capture of the 
+#enclone_visual window and copy that to your clipboard.</p>
 
 <p><b>3.</b> 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-is primarily <b>command driven</b>.  This means that you still need to formulate an
-#enclone command!  It also means that 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
+#enclone_visual is primarily <b>command driven</b>.  This means that you still need to formulate an
+#enclone command!  It also means that #enclone_visual
 commands can be reproduced in #enclone, and, for example, scripted.  The commands for 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-are similar to, but not identical to #enclone commands.  There are two differences:
+#enclone_visual are similar to, but not identical to #enclone commands.  There are two differences:
 <ul>
 <li>In a plot argument, instead of putting in the name of an image file, you put in the text
 <code>gui</code>.</li>
-<li>For
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+<li>For #enclone_visual,
 you do not have to quote (<code>"..."</code>) special characters, although arguments containing
 blanks do still need to be quoted.</li>
 </ul>
 
 <h2>Read the help!</h2>
 
-<p>In the 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-window, you will see a <code>Help</code> button.  Please push that button and 
-<b>read the help text there</b>.
-This will take you about five minutes, and then you'll understand how the system works.  
-Some of the behavior is counterintuitive but easily grasped.
-</p>
+<p>In the #enclone_visual window, you will see a <code>Help</code> button.  Please push that button
+and <b>read the help text there</b>.  This will take you about five minutes, and then you'll 
+understand how the system works.  Some of the behavior is counterintuitive but easily grasped.</p>
 
 <h2>Read the cookbook!</h2>
 
@@ -117,8 +104,7 @@ Now if you push the <code>Dismiss</code> button, you'll be back to the main page
 
 <h2>States and sessions</h2>
 
-<p>When you run a series of commands in 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
+<p>When you run a series of commands in #enclone_visual,
 you create a series of <i>states</i>, and you can navigate instantaneously between those states 
 using the up and down arrows on the right side of the window, which become visible only as you 
 create multiple states.  You can also delete states that you're not interested in, and you can
@@ -127,17 +113,14 @@ annotate them with comments.</p>
 <p>All these states comprise a <i>session</i>.  You can save your session by clicking on the
 <code>Save</code> button.</p>
 
-<p>When you're done, you can push the <code>Exit</code> button to leave 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.
-If you saved your session, then you can restart 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
+<p>When you're done, you can push the <code>Exit</code> button to leave #enclone_visual.
+If you saved your session, then you can restart #enclone_visual
 later, push the <code>Archive</code> button, and then restore your previously saved session.  
 These saved sessions can also have names and narratives associated to them.</p>
 
 <h2>Remote computation (unreleased)</h2>
 
-<p>There is unreleased code in 
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> 
+<p>There is unreleased code in #enclone_visual
 that enables running on a Mac and doing "back end" computations on a remote server.  This is 
 something that we could make public if there was sufficient demand.
 </p>
@@ -163,8 +146,7 @@ what this incantation is for our system, and thus some experimentation would be 
 <p>You can send your thoughts to us here:
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.  It is also possible for you
 to contribute directly to the code and thereby extend capabilities yourself.  Regardless, please
-let us know if and how you are using
-<span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  We are very
+let us know if and how you are using #enclone_visual.  We are very
 interested in your experiences!
 </p>
 
