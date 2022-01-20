@@ -70,11 +70,11 @@ understand how the system works.  Some of the behavior is counterintuitive but e
 
 <h2>Read the cookbook!</h2>
 
-<p>Push the <code>Archive</code> button.  You will see this:
-<br><br>
-<img src="../../img/visual_archive1.png" style="max-width: 70%" lt="enclone visual archive" 
+<p>Push the <code>Archive</code> button.  You will see the following (without the red coloring
+of the Snapshot button, which is how we captured the image):
+<img src="../../img/visual_archive1.png" style="max-width: 80%" lt="enclone visual archive" 
 title="enclone visual archive">
-<br><br>
+<br>
 If you later save #enclone_visual sessions, they will appear as entries on this page.  For now,
 there is only one entry, which is a built-in cookbook.  Please expand and read the documentation.
 Then check the <code>restore</code> box, and push <code>Dismiss</code> to return to the main page.
@@ -86,7 +86,7 @@ Now work your way through the cookbook.</p>
 (Note that the outputs here will change slightly over time and we are not updating them
 accordingly.)
 Enter this command
-<code>enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,u_cell2</code> in the command box.
+<code>enclone BCR=123085 HONEY=out=gui,color=var,u_cell2</code> in the command box.
 This will display a honeycomb plot showing all cells, colored by the variable <code>u_cell2</code>,
 which is the UMI count for the second chain (relative to the numbering of columns in a given
 clonotype).  The "undefined" cells arise from the case where there is no second chain.  Note that 
@@ -95,16 +95,14 @@ you could arrange to instead color by almost any variable that you can imagine!
 
 <p>
 You will see something like this:
-<br><br>
-<img src="../../img/visual1.png" style="max-width: 70%" lt="enclone visual example" title="enclone visual example">
-</p>
+<img src="../../img/visual1.png" style="max-width: 80%" lt="enclone visual example" title="enclone visual example">
 
-<p>This is the basic view.  Now suppose that you want to see only part of this view, for example
+<br>
+This is the basic view.  Now suppose that you want to see only part of this view, for example
 just the plot.  Push the <code>Pic</code> button.
-<br><br>
-<img src="../../img/visual2.png" style="max-width: 70%" lt="enclone visual example 2" title="enclone visual example 2">
+<img src="../../img/visual2.png" style="max-width: 80%" lt="enclone visual example 2" title="enclone visual example 2">
 
-<br><br>
+<br>
 Now if you push the <code>Dismiss</code> button, you'll be back to the main page.</p>
 
 <h2>States and sessions</h2>
