@@ -174,8 +174,13 @@ git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_c
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # make dependency graph
+#
+# Note that crates.png can vary (although perhaps not visibly), depending on the environment.
+# This might be due to different versions of graphviz.  Therefore we keep crates.dot under source
+# code control, but not crates.png.
 
-cargo depgraph --focus enclone* | dot -Tpng > crates.png
+cargo depgraph --focus enclone* > crates.dot
+cat crates.dot | dot -Tpng > crates.png
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
