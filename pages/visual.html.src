@@ -26,7 +26,7 @@ is alpha (α) software!</b>
 
 <br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
 part because different versions of the OSX (Mac) operating system may yield different behavior,
-and we are unlikely to be able to replicate problems on other versions.
+and may be unable to replicate such problems.
 
 <br>• There are a few features of #enclone that are not properly delivered in
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  Notably, clonotype
@@ -47,7 +47,8 @@ window should appear.</p>
 
 <p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
 access.  We have observed it ask for permission to capture the screen.  You should provide
-this permission.  This <i>should</i> be a one-time operation.  Upon pushing certain buttons,
+this permission.  This <i>should</i> be a one-time operation.  The reason for needing access is
+that upon pushing certain buttons,
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
 will do a screen capture of the 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
@@ -67,24 +68,24 @@ are similar to, but not identical to #enclone commands.  There are two differenc
 <li>For
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
 you do not have to quote (<code>"..."</code>) special characters, although arguments containing
-blanks still do need to be quoted.</li>
+blanks do still need to be quoted.</li>
 </ul>
 
 <h2>Read the help!</h2>
 
 <p>In the 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual </span>
-window, you will see a <code>Help</code> button.  Push that button and 
+window, you will see a <code>Help</code> button.  Please push that button and 
 <b>read the help text there</b>.
-This will take you about five minutes, and then you'll understand how the system works.  Otherwise,
-you're going to suffer.
+This will take you about five minutes, and then you'll understand how the system works.  
+Some of the behavior is counterintuitive but easily grasped.
 </p>
 
 <h2>Read the cookbook!</h2>
 
 <p>Push the <code>Archive</code> button.  Ultimately this page will show sessions that you save,
 but for now, you will see only one entry on the page, which is a built-in cookbook.  Check the
-<code>restore</code> box, and then <code>Dismiss</code> the page to get back to the main page.
+<code>restore</code> box, and then push <code>Dismiss</code> to return to the main page.
 Now work your way through the cookbook.</p>
 
 <h2>An example</h2>
@@ -96,7 +97,7 @@ Enter this command
 <code>enclone BCR=123085 GEX=123217 HONEY=out=gui,color=var,u_cell2</code> in the command box.
 This will display a honeycomb plot showing all cells, colored by the variable <code>u_cell2</code>,
 which is the UMI count for the second chain (relative to the numbering of columns in a given
-clonotype).  The "undefined" case comes from the case where there is no second chain.  Note that 
+clonotype).  The "undefined" cells arise from the case where there is no second chain.  Note that 
 you could arrange to instead color by almost any variable that you can imagine!
 </p>
 
