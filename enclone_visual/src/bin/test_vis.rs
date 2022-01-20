@@ -123,7 +123,7 @@ fn main() {
                     }
                 }
                 if !found2 {
-                    eprintln!("\nFailed to find remote share dir.\n");
+                    eprintln!("\nFailed to find remote share dir in {}:{}.\n", host, rdir);
                     std::process::exit(1);
                 }
             }
