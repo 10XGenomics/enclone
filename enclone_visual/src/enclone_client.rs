@@ -464,6 +464,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 "\nfailed to launch server, err =\n{}.\n",
                 server_process.as_ref().unwrap_err()
             );
+            xprintln!(
+                "It is possible that you did not follow the enclone installation \
+                instructions on bit.ly/enclone.\nIf so, please try that and see if the problem \
+                goes away.\n"
+            );
             std::process::exit(1);
         }
         let mut server_process = server_process.unwrap();
