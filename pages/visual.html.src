@@ -70,9 +70,14 @@ understand how the system works.  Some of the behavior is counterintuitive but e
 
 <h2>Read the cookbook!</h2>
 
-<p>Push the <code>Archive</code> button.  Ultimately this page will show sessions that you save,
-but for now, you will see only one entry on the page, which is a built-in cookbook.  Check the
-<code>restore</code> box, and then push <code>Dismiss</code> to return to the main page.
+<p>Push the <code>Archive</code> button.  You will see this:
+<br><br>
+<img src="../../img/visual_archive1.png" style="max-width: 70%" lt="enclone visual archive" 
+title="enclone visual archive">
+<br><br>
+If you later save #enclone_visual sessions, they will appear as entries on this page.  For now,
+there is only one entry, which is a built-in cookbook.  Please expand and read the documentation.
+Then check the <code>restore</code> box, and push <code>Dismiss</code> to return to the main page.
 Now work your way through the cookbook.</p>
 
 <h2>An example</h2>
