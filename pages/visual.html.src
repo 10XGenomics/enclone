@@ -25,7 +25,7 @@ padding: 8px; width: 900px; font-size: 110%">
 
 <br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
 part because different versions of the OS X (Mac) operating system may yield different behavior,
-and may be unable to replicate such problems.
+and we may be unable to replicate such problems.
 
 <br>• There are a few features of #enclone that are not properly delivered in
 #enclone_visual.  Notably, clonotype
