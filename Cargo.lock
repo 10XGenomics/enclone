@@ -1740,7 +1740,7 @@ dependencies = [
  "include_dir",
  "io_utils",
  "itertools",
- "jpeg-decoder",
+ "jpeg-decoder 0.2.1",
  "lazy_static",
  "libc",
  "log",
@@ -2815,7 +2815,7 @@ dependencies = [
  "byteorder",
  "color_quant",
  "gif",
- "jpeg-decoder",
+ "jpeg-decoder 0.1.22",
  "num-iter",
  "num-rational 0.3.2",
  "num-traits",
@@ -2938,6 +2938,15 @@ name = "jpeg-decoder"
 version = "0.1.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "229d53d58899083193af11e15917b5640cd40b29ff475a1fe4ef725deb02d0f2"
+dependencies = [
+ "rayon",
+]
+
+[[package]]
+name = "jpeg-decoder"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fbcf0244f6597be39ab8d9203f574cafb529ae8c698afa2182f7b3c3205a4a9c"
 dependencies = [
  "rayon",
 ]
@@ -4333,7 +4342,7 @@ version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "256cc9203115db152290219f35f3362e729301b59e2a391fb2721fe3fa155352"
 dependencies = [
- "jpeg-decoder",
+ "jpeg-decoder 0.1.22",
  "log",
  "pico-args",
  "png 0.17.2",
@@ -4969,7 +4978,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a53f4706d65497df0c4349241deddf35f84cee19c87ed86ea8ca590f4464437"
 dependencies = [
- "jpeg-decoder",
+ "jpeg-decoder 0.1.22",
  "miniz_oxide 0.4.4",
  "weezl",
 ]

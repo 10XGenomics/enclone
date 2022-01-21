@@ -42,7 +42,7 @@ image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-fe
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.3"
 itertools = "0.10"
-jpeg-decoder = "0.1"
+jpeg-decoder = "0.2"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
