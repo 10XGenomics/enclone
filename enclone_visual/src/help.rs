@@ -34,7 +34,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .width(Units(290));
     let png_top_region = include_bytes!("../images/top_region.png").to_vec();
     let top_region =
-        Image::new(iced::image::Handle::from_memory(png_top_region)).height(Units(120));
+        Image::new(iced::image::Handle::from_memory(png_top_region)).height(Units(84));
     let help_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -90,9 +90,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_width(Units(15)))
                 .push(
                     Column::new()
-                        .push(Space::with_height(Units(10)))
                         .push(Text::new(
-                            "Here are three buttons that appear in the upper left \
+                            "Here are two buttons that appear in the upper left \
                     corner of the screen:",
                         ))
                         .push(Space::with_height(Units(20)))
@@ -103,11 +102,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             )
                             .width(max_width),
                         )
-                        .push(Text::new("2.  Help, to get to this page."))
-                        .push(Text::new(
-                            "3.  Cookbook, to show some sample commands.  And \
-                            see below, at Archive.",
-                        )),
+                        .push(Text::new("2.  Help, to get to this page.")),
                 ),
         )
         .push(Space::with_height(Units(20)))
