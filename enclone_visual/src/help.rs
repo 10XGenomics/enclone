@@ -164,7 +164,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "More information about saving and restoring session may be \
                                 obtained by \
                                 pushing the Archive button on the main page.  The archive page \
-                                also provides access to a cookbook, which you should work through!",
+                                also provides access to cookbooks, which you should work through!",
                             )
                             .width(max_width2),
                         ),
@@ -229,7 +229,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             Text::new(
                 "Except for special cases (see below), every command begins with \
             the word enclone.  You can see examples \
-            in the cookbook on the Archive page.  You can learn about \
+            in the cookbooks on the Archive page.  You can learn about \
             enclone commands in general by going to the site bit.ly/enclone.",
             )
             .width(max_width),
@@ -260,7 +260,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
-                "If you've displayed a honeycomb plot (see cookbook for examples), \
+                "If you've displayed a honeycomb plot (see cookbooks for examples), \
             then positioning your mouse over a cell will cause a \"tooltip\" box to appear that \
             provides some information about that cell.  See also the Tooltip button, that \
             controls the position of this box.",
@@ -462,10 +462,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Text::new("1.  The clonotype tables are black and white.").width(max_width))
         .push(
-            Text::new(
-                "2.  You can't use the mouse to copy text, except from text input boxes.",
-            )
-            .width(max_width),
+            Text::new("2.  You can't use the mouse to copy text, except from text input boxes.")
+                .width(max_width),
         )
         //
         // Bottom.
