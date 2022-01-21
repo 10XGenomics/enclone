@@ -11,7 +11,7 @@ ansi_escape = "0.1"
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
-attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
+attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
 binary_vec_io = "0.1"
 bio = "0.39"
@@ -39,10 +39,10 @@ enclone_tail = { path = "../enclone_tail" }
 enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
 equiv = "0.1"
-evalexpr = "6"
+evalexpr = "7"
 expr_tools = "0.1"
 fasta_tools = "0.1"
-file-lock = "1"
+file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
@@ -50,13 +50,13 @@ fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
-iced = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a", features = ["canvas", "image", "async-std"] }
-iced_native = { git = "https://github.com/hecrj/iced", rev = "aeec0375f0897b2ef0897c4c54476b2d0db9311a" }
+iced = { git = "https://github.com/hecrj/iced", rev = "04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0", features = ["canvas", "image", "async-std"] }
+iced_native = { git = "https://github.com/hecrj/iced", rev = "04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
 io_utils = "0.3"
 itertools = "0.10"
-jpeg-decoder = "0.1"
+jpeg-decoder = "0.2"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -75,7 +75,7 @@ plotters = { version = "0.3", default_features = false, features = ["svg_backend
 png-decoder = "0.1"
 pprof = "0.6"
 pretty_trace = "0.5"
-procfs = { version = "0.11", default_features = false }
+procfs = { version = "0.12", default_features = false }
 # enclone will compile without the std and prost-derive features, but other things (such as enclone_proto) break.
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
@@ -87,7 +87,7 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-sha2 = "0.9"
+sha2 = "0.10"
 stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"

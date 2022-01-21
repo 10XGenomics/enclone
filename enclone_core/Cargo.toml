@@ -23,12 +23,12 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
-attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
+attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 bio_edit = "0.1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
-evalexpr = "6"
+evalexpr = "7"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
 io_utils = "0.3"
 itertools = "0.10"
