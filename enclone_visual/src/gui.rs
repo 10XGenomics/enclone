@@ -41,7 +41,6 @@ impl Application for EncloneVisual {
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         prepare_for_apocalypse_visual();
-        COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
         x.inputn = vec![iced::text_input::State::default(); EXTRA_INPUTS];
         x.inputn_value.resize(EXTRA_INPUTS, String::new());
@@ -64,7 +63,6 @@ impl Application for EncloneVisual {
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.graphic_help_title = "Help".to_string();
-        x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
         CURRENT_WIDTH_LAST_SEEN.store(INITIAL_WIDTH as usize, SeqCst);
@@ -299,9 +297,6 @@ impl Application for EncloneVisual {
         }
         if self.console_mode {
             return console(self);
-        }
-        if self.cookbook_mode {
-            return cookbook(self);
         }
         if self.archive_mode {
             return archive(self);
@@ -687,10 +682,6 @@ impl Application for EncloneVisual {
             .push(
                 Button::new(&mut self.open_state, Text::new("Help"))
                     .on_press(Message::HelpOpen(Ok(()))),
-            )
-            .push(
-                Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
-                    .on_press(Message::CookbookOpen),
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
