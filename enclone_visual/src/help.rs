@@ -10,7 +10,6 @@ use messages::Message;
 
 pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let version = VERSION.lock().unwrap()[0].clone();
-    let version_float = format!("1e-{}", -version.force_f64().log10());
     let help_title = Text::new(&format!("Help")).size(30);
     let help_close_button =
         Button::new(&mut slf.open_state, Text::new("Dismiss")).on_press(Message::HelpClose(Ok(())));
@@ -48,8 +47,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Text::new("Introduction").size(24))
         .push(Space::with_height(Units(20)))
         .push(Text::new(&format!(
-            "Welcome to enclone visual version {} = {}!",
-            version, version_float,
+            "Welcome to enclone visual version {}!",
+            version,
         )))
         .push(Space::with_height(Units(20)))
         .push(
