@@ -33,8 +33,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .height(Units(300))
         .width(Units(290));
     let png_top_region = include_bytes!("../images/top_region.png").to_vec();
-    let top_region =
-        Image::new(iced::image::Handle::from_memory(png_top_region)).height(Units(84));
+    let top_region = Image::new(iced::image::Handle::from_memory(png_top_region)).height(Units(84));
     let help_scrollable = Scrollable::new(&mut slf.scroll)
         .width(Length::Fill)
         .height(Length::Fill)
@@ -159,16 +158,15 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             )
                             .width(max_width2),
                         )
+                        .push(Space::with_height(Units(10)))
                         .push(
                             Text::new(
-                                "More information for the last two buttons may be obtained by \
-                                pushing the Archive button on the main page.",
+                                "More information about saving and restoring session may be \
+                                obtained by \
+                                pushing the Archive button on the main page.  The archive page \
+                                also provides access to a cookbook, which you should work through!",
                             )
                             .width(max_width2),
-                        )
-                        .push(
-                            Text::new("The archive page also gives you access to more cookbooks!")
-                                .width(max_width2),
                         ),
                 )
                 .push(Space::with_width(Length::Fill))
