@@ -300,9 +300,6 @@ impl Application for EncloneVisual {
         if self.console_mode {
             return console(self);
         }
-        if self.cookbook_mode {
-            return cookbook(self);
-        }
         if self.archive_mode {
             return archive(self);
         }
@@ -687,10 +684,6 @@ impl Application for EncloneVisual {
             .push(
                 Button::new(&mut self.open_state, Text::new("Help"))
                     .on_press(Message::HelpOpen(Ok(()))),
-            )
-            .push(
-                Button::new(&mut self.open_state_cookbook, Text::new("Cookbook"))
-                    .on_press(Message::CookbookOpen),
             );
         let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
             .on_press(Message::ConsoleOpen);
