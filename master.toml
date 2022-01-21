@@ -11,7 +11,7 @@ ansi_escape = "0.1"
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
-attohttpc = { version = "0.17", default-features = false, features = ["compress", "tls-rustls"] }
+attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
 binary_vec_io = "0.1"
 bio = "0.39"
