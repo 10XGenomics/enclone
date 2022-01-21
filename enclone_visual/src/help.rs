@@ -228,8 +228,8 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(
             Text::new(
                 "Except for special cases (see below), every command begins with \
-            the word enclone.  You can see examples by pushing the Cookbook button on the \
-            main screen, and from the cookbooks at the Archive page.  You can learn about \
+            the word enclone.  You can see examples \
+            in the cookbook on the Archive page.  You can learn about \
             enclone commands in general by going to the site bit.ly/enclone.",
             )
             .width(max_width),
@@ -248,15 +248,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
-                "In the cookbook, you'll find abbreviations for commands, \
-            called tags, for example #1.  You can type these into the input box.",
-            )
-            .width(max_width),
-        )
-        .push(Space::with_height(Units(20)))
-        .push(
-            Text::new(
-                "You can also type a number into the text box, where the number \
+                "You can type a number into the text box, where the number \
             is the number of a clonotype group.  Things like this",
             )
             .width(max_width),
@@ -335,7 +327,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(
                             Text::new(
                                 "• The number at the top is the index of the current \
-                    state.  This is not for pushing.",
+                    state.  This is not a button that can be pushed.",
                             )
                             .width(Units((slf.width - 120) as u16)),
                         )
@@ -374,7 +366,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(Space::with_height(Units(5)))
                         .push(
                             Text::new(
-                                "Just to the left of the history boxes are some more, \
+                                "Just to the left of the history boxes are more, \
                     samples of which you can see on the right.",
                             )
                             .width(Units((slf.width - 350) as u16)),
@@ -471,8 +463,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Text::new("1.  The clonotype tables are black and white.").width(max_width))
         .push(
             Text::new(
-                "2.  You can't use the mouse to copy text from the graphics \
-            window or the text window.",
+                "2.  You can't use the mouse to copy text, except from text input boxes.",
             )
             .width(max_width),
         )
