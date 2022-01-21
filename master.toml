@@ -87,7 +87,7 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-sha2 = "0.9"
+sha2 = "0.10"
 stats_utils = "0.1"
 stirling_numbers = "0.1"
 string_utils = "0.1"
