@@ -164,8 +164,8 @@ const N1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5";
 const N2: &str = "enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5";
 const N3: &str = "enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui";
 const N4: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX";
-const N5: &str 
-    = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n,fb2,fb2_n";
+const N5: &str =
+    "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n,fb2,fb2_n";
 
 // This block of tests is good because it tests a lot, but bad because one can't test parts of it.
 // For future tests, it would be better to have smaller chunks, as in the earlier tests.  Except
