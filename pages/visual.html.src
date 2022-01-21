@@ -7,6 +7,8 @@
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 </a>
 
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
 <h1>enclone visual</h1>
 
 <p>
@@ -36,6 +38,8 @@ from developers outside 10x, and do not have a timeline for those changes.
 be generalized to Linux and Windows platforms, but we're not sure how difficult this would be.
 </p>
 
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
 <h2>Getting started</h2>
 
 <p><b>1.</b> To use #enclone_visual,
@@ -57,17 +61,21 @@ commands can be reproduced in #enclone, and, for example, scripted.  The command
 #enclone_visual are similar to, but not identical to #enclone commands.  There are two differences:
 <ul>
 <li>In a plot argument, instead of putting in the name of an image file, you put in the text
-<code>gui</code>.</li>
+<code>gui</code>.  This is illustrated below.</li>
 <li>For #enclone_visual,
 you do not have to quote (<code>"..."</code>) special characters, although arguments containing
 blanks do still need to be quoted.</li>
 </ul>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>Read the help!</h2>
 
 <p>In the #enclone_visual window, you will see a <code>Help</code> button.  Please push that button
 and <b>read the help text there</b>.  This will take you about five minutes, and then you'll 
 understand how the system works.  Some of the behavior is counterintuitive but easily grasped.</p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>Read the cookbook!</h2>
 
@@ -80,6 +88,8 @@ If you later save #enclone_visual sessions, they will appear as entries on this 
 there is only one entry, which is a built-in cookbook.  Please expand and read the documentation.
 Then check the <code>restore</code> box, and push <code>Dismiss</code> to return to the main page.
 Now work your way through the cookbook.</p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>An example</h2>
 
@@ -105,6 +115,17 @@ just the plot.  Push the <code>Pic</code> button.
 <br>
 Now if you push the <code>Dismiss</code> button, you'll be back to the main page.</p>
 
+<p>Suppose that you now wish to reproduce the same plot from the command line in a terminal
+window.  In the command <code>enclone BCR=123085 HONEY=out=gui,color=var,u_cell2</code>,
+you would change <code>gui</code> to the name of a file (or path), ending with either 
+<code>.svg</code> or <code>.png</code>, depending which you prefer.  For example, you could use
+<code>enclone BCR=123085 HONEY=out=plot.svg,color=var,u_cell2</code> to put the plot output
+of the command into a file <code>plot.svg</code>.  You could also to add the argument
+<code>NOPRINT</code>, if you do not want to see the standard output (clonotype tables) that
+<code>enclone</code> generates.</p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
 <h2>States and sessions</h2>
 
 <p>When you run a series of commands in #enclone_visual,
@@ -120,6 +141,8 @@ annotate them with comments.</p>
 If you saved your session, then you can restart #enclone_visual
 later, push the <code>Archive</code> button, and then restore your previously saved session.  
 These saved sessions can also have names and narratives associated to them.</p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>Remote computation (unreleased)</h2>
 
@@ -144,6 +167,8 @@ incantation" is needed to "jump over" a firewall between your Mac and the server
 what this incantation is for our system, and thus some experimentation would be required for yours.
 </p>
 
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
 <h2>Feedback</h2>
 
 <p>You can send your thoughts to us here:
@@ -152,6 +177,8 @@ to contribute directly to the code and thereby extend capabilities yourself.  Re
 let us know if and how you are using #enclone_visual.  We are very
 interested in your experiences!
 </p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 </body>
 </html>
