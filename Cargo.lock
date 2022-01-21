@@ -3990,7 +3990,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.23.1",
+ "nix 0.20.2",
  "pprof",
  "stats_utils",
  "string_utils",
