@@ -25,7 +25,7 @@ ansi_escape = "0.1"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1"
-evalexpr = "6"
+evalexpr = "7"
 graph_simple = "0.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
 io_utils = "0.3"

@@ -61,9 +61,9 @@ dependencies = [
 
 [[package]]
 name = "align_tools"
-version = "0.1.10"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d106e31e27304b55a3dcfa088f8705411f58e5c6718cda6bce7d8a7484f80c0b"
+checksum = "ff21503efd43332c9ef1a6d04ac55b7f8c8878655d6c28c7f749823ac0186406"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -74,9 +74,9 @@ dependencies = [
 
 [[package]]
 name = "amino"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d515c1f6a00594035aa52c80ec02c1bb0c34822bed011937355b795042470a8"
+checksum = "5fd6d116795099c91389d0d065b0a8ca053f15b38df74f31f6c935cbc4629e6c"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -1899,9 +1899,9 @@ dependencies = [
 
 [[package]]
 name = "evalexpr"
-version = "6.6.0"
+version = "7.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cfc25fd417983cc7f203394ebb89eba18e2df1b0ac1be2673091b5aca52b595f"
+checksum = "0eb8c3fede1e2612da9d84fc2a20769b269c8a3d6d29e0854c22f336db343701"
 
 [[package]]
 name = "event-listener"
@@ -1932,9 +1932,9 @@ dependencies = [
 
 [[package]]
 name = "expr_tools"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "decd24d7468ad8a966eda9dd491a7ee0ab6020c0f853bf0998e4c71ebce0f4d9"
+checksum = "26a638c6089b7dd864372f077ee0b6e7c327d00aa5f28db77f292cb6eae442bd"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1944,9 +1944,9 @@ dependencies = [
 
 [[package]]
 name = "fasta_tools"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b74cd477c44581e4bea50cc9bc4fbd3a7d517d5fee489784d9059937ff9f4ff"
+checksum = "47968b60700da803afa3a0f7000e947ca56ccb6b2b0f8768a77ebccb8fe39680"
 dependencies = [
  "debruijn",
  "flate2",
@@ -2638,9 +2638,9 @@ dependencies = [
 
 [[package]]
 name = "hyperbase"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f7b421523378416db37aef1e0e4d41bc3c84524acc0f69da9b7e8890f4760d1"
+checksum = "2e4149ebb430498aa1c8fcc2bfa348df892a34a66218abbe3474fe241f503d3d"
 dependencies = [
  "debruijn",
  "equiv",
@@ -2859,9 +2859,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a857da7bfebb286324f3787ff63a3bf6da3d844e43d6345b58644d5bf59d957d"
+checksum = "d88c239b08f2e90f0f0d71faab2975ee25f70af3869afb442ffd327219eed1ae"
 dependencies = [
  "bincode",
  "flate2",
@@ -2963,9 +2963,9 @@ dependencies = [
 
 [[package]]
 name = "kmer_lookup"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54dba4cacdcca8ba7374a6bad2ab3de28811f8e71526aacd24e58601547fe0b5"
+checksum = "f8b99223e43a9eb74be262b78b33727e1a70a224f96db44063632de610938dfd"
 dependencies = [
  "debruijn",
  "rayon",
@@ -3725,9 +3725,9 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 
 [[package]]
 name = "perf_stats"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97351b3d037f3e3226bbcc796ce53dfbb5298e9286e6ac58f65b8bfe336a8c42"
+checksum = "b0177fac70981a979322d624a0c4820d0c698b975267c92f34a5f15ccf3f9a8d"
 dependencies = [
  "io_utils",
  "libc",
@@ -3982,9 +3982,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.22"
+version = "0.5.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f782e4a3c572c596b302323fe8decb83815a07e8cb21e223383b926668318cc8"
+checksum = "ffb7fee4fba2b897a4dabb1d95c746960aea01dbd2de45080cfb2bb32f4b7d2a"
 dependencies = [
  "backtrace",
  "io_utils",
@@ -4744,9 +4744,9 @@ checksum = "b2d615734a36694d0a5803b1fe69b185611864224f5b2d4425ad0b69e39fb877"
 
 [[package]]
 name = "stirling_numbers"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b38318215cdac77fc77de2b7d5a79db9098340d05b4960dbe227e33a95ece95"
+checksum = "4c7f85a2d5a816fe63aa975431908b96d447ba14c494a21fd197e4b53140a814"
 dependencies = [
  "num-traits",
 ]
@@ -5398,9 +5398,9 @@ dependencies = [
 
 [[package]]
 name = "vdj_types"
-version = "0.1.5"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a76e5166d76abf704655a248654e8fd3884c28978bd75e25483caaaf92aad7c"
+checksum = "eac00ee04f04b50e6171aaa38ca77f6e8c0cca4445c67d741f4ee07da30ccb96"
 dependencies = [
  "enum-iterator",
  "serde",
@@ -5419,9 +5419,9 @@ dependencies = [
 
 [[package]]
 name = "vector_utils"
-version = "0.1.3"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e107021f89b5d21750b11933706dbf1804eb48fa96dd81966e113786d707b5f"
+checksum = "2d3ecf8ee11bfddd2cb41fe07abbb063610a90d22515b47718d1a7ba200d3059"
 dependencies = [
  "permutation",
  "superslice",

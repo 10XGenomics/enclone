@@ -39,7 +39,7 @@ enclone_tail = { path = "../enclone_tail" }
 enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
 equiv = "0.1"
-evalexpr = "6"
+evalexpr = "7"
 expr_tools = "0.1"
 fasta_tools = "0.1"
 file-lock = "2"
