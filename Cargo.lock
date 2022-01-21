@@ -482,9 +482,9 @@ checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
 
 [[package]]
 name = "bitflags"
-version = "1.2.1"
+version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
+checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "block"
@@ -634,7 +634,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bf2eec61efe56aa1e813f5126959296933cf0700030e4314786c48779a66ab82"
 dependencies = [
  "log",
- "nix 0.22.2",
+ "nix 0.22.0",
 ]
 
 [[package]]
@@ -3388,22 +3388,21 @@ dependencies = [
 
 [[package]]
 name = "nix"
-version = "0.20.2"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5e06129fb611568ef4e868c14b326274959aa70ff7776e9d55323531c374945"
+checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
 dependencies = [
  "bitflags",
  "cc",
  "cfg-if 1.0.0",
  "libc",
- "memoffset",
 ]
 
 [[package]]
 name = "nix"
-version = "0.22.2"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3bb9a13fa32bc5aeb64150cd3f32d6cf4c748f8f8a417cce5d2eb976a8370ba"
+checksum = "cf1e25ee6b412c2a1e3fcb6a4499a5c1bfe7f43e014bdce9a6b6666e5aa2d187"
 dependencies = [
  "bitflags",
  "cc",
@@ -4627,7 +4626,7 @@ dependencies = [
  "lazy_static",
  "log",
  "memmap2 0.3.1",
- "nix 0.22.2",
+ "nix 0.22.0",
  "pkg-config",
  "wayland-client",
  "wayland-cursor",
@@ -5509,7 +5508,7 @@ dependencies = [
  "bitflags",
  "downcast-rs",
  "libc",
- "nix 0.22.2",
+ "nix 0.22.0",
  "scoped-tls",
  "wayland-commons",
  "wayland-scanner",
@@ -5522,7 +5521,7 @@ version = "0.29.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "94f6e5e340d7c13490eca867898c4cec5af56c27a5ffe5c80c6fc4708e22d33e"
 dependencies = [
- "nix 0.22.2",
+ "nix 0.22.0",
  "once_cell",
  "smallvec",
  "wayland-sys",
@@ -5534,7 +5533,7 @@ version = "0.29.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c52758f13d5e7861fc83d942d3d99bf270c83269575e52ac29e5b73cb956a6bd"
 dependencies = [
- "nix 0.22.2",
+ "nix 0.22.0",
  "wayland-client",
  "xcursor",
 ]
@@ -5877,7 +5876,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ffb080b3f2f616242a4eb8e7d325035312127901025b0052bc3154a282d0f19"
 dependencies = [
  "gethostname",
- "nix 0.20.2",
+ "nix 0.20.0",
  "winapi",
  "winapi-wsapoll",
 ]
