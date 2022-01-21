@@ -41,7 +41,6 @@ impl Application for EncloneVisual {
 
     fn new(_flags: ()) -> (EncloneVisual, Command<Message>) {
         prepare_for_apocalypse_visual();
-        COOKBOOK_CONTENTS.lock().unwrap().push(format_cookbook());
         let mut x = EncloneVisual::default();
         x.inputn = vec![iced::text_input::State::default(); EXTRA_INPUTS];
         x.inputn_value.resize(EXTRA_INPUTS, String::new());
@@ -64,7 +63,6 @@ impl Application for EncloneVisual {
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.graphic_help_title = "Help".to_string();
-        x.cookbook = parse_cookbook();
         x.width = INITIAL_WIDTH;
         CURRENT_WIDTH.store(INITIAL_WIDTH as usize, SeqCst);
         CURRENT_WIDTH_LAST_SEEN.store(INITIAL_WIDTH as usize, SeqCst);

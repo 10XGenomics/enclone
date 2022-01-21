@@ -13,7 +13,6 @@ use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
 use nix::unistd::Pid;
 use perf_stats::*;
-use std::cmp::max;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::env;
@@ -464,86 +463,6 @@ pub fn get_window_id() -> usize {
     panic!("Unimplemented!");
 }
 
-pub fn format_cookbook() -> String {
-    let c;
-    if INTERNAL.load(SeqCst) {
-        c = include_str!["cookbook.internal"];
-    } else {
-        c = include_str!["cookbook.external"];
-    }
-    let mut rows = Vec::<Vec<String>>::new();
-    let row = vec![
-        "tag".to_string(),
-        "command".to_string(),
-        "action".to_string(),
-    ];
-    rows.push(row);
-    let mut row = Vec::<String>::new();
-    for line in c.lines() {
-        if line.len() > 0 {
-            row.push(line.to_string());
-            if row.len() == 3 {
-                if rows.len() > 0 {
-                    rows.push(vec!["\\hline".to_string(); 3]);
-                }
-                rows.push(row.clone());
-                row.clear();
-            }
-        }
-    }
-    let mut rows2 = Vec::<Vec<String>>::new();
-    for i in 0..rows.len() {
-        let m1 = fold(&rows[i][1], 60);
-        let m2 = fold(&rows[i][2], 60);
-        if m1.len() == 1 && m2.len() == 1 {
-            rows2.push(rows[i].clone());
-        } else {
-            for j in 0..max(m1.len(), m2.len()) {
-                let mut row = Vec::<String>::new();
-                if j == 0 {
-                    row.push(rows[i][0].clone());
-                } else {
-                    row.push("".to_string());
-                }
-                if j < m1.len() {
-                    row.push(m1[j].clone());
-                } else {
-                    row.push("".to_string());
-                }
-                if j < m2.len() {
-                    row.push(m2[j].clone());
-                } else {
-                    row.push("".to_string());
-                }
-                rows2.push(row);
-            }
-        }
-    }
-    let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows2, 0, &b"l|l|l".to_vec(), false, true);
-    log
-}
-
-pub fn parse_cookbook() -> HashMap<String, String> {
-    let c;
-    if INTERNAL.load(SeqCst) {
-        c = include_str!["cookbook.internal"];
-    } else {
-        c = include_str!["cookbook.external"];
-    }
-    let mut lines = Vec::<String>::new();
-    for line in c.lines() {
-        if line.len() > 0 {
-            lines.push(line.to_string());
-        }
-    }
-    let mut h = HashMap::<String, String>::new();
-    for i in (0..lines.len()).step_by(3) {
-        h.insert(lines[i].clone(), lines[i + 1].clone());
-    }
-    h
-}
-
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Global variables for client.
@@ -598,7 +517,6 @@ lazy_static! {
     pub static ref SERVER_REPLY_DATASET_NAMES: Mutex<Vec<String>> =
         Mutex::new(Vec::<String>::new());
     pub static ref CONFIG_FILE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-    pub static ref COOKBOOK_CONTENTS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref CONSOLE: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref USER_NAME: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
     pub static ref RECEIVED_SHARES_CONTENT: Mutex<Vec<Vec<u8>>> = Mutex::new(Vec::<Vec<u8>>::new());
