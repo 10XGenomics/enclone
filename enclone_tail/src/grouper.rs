@@ -14,7 +14,7 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
-use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
+use vector_utils::{next_diff1_2, sort_sync2, unique_sort, VecUtils};
 
 pub fn grouper(
     refdata: &RefData,
@@ -541,6 +541,25 @@ pub fn grouper(
                 }
                 unique_sort(&mut donors);
                 if donors.len() < ctl.clono_group_opt.min_group_donors {
+                    continue;
+                }
+            }
+            if ctl.clono_group_opt.cdr3h_len_var {
+                let mut lens = Vec::<usize>::new();
+                for j in 0..o.len() {
+                    let x = o[j] as usize;
+                    let s = &exacts[x];
+                    for k in 0..s.len() {
+                        let ex = &exact_clonotypes[s[k]];
+                        for l in 0..ex.share.len() {
+                            if ex.share[l].left {
+                                lens.push(ex.share[l].cdr3_aa.len());
+                            }
+                        }
+                    }
+                }
+                unique_sort(&mut lens);
+                if lens.solo() {
                     continue;
                 }
             }
