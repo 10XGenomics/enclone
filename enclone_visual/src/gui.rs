@@ -69,25 +69,34 @@ impl Application for EncloneVisual {
         CURRENT_HEIGHT.store(INITIAL_HEIGHT as usize, SeqCst);
         CURRENT_HEIGHT_LAST_SEEN.store(INITIAL_HEIGHT as usize, SeqCst);
         x.height = INITIAL_HEIGHT;
-        let mut home = String::new();
-        for (key, value) in env::vars() {
-            if key == "HOME" {
-                home = value.clone();
+
+        // Find ~/enclone/visual.
+
+        let enclone;
+        if EHOME.lock().unwrap().len() > 0 {
+            enclone = EHOME.lock().unwrap()[0].clone();
+        } else {
+            let mut home = String::new();
+            for (key, value) in env::vars() {
+                if key == "HOME" {
+                    home = value.clone();
+                }
             }
+            if home.len() == 0 {
+                eprintln!(
+                    "Unable to determine home directory.  This is unexpected and \
+                    pathological.\nPlease report this problem!\n"
+                );
+                std::process::exit(1);
+            }
+            enclone = format!("{}/enclone", home);
         }
-        if home.len() == 0 {
-            eprintln!(
-                "Unable to determine home directory.  This is unexpected and \
-                pathological.\nPlease report this problem!\n"
-            );
-            std::process::exit(1);
-        }
-        let enclone = format!("{}/enclone", home);
         if !path_exists(&enclone) {
             eprintln!(
-                "Oddly, you do not have a directory ~/enclone.  Normally this would be\n\
+                "Oddly, you do not have a directory {}.  Normally this would be\n\
                 created by following the installation instructions at bit.ly/enclone.  Please do \
-                that or at least create the directory.\n"
+                that or at least create the directory.\n",
+                enclone,
             );
             std::process::exit(1);
         }
@@ -95,6 +104,9 @@ impl Application for EncloneVisual {
         if VISUAL_DIR.lock().unwrap().len() > 0 {
             x.visual = VISUAL_DIR.lock().unwrap()[0].clone();
         }
+
+        // Proceed.
+
         let history = format!("{}/history", x.visual);
         if !path_exists(&history) {
             let res = create_dir_all(&history);

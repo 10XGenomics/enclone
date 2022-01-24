@@ -88,6 +88,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             verbose = true;
 
         // Special testing options.
+        //
         } else if arg == "MONITOR_THREADS" {
             monitor_threads = true;
         } else if arg.starts_with("PORT=") {
@@ -113,6 +114,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             EXEC.lock().unwrap().push(arg.after("EXEC=").to_string());
         } else if arg == "REQUIRE_COMPATIBLE" {
             require_compatible = true;
+        } else if arg.starts_with("EHOME=") {
+            let ehome = arg.after("EHOME=").to_string();
+            EHOME.lock().unwrap().push(ehome);
         } else {
             xprintln!(
                 "\nCurrently the only allowed arguments are VIS, VIS=x where x is a\n\
@@ -148,15 +152,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Announce.
 
-    let version_float = format!("1e-{}", -version.force_f64().log10());
     if !verbose {
         xprintln!(
-            "\nHi! You are using enclone visual {} = {}.\n\n\
+            "\nHi! You are using enclone visual {}.\n\n\
             If you get an error \
             message or a window does not pop up, and it's not clear what to do,\nplease \
             rerun the command with the added argument VERBOSE, and then ask for help.",
             version,
-            version_float,
         );
     }
 
