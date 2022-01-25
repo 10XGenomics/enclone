@@ -1,14 +1,5 @@
-#1
-enclone BCR=123085 PLOT=gui MIN_CELLS=5
-Show a honeycomb plot, showing only clonotypes having at least five cells.
 
-#2
-enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
-Show a honeycomb plot with cells colored by their isotype.
-
-#3
-enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
-Plot the UMI counts for the genes HLA-A versus CD74 versus each other.
+This is not used anymore but kept because it includes some interesting commands.
 
 #4
 enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX

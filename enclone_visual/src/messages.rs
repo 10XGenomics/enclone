@@ -23,8 +23,6 @@ pub enum Message {
     Resize(u32, u32),
     HelpOpen(Result<(), String>),
     HelpClose(Result<(), String>),
-    CookbookOpen,
-    CookbookClose,
     CommandOpen(Result<(), String>),
     CommandClose,
     SummaryOpen(Result<(), String>),

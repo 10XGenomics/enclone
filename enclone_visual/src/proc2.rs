@@ -418,11 +418,7 @@ pub fn do_submit_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
             slf.start_command = Some(Instant::now());
             // The following sleep is needed for button text to consistenly update.
             thread::sleep(Duration::from_millis(20));
-            if slf.input_value.starts_with('#') && slf.cookbook.contains_key(&slf.input_value) {
-                slf.translated_input_value = slf.cookbook[&slf.input_value].clone();
-            } else {
-                slf.translated_input_value = slf.input_value.clone();
-            }
+            slf.translated_input_value = slf.input_value.clone();
             USER_REQUEST.lock().unwrap().clear();
             USER_REQUEST
                 .lock()

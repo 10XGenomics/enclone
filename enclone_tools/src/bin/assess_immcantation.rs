@@ -1,8 +1,7 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Assess immcantation clonotyping.  Pass a single argument, which is to be a directory.
-// The code looks for an immcantation output file filtered_contig_igblast_db-pass_clone-pass.tsv
-// in that directory.
+// Assess immcantation clonotyping.  Pass a single argument, which is to be an immcantation
+// output file.
 //
 // 1. First run build_immcantation_inputs.
 // 2. Then run immcantation.
@@ -10,6 +9,8 @@
 //
 // We assume that the argument to build_immcantation_inputs is a list of ids from
 // enclone.testdata.bcr.gex.
+//
+// We ignore lines for which clone_id is unspecified.
 
 use io_utils::*;
 use pretty_trace::*;
@@ -62,20 +63,17 @@ pub fn main() {
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
-        eprintln!("\nPlease run with a single argument which is a directory name.\n");
+        eprintln!("\nPlease run with a single argument which is a path to a CSV file.\n");
         std::process::exit(1);
     }
-    let f = open_for_read![&format!(
-        "{}/filtered_contig_igblast_db-pass_clone-pass.tsv",
-        args[1]
-    )];
+    let f = open_for_read![&args[1]];
     let mut n_seq = None;
     let mut n_clone = None;
     let mut assignments = Vec::<(usize, String, String)>::new();
     let mut datasets = Vec::<String>::new();
     for (i, line) in f.lines().enumerate() {
         let s = line.unwrap();
-        let fields = s.split('\t').collect::<Vec<&str>>();
+        let fields = parse_csv(&s);
         if i == 0 {
             for j in 0..fields.len() {
                 if fields[j] == "sequence_id" {
@@ -85,8 +83,15 @@ pub fn main() {
                 }
             }
         } else {
-            let seq_id = fields[n_seq.unwrap()];
-            let clone_id = fields[n_clone.unwrap()].force_usize();
+            let seq_id = &fields[n_seq.unwrap()];
+            let clone_id = &fields[n_clone.unwrap()];
+            if clone_id == "" {
+                continue;
+            }
+            if !clone_id.parse::<usize>().is_ok() {
+                eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
+            }
+            let clone_id = clone_id.force_usize();
             let dataset = seq_id.before("_").to_string();
             datasets.push(dataset.clone());
             let barcode = seq_id.between("_", "_").to_string();

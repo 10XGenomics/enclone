@@ -160,6 +160,12 @@ const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
 const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
                           SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
+const N1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5";
+const N2: &str = "enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5";
+const N3: &str = "enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui";
+const N4: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX";
+const N5: &str =
+    "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n,fb2,fb2_n";
 
 // This block of tests is good because it tests a lot, but bad because one can't test parts of it.
 // For future tests, it would be better to have smaller chunks, as in the earlier tests.  Except
@@ -168,7 +174,7 @@ const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
 #[rustfmt::skip]
 pub const TESTS: [(&str, MsgFn, &str); 40] = [
     (X0,     SUBMIT,  ""),        // enclone woof
-    ("#1",   SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
+    (N1,     SUBMIT,  "test1"),   // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("#999", SUBMIT,  "test1a"),  // #999
     ("",     DEL,     ""),        // enclone BCR=123085 PLOT=gui MIN_CELLS=5
     ("",     BACK,    ""),        // enclone woof
@@ -178,11 +184,11 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     ("",     FORWARD, "test1x"),  // 10
     (X1,     SUBMIT,  "test1c"),  // enclone BCR=123085 PLOT=gui MIN_CELLS=5 G=12
     (X2,     SUBMIT,  "test1d"),  // enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui
-    ("#2",   SUBMIT,  "test2"),   // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
-    ("#3",   SUBMIT,  "test3"),   // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
+    (N2,     SUBMIT,  "test2"),   // enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5
+    (N3,     SUBMIT,  "test3"),   // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
     ("",     BACK,    "test4"),   // #2
     ("",     FORWARD, "test5"),   // #3
-    ("#4",   SUBMIT,  "test6"),   // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+    (N4,     SUBMIT,  "test6"),   // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
     ("200",  SUBMIT,  "test7"),   // 200
     ("",     BACK,    "test8"),   // #4
     ("",     BACK,    "test9"),   // #3
@@ -200,7 +206,7 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     ("",     BACK,    "test13"),  // enclone + BCR=123085 NOPRINT
     (X4,     SUBMIT,  "test14"),  // enclone BCR=123085 CHAINS=10
     (X5,     SUBMIT,  "test15"),  // enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX="u1 >= 6000" SEG=IGHM
-    ("#5",   SUBMIT,  "test16"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT 
+    (N5,     SUBMIT,  "test16"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT 
                                   //         NGEX LVARSP=fb1,fb1_n,fb2,fb2_n
     (X6,     SUBMIT,  "test17"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX 
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n

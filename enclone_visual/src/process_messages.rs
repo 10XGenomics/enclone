@@ -768,16 +768,6 @@ impl EncloneVisual {
                 }
             }
 
-            Message::CookbookOpen => {
-                self.cookbook_mode = true;
-                Command::none()
-            }
-
-            Message::CookbookClose => {
-                self.cookbook_mode = false;
-                Command::none()
-            }
-
             Message::ClonotypesOpen(_) => {
                 self.clonotypes_mode = true;
                 Command::none()

@@ -10,7 +10,6 @@ use flate2::read::GzDecoder;
 use iced::{button, scrollable, text_input, Color};
 // use iced::Subscription;
 // use iced_native::{window, Event};
-use std::collections::HashMap;
 use std::io::Read;
 use std::time::Instant;
 
@@ -111,12 +110,10 @@ pub struct EncloneVisual {
     pub descrips_copy_button_color: Color,
     pub png_button_color: Color,
     pub canvas_view: CanvasView,
-    pub cookbook: HashMap<String, String>,
     pub window_id: usize,
     pub start_command: Option<Instant>,
     pub help_mode: bool,
     pub command_mode: bool,
-    pub cookbook_mode: bool,
     pub summary_mode: bool,
     pub console_mode: bool,
     pub archive_mode: bool,
@@ -161,7 +158,6 @@ pub struct EncloneVisual {
     pub del_button: button::State,
     pub exec_button: button::State,
     pub summary_button: button::State,
-    pub open_state_cookbook: button::State,
     pub exit_state: button::State,
     pub copy_image_button: button::State,
     pub command_copy_button: button::State,
