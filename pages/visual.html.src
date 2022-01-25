@@ -81,6 +81,7 @@ understand how the system works.  Some of the behavior is counterintuitive but e
 
 <p>Push the <code>Archive</code> button.  You will see the following (without the red coloring
 of the Snapshot button, which is how we captured the image):
+<br>
 <img src="../../img/visual_archive1.png" style="max-width: 80%" lt="enclone visual archive" 
 title="enclone visual archive">
 <br>
