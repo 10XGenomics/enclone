@@ -169,9 +169,10 @@ pub const EXTENDED_TESTS: [&str; 15] = [
     // 7. test MIN_GROUP_DONORS
     r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NO_PRE NFORCE
          GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###,
-    // 8. test on PD multi pipestance; failed before bug fix
-    // THIS TEST IS SUPERCEDED AND CAN BE DELETED.
-    r###"BCR_GEX=1084461 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    // 8. this asserted at one point
+    r###"BUILT_IN GROUP=vj_refname,cdr3_aa_heavy≥90% MIN_CHAINS_EXACT=2 MIN_GROUP=2 
+         KEEP_CLONO_IF_CELL_MEAN="cdr3_len1>=18" BCR=1018096-1018098 JALIGN1 NO_PRE NFORCE
+         EXPECT_OK"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
@@ -184,7 +185,7 @@ pub const EXTENDED_TESTS: [&str; 15] = [
     r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
     //
     // NOT ALL PUBLIC
-
+    //
     // 14. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
          CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,

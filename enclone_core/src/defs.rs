@@ -101,7 +101,6 @@ impl OriginInfo {
 #[derive(Default, PartialEq)]
 pub struct GeneralOpt {
     pub pre: Vec<String>,
-    pub insertions: bool,
     pub indels: bool,
     pub reannotate: bool,
     pub heavy_chain_reuse: bool,

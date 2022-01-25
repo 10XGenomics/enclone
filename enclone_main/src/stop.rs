@@ -344,6 +344,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         }
     }
     erase_if(&mut exacts, &to_delete);
+    erase_if(&mut rsi, &to_delete);
     erase_if(&mut pics, &to_delete);
     ctl.perf_stats(&t, "in grouper");
 
