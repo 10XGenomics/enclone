@@ -89,9 +89,7 @@ pub fn main() {
                 continue;
             }
             if !clone_id.parse::<usize>().is_ok() {
-                eprintln!("\nProblem parsing line {}, clone_id = {}.",
-                    i + 1, clone_id
-                );
+                eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
             }
             let clone_id = clone_id.force_usize();
             let dataset = seq_id.before("_").to_string();

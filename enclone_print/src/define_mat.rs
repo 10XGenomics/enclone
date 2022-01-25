@@ -51,7 +51,7 @@ fn joiner(
     e
 }
 
-// This generates a cols x nexacts matrices for a given clonotype, where cols is defined by the 
+// This generates a cols x nexacts matrices for a given clonotype, where cols is defined by the
 // algorithm, and is the number of columns (chains) in the clonotype table.
 
 pub fn define_mat(
