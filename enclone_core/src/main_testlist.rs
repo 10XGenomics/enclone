@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 283] = [
+pub const TESTS: [&str; 284] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -710,4 +710,7 @@ pub const TESTS: [&str; 283] = [
     // 283. another test of VAR_DEF
     r###"BCR=86237 GEX=85679 VAR_DEF="mu:CD19_ab + CD25_ab" LVARSP=gex,CD19_ab,CD25_ab,mu
          CDR3=CARSFFGDTAMVMFQAFDPW FOLD_HEADERS PER_CELL AMINO= POUT=stdout PCOLS=mu"###,
+    // 284. another test of VAR_DEF
+    r###"BCR=86237 GEX=85679 VAR_DEF="mu:CD19_ab + CD25_ab" LVARSP=mu CDR3=CARSFFGDTAMVMFQAFDPW
+         PER_CELL POUT=stdout PCOLS=mu PCELL FOLD_HEADERS"###,
 ];
