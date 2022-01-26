@@ -706,35 +706,37 @@ pub fn print_clonotypes(
 
                     // Compute per-cell entries.
 
-                    let mut subrows = Vec::<Vec<String>>::new();
-                    compute_bu(
-                        u,
-                        cell_count,
-                        &exacts,
-                        &lvars,
-                        ctl,
-                        &bli,
-                        ex,
-                        exact_clonotypes,
-                        &mut row,
-                        &mut subrows,
-                        &varmat,
-                        have_gex,
-                        gex_info,
-                        &rsi,
-                        &mut sr,
-                        fate,
-                        &nd_fields,
-                        &alt_bcs,
-                        &cred,
-                        &pe,
-                        &ppe,
-                        &npe,
-                        &d_all,
-                        &ind_all,
-                        mat,
-                        &these_stats,
-                    );
+                    if pass == 2 {
+                        let mut subrows = Vec::<Vec<String>>::new();
+                        compute_bu(
+                            u,
+                            cell_count,
+                            &exacts,
+                            &lvars,
+                            ctl,
+                            &bli,
+                            ex,
+                            exact_clonotypes,
+                            &mut row,
+                            &mut subrows,
+                            &varmat,
+                            have_gex,
+                            gex_info,
+                            &rsi,
+                            &mut sr,
+                            fate,
+                            &nd_fields,
+                            &alt_bcs,
+                            &cred,
+                            &pe,
+                            &ppe,
+                            &npe,
+                            &d_all,
+                            &ind_all,
+                            mat,
+                            &these_stats,
+                        );
+                    }
                     cell_count += ex.clones.len();
                 }
                 let mut rord = Vec::<usize>::new(); // note that this is now superfluous
