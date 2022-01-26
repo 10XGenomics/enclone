@@ -30,6 +30,11 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+
+<p><b>1/26/22</b>: Add ability to define variables as expressions involving other variables,
+using an argument <code>VAR_DEF=...</code>.  Please see
+<a href="../../pages/auto/variables.html"><code>variables</code></a>.</p>
+
 <p><b>1/13/22</b>: Make three small changes to BCR clonotyping:
 <ul>
 <ol>
