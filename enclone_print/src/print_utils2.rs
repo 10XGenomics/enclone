@@ -9,7 +9,7 @@ use crate::proc_lvar2::proc_lvar2;
 use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
 use enclone_core::allowed_vars::LVARS_ALLOWED;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::median_f64;
 use enclone_proto::types::DonorReferenceItem;
 use enclone_vars::decode_arith;
@@ -388,7 +388,15 @@ pub fn row_fill(
                         row.push(median.clone())
                     }
                     if pass == 2 {
-                        speak!(u, x.to_string(), median.clone());
+                        if ctl.parseable_opt.pbarcode {
+                            speak!(
+                                u,
+                                x.to_string(),
+                                format!("{}", out_vals.iter().format(POUT_SEP))
+                            );
+                        } else {
+                            speak!(u, x.to_string(), median.clone());
+                        }
                     }
                     stats.push((x.to_string(), out_vals.clone()));
                 } else if i < lvars.len() {
