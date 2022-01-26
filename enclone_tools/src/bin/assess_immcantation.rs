@@ -60,7 +60,7 @@ pub fn main() {
     // Parse the immcantation output file.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 2 || ( !args[1].ends_with(".csv") && !args[1].ends_with(".tsv")) {
+    if args.len() != 2 || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv")) {
         eprintln!("\nPlease run with a single argument which is a path to a CSV or TSV file.\n");
         std::process::exit(1);
     }
@@ -76,7 +76,7 @@ pub fn main() {
         if args[1].ends_with(".csv") {
             fields = parse_csv(&s);
         } else {
-            fields = s.split('\t').map(str::to_owned).collect();  
+            fields = s.split('\t').map(str::to_owned).collect();
         }
         if i == 0 {
             for j in 0..fields.len() {

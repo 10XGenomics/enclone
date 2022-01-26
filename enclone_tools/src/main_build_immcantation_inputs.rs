@@ -56,8 +56,8 @@ pub fn main_build_immcantation_inputs() {
 
     let pre = format!("{}/current{}", config["cloud"], TEST_FILES_VERSION);
 
-    // Concatenate the fasta files, prepending the lena id to the contig name.
-    // Also concatenate the csv files, prepending the lena id to the contig name.
+    // Concatenate the fasta files, prepending the id to the contig name.
+    // Also concatenate the csv files, prepending the id to the contig name.
 
     let mut g1 = open_for_write_new!["filtered_contig.fasta"];
     let mut g = open_for_write_new!["filtered_contig_annotations.csv"];
@@ -67,7 +67,9 @@ pub fn main_build_immcantation_inputs() {
         for line in f1.lines() {
             let s = line.unwrap();
             if s.starts_with('>') {
-                fwriteln!(g1, ">{}_{}", l, s.after(">"));
+                let bc = s.between(">", "-");
+                let contig = s.rev_after("_");
+                fwriteln!(g1, ">{}-{}_contig_{}", bc, l, contig);
                 count1 += 1;
             } else {
                 fwriteln!(g1, "{}", s);
@@ -94,11 +96,20 @@ pub fn main_build_immcantation_inputs() {
                 if j > 0 {
                     fwrite!(g, ",");
                 }
-                if j == 2 {
-                    fwrite!(g, "{}_", l);
+                if j == 0 {
+                    fwrite!(g, "{}-{}", fields[j].before("-"), l);
+                } else if j == 2 {
+                    fwrite!(
+                        g,
+                        "{}-{}_contig_{}",
+                        fields[j].before("-"),
+                        l,
+                        fields[j].rev_after("_")
+                    );
                     count2 += 1;
+                } else {
+                    fwrite!(g, "{}", fields[j]);
                 }
-                fwrite!(g, "{}", fields[j]);
             }
             fwriteln!(g, "");
         }
