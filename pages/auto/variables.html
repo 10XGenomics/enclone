@@ -275,6 +275,54 @@ AGCTTGACAATGGAGC-1    18       18
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
+<h2>Defining new variables as expressions</h2>
+
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> allows new variables to be defined as expressions using <code>VAR_DEF=...</code>, like
+this:
+
+<pre><code>enclone BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum 
+CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS</code></pre>
+
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 3 CELLS</span>
+
+[1.1] CLONOTYPE = 3 CELLS
+┌────────────────────────────────────────────────────┬──────────────────────────────────┬───────────────────────┐
+│                                                    │  <span style="font-weight:bold;">CHAIN 1</span>                         │  CHAIN 2              │
+│                                                    │  <span style="font-weight:bold;">194|IGHV4-59</span>                    │  349|IGLV3-1          │
+│                                                    │  <span style="font-weight:bold;">◆ 29|IGHD5-18</span>                   │  ◆ 311|IGLJ2          │
+│                                                    │  <span style="font-weight:bold;">◆ 57|IGHJ5</span>                      │                       │
+│                                                    ├──────────────────────────────────┼───────────────────────┤
+│                                                    │  11111111111111111111            │  11111111111          │
+│                                                    │  11111112222222222333            │  00000111111          │
+│                                                    │  34567890123456789012            │  56789012345          │
+│                                                    │  ════════CDR3════════            │  ════CDR3═══          │
+│reference                                           │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>            │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">D</span>◦◦◦◦◦◦          │
+│donor ref                                           │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>            │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">D</span>◦◦◦◦◦◦          │
+├────────────────────────────────────────────────────┼──────────────────────────────────┼───────────────────────┤
+│<span style="font-weight:bold;">#  barcode             n  CD19_ab  CD25_ab     sum  </span>│<span style="font-weight:bold;">  ....................  u  const  </span>│<span style="font-weight:bold;">  ...........  u  const</span>│
+│1                      1     1210      102  1312.0  │  <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#31c39a;">S</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">T</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">M</span><span style="color:#e7bd20;">V</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  2  IGHD   │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">DSS</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  8  IGLC2│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   GCTGGGTTCAACCAAC-1        1210      102  1312.0  </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                        2         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">               8       </span>│
+│2                      2      952       53  1004.5  │                                  │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">DSS</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  4  IGLC2│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   ACGTCAAAGTGGTAGC-1         850       80   930.0  </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                                  </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">               6       </span>│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   ATGTGTGAGAGTACCG-1        1054       25  1079.0  </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                                  </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">               2       </span>│
+└────────────────────────────────────────────────────┴──────────────────────────────────┴───────────────────────┘
+</span></pre>
+
+<p>
+Note that spaces need to be placed around operators!  We require this because some variable
+names can have operators in them, for example because gene names can include <code>-</code>.
+</p>
+
+<p>
+Multiple invocations of <code>VAR_DEF</code> are allowed.
+</p>
+
+<p>We could easily add the ability to include calls to standard functions, if we had a list of
+such.  Please let us know if this would be useful to you.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
 <h2>Column key</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">

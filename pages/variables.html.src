@@ -183,6 +183,31 @@ version.</li>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
+<h2>Defining new variables as expressions</h2>
+
+#enclone allows new variables to be defined as expressions using <code>VAR_DEF=...</code>, like
+this:
+
+<pre><code>enclone BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum 
+CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS</code></pre>
+
+#include pages/auto/var_def.html
+
+<p>
+Note that spaces need to be placed around operators!  We require this because some variable
+names can have operators in them, for example because gene names can include <code>-</code>.
+</p>
+
+<p>
+Multiple invocations of <code>VAR_DEF</code> are allowed.
+</p>
+
+<p>We could easily add the ability to include calls to standard functions, if we had a list of
+such.  Please let us know if this would be useful to you.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
 <h2>Column key</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
