@@ -23,8 +23,6 @@ use vector_utils::*;
 pub fn main() {
     PrettyTrace::new().on();
 
-    // cat clone | grep -v "^SEQ" | cut -f1,61 | tr '_' ' ' | tr '\t' ' ' | Col 1 2 5 | sort -u
-
     // Get dataset classification by sample.
 
     let mut to_donor = HashMap::<usize, usize>::new();
@@ -62,8 +60,8 @@ pub fn main() {
     // Parse the immcantation output file.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        eprintln!("\nPlease run with a single argument which is a path to a CSV file.\n");
+    if args.len() != 2 || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv")) {
+        eprintln!("\nPlease run with a single argument which is a path to a CSV or TSV file.\n");
         std::process::exit(1);
     }
     let f = open_for_read![&args[1]];
@@ -71,9 +69,15 @@ pub fn main() {
     let mut n_clone = None;
     let mut assignments = Vec::<(usize, String, String)>::new();
     let mut datasets = Vec::<String>::new();
+    let mut unassigned = 0;
     for (i, line) in f.lines().enumerate() {
         let s = line.unwrap();
-        let fields = parse_csv(&s);
+        let fields;
+        if args[1].ends_with(".csv") {
+            fields = parse_csv(&s);
+        } else {
+            fields = s.split('\t').map(str::to_owned).collect();
+        }
         if i == 0 {
             for j in 0..fields.len() {
                 if fields[j] == "sequence_id" {
@@ -85,7 +89,8 @@ pub fn main() {
         } else {
             let seq_id = &fields[n_seq.unwrap()];
             let clone_id = &fields[n_clone.unwrap()];
-            if clone_id == "" {
+            if clone_id == "" || clone_id == "NA" {
+                unassigned += 1;
                 continue;
             }
             if !clone_id.parse::<usize>().is_ok() {
@@ -102,7 +107,8 @@ pub fn main() {
     use itertools::Itertools;
     println!("\ndatasets: {}", datasets.iter().format(","));
     unique_sort(&mut assignments);
-    println!("\n{} cells assigned to clonotypes\n", assignments.len());
+    println!("\n{} cells assigned to clonotypes", assignments.len());
+    println!("{} lines with clonotype unspecified\n", unassigned);
     println!("top clonotype sizes:\n");
     let mut sizes = Vec::<usize>::new();
     let mut i = 0;
