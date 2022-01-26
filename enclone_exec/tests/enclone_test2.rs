@@ -561,7 +561,7 @@ fn test_for_broken_links_and_spellcheck() {
         fixedtextbox foursie foursies frameshifted frameshifts frontiersin fwr fwyh ganesh \
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
         googletagmanager grok gz html \
-        hypermutation hypermutations igblast igh igk igl ighm igkc imgt immunoglobulins \
+        hypermutation hypermutations igblast igh ighd igk igl ighm igkc imgt immunoglobulins \
         indel indels inkt intradonor jsdelivr json krh levenshtein lgc linux loh lvar lvars \
         macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \

@@ -358,7 +358,9 @@ pub fn row_fill(
                                     }
                                 }
                             }
-                            assert!(found);
+                            if !found {
+                                in_vals.push(String::new());
+                            }
                         }
                         let c = define_evalexpr_context(&vars, &in_vals);
                         let res = comp.eval_with_context(&c);
@@ -367,8 +369,13 @@ pub fn row_fill(
                         //     std::process::exit(1);
                         // }
                         let val = res.unwrap();
-                        let val = val.as_number().unwrap();
-                        out_vals.push(format!("{:.1}", val));
+                        let val = val.as_number();
+                        if !val.is_ok() {
+                            out_vals.push(String::new());
+                        } else {
+                            let val = val.unwrap();
+                            out_vals.push(format!("{:.1}", val));
+                        }
                     }
                     let mut median = String::new();
                     let mut out_valsf = Vec::<f64>::new();
