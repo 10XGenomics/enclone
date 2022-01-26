@@ -9,7 +9,7 @@ use crate::proc_lvar2::proc_lvar2;
 use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
 use enclone_core::allowed_vars::LVARS_ALLOWED;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::median_f64;
 use enclone_proto::types::DonorReferenceItem;
 use enclone_vars::decode_arith;
@@ -326,23 +326,6 @@ pub fn row_fill(
         };
     }
 
-    let verbose = ctl.gen_opt.row_fill_verbose;
-    macro_rules! lvar_stats {
-        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
-            if verbose {
-                eprint!("lvar {} ==> {}; ", $var, $val);
-                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
-            }
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-            stats.push(($var.to_string(), $stats.clone()));
-        };
-    }
-
     'lvar_loop: for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
 
@@ -401,7 +384,21 @@ pub fn row_fill(
                         out_valsf.sort_by(|a, b| a.partial_cmp(b).unwrap());
                         median = format!("{:.1}", median_f64(&out_valsf));
                     }
-                    lvar_stats![i, x, median.clone(), out_vals];
+                    if i < lvars.len() {
+                        row.push(median.clone())
+                    }
+                    if pass == 2 {
+                        if ctl.parseable_opt.pbarcode {
+                            speak!(
+                                u,
+                                x.to_string(),
+                                format!("{}", out_vals.iter().format(POUT_SEP))
+                            );
+                        } else {
+                            speak!(u, x.to_string(), median.clone());
+                        }
+                    }
+                    stats.push((x.to_string(), out_vals.clone()));
                 } else if i < lvars.len() {
                     row.push(String::new());
                 }
