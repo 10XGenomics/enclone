@@ -130,7 +130,6 @@ pub fn main() {
     println!("\ndatasets: {}", datasets.iter().format(","));
     println!("\n{} cells assigned to clonotypes", assignments.len());
     println!("{} lines with clonotype unspecified\n", unassigned);
-    println!("top clonotype sizes:\n");
     let mut sizes = Vec::<usize>::new();
     for i in 0..clono.len() {
         if clono[i].len() > 0 {
@@ -138,10 +137,10 @@ pub fn main() {
         }
     }
     reverse_sort(&mut sizes);
-    for i in 0..10 {
-        println!("{}", sizes[i]);
+    if sizes.len() > 10 {
+        sizes.truncate(10);
     }
-    println!("");
+    println!("top clonotype sizes: {}\n", sizes.iter().format(", "));
 
     // Compute sensitivity/specificity stats.
 
