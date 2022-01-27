@@ -13,6 +13,7 @@
 // We ignore lines for which clone_id is unspecified.
 
 use io_utils::*;
+use itertools::Itertools;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
@@ -99,23 +100,35 @@ pub fn main() {
             let clone_id = clone_id.force_usize();
             let dataset = seq_id.between("-", "_").to_string();
             datasets.push(dataset.clone());
-            let barcode = seq_id.between("_", "_").to_string();
+            let barcode = format!("{}-1", seq_id.before("-"));
             assignments.push((clone_id, dataset, barcode));
         }
     }
     unique_sort(&mut datasets);
-    use itertools::Itertools;
-    println!("\ndatasets: {}", datasets.iter().format(","));
     unique_sort(&mut assignments);
+
+    // Create clonotypes.
+
+    let mut max_id = 0;
+    for i in 0..assignments.len() {
+        max_id = std::cmp::max(max_id, assignments[i].0);
+    }
+    let mut clono = vec![Vec::<(String, String)>::new(); max_id + 1]; // {(dataset, barcode)}
+    for i in 0..assignments.len() {
+        clono[assignments[i].0].push((assignments[i].1.clone(), assignments[i].2.clone()));
+    }
+
+    // Generate some stats.
+
+    println!("\ndatasets: {}", datasets.iter().format(","));
     println!("\n{} cells assigned to clonotypes", assignments.len());
     println!("{} lines with clonotype unspecified\n", unassigned);
     println!("top clonotype sizes:\n");
     let mut sizes = Vec::<usize>::new();
-    let mut i = 0;
-    while i < assignments.len() {
-        let j = next_diff1_3(&assignments, i as i32) as usize;
-        sizes.push(j - i);
-        i = j;
+    for i in 0..clono.len() {
+        if clono[i].len() > 0 {
+            sizes.push(clono[i].len());
+        }
     }
     reverse_sort(&mut sizes);
     for i in 0..10 {
