@@ -97,7 +97,7 @@ pub fn main() {
                 eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
             }
             let clone_id = clone_id.force_usize();
-            let dataset = seq_id.before("_").to_string();
+            let dataset = seq_id.between("-", "_").to_string();
             datasets.push(dataset.clone());
             let barcode = seq_id.between("_", "_").to_string();
             assignments.push((clone_id, dataset, barcode));
