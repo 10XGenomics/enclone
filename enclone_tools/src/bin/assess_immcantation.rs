@@ -15,6 +15,7 @@
 use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
@@ -107,15 +108,21 @@ pub fn main() {
     unique_sort(&mut datasets);
     unique_sort(&mut assignments);
 
-    // Create clonotypes.
+    // Create clonotypes.  Note that we allow a cell to be assigned to more than one clonotype.
 
     let mut max_id = 0;
     for i in 0..assignments.len() {
-        max_id = std::cmp::max(max_id, assignments[i].0);
+        max_id = max(max_id, assignments[i].0);
     }
-    let mut clono = vec![Vec::<(String, String)>::new(); max_id + 1]; // {(dataset, barcode)}
+    let mut clono = vec![Vec::<(usize, usize, String)>::new(); max_id + 1]; 
     for i in 0..assignments.len() {
-        clono[assignments[i].0].push((assignments[i].1.clone(), assignments[i].2.clone()));
+        let dataset = assignments[i].1.force_usize();
+        let donor = to_donor[&dataset];
+        let barcode = assignments[i].2.clone();
+        clono[assignments[i].0].push((donor, dataset, barcode));
+    }
+    for i in 0..clono.len() {
+        clono[i].sort();
     }
 
     // Generate some stats.
@@ -135,4 +142,63 @@ pub fn main() {
         println!("{}", sizes[i]);
     }
     println!("");
+
+    // Compute sensitivity/specificity stats.
+
+    let mut max_donor = 0;
+    for i in 0..clono.len() {
+        for j in 0..clono[i].len() {
+            max_donor = max(max_donor, clono[i][j].0);
+        }
+    }
+    let mut cells_by_donor = vec![0 as usize; max_donor + 1];
+    let mut merges2 = 0;
+    let mut mixes = 0;
+    for i in 0..clono.len() {
+        let mut cells_by_donor_this = vec![0; max_donor + 1];
+        for c in clono[i].iter() {
+            cells_by_donor[c.0] += 1;
+            cells_by_donor_this[c.0] += 1;
+        }
+        for j1 in 0..clono[i].len() {
+            for j2 in j1 + 1..clono[i].len() {
+                if clono[i][j1].0 != clono[i][j2].0 {
+                    mixes += 1;
+                }
+            }
+        }
+        for j in 0..cells_by_donor_this.len() {
+            let n = cells_by_donor_this[j];
+            if n > 1 {
+                merges2 += (n * (n - 1)) / 2;
+            }
+        }
+    }
+    let mut cross = 0;
+    let mut intra = 0;
+    for i1 in 0..cells_by_donor.len() {
+        if cells_by_donor[i1] > 1 {
+            intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+        }
+        for i2 in i1 + 1..cells_by_donor.len() {
+            cross += cells_by_donor[i1] * cells_by_donor[i2];
+        }
+    }
+    println!("number of intradonor comparisons = {}", add_commas(intra));
+    println!(
+        "number of intradonor cell-cell merges (quadratic) = {}",
+        add_commas(merges2)
+    );
+    println!("number of cross-donor comparisons = {}", add_commas(cross));
+    println!(
+        "number of cross-donor comparisons that mix donors = {}",
+        add_commas(mixes)
+    );
+    let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
+    println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
+    let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+    println!(
+        "estimated number of false intradonor merges = {}\n",
+        add_commas(bogus.round() as usize)
+    );
 }
