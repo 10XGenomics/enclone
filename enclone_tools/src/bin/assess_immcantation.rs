@@ -125,6 +125,22 @@ pub fn main() {
         clono[i].sort();
     }
 
+
+    let mut mc = 0;
+    let mut mci = 0;
+    for i in 0..clono.len() {
+        if clono[i].len() > mc {
+            mc = clono[i].len();
+            mci = i;
+        }
+    }
+    let mut bcs = Vec::<String>::new();
+    for x in clono[mci].iter() {
+        bcs.push(x.2.clone());
+    }
+    println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
+
+
     // Generate some stats.
 
     println!("\ndatasets: {}", datasets.iter().format(","));
