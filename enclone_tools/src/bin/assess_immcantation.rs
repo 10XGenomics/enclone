@@ -114,7 +114,7 @@ pub fn main() {
     for i in 0..assignments.len() {
         max_id = max(max_id, assignments[i].0);
     }
-    let mut clono = vec![Vec::<(usize, usize, String)>::new(); max_id + 1]; 
+    let mut clono = vec![Vec::<(usize, usize, String)>::new(); max_id + 1];
     for i in 0..assignments.len() {
         let dataset = assignments[i].1.force_usize();
         let donor = to_donor[&dataset];
@@ -124,7 +124,6 @@ pub fn main() {
     for i in 0..clono.len() {
         clono[i].sort();
     }
-
 
     let mut mc = 0;
     let mut mci = 0;
@@ -139,7 +138,6 @@ pub fn main() {
         bcs.push(x.2.clone());
     }
     println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
-
 
     // Generate some stats.
 

@@ -604,11 +604,16 @@ pub fn proc_xcr(
             }
         }
         for (is, s) in origin_groups.iter().enumerate() {
-            let datasets;
+            let mut datasets;
             if ctl.gen_opt.cellranger {
                 datasets = vec![&s[..]];
             } else {
                 datasets = (*s).split(',').collect::<Vec<&str>>();
+            }
+            for i in 0..datasets.len() {
+                if datasets[i].ends_with("/") {
+                    datasets[i] = datasets[i].rev_before("/");
+                }
             }
             let datasets_gex: Vec<&str>;
             let mut datasets_bc = Vec::<&str>::new();
