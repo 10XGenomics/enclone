@@ -167,7 +167,10 @@ pub fn main() {
     let mut cells_by_donor = vec![0 as usize; max_donor + 1];
     let mut merges2 = 0;
     let mut mixes = 0;
+    let mut wrongotypes = 0;
+    let mut clono2 = 0;
     for i in 0..clono.len() {
+        let mut wrong = false;
         let mut cells_by_donor_this = vec![0; max_donor + 1];
         for c in clono[i].iter() {
             cells_by_donor[c.0] += 1;
@@ -177,8 +180,15 @@ pub fn main() {
             for j2 in j1 + 1..clono[i].len() {
                 if clono[i][j1].0 != clono[i][j2].0 {
                     mixes += 1;
+                    wrong = true;
                 }
             }
+        }
+        if wrong {
+            wrongotypes += 1;
+        }
+        if clono[i].len() > 1 {
+            clono2 += 1;
         }
         for j in 0..cells_by_donor_this.len() {
             let n = cells_by_donor_this[j];
@@ -207,6 +217,8 @@ pub fn main() {
         "number of cross-donor comparisons that mix donors = {}",
         add_commas(mixes)
     );
+    println!("number of mixed clonotypes = {}", wrongotypes);
+    println!("number of clonotypes having at least two cells = {}", clono2);
     let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
     println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
     let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
