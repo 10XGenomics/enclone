@@ -435,8 +435,8 @@ dependencies = [
  "serde",
  "serde_derive",
  "statrs",
- "strum 0.23.0",
- "strum_macros 0.23.1",
+ "strum",
+ "strum_macros",
  "thiserror",
  "triple_accel",
  "vec_map",
@@ -451,7 +451,7 @@ dependencies = [
  "derive-new",
  "lazy_static",
  "regex",
- "strum_macros 0.23.1",
+ "strum_macros",
  "thiserror",
 ]
 
@@ -1788,26 +1788,6 @@ name = "encoding_index_tests"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a246d82be1c9d791c5dfde9a2bd045fc3cbba3fa2b11ad558f27d01712f00569"
-
-[[package]]
-name = "enum-iterator"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4eeac5c5edb79e4e39fe8439ef35207780a11f69c52cbe424ce3dfad4cb78de6"
-dependencies = [
- "enum-iterator-derive",
-]
-
-[[package]]
-name = "enum-iterator-derive"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c134c37760b27a871ba422106eedbb8247da973a09e82558bf26d619c882b159"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "enum-map"
@@ -4732,27 +4712,9 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "strum"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaf86bbcfd1fa9670b7a129f64fc0c9fcbbfe4f1bc4210e9e98fe71ffc12cde2"
-
-[[package]]
-name = "strum"
 version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cae14b91c7d11c9a851d3fbc80a963198998c2a64eec840477fa92d8ce9b70bb"
-
-[[package]]
-name = "strum_macros"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "strum_macros"
@@ -5315,9 +5277,9 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe5db0a6278caf5bbd480d84d3cca2c0a8be0b2acad01322709700ccc809017e"
+checksum = "bf2382451427e4e963c910f39d8823ea29d015c5d77193db2aa4278c429a9dc8"
 dependencies = [
  "align_tools",
  "amino",
@@ -5339,7 +5301,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=277f6d9708b05587a737535fa9869f58edd6bad7#277f6d9708b05587a737535fa9869f58edd6bad7"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=8ed8d7b3186b13c5db6ec7ad3fb8786f111eda65#8ed8d7b3186b13c5db6ec7ad3fb8786f111eda65"
 dependencies = [
  "debruijn",
  "exons",
@@ -5356,14 +5318,11 @@ dependencies = [
 
 [[package]]
 name = "vdj_types"
-version = "0.1.7"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eac00ee04f04b50e6171aaa38ca77f6e8c0cca4445c67d741f4ee07da30ccb96"
+checksum = "029dbe2aecc529693aecdf5f8f7cab1a647ed7df5c8e3bf13ab1f2907745be91"
 dependencies = [
- "enum-iterator",
  "serde",
- "strum 0.21.0",
- "strum_macros 0.21.1",
 ]
 
 [[package]]

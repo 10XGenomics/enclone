@@ -38,5 +38,5 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"
 string_utils = "0.1"
 tables = "0.1"
-vdj_ann = "0.3"
+vdj_ann = "0.4"
 vector_utils = "0.1"

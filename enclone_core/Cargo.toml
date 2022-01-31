@@ -43,7 +43,7 @@ stirling_numbers = "0.1"
 string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
-vdj_ann = "0.3"
+vdj_ann = "0.4"
 vector_utils = "0.1"
 zstd = "0.9"
 
