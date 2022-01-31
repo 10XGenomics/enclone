@@ -218,7 +218,10 @@ pub fn main() {
         add_commas(mixes)
     );
     println!("number of mixed clonotypes = {}", wrongotypes);
-    println!("number of clonotypes having at least two cells = {}", clono2);
+    println!(
+        "number of clonotypes having at least two cells = {}",
+        clono2
+    );
     let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
     println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
     let bogus = (intra as f64) * (mixes as f64) / (cross as f64);

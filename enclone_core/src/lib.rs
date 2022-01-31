@@ -83,7 +83,15 @@ pub fn fetch_url(url: &str) -> Result<String, String> {
     let req = attohttpc::get(url).read_timeout(Duration::new(TIMEOUT, 0));
     let response = req.send();
     if response.is_err() {
-        panic!("Failed to access URL {}.", url);
+        return Err(format!(
+            "\nFailed to access URL {},\ntimeout after two minutes.  There are a few ways that \
+            you might have arrived at this state:\n• The server for that URL is down.\n\
+            • The server for that URL is overloaded and responding very slowly.\n\
+            • Same thing as last, and your process is slamming the server.  Please inspect \
+            your command!\n\
+            • There is a bug in this program.  This is relatively unlikely but possible.\n",
+            url
+        ));
     }
     let response = response.unwrap();
     if !response.is_success() {
