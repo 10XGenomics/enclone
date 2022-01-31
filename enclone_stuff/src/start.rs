@@ -31,6 +31,7 @@ use std::{
     time::Instant,
 };
 use string_utils::add_commas;
+use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
 use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -336,6 +337,22 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let tdonor = Instant::now();
     let drefs = make_donor_refs(&alt_refs, refdata);
     ctl.perf_stats(&tdonor, "making donor refs");
+
+    // Analyze donor reference.
+
+    if ctl.gen_opt.external_ref.len() > 0 {
+        let mut erefdata = RefData::new();
+        let f = std::fs::read_to_string(&ctl.gen_opt.external_ref).unwrap();
+        make_vdj_ref_data_core(&mut erefdata, &f, "", true, true, None);
+        for i in 0..alt_refs.len() {
+            let donor = alt_refs[i].0;
+            let ref_id = alt_refs[i].1;
+            let name = &refdata.name[ref_id];
+            let _alt_seq = &alt_refs[i].2;
+            println!("see donor ref for donor {}, gene {}", donor, name);
+        }
+        std::process::exit(0);
+    }
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 

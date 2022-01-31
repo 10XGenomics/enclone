@@ -244,6 +244,7 @@ pub struct GeneralOpt {
     pub all_bc_fields_orig: Vec<String>,
     pub gamma_delta: bool,
     pub pre_eval: bool,
+    pub external_ref: String,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.

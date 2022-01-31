@@ -330,3 +330,6 @@ This option is particularly slow because it forces more comparisons in the join 
 Uses very high memory.  Time and memory use increase as n is reduced.
 
 ===================================================================================================
+
+EXTERNAL_REF: if you set this to a IMGT reference fasta file, this will compare the internally
+generated donor reference to it, do some analyses, and exit
