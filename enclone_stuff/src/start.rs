@@ -31,6 +31,7 @@ use std::{
     time::Instant,
 };
 use string_utils::add_commas;
+use string_utils::TextUtils;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
 use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
 
@@ -349,7 +350,14 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let _alt_seq = &alt_refs[i].2;
-            println!("see donor ref for donor {}, gene {}", donor, name);
+            println!("\nsee donor ref for donor {}, gene {}", donor, name);
+            for i in 0..erefdata.refs.len() {
+                if erefdata.name[i] == refdata.name[ref_id] {
+                    let allele = erefdata.rheaders_orig[i].between("*", " ");
+                    println!("could compare to allele {}", allele);
+                    // println!("could compare to {}", erefdata.rheaders_orig[i]);
+                }
+            }
         }
         std::process::exit(0);
     }
