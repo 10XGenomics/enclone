@@ -33,7 +33,7 @@ use std::{
 use string_utils::add_commas;
 use string_utils::TextUtils;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
-use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
+use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort, next_diff1_3};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -345,7 +345,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         let mut erefdata = RefData::new();
         let f = std::fs::read_to_string(&ctl.gen_opt.external_ref).unwrap();
         make_vdj_ref_data_core(&mut erefdata, &f, "", true, true, None);
-        let mut refs = Vec::<(String, String, Vec<u8>)>::new();
+        let mut refs = Vec::<(String, String, Vec<u8>)>::new(); // {(gene, allele, seq)}
         for i in 0..erefdata.refs.len() {
             let allele = erefdata.rheaders_orig[i].between("*", " ");
             refs.push((
@@ -354,13 +354,20 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 erefdata.refs[i].to_ascii_vec()
             ));
         }
+        for i in 0..refdata.refs.len() {
+            refs.push((
+                refdata.name[i].clone(),
+                format!("uref{}", i),
+                refdata.refs[i].to_ascii_vec()
+            ));
+        }
         for i in 0..alt_refs.len() {
             let donor = alt_refs[i].0;
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
             refs.push((
-                erefdata.name[i].clone(),
+                refdata.name[i].clone(),
                 format!("dref{}", i),
                 alt_seq.to_ascii_vec()
             ));
@@ -371,6 +378,24 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     println!("could compare to allele {}", allele);
                 }
             }
+        }
+        refs.sort();
+        let mut i = 0;
+        while i < refs.len() {
+            let j = next_diff1_3(&refs, i as i32) as usize;
+            let gene = &refs[i].0;
+            let mut alleles = Vec::<(String, Vec<u8>)>::new();
+            let mut have_alt = false;
+            for k in i..j {
+                if refs[k].1.starts_with("dref") {
+                    have_alt = true;
+                }
+                alleles.push((refs[k].1.clone(), refs[k].2.clone()));
+            }
+            if have_alt {
+                println!("working on {}, have {} seqs", gene, alleles.len());
+            }
+            i = j;
         }
         std::process::exit(0);
     }
