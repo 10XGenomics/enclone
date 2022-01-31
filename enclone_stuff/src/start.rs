@@ -25,6 +25,7 @@ use equiv::EquivRel;
 use io_utils::fwriteln;
 use qd::dd;
 use std::{
+    cmp::min,
     collections::HashMap,
     fs::File,
     io::{BufWriter, Write},
@@ -367,7 +368,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
             refs.push((
-                refdata.name[i].clone(),
+                name.clone(),
                 format!("dref{}", i),
                 alt_seq.to_ascii_vec()
             ));
@@ -394,6 +395,21 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
             if have_alt {
                 println!("working on {}, have {} seqs", gene, alleles.len());
+                for m1 in 0..alleles.len() {
+                    for m2 in m1 + 1..alleles.len() {
+                        let a1 = &alleles[m1];
+                        let a2 = &alleles[m2];
+                        let mut diffs = 0;
+                        for p in 0..min(a1.1.len(), a2.1.len()) {
+                            if a1.1[p] != a2.1[p] {
+                                diffs += 1;
+                            }
+                        }
+                        println!("{} = {} vs {} = {} ==> {} diffs", 
+                            m1 + 1, a1.0, m2 + 1, a2.0, diffs
+                        );
+                    }
+                }
             }
             i = j;
         }
