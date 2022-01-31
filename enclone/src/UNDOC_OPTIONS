@@ -333,3 +333,8 @@ Uses very high memory.  Time and memory use increase as n is reduced.
 
 EXTERNAL_REF: if you set this to a IMGT reference fasta file, this will compare the internally
 generated donor reference to it, do some analyses, and exit
+
+To generate the current IMGT reference within the 10x codebase, do something like this:
+1. bazel build //:pd //:shimulate //:devpipes_env
+2. cellranger/bazel-bin/devpipes_env.sh python cellranger/lib/bin/fetch_imgt_lib.py 
+   --genome vdj_IMGT_human --species "Homo sapiens"
