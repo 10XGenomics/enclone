@@ -98,6 +98,7 @@ fn main() {
             gamma_delta = true;
         }
     }
+    let is_gd = Some(gamma_delta);
 
     // Make reference data.
 
@@ -128,9 +129,9 @@ fn main() {
         if ext {
             fwriteln!(log, "\nFW ANNOTATION VERSUS PLAIN REFERENCE\n");
         }
-        print_annotations(&seq, &refdata, &mut log, false, true, verbose);
+        print_annotations(&seq, &refdata, &mut log, false, true, verbose, is_gd);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
-        annotate_seq(&seq, &refdata, &mut ann, true, false, true);
+        annotate_seq(&seq, &refdata, &mut ann, true, false, true, is_gd);
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log);
         print_start_codon_positions(&seq, &mut log);
         if is_valid(&seq, &refdata, &ann, true, &mut log, Some(gamma_delta)) {
@@ -255,16 +256,16 @@ fn main() {
         if ext {
             let seq_rc = seq.rc();
             fwriteln!(log, "\nRC ANNOTATION VERSUS PLAIN REFERENCE\n");
-            print_annotations(&seq_rc, &refdata, &mut log, false, false, verbose);
+            print_annotations(&seq_rc, &refdata, &mut log, false, false, verbose, is_gd);
 
             // Annotate using the extended reference.
 
             let mut refdatax = RefData::new();
             make_vdj_ref_data(&mut refdatax, imgt, &species, true, is_tcr, is_bcr);
             fwriteln!(log, "\nFW ANNOTATION VERSUS EXTENDED REFERENCE\n");
-            print_annotations(&seq, &refdatax, &mut log, false, false, verbose);
+            print_annotations(&seq, &refdatax, &mut log, false, false, verbose, is_gd);
             fwriteln!(log, "\nRC ANNOTATION VERSUS EXTENDED REFERENCE\n");
-            print_annotations(&seq_rc, &refdatax, &mut log, false, false, verbose);
+            print_annotations(&seq_rc, &refdatax, &mut log, false, false, verbose, is_gd);
         }
 
         // Print.

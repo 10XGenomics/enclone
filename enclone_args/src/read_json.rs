@@ -203,7 +203,15 @@ fn parse_vector_entry_from_json(
     if reannotate || ctl.gen_opt.reprod {
         let x = DnaString::from_dna_string(full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
-        annotate_seq(&x, refdata, &mut ann, true, false, true);
+        annotate_seq(
+            &x,
+            refdata,
+            &mut ann,
+            true,
+            false,
+            true,
+            Some(ctl.gen_opt.gamma_delta),
+        );
 
         // If there are multiple V segment alignments, possibly reduce to just one.
 

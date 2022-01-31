@@ -432,12 +432,28 @@ pub fn join_exacts(
                         if !info[k1].has_del[m] {
                             fwriteln!(log, "chain {}, tig 1", m + 1);
                             let t1 = DnaString::from_acgt_bytes(tig1);
-                            print_annotations(&t1, refdata, &mut log, false, true, false);
+                            print_annotations(
+                                &t1,
+                                refdata,
+                                &mut log,
+                                false,
+                                true,
+                                false,
+                                Some(ctl.gen_opt.gamma_delta),
+                            );
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 1", m + 1);
-                        print_annotations(&otig1, refdata, &mut log, false, true, false);
+                        print_annotations(
+                            &otig1,
+                            refdata,
+                            &mut log,
+                            false,
+                            true,
+                            false,
+                            Some(ctl.gen_opt.gamma_delta),
+                        );
                     }
                     if ctl.join_print_opt.seq {
                         fwriteln!(log, "\nchain {}, tig 2 = {}", m + 1, otig2.to_string());
@@ -447,12 +463,28 @@ pub fn join_exacts(
                         if !info[k2].has_del[m] {
                             fwriteln!(log, "chain {}, tig 2", m + 1);
                             let t2 = DnaString::from_acgt_bytes(tig2);
-                            print_annotations(&t2, refdata, &mut log, false, true, false);
+                            print_annotations(
+                                &t2,
+                                refdata,
+                                &mut log,
+                                false,
+                                true,
+                                false,
+                                Some(ctl.gen_opt.gamma_delta),
+                            );
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 2", m + 1);
-                        print_annotations(&otig2, refdata, &mut log, false, true, false);
+                        print_annotations(
+                            &otig2,
+                            refdata,
+                            &mut log,
+                            false,
+                            true,
+                            false,
+                            Some(ctl.gen_opt.gamma_delta),
+                        );
                     }
                 }
             }
