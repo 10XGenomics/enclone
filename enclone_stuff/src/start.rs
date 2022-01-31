@@ -348,22 +348,26 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         make_vdj_ref_data_core(&mut erefdata, &f, "", true, true, None);
         let mut refs = Vec::<(String, String, Vec<u8>)>::new(); // {(gene, allele, seq)}
         for i in 0..erefdata.refs.len() {
-            let allele = erefdata.rheaders_orig[i].between("*", " ");
-            refs.push((
-                erefdata.name[i].clone(),
-                allele.to_string(),
-                erefdata.refs[i].to_ascii_vec()
-            ));
+            if erefdata.is_v(i) {
+                let allele = erefdata.rheaders_orig[i].between("*", " ");
+                refs.push((
+                    erefdata.name[i].clone(),
+                    allele.to_string(),
+                    erefdata.refs[i].to_ascii_vec()
+                ));
+            }
         }
         for i in 0..refdata.refs.len() {
-            refs.push((
-                refdata.name[i].clone(),
-                format!("uref{}", i),
-                refdata.refs[i].to_ascii_vec()
-            ));
+            if refdata.is_v(i) {
+                refs.push((
+                    refdata.name[i].clone(),
+                    format!("uref{}", i),
+                    refdata.refs[i].to_ascii_vec()
+                ));
+            }
         }
         for i in 0..alt_refs.len() {
-            let donor = alt_refs[i].0;
+            let _donor = alt_refs[i].0;
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
@@ -372,13 +376,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 format!("dref{}", i),
                 alt_seq.to_ascii_vec()
             ));
-            println!("\nsee donor ref for donor {}, gene {}", donor, name);
-            for i in 0..erefdata.refs.len() {
-                if erefdata.name[i] == refdata.name[ref_id] {
-                    let allele = erefdata.rheaders_orig[i].between("*", " ");
-                    println!("could compare to allele {}", allele);
-                }
-            }
         }
         refs.sort();
         let mut i = 0;
