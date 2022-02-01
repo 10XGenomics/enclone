@@ -516,12 +516,17 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "dref",
             "Hamming distance of V..J DNA sequence to donor reference, excluding",
         );
-        h.doc2("region of recombination");
+        h.doc2("region of recombination, sum over all chains");
         h.doc(
             "dref_aa",
             "Hamming distance of V..J amino acid sequence to donor reference, excluding",
         );
-        h.doc2("region of recombination");
+        h.doc2("region of recombination, sum over all chains");
+        h.doc(
+            "dref_max",
+            "Hamming distance of V..J DNA sequence to donor reference, max over all",
+        );
+        h.doc2("chains");
         h.ldoc(
             "count_<reg>",
             "Number of matches of the V..J amino acid sequences of all chains to the given",
