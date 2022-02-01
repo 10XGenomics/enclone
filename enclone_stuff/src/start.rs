@@ -407,6 +407,28 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                         );
                     }
                 }
+                for m1 in 0..alleles.len() {
+                    let mut best = 1_000_000;
+                    let a1 = &alleles[m1];
+                    if !a1.0.starts_with("dref") {
+                        continue;
+                    }
+                    for m2 in 0..alleles.len() {
+                        let a2 = &alleles[m2];
+                        if a2.0.starts_with("dref") {
+                            continue;
+                        }
+                        let mut diffs = 0;
+                        for p in 0..min(a1.1.len(), a2.1.len()) {
+                            if a1.1[p] != a2.1[p] {
+                                diffs += 1;
+                            }
+                        }
+                        best = min(best, diffs);
+                    }
+                    println!("{} is distance {} from a reference", a1.0, best);
+                }
+
             }
             i = j;
         }
