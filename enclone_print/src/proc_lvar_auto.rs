@@ -752,6 +752,35 @@ pub fn proc_lvar_auto(
         }
 
         (format!("{}", diffs), Vec::new(), "exact".to_string())
+    } else if vname == "dref_max" {
+        let mut mx = 0;
+        for m in 0..cols {
+            let mut diffs = 0;
+            if mat[m][u].is_some() {
+                let r = mat[m][u].unwrap();
+                let seq = &ex.share[r].seq_del_amino;
+                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                if rsi.vpids[m].is_some() {
+                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                let z = seq.len();
+                for p in 0..z {
+                    let b = seq[p];
+                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                        diffs += 1;
+                    }
+                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (z - p)]
+                    {
+                        diffs += 1;
+                    }
+                }
+                mx = std::cmp::max(mx, diffs);
+            }
+        }
+
+        (format!("{}", mx), Vec::new(), "exact".to_string())
     } else if vname == "entropy" {
         let mut total_counts = Vec::<usize>::new();
         for l in 0..ex.clones.len() {

@@ -1672,7 +1672,7 @@ page:     enclone help lvars
 avail:    public
 notes:
 code:
-          let mut m = 0;
+          let mut mx = 0;
           for m in 0..cols {
               let mut diffs = 0;
               if mat[m][u].is_some() {
@@ -1695,10 +1695,10 @@ code:
                           diffs += 1;
                       }
                   }
-                  m = std::cmp::max(m, diffs);
+                  mx = std::cmp::max(mx, diffs);
               }
           }
-          exact: format!("{}", m)
+          exact: format!("{}", mx)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     edit
 inputs:   cvar_vdj
