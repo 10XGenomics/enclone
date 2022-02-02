@@ -575,7 +575,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Define arguments that set something to a string that is an input file name, not represented
     // as an option.
 
-    let set_string_readable_plain = [("REF", &mut ctl.gen_opt.refname)];
+    let set_string_readable_plain = [
+        ("EXTERNAL_REF", &mut ctl.gen_opt.external_ref),
+        ("REF", &mut ctl.gen_opt.refname),
+    ];
 
     // Define arguments that do nothing (because already parsed), and which have no "= value" part.
 

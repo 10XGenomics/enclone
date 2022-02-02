@@ -4,7 +4,7 @@
 
 // Lead variables for exact subclonotypes and cells.
 
-pub const LVARS_ALLOWED: [&str; 37] = [
+pub const LVARS_ALLOWED: [&str; 38] = [
     "datasets",
     "origins",
     "donors",
@@ -31,6 +31,7 @@ pub const LVARS_ALLOWED: [&str; 37] = [
     "far",
     "dref",
     "dref_aa",
+    "dref_max",
     "ext",
     "mark",
     "inkt",

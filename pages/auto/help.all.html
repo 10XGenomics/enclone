@@ -1276,9 +1276,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │                  │  both compare to cells having chains in the same columns of the clonotype,    │
 │                  │  with - shown if there is no other exact subclonotype to compare to           │
 │dref              │  Hamming distance of V..J DNA sequence to donor reference, excluding          │
-│                  │  region of recombination                                                      │
+│                  │  region of recombination, sum over all chains                                 │
 │dref_aa           │  Hamming distance of V..J amino acid sequence to donor reference, excluding   │
-│                  │  region of recombination                                                      │
+│                  │  region of recombination, sum over all chains                                 │
+│dref_max          │  Hamming distance of V..J DNA sequence to donor reference, max over all       │
+│                  │  chains                                                                       │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │count_&lt;reg>       │  Number of matches of the V..J amino acid sequences of all chains to the given│
 │                  │  regular expression, which is treated as a subset match, so for example,      │

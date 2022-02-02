@@ -13,7 +13,9 @@
 // We ignore lines for which clone_id is unspecified.
 
 use io_utils::*;
+use itertools::Itertools;
 use pretty_trace::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
@@ -97,29 +99,134 @@ pub fn main() {
                 eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
             }
             let clone_id = clone_id.force_usize();
-            let dataset = seq_id.before("_").to_string();
+            let dataset = seq_id.between("-", "_").to_string();
             datasets.push(dataset.clone());
-            let barcode = seq_id.between("_", "_").to_string();
+            let barcode = format!("{}-1", seq_id.before("-"));
             assignments.push((clone_id, dataset, barcode));
         }
     }
     unique_sort(&mut datasets);
-    use itertools::Itertools;
-    println!("\ndatasets: {}", datasets.iter().format(","));
     unique_sort(&mut assignments);
+
+    // Create clonotypes.  Note that we allow a cell to be assigned to more than one clonotype.
+
+    let mut max_id = 0;
+    for i in 0..assignments.len() {
+        max_id = max(max_id, assignments[i].0);
+    }
+    let mut clono = vec![Vec::<(usize, usize, String)>::new(); max_id + 1];
+    for i in 0..assignments.len() {
+        let dataset = assignments[i].1.force_usize();
+        let donor = to_donor[&dataset];
+        let barcode = assignments[i].2.clone();
+        clono[assignments[i].0].push((donor, dataset, barcode));
+    }
+    for i in 0..clono.len() {
+        clono[i].sort();
+    }
+
+    let mut mc = 0;
+    let mut mci = 0;
+    for i in 0..clono.len() {
+        if clono[i].len() > mc {
+            mc = clono[i].len();
+            mci = i;
+        }
+    }
+    let mut bcs = Vec::<String>::new();
+    for x in clono[mci].iter() {
+        bcs.push(x.2.clone());
+    }
+    println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
+
+    // Generate some stats.
+
+    println!("\ndatasets: {}", datasets.iter().format(","));
     println!("\n{} cells assigned to clonotypes", assignments.len());
     println!("{} lines with clonotype unspecified\n", unassigned);
-    println!("top clonotype sizes:\n");
     let mut sizes = Vec::<usize>::new();
-    let mut i = 0;
-    while i < assignments.len() {
-        let j = next_diff1_3(&assignments, i as i32) as usize;
-        sizes.push(j - i);
-        i = j;
+    for i in 0..clono.len() {
+        if clono[i].len() > 0 {
+            sizes.push(clono[i].len());
+        }
     }
     reverse_sort(&mut sizes);
-    for i in 0..10 {
-        println!("{}", sizes[i]);
+    if sizes.len() > 10 {
+        sizes.truncate(10);
     }
-    println!("");
+    println!("top clonotype sizes: {}\n", sizes.iter().format(", "));
+
+    // Compute sensitivity/specificity stats.
+
+    let mut max_donor = 0;
+    for i in 0..clono.len() {
+        for j in 0..clono[i].len() {
+            max_donor = max(max_donor, clono[i][j].0);
+        }
+    }
+    let mut cells_by_donor = vec![0 as usize; max_donor + 1];
+    let mut merges2 = 0;
+    let mut mixes = 0;
+    let mut wrongotypes = 0;
+    let mut clono2 = 0;
+    for i in 0..clono.len() {
+        let mut wrong = false;
+        let mut cells_by_donor_this = vec![0; max_donor + 1];
+        for c in clono[i].iter() {
+            cells_by_donor[c.0] += 1;
+            cells_by_donor_this[c.0] += 1;
+        }
+        for j1 in 0..clono[i].len() {
+            for j2 in j1 + 1..clono[i].len() {
+                if clono[i][j1].0 != clono[i][j2].0 {
+                    mixes += 1;
+                    wrong = true;
+                }
+            }
+        }
+        if wrong {
+            wrongotypes += 1;
+        }
+        if clono[i].len() > 1 {
+            clono2 += 1;
+        }
+        for j in 0..cells_by_donor_this.len() {
+            let n = cells_by_donor_this[j];
+            if n > 1 {
+                merges2 += (n * (n - 1)) / 2;
+            }
+        }
+    }
+    let mut cross = 0;
+    let mut intra = 0;
+    for i1 in 0..cells_by_donor.len() {
+        if cells_by_donor[i1] > 1 {
+            intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
+        }
+        for i2 in i1 + 1..cells_by_donor.len() {
+            cross += cells_by_donor[i1] * cells_by_donor[i2];
+        }
+    }
+    println!("number of intradonor comparisons = {}", add_commas(intra));
+    println!(
+        "number of intradonor cell-cell merges (quadratic) = {}",
+        add_commas(merges2)
+    );
+    println!("number of cross-donor comparisons = {}", add_commas(cross));
+    println!(
+        "number of cross-donor comparisons that mix donors = {}",
+        add_commas(mixes)
+    );
+    println!("number of mixed clonotypes = {}", wrongotypes);
+    println!(
+        "number of clonotypes having at least two cells = {}",
+        clono2
+    );
+    let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
+    println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
+    let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+    println!(
+        "estimated number of false intradonor merges = {}\n",
+        add_commas(bogus.round() as usize)
+    );
 }
