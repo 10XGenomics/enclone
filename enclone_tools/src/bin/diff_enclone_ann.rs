@@ -120,7 +120,7 @@ fn main() {
                 let dref1 = l1.between(",", ",").force_usize();
                 let dref2 = l2.between(",", ",").force_usize();
                 if dref1 > dref2 {
-                    println!("\n{}\n{}  BETTER", l1, l2);
+                    // println!("\n{}\n{}  BETTER", l1, l2);
                 } else {
                     println!("\n{}\n{}  WORSE", l1, l2);
                 }
@@ -133,7 +133,7 @@ fn main() {
             let state = lines[i].rev_after(",");
             if state == "new" {
                 lost_old += 1;
-                println!("\n{}  BETTER", lines[i]);
+                // println!("\n{}  BETTER", lines[i]);
             } else {
                 lost_new += 1;
                 println!("\n{}  WORSE", lines[i]);
@@ -144,6 +144,7 @@ fn main() {
     println!("\nchanged cells = {}", changed_cells);
     println!("\nold dref sum = {}", old_dref);
     println!("new dref sum = {}", new_dref);
+    println!("improvement = {}", old_dref - new_dref);
     println!("\ncells lost by old = {}", lost_old);
     println!("cells lost by new = {}\n", lost_new);
 }
