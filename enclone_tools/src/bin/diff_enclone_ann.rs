@@ -13,7 +13,10 @@
 // usage diff_enclone_ann <argument list>
 // where exactly one of OLD_PARAM=... or OLD_EXEC... must appear in the list.
 //
-// This measures changes uses the dref variable.  Higher dref is assumed to be worse.
+// This measures changes using the dref variable.  Higher dref is assumed to be worse.  Use of dref
+// is sort of a poor man's proxy for alignment score (e.g. deducible from ALIGN1 or ALIGN2), but
+// has the advantage of being more reflective of enclone's view of the data.  For example, ALIGN1
+// will correctly reflect two indels, but dref will reflect enclone's messed up view of them.
 //
 // Typically one would run this with just the dataset specification and OLD_EXEC.
 
@@ -27,7 +30,7 @@ fn main() {
     let mut args: Vec<String> = env::args().collect();
     let (mut old_param, mut old_exec) = (None, None);
     let mut args2 = Vec::<String>::new();
-    let blacklist = ["PCELL", "POUT", "PCOLS", "BARCODE", "NOPAGER", "NOPRINT", "BUILT_IN"];
+    let blacklist = ["PCELL", "POUT", "PCOLS", "BARCODE", "NOPAGER", "NOPRINT", "BUILT_IN", "CHAINS_EXACT"];
     for i in 1..args.len() {
         let mut a = args[i].clone();
         if a.contains('=') {
@@ -71,6 +74,7 @@ fn main() {
         let new = new
             .args(&argsp)
             .arg("BUILT_IN")
+            .arg("CHAINS_EXACT=2")
             .arg("PCELL")
             .arg(&format!("PCOLS={}", pcols))
             .arg("POUT=stdout")
