@@ -34,7 +34,7 @@ use std::{
 use string_utils::add_commas;
 use string_utils::TextUtils;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
-use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort, next_diff1_3};
+use vector_utils::{bin_member, erase_if, next_diff12_3, next_diff1_3, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -353,7 +353,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 refs.push((
                     erefdata.name[i].clone(),
                     allele.to_string(),
-                    erefdata.refs[i].to_ascii_vec()
+                    erefdata.refs[i].to_ascii_vec(),
                 ));
             }
         }
@@ -362,7 +362,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 refs.push((
                     refdata.name[i].clone(),
                     format!("uref{}", i),
-                    refdata.refs[i].to_ascii_vec()
+                    refdata.refs[i].to_ascii_vec(),
                 ));
             }
         }
@@ -371,11 +371,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
-            refs.push((
-                name.clone(),
-                format!("dref{}", i),
-                alt_seq.to_ascii_vec()
-            ));
+            refs.push((name.clone(), format!("dref{}", i), alt_seq.to_ascii_vec()));
         }
         refs.sort();
         let mut i = 0;
@@ -402,8 +398,13 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                                 diffs += 1;
                             }
                         }
-                        println!("{} = {} vs {} = {} ==> {} diffs", 
-                            m1 + 1, a1.0, m2 + 1, a2.0, diffs
+                        println!(
+                            "{} = {} vs {} = {} ==> {} diffs",
+                            m1 + 1,
+                            a1.0,
+                            m2 + 1,
+                            a2.0,
+                            diffs
                         );
                     }
                 }
@@ -428,7 +429,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                     println!("{} is distance {} from a reference", a1.0, best);
                 }
-
             }
             i = j;
         }
