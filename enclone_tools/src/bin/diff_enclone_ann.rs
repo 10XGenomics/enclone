@@ -122,7 +122,9 @@ fn main() {
                 if dref1 > dref2 {
                     // println!("\n{}\n{}  BETTER", l1, l2);
                 } else {
-                    println!("\n{}\n{}  WORSE", l1, l2);
+                    if dref2 - dref1 >= 5 {
+                        println!("\n{}\n{}  WORSE", l1, l2);
+                    }
                 }
                 old_dref += dref1;
                 new_dref += dref2;
