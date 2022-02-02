@@ -720,5 +720,5 @@ pub const TESTS: [&str; 288] = [
     // 287. test gamma delta
     r###"TCRGD=testx/inputs/gamma_delta1 GAMMA_DELTA MOUSE BUILT_IN"###,
     // 288. test gamma delta data without GAMMA_DELTA tag
-    r###"TCR=testx/inputs/gamma_delta1 MOUSE BUILT_IN"###,
+    r###"TCR=testx/inputs/gamma_delta1 MOUSE BUILT_IN REQUIRED_CLONOTYPES=0 EXPECT_NULL"###,
 ];
