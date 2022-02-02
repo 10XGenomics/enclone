@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 287] = [
+pub const TESTS: [&str; 288] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -719,4 +719,6 @@ pub const TESTS: [&str; 287] = [
     r###"BUILT_IN BCR=testx/inputs/flaky2/outs/,testx/inputs/flaky3/outs/ EXPECT_OK"###,
     // 287. test gamma delta
     r###"TCRGD=testx/inputs/gamma_delta1 GAMMA_DELTA MOUSE BUILT_IN"###,
+    // 288. test gamma delta data without GAMMA_DELTA tag
+    r###"TCR=testx/inputs/gamma_delta1 MOUSE BUILT_IN"###,
 ];
