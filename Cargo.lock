@@ -5124,7 +5124,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if 0.1.10",
  "rand",
  "static_assertions",
 ]
@@ -5277,9 +5277,9 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf2382451427e4e963c910f39d8823ea29d015c5d77193db2aa4278c429a9dc8"
+checksum = "0c9211ce931d71c22d58eb8570fb54a559b1deda8914b8b64a89d1d1762f2d77"
 dependencies = [
  "align_tools",
  "amino",
