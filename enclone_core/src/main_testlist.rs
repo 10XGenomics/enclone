@@ -717,8 +717,8 @@ pub const TESTS: [&str; 288] = [
     r###"BCR=123085 VAR_DEF=x:u1 LVARSP=x CDR3=CAKDGYSSSWYVVDW SEG=IGHV3-30"###,
     // 286. this asserted at one point
     r###"BUILT_IN BCR=testx/inputs/flaky2/outs/,testx/inputs/flaky3/outs/ EXPECT_OK"###,
-    // 287. test gamma delta
+    // 287. test gamma delta data (pos control)
     r###"TCRGD=testx/inputs/gamma_delta1 GAMMA_DELTA MOUSE BUILT_IN"###,
-    // 288. test gamma delta data without GAMMA_DELTA tag
+    // 288. test gamma delta data without GAMMA_DELTA tag in regular TCR pipe (neg control)
     r###"TCR=testx/inputs/gamma_delta1 MOUSE BUILT_IN REQUIRED_CLONOTYPES=0 EXPECT_NULL"###,
 ];
