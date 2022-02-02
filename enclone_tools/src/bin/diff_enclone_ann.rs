@@ -3,6 +3,8 @@
 // This program is designed for the assessment of changes to the annotation algorithm
 // (in crate vdj_ann) or the reference sequence.
 //
+// This only makes sense for BCR.
+//
 // Run enclone twice on the same dataset, where the two runs differ either by
 // • an extra command-line argument (specified by OLD_PARAM=...)
 // • or a code version (specified by OLD_EXEC=..., as comparsed to whatever PATH gives).
