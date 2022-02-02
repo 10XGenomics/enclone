@@ -30,7 +30,16 @@ fn main() {
     let mut args: Vec<String> = env::args().collect();
     let (mut old_param, mut old_exec) = (None, None);
     let mut args2 = Vec::<String>::new();
-    let blacklist = ["PCELL", "POUT", "PCOLS", "BARCODE", "NOPAGER", "NOPRINT", "BUILT_IN", "CHAINS_EXACT"];
+    let blacklist = [
+        "PCELL",
+        "POUT",
+        "PCOLS",
+        "BARCODE",
+        "NOPAGER",
+        "NOPRINT",
+        "BUILT_IN",
+        "CHAINS_EXACT",
+    ];
     for i in 1..args.len() {
         let mut a = args[i].clone();
         if a.contains('=') {
@@ -57,7 +66,7 @@ fn main() {
     }
     let pcols = "datasets,barcode,dref";
 
-    // Run enclone twice, once for "old" and once for "new".  
+    // Run enclone twice, once for "old" and once for "new".
 
     let mut lines = Vec::<String>::new();
     for pass in 1..=2 {
