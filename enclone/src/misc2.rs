@@ -253,6 +253,7 @@ pub fn create_exact_subclonotype_core(
                     invalidated_umis: tig_bc[t][m].invalidated_umis.clone(),
                     frac_reads_used: tig_bc[t][m].frac_reads_used,
                     marked: false,
+                    v_ref_id: tig_bc[t][m].v_ref_id,
                 });
             }
             clones.push(x);

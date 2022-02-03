@@ -515,6 +515,7 @@ pub fn compute_bu(
     ind_all: &Vec<Vec<u32>>,
     mat: &Vec<Vec<Option<usize>>>,
     these_stats: &Vec<(String, Vec<String>)>,
+    refdata: &RefData,
 ) {
     // Very bad computation because of embedded binary search.
 
@@ -815,7 +816,10 @@ pub fn compute_bu(
                 if m.is_some() {
                     let m = m.unwrap();
                     for p in 0..rsi.cvars[col].len() {
-                        if rsi.cvars[col][p] == *"u" {
+                        if rsi.cvars[col][p] == *"v_name_orig" {
+                            let v = &refdata.name[ex.clones[bcl.2][m].v_ref_id];
+                            cx[cp + p] = format!("{}", v);
+                        } else if rsi.cvars[col][p] == *"u" {
                             let numi = ex.clones[bcl.2][m].umi_count;
                             cx[cp + p] = format!("{}", numi);
                         } else if rsi.cvars[col][p] == *"r" {

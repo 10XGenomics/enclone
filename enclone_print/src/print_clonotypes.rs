@@ -735,6 +735,7 @@ pub fn print_clonotypes(
                             &ind_all,
                             mat,
                             &these_stats,
+                            &refdata,
                         );
                     }
                     cell_count += ex.clones.len();

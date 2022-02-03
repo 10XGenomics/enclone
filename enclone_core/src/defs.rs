@@ -633,6 +633,7 @@ pub struct TigData0 {
     pub non_validated_umis: Option<Vec<String>>, // non-validated UMIs
     pub invalidated_umis: Option<Vec<String>>,   // invalidated UMIs
     pub frac_reads_used: Option<u32>,            // fraction of reads passed to assembly stage in CR
+    pub v_ref_id: usize, // index of V segment reference sequence in ref file
 }
 
 #[derive(Clone)]

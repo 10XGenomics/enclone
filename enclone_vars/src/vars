@@ -3467,10 +3467,30 @@ level:    clono
 val:      string
 doc:      TBD
 brief:    V region name
-page:     enclone help parseable
+page:     enclone help cvars
 avail:    public
 notes:
 code:     exact: refdata.name[rsi.vids[col]].clone()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     v_name_orig
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    cell-exact
+val:      string
+doc:      TBD
+brief:    V region name that was originally assigned
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let mut vals = Vec::<String>::new();
+          for k in 0..ex.ncells() {
+              vals.push(refdata.name[ex.clones[k][mid].v_ref_id].clone());
+          }
+          let mut vals_uniq = vals.clone();
+          unique_sort(&mut vals_uniq);
+          cell: vals
+          exact: format!("{}", vals_uniq.iter().format(","))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     v_start
 inputs:   cvar_vdj
