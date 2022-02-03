@@ -869,7 +869,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
             "nucleotide percent identity with donor reference, outside junction region",
         );
 
-        h.ldoc("utr_name", "name of 5'-UTR region");
+        h.ldoc(
+            "v_name_orig",
+            "name of V region originally assigned (per cell);",
+        );
+        h.doc2("values below are clonotype consensuses");
+        h.doc("utr_name", "name of 5'-UTR region");
         h.doc("v_name", "name of V region");
         h.doc("d_name", "name of D region (or null)");
         h.doc("j_name", "name of J region");

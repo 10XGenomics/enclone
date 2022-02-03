@@ -1272,6 +1272,29 @@ pub fn proc_cvar_auto(
             Vec::new(),
             "clono".to_string(),
         )
+    } else if vname == "v_name_orig" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            vals.push(refdata.name[ex.clones[k][mid].v_ref_id].clone());
+        }
+        let mut vals_uniq = vals.clone();
+        unique_sort(&mut vals_uniq);
+
+        (
+            format!("{}", vals_uniq.iter().format(",")),
+            vals,
+            "cell-exact".to_string(),
+        )
+    } else if vname == "v_name_orig_cell" {
+        let mut vals = Vec::<String>::new();
+        for k in 0..ex.ncells() {
+            vals.push(refdata.name[ex.clones[k][mid].v_ref_id].clone());
+        }
+        let mut vals_uniq = vals.clone();
+        unique_sort(&mut vals_uniq);
+
+        let _exact = format!("{}", vals_uniq.iter().format(","));
+        (String::new(), vals, "cell-exact".to_string())
     } else if vname == "v_start" {
         (
             format!("{}", ex.share[mid].v_start),
