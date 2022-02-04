@@ -179,14 +179,20 @@ pub fn create_exact_subclonotype_core(
         // other segments, but it would take some thought to make sure that was done consistently.
         // Note that several of the entries in TigData1 are synced to follow this choice via vv.
 
-        let mut vx = Vec::<(usize, usize)>::new();
+        let mut vx = Vec::<usize>::new();
         for t in r..s {
-            vx.push((tig_bc[t][m].v_ref_id, t));
+            vx.push(tig_bc[t][m].v_ref_id);
         }
         vx.sort();
-        let mut freq = Vec::<(u32, (usize, usize))>::new();
+        let mut freq = Vec::<(u32, usize)>::new();
         make_freq(&vx, &mut freq);
-        let vv = freq[0].1 .1;
+        let mut vv = 0;
+        for t in r..s {
+            if tig_bc[t][m].v_ref_id == freq[0].1 {
+                vv = t;
+                break;
+            }
+        }
 
         // Note that here we are taking the first entry (r), sort of assuming
         // that all the entries are the same, which in principle they should be.
