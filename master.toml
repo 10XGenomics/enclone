@@ -104,6 +104,6 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
 vdj_ann = "0.4"
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "8ed8d7b3186b13c5db6ec7ad3fb8786f111eda65" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "abf7763fd7de2a60bbe2f953fd8453a420680359" }
 vector_utils = "0.1"
 yaml-rust = "0.4"

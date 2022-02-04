@@ -30,6 +30,14 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>2/4/22</b>:
+<ul>
+<li>Improve the correctness of V gene assignment.  The changes comprise several technical changes 
+to the alignment code and the addition of one gene IGHV3-9 to the VDJ reference.  About 2%
+of cells are affected.</li>
+<li>Add lvars <code>vname_orig</code> and <code>dref_max</code>.
+</ul>
+</p>
 
 <p><b>1/26/22</b>: Add ability to define variables as expressions involving other variables,
 using an argument <code>VAR_DEF=...</code>.  Please see
@@ -37,7 +45,6 @@ using an argument <code>VAR_DEF=...</code>.  Please see
 
 <p><b>1/13/22</b>: Make three small changes to BCR clonotyping:
 <ul>
-<ol>
 <li>Change the default value for <code>MAX_SCORE</code> to <code>100000</code>.</li>
 <li>Fix bug that resulted in the constraint <code>cd ≤ 15</code> still being imposed.</li>
 <li>Allow joins with high score to pass so long as they have at least <code>15</code> shared

@@ -3961,7 +3961,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.23.1",
+ "nix 0.22.0",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5277,9 +5277,9 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c9211ce931d71c22d58eb8570fb54a559b1deda8914b8b64a89d1d1762f2d77"
+checksum = "7e9d0a7fad1e932f77983ffd9be8b84a185a93696a4ad2ae817b832c96b0a3f6"
 dependencies = [
  "align_tools",
  "amino",
@@ -5300,8 +5300,8 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann_ref"
-version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=8ed8d7b3186b13c5db6ec7ad3fb8786f111eda65#8ed8d7b3186b13c5db6ec7ad3fb8786f111eda65"
+version = "0.2.1"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=abf7763fd7de2a60bbe2f953fd8453a420680359#abf7763fd7de2a60bbe2f953fd8453a420680359"
 dependencies = [
  "debruijn",
  "exons",
