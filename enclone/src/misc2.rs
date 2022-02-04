@@ -186,7 +186,7 @@ pub fn create_exact_subclonotype_core(
         vx.sort();
         let mut freq = Vec::<(u32, (usize, usize))>::new();
         make_freq(&vx, &mut freq);
-        let vv = freq[0].1.1;
+        let vv = freq[0].1 .1;
 
         // Note that here we are taking the first entry (r), sort of assuming
         // that all the entries are the same, which in principle they should be.
