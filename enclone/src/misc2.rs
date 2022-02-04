@@ -174,7 +174,7 @@ pub fn create_exact_subclonotype_core(
         full.append(&mut z);
         full.append(&mut constx);
 
-        // Note that here we are taking the first entry (r), sort of assuming that all the entries 
+        // Note that here we are taking the first entry (r), sort of assuming that all the entries
         // are the same, which in principle they should be, but this is not actually always true.
         // However this is hard to fix.
 
