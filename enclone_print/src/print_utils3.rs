@@ -358,6 +358,9 @@ pub fn define_column_info(
                     }
                 }
                 for _ in 0..ex.ncells() {
+                    // This is not actually correct.  It copies the consensus V gene assignment
+                    // for an exact subclonotype, rather than fetch the per cell entries.  However
+                    // it would be very rare for this to make a difference.
                     v.push(x.v_ref_id);
                     vp.push((
                         x.v_ref_id,
