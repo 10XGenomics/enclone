@@ -17,8 +17,7 @@ use std::time::Instant;
 use string_utils::strme;
 use vdj_ann::refx::RefData;
 use vector_utils::{
-    erase_if, make_freq, next_diff, next_diff12_4, next_diff1_2, next_diff1_3, reverse_sort,
-    unique_sort,
+    erase_if, next_diff, next_diff12_4, next_diff1_2, next_diff1_3, reverse_sort, unique_sort,
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -175,19 +174,6 @@ pub fn create_exact_subclonotype_core(
         full.append(&mut z);
         full.append(&mut constx);
 
-        // Find the most common reference V segment.  Possibly we should be doing that for the
-        // other segments, but it would take some thought to make sure that was done consistently.
-        // Note that several of the entries in TigData1 are synced to follow this choice via vv.
-
-        let mut vx = Vec::<(usize, usize)>::new();
-        for t in r..s {
-            vx.push((tig_bc[t][m].v_ref_id, t));
-        }
-        vx.sort();
-        let mut freq = Vec::<(u32, (usize, usize))>::new();
-        make_freq(&vx, &mut freq);
-        let vv = freq[0].1.1;
-
         // Note that here we are taking the first entry (r), sort of assuming
         // that all the entries are the same, which in principle they should be.
 
@@ -211,8 +197,8 @@ pub fn create_exact_subclonotype_core(
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
-            u_ref_id: tig_bc[vv][m].u_ref_id,
-            v_ref_id: tig_bc[vv][m].v_ref_id,
+            u_ref_id: tig_bc[r][m].u_ref_id,
+            v_ref_id: tig_bc[r][m].v_ref_id,
             v_ref_id_donor: None,
             v_ref_id_donor_alt_id: None,
             v_ref_id_donor_donor: None,
@@ -226,9 +212,9 @@ pub fn create_exact_subclonotype_core(
             cdr2_start: tig_bc[r][m].cdr2_start,
             cdr3_aa: tig_bc[r][m].cdr3_aa.clone(),
             cdr3_start: tig_bc[r][m].cdr3_start,
-            left: tig_bc[vv][m].left,
-            chain_type: tig_bc[vv][m].chain_type.clone(),
-            annv: tig_bc[vv][m].annv.clone(),
+            left: tig_bc[r][m].left,
+            chain_type: tig_bc[r][m].chain_type.clone(),
+            annv: tig_bc[r][m].annv.clone(),
             // these get set when making CloneInfo objects:
             vs: DnaString::new(),
             vs_notesx: String::new(),
