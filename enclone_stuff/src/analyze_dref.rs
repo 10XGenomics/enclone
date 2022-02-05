@@ -125,7 +125,7 @@ pub fn analyze_donor_ref(
                 // Make table, if it won't be too wide.
 
                 let mut log = String::new();
-                if dp.len() <= 15 {
+                if dp.len() <= 20 {
                     let mut rows = Vec::<Vec<String>>::new();
                     let mut row = Vec::<String>::new();
                     row.push("allele".to_string());
