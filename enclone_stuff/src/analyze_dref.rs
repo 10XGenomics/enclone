@@ -142,7 +142,7 @@ pub fn analyze_donor_ref(
                         rows.push(row);
                     }
                     let mut just = b"l|".to_vec();
-                    just.append(&mut vec![b'l'; dp.len() + 1]);
+                    just.append(&mut vec![b'l'; dp.len()]);
                     print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
                 }
 
