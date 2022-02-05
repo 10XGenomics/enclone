@@ -2,6 +2,7 @@
 
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::EncloneControl;
+use itertools::Itertools;
 use std::cmp::min;
 use string_utils::*;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
@@ -63,37 +64,77 @@ pub fn analyze_donor_ref(
         while i < refs.len() {
             let j = next_diff1_3(&refs, i as i32) as usize;
             let gene = &refs[i].0;
-            let mut alleles = Vec::<(String, Vec<u8>)>::new();
+            let mut alleles = Vec::<(Vec<u8>, String)>::new(); // (name, sequence)
             let mut have_alt = false;
             for k in i..j {
                 if refs[k].1.starts_with("dref") {
                     have_alt = true;
                 }
-                alleles.push((refs[k].1.clone(), refs[k].2.clone()));
+                alleles.push((refs[k].2.clone(), refs[k].1.clone()));
             }
 
             if have_alt {
 
-                // Now alleles = all the alleles for one gene, and there is at least one
-                // donor reference allele.
+                // Truncate alleles so that they all have the same length.
 
-                println!("working on {}, have {} seqs", gene, alleles.len());
+                let mut m = 1000000;
+                for r in 0..alleles.len() {
+                    m = min(m, alleles[r].0.len());
+                }
+                for r in 0..alleles.len() {
+                    alleles[r].0.truncate(m);
+                }
+
+                // Now alleles = all the alleles for one gene, and there is at least one
+                // donor reference allele.  Combine identical alleles, and reorder.
+
+                alleles.sort();
+                let mut allelesg = Vec::<(Vec<String>, Vec<u8>)>::new();
+                let mut r = 0;
+                while r < alleles.len() {
+                    let s = next_diff1_2(&alleles, r as i32) as usize;
+                    let mut names = Vec::<String>::new();
+                    for t in r..s {
+                        names.push(alleles[t].1.clone());
+                    }
+                    allelesg.push((names, alleles[r].0.clone()));
+                    r = s;
+                }
+
+                // Find the positions at which the alleles differ.
+
+                let mut dp = Vec::<usize>::new();
+                for p in 0..m {
+                    let mut bases = Vec::<u8>::new();
+                    for r in 0..allelesg.len() {
+                        bases.push(allelesg[r].1[p]);
+                    }
+                    unique_sort(&mut bases);
+                    if bases.len() > 1 {
+                        dp.push(p);
+                    }
+                }
+
+                // Print.
+
+                println!("\nworking on {}, have {} seqs", gene, alleles.len());
+                println!("alleles differ at {} positions = {}", dp.len(), dp.iter().format(","));
                 for m1 in 0..alleles.len() {
                     for m2 in m1 + 1..alleles.len() {
                         let a1 = &alleles[m1];
                         let a2 = &alleles[m2];
                         let mut diffs = 0;
-                        for p in 0..min(a1.1.len(), a2.1.len()) {
-                            if a1.1[p] != a2.1[p] {
+                        for p in 0..min(a1.0.len(), a2.0.len()) {
+                            if a1.0[p] != a2.0[p] {
                                 diffs += 1;
                             }
                         }
                         println!(
                             "{} = {} vs {} = {} ==> {} diffs",
                             m1 + 1,
-                            a1.0,
+                            a1.1,
                             m2 + 1,
-                            a2.0,
+                            a2.1,
                             diffs
                         );
                     }
@@ -101,23 +142,23 @@ pub fn analyze_donor_ref(
                 for m1 in 0..alleles.len() {
                     let mut best = 1_000_000;
                     let a1 = &alleles[m1];
-                    if !a1.0.starts_with("dref") {
+                    if !a1.1.starts_with("dref") {
                         continue;
                     }
                     for m2 in 0..alleles.len() {
                         let a2 = &alleles[m2];
-                        if a2.0.starts_with("dref") {
+                        if a2.1.starts_with("dref") {
                             continue;
                         }
                         let mut diffs = 0;
-                        for p in 0..min(a1.1.len(), a2.1.len()) {
-                            if a1.1[p] != a2.1[p] {
+                        for p in 0..min(a1.0.len(), a2.0.len()) {
+                            if a1.0[p] != a2.0[p] {
                                 diffs += 1;
                             }
                         }
                         best = min(best, diffs);
                     }
-                    println!("{} is distance {} from a reference", a1.0, best);
+                    println!("{} is distance {} from a reference", a1.1, best);
                 }
             }
             i = j;
