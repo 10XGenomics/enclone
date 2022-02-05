@@ -101,7 +101,7 @@ pub fn analyze_donor_ref(
                     r = s;
                 }
 
-                // Find the positions at which the alleles differ.
+                // Find the positions at which the alleles differ, and make a matrix.
 
                 let mut dp = Vec::<usize>::new();
                 for p in 0..m {
@@ -112,6 +112,12 @@ pub fn analyze_donor_ref(
                     unique_sort(&mut bases);
                     if bases.len() > 1 {
                         dp.push(p);
+                    }
+                }
+                let mut dm = vec![vec![0; dp.len()]; allelesg.len()];
+                for u in 0..dp.len() {
+                    for r in 0..allelesg.len() {
+                        dm[r][u] = allelesg[r].1[dp[u]];
                     }
                 }
 
