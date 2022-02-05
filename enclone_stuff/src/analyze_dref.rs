@@ -5,6 +5,7 @@ use enclone_core::defs::EncloneControl;
 use itertools::Itertools;
 use std::cmp::min;
 use string_utils::*;
+use tables::*;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
 use vector_utils::*;
 
@@ -121,10 +122,34 @@ pub fn analyze_donor_ref(
                     }
                 }
 
+                // Make table, if it won't be too wide.
+
+                let mut log = String::new();
+                if dp.len() <= 10 {
+                    let mut rows = Vec::<Vec<String>>::new();
+                    let mut row = Vec::<String>::new();
+                    row.push("allele".to_string());
+                    for u in 0..dp.len() {
+                        row.push(dp[u].to_string());
+                    }
+                    rows.push(row);
+                    for r in 0..allelesg.len() {
+                        let mut row = Vec::<String>::new();
+                        row.push(format!("{}", allelesg[r].0.iter().format(",")));
+                        for u in 0..dp.len() {
+                            row.push((allelesg[r].1[dp[u]] as char).to_string());
+                        }
+                        rows.push(row);
+                    }
+                    let just = vec![b'l'; dp.len() + 1];
+                    print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
+                }
+
                 // Print.
 
                 println!("\nworking on {}, have {} seqs", gene, alleles.len());
                 println!("alleles differ at {} positions = {}", dp.len(), dp.iter().format(","));
+                println!("{}", log);
                 for m1 in 0..alleles.len() {
                     for m2 in m1 + 1..alleles.len() {
                         let a1 = &alleles[m1];
