@@ -20,6 +20,9 @@ pub fn analyze_donor_ref(
         let f = std::fs::read_to_string(&ctl.gen_opt.external_ref).unwrap();
         make_vdj_ref_data_core(&mut erefdata, &f, "", true, true, None);
         let mut refs = Vec::<(String, String, Vec<u8>)>::new(); // {(gene, allele, seq)}
+
+        // Store the external (IMGT) alleles.
+
         for i in 0..erefdata.refs.len() {
             if erefdata.is_v(i) {
                 let allele = erefdata.rheaders_orig[i].between("*", " ");
@@ -30,6 +33,9 @@ pub fn analyze_donor_ref(
                 ));
             }
         }
+
+        // Store the enclone reference alleles.
+
         for i in 0..refdata.refs.len() {
             if refdata.is_v(i) {
                 refs.push((
@@ -39,6 +45,9 @@ pub fn analyze_donor_ref(
                 ));
             }
         }
+
+        // Store the donor reference alleles;
+
         for i in 0..alt_refs.len() {
             let _donor = alt_refs[i].0;
             let ref_id = alt_refs[i].1;
@@ -46,6 +55,9 @@ pub fn analyze_donor_ref(
             let alt_seq = &alt_refs[i].2;
             refs.push((name.clone(), format!("dref{}", i), alt_seq.to_ascii_vec()));
         }
+
+        // Sort the alleles and group by gene.
+
         refs.sort();
         let mut i = 0;
         while i < refs.len() {
@@ -59,7 +71,12 @@ pub fn analyze_donor_ref(
                 }
                 alleles.push((refs[k].1.clone(), refs[k].2.clone()));
             }
+
             if have_alt {
+
+                // Now alleles = all the alleles for one gene, and there is at least one
+                // donor reference allele.
+
                 println!("working on {}, have {} seqs", gene, alleles.len());
                 for m1 in 0..alleles.len() {
                     for m2 in m1 + 1..alleles.len() {
