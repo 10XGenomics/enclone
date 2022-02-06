@@ -340,8 +340,10 @@ pub fn find_alleles(
                 }
                 i = j;
             }
-            if keep.len() > 1 || (!keep.is_empty() && !have_ref) {
-                // Remove columns that are pure reference.
+            let analysis_mode = ctl.gen_opt.external_ref.len() > 0;
+            if (analysis_mode && keep.len() > 0) || keep.len() > 1 || (!keep.is_empty() && !have_ref) {
+                // Remove columns that are pure reference.  We don't do this if the EXTERNAL_REF
+                // option was used.
 
                 let mut to_delete = vec![false; keep[0].0.len()];
                 for i in 0..keep[0].0.len() {
@@ -363,7 +365,7 @@ pub fn find_alleles(
                             is_ref = false;
                         }
                     }
-                    if is_ref {
+                    if is_ref && !analysis_mode {
                         to_delete[i] = true;
                     }
                 }
