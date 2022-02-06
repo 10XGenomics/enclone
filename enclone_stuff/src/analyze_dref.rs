@@ -237,8 +237,10 @@ pub fn analyze_donor_ref(
                     }
                     let mut just = b"l|".to_vec();
                     just.append(&mut vec![b'l'; ndonors]);
-                    just.push(b'|');
-                    just.append(&mut vec![b'l'; nimgt]);
+                    if nimgt > 0 {
+                        just.push(b'|');
+                        just.append(&mut vec![b'l'; nimgt]);
+                    }
                     if dp.len() > 0 {
                         just.push(b'|');
                         just.append(&mut vec![b'l'; dp.len()]);
