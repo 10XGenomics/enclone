@@ -406,7 +406,7 @@ pub fn find_alleles(
                 // Save alternate references.
 
                 for x in keep.iter() {
-                    if !x.3 {
+                    if !x.3 || analysis_mode {
                         let mut b = refdata.refs[id].clone();
                         for i in 0..ps.len() {
                             let c;
