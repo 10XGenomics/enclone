@@ -174,9 +174,11 @@ pub fn analyze_donor_ref(
                     for _ in 0..ndonors - 1 {
                         row.push("\\ext".to_string());
                     }
-                    row.push("IMGT".to_string());
-                    for _ in 0..nimgt - 1 {
-                        row.push("\\ext".to_string());
+                    if nimgt > 0 {
+                        row.push("IMGT".to_string());
+                        for _ in 0..nimgt - 1 {
+                            row.push("\\ext".to_string());
+                        }
                     }
                     row.push("position".to_string());
                     for _ in 0..dp.len() - 1 {
