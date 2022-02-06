@@ -180,11 +180,9 @@ pub fn analyze_donor_ref(
                             row.push("\\ext".to_string());
                         }
                     }
-                    if dp.len() > 0 {
-                        row.push("position".to_string());
-                        for _ in 0..dp.len() - 1 {
-                            row.push("\\ext".to_string());
-                        }
+                    row.push("position".to_string());
+                    for _ in 0..dp.len() - 1 {
+                        row.push("\\ext".to_string());
                     }
                     rows.push(row);
                     let mut row = vec!["".to_string()];
