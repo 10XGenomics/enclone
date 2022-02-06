@@ -51,11 +51,11 @@ pub fn analyze_donor_ref(
         // Store the donor reference alleles;
 
         for i in 0..alt_refs.len() {
-            let _donor = alt_refs[i].0;
+            let donor = alt_refs[i].0;
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
-            refs.push((name.clone(), format!("dref{}", i), alt_seq.to_ascii_vec()));
+            refs.push((name.clone(), format!("dref{}_{}", i, donor), alt_seq.to_ascii_vec()));
         }
 
         // Sort the alleles and group by gene.
@@ -102,7 +102,7 @@ pub fn analyze_donor_ref(
                     r = s;
                 }
 
-                // Find the positions at which the alleles differ, and make a matrix.
+                // Find the positions at which the alleles differ, and make variant matrix.
 
                 let mut dp = Vec::<usize>::new();
                 for p in 0..m {
@@ -122,6 +122,20 @@ pub fn analyze_donor_ref(
                     }
                 }
 
+                // Make donor matrix.
+
+                let ndonors = ctl.origin_info.donor_list.len();
+                let mut dd = vec![vec![false; ndonors]; allelesg.len()];
+                for r in 0..allelesg.len() {
+                    for k in 0..allelesg[r].0.len() {
+                        let n = &allelesg[r].0[k];
+                        if n.starts_with("dref") {
+                            let d = n.after("_").force_usize();
+                            dd[r][d] = true;
+                        }
+                    }
+                }
+
                 // Make table, if it won't be too wide.
 
                 let mut log = String::new();
@@ -129,6 +143,9 @@ pub fn analyze_donor_ref(
                     let mut rows = Vec::<Vec<String>>::new();
                     let mut row = Vec::<String>::new();
                     row.push("allele".to_string());
+                    for d in 0..ndonors {
+                        row.push(format!("{}", d + 1));
+                    }
                     for u in 0..dp.len() {
                         row.push(dp[u].to_string());
                     }
@@ -136,14 +153,23 @@ pub fn analyze_donor_ref(
                     for r in 0..allelesg.len() {
                         let mut row = Vec::<String>::new();
                         row.push(format!("{}", allelesg[r].0.iter().format(",")));
+                        for d in 0..ndonors {
+                            if dd[r][d] {
+                                row.push("▓".to_string());
+                            } else {
+                                row.push(" ".to_string());
+                            }
+                        }
                         for u in 0..dp.len() {
                             row.push((allelesg[r].1[dp[u]] as char).to_string());
                         }
                         rows.push(row);
                     }
                     let mut just = b"l|".to_vec();
+                    just.append(&mut vec![b'l'; ndonors]);
+                    just.push(b'|');
                     just.append(&mut vec![b'l'; dp.len()]);
-                    print_tabular_vbox(&mut log, &rows, 2, &just, false, false);
+                    print_tabular_vbox(&mut log, &rows, 1, &just, false, false);
                 }
 
                 // Print.
