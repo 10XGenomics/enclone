@@ -239,8 +239,10 @@ pub fn analyze_donor_ref(
                     just.append(&mut vec![b'l'; ndonors]);
                     just.push(b'|');
                     just.append(&mut vec![b'l'; nimgt]);
-                    just.push(b'|');
-                    just.append(&mut vec![b'l'; dp.len()]);
+                    if dp.len() > 0 {
+                        just.push(b'|');
+                        just.append(&mut vec![b'l'; dp.len()]);
+                    }
                     print_tabular_vbox(&mut log, &rows, 1, &just, false, false);
                 }
 
