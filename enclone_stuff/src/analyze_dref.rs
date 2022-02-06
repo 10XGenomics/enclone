@@ -145,7 +145,6 @@ pub fn analyze_donor_ref(
                 let mut log = String::new();
                 if dp.len() <= 20 {
                     let mut rows = Vec::<Vec<String>>::new();
-
                     let mut row = Vec::<String>::new();
                     row.push("allele".to_string());
                     row.push("donor".to_string());
@@ -157,18 +156,19 @@ pub fn analyze_donor_ref(
                         row.push("\\ext".to_string());
                     }
                     rows.push(row);
-
-                    let row = vec!["\\hline".to_string(); ndonors + dp.len() + 1];
+                    let mut row = vec!["".to_string()];
+                    row.append(&mut vec!["\\hline".to_string(); ndonors + dp.len()]);
                     rows.push(row);
-
                     let mut row = Vec::<String>::new();
-                    row.push("allele".to_string());
+                    row.push("".to_string());
                     for d in 0..ndonors {
                         row.push(format!("{}", d + 1));
                     }
                     for u in 0..dp.len() {
                         row.push(dp[u].to_string());
                     }
+                    rows.push(row);
+                    let row = vec!["\\hline".to_string(); ndonors + dp.len() + 1];
                     rows.push(row);
                     for r in 0..allelesg.len() {
                         let mut row = Vec::<String>::new();
