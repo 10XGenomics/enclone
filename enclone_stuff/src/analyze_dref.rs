@@ -140,6 +140,29 @@ pub fn analyze_donor_ref(
                     }
                 }
 
+                // Make IMGT matrix.
+
+                let mut imgts = Vec::<String>::new();
+                for r in 0..allelesg.len() {
+                    for n in allelesg[r].0.iter() {
+                        if !n.starts_with("d") && !n.starts_with("u") {
+                            imgts.push(n.to_string());
+                        }
+                    }
+                }
+                unique_sort(&mut imgts);
+                let nimgt = imgts.len();
+                let mut im = vec![vec![false; nimgt]; allelesg.len()];
+                for r in 0..allelesg.len() {
+                    for k in 0..allelesg[r].0.len() {
+                        let n = &allelesg[r].0[k];
+                        let p = bin_position(&imgts, n);
+                        if p >= 0 {
+                            im[r][p as usize] = true;
+                        }
+                    }
+                }
+
                 // Make table, if it won't be too wide.
 
                 let mut log = String::new();
@@ -151,24 +174,31 @@ pub fn analyze_donor_ref(
                     for _ in 0..ndonors - 1 {
                         row.push("\\ext".to_string());
                     }
+                    row.push("IMGT".to_string());
+                    for _ in 0..nimgt - 1 {
+                        row.push("\\ext".to_string());
+                    }
                     row.push("position".to_string());
                     for _ in 0..dp.len() - 1 {
                         row.push("\\ext".to_string());
                     }
                     rows.push(row);
                     let mut row = vec!["".to_string()];
-                    row.append(&mut vec!["\\hline".to_string(); ndonors + dp.len()]);
+                    row.append(&mut vec!["\\hline".to_string(); ndonors + nimgt + dp.len()]);
                     rows.push(row);
                     let mut row = Vec::<String>::new();
                     row.push("".to_string());
                     for d in 0..ndonors {
                         row.push(format!("{}", d + 1));
                     }
+                    for k in 0..nimgt {
+                        row.push(imgts[k].clone());
+                    }
                     for u in 0..dp.len() {
                         row.push(dp[u].to_string());
                     }
                     rows.push(row);
-                    let row = vec!["\\hline".to_string(); ndonors + dp.len() + 1];
+                    let row = vec!["\\hline".to_string(); ndonors + nimgt + dp.len() + 1];
                     rows.push(row);
                     for r in 0..allelesg.len() {
                         let mut row = Vec::<String>::new();
@@ -186,6 +216,13 @@ pub fn analyze_donor_ref(
                                 row.push(" ".to_string());
                             }
                         }
+                        for k in 0..nimgt {
+                            if im[r][k] {
+                                row.push("▓".to_string());
+                            } else {
+                                row.push(" ".to_string());
+                            }
+                        }
                         for u in 0..dp.len() {
                             row.push((allelesg[r].1[dp[u]] as char).to_string());
                         }
@@ -193,6 +230,8 @@ pub fn analyze_donor_ref(
                     }
                     let mut just = b"l|".to_vec();
                     just.append(&mut vec![b'l'; ndonors]);
+                    just.push(b'|');
+                    just.append(&mut vec![b'l'; nimgt]);
                     just.push(b'|');
                     just.append(&mut vec![b'l'; dp.len()]);
                     print_tabular_vbox(&mut log, &rows, 1, &just, false, false);
