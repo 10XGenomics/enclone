@@ -172,7 +172,13 @@ pub fn analyze_donor_ref(
                     rows.push(row);
                     for r in 0..allelesg.len() {
                         let mut row = Vec::<String>::new();
-                        row.push(format!("{}", allelesg[r].0.iter().format(",")));
+                        let mut ns = Vec::<String>::new();
+                        for n in allelesg[r].0.iter() {
+                            if !n.starts_with("dref") {
+                                ns.push(n.to_string());
+                            }
+                        }
+                        row.push(format!("{}", ns.iter().format(",")));
                         for d in 0..ndonors {
                             if dd[r][d] {
                                 row.push("▓".to_string());
