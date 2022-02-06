@@ -202,13 +202,16 @@ pub fn analyze_donor_ref(
                     rows.push(row);
                     for r in 0..allelesg.len() {
                         let mut row = Vec::<String>::new();
-                        let mut ns = Vec::<String>::new();
+                        let allele_name = (b'A' + r as u8) as char;
+                        let mut an = String::new();
+                        an.push(allele_name);
                         for n in allelesg[r].0.iter() {
-                            if !n.starts_with("dref") {
-                                ns.push(n.to_string());
+                            if n.starts_with("uref") {
+                                an.push('*');
+                                break;
                             }
                         }
-                        row.push(format!("{}", ns.iter().format(",")));
+                        row.push(an);
                         for d in 0..ndonors {
                             if dd[r][d] {
                                 row.push("▓".to_string());
@@ -241,7 +244,11 @@ pub fn analyze_donor_ref(
 
                 println!("\nworking on {}, have {} seqs", gene, alleles.len());
                 println!("alleles differ at {} positions = {}", dp.len(), dp.iter().format(","));
-                println!("{}", log);
+                if log.len() > 0 {
+                    log.truncate(log.len() - 1);
+                    println!("\n{}", log);
+                    println!("* = a universal reference\n");
+                }
                 for m1 in 0..alleles.len() {
                     for m2 in m1 + 1..alleles.len() {
                         let a1 = &alleles[m1];
