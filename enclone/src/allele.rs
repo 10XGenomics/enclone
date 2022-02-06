@@ -340,6 +340,30 @@ pub fn find_alleles(
                 }
                 i = j;
             }
+
+            // Print.
+
+            if ctl.allele_print_opt.con {
+                println!(
+                    "\nDONOR {} ({})",
+                    donor_id + 1,
+                    ctl.origin_info.donor_list[donor_id]
+                );
+                println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
+                println!("ps = {}", ps.iter().format(","));
+                for x in keep.iter() {
+                    let mut bases = String::new();
+                    for z in x.0.iter() {
+                        bases.push(*z as char);
+                    }
+                    print!("{} [{}] {:.1}", bases, x.1, x.2);
+                    if x.3 {
+                        print!(" (ref)");
+                    }
+                    println!();
+                }
+            }
+
             let analysis_mode = ctl.gen_opt.external_ref.len() > 0;
             if (analysis_mode && keep.len() > 0) || keep.len() > 1 || (!keep.is_empty() && !have_ref) {
                 // Remove columns that are pure reference.  We don't do this if the EXTERNAL_REF
@@ -379,29 +403,6 @@ pub fn find_alleles(
                 }
                 keep0.sort();
                 keep.sort_by(|a, b| a.partial_cmp(b).unwrap());
-
-                // Print.
-
-                if ctl.allele_print_opt.con {
-                    println!(
-                        "\nDONOR {} ({})",
-                        donor_id + 1,
-                        ctl.origin_info.donor_list[donor_id]
-                    );
-                    println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
-                    println!("ps = {}", ps.iter().format(","));
-                    for x in keep.iter() {
-                        let mut bases = String::new();
-                        for z in x.0.iter() {
-                            bases.push(*z as char);
-                        }
-                        print!("{} [{}] {:.1}", bases, x.1, x.2);
-                        if x.3 {
-                            print!(" (ref)");
-                        }
-                        println!();
-                    }
-                }
 
                 // Save alternate references.
 
