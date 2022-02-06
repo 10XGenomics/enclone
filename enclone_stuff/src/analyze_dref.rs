@@ -1,5 +1,9 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 
+// Analyze donor reference and exit.
+//
+// This displays tables, which are somewhat mangled unless there are at least four donors.
+
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::EncloneControl;
 use itertools::Itertools;
@@ -141,6 +145,22 @@ pub fn analyze_donor_ref(
                 let mut log = String::new();
                 if dp.len() <= 20 {
                     let mut rows = Vec::<Vec<String>>::new();
+
+                    let mut row = Vec::<String>::new();
+                    row.push("allele".to_string());
+                    row.push("donor".to_string());
+                    for _ in 0..ndonors - 1 {
+                        row.push("\\ext".to_string());
+                    }
+                    row.push("position".to_string());
+                    for _ in 0..dp.len() - 1 {
+                        row.push("\\ext".to_string());
+                    }
+                    rows.push(row);
+
+                    let row = vec!["\\hline".to_string(); ndonors + dp.len() + 1];
+                    rows.push(row);
+
                     let mut row = Vec::<String>::new();
                     row.push("allele".to_string());
                     for d in 0..ndonors {
