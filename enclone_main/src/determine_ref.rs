@@ -10,7 +10,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use string_utils::{strme, TextUtils};
 use vdj_ann_ref::{
-    human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, mouse_ref, mouse_ref_3_1, mouse_ref_4_0,
+    human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, human_ref_old, mouse_ref,
+    mouse_ref_3_1, mouse_ref_4_0, mouse_ref_old,
 };
 use vector_utils::{erase_if, unique_sort, VecUtils};
 
@@ -230,7 +231,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
     // first json file to find a distinguishing entry.
 
     if refx.is_empty() && !jsonx.is_empty() {
-        let cr_ver = ["2.0", "3.1", "4.0", "current"];
+        let cr_ver = ["2.0", "3.1", "4.0", "old", "current"];
         let species = ["human", "mouse"];
         let mut refhash = Vec::<(HashMap<usize, (usize, String)>, String)>::new();
         for i in 0..cr_ver.len() {
@@ -246,12 +247,16 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                     refx = mouse_ref_3_1();
                 } else if cr_ver[i] == "4.0" && species[j] == "human" {
                     refx = human_ref_4_0();
+                } else if cr_ver[i] == "old" && species[j] == "human" {
+                    refx = human_ref_old();
                 } else if cr_ver[i] == "4.0" && species[j] == "mouse" {
                     refx = mouse_ref_4_0();
                 } else if cr_ver[i] == "current" && species[j] == "human" {
                     refx = human_ref();
                 } else if cr_ver[i] == "current" && species[j] == "mouse" {
                     refx = mouse_ref();
+                } else if cr_ver[i] == "old" && species[j] == "mouse" {
+                    refx = mouse_ref_old();
                 } else {
                     panic!("Failed match for reference.");
                 }
