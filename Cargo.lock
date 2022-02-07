@@ -3961,7 +3961,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.22.0",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5301,7 +5301,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#965f92f903dc179922dbf0c09e8666b51f318836"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5e09de4f57cf6a89206b95623756b962cf48585a"
 dependencies = [
  "debruijn",
  "exons",
