@@ -24,7 +24,7 @@ pub fn find_alleles(
     refdata: &RefData,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
-) -> Vec<(usize, usize, DnaString)> {
+) -> Vec<(usize, usize, DnaString, usize)> {
     // Derive consensus sequences for alternate alleles of V segments.
     //
     // The priority of this algorithm is to reduce the likelihood of false positive joins.  It
@@ -53,7 +53,8 @@ pub fn find_alleles(
     // 3. Make alt_refs into a more efficient data structure.
     // 4. Speed up.
 
-    let mut alt_refs = Vec::<(usize, usize, DnaString)>::new(); // (donor, ref id, alt seq)
+    // (donor, ref id, alt seq, support):
+    let mut alt_refs = Vec::<(usize, usize, DnaString, usize)>::new(); 
 
     // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
 
@@ -102,7 +103,7 @@ pub fn find_alleles(
             vs.push(id);
         }
     }
-    let mut results = Vec::<(usize, Vec<(usize, usize, DnaString)>)>::new();
+    let mut results = Vec::<(usize, Vec<(usize, usize, DnaString, usize)>)>::new();
     for v in vs.iter() {
         results.push((*v, Vec::new()));
     }
@@ -452,7 +453,7 @@ pub fn find_alleles(
                             }
                             b.set_mut(ps[i], c);
                         }
-                        res.1.push((donor_id, id, b));
+                        res.1.push((donor_id, id, b, x.1));
                     }
                 }
 
@@ -507,7 +508,7 @@ pub fn find_alleles(
 pub fn sub_alts(
     refdata: &RefData,
     ctl: &EncloneControl,
-    alt_refs: &Vec<(usize, usize, DnaString)>,
+    alt_refs: &Vec<(usize, usize, DnaString, usize)>,
     info: &mut Vec<CloneInfo>,
     exact_clonotypes: &mut Vec<ExactClonotype>,
 ) {

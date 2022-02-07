@@ -302,7 +302,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // reference sequences for Loupe.
 
     let talt = Instant::now();
-    let alt_refs : Vec<(usize,usize,DnaString)>  // {(donor, ref id, alt seq)}
+    let alt_refs : Vec<(usize,usize,DnaString,usize)>  // {(donor, ref id, alt seq, support)}
         = find_alleles( refdata, ctl, &exact_clonotypes );
     ctl.perf_stats(&talt, "finding alt alleles");
     if !ctl.gen_opt.dref_file.is_empty() {
