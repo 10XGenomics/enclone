@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod analyze_dref;
 pub mod disintegrate;
 pub mod doublets;
 pub mod fcell;

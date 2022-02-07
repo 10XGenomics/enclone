@@ -10,11 +10,9 @@ use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use itertools::Itertools;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::cmp::{max, PartialOrd};
+use std::cmp::{max, min, PartialOrd};
 use std::time::Instant;
-use vector_utils::{
-    erase_if, next_diff, next_diff1_2, next_diff1_3, next_diff1_5, reverse_sort, unique_sort,
-};
+use vector_utils::{erase_if, next_diff, next_diff1_2, next_diff1_3, reverse_sort, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -24,7 +22,7 @@ pub fn find_alleles(
     refdata: &RefData,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
-) -> Vec<(usize, usize, DnaString)> {
+) -> Vec<(usize, usize, DnaString, usize, bool)> {
     // Derive consensus sequences for alternate alleles of V segments.
     //
     // The priority of this algorithm is to reduce the likelihood of false positive joins.  It
@@ -53,12 +51,13 @@ pub fn find_alleles(
     // 3. Make alt_refs into a more efficient data structure.
     // 4. Speed up.
 
-    let mut alt_refs = Vec::<(usize, usize, DnaString)>::new(); // (donor, ref id, alt seq)
+    // (donor, ref id, alt seq, support, is_ref):
+    let mut alt_refs = Vec::<(usize, usize, DnaString, usize, bool)>::new();
 
     // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
 
     let mut allxy =
-        vec![Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize)>::new(); refdata.refs.len()];
+        vec![Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>::new(); refdata.refs.len()];
     for (m, x) in exact_clonotypes.iter().enumerate() {
         if x.share.len() >= 2 && x.share.len() <= 3 {
             for j in 0..x.share.len() {
@@ -85,6 +84,7 @@ pub fn find_alleles(
                                 partner.clone(),
                                 m,
                                 x.clones[l][j].dataset_index,
+                                x.clones[l][0].barcode.clone(),
                             ));
                         }
                     }
@@ -101,7 +101,7 @@ pub fn find_alleles(
             vs.push(id);
         }
     }
-    let mut results = Vec::<(usize, Vec<(usize, usize, DnaString)>)>::new();
+    let mut results = Vec::<(usize, Vec<(usize, usize, DnaString, usize, bool)>)>::new();
     for v in vs.iter() {
         results.push((*v, Vec::new()));
     }
@@ -112,11 +112,18 @@ pub fn find_alleles(
         // Divide by donor.
 
         allx.sort();
-        let mut alls = Vec::<Vec<(usize, Vec<u8>, Vec<usize>, usize, usize)>>::new();
+        let mut alls = Vec::<Vec<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>>::new();
         let mut i = 0;
         while i < allx.len() {
-            let j = next_diff1_5(&allx, i as i32) as usize;
-            let mut all = Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize)>::new();
+            // let j = next_diff1_6(&allx, i as i32) as usize;
+            let mut j = i + 1;
+            while j < allx.len() {
+                if allx[j].0 != allx[i].0 {
+                    break;
+                }
+                j += 1;
+            }
+            let mut all = Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>::new();
             for k in i..j {
                 all.push(allx[k].clone());
             }
@@ -291,7 +298,7 @@ pub fn find_alleles(
             // Traverse the types, grouping contigs that have an identical footprint at
             // the positions in ps.
 
-            let mut keep = Vec::<(Vec<u8>, usize, f64, bool)>::new();
+            let mut keep = Vec::<(Vec<u8>, usize, f64, bool, Vec<String>)>::new();
             let mut i = 0;
             let mut have_ref = false;
             while i < types.len() {
@@ -321,9 +328,11 @@ pub fn find_alleles(
                     || is_ref
                 {
                     let mut q = Vec::<Vec<usize>>::new();
+                    let mut barcodes = Vec::<String>::new();
                     for k in i..j {
                         let m = types[k].1;
                         q.push(all[m].2.clone());
+                        barcodes.push(all[m].5.clone());
                     }
                     q.sort();
                     let (mut m, mut r) = (0, 0);
@@ -333,15 +342,64 @@ pub fn find_alleles(
                         r = s;
                     }
                     let purity = 100.0 - percent_ratio(m, q.len());
-                    keep.push((types[i].0.clone(), j - i, purity, is_ref));
+                    keep.push((types[i].0.clone(), j - i, purity, is_ref, barcodes));
                     if is_ref {
                         have_ref = true;
                     }
                 }
                 i = j;
             }
-            if keep.len() > 1 || (!keep.is_empty() && !have_ref) {
-                // Remove columns that are pure reference.
+
+            // Delete rare alleles, which are probably artifacts.  Commented out because it
+            // seemed to make results worse.
+
+            /*
+            let mut m = 0;
+            for i in 0..keep.len() {
+                m = max(m, keep[i].1);
+            }
+            let mut to_delete = vec![false; keep.len()];
+            for i in 0..keep.len() {
+                if keep[i].1 * 10 < m {
+                    to_delete[i] = true;
+                }
+            }
+            erase_if(&mut keep, &to_delete);
+            */
+
+            // Print.
+
+            if ctl.allele_print_opt.con {
+                println!(
+                    "\nDONOR {} ({})",
+                    donor_id + 1,
+                    ctl.origin_info.donor_list[donor_id]
+                );
+                println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
+                println!("ps = {}", ps.iter().format(","));
+                for x in keep.iter() {
+                    let mut bases = String::new();
+                    for z in x.0.iter() {
+                        bases.push(*z as char);
+                    }
+                    print!("{} [{}] {:.1}", bases, x.1, x.2);
+                    if x.3 {
+                        print!(" (ref)");
+                    }
+                    for i in 0..min(x.4.len(), 5) {
+                        print!(" {}", x.4[i]);
+                    }
+                    println!();
+                }
+            }
+
+            let analysis_mode = ctl.gen_opt.external_ref.len() > 0;
+            if (analysis_mode && keep.len() > 0)
+                || keep.len() > 1
+                || (!keep.is_empty() && !have_ref)
+            {
+                // Remove columns that are pure reference.  We don't do this if the EXTERNAL_REF
+                // option was used.
 
                 let mut to_delete = vec![false; keep[0].0.len()];
                 for i in 0..keep[0].0.len() {
@@ -363,7 +421,7 @@ pub fn find_alleles(
                             is_ref = false;
                         }
                     }
-                    if is_ref {
+                    if is_ref && !analysis_mode {
                         to_delete[i] = true;
                     }
                 }
@@ -378,33 +436,10 @@ pub fn find_alleles(
                 keep0.sort();
                 keep.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-                // Print.
-
-                if ctl.allele_print_opt.con {
-                    println!(
-                        "\nDONOR {} ({})",
-                        donor_id + 1,
-                        ctl.origin_info.donor_list[donor_id]
-                    );
-                    println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
-                    println!("ps = {}", ps.iter().format(","));
-                    for x in keep.iter() {
-                        let mut bases = String::new();
-                        for z in x.0.iter() {
-                            bases.push(*z as char);
-                        }
-                        print!("{} [{}] {:.1}", bases, x.1, x.2);
-                        if x.3 {
-                            print!(" (ref)");
-                        }
-                        println!();
-                    }
-                }
-
                 // Save alternate references.
 
                 for x in keep.iter() {
-                    if !x.3 {
+                    if !x.3 || analysis_mode {
                         let mut b = refdata.refs[id].clone();
                         for i in 0..ps.len() {
                             let c;
@@ -419,7 +454,7 @@ pub fn find_alleles(
                             }
                             b.set_mut(ps[i], c);
                         }
-                        res.1.push((donor_id, id, b));
+                        res.1.push((donor_id, id, b, x.1, x.3));
                     }
                 }
 
@@ -474,7 +509,7 @@ pub fn find_alleles(
 pub fn sub_alts(
     refdata: &RefData,
     ctl: &EncloneControl,
-    alt_refs: &Vec<(usize, usize, DnaString)>,
+    alt_refs: &Vec<(usize, usize, DnaString, usize, bool)>,
     info: &mut Vec<CloneInfo>,
     exact_clonotypes: &mut Vec<ExactClonotype>,
 ) {

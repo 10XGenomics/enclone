@@ -30,6 +30,10 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>2/7/22</b>: Remove some genes from the reference that were identical except for extension
+on the 3' end.
+</p>
+
 <p><b>2/4/22</b>:
 <ul>
 <li>Improve the correctness of V gene assignment.  The changes comprise several technical changes 
