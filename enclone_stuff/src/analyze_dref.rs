@@ -16,9 +16,8 @@ use vector_utils::*;
 pub fn analyze_donor_ref(
     refdata: &RefData,
     ctl: &EncloneControl,
-    alt_refs: &Vec<(usize,usize,DnaString, usize)>,
+    alt_refs: &Vec<(usize, usize, DnaString, usize, bool)>,
 ) {
-
     // Analyze donor reference.
 
     if ctl.gen_opt.external_ref.len() > 0 {
@@ -59,7 +58,11 @@ pub fn analyze_donor_ref(
             let ref_id = alt_refs[i].1;
             let name = &refdata.name[ref_id];
             let alt_seq = &alt_refs[i].2;
-            refs.push((name.clone(), format!("dref{}_{}", i, donor), alt_seq.to_ascii_vec()));
+            refs.push((
+                name.clone(),
+                format!("dref{}_{}", i, donor),
+                alt_seq.to_ascii_vec(),
+            ));
         }
 
         // Sort the alleles and group by gene.
@@ -79,7 +82,6 @@ pub fn analyze_donor_ref(
             }
 
             if have_alt {
-
                 // Truncate alleles so that they all have the same length.
 
                 let mut m = 1000000;
@@ -251,7 +253,11 @@ pub fn analyze_donor_ref(
                 // Print.
 
                 println!("\nworking on {}, have {} seqs", gene, alleles.len());
-                println!("alleles differ at {} positions = {}", dp.len(), dp.iter().format(","));
+                println!(
+                    "alleles differ at {} positions = {}",
+                    dp.len(),
+                    dp.iter().format(",")
+                );
                 if log.len() > 0 {
                     log.truncate(log.len() - 1);
                     println!("\n{}", log);
