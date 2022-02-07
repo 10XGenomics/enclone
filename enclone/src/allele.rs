@@ -10,10 +10,10 @@ use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use itertools::Itertools;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::cmp::{max, PartialOrd};
+use std::cmp::{max, min, PartialOrd};
 use std::time::Instant;
 use vector_utils::{
-    erase_if, next_diff, next_diff1_2, next_diff1_3, next_diff1_5, reverse_sort, unique_sort,
+    erase_if, next_diff, next_diff1_2, next_diff1_3, reverse_sort, unique_sort,
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -58,7 +58,7 @@ pub fn find_alleles(
     // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
 
     let mut allxy =
-        vec![Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize)>::new(); refdata.refs.len()];
+        vec![Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>::new(); refdata.refs.len()];
     for (m, x) in exact_clonotypes.iter().enumerate() {
         if x.share.len() >= 2 && x.share.len() <= 3 {
             for j in 0..x.share.len() {
@@ -85,6 +85,7 @@ pub fn find_alleles(
                                 partner.clone(),
                                 m,
                                 x.clones[l][j].dataset_index,
+                                x.clones[l][0].barcode.clone(),
                             ));
                         }
                     }
@@ -112,11 +113,18 @@ pub fn find_alleles(
         // Divide by donor.
 
         allx.sort();
-        let mut alls = Vec::<Vec<(usize, Vec<u8>, Vec<usize>, usize, usize)>>::new();
+        let mut alls = Vec::<Vec<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>>::new();
         let mut i = 0;
         while i < allx.len() {
-            let j = next_diff1_5(&allx, i as i32) as usize;
-            let mut all = Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize)>::new();
+            // let j = next_diff1_6(&allx, i as i32) as usize;
+            let mut j = i + 1;
+            while j < allx.len() {
+                if allx[j].0 != allx[i].0 {
+                    break;
+                }
+                j += 1;
+            }
+            let mut all = Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize, String)>::new();
             for k in i..j {
                 all.push(allx[k].clone());
             }
@@ -291,7 +299,7 @@ pub fn find_alleles(
             // Traverse the types, grouping contigs that have an identical footprint at
             // the positions in ps.
 
-            let mut keep = Vec::<(Vec<u8>, usize, f64, bool)>::new();
+            let mut keep = Vec::<(Vec<u8>, usize, f64, bool, Vec<String>)>::new();
             let mut i = 0;
             let mut have_ref = false;
             while i < types.len() {
@@ -321,9 +329,11 @@ pub fn find_alleles(
                     || is_ref
                 {
                     let mut q = Vec::<Vec<usize>>::new();
+                    let mut barcodes = Vec::<String>::new();
                     for k in i..j {
                         let m = types[k].1;
                         q.push(all[m].2.clone());
+                        barcodes.push(all[m].5.clone());
                     }
                     q.sort();
                     let (mut m, mut r) = (0, 0);
@@ -333,7 +343,7 @@ pub fn find_alleles(
                         r = s;
                     }
                     let purity = 100.0 - percent_ratio(m, q.len());
-                    keep.push((types[i].0.clone(), j - i, purity, is_ref));
+                    keep.push((types[i].0.clone(), j - i, purity, is_ref, barcodes));
                     if is_ref {
                         have_ref = true;
                     }
@@ -359,6 +369,9 @@ pub fn find_alleles(
                     print!("{} [{}] {:.1}", bases, x.1, x.2);
                     if x.3 {
                         print!(" (ref)");
+                    }
+                    for i in 0..min(x.4.len(), 5) {
+                        print!(" {}", x.4[i]);
                     }
                     println!();
                 }
