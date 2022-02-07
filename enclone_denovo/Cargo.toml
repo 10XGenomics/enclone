@@ -40,5 +40,5 @@ string_utils = "0.1"
 superslice = "1"
 tables = "0.1"
 vdj_ann = "0.4"
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev = "abf7763fd7de2a60bbe2f953fd8453a420680359" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vector_utils = "0.1"
