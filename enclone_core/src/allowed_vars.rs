@@ -143,7 +143,8 @@ pub const CVARS_ALLOWED: [&str; 93] = [
     "d_Δ",
 ];
 
-pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
+// We should not have to specify this.
+pub const CVARS_ALLOWED_PCELL: [&str; 3] = ["u_cell", "r_cell", "v_name_orig_cell"];
 
 pub const PLVARS_ALLOWED: [&str; 5] = [
     "group_id",
