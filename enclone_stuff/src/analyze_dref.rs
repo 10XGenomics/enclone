@@ -16,7 +16,7 @@ use vector_utils::*;
 pub fn analyze_donor_ref(
     refdata: &RefData,
     ctl: &EncloneControl,
-    alt_refs: &Vec<(usize,usize,DnaString)>,
+    alt_refs: &Vec<(usize,usize,DnaString, usize)>,
 ) {
 
     // Analyze donor reference.

@@ -19,17 +19,17 @@ use enclone_proto::types::{
     InvariantTCellAnnotation, Metadata, Region, UniversalReference, UniversalReferenceItem,
 };
 use io_utils::write_obj;
-use vector_utils::next_diff12_3;
+use vector_utils::next_diff12_4;
 
 // Export donor reference/inferred alt allele sequences
 pub fn make_donor_refs(
-    alt_refs: &Vec<(usize, usize, DnaString)>,
+    alt_refs: &Vec<(usize, usize, DnaString, usize)>,
     refdata: &RefData,
 ) -> Vec<DonorReferenceItem> {
     let mut drefs = Vec::<DonorReferenceItem>::new();
     let mut i = 0;
     while i < alt_refs.len() {
-        let j = next_diff12_3(alt_refs, i as i32) as usize;
+        let j = next_diff12_4(alt_refs, i as i32) as usize;
         for k in i..j {
             let x = &alt_refs[k];
             let donor_id = x.0;
