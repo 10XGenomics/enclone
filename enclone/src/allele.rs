@@ -351,6 +351,23 @@ pub fn find_alleles(
                 i = j;
             }
 
+            // Delete rare alleles, which are probably artifacts.  Commented out because it
+            // seemed to make results worse.
+
+            /*
+            let mut m = 0;
+            for i in 0..keep.len() {
+                m = max(m, keep[i].1);
+            }
+            let mut to_delete = vec![false; keep.len()];
+            for i in 0..keep.len() {
+                if keep[i].1 * 10 < m {
+                    to_delete[i] = true;
+                }
+            }
+            erase_if(&mut keep, &to_delete);
+            */
+
             // Print.
 
             if ctl.allele_print_opt.con {
