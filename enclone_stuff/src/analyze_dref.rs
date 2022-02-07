@@ -72,7 +72,7 @@ pub fn analyze_donor_ref(
         while i < refs.len() {
             let j = next_diff1_3(&refs, i as i32) as usize;
             let gene = &refs[i].0;
-            let mut alleles = Vec::<(Vec<u8>, String)>::new(); // (name, sequence)
+            let mut alleles = Vec::<(Vec<u8>, String)>::new(); // (sequence, name)
             let mut have_alt = false;
             for k in i..j {
                 if refs[k].1.starts_with("dref") {
@@ -80,6 +80,28 @@ pub fn analyze_donor_ref(
                 }
                 alleles.push((refs[k].2.clone(), refs[k].1.clone()));
             }
+
+            // Delete reference alleles having very low count relative to others.
+
+            let mut to_delete = vec![false; alleles.len()];
+            let mut mm = 0;
+            for k in 0..alleles.len() {
+                if alleles[k].1.starts_with("dref") {
+                    let ii = alleles[k].1.between("dref", "_").force_usize();
+                    mm = std::cmp::max(mm, alt_refs[ii].3);
+                }
+            }
+            for k in 0..alleles.len() {
+                if alleles[k].1.starts_with("dref") {
+                    let ii = alleles[k].1.between("dref", "_").force_usize();
+                    if alt_refs[ii].4 && alt_refs[ii].3 * 10 < mm {
+                        to_delete[k] = true;
+                    }
+                }
+            }
+            erase_if(&mut alleles, &to_delete);
+
+            // Proceed.
 
             if have_alt {
                 // Truncate alleles so that they all have the same length.
