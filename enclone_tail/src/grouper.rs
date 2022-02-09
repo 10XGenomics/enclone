@@ -412,8 +412,12 @@ pub fn grouper(
         let t = Instant::now();
         if ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
             let min_r = ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0;
-            let mut groups2 = Vec::<Vec<usize>>::new();
-            for g in groups.iter() {
+            let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
+            for i in 0..groups.len() {
+                results.push((i, Vec::new()));
+            }
+            results.par_iter_mut().for_each(|res| {
+                let g = &groups[res.0];
                 let mut ee: EquivRel = EquivRel::new(g.len() as i32);
                 for i1 in 0..g.len() {
                     'next_heavy_cdr3: for i2 in i1 + 1..g.len() {
@@ -458,10 +462,13 @@ pub fn grouper(
                     for j in 0..o.len() {
                         p.push(g[o[j] as usize]);
                     }
-                    groups2.push(p);
+                    res.1.push(p);
                 }
+            });
+            groups.clear();
+            for i in 0..results.len() {
+                groups.append(&mut results[i].1.clone());
             }
-            groups = groups2;
         }
         ctl.perf_stats(&t, "grouping by cdr3 aa heavy percent");
 
