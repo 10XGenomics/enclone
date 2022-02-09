@@ -12,6 +12,7 @@ use edit_distance::edit_distance;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
 use rayon::prelude::*;
+use std::time::Instant;
 use string_utils::{strme, TextUtils};
 use vdj_ann::refx::RefData;
 use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
@@ -25,6 +26,7 @@ pub fn grouper(
     rsi: &Vec<ColInfo>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) -> Vec<Vec<(i32, String)>> {
+    let t = Instant::now();
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 0: no grouping.
@@ -42,6 +44,7 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
+        ctl.perf_stats(&t, "in grouper");
         groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -85,9 +88,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by vj refname");
 
         // Group by vdj_refname.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.vdj_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -126,9 +131,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by vdj refname");
 
         // Group by vj_heavy_refname.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.vj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -166,9 +173,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by vj heavy refname");
 
         // Group by vdj_heavy_refname.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.vdj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -214,9 +223,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by vdj heavy refname");
 
         // Group by vj_len.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.vj_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -244,9 +255,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by vj length");
 
         // Group by cdr3_len.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.cdr3_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -274,9 +287,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by cdr3 length");
 
         // Group by aa_heavy_pc.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.aa_heavy_pc.is_some() {
             let min_r = ctl.clono_group_opt.aa_heavy_pc.unwrap() / 100.0;
             let mut groups2 = Vec::<Vec<usize>>::new();
@@ -331,9 +346,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by aa heavy percent");
 
         // Group by aa_light_pc.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.aa_light_pc.is_some() {
             let min_r = ctl.clono_group_opt.aa_light_pc.unwrap() / 100.0;
             let mut groups2 = Vec::<Vec<usize>>::new();
@@ -388,9 +405,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by aa light percent");
 
         // Group by cdr3_aa_heavy_pc.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
             let min_r = ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0;
             let mut groups2 = Vec::<Vec<usize>>::new();
@@ -444,9 +463,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by cdr3 aa heavy percent");
 
         // Group by cdr3_aa_light_pc.
 
+        let t = Instant::now();
         if ctl.clono_group_opt.cdr3_aa_light_pc.is_some() {
             let min_r = ctl.clono_group_opt.cdr3_aa_light_pc.unwrap() / 100.0;
             let mut groups2 = Vec::<Vec<usize>>::new();
@@ -500,9 +521,11 @@ pub fn grouper(
             }
             groups = groups2;
         }
+        ctl.perf_stats(&t, "grouping by cdr3 aa light percent");
 
         // Join based on grouping.  Stupid, see next step.
 
+        let t = Instant::now();
         for g in groups.iter() {
             for i in 0..g.len() - 1 {
                 e.join(g[i] as i32, g[i + 1] as i32);
@@ -561,6 +584,7 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
+        ctl.perf_stats(&t, "in grouper tail");
         groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -662,6 +686,7 @@ pub fn grouper(
                 groups.push(g);
             }
         }
+        ctl.perf_stats(&t, "in grouper");
         groups
     }
 }
