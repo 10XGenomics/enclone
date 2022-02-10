@@ -12,8 +12,10 @@ use edit_distance::edit_distance;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
 use rayon::prelude::*;
+use std::cmp::min;
 use std::time::Instant;
 use string_utils::{strme, TextUtils};
+use triple_accel::levenshtein::levenshtein_simd_k;
 use vdj_ann::refx::RefData;
 use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
 
@@ -462,12 +464,10 @@ pub fn grouper(
                                             continue;
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa.as_bytes();
-                                        let d = triple_accel::levenshtein(aa1, aa2) as usize;
-                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
-                                        let r1 = r1 as f64 / aa1.len() as f64;
-                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
-                                        let r2 = r2 as f64 / aa2.len() as f64;
-                                        if r1 >= min_r || r2 >= min_r {
+                                        let d_max_f =
+                                            (1.0 - min_r) * min(aa1.len(), aa2.len()) as f64;
+                                        let d_max = d_max_f.floor() as u32;
+                                        if levenshtein_simd_k(aa1, aa2, d_max).is_some() {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_cdr3;
                                         }
