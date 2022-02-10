@@ -235,11 +235,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
             }
             let mut args2 = Vec::<String>::new();
+            let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
             for j in 0..i {
-                args2.push(args[j].clone());
+                if args[j].starts_with("BCR=") {
+                    bcrv.push(args[j].after("BCR=").to_string());
+                } else if args[j].starts_with("GEX=") {
+                    gexv.push(args[j].after("GEX=").to_string());
+                } else {
+                    args2.push(args[j].clone());
+                }
             }
             let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
-            let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
             for n in y.iter() {
                 if *n != "m1" {
                     if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 39 {
@@ -283,14 +289,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                     }
                 }
             }
+            for j in i + 1..args.len() {
+                if args[j].starts_with("BCR=") {
+                    bcrv.push(args[j].after("BCR=").to_string());
+                } else if args[j].starts_with("GEX=") {
+                    gexv.push(args[j].after("GEX=").to_string());
+                } else {
+                    args2.push(args[j].clone());
+                }
+            }
             args2.push(format!("BCR={}", bcrv.iter().format(";")));
             if !gexv.is_empty() && args[i].starts_with("BI=") {
                 have_gex = true;
                 args2.push(format!("GEX={}", gexv.iter().format(";")));
                 gex = format!("{}", gexv.iter().format(";"));
-            }
-            for j in i + 1..args.len() {
-                args2.push(args[j].clone());
             }
             args = args2;
             break;
