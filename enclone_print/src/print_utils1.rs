@@ -577,6 +577,29 @@ pub fn start_gen(
             &mut mlog,
             " WARNING: This clonotype contains cells from multiple donors."
         );
+        let mut mixes = 0;
+        if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
+            for j1 in 0..exacts.len() {
+                let ex1 = &exact_clonotypes[exacts[j1]];
+                for j2 in j1..exacts.len() {
+                    let ex2 = &exact_clonotypes[exacts[j2]];
+                    for k1 in 0..ex1.clones.len() {
+                        let x1 = &ex1.clones[k1][0];
+                        for k2 in 0..ex2.clones.len() {
+                            if (j1, k1) < (j2, k2) {
+                                let x2 = &ex2.clones[k2][0];
+                                if x1.donor_index.is_some() && x2.donor_index.is_some() {
+                                    if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                        mixes += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        fwriteln!(&mut mlog, "total mixed cell pairs = {}", mixes);
         let mut donor_names = Vec::<String>::new();
         for i in 0..donors.len() {
             donor_names.push(ctl.origin_info.donor_list[donors[i]].clone());
