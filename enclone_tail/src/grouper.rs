@@ -421,11 +421,21 @@ pub fn grouper(
         }
         ctl.perf_stats(&t, "grouping by aa light percent");
 
-        // Group by cdr3_aa_heavy_pc.
+        // Group by cdr3_aa_heavy_pc and then cdr3_aa_light_pc.
 
-        let t = Instant::now();
-        if ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
-            let min_r = ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0;
+        for pass in 1..=2 {
+            if pass == 1 && !ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
+                continue;
+            }
+            if pass == 2 && !ctl.clono_group_opt.cdr3_aa_light_pc.is_some() {
+                continue;
+            }
+            let t = Instant::now();
+            let min_r = if pass == 1 {
+                ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0
+            } else {
+                ctl.clono_group_opt.cdr3_aa_light_pc.unwrap() / 100.0
+            };
             let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
             for i in 0..groups.len() {
                 results.push((i, Vec::new()));
@@ -434,7 +444,7 @@ pub fn grouper(
                 let g = &groups[res.0];
                 let mut ee: EquivRel = EquivRel::new(g.len() as i32);
                 for i1 in 0..g.len() {
-                    'next_heavy_cdr3: for i2 in i1 + 1..g.len() {
+                    'next_cdr3: for i2 in i1 + 1..g.len() {
                         if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
                             continue;
                         }
@@ -443,12 +453,12 @@ pub fn grouper(
                             for u2 in exacts[g2].iter() {
                                 let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
                                 for p1 in 0..ex1.share.len() {
-                                    if !ex1.share[p1].left {
+                                    if (pass == 1) != ex1.share[p1].left {
                                         continue;
                                     }
                                     let aa1 = &ex1.share[p1].cdr3_aa;
                                     for p2 in 0..ex2.share.len() {
-                                        if !ex2.share[p2].left {
+                                        if (pass == 1) != ex2.share[p2].left {
                                             continue;
                                         }
                                         let aa2 = &ex2.share[p2].cdr3_aa;
@@ -459,7 +469,7 @@ pub fn grouper(
                                         let r2 = r2 as f64 / aa2.len() as f64;
                                         if r1 >= min_r || r2 >= min_r {
                                             ee.join(i1 as i32, i2 as i32);
-                                            continue 'next_heavy_cdr3;
+                                            continue 'next_cdr3;
                                         }
                                     }
                                 }
@@ -483,73 +493,9 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
+            let chain = if pass == 1 { "heavy" } else { "light" };
+            ctl.perf_stats(&t, &format!("grouping by cdr3 aa {} percent", chain));
         }
-        ctl.perf_stats(&t, "grouping by cdr3 aa heavy percent");
-
-        // Group by cdr3_aa_light_pc.
-
-        let t = Instant::now();
-        if ctl.clono_group_opt.cdr3_aa_light_pc.is_some() {
-            let min_r = ctl.clono_group_opt.cdr3_aa_light_pc.unwrap() / 100.0;
-            let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
-            for i in 0..groups.len() {
-                results.push((i, Vec::new()));
-            }
-            results.par_iter_mut().for_each(|res| {
-                let g = &groups[res.0];
-                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
-                for i1 in 0..g.len() {
-                    'next_light_cdr3: for i2 in i1 + 1..g.len() {
-                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
-                            continue;
-                        }
-                        let (g1, g2) = (g[i1], g[i2]);
-                        for u1 in exacts[g1].iter() {
-                            for u2 in exacts[g2].iter() {
-                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
-                                for p1 in 0..ex1.share.len() {
-                                    if ex1.share[p1].left {
-                                        continue;
-                                    }
-                                    let aa1 = &ex1.share[p1].cdr3_aa;
-                                    for p2 in 0..ex2.share.len() {
-                                        if ex2.share[p2].left {
-                                            continue;
-                                        }
-                                        let aa2 = &ex2.share[p2].cdr3_aa;
-                                        let d = edit_distance(aa1, aa2);
-                                        let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
-                                        let r1 = r1 as f64 / aa1.len() as f64;
-                                        let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
-                                        let r2 = r2 as f64 / aa2.len() as f64;
-                                        if r1 >= min_r || r2 >= min_r {
-                                            ee.join(i1 as i32, i2 as i32);
-                                            continue 'next_light_cdr3;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                let mut reps = Vec::<i32>::new();
-                ee.orbit_reps(&mut reps);
-                for i in 0..reps.len() {
-                    let mut o = Vec::<i32>::new();
-                    ee.orbit(i as i32, &mut o);
-                    let mut p = Vec::<usize>::new();
-                    for j in 0..o.len() {
-                        p.push(g[o[j] as usize]);
-                    }
-                    res.1.push(p);
-                }
-            });
-            groups.clear();
-            for i in 0..results.len() {
-                groups.append(&mut results[i].1.clone());
-            }
-        }
-        ctl.perf_stats(&t, "grouping by cdr3 aa light percent");
 
         // Join based on grouping.  Stupid, see next step.
 
