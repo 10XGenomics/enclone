@@ -14,7 +14,8 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::min;
 use std::time::Instant;
-use string_utils::{strme, TextUtils};
+use string_utils::TextUtils;
+use triple_accel::levenshtein;
 use triple_accel::levenshtein::levenshtein_simd_k;
 use vdj_ann::refx::RefData;
 use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
@@ -323,7 +324,7 @@ pub fn grouper(
                                         }
                                         let dna2 = &ex2.share[p2].seq;
                                         let (aa1, aa2) = (aa_seq(dna1, 0), aa_seq(dna2, 0));
-                                        let d = edit_distance(strme(&aa1), strme(&aa2));
+                                        let d = levenshtein(&aa1, &aa2) as usize;
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
@@ -389,7 +390,7 @@ pub fn grouper(
                                         }
                                         let dna2 = &ex2.share[p2].seq;
                                         let (aa1, aa2) = (aa_seq(dna1, 0), aa_seq(dna2, 0));
-                                        let d = edit_distance(strme(&aa1), strme(&aa2));
+                                        let d = levenshtein(&aa1, &aa2) as usize;
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
