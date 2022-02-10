@@ -1614,6 +1614,7 @@ dependencies = [
  "tables",
  "tar",
  "tiny-skia",
+ "triple_accel",
  "usvg",
  "vdj_ann",
  "vector_utils",

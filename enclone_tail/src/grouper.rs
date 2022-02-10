@@ -456,13 +456,13 @@ pub fn grouper(
                                     if (pass == 1) != ex1.share[p1].left {
                                         continue;
                                     }
-                                    let aa1 = &ex1.share[p1].cdr3_aa;
+                                    let aa1 = &ex1.share[p1].cdr3_aa.as_bytes();
                                     for p2 in 0..ex2.share.len() {
                                         if (pass == 1) != ex2.share[p2].left {
                                             continue;
                                         }
-                                        let aa2 = &ex2.share[p2].cdr3_aa;
-                                        let d = edit_distance(aa1, aa2);
+                                        let aa2 = &ex2.share[p2].cdr3_aa.as_bytes();
+                                        let d = triple_accel::levenshtein(aa1, aa2) as usize;
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;
                                         let r2 = if d <= aa2.len() { aa2.len() - d } else { 0 };
