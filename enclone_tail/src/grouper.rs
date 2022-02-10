@@ -8,7 +8,6 @@
 //               to be printed
 
 use amino::aa_seq;
-use edit_distance::edit_distance;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use equiv::EquivRel;
 use rayon::prelude::*;
@@ -606,15 +605,15 @@ pub fn grouper(
                         let (ex1, ex2) = (&exact_clonotypes[c1[k1]], &exact_clonotypes[c2[k2]]);
                         let (mut heavy, mut light) = (infinity, infinity);
                         for m1 in 0..ex1.share.len() {
-                            let cdr3_aa1 = &ex1.share[m1].cdr3_aa;
+                            let cdr3_aa1 = &ex1.share[m1].cdr3_aa.as_bytes();
                             for m2 in 0..ex2.share.len() {
-                                let cdr3_aa2 = &ex2.share[m2].cdr3_aa;
+                                let cdr3_aa2 = &ex2.share[m2].cdr3_aa.as_bytes();
                                 if ex1.share[m1].left && ex2.share[m2].left {
-                                    let x = edit_distance(cdr3_aa1, cdr3_aa2) as f64;
+                                    let x = levenshtein(cdr3_aa1, cdr3_aa2) as f64;
                                     heavy = heavy.min(x);
                                 }
                                 if !ex1.share[m1].left && !ex2.share[m2].left {
-                                    let x = edit_distance(cdr3_aa1, cdr3_aa2) as f64;
+                                    let x = levenshtein(cdr3_aa1, cdr3_aa2) as f64;
                                     light = light.min(x);
                                 }
                             }
