@@ -368,6 +368,70 @@ pub fn join_exacts(
                 fwriteln!(log, "{}", mega1);
                 fwriteln!(log, "{}", mega2);
             }
+
+            // Compute CDR1 and CDR2 nucleotide diffs.
+
+            let nchains = info[k1].lens.len();
+            let (mut cdr1_len, mut cdr2_len) = (0, 0);
+            let (mut cdr1_diffs, mut cdr2_diffs) = (0, 0);
+            for m in 0..nchains {
+                let (j1, j2) = (info[k1].exact_cols[m], info[k2].exact_cols[m]);
+                let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+                if x1.left {
+                    if x1.cdr1_start.is_some() && x1.fr2_start.is_some() {
+                        if x2.cdr1_start.is_some() && x2.fr2_start.is_some() {
+                            let cdr1_start1 = x1.cdr1_start.unwrap();
+                            let cdr1_stop1 = x1.fr2_start.unwrap();
+                            let cdr1_start2 = x2.cdr1_start.unwrap();
+                            let cdr1_stop2 = x2.fr2_start.unwrap();
+                            let len = cdr1_stop1 - cdr1_start1;
+                            if cdr1_stop2 - cdr1_start2 == len {
+                                let mut diffs = 0;
+                                for p in 0..len {
+                                    if x1.seq_del_amino[p + cdr1_start1] != 
+                                        x2.seq_del_amino[p + cdr1_start2] {
+                                        diffs += 1;
+                                    }
+                                }
+                                fwriteln!(log, "CDR1 diffs = {}", diffs);
+                                cdr1_len = len;
+                                cdr1_diffs = diffs;
+                            }
+                        }
+                    }
+                    if x1.cdr2_start.is_some() && x1.fr3_start.is_some() {
+                        if x2.cdr2_start.is_some() && x2.fr3_start.is_some() {
+                            let cdr2_start1 = x1.cdr2_start.unwrap();
+                            let cdr2_stop1 = x1.fr3_start.unwrap();
+                            let cdr2_start2 = x2.cdr2_start.unwrap();
+                            let cdr2_stop2 = x2.fr3_start.unwrap();
+                            let len = cdr2_stop1 - cdr2_start1;
+                            if cdr2_stop2 - cdr2_start2 == len {
+                                let mut diffs = 0;
+                                for p in 0..len {
+                                    if x1.seq_del_amino[p + cdr2_start1] != 
+                                        x2.seq_del_amino[p + cdr2_start2] {
+                                        diffs += 1;
+                                    }
+                                }
+                                fwriteln!(log, "CDR2 diffs = {}", diffs);
+                                cdr2_len = len;
+                                cdr2_diffs = diffs;
+                            }
+                        }
+                    }
+                }
+            }
+            if cdr1_len > 0 && cdr2_len > 0 {
+                let len = cdr1_len + cdr2_len;
+                let diffs = cdr1_diffs + cdr2_diffs;
+                fwriteln!(log, "nucleotide identity on CDR1-2 = {:.1}%",
+                    100.0 * (len - diffs) as f64 / len as f64
+                );
+            }
+
+            // Keep going.
+
             fwriteln!(
                 log,
                 "p1 = prob of getting so many shares by accident = {}",
@@ -390,7 +454,6 @@ pub fn join_exacts(
             // Show difference patterns.  And x denotes a different base.  A ▓ denotes an
             // equal base that differs from the reference.  Otherwise - is shown.
 
-            let nchains = info[k1].lens.len();
             for m in 0..nchains {
                 let (tig1, tig2) = (&info[k1].tigs[m], &info[k2].tigs[m]);
                 fwriteln!(log, "difference pattern for chain {}", m + 1);
