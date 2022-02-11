@@ -5,6 +5,7 @@ use enclone_core::join_one::join_one;
 use equiv::EquivRel;
 use qd::Double;
 use std::collections::HashMap;
+use vdj_ann::refx::RefData;
 
 pub fn join_core(
     is_bcr: bool,
@@ -16,6 +17,7 @@ pub fn join_core(
     to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
+    refdata: &RefData,
 ) {
     let mut eq: EquivRel = EquivRel::new((j - i) as i32);
     for k1 in i..j {
@@ -29,7 +31,18 @@ pub fn join_core(
             if !ctl.force && (eq.class_id((k1 - i) as i32) == eq.class_id((k2 - i) as i32)) {
                 continue;
             }
-            if join_one(is_bcr, k1, k2, ctl, exact_clonotypes, info, to_bc, sr, pot) {
+            if join_one(
+                is_bcr,
+                k1,
+                k2,
+                ctl,
+                exact_clonotypes,
+                info,
+                to_bc,
+                sr,
+                pot,
+                &refdata,
+            ) {
                 eq.join((k1 - i) as i32, (k2 - i) as i32);
             }
         }

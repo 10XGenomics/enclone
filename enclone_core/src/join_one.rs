@@ -7,7 +7,10 @@ use debruijn::{
 };
 use qd::{dd, Double};
 use stats_utils::abs_diff;
+use std::cmp::min;
 use std::collections::HashMap;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
 // use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
 use vector_utils::{meet, unique_sort};
 
@@ -71,6 +74,7 @@ pub fn join_one(
     to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
+    refdata: &RefData,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -515,6 +519,94 @@ pub fn join_one(
 
     if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize {
         return false;
+    }
+
+    /*
+    for i in 0..info[k1].cdr3s.len() {
+        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+        if ex1.share[j1].left {
+            let x1 = &ex1.share[j1];
+            let x2 = &ex2.share[j2];
+            let u1 = x1.u_ref_id;
+            let u2 = x2.u_ref_id;
+            if u1.is_some() && u2.is_some() {
+                let r1 = &refdata.refs[u1.unwrap()];
+                let r2 = &refdata.refs[u2.unwrap()];
+                if r1.len() != r2.len() {
+                    if x1.v_start == r1.len() && x2.v_start == r2.len() {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    */
+
+    /*
+    for i in 0..info[k1].cdr3s.len() {
+        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+        let x1 = &ex1.share[j1];
+        let x2 = &ex2.share[j2];
+        let u1 = x1.u_ref_id;
+        let u2 = x2.u_ref_id;
+        if u1.is_some() && u2.is_some() {
+            let r1 = &refdata.refs[u1.unwrap()];
+            let r2 = &refdata.refs[u2.unwrap()];
+            if r1.len() != r2.len() {
+                if x1.v_start == r1.len() && x2.v_start == r2.len() {
+                    return false;
+                }
+            }
+        }
+    }
+    */
+
+    // If V gene names are different (after removing trailing *...), and either
+    // • V gene reference sequences are different, after truncation on right to the same length
+    // • or 5' UTR reference sequences are different, after truncation on left to the same length,
+    // then the join is rejected.
+
+    for i in 0..info[k1].cdr3s.len() {
+        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+        let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+        let (v1, v2) = (x1.v_ref_id, x2.v_ref_id);
+        let (mut n1, mut n2) = (refdata.name[v1].clone(), refdata.name[v2].clone());
+        if n1.contains("*") {
+            n1 = n1.before("*").to_string();
+        }
+        if n2.contains("*") {
+            n2 = n2.before("*").to_string();
+        }
+        if n1 != n2 {
+            /*
+            if refdata.refs[v1] != refdata.refs[v2] {
+                return false;
+            }
+            */
+            let (y1, y2) = (&refdata.refs[v1], &refdata.refs[v2]);
+            if y1.len() == y2.len() {
+                if y1 != y2 {
+                    return false;
+                }
+            } else {
+                let n = min(y1.len(), y2.len());
+                for m in 0..n {
+                    if y1.get(m) != y2.get(m) {
+                        return false;
+                    }
+                }
+            }
+            let (u1, u2) = (x1.u_ref_id, x2.u_ref_id);
+            if u1.is_some() && u2.is_some() {
+                let (x1, x2) = (&refdata.refs[u1.unwrap()], &refdata.refs[u2.unwrap()]);
+                let n = min(x1.len(), x2.len());
+                for m in 0..n {
+                    if x1.get(x1.len() - 1 - m) != x2.get(x2.len() - 1 - m) {
+                        return false;
+                    }
+                }
+            }
+        }
     }
 
     // Save potential joins.  Note that this jacks up memory usage significantly,

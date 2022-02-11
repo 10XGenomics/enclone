@@ -6,6 +6,7 @@ use equiv::EquivRel;
 use qd::Double;
 use std::cmp::max;
 use std::collections::HashMap;
+use vdj_ann::refx::RefData;
 use vector_utils::{bin_position, next_diff12_3, next_diff1_3, unique_sort};
 
 // Define an equivalence relation on the chains, introducing connections defined by the
@@ -64,6 +65,7 @@ pub fn define_mat(
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
+    refdata: &RefData,
 ) -> Vec<Vec<Option<usize>>> {
     // Define map of indices into exacts.
 
@@ -159,6 +161,7 @@ pub fn define_mat(
                                 to_bc,
                                 sr,
                                 &mut pot,
+                                &refdata,
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -237,6 +240,7 @@ pub fn define_mat(
                     to_bc,
                     sr,
                     &mut pot,
+                    &refdata,
                 ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);

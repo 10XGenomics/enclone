@@ -135,6 +135,7 @@ pub fn join_exacts(
             to_bc,
             sr,
             &mut pot,
+            &refdata,
         );
 
         // Run two passes.

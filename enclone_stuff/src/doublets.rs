@@ -11,6 +11,7 @@ use qd::Double;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::time::Instant;
+use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, erase_if, next_diff, next_diff12_3, next_diff1_2, sort_sync2};
 
 pub fn delete_doublets(
@@ -22,6 +23,7 @@ pub fn delete_doublets(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
+    refdata: &RefData,
 ) {
     if ctl.clono_filt_opt_def.doublet {
         let t = Instant::now();
@@ -62,6 +64,7 @@ pub fn delete_doublets(
                 &od,
                 info,
                 raw_joins,
+                &refdata,
             );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();
