@@ -369,7 +369,7 @@ pub fn join_exacts(
                 fwriteln!(log, "{}", mega2);
             }
 
-            // Compute CDR1 and CDR2 nucleotide diffs.
+            // Compute heavy chain CDR1 and CDR2 nucleotide diffs.
 
             let nchains = info[k1].lens.len();
             let (mut cdr1_len, mut cdr2_len) = (0, 0);
@@ -393,7 +393,7 @@ pub fn join_exacts(
                                         diffs += 1;
                                     }
                                 }
-                                fwriteln!(log, "CDR1 diffs = {}", diffs);
+                                fwriteln!(log, "heavy chain CDR1 diffs = {}", diffs);
                                 cdr1_len = len;
                                 cdr1_diffs = diffs;
                             }
@@ -414,7 +414,7 @@ pub fn join_exacts(
                                         diffs += 1;
                                     }
                                 }
-                                fwriteln!(log, "CDR2 diffs = {}", diffs);
+                                fwriteln!(log, "heavy chain CDR2 diffs = {}", diffs);
                                 cdr2_len = len;
                                 cdr2_diffs = diffs;
                             }
@@ -425,7 +425,7 @@ pub fn join_exacts(
             if cdr1_len > 0 && cdr2_len > 0 {
                 let len = cdr1_len + cdr2_len;
                 let diffs = cdr1_diffs + cdr2_diffs;
-                fwriteln!(log, "nucleotide identity on CDR1-2 = {:.1}%",
+                fwriteln!(log, "nucleotide identity on heavy chain CDR1-2 = {:.1}%",
                     100.0 * (len - diffs) as f64 / len as f64
                 );
             }
