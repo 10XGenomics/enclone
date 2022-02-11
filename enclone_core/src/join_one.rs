@@ -313,6 +313,8 @@ pub fn join_one(
         }
     }
     let mut shares = vec![0; nrefs]; // shared mutations from reference
+    let mut shares1 = vec![0; nrefs];
+    let mut shares2 = vec![0; nrefs];
     let mut indeps = vec![0; nrefs]; // independent mutations from reference
     let mut total = vec![vec![0; 2]; nrefs]; // total differences from reference
     let mut shares_details = vec![vec![0; 4]; nrefs];
@@ -384,6 +386,11 @@ pub fn join_one(
                     }
                     if t1 == t2 && t1 != r {
                         shares[u] += 1;
+                        if m == 1 {
+                            shares1[u] += 1;
+                        } else {
+                            shares2[u] += 1;
+                        }
                         shares_details[u][2 * m + si] += 1;
                         if si == 0 {
                             share_pos_v[m].push(p);
@@ -420,6 +427,8 @@ pub fn join_one(
     // Another test for acceptable join.  (not fully documented)
 
     let min_shares = shares.iter().min().unwrap();
+    let _min_shares1 = shares1.iter().min().unwrap();
+    let _min_shares2 = shares2.iter().min().unwrap();
     let min_indeps = indeps.iter().min().unwrap();
 
     // Reject if barcode overlap. (not documented)
@@ -563,6 +572,15 @@ pub fn join_one(
             }
         }
     }
+
+    /*
+    if *min_shares1 >= 10 && *min_shares2 <= 1 {
+        return false;
+    }
+    if *min_shares2 >= 10 && *min_shares1 <= 1 {
+        return false;
+    }
+    */
 
     // Save potential joins.  Note that this jacks up memory usage significantly,
     // so it would likely be more efficient to duplicate some of the computations
