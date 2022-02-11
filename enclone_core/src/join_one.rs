@@ -521,46 +521,6 @@ pub fn join_one(
         return false;
     }
 
-    /*
-    for i in 0..info[k1].cdr3s.len() {
-        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
-        if ex1.share[j1].left {
-            let x1 = &ex1.share[j1];
-            let x2 = &ex2.share[j2];
-            let u1 = x1.u_ref_id;
-            let u2 = x2.u_ref_id;
-            if u1.is_some() && u2.is_some() {
-                let r1 = &refdata.refs[u1.unwrap()];
-                let r2 = &refdata.refs[u2.unwrap()];
-                if r1.len() != r2.len() {
-                    if x1.v_start == r1.len() && x2.v_start == r2.len() {
-                        return false;
-                    }
-                }
-            }
-        }
-    }
-    */
-
-    /*
-    for i in 0..info[k1].cdr3s.len() {
-        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
-        let x1 = &ex1.share[j1];
-        let x2 = &ex2.share[j2];
-        let u1 = x1.u_ref_id;
-        let u2 = x2.u_ref_id;
-        if u1.is_some() && u2.is_some() {
-            let r1 = &refdata.refs[u1.unwrap()];
-            let r2 = &refdata.refs[u2.unwrap()];
-            if r1.len() != r2.len() {
-                if x1.v_start == r1.len() && x2.v_start == r2.len() {
-                    return false;
-                }
-            }
-        }
-    }
-    */
-
     // If V gene names are different (after removing trailing *...), and either
     // • V gene reference sequences are different, after truncation on right to the same length
     // • or 5' UTR reference sequences are different, after truncation on left to the same length,
@@ -578,11 +538,6 @@ pub fn join_one(
             n2 = n2.before("*").to_string();
         }
         if n1 != n2 {
-            /*
-            if refdata.refs[v1] != refdata.refs[v2] {
-                return false;
-            }
-            */
             let (y1, y2) = (&refdata.refs[v1], &refdata.refs[v2]);
             if y1.len() == y2.len() {
                 if y1 != y2 {
