@@ -11,7 +11,8 @@ Optional arguments controlling printing of join events:
 - ANN0: print annotations of contig, after truncation to V..J
 - PFREQ=n: show data for 1/n joins even if correct
 - SHOW_BC: show barcodes
-- PRINT_FAILED_JOINS: print failed join events.
+- PRINT_FAILED_JOINS: print failed join events
+- FAILS_ONLY: only print failed clonotypes.
 
 Optional arguments that control clonotype filtering:
 - WHITEF: only show clonotypes that exhibit whitelist contamination

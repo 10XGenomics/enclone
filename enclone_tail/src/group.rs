@@ -272,6 +272,21 @@ pub fn group_and_print_clonotypes(
 
         let mut glog = Vec::<u8>::new();
         if !ctl.gen_opt.noprint {
+            // Test for fail if FAILS_ONLY.
+
+            let mut fail = false;
+            if ctl.gen_opt.fails_only {
+                for j in 0..o.len() {
+                    let oo = o[j] as usize;
+                    if pics[oo].contains("multiple donors") {
+                        fail = true;
+                    }
+                }
+                if !fail {
+                    continue;
+                }
+            }
+
             // If NGROUP is not on, output a GROUP line, including a newline at the end.
 
             if !ctl.clono_group_opt.ngroup {

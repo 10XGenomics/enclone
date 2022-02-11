@@ -245,6 +245,7 @@ pub struct GeneralOpt {
     pub gamma_delta: bool,
     pub pre_eval: bool,
     pub external_ref: String,
+    pub fails_only: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
