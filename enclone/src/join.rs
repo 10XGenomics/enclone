@@ -301,19 +301,19 @@ pub fn join_exacts(
                     ctl.origin_info.descrips[*l2]
                 );
             }
-            let ci1 = info[k1].clonotype_index;
-            let ci2 = info[k2].clonotype_index;
+            let (ci1, ci2) = (info[k1].clonotype_index, info[k2].clonotype_index);
+            let (ex1, ex2) = (&exact_clonotypes[ci1], &exact_clonotypes[ci2]);
             let mut mega1 = String::new();
-            for j in 0..exact_clonotypes[ci1].share.len() {
-                let x = &exact_clonotypes[ci1].share[j];
+            for j in 0..ex1.share.len() {
+                let x = &ex1.share[j];
                 if j > 0 {
                     mega1 += ";";
                 }
                 mega1 += format!("{}:{}", x.chain_type, x.cdr3_aa).as_str();
             }
             let mut mega2 = String::new();
-            for j in 0..exact_clonotypes[ci2].share.len() {
-                let x = &exact_clonotypes[ci2].share[j];
+            for j in 0..ex2.share.len() {
+                let x = &ex2.share[j];
                 if j > 0 {
                     mega2 += ";";
                 }
@@ -323,7 +323,7 @@ pub fn join_exacts(
                 log,
                 "{}, mult = {}",
                 mega1,
-                exact_clonotypes[info[k1].clonotype_index].ncells()
+                ex1.ncells()
             );
             if ctl.join_print_opt.show_bc {
                 fwriteln!(log, "bcs = {}", bcs1.iter().format(" "));
@@ -332,7 +332,7 @@ pub fn join_exacts(
                 log,
                 "{}, mult = {}",
                 mega2,
-                exact_clonotypes[info[k2].clonotype_index].ncells()
+                ex2.ncells()
             );
             if ctl.join_print_opt.show_bc {
                 fwriteln!(log, "bcs = {}", bcs2.iter().format(" "));
@@ -419,10 +419,8 @@ pub fn join_exacts(
                 let nchains = info[k1].lens.len();
                 for m in 0..nchains {
                     let (tig1, tig2) = (&info[k1].tigs[m], &info[k2].tigs[m]);
-                    let ex1 = &exact_clonotypes[info[k1].clonotype_index];
                     let otig1 =
                         DnaString::from_acgt_bytes(&ex1.share[info[k1].exact_cols[m]].full_seq);
-                    let ex2 = &exact_clonotypes[info[k2].clonotype_index];
                     let otig2 =
                         DnaString::from_acgt_bytes(&ex2.share[info[k2].exact_cols[m]].full_seq);
                     if ctl.join_print_opt.seq {
