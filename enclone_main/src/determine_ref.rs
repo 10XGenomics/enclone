@@ -191,8 +191,15 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         ];
         let mut refs = Vec::<String>::new();
         for li in 0..ctl.origin_info.n() {
+            let mut path = ctl.origin_info.dataset_path[li].clone();
+            if path.ends_with("/multi/vdj_b") {
+                path = path.rev_before("/multi/vdj_b").to_string();
+            }
+            if path.ends_with("/multi/vdj_t") {
+                path = path.rev_before("/multi/vdj_t").to_string();
+            }
             for r in rpaths.iter() {
-                let fasta = format!("{}/{}", ctl.origin_info.dataset_path[li], r);
+                let fasta = format!("{}/{}", path, r);
                 if path_exists(&fasta) {
                     refs.push(std::fs::read_to_string(&fasta).unwrap());
                     break;
