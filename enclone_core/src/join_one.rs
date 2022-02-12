@@ -628,7 +628,7 @@ pub fn join_one(
         let len = cdr1_len + cdr2_len;
         let diffs = cdr1_diffs + cdr2_diffs;
         let identity = 100.0 * (len - diffs) as f64 / len as f64;
-        if identity < 75.0 {
+        if identity < ctl.join_alg_opt.join_cdr12h_ident {
             return false;
         }
     }
