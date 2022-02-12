@@ -319,21 +319,11 @@ pub fn join_exacts(
                 }
                 mega2 += format!("{}:{}", x.chain_type, x.cdr3_aa).as_str();
             }
-            fwriteln!(
-                log,
-                "{}, mult = {}",
-                mega1,
-                ex1.ncells()
-            );
+            fwriteln!(log, "{}, mult = {}", mega1, ex1.ncells());
             if ctl.join_print_opt.show_bc {
                 fwriteln!(log, "bcs = {}", bcs1.iter().format(" "));
             }
-            fwriteln!(
-                log,
-                "{}, mult = {}",
-                mega2,
-                ex2.ncells()
-            );
+            fwriteln!(log, "{}, mult = {}", mega2, ex2.ncells());
             if ctl.join_print_opt.show_bc {
                 fwriteln!(log, "bcs = {}", bcs2.iter().format(" "));
             }
@@ -388,8 +378,9 @@ pub fn join_exacts(
                             if cdr1_stop2 - cdr1_start2 == len {
                                 let mut diffs = 0;
                                 for p in 0..len {
-                                    if x1.seq_del_amino[p + cdr1_start1] != 
-                                        x2.seq_del_amino[p + cdr1_start2] {
+                                    if x1.seq_del_amino[p + cdr1_start1]
+                                        != x2.seq_del_amino[p + cdr1_start2]
+                                    {
                                         diffs += 1;
                                     }
                                 }
@@ -409,8 +400,9 @@ pub fn join_exacts(
                             if cdr2_stop2 - cdr2_start2 == len {
                                 let mut diffs = 0;
                                 for p in 0..len {
-                                    if x1.seq_del_amino[p + cdr2_start1] != 
-                                        x2.seq_del_amino[p + cdr2_start2] {
+                                    if x1.seq_del_amino[p + cdr2_start1]
+                                        != x2.seq_del_amino[p + cdr2_start2]
+                                    {
                                         diffs += 1;
                                     }
                                 }
@@ -425,7 +417,9 @@ pub fn join_exacts(
             if cdr1_len > 0 && cdr2_len > 0 {
                 let len = cdr1_len + cdr2_len;
                 let diffs = cdr1_diffs + cdr2_diffs;
-                fwriteln!(log, "nucleotide identity on heavy chain CDR1-2 = {:.1}%",
+                fwriteln!(
+                    log,
+                    "nucleotide identity on heavy chain CDR1-2 = {:.1}%",
                     100.0 * (len - diffs) as f64 / len as f64
                 );
             }

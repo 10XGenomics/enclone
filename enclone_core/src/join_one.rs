@@ -595,8 +595,9 @@ pub fn join_one(
                         if cdr1_stop2 - cdr1_start2 == len {
                             let mut diffs = 0;
                             for p in 0..len {
-                                if x1.seq_del_amino[p + cdr1_start1] !=
-                                    x2.seq_del_amino[p + cdr1_start2] {
+                                if x1.seq_del_amino[p + cdr1_start1]
+                                    != x2.seq_del_amino[p + cdr1_start2]
+                                {
                                     diffs += 1;
                                 }
                             }
@@ -615,8 +616,9 @@ pub fn join_one(
                         if cdr2_stop2 - cdr2_start2 == len {
                             let mut diffs = 0;
                             for p in 0..len {
-                                if x1.seq_del_amino[p + cdr2_start1] !=
-                                    x2.seq_del_amino[p + cdr2_start2] {
+                                if x1.seq_del_amino[p + cdr2_start1]
+                                    != x2.seq_del_amino[p + cdr2_start2]
+                                {
                                     diffs += 1;
                                 }
                             }
