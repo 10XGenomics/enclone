@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::gui_structures::ComputeState::WaitingForRequest;
 use crate::history::*;
 use crate::messages::*;
 use crate::share::*;
@@ -170,45 +171,49 @@ pub fn do_meta(slf: &mut EncloneVisual) -> Command<Message> {
 }
 
 pub fn do_del_button_pressed(slf: &mut EncloneVisual) -> Command<Message> {
-    slf.modified = true;
-    let h = slf.h.history_index - 1;
-    slf.h.svg_history.remove(h as usize);
-    slf.h.summary_history.remove(h as usize);
-    slf.h.input1_history.remove(h as usize);
-    slf.h.input2_history.remove(h as usize);
-    slf.h.inputn_history.remove(h as usize);
-    slf.h.narrative_history.remove(h as usize);
-    slf.h.translated_input_history.remove(h as usize);
-    slf.h.displayed_tables_history.remove(h as usize);
-    slf.h.table_comp_history.remove(h as usize);
-    slf.h.last_widths_history.remove(h as usize);
-    slf.h.is_blank.remove(h as usize);
-    slf.h.descrip_history.remove(h as usize);
-    if slf.state_count() == 0 {
-        slf.h.history_index -= 1;
-        slf.input1_value.clear();
-        slf.input2_value.clear();
-        slf.inputn_value.clear();
-        slf.svg_value.clear();
-        slf.png_value.clear();
-        slf.submit_button_text.clear();
-        slf.summary_value.clear();
-        slf.output_value.clear();
-        slf.table_comp_value.clear();
-        slf.last_widths_value.clear();
-        slf.descrip_value.clear();
-        slf.translated_input_value.clear();
-        slf.current_tables.clear();
-    } else {
-        if h > 0 {
-            slf.h.history_index -= 1;
-        }
-        slf.update_to_current();
-    }
-    if !TEST_MODE.load(SeqCst) {
+    if slf.compute_state != WaitingForRequest {
         Command::none()
     } else {
-        Command::perform(noop0(), Message::Capture)
+        slf.modified = true;
+        let h = slf.h.history_index - 1;
+        slf.h.svg_history.remove(h as usize);
+        slf.h.summary_history.remove(h as usize);
+        slf.h.input1_history.remove(h as usize);
+        slf.h.input2_history.remove(h as usize);
+        slf.h.inputn_history.remove(h as usize);
+        slf.h.narrative_history.remove(h as usize);
+        slf.h.translated_input_history.remove(h as usize);
+        slf.h.displayed_tables_history.remove(h as usize);
+        slf.h.table_comp_history.remove(h as usize);
+        slf.h.last_widths_history.remove(h as usize);
+        slf.h.is_blank.remove(h as usize);
+        slf.h.descrip_history.remove(h as usize);
+        if slf.state_count() == 0 {
+            slf.h.history_index -= 1;
+            slf.input1_value.clear();
+            slf.input2_value.clear();
+            slf.inputn_value.clear();
+            slf.svg_value.clear();
+            slf.png_value.clear();
+            slf.submit_button_text.clear();
+            slf.summary_value.clear();
+            slf.output_value.clear();
+            slf.table_comp_value.clear();
+            slf.last_widths_value.clear();
+            slf.descrip_value.clear();
+            slf.translated_input_value.clear();
+            slf.current_tables.clear();
+        } else {
+            if h > 0 {
+                slf.h.history_index -= 1;
+            }
+            slf.update_to_current();
+        }
+        if !TEST_MODE.load(SeqCst) {
+            Command::none()
+        } else {
+            Command::perform(noop0(), Message::Capture)
+        }
     }
 }
 
