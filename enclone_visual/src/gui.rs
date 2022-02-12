@@ -370,7 +370,14 @@ impl Application for EncloneVisual {
                 "Submit"
             } else {
                 "thinking"
-            }),
+            })
+            .color(
+                if self.compute_state == WaitingForRequest {
+                    Color::from_rgb(0.0, 0.0, 0.0)
+                } else {
+                    Color::from_rgb(1.0, 0.0, 0.0)
+                }
+            ),
         )
         .padding(10)
         .on_press(Message::SubmitButtonPressed(Ok(())));
