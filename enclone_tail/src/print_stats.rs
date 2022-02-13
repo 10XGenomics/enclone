@@ -514,10 +514,18 @@ pub fn print_stats(
                 rate
             );
             let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+            let bogus = bogus.round() as usize;
             fwriteln!(
                 logx,
                 "   • estimated number of false intradonor merges = {}",
-                add_commas(bogus.round() as usize)
+                add_commas(bogus)
+            );
+
+            let adjusted = if bogus <= intra { intra - bogus } else { 0 };
+            fwriteln!(
+                logx,
+                "   • adjusted intradonor comparisons = {}",
+                add_commas(adjusted)
             );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
