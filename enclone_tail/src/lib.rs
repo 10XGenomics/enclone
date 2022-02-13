@@ -9,6 +9,7 @@ pub mod colors;
 pub mod convert_svg_to_png;
 pub mod display_tree;
 pub mod fasta;
+pub mod fate;
 pub mod group;
 pub mod group_colors;
 pub mod grouper;
