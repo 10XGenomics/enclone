@@ -1,6 +1,6 @@
 [package]
 name = "enclone_visual"
-version = "0.5.147"
+version = "0.5.148"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
