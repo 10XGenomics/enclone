@@ -263,17 +263,25 @@ pub fn plot_clonotypes(
 
         let mut centersx = vec![(0.0, 0.0); radiix.len()];
         let mut xshift = vec![0.0; radiix.len()];
-        if plot_opt.split_plot_by_origin {
-            let passes = ctl.origin_info.origin_list.len();
+        if plot_opt.split_plot_by_origin || plot_opt.split_plot_by_dataset {
+            let passes = if plot_opt.split_plot_by_origin {
+                ctl.origin_info.origin_list.len()
+            } else {
+                ctl.origin_info.n()
+            };
             let mut xstart = 0.0;
             for pass in 0..passes {
                 let mut radiiy = Vec::<f64>::new();
                 let mut indices = Vec::<usize>::new();
                 for i in 0..radiix.len() {
                     let li = clusters[i].barcodes[0].0;
-                    let p =
-                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
-                    if pass != p as usize {
+                    let p = if plot_opt.split_plot_by_origin {
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li])
+                            as usize
+                    } else {
+                        li
+                    };
+                    if pass != p {
                         continue;
                     }
                     radiiy.push(radiix[i]);
@@ -329,10 +337,10 @@ pub fn plot_clonotypes(
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
         //
-        // We do the split_plot_by_origin case second.  It is a more complicated version of the
-        // same algorithm.  The second part definitely does not work with grouping.
+        // We do the split_plot_by_origin/dataset case second.  It is a more complicated version of
+        // the same algorithm.  The second part definitely does not work with grouping.
 
-        if !plot_opt.split_plot_by_origin {
+        if !plot_opt.split_plot_by_origin && !plot_opt.split_plot_by_dataset {
             let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
             let mut clusters2 = clusters.clone();
             for i in 0..ids.len() {
@@ -374,15 +382,23 @@ pub fn plot_clonotypes(
             for i in 0..centersp.len() {
                 centersp[i].0 -= xshift[i];
             }
-            let passes = ctl.origin_info.origin_list.len();
+            let passes = if plot_opt.split_plot_by_origin {
+                ctl.origin_info.origin_list.len()
+            } else {
+                ctl.origin_info.n()
+            };
             for pass in 0..passes {
                 let mut ccc = Vec::<(usize, String, usize)>::new();
                 let mut this = Vec::<usize>::new();
                 for i in 0..radiix.len() {
                     let li = clusters[i].barcodes[0].0;
-                    let p =
-                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li]);
-                    if pass != p as usize {
+                    let p = if plot_opt.split_plot_by_origin {
+                        bin_position(&ctl.origin_info.origin_list, &ctl.origin_info.origin_id[li])
+                            as usize
+                    } else {
+                        li
+                    };
+                    if pass != p {
                         continue;
                     }
                     let mut c = clusters[i].colors.clone();
@@ -402,7 +418,6 @@ pub fn plot_clonotypes(
                         angle[k - i] = (centersp[id].1.atan2(centersp[id].0), id);
                     }
                     angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-
                     for k in i..j {
                         let new_id = angle[k - i].1;
                         let id = ccc[k].2;

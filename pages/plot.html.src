@@ -293,6 +293,10 @@ enclone BCR=123085:123089 PLOT_BY_ISOTYPE=plot.svg SPLIT_PLOT_BY_ORIGIN NOPRINT
 
 <br><br>
 
+Similarly, there is <code>SPLIT_PLOT_BY_DATASET</code>.
+
+<br><br>
+
 <hr>
 
 <h2>other controls</h2>

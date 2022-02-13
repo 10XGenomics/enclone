@@ -273,6 +273,7 @@ pub struct PlotOpt {
     pub sim_mat_plot_vars: Vec<String>,
     pub honey_in: Option<String>,
     pub honey_out: String,
+    pub split_plot_by_dataset: bool,
     pub split_plot_by_origin: bool,
     pub png_width: Option<usize>,
 }

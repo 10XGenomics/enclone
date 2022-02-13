@@ -441,6 +441,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("SHOW_BC", &mut ctl.join_print_opt.show_bc),
         ("STABLE_DOC", &mut ctl.gen_opt.stable_doc),
         (
+            "SPLIT_PLOT_BY_DATASET",
+            &mut ctl.plot_opt.split_plot_by_dataset,
+        ),
+        (
             "SPLIT_PLOT_BY_ORIGIN",
             &mut ctl.plot_opt.split_plot_by_origin,
         ),
