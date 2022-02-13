@@ -314,6 +314,9 @@ empirically balancing sensitivity and specificity across a large collection of d
 results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
 <span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.
+• If V gene names are different (after removing trailing *...), and either V gene reference
+sequences are different, after truncation on right to the same length or 5' UTR reference
+sequences are different, after truncation on left to the same length, then the join is rejected.
 • As an exception to the key join criterion, we allow a join which has at least 15 shares, even if
 p*N > C.  The constant 15 is modifiable via the argument <span style="font-weight:bold;">AUTO_SHARES</span>.
 • We do not join two clonotypes which were assigned different reference sequences unless those

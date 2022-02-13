@@ -34,6 +34,8 @@ pub fn build_clusters(
     let mut passes = 1;
     if plot_opt.split_plot_by_origin {
         passes = ctl.origin_info.origin_list.len();
+    } else if plot_opt.split_plot_by_dataset {
+        passes = ctl.origin_info.n();
     }
     let tcn = turbo_color_names();
     let n = std::cmp::min(256, ctl.origin_info.n());

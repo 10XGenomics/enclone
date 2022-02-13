@@ -245,6 +245,7 @@ pub struct GeneralOpt {
     pub gamma_delta: bool,
     pub pre_eval: bool,
     pub external_ref: String,
+    pub fails_only: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -272,6 +273,7 @@ pub struct PlotOpt {
     pub sim_mat_plot_vars: Vec<String>,
     pub honey_in: Option<String>,
     pub honey_out: String,
+    pub split_plot_by_dataset: bool,
     pub split_plot_by_origin: bool,
     pub png_width: Option<usize>,
 }
@@ -323,6 +325,7 @@ pub struct JoinAlgOpt {
     pub basicx: bool,
     pub join_full_diff: bool,
     pub join_cdr3_ident: f64,
+    pub join_cdr12h_ident: f64,
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
 }

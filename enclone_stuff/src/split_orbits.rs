@@ -5,6 +5,7 @@ use enclone_print::define_mat::define_mat;
 use equiv::EquivRel;
 use qd::Double;
 use std::collections::HashMap;
+use vdj_ann::refx::RefData;
 use vector_utils::{bin_position, next_diff12_3, unique_sort, VecUtils};
 
 // Check for disjoint orbits.
@@ -18,6 +19,7 @@ pub fn split_orbits(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
+    refdata: &RefData,
 ) {
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
@@ -45,6 +47,7 @@ pub fn split_orbits(
             &od,
             info,
             raw_joins,
+            &refdata,
         );
         let cols = mat.len();
 

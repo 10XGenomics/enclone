@@ -7,7 +7,10 @@ use debruijn::{
 };
 use qd::{dd, Double};
 use stats_utils::abs_diff;
+use std::cmp::min;
 use std::collections::HashMap;
+use string_utils::TextUtils;
+use vdj_ann::refx::RefData;
 // use stirling_numbers::p_at_most_m_distinct_in_sample_of_x_from_n;
 use vector_utils::{meet, unique_sort};
 
@@ -71,6 +74,7 @@ pub fn join_one(
     to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
+    refdata: &RefData,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -309,6 +313,8 @@ pub fn join_one(
         }
     }
     let mut shares = vec![0; nrefs]; // shared mutations from reference
+    let mut shares1 = vec![0; nrefs];
+    let mut shares2 = vec![0; nrefs];
     let mut indeps = vec![0; nrefs]; // independent mutations from reference
     let mut total = vec![vec![0; 2]; nrefs]; // total differences from reference
     let mut shares_details = vec![vec![0; 4]; nrefs];
@@ -380,6 +386,11 @@ pub fn join_one(
                     }
                     if t1 == t2 && t1 != r {
                         shares[u] += 1;
+                        if m == 1 {
+                            shares1[u] += 1;
+                        } else {
+                            shares2[u] += 1;
+                        }
                         shares_details[u][2 * m + si] += 1;
                         if si == 0 {
                             share_pos_v[m].push(p);
@@ -416,6 +427,8 @@ pub fn join_one(
     // Another test for acceptable join.  (not fully documented)
 
     let min_shares = shares.iter().min().unwrap();
+    let _min_shares1 = shares1.iter().min().unwrap();
+    let _min_shares2 = shares2.iter().min().unwrap();
     let min_indeps = indeps.iter().min().unwrap();
 
     // Reject if barcode overlap. (not documented)
@@ -515,6 +528,115 @@ pub fn join_one(
 
     if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize {
         return false;
+    }
+
+    // If V gene names are different (after removing trailing *...), and either
+    // • V gene reference sequences are different, after truncation on right to the same length
+    // • or 5' UTR reference sequences are different, after truncation on left to the same length,
+    // then the join is rejected.
+
+    for i in 0..info[k1].cdr3s.len() {
+        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
+        let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+        let (v1, v2) = (x1.v_ref_id, x2.v_ref_id);
+        let (mut n1, mut n2) = (refdata.name[v1].clone(), refdata.name[v2].clone());
+        if n1.contains("*") {
+            n1 = n1.before("*").to_string();
+        }
+        if n2.contains("*") {
+            n2 = n2.before("*").to_string();
+        }
+        if n1 != n2 {
+            let (y1, y2) = (&refdata.refs[v1], &refdata.refs[v2]);
+            if y1.len() == y2.len() {
+                if y1 != y2 {
+                    return false;
+                }
+            } else {
+                let n = min(y1.len(), y2.len());
+                for m in 0..n {
+                    if y1.get(m) != y2.get(m) {
+                        return false;
+                    }
+                }
+            }
+            let (u1, u2) = (x1.u_ref_id, x2.u_ref_id);
+            if u1.is_some() && u2.is_some() {
+                let (x1, x2) = (&refdata.refs[u1.unwrap()], &refdata.refs[u2.unwrap()]);
+                let n = min(x1.len(), x2.len());
+                for m in 0..n {
+                    if x1.get(x1.len() - 1 - m) != x2.get(x2.len() - 1 - m) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    // Put 75% nucleotide identity filter on heavy chain CDR1-2.
+    // Turned off.  On the training set this increase specificity significantly, but it lost
+    // 0.4% sensitivity, and that was concentrated in highly mutated antibodies.
+
+    if ctl.join_alg_opt.join_cdr12h_ident > 0.0 {
+        let nchains = info[k1].lens.len();
+        let (mut cdr1_len, mut cdr2_len) = (0, 0);
+        let (mut cdr1_diffs, mut cdr2_diffs) = (0, 0);
+        for m in 0..nchains {
+            let (j1, j2) = (info[k1].exact_cols[m], info[k2].exact_cols[m]);
+            let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+            if x1.left {
+                if x1.cdr1_start.is_some() && x1.fr2_start.is_some() {
+                    if x2.cdr1_start.is_some() && x2.fr2_start.is_some() {
+                        let cdr1_start1 = x1.cdr1_start.unwrap();
+                        let cdr1_stop1 = x1.fr2_start.unwrap();
+                        let cdr1_start2 = x2.cdr1_start.unwrap();
+                        let cdr1_stop2 = x2.fr2_start.unwrap();
+                        let len = cdr1_stop1 - cdr1_start1;
+                        if cdr1_stop2 - cdr1_start2 == len {
+                            let mut diffs = 0;
+                            for p in 0..len {
+                                if x1.seq_del_amino[p + cdr1_start1]
+                                    != x2.seq_del_amino[p + cdr1_start2]
+                                {
+                                    diffs += 1;
+                                }
+                            }
+                            cdr1_len = len;
+                            cdr1_diffs = diffs;
+                        }
+                    }
+                }
+                if x1.cdr2_start.is_some() && x1.fr3_start.is_some() {
+                    if x2.cdr2_start.is_some() && x2.fr3_start.is_some() {
+                        let cdr2_start1 = x1.cdr2_start.unwrap();
+                        let cdr2_stop1 = x1.fr3_start.unwrap();
+                        let cdr2_start2 = x2.cdr2_start.unwrap();
+                        let cdr2_stop2 = x2.fr3_start.unwrap();
+                        let len = cdr2_stop1 - cdr2_start1;
+                        if cdr2_stop2 - cdr2_start2 == len {
+                            let mut diffs = 0;
+                            for p in 0..len {
+                                if x1.seq_del_amino[p + cdr2_start1]
+                                    != x2.seq_del_amino[p + cdr2_start2]
+                                {
+                                    diffs += 1;
+                                }
+                            }
+                            cdr2_len = len;
+                            cdr2_diffs = diffs;
+                        }
+                    }
+                }
+            }
+        }
+        if cdr1_len > 0 && cdr2_len > 0 {
+            let len = cdr1_len + cdr2_len;
+            let diffs = cdr1_diffs + cdr2_diffs;
+            let identity = 100.0 * (len - diffs) as f64 / len as f64;
+            if identity < ctl.join_alg_opt.join_cdr12h_ident {
+                return false;
+            }
+        }
     }
 
     // Save potential joins.  Note that this jacks up memory usage significantly,

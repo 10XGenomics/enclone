@@ -26,7 +26,6 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
@@ -101,6 +100,7 @@ tokio = { version = "1", default-features = false, features = ["io-util", "macro
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
 tonic-build = { version = "0.6", default-features = false, features = ["transport", "prost"] }
+triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
 vdj_ann = "0.4"

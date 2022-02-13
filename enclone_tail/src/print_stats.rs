@@ -3,6 +3,7 @@
 // Print statistics.
 
 use crate::alluvial_fb::*;
+use crate::fate::print_fate;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
@@ -354,61 +355,7 @@ pub fn print_stats(
 
         // Print barcode fate.
 
-        fwriteln!(logx, "2. barcode fate");
-        let mut fates = Vec::<String>::new();
-        for i in 0..fate.len() {
-            for f in fate[i].iter() {
-                if f.1.contains(" GEX ") && ctl.clono_filt_opt_def.ngex {
-                    continue;
-                }
-                if f.1.contains(" CROSS ") && ctl.clono_filt_opt_def.ncross {
-                    continue;
-                }
-                if f.1.contains(" UMI ") && !ctl.clono_filt_opt_def.umi_filt {
-                    continue;
-                }
-                if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt_def.umi_ratio_filt {
-                    continue;
-                }
-                if f.1.contains(" GRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
-                    continue;
-                }
-                if f.1.contains(" QUAL") && !ctl.clono_filt_opt.qual_filter {
-                    continue;
-                }
-                if f.1.contains(" WEAK_CHAINS ") && !ctl.clono_filt_opt_def.weak_chains {
-                    continue;
-                }
-                if f.1.contains(" FOURSIE_KILL ") && !ctl.clono_filt_opt_def.weak_foursies {
-                    continue;
-                }
-                if f.1.contains(" WHITEF ") && ctl.gen_opt.nwhitef {
-                    continue;
-                }
-                if f.1.contains(" BC_DUP ") && !ctl.clono_filt_opt_def.bc_dup {
-                    continue;
-                }
-                if f.1.contains(" IMPROPER ") && ctl.merge_all_impropers {
-                    continue;
-                }
-                fates.push(f.1.clone());
-            }
-        }
-        fates.sort();
-        let mut freq = Vec::<(u32, String)>::new();
-        make_freq(&fates, &mut freq);
-        let mut rows = Vec::<Vec<String>>::new();
-        rows.push(vec!["barcodes".to_string(), "why deleted".to_string()]);
-        rows.push(vec!["\\hline".to_string(); 2]);
-        for i in 0..freq.len() {
-            rows.push(vec![format!("{}", freq[i].0), freq[i].1.clone()]);
-        }
-        rows.push(vec![format!("{}", fates.len()), "total".to_string()]);
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"r|l".to_vec(), false, false);
-        log.truncate(log.len() - 1);
-        log = log.replace("\n", "\n   ");
-        fwrite!(logx, "   {}\n", log);
+        print_fate(&ctl, &fate, logx);
 
         // Print other stats.
 
@@ -514,10 +461,18 @@ pub fn print_stats(
                 rate
             );
             let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
+            let bogus = bogus.round() as usize;
             fwriteln!(
                 logx,
                 "   • estimated number of false intradonor merges = {}",
-                add_commas(bogus.round() as usize)
+                add_commas(bogus)
+            );
+
+            let adjusted = if bogus <= intra { intra - bogus } else { 0 };
+            fwriteln!(
+                logx,
+                "   • adjusted intradonor comparisons = {}",
+                add_commas(adjusted)
             );
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);

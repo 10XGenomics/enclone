@@ -275,6 +275,7 @@ pub fn print_clonotypes(
                 &od,
                 info,
                 raw_joins,
+                &refdata,
             );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
@@ -319,6 +320,7 @@ pub fn print_clonotypes(
                 &od,
                 info,
                 raw_joins,
+                &refdata,
             );
             let cols = mat.len();
             let mut rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);

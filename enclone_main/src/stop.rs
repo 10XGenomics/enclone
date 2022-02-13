@@ -311,7 +311,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Group clonotypes.
 
-    let t = Instant::now();
     let mut groups = grouper(
         refdata,
         &exacts,
@@ -324,6 +323,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Remove clonotypes that are not in groups.
 
+    let t = Instant::now();
     let mut to_delete = vec![true; exacts.len()];
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
@@ -346,7 +346,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     erase_if(&mut exacts, &to_delete);
     erase_if(&mut rsi, &to_delete);
     erase_if(&mut pics, &to_delete);
-    ctl.perf_stats(&t, "in grouper");
+    ctl.perf_stats(&t, "degrouping");
 
     // Process TOY_COM option.
 

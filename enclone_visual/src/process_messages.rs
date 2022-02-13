@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::copy_image_to_clipboard::copy_bytes_to_clipboard;
+use crate::gui_structures::ComputeState::WaitingForRequest;
 use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
@@ -703,22 +704,30 @@ impl EncloneVisual {
             Message::DelButtonPressed(_) => do_del_button_pressed(self),
 
             Message::BackButtonPressed(_) => {
-                self.h.history_index -= 1;
-                self.update_to_current();
-                if !TEST_MODE.load(SeqCst) {
+                if self.compute_state != WaitingForRequest {
                     Command::none()
                 } else {
-                    Command::perform(noop0(), Message::Capture)
+                    self.h.history_index -= 1;
+                    self.update_to_current();
+                    if !TEST_MODE.load(SeqCst) {
+                        Command::none()
+                    } else {
+                        Command::perform(noop0(), Message::Capture)
+                    }
                 }
             }
 
             Message::ForwardButtonPressed(_) => {
-                self.h.history_index += 1;
-                self.update_to_current();
-                if !TEST_MODE.load(SeqCst) {
+                if self.compute_state != WaitingForRequest {
                     Command::none()
                 } else {
-                    Command::perform(noop0(), Message::Capture)
+                    self.h.history_index += 1;
+                    self.update_to_current();
+                    if !TEST_MODE.load(SeqCst) {
+                        Command::none()
+                    } else {
+                        Command::perform(noop0(), Message::Capture)
+                    }
                 }
             }
 

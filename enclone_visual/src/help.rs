@@ -238,6 +238,14 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(
             Text::new("Once you've entered your command, push the Submit button.").width(max_width),
         )
+        .push(Space::with_height(Units(20)))
+        .push(
+            Text::new(
+                "Then wait for the command to finish!  Some buttons are disabled during \
+                this period.",
+            )
+            .width(max_width),
+        )
         //
         // Special commands.
         //

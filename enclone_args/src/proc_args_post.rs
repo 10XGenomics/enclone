@@ -281,6 +281,12 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.plot_opt.split_plot_by_dataset && ctl.plot_opt.split_plot_by_origin {
+        return Err(
+            "\nOnly one of SPLIT_PLOT_BY_DATASET and SPLIT_PLOT_BY_ORIGIN can be specified.\n"
+                .to_string(),
+        );
+    }
     if ctl.clono_print_opt.amino.is_empty() && ctl.clono_print_opt.cvars.is_empty() {
         return Err(
             "\nSorry, use of both CVARS= and AMINO= (setting both to null) is not \

@@ -108,6 +108,15 @@ pub fn process_special_arg1(
             );
         }
         ctl.join_alg_opt.join_cdr3_ident = val.force_f64();
+    } else if arg.starts_with("JOIN_CDR12H_IDENT=") {
+        let val = arg.after("JOIN_CDR12H_IDENT=");
+        if !val.parse::<f64>().is_ok() || val.force_f64() < 0.0 || val.force_f64() > 100.0 {
+            return Err(
+                "\nArgument to JOIN_CDR12H_IDENT needs to be a number between 0 and 100.\n"
+                    .to_string(),
+            );
+        }
+        ctl.join_alg_opt.join_cdr3_ident = val.force_f64();
     } else if arg.starts_with("HONEY=") {
         let mut parts = Vec::<Vec<String>>::new();
         {

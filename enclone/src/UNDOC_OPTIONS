@@ -11,7 +11,8 @@ Optional arguments controlling printing of join events:
 - ANN0: print annotations of contig, after truncation to V..J
 - PFREQ=n: show data for 1/n joins even if correct
 - SHOW_BC: show barcodes
-- PRINT_FAILED_JOINS: print failed join events.
+- PRINT_FAILED_JOINS: print failed join events
+- FAILS_ONLY: only print failed clonotypes.
 
 Optional arguments that control clonotype filtering:
 - WHITEF: only show clonotypes that exhibit whitelist contamination
@@ -338,3 +339,5 @@ To generate the current IMGT reference within the 10x codebase, do something lik
 1. bazel build //:pd //:shimulate //:devpipes_env
 2. cellranger/bazel-bin/devpipes_env.sh python cellranger/lib/bin/fetch_imgt_lib.py 
    --genome vdj_IMGT_human --species "Homo sapiens"
+
+JOIN_CDR12H_IDENT

@@ -326,6 +326,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              described at \\green{bit.ly/enclone}.\n\n\
              \
              \\boldred{11}.  Other join criteria.\n\
+             • If V gene names are different (after removing trailing *...), and either \
+             V gene reference sequences are different, after truncation on right to the same \
+             length or 5' UTR reference sequences are different, after truncation on left to the \
+             same length, then the join is rejected.\n\
              • As an exception to the key join criterion, we allow a join which has at least 15 \
              shares, even if p*N > C.  The constant 15 is modifiable via the argument \
              \\bold{AUTO_SHARES}.\n\

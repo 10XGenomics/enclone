@@ -41,6 +41,7 @@ pub fn some_filters(
         exact_clonotypes,
         info,
         raw_joins,
+        &refdata,
     );
 
     // Given a signature s having at least two chains, if the total cells in the two-chain
@@ -81,6 +82,7 @@ pub fn some_filters(
             &od,
             info,
             raw_joins,
+            &refdata,
         );
 
         // Find all the signatures and cell counts associated to each.
@@ -210,6 +212,7 @@ pub fn some_filters(
         exact_clonotypes,
         info,
         raw_joins,
+        &refdata,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 1");
 
@@ -226,6 +229,7 @@ pub fn some_filters(
         info,
         raw_joins,
         fate,
+        &refdata,
     );
     ctl.perf_stats(&tweak, "weak chain filtering");
 
@@ -241,6 +245,7 @@ pub fn some_filters(
         exact_clonotypes,
         info,
         raw_joins,
+        &refdata,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 2");
 
@@ -278,6 +283,7 @@ pub fn some_filters(
             &od,
             info,
             raw_joins,
+            &refdata,
         );
         let cols = mat.len();
         let rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);

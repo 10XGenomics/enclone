@@ -235,6 +235,21 @@ gene copies from the reference that were identical except for extension on the 3
 </td>
 </tr>
 
+<tr>
+<td> Feb. 13, 2022 </td>
+<td> <code>******</code> </td>
+<td> TBD </td>
+<td>
+Another change to the join algorithm.
+If V gene names are different (after removing trailing *...), and either
+<br>
+• V gene reference sequences are different, after truncation on right to the same length
+<br>
+• or 5' UTR reference sequences are different, after truncation on left to the same length,
+then the join is rejected.
+</td>
+</tr>
+
 </tbody>
 </table>
 </p>

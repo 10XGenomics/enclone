@@ -7,12 +7,12 @@
 use vdj_ann::refx;
 
 use self::refx::RefData;
-use edit_distance::edit_distance;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
 use std::cmp::{max, min};
 use string_utils::TextUtils;
+use triple_accel::levenshtein;
 use vector_utils::{make_freq, next_diff, unique_sort};
 
 pub fn survives_filter(
@@ -488,7 +488,9 @@ pub fn survives_filter(
             let ex = &exact_clonotypes[*s];
             for j in 0..ex.share.len() {
                 for k in 0..cdr3.len() {
-                    if edit_distance(&ex.share[j].cdr3_aa, &cdr3[k]) <= dist[k] {
+                    if levenshtein(&ex.share[j].cdr3_aa.as_bytes(), &cdr3[k].as_bytes()) as usize
+                        <= dist[k]
+                    {
                         ok = true;
                         break 'exact_loop;
                     }

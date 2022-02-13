@@ -355,7 +355,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 27] = [
     // 24.
     (
         "img/twin_plot.svg",
-        "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout SPLIT_PLOT_BY_ORIGIN NOPRINT H5",
+        "BCR=123085:123089 PLOT_BY_ISOTYPE=stdout SPLIT_PLOT_BY_ORIGIN NOPRINT",
     ),
     // 25.
     (
