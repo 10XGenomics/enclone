@@ -165,6 +165,8 @@ that cd ≤ d, where cd is the number of CDR3 differences and d is the number of
 as above.  This filter may be turned off using the command-line argument <span style="font-weight:bold;">EASY</span>.
 • We do not join in cases where light chain constant regions are different and cd > 0.  This
 filter may be turned off using the command-line argument <span style="font-weight:bold;">OLD_LIGHT</span>.
+• If the percent nucleotide identity on heavy chain FWR1 is at least 20 more than the percent
+nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is rejected.
 • We do not join in cases where there is too high a concentration of changes in the junction
 region.  More specifically, if the number of mutations in CDR3 is at least 5 times the number of
 non-shared mutations outside CDR3 (maxed with 1), the join is rejected.  The number 5 is the

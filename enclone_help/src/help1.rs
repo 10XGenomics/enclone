@@ -345,6 +345,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              • We do not join in cases where light chain constant regions are different and \
              cd > 0.  This \
              filter may be turned off using the command-line argument \\bold{OLD_LIGHT}.\n\
+             • If the percent nucleotide identity on heavy chain FWR1 is at least 20 more than \
+             the percent nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join \
+             is rejected.\n\
              • We do not join in cases where there is too high a concentration of changes in the \
              junction region.  More specifically, if the number of mutations in CDR3 is at least \
              5 times the number of non-shared mutations outside CDR3 (maxed with 1), the join is \

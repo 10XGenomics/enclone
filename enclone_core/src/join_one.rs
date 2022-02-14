@@ -573,69 +573,92 @@ pub fn join_one(
         }
     }
 
-    // Put 75% nucleotide identity filter on heavy chain CDR1-2.
-    // Turned off.  On the training set this increase specificity significantly, but it lost
-    // 0.4% sensitivity, and that was concentrated in highly mutated antibodies.
+    // Require
+    // percent heavy chain nuke identity on FWR1
+    // minus
+    // percent heavy chain nuke identity on CDR12
+    // is less than 20.
 
-    if ctl.join_alg_opt.join_cdr12h_ident > 0.0 {
-        let nchains = info[k1].lens.len();
-        let (mut cdr1_len, mut cdr2_len) = (0, 0);
-        let (mut cdr1_diffs, mut cdr2_diffs) = (0, 0);
-        for m in 0..nchains {
-            let (j1, j2) = (info[k1].exact_cols[m], info[k2].exact_cols[m]);
-            let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
-            if x1.left {
-                if x1.cdr1_start.is_some() && x1.fr2_start.is_some() {
-                    if x2.cdr1_start.is_some() && x2.fr2_start.is_some() {
-                        let cdr1_start1 = x1.cdr1_start.unwrap();
-                        let cdr1_stop1 = x1.fr2_start.unwrap();
-                        let cdr1_start2 = x2.cdr1_start.unwrap();
-                        let cdr1_stop2 = x2.fr2_start.unwrap();
-                        let len = cdr1_stop1 - cdr1_start1;
-                        if cdr1_stop2 - cdr1_start2 == len {
-                            let mut diffs = 0;
-                            for p in 0..len {
-                                if x1.seq_del_amino[p + cdr1_start1]
-                                    != x2.seq_del_amino[p + cdr1_start2]
-                                {
-                                    diffs += 1;
-                                }
+    let nchains = info[k1].lens.len();
+    let (mut fwr1_len, mut cdr1_len, mut cdr2_len) = (0, 0, 0);
+    let (mut fwr1_diffs, mut cdr1_diffs, mut cdr2_diffs) = (0, 0, 0);
+    for m in 0..nchains {
+        let (j1, j2) = (info[k1].exact_cols[m], info[k2].exact_cols[m]);
+        let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+        if x1.left {
+            if x1.cdr1_start.is_some() {
+                if x2.cdr1_start.is_some() {
+                    let fr1_start1 = x1.fr1_start;
+                    let fr1_stop1 = x1.cdr1_start.unwrap();
+                    let fr1_start2 = x2.fr1_start;
+                    let fr1_stop2 = x2.cdr1_start.unwrap();
+                    let len = fr1_stop1 - fr1_start1;
+                    if fr1_stop2 - fr1_start2 == len {
+                        let mut diffs = 0;
+                        for p in 0..len {
+                            if x1.seq_del_amino[p + fr1_start1] != x2.seq_del_amino[p + fr1_start2]
+                            {
+                                diffs += 1;
                             }
-                            cdr1_len = len;
-                            cdr1_diffs = diffs;
                         }
+                        fwr1_len = len;
+                        fwr1_diffs = diffs;
                     }
                 }
-                if x1.cdr2_start.is_some() && x1.fr3_start.is_some() {
-                    if x2.cdr2_start.is_some() && x2.fr3_start.is_some() {
-                        let cdr2_start1 = x1.cdr2_start.unwrap();
-                        let cdr2_stop1 = x1.fr3_start.unwrap();
-                        let cdr2_start2 = x2.cdr2_start.unwrap();
-                        let cdr2_stop2 = x2.fr3_start.unwrap();
-                        let len = cdr2_stop1 - cdr2_start1;
-                        if cdr2_stop2 - cdr2_start2 == len {
-                            let mut diffs = 0;
-                            for p in 0..len {
-                                if x1.seq_del_amino[p + cdr2_start1]
-                                    != x2.seq_del_amino[p + cdr2_start2]
-                                {
-                                    diffs += 1;
-                                }
+            }
+            if x1.cdr1_start.is_some() && x1.fr2_start.is_some() {
+                if x2.cdr1_start.is_some() && x2.fr2_start.is_some() {
+                    let cdr1_start1 = x1.cdr1_start.unwrap();
+                    let cdr1_stop1 = x1.fr2_start.unwrap();
+                    let cdr1_start2 = x2.cdr1_start.unwrap();
+                    let cdr1_stop2 = x2.fr2_start.unwrap();
+                    let len = cdr1_stop1 - cdr1_start1;
+                    if cdr1_stop2 - cdr1_start2 == len {
+                        let mut diffs = 0;
+                        for p in 0..len {
+                            if x1.seq_del_amino[p + cdr1_start1]
+                                != x2.seq_del_amino[p + cdr1_start2]
+                            {
+                                diffs += 1;
                             }
-                            cdr2_len = len;
-                            cdr2_diffs = diffs;
                         }
+                        cdr1_len = len;
+                        cdr1_diffs = diffs;
+                    }
+                }
+            }
+            if x1.cdr2_start.is_some() && x1.fr3_start.is_some() {
+                if x2.cdr2_start.is_some() && x2.fr3_start.is_some() {
+                    let cdr2_start1 = x1.cdr2_start.unwrap();
+                    let cdr2_stop1 = x1.fr3_start.unwrap();
+                    let cdr2_start2 = x2.cdr2_start.unwrap();
+                    let cdr2_stop2 = x2.fr3_start.unwrap();
+                    let len = cdr2_stop1 - cdr2_start1;
+                    if cdr2_stop2 - cdr2_start2 == len {
+                        let mut diffs = 0;
+                        for p in 0..len {
+                            if x1.seq_del_amino[p + cdr2_start1]
+                                != x2.seq_del_amino[p + cdr2_start2]
+                            {
+                                diffs += 1;
+                            }
+                        }
+                        cdr2_len = len;
+                        cdr2_diffs = diffs;
                     }
                 }
             }
         }
-        if cdr1_len > 0 && cdr2_len > 0 {
-            let len = cdr1_len + cdr2_len;
-            let diffs = cdr1_diffs + cdr2_diffs;
-            let identity = 100.0 * (len - diffs) as f64 / len as f64;
-            if identity < ctl.join_alg_opt.join_cdr12h_ident {
-                return false;
-            }
+    }
+    if fwr1_len > 0 && cdr1_len > 0 && cdr2_len > 0 {
+        let len = fwr1_len;
+        let diffs = fwr1_diffs;
+        let fwr1_identity = 100.0 * (len - diffs) as f64 / len as f64;
+        let len = cdr1_len + cdr2_len;
+        let diffs = cdr1_diffs + cdr2_diffs;
+        let cdr12_identity = 100.0 * (len - diffs) as f64 / len as f64;
+        if fwr1_identity - cdr12_identity >= ctl.join_alg_opt.fwr1_cdr12_delta {
+            return false;
         }
     }
 
