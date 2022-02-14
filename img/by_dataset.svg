@@ -1129,7 +1129,6 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="269.31" cy="233.42" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="269.31" cy="254.57" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="269.31" cy="247.52" r="2.03" fill="rgb(0,90,200)" />
-<circle cx="271.34" cy="272.19" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="271.34" cy="265.14" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="271.34" cy="236.94" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="271.34" cy="229.89" r="2.03" fill="rgb(0,90,200)" />
@@ -1150,7 +1149,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="275.41" cy="236.94" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="277.45" cy="268.66" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="277.45" cy="254.57" r="2.03" fill="rgb(0,90,200)" />
-<circle cx="277.45" cy="247.52" r="2.03" fill="rgb(250,120,250)" />
+<circle cx="277.45" cy="247.52" r="2.03" fill="rgb(0,90,200)" />
 <circle cx="277.45" cy="261.61" r="2.03" fill="rgb(250,120,250)" />
 <circle cx="277.45" cy="233.42" r="2.03" fill="rgb(250,120,250)" />
 <circle cx="277.45" cy="240.47" r="2.03" fill="rgb(250,120,250)" />
@@ -3176,11 +3175,6 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="16.35" cy="239.93" r="2.03" fill="rgb(250,120,250)" />
 <circle cx="18.39" cy="236.41" r="2.03" fill="rgb(250,120,250)" />
 <circle cx="20.42" cy="239.93" r="2.03" fill="rgb(0,160,250)" />
-<circle cx="336.52" cy="345.27" r="2.03" fill="rgb(250,120,250)" />
-<circle cx="338.56" cy="341.75" r="2.03" fill="rgb(250,120,250)" />
-<circle cx="340.59" cy="345.27" r="2.03" fill="rgb(0,160,250)" />
-<circle cx="342.63" cy="341.75" r="2.03" fill="rgb(0,160,250)" />
-<circle cx="344.66" cy="345.27" r="2.03" fill="rgb(0,160,250)" />
 <rect x="420" y="10" width="91.84" height="85" style="fill:white;stroke:black;stroke-width:2" />
 <text x="440" y="35" font-family="Arial" font-size="20">123085</text>
 <circle cx="430" cy="30" r="4" fill="rgb(0,90,200)" />

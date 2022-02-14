@@ -150,7 +150,7 @@ fn test_site_examples() {
             let mut f = open_for_write_new!["testx/outputs/index.html.new"];
             fwrite!(f, "{}", new_index);
         }
-        eprintln!("Please diff index.html enclone_main/testx/outputs/index.html.new.\n");
+        eprintln!("Please diff index.html enclone_exec/testx/outputs/index.html.new.\n");
         std::process::exit(1);
     }
     /*
@@ -405,7 +405,7 @@ fn test_enclone_prebuild() {
         eprintln!(
             "\nenclone_test_prebuild: first pass output has changed.\n\
             If you are OK with the new output, it should work to type:\n\
-            enclone {} > enclone_main/{}\n",
+            enclone {} > enclone_exec/{}\n",
             testn, out_file
         );
         eprintln!("old output =\n{}\n", old);
@@ -554,7 +554,7 @@ fn test_proto_write() -> Result<(), Error> {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
                 please run the command\n\
-                echo -n {} > enclone_main/testx/inputs/{}.binary.sha256",
+                echo -n {} > enclone_exec/testx/inputs/{}.binary.sha256",
                 t,
                 &cksum_new,
                 t.after("=")

@@ -455,4 +455,20 @@ pub fn some_filters(
         orbits2.push(o);
     }
     *orbits = orbits2;
+
+    // Check for disjoint orbits (again again).
+
+    let tsplit = Instant::now();
+    split_orbits(
+        orbits,
+        is_bcr,
+        to_bc,
+        sr,
+        ctl,
+        exact_clonotypes,
+        info,
+        raw_joins,
+        &refdata,
+    );
+    ctl.perf_stats(&tsplit, "splitting orbits 3");
 }
