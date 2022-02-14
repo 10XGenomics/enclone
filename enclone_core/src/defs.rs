@@ -326,6 +326,7 @@ pub struct JoinAlgOpt {
     pub join_full_diff: bool,
     pub join_cdr3_ident: f64,
     pub join_cdr12h_ident: f64,
+    pub fwr1_cdr12_delta: f64,
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
 }

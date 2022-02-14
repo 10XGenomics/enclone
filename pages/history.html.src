@@ -30,9 +30,9 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<p><b>2/13/22</b>: 
+<p><b>2/14/22</b>: 
 <ul>
-<li>Another change to the clonotyping join algorithm, see
+<li>Two more changes to the clonotyping join algorithm, see
 <a href="../../pages/auto/cellranger.html">here</a>.</li>
 <li>Add <code>SPLIT_PLOT_BY_DATASET</code>, see
 <a href="../../pages/auto/plot.html">enclone plots</a>.</li>
