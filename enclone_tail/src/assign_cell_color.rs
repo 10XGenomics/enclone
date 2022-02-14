@@ -158,7 +158,7 @@ pub fn assign_cell_color(
             // Note that is possible for p to be -1 in the following.  This is known
             // to happen if a heavy chain V gene is on the same contig as a light
             // chain C gene (which may be an artifact).  There is an example in
-            // enclone_main/testx/inputs/flaky.
+            // enclone_exec/testx/inputs/flaky.
             let p = bin_position(const_names, c);
             color_id = (1 + p) as usize;
         }
