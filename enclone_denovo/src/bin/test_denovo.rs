@@ -17,7 +17,7 @@ fn main() {
     let denovo = read_fasta_to_vec_vec_u8("xxx.fasta");
     let imgt = read_fasta_to_vec_vec_u8("imgt.fasta");
     let tenx = read_fasta_to_vec_vec_u8("regions.fa");
-    let f = open_for_read!["/mnt/home/david.jaffe/seqs"];
+    let f = open_for_read!["seqs"];
     for (l, line) in f.lines().enumerate() {
         if l > 0 {
             let s = line.unwrap();
