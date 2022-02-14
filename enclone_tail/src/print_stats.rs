@@ -468,10 +468,10 @@ pub fn print_stats(
                 add_commas(bogus)
             );
 
-            let adjusted = if bogus <= intra { intra - bogus } else { 0 };
+            let adjusted = if bogus <= merges2 { merges2 - bogus } else { 0 };
             fwriteln!(
                 logx,
-                "   • adjusted intradonor comparisons = {}",
+                "   • adjusted cell-cell merges (quadratic) = {}",
                 add_commas(adjusted)
             );
         }
