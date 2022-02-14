@@ -44,8 +44,10 @@ CDR3 nucleotide diffs = 2
 in amino acid space:
 IGK:CMQSTHWPTWTF;IGH:CAFDFW
 IGK:CMQTTHWPTWTL;IGH:CAFDFW
+heavy chain FWR1 diffs = 2
 heavy chain CDR1 diffs = 0
 heavy chain CDR2 diffs = 3
+nucleotide identity on heavy chain FWR1 = 97.3%
 nucleotide identity on heavy chain CDR1-2 = 92.3%
 p1 = prob of getting so many shares by accident = 0.0000016600942157683246
 computed using k = 33, d = 5, n = 2373
