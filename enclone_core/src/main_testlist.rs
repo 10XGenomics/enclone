@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 291] = [
+pub const TESTS: [&str; 292] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -728,4 +728,6 @@ pub const TESTS: [&str; 291] = [
          CDR3=CARDRIDDSSGYYYAYYYGMDVW"###,
     // 291. test SPLIT_PLOT_BY_DATASET
     r###"BCR=123085,123089 PLOT_BY_ISOTYPE=stdout SPLIT_PLOT_BY_DATASET NOPRINT"###,
+    // 292. this asserted
+    r###"BCR=85333 CDR3=”CAKGDRTGYSYGGGIFDYW~3” NOPRINT SUMMARY EXPECT_FAIL"###,
 ];
