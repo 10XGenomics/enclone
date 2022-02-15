@@ -721,6 +721,11 @@ pub fn plot_clonotypes(
         reorder_color_list(&mut dcx);
     }
     if by_var && plot_opt.use_legend {
+        if VAR_LOW.lock().unwrap()[0].1 == f64::MAX && VAR_HIGH.lock().unwrap()[0].1 == f64::MIN {
+            return Err(format!(
+                "\nVariable used for color in plot has no numeric values.\n"
+            ));
+        }
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
         || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
