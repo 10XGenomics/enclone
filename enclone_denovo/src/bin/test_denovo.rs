@@ -27,7 +27,7 @@ fn main() {
             }
             let mut best_mis = 1000000;
             let mut best_i = 0;
-            for i in 0..denovo.len()/2 {
+            for i in 0..denovo.len() / 2 {
                 let i = 2 * i + 1;
                 let mut mis = 0;
                 for j in 0..min(denovo[i].len(), s.len()) {
