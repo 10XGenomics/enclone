@@ -732,5 +732,5 @@ pub const TESTS: [&str; 293] = [
     r###"BCR=85333 CDR3=”CAKGDRTGYSYGGGIFDYW~3” NOPRINT SUMMARY EXPECT_FAIL"###,
     // 293. test BC var in color by variable
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv KEEP_CELL_IF="rank >= 1"
-         HONEY=out="stdout,color=var,rank" NOPRINT"###,
+         HONEY="out=stdout,color=var,rank" NOPRINT"###,
 ];
