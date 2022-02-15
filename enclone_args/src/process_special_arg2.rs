@@ -471,6 +471,25 @@ pub fn process_special_arg2(
             }
         }
         if lev {
+            let mut ok = true;
+            for i in 0..fields.len() {
+                if !fields[i].contains('~') {
+                    ok = false;
+                } else {
+                    let _f1 = fields[i].before("~");
+                    let f2 = fields[i].after("~");
+                    if !f2.parse::<usize>().is_ok() {
+                        ok = false;
+                    }
+                }
+            }
+            if !ok {
+                return Err(format!(
+                    "\nLooks like your CDR3 value {} is trying to be an Levenshtein distance\n\
+                        pattern, but it is not.\n",
+                    arg.after("CDR3=")
+                ));
+            }
             ctl.clono_filt_opt.cdr3_lev = arg.after("=").to_string();
         } else {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
