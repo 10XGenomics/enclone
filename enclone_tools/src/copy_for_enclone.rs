@@ -10,7 +10,7 @@ use mirror_sparse_matrix::{write_to_file, MirrorSparseMatrix};
 use std::fs::{copy, remove_file, File};
 use vector_utils::VecUtils;
 
-fn copy_if(f: &str, g:&str) {
+fn copy_if(f: &str, g: &str) {
     if path_exists(&f) {
         copy(f, g).unwrap();
     }
