@@ -81,7 +81,9 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             &format!("{}/_invocation", target),
         )
         .unwrap();
-        copy(&format!("{}/../_log", p), &format!("{}/_log", target)).unwrap();
+        if path_exists(&format!("{}/../_log", p)) {
+            copy(&format!("{}/../_log", p), &format!("{}/_log", target)).unwrap();
+        }
 
         // Copy these two files used for Immcantation.
 
