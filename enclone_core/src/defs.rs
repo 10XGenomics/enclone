@@ -434,8 +434,12 @@ pub struct ClonoGroupOpt {
     pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names
     pub vj_len: bool,            // group by V..J of same length
     pub cdr3_len: bool,          // group by CDR3 of same length
+    pub cdr3_heavy_pc: Option<f64>, // group if nuke aa identity >= given percent on heavy chain
+    pub cdr3_light_pc: Option<f64>, // group if nuke aa identity >= given percent on light chain
     pub cdr3_aa_heavy_pc: Option<f64>, // group if CDR3 aa identity >= given percent on heavy chain
     pub cdr3_aa_light_pc: Option<f64>, // group if CDR3 aa identity >= given percent on light chain
+    pub heavy_pc: Option<f64>,   // group if nucleotide identity >= given percent on heavy chain
+    pub light_pc: Option<f64>,   // group if nucleotide identity >= given percent on light chain
     pub aa_heavy_pc: Option<f64>, // group if amino acid identity >= given percent on heavy chain
     pub aa_light_pc: Option<f64>, // group if amino acid identity >= given percent on light chain
     // ASYMMETRIC GROUPING CONTROLS

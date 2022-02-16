@@ -1896,9 +1896,9 @@ dependencies = [
 
 [[package]]
 name = "fasta_tools"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47968b60700da803afa3a0f7000e947ca56ccb6b2b0f8768a77ebccb8fe39680"
+checksum = "68adfb3db3241435957c3a0066c7b65beec225023961c5848264c66272cedea7"
 dependencies = [
  "debruijn",
  "flate2",
