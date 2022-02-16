@@ -44,72 +44,144 @@ pub fn process_special_arg2(
                 ctl.clono_group_opt.vj_len = true;
             } else if x == "cdr3_len" {
                 ctl.clono_group_opt.cdr3_len = true;
+            } else if x.starts_with("≥light") && x.ends_with('%') {
+                let val = x.after("≥").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.light_pc = Some(val.force_f64());
             } else if x.starts_with("≥aa_light") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("light>=") && x.ends_with('%') {
+                let val = x.after(">=").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_light>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("light⩾") && x.ends_with('%') {
+                let val = x.after("⩾").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.light_pc = Some(val.force_f64());
             } else if x.starts_with("aa_light⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("heavy≥") && x.ends_with('%') {
+                let val = x.after("≥").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.heavy_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("heavy>=") && x.ends_with('%') {
+                let val = x.after(">=").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.heavy_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("heavy⩾") && x.ends_with('%') {
+                let val = x.after("⩾").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.heavy_pc = Some(val.force_f64());
             } else if x.starts_with("aa_heavy⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_light≥") && x.ends_with('%') {
+                let val = x.after("≥").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_light>=") && x.ends_with('%') {
+                let val = x.after(">=").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_light⩾") && x.ends_with('%') {
+                let val = x.after("⩾").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_light in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_light_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_light⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_light in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_light_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_heavy≥") && x.ends_with('%') {
+                let val = x.after("≥").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy≥") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_heavy>=") && x.ends_with('%') {
+                let val = x.after(">=").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy>=") && x.ends_with('%') {
                 let val = x.after(">=").rev_before("%");
                 if val.parse::<f64>().is_err() {
                     return Err("\nIllegal value for cdr3_aa_heavy in GROUP.\n".to_string());
                 }
                 ctl.clono_group_opt.cdr3_aa_heavy_pc = Some(val.force_f64());
+            } else if x.starts_with("cdr3_heavy⩾") && x.ends_with('%') {
+                let val = x.after("⩾").rev_before("%");
+                if val.parse::<f64>().is_err() {
+                    return Err("\nIllegal value for cdr3_heavy in GROUP.\n".to_string());
+                }
+                ctl.clono_group_opt.cdr3_heavy_pc = Some(val.force_f64());
             } else if x.starts_with("cdr3_aa_heavy⩾") && x.ends_with('%') {
                 let val = x.after("⩾").rev_before("%");
                 if val.parse::<f64>().is_err() {

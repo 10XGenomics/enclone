@@ -124,12 +124,16 @@ Here are the conditions:
 │len                │  the lengths of V..J are the same (after correction for indels)       │
 │cdr3_len           │  CDR3 sequences have the same length                                  │
 ├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│cdr3_heavy≥n%      │  nucleotide identity on heavy chain CDR3 sequences is at least n%     │
+│cdr3_light≥n%      │  nucleotide identity on light chain CDR3 sequences is at least n%     │
 │cdr3_aa_heavy≥n%   │  amino acid identity on heavy chain CDR3 sequences is at least n%     │
 │cdr3_aa_light≥n%   │  amino acid identity on light chain CDR3 sequences is at least n%     │
 │                   │  (note that use of either of these options without at least one of the│
 │                   │  earlier options may be slow)                                         │
 │                   │  (in both cases, we also recognize >= (with quoting) and ⩾)           │
 ├───────────────────┼───────────────────────────────────────────────────────────────────────┤
+│heavy≥n%           │  nucleotide identity on heavy chain V..J sequences is at least n%     │
+│light≥n%           │  nucleotide identity on light chain V..J sequences is at least n%     │
 │aa_heavy≥n%        │  amino acid identity on heavy chain V..J sequences is at least n%     │
 │aa_light≥n%        │  amino acid identity on light chain V..J sequences is at least n%     │
 │                   │  (note that use of either of these options without at least one of the│
