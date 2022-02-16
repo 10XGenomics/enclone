@@ -444,6 +444,84 @@ pub fn grouper(
             ctl.perf_stats(&t, &format!("grouping by aa {} percent", chain));
         }
 
+        // Group by cdr3_heavy_pc and then cdr3_light_pc.
+
+        for pass in 1..=2 {
+            if pass == 1 && !ctl.clono_group_opt.cdr3_heavy_pc.is_some() {
+                continue;
+            }
+            if pass == 2 && !ctl.clono_group_opt.cdr3_light_pc.is_some() {
+                continue;
+            }
+            let t = Instant::now();
+            let min_r = if pass == 1 {
+                ctl.clono_group_opt.cdr3_heavy_pc.unwrap() / 100.0
+            } else {
+                ctl.clono_group_opt.cdr3_light_pc.unwrap() / 100.0
+            };
+            let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
+            for i in 0..groups.len() {
+                results.push((i, Vec::new()));
+            }
+            results.par_iter_mut().for_each(|res| {
+                let g = &groups[res.0];
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_cdr3: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if (pass == 1) != ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let s1 = &ex1.share[p1];
+                                    let start1 = s1.cdr3_start;
+                                    let dna1 = &s1.seq[start1..start1 + s1.cdr3_aa.len() * 3];
+                                    for p2 in 0..ex2.share.len() {
+                                        if (pass == 1) != ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let s2 = &ex2.share[p2];
+                                        let start2 = s2.cdr3_start;
+                                        let dna2 = &s2.seq[start2..start2 + s2.cdr3_aa.len() * 3];
+                                        let d_max_f =
+                                            (1.0 - min_r) * min(dna1.len(), dna2.len()) as f64;
+                                        let d_max = d_max_f.floor() as u32;
+                                        if levenshtein_simd_k(dna1, dna2, d_max).is_some() {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_cdr3;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    res.1.push(p);
+                }
+            });
+            groups.clear();
+            for i in 0..results.len() {
+                groups.append(&mut results[i].1.clone());
+            }
+            let chain = if pass == 1 { "heavy" } else { "light" };
+            ctl.perf_stats(&t, &format!("grouping by cdr3 {} percent", chain));
+        }
+
         // Group by cdr3_aa_heavy_pc and then cdr3_aa_light_pc.
 
         for pass in 1..=2 {
