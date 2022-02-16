@@ -166,7 +166,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     let mut metaxs = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
-        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") {
+        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") || args[i].starts_with("BIP") {
             have_bcr = true;
         } else if args[i].starts_with("TCR=") {
             have_tcr = true;
@@ -208,12 +208,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     }
     let mut using_plot = false;
 
-    // Preprocess BI and BIB arguments.
+    // Preprocess BI and BIB and BIP arguments.
 
     for i in 1..args.len() {
-        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") {
+        if args[i].starts_with("BI=") || args[i].starts_with("BIB=") || args[i].starts_with("BIP") {
             let bix = format!("{}=", args[i].before("="));
-            if !ctl.gen_opt.internal_run {
+            if !ctl.gen_opt.internal_run && !args[i].starts_with("BIP=") {
                 return Err(format!("\nUnrecognized argument {}.\n", args[i]));
             }
             let x = args[i].after(&bix).split(',').collect::<Vec<&str>>();
@@ -225,7 +225,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         || stop.parse::<usize>().is_err()
                         || start.force_usize() > stop.force_usize()
                     {
-                        return Err("\nIllegal range in BI argument.\n".to_string());
+                        return Err("\nIllegal range in BI or BIB or BIP argument.\n".to_string());
                     }
                     let (start, stop) = (start.force_usize(), stop.force_usize());
                     for j in start..=stop {
@@ -251,13 +251,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if *n != "m1" {
                     if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 43 {
                         return Err(
-                            "\nBI and BIB only work for values n with if 1 <= n <= 43, or n = m1.\n"
+                            "\nBI and BIB and BIP only work for values n with if 1 <= n <= 43, \
+                                or n = m1.\n"
                                 .to_string(),
                         );
                     }
                 } else if y.len() > 1 {
                     return Err(
-                        "\nFor BI and BIB , if you specify m1, you can only specify m1.\n"
+                        "\nFor BI and BIB and BIP, if you specify m, you can only specify m1.\n"
                             .to_string(),
                     );
                 }
@@ -270,7 +271,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                         break;
                     }
                     if found {
-                        if s.starts_with("BCR=") {
+                        if args[i].starts_with("BIP=") {
+                            if s.starts_with("PUBLIC_BCR_SUBSET=") {
+                                if bcrv.len() == 0 {
+                                    bcrv.push(s.after("PUBLIC_BCR_SUBSET=").to_string());
+                                } else {
+                                    let n = bcrv.len();
+                                    bcrv[n - 1] +=
+                                        &mut format!(",{}", s.after("PUBLIC_BCR_SUBSET="));
+                                }
+                            }
+                        } else if s.starts_with("BCR=") {
                             if bcr_seen {
                                 if args[i].starts_with("BIB=") {
                                     let n = bcrv.len();
