@@ -67,7 +67,7 @@ pub const DTESTS: [&str; 15] = [
 // Tests that are affected by the grouping algorithm.  All such tests should go here, if not
 // already in DTESTS.
 
-pub const GTESTS: [&str; 14] = [
+pub const GTESTS: [&str; 17] = [
     // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
     // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
@@ -106,6 +106,15 @@ pub const GTESTS: [&str; 14] = [
     // 14. test symmetric grouping stats
     r###"BCR=123085 GROUP=vj_refname,cdr3_aa_heavy≥80%,cdr3_aa_light≥80% NOPRINT
          SUMMARY SUMMARY_CLEAN"###,
+    // 15. test of GROUP
+    r###"BCR=123085 GROUP=cdr3_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+         CDR3=CARPKSDYIIDAFDIW"###,
+    // 16. test of GROUP
+    r###"BCR=123085 GROUP="cdr3_light>=100%" MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+         CDR3=CQTWGTGPWVF"###,
+    // 17. test of GROUP
+    r###"BCR=123085 GROUP=vj_refname,heavy≥96.6% MIN_GROUP=2 MIN_CHAINS=2 
+         CDR3="CARVIVGPKKLEGRLYSSSLHFDCW|CARVIVGPEKQEGRLYSSSLHFDYW" POUT=stdout PCOLS=vj_seq1"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
