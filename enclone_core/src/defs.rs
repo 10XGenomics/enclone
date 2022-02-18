@@ -426,6 +426,7 @@ pub struct ClonoGroupOpt {
     pub ngroup: bool,            // do not print group headers
     pub min_group: usize,        // minimum number of clonotypes in group to print
     pub min_group_donors: usize, // minimum number of donors in a group to print
+    pub cdr3h_len_var: bool,     // requires different heavy chain CDR3 lengths
     pub style: String,           // symmetric or unsymmetric or unspecified
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names

@@ -288,6 +288,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "MIN_GROUP_DONORS",
             "minimum number of donors for a group to be printed (default = 1)",
         );
+        h.doc(
+            "GROUP_CDR3H_LEN_VAR",
+            "only print groups having variable heavy chain CDR3 length",
+        );
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2()?;
         h.print("\n")?;
