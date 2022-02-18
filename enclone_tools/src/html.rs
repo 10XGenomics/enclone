@@ -157,6 +157,8 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
 
     const ENCLONE_FORMATTED: &str =
         "<span style=\"color:rgb(120,123,175);font-weight:900\">enclone</span>";
+    const ENCLONE_VISUAL_FORMATTED: &str =
+        "<span style=\"color:rgb(120,123,175);font-weight:900\">enclone visual</span>";
     let pwd = env::current_dir().unwrap();
     let pwd = pwd.to_str().unwrap();
     let mut title = String::new();
@@ -257,6 +259,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
                 fwriteln!(g, "{}", s);
             }
         } else {
+            s = s.replace("#enclone_visual", ENCLONE_VISUAL_FORMATTED);
             s = s.replace("#enclone", ENCLONE_FORMATTED);
             s = s.replace("#required_fps", &format!("{}", required_fps));
             s = s.replace("#required_cells", &add_commas(required_cells));

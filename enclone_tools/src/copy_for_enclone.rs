@@ -10,6 +10,12 @@ use mirror_sparse_matrix::{write_to_file, MirrorSparseMatrix};
 use std::fs::{copy, remove_file, File};
 use vector_utils::VecUtils;
 
+fn copy_if(f: &str, g: &str) {
+    if path_exists(&f) {
+        copy(f, g).unwrap();
+    }
+}
+
 fn copy_file(f: &str, dir1: &str, dir2: &str) {
     let x = copy(&format!("{}/{}", dir1, f), &format!("{}/{}", dir2, f));
     if x.is_err() {
@@ -81,28 +87,25 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             &format!("{}/_invocation", target),
         )
         .unwrap();
-        copy(&format!("{}/../_log", p), &format!("{}/_log", target)).unwrap();
+        copy_if(&format!("{}/../_log", p), &format!("{}/_log", target));
 
         // Copy these two files used for Immcantation.
 
-        copy(
+        copy_if(
             &format!("{}/filtered_contig_annotations.csv", p),
             &format!("{}/outs/filtered_contig_annotations.csv", target),
-        )
-        .unwrap();
-        copy(
+        );
+        copy_if(
             &format!("{}/filtered_contig.fasta", p),
             &format!("{}/outs/filtered_contig.fasta", target),
-        )
-        .unwrap();
+        );
 
         // Copy these files that are nice to have.
 
-        copy(
+        copy_if(
             &format!("{}/cell_barcodes.json", p),
             &format!("{}/outs/cell_barcodes.json", target),
-        )
-        .unwrap();
+        );
         copy(
             &format!("{}/metrics_summary_json.json", p),
             &format!("{}/outs/metrics_summary_json.json", target),

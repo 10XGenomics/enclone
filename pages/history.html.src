@@ -30,6 +30,10 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>2/18/22</b>: Introducing #enclone_visual!  This is <b>alpha</b> software for a
+graphic user interface (GUI) for #enclone, that is implemented initially for Macs.  
+Please see <a href="../../pages/auto/visual.html">#enclone_visual</a>.</p>
+
 <p><b>2/16/22</b>: Add new grouping options, please see
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</p>
 

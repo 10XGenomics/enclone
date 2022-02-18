@@ -20,3 +20,6 @@ other parts deleted.  The cigar function is from rust-bio.
 The file convert_svg_to_png.rs is largely copied from the resvg crate.
 
 The file colors.rs is from Anton Mikhailov at Google.
+
+We redistribute LIBRA-seq data from Setliff et al. 2019, High-Throughput Mapping of B Cell 
+Receptor Sequences to Antigen Specificity.

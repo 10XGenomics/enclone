@@ -542,12 +542,6 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "2.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad807f2fc2bf185eeb98ff3a901bd46dc5ad58163d0fa4577ba0d25674d71708"
-
-[[package]]
-name = "bumpalo"
 version = "3.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4a45a46ab1f2412e53d3a0ade76ffad2025804294569aae387231a0cd6e0899"
@@ -1232,22 +1226,6 @@ name = "doc-comment"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
-
-[[package]]
-name = "dodrio"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7593dfc68e57dc1d058ada0f151ba07f4b05183c4da4c4df8ff651a81ef0fab"
-dependencies = [
- "bumpalo 2.6.0",
- "cfg-if 0.1.10",
- "fxhash",
- "js-sys",
- "longest-increasing-subsequence",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
-]
 
 [[package]]
 name = "downcast-rs"
@@ -2605,11 +2583,10 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "iced_core",
  "iced_futures",
- "iced_web",
  "iced_wgpu",
  "iced_winit",
  "thiserror",
@@ -2618,26 +2595,28 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "bitflags",
+ "wasm-timer",
 ]
 
 [[package]]
 name = "iced_futures"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "async-std",
  "futures",
  "log",
  "wasm-bindgen-futures",
+ "wasm-timer",
 ]
 
 [[package]]
 name = "iced_graphics"
 version = "0.2.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "bytemuck",
  "font-kit",
@@ -2652,7 +2631,7 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "iced_core",
  "iced_futures",
@@ -2665,32 +2644,15 @@ dependencies = [
 [[package]]
 name = "iced_style"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "iced_core",
-]
-
-[[package]]
-name = "iced_web"
-version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
-dependencies = [
- "base64",
- "dodrio",
- "iced_core",
- "iced_futures",
- "iced_style",
- "num-traits",
- "url",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
 ]
 
 [[package]]
 name = "iced_wgpu"
 version = "0.4.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "bitflags",
  "bytemuck",
@@ -2710,13 +2672,14 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.3.0"
-source = "git+https://github.com/hecrj/iced?rev=04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0#04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0"
+source = "git+https://github.com/hecrj/iced?rev=adce9e04213803bd775538efddf6e7908d1c605e#adce9e04213803bd775538efddf6e7908d1c605e"
 dependencies = [
  "iced_futures",
  "iced_graphics",
  "iced_native",
  "log",
  "thiserror",
+ "web-sys",
  "winapi",
  "window_clipboard",
  "winit",
@@ -2994,12 +2957,6 @@ dependencies = [
  "cfg-if 1.0.0",
  "value-bag",
 ]
-
-[[package]]
-name = "longest-increasing-subsequence"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3bd0dd2cd90571056fdb71f6275fada10131182f84899f4b2a916e565d81d86"
 
 [[package]]
 name = "lyon"
@@ -3955,7 +3912,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.22.0",
+ "nix 0.23.1",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5118,7 +5075,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand",
  "static_assertions",
 ]
@@ -5403,7 +5360,7 @@ version = "0.2.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b21c0df030f5a177f3cba22e9bc4322695ec43e7257d865302900290bcdedca"
 dependencies = [
- "bumpalo 3.9.1",
+ "bumpalo",
  "lazy_static",
  "log",
  "proc-macro2",
@@ -5452,6 +5409,21 @@ name = "wasm-bindgen-shared"
 version = "0.2.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d958d035c4438e28c70e4321a2911302f10135ce78a9c7834c0cab4123d06a2"
+
+[[package]]
+name = "wasm-timer"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be0ecb0db480561e9a7642b5d3e4187c128914e58aa84330b9493e3eb68c5e7f"
+dependencies = [
+ "futures",
+ "js-sys",
+ "parking_lot",
+ "pin-utils",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
 
 [[package]]
 name = "wayland-client"

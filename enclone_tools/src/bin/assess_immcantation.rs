@@ -27,7 +27,7 @@ pub fn main() {
 
     // Get dataset classification by sample.
 
-    let mut to_donor = HashMap::<usize, usize>::new();
+    let mut to_donor = HashMap::<String, usize>::new();
     {
         let f = include_str!["../../../enclone/src/enclone.testdata.bcr.gex"];
         let mut donor = 0;
@@ -40,20 +40,20 @@ pub fn main() {
             }
             if s.starts_with("BCR=") {
                 let ids0 = s.after("BCR=").split(',').collect::<Vec<&str>>();
-                let mut ids = Vec::<usize>::new();
+                let mut ids = Vec::<String>::new();
                 for id in ids0.iter() {
                     if id.contains('-') {
                         let start = id.before("-").force_usize();
                         let stop = id.after("-").force_usize();
                         for p in start..=stop {
-                            ids.push(p);
+                            ids.push(p.to_string());
                         }
                     } else {
-                        ids.push(id.force_usize());
+                        ids.push(id.to_string());
                     }
                 }
                 for id in ids.iter() {
-                    to_donor.insert(*id, donor);
+                    to_donor.insert(id.to_string(), donor);
                 }
             }
         }
@@ -114,12 +114,12 @@ pub fn main() {
     for i in 0..assignments.len() {
         max_id = max(max_id, assignments[i].0);
     }
-    let mut clono = vec![Vec::<(usize, usize, String)>::new(); max_id + 1];
+    let mut clono = vec![Vec::<(usize, String, String)>::new(); max_id + 1];
     for i in 0..assignments.len() {
-        let dataset = assignments[i].1.force_usize();
-        let donor = to_donor[&dataset];
+        let dataset = &assignments[i].1;
+        let donor = to_donor[dataset];
         let barcode = assignments[i].2.clone();
-        clono[assignments[i].0].push((donor, dataset, barcode));
+        clono[assignments[i].0].push((donor, dataset.to_string(), barcode));
     }
     for i in 0..clono.len() {
         clono[i].sort();
@@ -134,10 +134,17 @@ pub fn main() {
         }
     }
     let mut bcs = Vec::<String>::new();
+    let mut datasets_top = Vec::<String>::new();
     for x in clono[mci].iter() {
         bcs.push(x.2.clone());
+        datasets_top.push(x.1.clone());
     }
+    unique_sort(&mut datasets_top);
     println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
+    println!(
+        "\ndatasets in top clonotype = {}",
+        datasets_top.iter().format(",")
+    );
 
     // Generate some stats.
 

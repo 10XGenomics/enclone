@@ -24,7 +24,7 @@ publish = false
 # path = "src/bin/enclone.rs"
 
 [dependencies]
-iced = { git = "https://github.com/hecrj/iced", rev = "04efd22dbaffbbb251c871aa7c1e81cdf31eb5f0", features = ["canvas", "image", "async-std"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "adce9e04213803bd775538efddf6e7908d1c605e", features = ["canvas", "image", "async-std", "default_system_font"] }
 itertools = "0.10"
 lazy_static = "1"
 libc = "0.2"

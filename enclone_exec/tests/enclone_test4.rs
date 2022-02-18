@@ -95,7 +95,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 53.5788;
+    const REQUIRED_GI: f64 = 53.6237;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -194,7 +194,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 23;
+    const DUPPED_CRATES: usize = 22;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
