@@ -571,7 +571,7 @@ fn test_for_broken_links_and_spellcheck() {
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
         subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
-        thresholding timepoint \
+        thresholding timeline timepoint \
         tracebacks trb tsv \
         tttctgtgcgaga \
         tttctgtgcgagat \
