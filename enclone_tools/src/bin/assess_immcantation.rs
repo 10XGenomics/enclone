@@ -134,10 +134,14 @@ pub fn main() {
         }
     }
     let mut bcs = Vec::<String>::new();
+    let mut datasets_top = Vec::<String>::new();
     for x in clono[mci].iter() {
         bcs.push(x.2.clone());
+        datasets_top.push(x.1.clone());
     }
+    unique_sort(&mut datasets_top);
     println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
+    println!("\ndatasets in top clonotype = {}", datasets_top.iter().format(","));
 
     // Generate some stats.
 
