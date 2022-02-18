@@ -141,7 +141,10 @@ pub fn main() {
     }
     unique_sort(&mut datasets_top);
     println!("\nbarcodes in top clonotype = {}", bcs.iter().format(","));
-    println!("\ndatasets in top clonotype = {}", datasets_top.iter().format(","));
+    println!(
+        "\ndatasets in top clonotype = {}",
+        datasets_top.iter().format(",")
+    );
 
     // Generate some stats.
 
