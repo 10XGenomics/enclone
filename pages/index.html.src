@@ -391,6 +391,8 @@ documentation within its online menus.  To get started you should:</p>
               wider.
 <br><b>3.</b> How wide depends on the data and the fields you choose to show.
 <br><b>4. If it's not wide enough, the output will "wrap" and be very confusing!</b>
+<br><b>5.</b> Having clonotype tables in a Terminal on a Mac can make the Terminal less
+              responsive.  This may depend on the operating system version.
 </p>
 </li>
 <li>
