@@ -29,6 +29,7 @@ debruijn = "0.3"
 dna = "0.1"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
+enclone_denovo = { path = "../enclone_denovo" }
 equiv = "0.1"
 evalexpr = "7"
 expr_tools = "0.1"

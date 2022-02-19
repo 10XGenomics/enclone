@@ -10,12 +10,14 @@ copy_for_enclone               import data from 10x pipeline
 diff_enclone_ann               diff two enclone runs in which annotation was different
 diff_enclone                   diff two enclone runs in which clonotyping was different
 display_csv                    make human readable output of a CSV file
+fetch_barcode_reads            fetch raw reads for a given barcode
 expand_ranges                  expand integer ranges
 import_data                    import data from 10x pipeline
 melt                           temporary code for playing with melting temperatures
 merge_html                     built html files for the 10x site
 mine_abybank                   extract some summary data from an abybank download
 minimal_fail                   shrink all_contig_annotations.json to find a minimal fail
+print_mammalian_fixed_len      print mammalian fixed len table as input to mammalian_fixed_len.rs
 release_nanny                  used by release process
 review_main_tests              walk through main tests and allow results changes
 run_last_test                  if you've just added a main test

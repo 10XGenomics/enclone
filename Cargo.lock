@@ -1610,6 +1610,7 @@ dependencies = [
  "dna",
  "enclone",
  "enclone_core",
+ "enclone_denovo",
  "equiv",
  "evalexpr",
  "expr_tools",
