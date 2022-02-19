@@ -1361,7 +1361,7 @@ dependencies = [
  "itertools",
  "kmer_lookup",
  "perf_stats",
- "permutation",
+ "permutation 0.4.0",
  "petgraph",
  "pretty_trace",
  "rayon",
@@ -1479,7 +1479,7 @@ dependencies = [
  "itertools",
  "mirror_sparse_matrix",
  "ndarray",
- "permutation",
+ "permutation 0.4.0",
  "pretty_trace",
  "qd",
  "rayon",
@@ -3673,6 +3673,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9978962f8a4b158e97447a6d09d2d75e206d2994eff056c894019f362b27142"
 
 [[package]]
+name = "permutation"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3f4a387a9ad6165bb590820827ef047d8e2921dfb9821891ed0ef2b7cf82774"
+
+[[package]]
 name = "pest"
 version = "2.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5302,7 +5308,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d3ecf8ee11bfddd2cb41fe07abbb063610a90d22515b47718d1a7ba200d3059"
 dependencies = [
- "permutation",
+ "permutation 0.2.5",
  "superslice",
 ]
 
