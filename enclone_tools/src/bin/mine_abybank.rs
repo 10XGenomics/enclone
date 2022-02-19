@@ -228,7 +228,5 @@ fn main() {
             }
         }
         println!("heavy cdr2 = {}, len = {}", strme(&cdr2), cdr2.len());
-
     }
-
 }

@@ -2,7 +2,7 @@
 
 // Fields that are used in all_contig_annotations.json:
 // • barcode
-// • is_cell and is_asm_cell -- both are optional, but at least one needs to be present and 
+// • is_cell and is_asm_cell -- both are optional, but at least one needs to be present and
 //   true for a cell called by the VDJ pipeline
 // • is_gex_cell -- optional
 // • productive -- optional but should be true for contigs to be used
