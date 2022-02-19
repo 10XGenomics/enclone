@@ -15,6 +15,7 @@ dup_crates                     find duplicated crates
 fetch_barcode_reads            fetch raw reads for a given barcode
 expand_ranges                  expand integer ranges
 import_data                    import data from 10x pipeline
+json_from_filtered             make all_contig_annotations.json from filtered contig files
 melt                           temporary code for playing with melting temperatures
 merge_html                     built html files for the 10x site
 mine_abybank                   extract some summary data from an abybank download
