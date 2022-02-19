@@ -26,6 +26,7 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
+dna = "0.1"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
