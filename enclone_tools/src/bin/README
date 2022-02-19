@@ -7,6 +7,7 @@ PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
 build_help_pages               build help pages for enclone site
 cargo_update_safe              update crate versions
+check_masters                  find inconsistencies between master.toml files
 dup_crates                     find duplicated crates
 merge_html                     built html files for the 10x site
 release_nanny                  used by release process
