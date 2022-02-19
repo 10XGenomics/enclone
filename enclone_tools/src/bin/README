@@ -30,7 +30,17 @@ shrink_json                    remove some fields that are not needed by enclone
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-3. other programs
+3. programs for working working with VDJ features
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+cdr_truth_data                 create truth data for CDR regions
+print_mammalian_fixed_len      print mammalian fixed len table as input to mammalian_fixed_len.rs
+print_mammalian_pwms           print mammalian fixed pwms table as input to mammalian_pwms.rs
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+4. other programs
 
 PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
@@ -38,7 +48,6 @@ annotate_seq                   annotate a VDJ contig
 annotate_seqs                  annotate some VDJ contigs
 assess_immcantation            assess the output of immcantation
 build_immcantation_inputs      build inputs for running immcantation
-cdr_truth_data                 create truth data for CDR regions
 convert_fasta                  convert fasta to binary Vec<Vec<u8>>
 copy_for_enclone               import data from 10x pipeline
 diff_enclone_ann               diff two enclone runs in which annotation was different
@@ -49,7 +58,5 @@ expand_ranges                  expand integer ranges
 import_data                    import data from 10x pipeline
 melt                           temporary code for playing with melting temperatures
 mine_abybank                   extract some summary data from an abybank download
-print_mammalian_fixed_len      print mammalian fixed len table as input to mammalian_fixed_len.rs
-print_mammalian_pwms           print mammalian fixed pwms table as input to mammalian_pwms.rs
 shrink_fasta                   contract long runs of Ns in a fasta file
 test_expr                      experimental code for working with eval_expr
