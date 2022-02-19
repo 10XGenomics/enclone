@@ -11,8 +11,8 @@ use refx::*;
 use std::env;
 use std::io::{BufRead, Write};
 use string_utils::*;
-use vdj_ann::*;
 use vdj_ann::transcript::*;
+use vdj_ann::*;
 
 fn main() {
     // Set up and parse args.
@@ -84,11 +84,15 @@ fn main() {
         let valid = is_valid(&seq, &refdata, &ann, false, &mut log, None);
         let mut shift = false;
         for i in 1..ann.len() {
-            if ann[i-1].2 == ann[i].2 {
-                if ann[i].0 == ann[i-1].0 + ann[i-1].1 + 1 && ann[i].3 == ann[i-1].3 + ann[i-1].1 {
+            if ann[i - 1].2 == ann[i].2 {
+                if ann[i].0 == ann[i - 1].0 + ann[i - 1].1 + 1
+                    && ann[i].3 == ann[i - 1].3 + ann[i - 1].1
+                {
                     shift = true;
                 }
-                if ann[i].0 == ann[i-1].0 + ann[i-1].1 && ann[i].3 == ann[i-1].3 + ann[i-1].1 + 1 {
+                if ann[i].0 == ann[i - 1].0 + ann[i - 1].1
+                    && ann[i].3 == ann[i - 1].3 + ann[i - 1].1 + 1
+                {
                     shift = true;
                 }
             }

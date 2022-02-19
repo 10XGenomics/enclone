@@ -41,7 +41,7 @@ fn main() {
                 to_field.insert(fields[j].to_string(), j);
             }
         } else {
-            contigs.push( Contig {
+            contigs.push(Contig {
                 barcode: fields[to_field["barcode"]].to_string(),
                 contig_id: fields[to_field["contig_id"]].to_string(),
                 is_cell: fields[to_field["is_cell"]] == "True",
