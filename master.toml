@@ -77,7 +77,8 @@ png-decoder = "0.1"
 pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.12", default_features = false }
-# enclone will compile without the std and prost-derive features, but other things (such as enclone_proto) break.
+# prost: enclone will compile without the std and prost-derive features, but other things
+#        (such as enclone_proto) break.
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
 qd = { git = "https://github.com/Barandis/qd" }
