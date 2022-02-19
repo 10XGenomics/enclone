@@ -1603,6 +1603,7 @@ version = "0.5.150"
 dependencies = [
  "ansi_escape",
  "attohttpc",
+ "binary_vec_io",
  "bio_edit",
  "chrono",
  "debruijn",

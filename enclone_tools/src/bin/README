@@ -5,10 +5,12 @@ annotate_seq                   annotate a VDJ contig
 assess_immcantation            assess the output of immcantation
 build_immcantation_inputs      build inputs for running immcantation
 cargo_update_safe              update crate versions
+convert_fasta                  convert fasta to binary Vec<Vec<u8>>
 copy_for_enclone               import data from 10x pipeline
 diff_enclone_ann               diff two enclone runs in which annotation was different
 diff_enclone                   diff two enclone runs in which clonotyping was different
 display_csv                    make human readable output of a CSV file
+expand_ranges                  expand integer ranges
 import_data                    import data from 10x pipeline
 melt                           temporary code for playing with melting temperatures
 merge_html                     built html files for the 10x site
