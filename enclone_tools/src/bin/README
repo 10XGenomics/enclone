@@ -1,4 +1,6 @@
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 1. utilities for building or testing or releasing enclone
 
 PROGRAM                        PURPOSE
@@ -15,6 +17,8 @@ start_release                  used to start release process
 sync_to_master                 changes Cargo.toml files to match master.toml
 update_all_main_tests          update all main tests, use with caution
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 2. programs for making all_contig_annotations.json
 
 PROGRAM                        PURPOSE
@@ -22,6 +26,8 @@ PROGRAM                        PURPOSE
 json_from_filtered             make all_contig_annotations.json from filtered contig files
 minimal_fail                   shrink all_contig_annotations.json to find a minimal fail
 shrink_json                    remove some fields that are not needed by enclone
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 3. other programs
 
