@@ -3,6 +3,7 @@ PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
 annotate_seq                   annotate a VDJ contig
 assess_immcantation            assess the output of immcantation
+build_help_pages               build help pages for enclone site
 build_immcantation_inputs      build inputs for running immcantation
 cargo_update_safe              update crate versions
 convert_fasta                  convert fasta to binary Vec<Vec<u8>>
