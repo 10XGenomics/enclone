@@ -1,0 +1,22 @@
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+annotate_seq                   annotate a VDJ contig
+assess_immcantation            assess the output of immcantation
+build_immcantation_inputs      build inputs for running immcantation
+cargo_update_safe              update crate versions
+copy_for_enclone               import data from 10x pipeline
+diff_enclone_ann               diff two enclone runs in which annotation was different
+diff_enclone                   diff two enclone runs in which clonotyping was different
+display_csv                    make human readable output of a CSV file
+import_data                    import data from 10x pipeline
+merge_html                     built html files for the 10x site
+minimal_fail                   shrink all_contig_annotations.json to find a minimal fail
+release_nanny                  used by release process
+review_main_tests              walk through main tests and allow results changes
+run_last_test                  if you've just added a main test
+rustfmt_del                    fast formatting of everything
+shrink_json                    remove some fields that are not needed by enclone
+start_release                  used to start release process
+test_expr                      experimental code for working with eval_expr
+update_all_main_tests          update all main tests, use with caution
