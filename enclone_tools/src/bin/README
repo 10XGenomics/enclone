@@ -10,6 +10,7 @@ copy_for_enclone               import data from 10x pipeline
 diff_enclone_ann               diff two enclone runs in which annotation was different
 diff_enclone                   diff two enclone runs in which clonotyping was different
 display_csv                    make human readable output of a CSV file
+dup_crates                     find duplicated crates
 fetch_barcode_reads            fetch raw reads for a given barcode
 expand_ranges                  expand integer ranges
 import_data                    import data from 10x pipeline
@@ -25,5 +26,6 @@ rustfmt_del                    fast formatting of everything
 shrink_fasta                   contract long runs of Ns in a fasta file
 shrink_json                    remove some fields that are not needed by enclone
 start_release                  used to start release process
+sync_to_master                 changes Cargo.toml files to match master.toml
 test_expr                      experimental code for working with eval_expr
 update_all_main_tests          update all main tests, use with caution
