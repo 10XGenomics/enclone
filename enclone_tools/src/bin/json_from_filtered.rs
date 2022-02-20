@@ -1,7 +1,6 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Make all_contig_annotations.json from
-// filtered_contig.fasta and filtered_contig_annotations.csv.
+// Make all_contig_annotations.json from filtered_contig.fasta and filtered_contig_annotations.csv.
 //
 // Limitations:
 // 1. Fakes the quality scores as perfect because they're not there.
@@ -46,7 +45,7 @@ fn main() {
                 high_confidence: fields[to_field["high_confidence"]] == "True",
                 productive: fields[to_field["productive"]] == "True",
                 reads: fields[to_field["reads"]].force_usize(),
-                umis: fields[to_field["reads"]].force_usize(),
+                umis: fields[to_field["umis"]].force_usize(),
                 seq: Vec::new(),
             });
         }
@@ -68,14 +67,15 @@ fn main() {
     fwriteln!(f, "[");
     for i in 0..contigs.len() {
         fwriteln!(f, "    {{");
-        fwriteln!(f, "\"barcode\": \"{}\",", contigs[i].barcode);
-        fwriteln!(f, "\"contig_id\": \"{}\",", contigs[i].contig_id);
-        fwriteln!(f, "\"is_cell\": {},", contigs[i].is_cell);
-        fwriteln!(f, "\"high_confidence\": {},", contigs[i].high_confidence);
-        fwriteln!(f, "\"productive\": {},", contigs[i].productive);
-        fwriteln!(f, "\"read_count\": {},", contigs[i].reads);
-        fwriteln!(f, "\"umi_count\": {},", contigs[i].umis);
-        fwriteln!(f, "\"seq\": \"{}\",", strme(&contigs[i].seq));
+        fwriteln!(f, "        \"barcode\": \"{}\",", contigs[i].barcode);
+        fwriteln!(f, "        \"contig_name\": \"{}\",", contigs[i].contig_id);
+        fwriteln!(f, "        \"is_cell\": {},", contigs[i].is_cell);
+        fwriteln!(f, "        \"high_confidence\": {},", contigs[i].high_confidence);
+        fwriteln!(f, "        \"productive\": {},", contigs[i].productive);
+        fwriteln!(f, "        \"read_count\": {},", contigs[i].reads);
+        fwriteln!(f, "        \"umi_count\": {},", contigs[i].umis);
+        fwriteln!(f, "        \"sequence\": \"{}\",", strme(&contigs[i].seq));
+        fwriteln!(f, "        \"quals\": \"{}\"", strme(&vec![b'I'; contigs[i].seq.len()]));
         if i < contigs.len() - 1 {
             fwriteln!(f, "    }},");
         } else {
