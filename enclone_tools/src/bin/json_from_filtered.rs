@@ -70,12 +70,20 @@ fn main() {
         fwriteln!(f, "        \"barcode\": \"{}\",", contigs[i].barcode);
         fwriteln!(f, "        \"contig_name\": \"{}\",", contigs[i].contig_id);
         fwriteln!(f, "        \"is_cell\": {},", contigs[i].is_cell);
-        fwriteln!(f, "        \"high_confidence\": {},", contigs[i].high_confidence);
+        fwriteln!(
+            f,
+            "        \"high_confidence\": {},",
+            contigs[i].high_confidence
+        );
         fwriteln!(f, "        \"productive\": {},", contigs[i].productive);
         fwriteln!(f, "        \"read_count\": {},", contigs[i].reads);
         fwriteln!(f, "        \"umi_count\": {},", contigs[i].umis);
         fwriteln!(f, "        \"sequence\": \"{}\",", strme(&contigs[i].seq));
-        fwriteln!(f, "        \"quals\": \"{}\"", strme(&vec![b']'; contigs[i].seq.len()]));
+        fwriteln!(
+            f,
+            "        \"quals\": \"{}\"",
+            strme(&vec![b']'; contigs[i].seq.len()])
+        );
         if i < contigs.len() - 1 {
             fwriteln!(f, "    }},");
         } else {
