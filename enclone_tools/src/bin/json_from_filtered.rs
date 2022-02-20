@@ -75,7 +75,7 @@ fn main() {
         fwriteln!(f, "        \"read_count\": {},", contigs[i].reads);
         fwriteln!(f, "        \"umi_count\": {},", contigs[i].umis);
         fwriteln!(f, "        \"sequence\": \"{}\",", strme(&contigs[i].seq));
-        fwriteln!(f, "        \"quals\": \"{}\"", strme(&vec![b'I'; contigs[i].seq.len()]));
+        fwriteln!(f, "        \"quals\": \"{}\"", strme(&vec![b']'; contigs[i].seq.len()]));
         if i < contigs.len() - 1 {
             fwriteln!(f, "    }},");
         } else {
