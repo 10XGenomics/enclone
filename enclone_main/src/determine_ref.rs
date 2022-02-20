@@ -299,7 +299,15 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                 break;
             }
             let v: Value = serde_json::from_str(strme(&x.unwrap())).unwrap();
-            let ann = v["annotations"].as_array().unwrap();
+            let ann = v["annotations"].as_array();
+            if ann.is_none() {
+                return Err(format!(
+                    "\nThe file {jsonx}\ndoes not contain annotations.  To use enclone with it, \
+                        please specify the argument BUILT_IN\nto force use of the internal \
+                        reference and recompute annotations.\n"
+                ));
+            }
+            let ann = ann.unwrap();
             for i in 0..ann.len() {
                 let a = &ann[i];
                 let id = a["feature"]["feature_id"].as_u64().unwrap() as usize;
