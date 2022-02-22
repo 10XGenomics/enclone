@@ -63,7 +63,11 @@ pub fn subset_json(
             }
             for j in 0..xs.len() {
                 if j == 0 && written {
-                    fwriteln!(g, "        \"dataset\": \"{}\",",ctl.origin_info.dataset_id[li]);
+                    fwriteln!(
+                        g,
+                        "        \"dataset\": \"{}\",",
+                        ctl.origin_info.dataset_id[li]
+                    );
                     fwriteln!(g, ",");
                 }
                 written = true;
