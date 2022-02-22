@@ -51,13 +51,19 @@ pub fn subset_json(
                         let v: Value = serde_json::from_str(strme(&x)).unwrap();
                         let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
                         if bin_member(&barcode_li, &(barcode.clone(), li)) {
-                            xs.push(x);
+                            let y = format!(
+                                "    {{\n        \"dataset\": \"{}\",\n{}",
+                                ctl.origin_info.dataset_id[li],
+                                strme(&x).after("    {\n"),
+                            );
+                            xs.push(y.as_bytes().to_vec());
                         }
                     }
                 }
             }
             for j in 0..xs.len() {
                 if j == 0 && written {
+                    fwriteln!(g, "        \"dataset\": \"{}\",",ctl.origin_info.dataset_id[li]);
                     fwriteln!(g, ",");
                 }
                 written = true;
