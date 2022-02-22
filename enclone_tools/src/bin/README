@@ -20,11 +20,12 @@ update_all_main_tests          update all main tests, use with caution
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-2. programs for making all_contig_annotations.json
+2. programs for making all_contig_annotations.json or converting it
 
 PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
 json_from_filtered             make all_contig_annotations.json from filtered contig files
+filtered_from_json             make filtered contig files from all_contig_annotations.json
 minimal_fail                   shrink all_contig_annotations.json to find a minimal fail
 shrink_json                    remove some fields that are not needed by enclone
 
