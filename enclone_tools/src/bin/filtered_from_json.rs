@@ -30,8 +30,11 @@ fn main() {
 
     let mut csv = open_for_write_new!["filtered_contig_annotations.csv"];
     let mut fasta = open_for_write_new!["filtered_contig.fasta"];
-    fwriteln!(csv, "barcode,is_cell,contig_id,high_confidence,length,chain,v_gene,d_gene,j_gene,\
-        c_gene,full_length,productive,cdr3,cdr3_nt,reads,umis,raw_clonotype_id,raw_consensus_id");
+    fwriteln!(
+        csv,
+        "barcode,is_cell,contig_id,high_confidence,length,chain,v_gene,d_gene,j_gene,\
+        c_gene,full_length,productive,cdr3,cdr3_nt,reads,umis,raw_clonotype_id,raw_consensus_id"
+    );
     for i in 0..xs.len() {
         let v: Result<Value, _> = serde_json::from_str(strme(&xs[i]));
         if v.is_err() {
@@ -49,7 +52,10 @@ fn main() {
         let seq = &v["sequence"].to_string().between("\"", "\"").to_string();
         let length = seq.len();
         let ann = v["annotations"].as_array().unwrap();
-        let chain = ann[0]["feature"]["chain"].to_string().between("\"", "\"").to_string();
+        let chain = ann[0]["feature"]["chain"]
+            .to_string()
+            .between("\"", "\"")
+            .to_string();
         let mut v_gene = String::new();
         let mut d_gene = String::new();
         let mut j_gene = String::new();
@@ -75,9 +81,12 @@ fn main() {
         let reads = v["read_count"].as_i64().unwrap() as usize;
         let umis = v["umi_count"].as_i64().unwrap() as usize;
         let (raw_clonotype_id, raw_consensus_id) = (String::new(), String::new());
-        fwriteln!(csv, "{barcode},{is_cell},{contig_id},{high_confidence},{length},{chain},\
+        fwriteln!(
+            csv,
+            "{barcode},{is_cell},{contig_id},{high_confidence},{length},{chain},\
             {v_gene},{d_gene},{j_gene},{c_gene},{full_length},{productive},{cdr3},{cdr3_nt},\
-            {reads},{umis},{raw_clonotype_id},{raw_consensus_id}");
+            {reads},{umis},{raw_clonotype_id},{raw_consensus_id}"
+        );
         fwriteln!(fasta, ">{contig_id}\n{seq}");
     }
 }
