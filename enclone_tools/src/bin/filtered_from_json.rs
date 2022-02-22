@@ -10,6 +10,14 @@ use serde_json::Value;
 use std::io::{BufReader, Write};
 use string_utils::*;
 
+fn strip(x: &str) -> String {
+    if x == "null" {
+        String::new()
+    } else {
+        x.between("\"", "\"").to_string()
+    }
+}
+
 fn main() {
     PrettyTrace::new().on();
 
@@ -45,39 +53,36 @@ fn main() {
             std::process::exit(1);
         }
         let v = v.unwrap();
-        let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
+        let barcode = strip(&v["barcode"].to_string());
         let is_cell = v["is_cell"].as_bool().unwrap_or(false);
-        let contig_id = &v["contig_name"].to_string().between("\"", "\"").to_string();
+        let contig_id = strip(&v["contig_name"].to_string());
         let high_confidence = v["high_confidence"].as_bool().unwrap_or(false);
-        let seq = &v["sequence"].to_string().between("\"", "\"").to_string();
+        let seq = strip(&v["sequence"].to_string());
         let length = seq.len();
         let ann = v["annotations"].as_array().unwrap();
-        let chain = ann[0]["feature"]["chain"]
-            .to_string()
-            .between("\"", "\"")
-            .to_string();
+        let chain = strip(&ann[0]["feature"]["chain"].to_string());
         let mut v_gene = String::new();
         let mut d_gene = String::new();
         let mut j_gene = String::new();
         let mut c_gene = String::new();
         for j in 0..ann.len() {
             if ann[j]["feature"]["region_type"] == "L-REGION+V-REGION" {
-                v_gene = ann[j]["feature"]["gene_name"].to_string();
+                v_gene = strip(&ann[j]["feature"]["gene_name"].to_string());
             }
             if ann[j]["feature"]["region_type"] == "D-REGION" {
-                d_gene = ann[j]["feature"]["gene_name"].to_string();
+                d_gene = strip(&ann[j]["feature"]["gene_name"].to_string());
             }
             if ann[j]["feature"]["region_type"] == "J-REGION" {
-                j_gene = ann[j]["feature"]["gene_name"].to_string();
+                j_gene = strip(&ann[j]["feature"]["gene_name"].to_string());
             }
             if ann[j]["feature"]["region_type"] == "C-REGION" {
-                c_gene = ann[j]["feature"]["gene_name"].to_string();
+                c_gene = strip(&ann[j]["feature"]["gene_name"].to_string());
             }
         }
         let full_length = v["full_length"].as_bool().unwrap_or(false);
         let productive = v["productive"].as_bool().unwrap_or(false);
-        let cdr3 = &v["cdr3"].to_string().between("\"", "\"").to_string();
-        let cdr3_nt = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
+        let cdr3 = strip(&v["cdr3"].to_string());
+        let cdr3_nt = strip(&v["cdr3_seq"].to_string());
         let reads = v["read_count"].as_i64().unwrap() as usize;
         let umis = v["umi_count"].as_i64().unwrap() as usize;
         let (raw_clonotype_id, raw_consensus_id) = (String::new(), String::new());
