@@ -2,8 +2,6 @@
 //
 // Make filtered_contig.fasta and filtered_contig_annotations.csv from all_contig_annotations.json.
 
-// barcode,is_cell,contig_id,high_confidence,length,chain,v_gene,d_gene,j_gene,c_gene,full_length,productive,fwr1,fwr1_nt,cdr1,cdr1_nt,fwr2,fwr2_nt,cdr2,cdr2_nt,fwr3,fwr3_nt,cdr3,cdr3_nt,fwr4,fwr4_nt,reads,umis,raw_clonotype_id,raw_consensus_id,exact_subclonotype_id
-
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use serde_json::Value;
@@ -53,9 +51,14 @@ fn main() {
             std::process::exit(1);
         }
         let v = v.unwrap();
+        let dataset = strip(&v["dataset"].to_string());
         let barcode = strip(&v["barcode"].to_string());
+        let bc = barcode.before("-");
+        let barcode = format!("{}-{}", bc, dataset);
         let is_cell = v["is_cell"].as_bool().unwrap_or(false);
-        let contig_id = strip(&v["contig_name"].to_string());
+        let mut contig_id = strip(&v["contig_name"].to_string());
+        let contig = contig_id.rev_after("_");
+        contig_id = format!("{}-{}_contig_{}", bc, dataset, contig);
         let high_confidence = v["high_confidence"].as_bool().unwrap_or(false);
         let seq = strip(&v["sequence"].to_string());
         let length = seq.len();
