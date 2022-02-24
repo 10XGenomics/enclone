@@ -137,9 +137,9 @@ CDR3 nucleotide differences.  Let n1 be the nucleotide length of the heavy chain
 likewise n2 for the light chain.  Then N = 80^(42 * (cd1/n1 + cd2/n2)).  The number 80 may be
 alternately specified via <span style="font-weight:bold;">MULT_POW</span> and the number 42 via <span style="font-weight:bold;">CDR3_NORMAL_LEN</span>.
 
-<span style="color:#c23621;font-weight:bold;">9</span>.  We also require CDR3 nucleotide identity of at least 80%.  The number 80 may be alternately
+<span style="color:#c23621;font-weight:bold;">9</span>.  We also require CDR3 nucleotide identity of at least 85%.  The number 85 may be alternately
 set using <span style="font-weight:bold;">JOIN_CDR3_IDENT=...</span>.  The nucleotide identity is computed by dividing cd by the total
-nucleotide length of the heavy and light chains.
+nucleotide length of the heavy and light chains, normalized.
 
 <span style="color:#c23621;font-weight:bold;">10</span>.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
 few CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, and the
