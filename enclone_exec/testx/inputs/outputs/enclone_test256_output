@@ -47,8 +47,11 @@ IGK:CMQTTHWPTWTL;IGH:CAFDFW
 heavy chain FWR1 diffs = 2
 heavy chain CDR1 diffs = 0
 heavy chain CDR2 diffs = 3
+heavy chain CDR3 diffs = 0
 nucleotide identity on heavy chain FWR1 = 97.3%
 nucleotide identity on heavy chain CDR1-2 = 92.3%
+nucleotide identity on heavy chain CDR2-3 = 91.7%
+nucleotide identity on heavy chain CDR3 = 100.0%
 p1 = prob of getting so many shares by accident = 0.0000016600942157683246
 computed using k = 33, d = 5, n = 2373
 mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = 27576.76403240813
