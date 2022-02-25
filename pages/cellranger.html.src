@@ -202,7 +202,7 @@ gene copies from the reference that were identical except for extension on the 3
 </tr>
 
 <tr>
-<td> Feb. 14, 2022 </td>
+<td> Feb. 24, 2022 </td>
 <td> <code>******</code> </td>
 <td> TBD </td>
 <td>
@@ -217,6 +217,8 @@ then the join is rejected.
 <br>
 2. If the percent nucleotide identity on heavy chain FWR1 is at least 20 more than the percent
 nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is rejected.
+<br>
+3. Change the default for <code>JOIN_CDR3_IDENT</code> from <code>80</code> to <code>85</code>.
 </td>
 </tr>
 

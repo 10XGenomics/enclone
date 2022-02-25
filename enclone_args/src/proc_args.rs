@@ -145,7 +145,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.max_cdr3_diffs = 1000;
     ctl.join_alg_opt.cdr3_mult = 5.0;
     ctl.join_alg_opt.mult_pow = 80.0;
-    ctl.join_alg_opt.join_cdr3_ident = 80.0;
+    ctl.join_alg_opt.join_cdr3_ident = 85.0;
     ctl.join_alg_opt.fwr1_cdr12_delta = 20.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
     ctl.join_alg_opt.auto_share = 15;

@@ -39,7 +39,7 @@ io_utils = "0.3"
 itertools = "0.10"
 mirror_sparse_matrix = "0.1"
 ndarray = "0.15"
-permutation = "0.2"
+permutation = "0.4"
 pretty_trace = "0.5"
 qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"

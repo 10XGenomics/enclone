@@ -30,6 +30,20 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>2/25/22</b>: 
+<ul>
+<li>
+For the <code>medium</code> and <code>large</code> #enclone installation 
+options, some published customer datasets are now included, from LIBRA-seq and for Kawasaki 
+disease, Wang et al. 2021 Nature Communications,
+"Single-cell RNA sequencing of peripheral blood mononuclear cells from acute
+Kawasaki disease patients".
+</li>
+<li>Change the default for <code>JOIN_CDR3_IDENT</code> from <code>80</code>
+to <code>85</code>.</li>
+</ul>
+</p>
+
 <p><b>2/18/22</b>: Introducing #enclone_visual!  This is <b>alpha</b> software for a
 graphic user interface (GUI) for #enclone, that is implemented initially for Macs.  
 Please see <a href="../../pages/auto/visual.html">#enclone_visual</a>.</p>

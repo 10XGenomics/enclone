@@ -26,7 +26,9 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
+dna = "0.1"
 enclone_core = { path = "../enclone_core" }
+enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }
 enclone_print = { path = "../enclone_print" }
@@ -68,14 +70,15 @@ objc = "0.2"
 pager = "0.16"
 palette = "0.6"
 perf_stats = "0.1"
-permutation = "0.2"
+permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
 pprof = "0.6"
 pretty_trace = "0.5"
 procfs = { version = "0.12", default_features = false }
-# enclone will compile without the std and prost-derive features, but other things (such as enclone_proto) break.
+# prost: enclone will compile without the std and prost-derive features, but other things
+#        (such as enclone_proto) break.
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
 qd = { git = "https://github.com/Barandis/qd" }

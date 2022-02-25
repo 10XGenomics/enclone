@@ -1,5 +1,27 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// Fields that are used in all_contig_annotations.json:
+// • barcode
+// • is_cell and is_asm_cell -- both are optional, but at least one needs to be present and
+//   true for a cell called by the VDJ pipeline
+// • is_gex_cell -- optional
+// • productive -- optional but should be true for contigs to be used
+// • high_confidence -- optional but should be true for contigs to be used
+// • contig_name
+// • sequence
+// • version -- optional
+// • validated_umis -- optional
+// • non_validated_umis -- optional
+// • invalidated_umis -- optional
+// • fraction_of_reads_for_this_barcode_provided_as_input_to_assembly -- optional
+// • quals
+// • umi_count
+// • read_count
+// • cdr3, unless in reannotate mode
+// • cdr3_seq, unless in reannotate mode
+// • cdr3_start, unless in reannotate mode
+// • annotations, unless in reannotate mode.
+
 use self::annotate::{annotate_seq, get_cdr3_using_ann, print_some_annotations};
 use self::refx::RefData;
 use self::transcript::is_valid;

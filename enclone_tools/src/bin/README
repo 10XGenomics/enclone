@@ -1,0 +1,62 @@
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+1. utilities for building or testing or releasing enclone
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+build_help_pages               build help pages for enclone site
+cargo_update_safe              update crate versions
+check_masters                  find inconsistencies between master.toml files
+dup_crates                     find duplicated crates
+merge_html                     built html files for the 10x site
+release_nanny                  used by release process
+review_main_tests              walk through main tests and allow results changes
+run_last_test                  if you've just added a main test
+rustfmt_del                    fast formatting of everything
+start_release                  used to start release process
+sync_to_master                 changes Cargo.toml files to match master.toml
+update_all_main_tests          update all main tests, use with caution
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+2. programs for making all_contig_annotations.json or converting it
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+json_from_filtered             make all_contig_annotations.json from filtered contig files
+filtered_from_json             make filtered contig files from all_contig_annotations.json
+minimal_fail                   shrink all_contig_annotations.json to find a minimal fail
+shrink_json                    remove some fields that are not needed by enclone
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+3. programs for working working with VDJ features
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+cdr_truth_data                 create truth data for CDR regions
+print_mammalian_fixed_len      print mammalian fixed len table as input to mammalian_fixed_len.rs
+print_mammalian_pwms           print mammalian fixed pwms table as input to mammalian_pwms.rs
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+4. other programs
+
+PROGRAM                        PURPOSE
+------------------------------------------------------------------------------
+annotate_seq                   annotate a VDJ contig
+annotate_seqs                  annotate some VDJ contigs
+assess_immcantation            assess the output of immcantation
+convert_fasta                  convert fasta to binary Vec<Vec<u8>>
+copy_for_enclone               import data from 10x pipeline
+diff_enclone_ann               diff two enclone runs in which annotation was different
+diff_enclone                   diff two enclone runs in which clonotyping was different
+display_csv                    make human readable output of a CSV file
+fetch_barcode_reads            fetch raw reads for a given barcode
+expand_ranges                  expand integer ranges
+import_data                    import data from 10x pipeline
+melt                           temporary code for playing with melting temperatures
+mine_abybank                   extract some summary data from an abybank download
+shrink_fasta                   contract long runs of Ns in a fasta file
+test_expr                      experimental code for working with eval_expr

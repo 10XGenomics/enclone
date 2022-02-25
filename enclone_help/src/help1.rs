@@ -306,10 +306,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              N = 80^(42 * (cd1/n1 + cd2/n2)).  The number 80 may be alternately specified via \
              \\bold{MULT_POW} and the number 42 via \\bold{CDR3_NORMAL_LEN}.\n\n\
              \
-             \\boldred{9}.  We also require CDR3 nucleotide identity of at least 80%.  The number \
-             80 may be alternately set using \\bold{JOIN_CDR3_IDENT=...}.  The nucleotide identity \
+             \\boldred{9}.  We also require CDR3 nucleotide identity of at least 85%.  The number \
+             85 may be alternately set using \\bold{JOIN_CDR3_IDENT=...}.  The nucleotide identity \
              is computed by dividing cd by the total nucleotide length of the heavy and light \
-             chains.\n\n\
+             chains, normalized.\n\n\
              \
              \\boldred{10}.  Key join criteria.  \
              Two cells sharing sufficiently many shared differences and sufficiently few \

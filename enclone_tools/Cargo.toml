@@ -22,11 +22,14 @@ publish = false
 [dependencies]
 ansi_escape = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
+binary_vec_io = "0.1"
 bio_edit = "0.1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
+dna = "0.1"
 enclone = { path = "../enclone" }
 enclone_core = { path = "../enclone_core" }
+enclone_denovo = { path = "../enclone_denovo" }
 equiv = "0.1"
 evalexpr = "7"
 expr_tools = "0.1"
@@ -44,6 +47,7 @@ pretty_trace = "0.5"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
+tables = "0.1"
 stats_utils = "0.1"
 string_utils = "0.1"
 vdj_ann = "0.4"

@@ -362,8 +362,8 @@ pub fn join_exacts(
             // Compute heavy chain FWR1, CDR1 and CDR2 nucleotide diffs.
 
             let nchains = info[k1].lens.len();
-            let (mut fwr1_len, mut cdr1_len, mut cdr2_len) = (0, 0, 0);
-            let (mut fwr1_diffs, mut cdr1_diffs, mut cdr2_diffs) = (0, 0, 0);
+            let (mut fwr1_len, mut cdr1_len, mut cdr2_len, mut cdr3_len) = (0, 0, 0, 0);
+            let (mut fwr1_diffs, mut cdr1_diffs, mut cdr2_diffs, mut cdr3_diffs) = (0, 0, 0, 0);
             for m in 0..nchains {
                 let (j1, j2) = (info[k1].exact_cols[m], info[k2].exact_cols[m]);
                 let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
@@ -434,6 +434,24 @@ pub fn join_exacts(
                             }
                         }
                     }
+                    let cdr3_start1 = x1.cdr3_start;
+                    let cdr3_stop1 = cdr3_start1 + x1.cdr3_aa.len() * 3;
+                    let cdr3_start2 = x2.cdr3_start;
+                    let cdr3_stop2 = x2.cdr3_start + x2.cdr3_aa.len() * 3;
+                    let len = cdr3_stop1 - cdr3_start1;
+                    if cdr3_stop2 - cdr3_start2 == len {
+                        let mut diffs = 0;
+                        for p in 0..len {
+                            if x1.seq_del_amino[p + cdr3_start1]
+                                != x2.seq_del_amino[p + cdr3_start2]
+                            {
+                                diffs += 1;
+                            }
+                        }
+                        fwriteln!(log, "heavy chain CDR3 diffs = {}", diffs);
+                        cdr3_len = len;
+                        cdr3_diffs = diffs;
+                    }
                 }
             }
             if fwr1_len > 0 {
@@ -451,6 +469,24 @@ pub fn join_exacts(
                 fwriteln!(
                     log,
                     "nucleotide identity on heavy chain CDR1-2 = {:.1}%",
+                    100.0 * (len - diffs) as f64 / len as f64
+                );
+            }
+            if cdr2_len > 0 && cdr3_len > 0 {
+                let len = cdr2_len + cdr3_len;
+                let diffs = cdr2_diffs + cdr3_diffs;
+                fwriteln!(
+                    log,
+                    "nucleotide identity on heavy chain CDR2-3 = {:.1}%",
+                    100.0 * (len - diffs) as f64 / len as f64
+                );
+            }
+            if cdr3_len > 0 {
+                let len = cdr3_len;
+                let diffs = cdr3_diffs;
+                fwriteln!(
+                    log,
+                    "nucleotide identity on heavy chain CDR3 = {:.1}%",
                     100.0 * (len - diffs) as f64 / len as f64
                 );
             }
