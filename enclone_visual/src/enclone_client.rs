@@ -588,6 +588,9 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             if remote_id.is_none() {
                 xprintln!("\nUnable to determine remote process id.\n");
                 xprintln!("message =\n\"{}\"", emsg);
+                xprintln!("\nOne possibility is that you have something in your ~/.bashrc that \
+                    should be in your ~/.bash_profile.\n"
+                );
                 std::process::exit(1);
             }
             let remote_version;
