@@ -18,8 +18,6 @@ pub fn join_core(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
-    pair_freq: &HashMap<(String, String), f64>,
-    observed_pair_freq: &HashMap<(String, String), f64>,
 ) {
     let mut eq: EquivRel = EquivRel::new((j - i) as i32);
     for k1 in i..j {
@@ -44,8 +42,6 @@ pub fn join_core(
                 sr,
                 pot,
                 &refdata,
-                pair_freq,
-                observed_pair_freq,
             ) {
                 eq.join((k1 - i) as i32, (k2 - i) as i32);
             }

@@ -75,8 +75,6 @@ pub fn join_one(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
-    pair_freq: &HashMap<(String, String), f64>,
-    observed_pair_freq: &HashMap<(String, String), f64>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -524,70 +522,7 @@ pub fn join_one(
 
     // Compute score.
 
-    let mut score = p1 * mult;
-
-    // Upgrade based on pair frequencies.
-
-    let mut names1 = (String::new(), String::new());
-    let mut names2 = (String::new(), String::new());
-    for i in 0..info[k1].cdr3s.len() {
-        let (j1, j2) = (info[k1].exact_cols[i], info[k2].exact_cols[i]);
-        let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
-        let (v1, v2) = (x1.v_ref_id, x2.v_ref_id);
-        let (mut n1, mut n2) = (refdata.name[v1].clone(), refdata.name[v2].clone());
-        if n1.contains("*") {
-            n1 = n1.before("*").to_string();
-        }
-        if n2.contains("*") {
-            n2 = n2.before("*").to_string();
-        }
-        if i == 0 {
-            names1.0 = n1.to_string();
-            names2.0 = n2.to_string();
-        } else {
-            names1.1 = n1.to_string();
-            names2.1 = n2.to_string();
-        }
-    }
-    let mut freq1 = 0.0;
-    if pair_freq.contains_key(&names1) {
-        freq1 = pair_freq[&names1];
-    }
-    let mut freq2 = 0.0;
-    if pair_freq.contains_key(&names2) {
-        freq2 = pair_freq[&names2];
-    }
-    let mut expected_freq = freq1.max(freq2);
-    if expected_freq == 0.0 {
-        expected_freq = 1.0;
-    }
-    let mut freq1 = 0.0;
-    if observed_pair_freq.contains_key(&names1) {
-        freq1 = observed_pair_freq[&names1];
-    }
-    let mut freq2 = 0.0;
-    if observed_pair_freq.contains_key(&names2) {
-        freq2 = observed_pair_freq[&names2];
-    }
-    let observed_freq = freq1.max(freq2);
-
-    let ratio = observed_freq / expected_freq;
-
-    /*
-    if names1.0 == "IGHV4-30-4" && names1.1 == "IGKV4-1" {
-        println!("{}, {} ==> observed = {}, expected = {}, ratio = {}", names1.0, names1.1, observed_freq, expected_freq, ratio);
-    }
-    */
-
-    if observed_freq >= 200.0 && ratio >= 1.4 {
-        score /= 1000.0;
-    }
-
-    /*
-    if ratio > 1.0 {
-        score /= (ratio * ratio);
-    }
-    */
+    let score = p1 * mult;
 
     // Threshold on score.
 

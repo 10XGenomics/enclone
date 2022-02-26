@@ -130,8 +130,6 @@ pub fn define_mat(
     //   equivalence relation was built.  This we address partially.
 
     let mut extras = Vec::<(usize, usize)>::new();
-    let pair_freq = HashMap::<(String, String), f64>::new();
-    let observed_pair_freq = HashMap::<(String, String), f64>::new();
     for i1 in 0..raw_joinsx.len() {
         for i2 in raw_joinsx[i1].iter() {
             let i2 = *i2;
@@ -164,8 +162,6 @@ pub fn define_mat(
                                 sr,
                                 &mut pot,
                                 &refdata,
-                                &pair_freq,
-                                &observed_pair_freq,
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -245,8 +241,6 @@ pub fn define_mat(
                     sr,
                     &mut pot,
                     &refdata,
-                    &pair_freq,
-                    &observed_pair_freq,
                 ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);
