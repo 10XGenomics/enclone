@@ -24,6 +24,7 @@ use std::cmp::min;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
+use string_utils::TextUtils;
 use vector_utils::{bin_member, erase_if, next_diff1_2};
 
 pub fn join_exacts(
@@ -37,9 +38,73 @@ pub fn join_exacts(
     raw_joins: &mut Vec<(i32, i32)>,
     sr: &Vec<Vec<Double>>,
 ) -> EquivRel {
-    // Run special option for joining by barcode identity.
 
     let timer1 = Instant::now();
+
+    // Load V gene pair frequencies.
+    //
+    // Generated from training data by:
+    // enclone BIB=1-3,5-9,11-12,14-16,18-39 MIN_CHAINS_EXACT=2 CHAINS=2 BUILT_IN NOPRINT 
+    //         POUT=stdout PCOLS=v_name1,v_name2 
+    //         | grep -v v_name | sort | uniq -c | sed -e 's/^[ \t]*//' | tr ' ' ',' 
+    //         > v_gene_pair_freqs
+    //
+    // Note that if the references is changed, this has to be changed too.
+    //
+    // Note that this only works for human!
+
+    let mut observed = Vec::<(String, String)>::new();
+    for ex in exact_clonotypes.iter() {
+        if ex.share.len() == 2 {
+            let mut heavy = String::new();
+            let mut light = String::new();
+            for j in 0..2 {
+                if ex.share[j].left {
+                    heavy = refdata.name[ex.share[j].v_ref_id].clone();
+                    if heavy.contains("*") {
+                        heavy = heavy.before("*").to_string();
+                    }
+                } else {
+                    light = refdata.name[ex.share[j].v_ref_id].clone();
+                    if light.contains("*") {
+                        light = light.before("*").to_string();
+                    }
+                }
+            }
+            observed.push((heavy, light));
+        }
+    }
+    observed.sort();
+    let mut observed_pair_freq = HashMap::<(String, String), f64>::new();
+    let mut i = 0;
+    while i < observed.len() {
+        let mut j = i + 1;
+        while j < observed.len() {
+            if observed[j] != observed[i] {
+                break;
+            }
+            j += 1;
+        }
+        observed_pair_freq.insert(observed[i].clone(), (j - i) as f64);
+        i = j;
+    }
+    let mut pair_freq = HashMap::<(String, String), f64>::new();
+    let freqs = include_str!["v_gene_pair_freqs"];
+    let mut total = 0;
+    for line in freqs.lines() {
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let count = fields[0].force_usize();
+        total += count;
+    }
+    for line in freqs.lines() {
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let count = fields[0].force_usize();
+        let (heavy, light) = (fields[1].to_string(), fields[2].to_string());
+        pair_freq.insert((heavy, light), count as f64 * observed.len() as f64 / total as f64);
+    }
+
+    // Run special option for joining by barcode identity.
+
     if ctl.join_alg_opt.bcjoin {
         let mut eq: EquivRel = EquivRel::new(info.len() as i32);
         let mut bcx = Vec::<(String, usize)>::new(); // {(barcode, info_index)}
@@ -136,6 +201,8 @@ pub fn join_exacts(
             sr,
             &mut pot,
             &refdata,
+            &pair_freq,
+            &observed_pair_freq,
         );
 
         // Run two passes.
