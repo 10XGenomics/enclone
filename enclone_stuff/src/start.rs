@@ -677,10 +677,10 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
         let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
         println!(
-            "estimated number of false intradonor merges = {}\n",
+            "estimated number of false intradonor merges = {}",
             add_commas(bogus.round() as usize)
         );
-        println!("number of mixed clonotypes = {}", mixed_clonotypes);
+        println!("number of mixed clonotypes = {}\n", mixed_clonotypes);
         std::process::exit(0);
     }
 
