@@ -582,6 +582,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         let mut mixes = 0;
         let mut mixed_clonotypes = 0;
         let mut mixed_clonotype_sizes = 0;
+        let mut cells1 = 0;
+        let mut clonotypes1 = 0;
         let mut cells2 = 0;
         let mut clonotypes2 = 0;
         let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
@@ -603,6 +605,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
         for i in 0..exacts.len() {
             let mut mixed = false;
+            clonotypes1 += 1;
+            cells1 += n[i];
             if ctl.gen_opt.pre_eval_show && n[i] > 1 {
                 println!("\nclonotype");
                 clonotypes2 += 1;
@@ -717,6 +721,10 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             100.0 * mixed_clonotypes as f64 / clonotypes2 as f64
         );
         println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}");
+        println!("total number of cells in clonotypes = {cells1}");
+        println!("mean clonotype size = {:.3}",
+            cells1 as f64 / clonotypes1 as f64
+        );
         println!("mean non-single-cell clonotype size = {:.3}\n",
             cells2 as f64 / clonotypes2 as f64
         );
