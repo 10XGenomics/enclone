@@ -713,8 +713,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             add_commas(bogus.round() as usize)
         );
         println!("number of mixed clonotypes = {mixed_clonotypes}");
-        println!("fraction of non-single-cell mixed clonotypes = {:.1}",
-            mixed_clonotypes as f64 / clonotypes2 as f64
+        println!("percent of non-single-cell mixed clonotypes = {:.1}",
+            100.0 * mixed_clonotypes as f64 / clonotypes2 as f64
         );
         println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}");
         println!("mean non-single-cell clonotype size = {:.3}\n",
