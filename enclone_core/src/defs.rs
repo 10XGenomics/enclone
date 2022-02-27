@@ -244,6 +244,7 @@ pub struct GeneralOpt {
     pub all_bc_fields_orig: Vec<String>,
     pub gamma_delta: bool,
     pub pre_eval: bool,
+    pub pre_eval_show: bool,
     pub external_ref: String,
     pub fails_only: bool,
 }
@@ -321,7 +322,6 @@ pub struct JoinAlgOpt {
     pub mult_pow: f64,
     pub old_light: bool,
     pub basic_h: Option<f64>,
-    pub basic_h_show: bool,
     pub basic: Option<f64>,
     pub basicx: bool,
     pub join_full_diff: bool,
