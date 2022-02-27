@@ -708,7 +708,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             "estimated number of false intradonor merges = {}",
             add_commas(bogus.round() as usize)
         );
-        println!("number of mixed clonotypes = {mixed_clonotypes}\n");
+        println!("number of mixed clonotypes = {mixed_clonotypes}");
         println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}\n");
         std::process::exit(0);
     }
