@@ -581,6 +581,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         let mut merges2 = 0;
         let mut mixes = 0;
         let mut mixed_clonotypes = 0;
+        let mut mixed_clonotype_sizes = 0;
         let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
 
         // Reverse sort clonotypes by size.
@@ -676,6 +677,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
             if mixed {
                 mixed_clonotypes += 1;
+                mixed_clonotype_sizes += n[i];
             }
         }
         let mut cross = 0;
@@ -705,7 +707,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             "estimated number of false intradonor merges = {}",
             add_commas(bogus.round() as usize)
         );
-        println!("number of mixed clonotypes = {}\n", mixed_clonotypes);
+        println!("number of mixed clonotypes = {mixed_clonotypes}\n");
+        println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}\n");
         std::process::exit(0);
     }
 
