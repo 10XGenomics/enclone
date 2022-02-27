@@ -595,6 +595,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
         sort_sync2(&mut n, &mut exacts);
         exacts.reverse();
+        n.reverse();
 
         // Process clonotypes.
 
