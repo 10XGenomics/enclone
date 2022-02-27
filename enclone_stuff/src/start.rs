@@ -582,9 +582,35 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         let mut mixes = 0;
         let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
         for i in 0..exacts.len() {
+            if ctl.join_alg_opt.basic_h_show && exacts[i].len() > 1 {
+                println!("\nclonotype");
+            }
             let mut cells_by_donor_this = vec![0; ctl.origin_info.donor_list.len()];
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
+                if ctl.join_alg_opt.basic_h_show && exacts[i].len() > 1 {
+                    let donor = ex.clones[0][0].donor_index;
+                    if donor.is_some() {
+                        print!("{}   ", ctl.origin_info.donor_list[donor.unwrap()]);
+                    }
+                    for k in 0..ex.share.len() {
+                        if ex.share[k].left {
+                            print!("{},{}\t",
+                                refdata.name[ex.share[k].v_ref_id],
+                                refdata.name[ex.share[k].j_ref_id]
+                            );
+                        }
+                    }
+                    for k in 0..ex.share.len() {
+                        if !ex.share[k].left {
+                            print!("{},{}\t",
+                                refdata.name[ex.share[k].v_ref_id],
+                                refdata.name[ex.share[k].j_ref_id]
+                            );
+                        }
+                    }
+                    println!("");
+                }
                 for k in 0..ex.clones.len() {
                     let x = &ex.clones[k][0];
                     if x.donor_index.is_some() {
