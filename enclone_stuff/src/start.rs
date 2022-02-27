@@ -636,6 +636,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                 }
             }
+            let mut mixes_this = 0;
             if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
                 for j1 in 0..exacts[i].len() {
                     let ex1 = &exact_clonotypes[exacts[i][j1]];
@@ -648,6 +649,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                                     let x2 = &ex2.clones[k2][0];
                                     if x1.donor_index.is_some() && x2.donor_index.is_some() {
                                         if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                            mixes_this += 1;
                                             mixes += 1;
                                             mixed = true;
                                         }
@@ -658,11 +660,19 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                 }
             }
+            if ctl.gen_opt.pre_eval_show && exacts[i].len() > 1 {
+                println!("mixes = {mixes_this}");
+            }
+            let mut merges2_this = 0;
             for j in 0..cells_by_donor_this.len() {
                 let n = cells_by_donor_this[j];
                 if n > 1 {
+                    merges2_this += (n * (n - 1)) / 2;
                     merges2 += (n * (n - 1)) / 2;
                 }
+            }
+            if ctl.gen_opt.pre_eval_show && exacts[i].len() > 1 {
+                println!("merges = {merges2_this}");
             }
             if mixed {
                 mixed_clonotypes += 1;
