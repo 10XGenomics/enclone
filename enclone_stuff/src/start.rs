@@ -32,7 +32,7 @@ use std::{
     time::Instant,
 };
 use string_utils::add_commas;
-use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
+use vector_utils::{bin_member, erase_if, next_diff12_3, sort_sync2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -582,6 +582,21 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         let mut mixes = 0;
         let mut mixed_clonotypes = 0;
         let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
+
+        // Reverse sort clonotypes by size.
+
+        let mut n = vec![0; exacts.len()];
+        for i in 0..exacts.len() {
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                n[i] += ex.ncells();
+            }
+        }
+        sort_sync2(&mut n, &mut exacts);
+        exacts.reverse();
+
+        // Process clonotypes.
+
         for i in 0..exacts.len() {
             let mut mixed = false;
             if ctl.gen_opt.pre_eval_show && exacts[i].len() > 1 {
