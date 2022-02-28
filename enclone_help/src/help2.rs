@@ -54,9 +54,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              cells.\n\
              • This clonotype has two chains.  The reference segments for them are shown at \
              the top.\n\
-             • The notation 181.1.1 says that this V reference sequence is an alternate allele\n  \
+             • The notation 740.1.2 says that this V reference sequence is an alternate allele\n  \
              derived from the universal reference sequence (contig in the reference file)\n  \
-             numbered 181, that is from donor 1 (\"181.1\") and is alternate allele 1 for that \
+             numbered 181, that is from donor 1 (\"740.1\") and is alternate allele 2 for that \
              donor.\n\
              • Sometimes chains are missing from exact subclonotypes.\n\
              • Amino acids are assigned different colors depending on which codon they represent.\n\
@@ -242,6 +242,18 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              variables, but values are only displayed in \\bold{PER_CELL} mode, or for parseable \
              output using \\bold{PCELL}.  These fields should not include existing lead variable \
              names.  Use of \\bold{BC} automatically turns on the \\bold{MIX_DONORS} option.\n\n",
+        )?;
+        h.print(
+            "Alternatively, an argument \\bold{BC_JOINT=filename} may be specified, where the \
+            filename is a CSV or TSV file like those for \\bold{BC=...}, but with an additional \
+            field \\bold{dataset}, whose value is an abbreviated dataset name, and which enables \
+            the information to be split up to mirror the \
+            specification of \\bold{TCR} or \\bold{BCR}.\n\n",
+        )?;
+        h.print(
+            "The argument \\bold{BC=...} or equivalently \\bold{BC_JOINT=filename} may be used \
+            on conjunction with\n\\bold{KEEP_CELL_IF=...} (see \"enclone help special\") to \
+            restrict the barcodes used by enclone to a specified set.\n\n",
         )?;
         h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n")?;
         h.print("\\bold{META=filename}\n")?;

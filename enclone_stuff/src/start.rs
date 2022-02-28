@@ -32,7 +32,7 @@ use std::{
     time::Instant,
 };
 use string_utils::add_commas;
-use vector_utils::{bin_member, erase_if, next_diff12_3, unique_sort};
+use vector_utils::{bin_member, erase_if, next_diff12_3, sort_sync2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -580,11 +580,68 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         }
         let mut merges2 = 0;
         let mut mixes = 0;
+        let mut mixed_clonotypes = 0;
+        let mut mixed_clonotype_sizes = 0;
+        let mut cells1 = 0;
+        let mut clonotypes1 = 0;
+        let mut cells2 = 0;
+        let mut clonotypes2 = 0;
         let mut cells_by_donor = vec![0 as usize; ctl.origin_info.donor_list.len()];
+
+        // Reverse sort clonotypes by size.
+
+        let mut n = vec![0; exacts.len()];
         for i in 0..exacts.len() {
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                n[i] += ex.ncells();
+            }
+        }
+        sort_sync2(&mut n, &mut exacts);
+        exacts.reverse();
+        n.reverse();
+
+        // Process clonotypes.
+
+        for i in 0..exacts.len() {
+            let mut mixed = false;
+            clonotypes1 += 1;
+            cells1 += n[i];
+            if n[i] >= 2 {
+                clonotypes2 += 1;
+            }
+            cells2 += n[i];
+            if ctl.gen_opt.pre_eval_show && n[i] > 1 {
+                println!("\nclonotype");
+            }
             let mut cells_by_donor_this = vec![0; ctl.origin_info.donor_list.len()];
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
+                if ctl.gen_opt.pre_eval_show && n[i] > 1 {
+                    let donor = ex.clones[0][0].donor_index;
+                    if donor.is_some() {
+                        print!("{}   ", ctl.origin_info.donor_list[donor.unwrap()]);
+                    }
+                    for k in 0..ex.share.len() {
+                        if ex.share[k].left {
+                            print!(
+                                "{},{}\t",
+                                refdata.name[ex.share[k].v_ref_id],
+                                refdata.name[ex.share[k].j_ref_id]
+                            );
+                        }
+                    }
+                    for k in 0..ex.share.len() {
+                        if !ex.share[k].left {
+                            print!(
+                                "{},{}\t",
+                                refdata.name[ex.share[k].v_ref_id],
+                                refdata.name[ex.share[k].j_ref_id]
+                            );
+                        }
+                    }
+                    println!("");
+                }
                 for k in 0..ex.clones.len() {
                     let x = &ex.clones[k][0];
                     if x.donor_index.is_some() {
@@ -593,6 +650,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                 }
             }
+            let mut mixes_this = 0;
             if ctl.origin_info.donor_list.len() > 1 && ctl.clono_filt_opt_def.donor {
                 for j1 in 0..exacts[i].len() {
                     let ex1 = &exact_clonotypes[exacts[i][j1]];
@@ -605,7 +663,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                                     let x2 = &ex2.clones[k2][0];
                                     if x1.donor_index.is_some() && x2.donor_index.is_some() {
                                         if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                            mixes_this += 1;
                                             mixes += 1;
+                                            mixed = true;
                                         }
                                     }
                                 }
@@ -614,11 +674,23 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                 }
             }
+            if ctl.gen_opt.pre_eval_show && exacts[i].len() > 1 {
+                println!("mixes = {mixes_this}");
+            }
+            let mut merges2_this = 0;
             for j in 0..cells_by_donor_this.len() {
                 let n = cells_by_donor_this[j];
                 if n > 1 {
+                    merges2_this += (n * (n - 1)) / 2;
                     merges2 += (n * (n - 1)) / 2;
                 }
+            }
+            if ctl.gen_opt.pre_eval_show && exacts[i].len() > 1 {
+                println!("merges = {merges2_this}");
+            }
+            if mixed {
+                mixed_clonotypes += 1;
+                mixed_clonotype_sizes += n[i];
             }
         }
         let mut cross = 0;
@@ -645,8 +717,23 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
         let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
         println!(
-            "estimated number of false intradonor merges = {}\n",
+            "estimated number of false intradonor merges = {}",
             add_commas(bogus.round() as usize)
+        );
+        println!("number of mixed clonotypes = {mixed_clonotypes}");
+        println!(
+            "percent of non-single-cell mixed clonotypes = {:.2}",
+            100.0 * mixed_clonotypes as f64 / clonotypes2 as f64
+        );
+        println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}");
+        println!("total number of cells in clonotypes = {cells1}");
+        println!(
+            "mean clonotype size = {:.3}",
+            cells1 as f64 / clonotypes1 as f64
+        );
+        println!(
+            "mean non-single-cell clonotype size = {:.3}\n",
+            cells2 as f64 / clonotypes2 as f64
         );
         std::process::exit(0);
     }

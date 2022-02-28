@@ -1,4 +1,4 @@
-// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 
 use crate::proc_args2::proc_args_tail;
 use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
@@ -8,12 +8,156 @@ use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
-
+use std::collections::HashMap;
 use std::io::BufRead;
 use std::time::Instant;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
 use vector_utils::{bin_member, next_diff, sort_sync2, unique_sort};
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Parse joint barcode-level information file from BC_JOINT.
+
+fn parse_bc_joint(ctl: &mut EncloneControl) -> Result<(), String> {
+    let bc = &ctl.gen_opt.bc_joint;
+    let delimiter;
+    if bc.ends_with(".tsv") {
+        delimiter = '\t';
+    } else {
+        delimiter = ',';
+    }
+    let n = ctl.origin_info.n();
+    let mut origin_for_bc = vec![HashMap::<String, String>::new(); n];
+    let mut donor_for_bc = vec![HashMap::<String, String>::new(); n];
+    let mut tag = vec![HashMap::<String, String>::new(); n];
+    let mut barcode_color = vec![HashMap::<String, String>::new(); n];
+    let mut alt_bc_fields = vec![Vec::<(String, HashMap<String, String>)>::new(); n];
+    let f = open_userfile_for_read(&bc);
+    let mut first = true;
+    let mut fieldnames = Vec::<String>::new();
+    let mut dataset_pos = 0;
+    let mut barcode_pos = 0;
+    let (mut origin_pos, mut donor_pos, mut tag_pos, mut color_pos) = (None, None, None, None);
+    let mut to_alt = Vec::<isize>::new();
+    let mut to_origin_pos = HashMap::<String, usize>::new();
+    for i in 0..ctl.origin_info.n() {
+        to_origin_pos.insert(ctl.origin_info.dataset_id[i].clone(), i);
+    }
+    for line in f.lines() {
+        let s = line.unwrap();
+        if first {
+            let fields = s.split(delimiter).collect::<Vec<&str>>();
+            to_alt = vec![-1_isize; fields.len()];
+            if !fields.contains(&"dataset") {
+                return Err(format!(
+                    "\nThe file\n{}\nis missing the dataset field.\n",
+                    bc,
+                ));
+            }
+            if !fields.contains(&"barcode") {
+                return Err(format!(
+                    "\nThe file\n{}\nis missing the barcode field.\n",
+                    bc,
+                ));
+            }
+            for x in fields.iter() {
+                fieldnames.push(x.to_string());
+            }
+            for i in 0..fields.len() {
+                if fields[i] == "color" {
+                    color_pos = Some(i);
+                }
+                if fields[i] == "barcode" {
+                    barcode_pos = i;
+                } else if fields[i] == "dataset" {
+                    dataset_pos = i;
+                } else if fields[i] == "origin" {
+                    origin_pos = Some(i);
+                } else if fields[i] == "donor" {
+                    donor_pos = Some(i);
+                } else if fields[i] == "tag" {
+                    tag_pos = Some(i);
+                } else {
+                    to_alt[i] = alt_bc_fields[0].len() as isize;
+                    for li in 0..ctl.origin_info.n() {
+                        alt_bc_fields[li]
+                            .push((fields[i].to_string(), HashMap::<String, String>::new()));
+                    }
+                }
+            }
+            first = false;
+        } else {
+            let fields = s.split(delimiter).collect::<Vec<&str>>();
+            if fields.len() != fieldnames.len() {
+                return Err(format!(
+                    "\nThere is a line\n{}\nin {}\n\
+                     that has {} fields, which isn't right, because the header line \
+                     has {} fields.\n",
+                    s,
+                    bc,
+                    fields.len(),
+                    fieldnames.len(),
+                ));
+            }
+            let dataset = fields[dataset_pos].to_string();
+            if !to_origin_pos.contains_key(&dataset) {
+                return Err(format!(
+                    "\nIn the file\n{},\nthe value\n{}\nis found for dataset, however that is \
+                     not an abbreviated dataset name.\n",
+                    bc, dataset,
+                ));
+            }
+            let li = to_origin_pos[&dataset];
+            for i in 0..fields.len() {
+                if to_alt[i] >= 0 {
+                    alt_bc_fields[li][to_alt[i] as usize]
+                        .1
+                        .insert(fields[barcode_pos].to_string(), fields[i].to_string());
+                }
+            }
+            if !fields[barcode_pos].contains('-') {
+                return Err(format!(
+                    "\nThe barcode \"{}\" appears in the file\n{}.\n\
+                     That doesn't make sense because a barcode\nshould include a hyphen.\n",
+                    fields[barcode_pos], bc,
+                ));
+            }
+
+            if origin_pos.is_some() {
+                origin_for_bc[li].insert(
+                    fields[barcode_pos].to_string(),
+                    fields[origin_pos.unwrap()].to_string(),
+                );
+            }
+            if donor_pos.is_some() {
+                donor_for_bc[li].insert(
+                    fields[barcode_pos].to_string(),
+                    fields[donor_pos.unwrap()].to_string(),
+                );
+            }
+            if tag_pos.is_some() {
+                let tag_pos = tag_pos.unwrap();
+                tag[li].insert(fields[barcode_pos].to_string(), fields[tag_pos].to_string());
+            }
+            if color_pos.is_some() {
+                let color_pos = color_pos.unwrap();
+                barcode_color[li].insert(
+                    fields[barcode_pos].to_string(),
+                    fields[color_pos].to_string(),
+                );
+            }
+        }
+    }
+    ctl.origin_info.origin_for_bc = origin_for_bc;
+    ctl.origin_info.donor_for_bc = donor_for_bc;
+    ctl.origin_info.tag = tag;
+    ctl.origin_info.barcode_color = barcode_color;
+    ctl.origin_info.alt_bc_fields = alt_bc_fields;
+    Ok(())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn proc_args_post(
     mut ctl: &mut EncloneControl,
@@ -389,6 +533,12 @@ pub fn proc_args_post(
     if !xcrs.is_empty() {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(arg, gex, bc, have_gex, ctl)?;
+    }
+
+    // Process BC_JOINT.
+
+    if ctl.gen_opt.bc_joint.len() > 0 {
+        parse_bc_joint(&mut ctl)?;
     }
 
     // More argument sanity checking.

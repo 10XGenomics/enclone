@@ -410,8 +410,12 @@ pub fn find_exact_subclonotypes(
 
         // Save exact subclonotype.
 
-        if !clones.is_empty() {
-            res.1.push(ExactClonotype { share, clones });
+        if share.len() >= ctl.gen_opt.min_chains_exact
+            || (ctl.join_alg_opt.basic_h.is_none() && !ctl.gen_opt.pre_eval)
+        {
+            if !clones.is_empty() {
+                res.1.push(ExactClonotype { share, clones });
+            }
         }
     });
     ctl.perf_stats(&t, "finding exact subclonotypes two");

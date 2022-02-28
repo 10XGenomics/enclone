@@ -486,9 +486,9 @@ There is a lot to explain about the compression, so please read carefully.
 • Clonotypes are grouped.  Here we see just one group having one clonotype in it.
 • This clonotype has three exact subclonotypes in it, the first of which has 10 cells.
 • This clonotype has two chains.  The reference segments for them are shown at the top.
-• The notation 181.1.1 says that this V reference sequence is an alternate allele
+• The notation 740.1.2 says that this V reference sequence is an alternate allele
   derived from the universal reference sequence (contig in the reference file)
-  numbered 181, that is from donor 1 ("181.1") and is alternate allele 1 for that donor.
+  numbered 181, that is from donor 1 ("740.1") and is alternate allele 2 for that donor.
 • Sometimes chains are missing from exact subclonotypes.
 • Amino acids are assigned different colors depending on which codon they represent.
 • Numbered columns show the state of particular amino acids, e.g. the first column is for amino
@@ -618,6 +618,15 @@ demultiplexing.  The <span style="font-weight:bold;">tag</span> field is intende
 used by the <span style="font-weight:bold;">PLOT</span> option.  All other fields are treated as lead variables, but values are only
 displayed in <span style="font-weight:bold;">PER_CELL</span> mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include
 existing lead variable names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
+
+Alternatively, an argument <span style="font-weight:bold;">BC_JOINT=filename</span> may be specified, where the filename is a CSV or TSV
+file like those for <span style="font-weight:bold;">BC=...</span>, but with an additional field <span style="font-weight:bold;">dataset</span>, whose value is an abbreviated
+dataset name, and which enables the information to be split up to mirror the specification of <span style="font-weight:bold;">TCR</span>
+or <span style="font-weight:bold;">BCR</span>.
+
+The argument <span style="font-weight:bold;">BC=...</span> or equivalently <span style="font-weight:bold;">BC_JOINT=filename</span> may be used on conjunction with
+<span style="font-weight:bold;">KEEP_CELL_IF=...</span> (see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>) to restrict the barcodes used by enclone to a
+specified set.
 
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>

@@ -140,6 +140,9 @@ pub fn proc_lvar2(
                 counts_sub.push(raw_count.round() as usize);
                 fcounts_sub.push(raw_count);
             }
+        } else {
+            counts_sub.push(0);
+            fcounts_sub.push(0.0);
         }
     }
     if computed {

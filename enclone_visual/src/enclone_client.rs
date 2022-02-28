@@ -586,8 +586,18 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                 }
             }
             if remote_id.is_none() {
+                // This happened once when an initialization command was in the user's ~/.bashrc.
+                // Unfortunately, the ssh command that this is reading the output of sources
+                // ~/.bashrc, and it's not clear how to turn that off.  The immediate solution for
+                // the user was to move the initialization command from ~/.bashrc to
+                // ~/.bash_profile.
+
                 xprintln!("\nUnable to determine remote process id.\n");
                 xprintln!("message =\n\"{}\"", emsg);
+                xprintln!(
+                    "\nOne possibility is that you have something in your ~/.bashrc that \
+                    should be in your ~/.bash_profile.\n"
+                );
                 std::process::exit(1);
             }
             let remote_version;

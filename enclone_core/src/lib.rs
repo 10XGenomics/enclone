@@ -116,7 +116,7 @@ pub fn require_readable_file(f: &str, arg: &str) -> Result<(), String> {
     let x = std::fs::File::open(&f);
     if x.is_err() {
         return Err(format!(
-            "\nThe file {} could not be opened because {}.  This came from \
+            "\nThe file {} could not be opened because {}.\nThis came from \
             the command line argument {}.\n",
             f,
             x.err().unwrap(),

@@ -30,6 +30,10 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>2/28/22</b>: Add an argument <code>BC_JOINT=filename</code>, which functions like 
+<code>BC</code>, but uses only a single file.  Please see
+<a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>.</p>
+
 <p><b>2/25/22</b>: 
 <ul>
 <li>
