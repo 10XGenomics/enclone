@@ -191,8 +191,10 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                         let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                         let mut count = 0;
                         if p >= 0 {
-                            let fid = gex_info.feature_id[li][&var.clone()];
-                            count = gex_info.gex_matrices[li].value(p as usize, fid);
+                            if gex_info.feature_id[li].contains_key(&var.clone()) {
+                                let fid = gex_info.feature_id[li][&var.clone()];
+                                count = gex_info.gex_matrices[li].value(p as usize, fid);
+                            }
                         }
                         fields.push(format!("{}", count));
                     }
