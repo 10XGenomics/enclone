@@ -50,13 +50,38 @@ pub fn test_writeable(val: &str, evil_eye: bool) -> Result<(), String> {
 // Process arguments.
 
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
-    // Knobs.
+    //
+    // Start.
 
+    let targs = Instant::now();
     let evil_eye = ctl.gen_opt.evil_eye;
     if evil_eye {
         println!("processing args");
     }
-    let targs = Instant::now();
+
+    // Check for @test1,...,@test4.
+
+    let mut args = args.clone();
+    for i in 0..args.len() {
+        args[i] = args[i].replace(
+            "@test1",
+            "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060"
+        );
+        args[i] = args[i].replace(
+            "@test2",
+            "1279049,1279057:1279054,1279062:1279055,1279063",
+        );
+        args[i] = args[i].replace(
+            "@test3",
+            "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076",
+        );
+        args[i] = args[i].replace(
+            "@test4",
+            "1279069,1279077:1279070,1279078:1279071,1279079:1279072,1279080",
+        );
+    }
+
+    // Knobs.
     let heur = ClonotypeHeuristics {
         max_diffs: 1_000_000,
         max_degradation: 2,
@@ -64,7 +89,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ref_j_trim: 15,
     };
     ctl.heur = heur;
-    let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     for i in 0..args.len() {
         if args[i].starts_with("BCR_GEX=") {
