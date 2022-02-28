@@ -607,7 +607,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             let mut mixed = false;
             clonotypes1 += 1;
             cells1 += n[i];
-            clonotypes2 += 1;
+            if n[i] >= 2 {
+                clonotypes2 += 1;
+            }
             cells2 += n[i];
             if ctl.gen_opt.pre_eval_show && n[i] > 1 {
                 println!("\nclonotype");
