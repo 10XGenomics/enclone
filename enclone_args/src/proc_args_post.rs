@@ -94,10 +94,10 @@ fn parse_bc_joint(ctl: &mut EncloneControl) -> Result<(), String> {
                     "\nThere is a line\n{}\nin {}\n\
                      that has {} fields, which isn't right, because the header line \
                      has {} fields.\n",
+                    s,
                     bc,
                     fields.len(),
                     fieldnames.len(),
-                    bc,
                 ));
             }
             let dataset = fields[dataset_pos].to_string();
