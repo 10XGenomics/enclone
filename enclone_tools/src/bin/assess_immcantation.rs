@@ -117,6 +117,9 @@ pub fn main() {
     let mut clono = vec![Vec::<(usize, String, String)>::new(); max_id + 1];
     for i in 0..assignments.len() {
         let dataset = &assignments[i].1;
+        if !to_donor.contains_key(dataset) {
+            eprintln!("\nCan't find donor for dataset {}.\n", dataset);
+        }
         let donor = to_donor[dataset];
         let barcode = assignments[i].2.clone();
         clono[assignments[i].0].push((donor, dataset.to_string(), barcode));
