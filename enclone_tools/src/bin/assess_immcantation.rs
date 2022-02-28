@@ -1,16 +1,20 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Assess immcantation clonotyping.  Pass a single argument, which is to be an immcantation
-// output file.
+// Assess immcantation clonotyping. 
 //
-// 1. First run build_immcantation_inputs.
-// 2. Then run immcantation.
-// 3. Then run this code.
+// Usage is something like this:
 //
-// We assume that the argument to build_immcantation_inputs is a list of ids from
-// enclone.testdata.bcr.gex.
+// 1. enclone BCR=@test MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT
+//            SUBSET_JSON=all_contig_annotations.json SUMMARY
 //
-// We ignore lines for which clone_id is unspecified.
+// 2. filtered_from_json
+//
+// 3. run immcantation
+//
+// 4. assess_immcantation scoper_clones.tsv cross intra
+//
+// where cross is the number of cross-donor comparisons and intra is the number of 
+// intra-donor comparisons.  These can be copied from the output of 1.
 
 use io_utils::*;
 use itertools::Itertools;
@@ -24,6 +28,20 @@ use vector_utils::*;
 
 pub fn main() {
     PrettyTrace::new().on();
+
+    // Parse arguments.
+
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 4 
+        || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
+        || args[2].parse::<usize>().is_err()
+        || args[3].parse::<usize>().is_err() {
+        eprintln!("\nPlease read the usage in the source file.\n");
+        std::process::exit(1);
+    }
+    let clone_file = &args[1];
+    let cross = args[2].force_usize();
+    let intra = args[3].force_usize();
 
     // Get dataset classification by sample.
 
@@ -61,12 +79,7 @@ pub fn main() {
 
     // Parse the immcantation output file.
 
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv")) {
-        eprintln!("\nPlease run with a single argument which is a path to a CSV or TSV file.\n");
-        std::process::exit(1);
-    }
-    let f = open_for_read![&args[1]];
+    let f = open_for_read![&clone_file];
     let mut n_seq = None;
     let mut n_clone = None;
     let mut assignments = Vec::<(usize, String, String)>::new();
@@ -205,16 +218,6 @@ pub fn main() {
             if n > 1 {
                 merges2 += (n * (n - 1)) / 2;
             }
-        }
-    }
-    let mut cross = 0;
-    let mut intra = 0;
-    for i1 in 0..cells_by_donor.len() {
-        if cells_by_donor[i1] > 1 {
-            intra += cells_by_donor[i1] * (cells_by_donor[i1] - 1) / 2;
-        }
-        for i2 in i1 + 1..cells_by_donor.len() {
-            cross += cells_by_donor[i1] * cells_by_donor[i2];
         }
     }
     println!("number of intradonor comparisons = {}", add_commas(intra));
