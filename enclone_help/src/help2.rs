@@ -54,9 +54,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              cells.\n\
              • This clonotype has two chains.  The reference segments for them are shown at \
              the top.\n\
-             • The notation 181.1.1 says that this V reference sequence is an alternate allele\n  \
+             • The notation 740.1.2 says that this V reference sequence is an alternate allele\n  \
              derived from the universal reference sequence (contig in the reference file)\n  \
-             numbered 181, that is from donor 1 (\"181.1\") and is alternate allele 1 for that \
+             numbered 181, that is from donor 1 (\"740.1\") and is alternate allele 2 for that \
              donor.\n\
              • Sometimes chains are missing from exact subclonotypes.\n\
              • Amino acids are assigned different colors depending on which codon they represent.\n\
