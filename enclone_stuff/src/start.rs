@@ -720,7 +720,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         );
         println!("number of mixed clonotypes = {mixed_clonotypes}");
         println!(
-            "percent of non-single-cell mixed clonotypes = {:.1}",
+            "percent of non-single-cell mixed clonotypes = {:.2}",
             100.0 * mixed_clonotypes as f64 / clonotypes2 as f64
         );
         println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}");
