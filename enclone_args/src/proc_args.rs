@@ -301,9 +301,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
             for n in y.iter() {
                 if *n != "m1" {
-                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 43 {
+                    if n.parse::<usize>().is_err() || n.force_usize() < 1 || n.force_usize() > 47 {
                         return Err(
-                            "\nBI and BIB and BIP only work for values n with if 1 <= n <= 43, \
+                            "\nBI and BIB and BIP only work for values n with if 1 <= n <= 47, \
                                 or n = m1.\n"
                                 .to_string(),
                         );
