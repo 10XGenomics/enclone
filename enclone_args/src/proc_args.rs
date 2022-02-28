@@ -59,26 +59,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         println!("processing args");
     }
 
-    // Check for @test1,...,@test4.
+    // Check for @test1,...,@test4 and @test.
 
     let mut args = args.clone();
     for i in 0..args.len() {
-        args[i] = args[i].replace(
-            "@test1",
-            "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060"
-        );
-        args[i] = args[i].replace(
-            "@test2",
-            "1279049,1279057:1279054,1279062:1279055,1279063",
-        );
-        args[i] = args[i].replace(
-            "@test3",
-            "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076",
-        );
-        args[i] = args[i].replace(
-            "@test4",
-            "1279069,1279077:1279070,1279078:1279071,1279079:1279072,1279080",
-        );
+        let test1 = "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060";
+        let test2 = "1279049,1279057:1279054,1279062:1279055,1279063";
+        let test3 = "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076";
+        let test4 = "1279069,1279077:1279070,1279078:1279071,1279079:1279072,1279080";
+        args[i] = args[i].replace("@test1", test1);
+        args[i] = args[i].replace("@test2", test2);
+        args[i] = args[i].replace("@test3", test3);
+        args[i] = args[i].replace("@test4", test4);
+        args[i] = args[i].replace("@test", &format!("{};{};{};{}", test1, test2, test3, test4));
     }
 
     // Knobs.
