@@ -394,6 +394,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 "NBC_DUP",
                 "MIX_DONORS",
                 "NIMPROPER",
+                "NSIGNATURE",
             ];
             for j in 0..f.len() {
                 if f[j] == "NCELL" {
