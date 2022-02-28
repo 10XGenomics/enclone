@@ -736,5 +736,5 @@ pub const TESTS: [&str; 295] = [
     // 294. this asserted
     r###"BCR=86237 HONEY=out=stdout,color=var,cdr3_aa1 NOPRINT EXPECT_FAIL"###,
     // 295. test BC_JOINT
-    r###"BCR="123085;85333" BC_JOINT=testx/inputs/bc_joint.csv KEEP_CELL_IF="dummy >= 0"###,
+    r###"BCR="123085;85333" BC_JOINT=testx/inputs/bc_joint.csv KEEP_CELL_IF="dummy >= 0""###,
 ];
