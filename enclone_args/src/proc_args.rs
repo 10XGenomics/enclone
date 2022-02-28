@@ -13,12 +13,47 @@ use std::{process::Command, time::Instant};
 use string_utils::{stringme, strme, TextUtils};
 use tilde_expand::tilde_expand;
 
+// Test a file for writeability by writing and then deleting it.
+
+pub fn test_writeable(val: &str, evil_eye: bool) -> Result<(), String> {
+    if evil_eye {
+        println!("creating file {} to test writability", val);
+    }
+    let f = File::create(&val);
+    if f.is_err() {
+        let mut msgx = format!(
+            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+            val
+        );
+        if val.contains('/') {
+            let dir = val.rev_before("/");
+            let msg;
+            if path_exists(dir) {
+                msg = "exists";
+            } else {
+                msg = "does not exist";
+            }
+            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
+        }
+        return Err(msgx);
+    }
+    if evil_eye {
+        println!("removing file {}", val);
+    }
+    remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
+    if evil_eye {
+        println!("removal of file {} complete", val);
+    }
+    Ok(())
+}
+
 // Process arguments.
 
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(), String> {
     // Knobs.
 
-    if ctl.gen_opt.evil_eye {
+    let evil_eye = ctl.gen_opt.evil_eye;
+    if evil_eye {
         println!("processing args");
     }
     let targs = Instant::now();
@@ -51,7 +86,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Process special option SPLIT_COMMAND.
 
-    if ctl.gen_opt.evil_eye {
+    if evil_eye {
         println!("at split command");
     }
     if ctl.gen_opt.split {
@@ -86,7 +121,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Set up general options.
 
-    if ctl.gen_opt.evil_eye {
+    if evil_eye {
         println!("setting up general options");
     }
     ctl.gen_opt.h5_pre = true;
@@ -666,12 +701,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // Traverse arguments.
 
     let mut processed = vec![true; args.len()];
-    if ctl.gen_opt.evil_eye {
+    if evil_eye {
         println!("starting main args loop");
     }
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
-        if ctl.gen_opt.evil_eye {
+        if evil_eye {
             println!("processing arg = {}", arg);
         }
 
@@ -770,34 +805,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 *(set_string_writeable[j].1) =
                     stringme(&tilde_expand(set_string_writeable[j].1.as_bytes()));
                 let val = &(set_string_writeable[j].1);
-                if ctl.gen_opt.evil_eye {
+                if evil_eye {
                     println!("creating file {} to test writability", val);
                 }
-                let f = File::create(&val);
-                if f.is_err() {
-                    let mut msgx = format!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
-                        val
-                    );
-                    if val.contains('/') {
-                        let dir = val.rev_before("/");
-                        let msg;
-                        if path_exists(dir) {
-                            msg = "exists";
-                        } else {
-                            msg = "does not exist";
-                        }
-                        msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
-                    }
-                    return Err(msgx);
-                }
-                if ctl.gen_opt.evil_eye {
-                    println!("removing file {}", val);
-                }
-                remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
-                if ctl.gen_opt.evil_eye {
-                    println!("removal of file {} complete", val);
-                }
+                test_writeable(&val, evil_eye)?;
                 continue 'args_loop;
             }
         }
@@ -814,34 +825,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 ));
                 let val = &(set_string_writeable_or_stdout[j].1);
                 if *val != "stdout" {
-                    if ctl.gen_opt.evil_eye {
-                        println!("creating file {} to test writability, not stdout", val);
-                    }
-                    let f = File::create(&val);
-                    if f.is_err() {
-                        let mut msgx = format!(
-                            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
-                            val
-                        );
-                        if val.contains('/') {
-                            let dir = val.rev_before("/");
-                            let msg;
-                            if path_exists(dir) {
-                                msg = "exists";
-                            } else {
-                                msg = "does not exist";
-                            }
-                            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
-                        }
-                        return Err(msgx);
-                    }
-                    if ctl.gen_opt.evil_eye {
-                        println!("removing file {}", val);
-                    }
-                    remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
-                }
-                if ctl.gen_opt.evil_eye {
-                    println!("removal of file {} complete", val);
+                    test_writeable(&val, evil_eye)?;
                 }
                 continue 'args_loop;
             }
@@ -858,11 +842,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 val = stringme(&tilde_expand(val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
-                if ctl.gen_opt.evil_eye {
+                if evil_eye {
                     println!("testing ability to open file {}", val);
                 }
                 require_readable_file(&val, &arg)?;
-                if ctl.gen_opt.evil_eye {
+                if evil_eye {
                     println!("file open complete");
                 }
                 continue 'args_loop;
@@ -880,11 +864,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 }
                 val = stringme(&tilde_expand(val.as_bytes()));
                 *(set_string_readable_plain[j].1) = val.clone();
-                if ctl.gen_opt.evil_eye {
+                if evil_eye {
                     println!("testing ability to open file {}", val);
                 }
                 require_readable_file(&val, &arg)?;
-                if ctl.gen_opt.evil_eye {
+                if evil_eye {
                     println!("file open complete");
                 }
                 continue 'args_loop;
@@ -936,7 +920,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     // Process remaining args.
 
-    if ctl.gen_opt.evil_eye {
+    if evil_eye {
         println!("processing remaining args");
     }
     for i in 1..args.len() {

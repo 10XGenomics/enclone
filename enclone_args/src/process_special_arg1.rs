@@ -2,6 +2,7 @@
 
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
+use crate::proc_args::test_writeable;
 use crate::proc_args2::{is_simple_arg, is_usize_arg};
 use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
@@ -77,8 +78,8 @@ pub fn process_special_arg1(
         if ctl.gen_opt.all_bc_filename.len() > 0 {
             return Err("\nThe argument ALL_BC/ALL_BCH may only be used once.\n".to_string());
         }
-        // should check file for writable, but don't
         ctl.gen_opt.all_bc_filename = parts[0].to_string();
+        test_writeable(&ctl.gen_opt.all_bc_filename, ctl.gen_opt.evil_eye)?;
         for i in 1..parts.len() {
             ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
         }
