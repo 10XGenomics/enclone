@@ -79,7 +79,7 @@ fn parse_bc_joint(ctl: &mut EncloneControl) -> Result<(), String> {
                 } else if fields[i] == "tag" {
                     tag_pos = Some(i);
                 } else {
-                    to_alt[i] = alt_bc_fields.len() as isize;
+                    to_alt[i] = alt_bc_fields[0].len() as isize;
                     for li in 0..ctl.origin_info.n() {
                         alt_bc_fields[li]
                             .push((fields[i].to_string(), HashMap::<String, String>::new()));
