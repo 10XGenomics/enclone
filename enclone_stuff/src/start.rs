@@ -622,7 +622,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                     for k in 0..ex.share.len() {
                         if ex.share[k].left {
-                            print!("{},{}\t",
+                            print!(
+                                "{},{}\t",
                                 refdata.name[ex.share[k].v_ref_id],
                                 refdata.name[ex.share[k].j_ref_id]
                             );
@@ -630,7 +631,8 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                     }
                     for k in 0..ex.share.len() {
                         if !ex.share[k].left {
-                            print!("{},{}\t",
+                            print!(
+                                "{},{}\t",
                                 refdata.name[ex.share[k].v_ref_id],
                                 refdata.name[ex.share[k].j_ref_id]
                             );
@@ -717,15 +719,18 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             add_commas(bogus.round() as usize)
         );
         println!("number of mixed clonotypes = {mixed_clonotypes}");
-        println!("percent of non-single-cell mixed clonotypes = {:.1}",
+        println!(
+            "percent of non-single-cell mixed clonotypes = {:.1}",
             100.0 * mixed_clonotypes as f64 / clonotypes2 as f64
         );
         println!("sum of mixed clonotype sizes = {mixed_clonotype_sizes}");
         println!("total number of cells in clonotypes = {cells1}");
-        println!("mean clonotype size = {:.3}",
+        println!(
+            "mean clonotype size = {:.3}",
             cells1 as f64 / clonotypes1 as f64
         );
-        println!("mean non-single-cell clonotype size = {:.3}\n",
+        println!(
+            "mean non-single-cell clonotype size = {:.3}\n",
             cells2 as f64 / clonotypes2 as f64
         );
         std::process::exit(0);

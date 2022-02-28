@@ -243,6 +243,18 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              output using \\bold{PCELL}.  These fields should not include existing lead variable \
              names.  Use of \\bold{BC} automatically turns on the \\bold{MIX_DONORS} option.\n\n",
         )?;
+        h.print(
+            "Alternatively, an argument \\bold{BC_JOINT=filename} may be specified, where the \
+            filename is a CSV or TSV file like those for \\bold{BC=...}, but with an additional \
+            field \\bold{dataset}, whose value is an abbreviated dataset name, and which enables \
+            the information to be split up to mirror the \
+            specification of \\bold{TCR} or \\bold{BCR}.\n\n",
+        )?;
+        h.print(
+            "The argument \\bold{BC=...} or equivalently \\bold{BC_JOINT=filename} may be used \
+            on conjunction with\n\\bold{KEEP_CELL_IF=...} (see \"enclone help special\") to \
+            restrict the barcodes used by enclone to a specified set.\n\n",
+        )?;
         h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n")?;
         h.print("\\bold{META=filename}\n")?;
         h.print(

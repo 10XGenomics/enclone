@@ -123,6 +123,15 @@ used by the <span style="font-weight:bold;">PLOT</span> option.  All other field
 displayed in <span style="font-weight:bold;">PER_CELL</span> mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include
 existing lead variable names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
 
+Alternatively, an argument <span style="font-weight:bold;">BC_JOINT=filename</span> may be specified, where the filename is a CSV or TSV
+file like those for <span style="font-weight:bold;">BC=...</span>, but with an additional field <span style="font-weight:bold;">dataset</span>, whose value is an abbreviated
+dataset name, and which enables the information to be split up to mirror the specification of <span style="font-weight:bold;">TCR</span>
+or <span style="font-weight:bold;">BCR</span>.
+
+The argument <span style="font-weight:bold;">BC=...</span> or equivalently <span style="font-weight:bold;">BC_JOINT=filename</span> may be used on conjunction with
+<span style="font-weight:bold;">KEEP_CELL_IF=...</span> (see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>) to restrict the barcodes used by enclone to a
+specified set.
+
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>
 This file should be a CSV (comma-separated values) file, with one line per cell group.  After the

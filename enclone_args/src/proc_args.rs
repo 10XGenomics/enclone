@@ -645,6 +645,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     // as an option.
 
     let set_string_readable_plain = [
+        ("BC_JOINT", &mut ctl.gen_opt.bc_joint),
         ("EXTERNAL_REF", &mut ctl.gen_opt.external_ref),
         ("REF", &mut ctl.gen_opt.refname),
     ];
