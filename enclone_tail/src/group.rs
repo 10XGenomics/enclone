@@ -617,10 +617,10 @@ pub fn group_and_print_clonotypes(
                 if ctl.parseable_opt.pout == *"stdout"
                     && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
                 {
-                    fwriteln!(glog, "{}", pcols.iter().format(","));
+                    fwriteln!(glog, "{}", pcols_show.iter().format(","));
                 }
                 if ctl.parseable_opt.pout == *"stdouth" {
-                    rows.push(pcols.clone());
+                    rows.push(pcols_show.clone());
                 }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {
