@@ -461,6 +461,7 @@ pub struct ParseableOpt {
     pub pout: String,             // name of parseable output file
     pub pchains: String,          // number of chains to show in parseable output
     pub pcols: Vec<String>,       // column names to show in parseable output
+    pub pcols_show: Vec<String>,  // replacement column names for the actual header line
     pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
     pub pcols_sortx: Vec<String>, // same but before colon if present
     pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype

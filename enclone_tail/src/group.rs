@@ -109,6 +109,9 @@ pub fn group_and_print_clonotypes(
         }
     }
     pcols = pcols2;
+    if ctl.parseable_opt.pcols_show.len() > 0 {
+        pcols = ctl.parseable_opt.pcols_show.clone();
+    }
     if !ctl.parseable_opt.pout.is_empty()
         && ctl.parseable_opt.pout != *"stdout"
         && ctl.parseable_opt.pout != *"stdouth"
