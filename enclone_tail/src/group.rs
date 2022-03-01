@@ -109,14 +109,15 @@ pub fn group_and_print_clonotypes(
         }
     }
     pcols = pcols2;
+    let mut pcols_show = pcols.clone();
     if ctl.parseable_opt.pcols_show.len() > 0 {
-        pcols = ctl.parseable_opt.pcols_show.clone();
+        pcols_show = ctl.parseable_opt.pcols_show.clone();
     }
     if !ctl.parseable_opt.pout.is_empty()
         && ctl.parseable_opt.pout != *"stdout"
         && ctl.parseable_opt.pout != *"stdouth"
     {
-        fwriteln!(pout, "{}", pcols.iter().format(","));
+        fwriteln!(pout, "{}", pcols_show.iter().format(","));
     }
 
     // Set up for fasta output.
