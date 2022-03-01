@@ -23,15 +23,15 @@ use enclone_core::defs::{CloneInfo, TigData};
 use enclone_core::enclone_structs::*;
 use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
-use io_utils::fwriteln;
+use io_utils::{fwriteln, open_for_read};
 use qd::dd;
 use std::{
     collections::HashMap,
     fs::File,
-    io::{BufWriter, Write},
+    io::{BufRead, BufWriter, Write},
     time::Instant,
 };
-use string_utils::add_commas;
+use string_utils::{add_commas, TextUtils};
 use vector_utils::{bin_member, erase_if, next_diff12_3, sort_sync2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -552,6 +552,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Pre evaluate (PRE_EVAL).
 
     if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h.is_some() {
+        //
+        // Gather exact subclonotypes.
+
         let mut exacts = Vec::<Vec<usize>>::new();
         {
             let mut results = Vec::<(usize, Vec<usize>)>::new();
@@ -578,6 +581,53 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
                 exacts.push(results[i].1.clone());
             }
         }
+
+        // Apply POST_FILTER.
+
+        if ctl.gen_opt.post_filter.len() > 0 {
+            let mut post_filter = Vec::<(String, String)>::new();
+            let f = open_for_read![&ctl.gen_opt.post_filter];
+            for (i, line) in f.lines().enumerate() {
+                let s = line.unwrap();
+                if i == 0 {
+                    assert_eq!(s, "dataset,barcode");
+                } else {
+                    post_filter.push((s.before(",").to_string(), s.after(",").to_string()));
+                }
+            }
+            post_filter.sort();
+            for u in 0..exact_clonotypes.len() {
+                let ex = &mut exact_clonotypes[u];
+                let mut to_delete = vec![false; ex.ncells()];
+                for i in 0..ex.clones.len() {
+                    let x = &ex.clones[i][0];
+                    if !bin_member(
+                        &post_filter,
+                        &(
+                            ctl.origin_info.dataset_id[x.dataset_index].clone(),
+                            x.barcode.clone(),
+                        ),
+                    ) {
+                        to_delete[i] = true;
+                    }
+                }
+                erase_if(&mut ex.clones, &to_delete);
+            }
+            let mut to_delete = vec![false; exacts.len()];
+            for j in 0..exacts.len() {
+                let mut ncells = 0;
+                for i in 0..exacts[j].len() {
+                    ncells += exact_clonotypes[exacts[j][i]].ncells();
+                }
+                if ncells == 0 {
+                    to_delete[j] = true;
+                }
+            }
+            erase_if(&mut exacts, &to_delete);
+        }
+
+        // Set up metrics.
+
         let mut merges2 = 0;
         let mut mixes = 0;
         let mut mixed_clonotypes = 0;

@@ -248,6 +248,7 @@ pub struct GeneralOpt {
     pub external_ref: String,
     pub fails_only: bool,
     pub bc_joint: String,
+    pub post_filter: String,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
