@@ -71,7 +71,7 @@ pub fn main_build_immcantation_inputs() {
             let list = dir_list(&format!("{outs}/per_sample_outs"));
             if list.solo() {
                 let x = &list[0];
-                let vdj_b = format!("per_sample_outs/{x}/vdj_b");
+                let vdj_b = format!("{outs}/per_sample_outs/{x}/vdj_b");
                 if path_exists(&vdj_b) {
                     fdir = vdj_b;
                 }
