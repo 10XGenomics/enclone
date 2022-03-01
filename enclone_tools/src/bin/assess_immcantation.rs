@@ -4,17 +4,21 @@
 //
 // Usage is something like this:
 //
-// 1. enclone BCR=@test MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT
-//            SUBSET_JSON=all_contig_annotations.json SUMMARY
+// 1. Let ids by the list of ids.  These need to be in enclone.testdata.bcr.gex.
 //
-// 2. filtered_from_json
+// 2. build_immcantation_inputs ids
 //
-// 3. run immcantation
+// 3. Run immcantation.
 //
-// 4. assess_immcantation scoper_clones.tsv cross intra
+// 4. enclone BCR=ids MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT POUT=stdout PCELL
+//            PCOLS=datasets_cell,barcode PCOLS_SHOW=dataset,barcode > post_filter.csv
 //
-// where cross is the number of cross-donor comparisons and intra is the number of
-// intra-donor comparisons.  These can be copied from the output of 1.
+// 5. enclone BCR=@test MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT SUMMARY
+//
+// to get intra = number of intra-donor comparisons and
+//        cross = number of cross-donor comparisons.
+//
+// 6. assess_immcantation scoper_clones.tsv post_filter.csv intra cross
 
 use io_utils::*;
 use itertools::Itertools;
@@ -32,17 +36,19 @@ pub fn main() {
     // Parse arguments.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 4
+    if args.len() != 5
         || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
-        || args[2].parse::<usize>().is_err()
-        || args[3].parse::<usize>().is_err()
+        || !args[2].ends_with(".csv")
+        || !args[3].parse::<usize>().is_ok()
+        || !args[4].parse::<usize>().is_ok()
     {
         eprintln!("\nPlease read the usage in the source file.\n");
         std::process::exit(1);
     }
     let clone_file = &args[1];
-    let cross = args[2].force_usize();
+    let filter_file = &args[2];
     let intra = args[3].force_usize();
+    let cross = args[4].force_usize();
 
     // Get dataset classification by sample.
 
@@ -78,49 +84,67 @@ pub fn main() {
         }
     }
 
+    // Load post filter data.
+
+    let mut post_filter = Vec::<(String, String)>::new();
+    let f = open_for_read![&filter_file];
+    for (i, line) in f.lines().enumerate() {
+        let s = line.unwrap();
+        if i == 0 {
+            assert_eq!(s, "dataset,barcode");
+        } else {
+            post_filter.push((s.before(",").to_string(), s.after(",").to_string()));
+        }
+    }
+    post_filter.sort();
+
     // Parse the immcantation output file.
 
-    let f = open_for_read![&clone_file];
-    let mut n_seq = None;
-    let mut n_clone = None;
     let mut assignments = Vec::<(usize, String, String)>::new();
     let mut datasets = Vec::<String>::new();
     let mut unassigned = 0;
-    for (i, line) in f.lines().enumerate() {
-        let s = line.unwrap();
-        let fields;
-        if args[1].ends_with(".csv") {
-            fields = parse_csv(&s);
-        } else {
-            fields = s.split('\t').map(str::to_owned).collect();
-        }
-        if i == 0 {
-            for j in 0..fields.len() {
-                if fields[j] == "sequence_id" {
-                    n_seq = Some(j);
-                } else if fields[j] == "clone_id" {
-                    n_clone = Some(j);
+    {
+        let mut n_seq = None;
+        let mut n_clone = None;
+        let f = open_for_read![&clone_file];
+        for (i, line) in f.lines().enumerate() {
+            let s = line.unwrap();
+            let fields;
+            if args[1].ends_with(".csv") {
+                fields = parse_csv(&s);
+            } else {
+                fields = s.split('\t').map(str::to_owned).collect();
+            }
+            if i == 0 {
+                for j in 0..fields.len() {
+                    if fields[j] == "sequence_id" {
+                        n_seq = Some(j);
+                    } else if fields[j] == "clone_id" {
+                        n_clone = Some(j);
+                    }
+                }
+            } else {
+                let seq_id = &fields[n_seq.unwrap()];
+                let clone_id = &fields[n_clone.unwrap()];
+                if clone_id == "" || clone_id == "NA" {
+                    unassigned += 1;
+                    continue;
+                }
+                if !clone_id.parse::<usize>().is_ok() {
+                    eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
+                }
+                let clone_id = clone_id.force_usize();
+                let dataset = seq_id.between("-", "_").to_string();
+                datasets.push(dataset.clone());
+                let barcode = format!("{}-1", seq_id.before("-"));
+                if bin_member(&post_filter, &(dataset.clone(), barcode.clone())) {
+                    assignments.push((clone_id, dataset, barcode));
                 }
             }
-        } else {
-            let seq_id = &fields[n_seq.unwrap()];
-            let clone_id = &fields[n_clone.unwrap()];
-            if clone_id == "" || clone_id == "NA" {
-                unassigned += 1;
-                continue;
-            }
-            if !clone_id.parse::<usize>().is_ok() {
-                eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
-            }
-            let clone_id = clone_id.force_usize();
-            let dataset = seq_id.between("-", "_").to_string();
-            datasets.push(dataset.clone());
-            let barcode = format!("{}-1", seq_id.before("-"));
-            assignments.push((clone_id, dataset, barcode));
         }
+        unique_sort(&mut datasets);
+        unique_sort(&mut assignments);
     }
-    unique_sort(&mut datasets);
-    unique_sort(&mut assignments);
 
     // Create clonotypes.  Note that we allow a cell to be assigned to more than one clonotype.
 
