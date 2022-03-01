@@ -63,7 +63,6 @@ pub fn main_build_immcantation_inputs() {
     let mut g1 = open_for_write_new!["filtered_contig.fasta"];
     let mut g = open_for_write_new!["filtered_contig_annotations.csv"];
     for (i, l) in ids.iter().enumerate() {
-
         // Find the filtered_contig input files.
 
         let outs = format!("{pre}/{l}/outs");
@@ -80,7 +79,7 @@ pub fn main_build_immcantation_inputs() {
         }
 
         // Edit and copy them.
-    
+
         let mut count1 = 0;
         let f1 = open_for_read![&format!("{fdir}/filtered_contig.fasta")];
         for line in f1.lines() {
