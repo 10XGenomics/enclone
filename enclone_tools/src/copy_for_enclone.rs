@@ -281,17 +281,27 @@ pub fn copy_for_enclone(source: &str, target: &str) {
             let list = dir_list(&format!("{}/per_sample_outs", p));
             if list.solo() {
                 let x = &list[0];
-                let mut d = format!("per_sample_outs/{}/count/analysis", x);
+                let pso = format!("per_sample_outs/{}", x);
+                let mut d = format!("{}/count/analysis", pso);
                 if !path_exists(&format!("{}/{}", p, d)) {
-                    d = format!("per_sample_outs/{}/count/analysis_csv", x);
+                    d = format!("{}/count/analysis_csv", pso);
                 }
                 mkdirp(&format!("{}/outs/{}", target, d));
                 copy(
                     &format!("{}/{}", p, d),
-                    &format!("{}/outs/per_sample_outs/{}/count", target, x),
+                    &format!("{}/outs/{}/count", target, pso),
                     &opt,
                 )
                 .unwrap();
+                for vdj in ["vdj_b", "vdj_t"].iter() {
+                    let sdir = format!("{}/{}/{}", p, pso, vdj);
+                    if path_exists(&format!("{}/filtered_contig.fasta", sdir)) {
+                        let tdir = format!("{}/outs/{}/{}", target, pso, vdj);
+                        mkdirp(&tdir);
+                        copy_file("filtered_contig.fasta", &sdir, &tdir);
+                        copy_file("filtered_contig_annotations.csv", &sdir, &tdir);
+                    }
+                }
             }
         }
 
