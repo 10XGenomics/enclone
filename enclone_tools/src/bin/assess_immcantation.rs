@@ -1,6 +1,6 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Assess immcantation clonotyping. 
+// Assess immcantation clonotyping.
 //
 // Usage is something like this:
 //
@@ -13,7 +13,7 @@
 //
 // 4. assess_immcantation scoper_clones.tsv cross intra
 //
-// where cross is the number of cross-donor comparisons and intra is the number of 
+// where cross is the number of cross-donor comparisons and intra is the number of
 // intra-donor comparisons.  These can be copied from the output of 1.
 
 use io_utils::*;
@@ -32,10 +32,11 @@ pub fn main() {
     // Parse arguments.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 4 
+    if args.len() != 4
         || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
         || args[2].parse::<usize>().is_err()
-        || args[3].parse::<usize>().is_err() {
+        || args[3].parse::<usize>().is_err()
+    {
         eprintln!("\nPlease read the usage in the source file.\n");
         std::process::exit(1);
     }
