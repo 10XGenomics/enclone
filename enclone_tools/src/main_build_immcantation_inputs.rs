@@ -16,6 +16,7 @@ use std::collections::HashMap;
 use std::env;
 use std::io::{BufRead, Write};
 use string_utils::*;
+use vector_utils::VecUtils;
 
 pub fn main_build_immcantation_inputs() {
     PrettyTrace::new().on();
@@ -62,8 +63,26 @@ pub fn main_build_immcantation_inputs() {
     let mut g1 = open_for_write_new!["filtered_contig.fasta"];
     let mut g = open_for_write_new!["filtered_contig_annotations.csv"];
     for (i, l) in ids.iter().enumerate() {
+
+        // Find the filtered_contig input files.
+
+        let outs = format!("{pre}/{l}/outs");
+        let mut fdir = outs.clone();
+        if path_exists(&format!("{outs}/per_sample_outs")) {
+            let list = dir_list(&format!("{outs}/per_sample_outs"));
+            if list.solo() {
+                let x = &list[0];
+                let vdj_b = format!("per_sample_outs/{x}/vdj_b");
+                if path_exists(&vdj_b) {
+                    fdir = vdj_b;
+                }
+            }
+        }
+
+        // Edit and copy them.
+    
         let mut count1 = 0;
-        let f1 = open_for_read![&format!("{}//{}/outs/filtered_contig.fasta", pre, l)];
+        let f1 = open_for_read![&format!("{fdir}/filtered_contig.fasta")];
         for line in f1.lines() {
             let s = line.unwrap();
             if s.starts_with('>') {
@@ -75,10 +94,7 @@ pub fn main_build_immcantation_inputs() {
                 fwriteln!(g1, "{}", s);
             }
         }
-        let f = open_for_read![&format!(
-            "{}//{}/outs/filtered_contig_annotations.csv",
-            pre, l
-        )];
+        let f = open_for_read![&format!("{fdir}/filtered_contig_annotations.csv")];
         let mut count2 = 0;
         let mut first = true;
         for line in f.lines() {
