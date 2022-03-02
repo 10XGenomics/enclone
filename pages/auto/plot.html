@@ -225,13 +225,24 @@ that they belong to.
     <td> <code>color=dataset</td>
     <td> Specify coloring by dataset.<br>The color scheme is fixed for now.</td></tr>
 
-<tr><td> <code>color-spec</code><br>variable version </td>
+<tr><td> <code>color-spec</code><br>numerical variable version </td>
     <td> <code>color=var,<span style="color:red">abbr</span>:<span style="color:red">name</span>,turbo,scale-spec</code></td>
-    <td> Specify coloring by variable.<br>
+    <td> Specify coloring by numerical variable.<br>
     1. <code>turbo</code> is the name of the color map and may be omitted
     <br>2. <code><span style="color:red">abbr</span>:</code> may be omitted; 
     <code><span style="color:red">abbr</code></span> is the display name
     <br>3. <code><span style="color:red">name</span></code> is the name of the variable</td></tr>
+
+<tr><td> <code>color-spec</code><br>categorical variable version </td>
+    <td> <code>color=catvar,<span style="color:red">vars</span>,maxcat=<span style="color:red">n</span></code></td>
+    <td> Specify coloring by categorical variable.<br>
+    1. <code><span style="color:red">vars</span></code>
+       is the variable to be displayed; more than one variable may be used,
+       separated by <code>+</code>.
+    <br>2.  <code><span style="color:red">n</span></code> is the maximum number of categories.
+    Categories are reverse ordered by number of cells and if there are too many categories, one
+    is lumped as "other" and displayed last.
+    </td></tr>
 
 <tr><td> <code>scale-spec</code> </td>
     <td><code>minmax,<span style="color:red">min</span>,<span style="color:red">max

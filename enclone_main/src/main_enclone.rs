@@ -240,6 +240,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         CellColor::ByVariableValue(ref x) => {
             check_pcols(&ctl, &gex_info, &vec![x.var.clone()], true)?;
         }
+        CellColor::ByCategoricalVariableValue(ref x) => {
+            check_pcols(&ctl, &gex_info, &x.vars, true)?;
+        }
         _ => {}
     };
     let mut bound_vars = Vec::<String>::new();

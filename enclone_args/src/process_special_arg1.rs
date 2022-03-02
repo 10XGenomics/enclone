@@ -192,6 +192,23 @@ pub fn process_special_arg1(
                     let v = ColorByDataset {};
                     let cc = CellColor::ByDataset(v);
                     ctl.plot_opt.cell_color = cc;
+                } else if p[0] == "catvar" {
+                    if p.len() != 3 {
+                        return Err(err);
+                    }
+                    let vars = p[1].split('+').map(str::to_owned).collect();
+                    if !p[2].starts_with("maxcat=") 
+                        || p[2].after("maxcat=").parse::<usize>().is_err() {
+                        return Err(err);
+                    }
+                    let n = p[2].after("maxcat=").force_usize();
+
+                    let v = ColorByCategoricalVariable {
+                        vars: vars,
+                        maxcat: n,
+                    };
+                    let cc = CellColor::ByCategoricalVariable(v);
+                    ctl.plot_opt.cell_color = cc;
                 } else {
                     if p[0] != "var" || p.len() < 2 {
                         return Err(err);

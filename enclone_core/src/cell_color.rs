@@ -6,6 +6,7 @@
 // - const,color                              all cells are assigned the given color (default/black)
 // - iso,color1,...,colorn                    by isotype; uses default colors if none provided
 // - var,name,minmax,min,max                  by values of given variable
+// - catvar,varlist,n                         by categorical variables
 // - dataset                                  by dataset, using the color field in META
 // - origin,origin1,color1,...,originn,colorn by origin, using the given assignment
 // - bc                                       by color to barcode assignment, via BC or META/bc
@@ -43,6 +44,12 @@ pub struct ColorByVariableValue {
 }
 
 #[derive(Clone)]
+pub struct ColorByCategoricalVariableValue {
+    pub vars: Vec<String>,
+    pub maxcat: usize,
+}
+
+#[derive(Clone)]
 pub struct ColorByDataset {}
 
 #[derive(Clone)]
@@ -59,6 +66,7 @@ pub enum CellColor {
     Unspecified,
     ByIsotype(ColorByIsotype),
     ByVariableValue(ColorByVariableValue),
+    ByCategoricalVariableValue(ColorByCategoricalVariableValue),
     BySample(ColorBySample),
     ByBarcodeSpecification(ColorByBarcodeSpecification),
     ByDataset(ColorByDataset),
