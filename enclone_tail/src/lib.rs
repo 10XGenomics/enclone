@@ -3,6 +3,7 @@
 pub mod align_n;
 pub mod alluvial_fb;
 pub mod assign_cell_color;
+pub mod cat_var;
 pub mod circles_to_svg;
 pub mod clustal;
 pub mod colors;
