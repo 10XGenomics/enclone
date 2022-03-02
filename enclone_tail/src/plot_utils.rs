@@ -109,12 +109,11 @@ pub fn build_clusters(
                             k,
                         );
                     } else {
-                        color = barcode_to_cat_var_color[
-                            &(
-                                ex.clones[k][0].dataset_index,
-                                ex.clones[k][0].barcode.clone()
-                            )
-                        ].clone();
+                        color = barcode_to_cat_var_color[&(
+                            ex.clones[k][0].dataset_index,
+                            ex.clones[k][0].barcode.clone(),
+                        )]
+                            .clone();
                     }
 
                     // Partially translate colors.

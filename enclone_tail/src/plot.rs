@@ -28,7 +28,8 @@ use std::time::Instant;
 use string_utils::TextUtils;
 use vdj_ann::refx::RefData;
 use vector_utils::{
-    bin_position, make_freq, next_diff1_2, next_diff1_3, position, reverse_sort, unique_sort, VecUtils,
+    bin_position, make_freq, next_diff1_2, next_diff1_3, position, reverse_sort, unique_sort,
+    VecUtils,
 };
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
