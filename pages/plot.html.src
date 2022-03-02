@@ -149,7 +149,7 @@ dataset that they belong to.
 <hr>
 <br><span style="color:red; font-weight:bold">7.</span> The seventh way is to color cells by 
 a categorical variable.  That is any variable, not necessarily having numerical values.  In this
-example, cells are colored by the (heavy chain V gene, light chain V gene).  A total of 
+example, cells are colored by (heavy chain V gene, light chain V gene).  A total of 
 <code>10</code> categories are shown, reverse sorted by cell count.  The last category is "other".
 <p><b>Example:</b> <code>enclone BCR=123085 
 HONEY=out=~/plot.svg,color=catvar,v_name1+v_name2,maxcat:10 NOPRINT CHAINS_EXACT=2</code></p>
