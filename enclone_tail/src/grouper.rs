@@ -758,8 +758,12 @@ pub fn grouper(
                 }
                 ncells.push(n);
             }
-            sort_sync2(&mut ncells, &mut groups[i]);
-            groups[i].reverse();
+            let mut ncells_unique = ncells.clone();
+            unique_sort(&mut ncells_unique);
+            if ncells_unique.len() > 1 {
+                sort_sync2(&mut ncells, &mut groups[i]);
+                groups[i].reverse();
+            }
         }
 
         // Done.
