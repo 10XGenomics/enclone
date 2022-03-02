@@ -154,7 +154,7 @@ pub fn plot_clonotypes(
                 for j in i..i + vars.len() {
                     vals.push(bvv[j].3.clone());
                 }
-                let v = format!("{}", vals.iter().format(","));
+                let v = format!("{}", vals.iter().format(", "));
                 barcode_to_cat_var_value.insert((bvv[i].0, bvv[i].1.clone()), v.clone());
                 values.push(v);
             }
@@ -177,7 +177,7 @@ pub fn plot_clonotypes(
                 for j in i..i + vars.len() {
                     vals.push(bvv[j].3.clone());
                 }
-                let v = format!("{}", vals.iter().format(","));
+                let v = format!("{}", vals.iter().format(", "));
                 let mut color = String::new();
                 let mut found = false;
                 for j in 0..freq.len() {
