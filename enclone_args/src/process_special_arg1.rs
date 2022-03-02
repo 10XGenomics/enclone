@@ -197,18 +197,18 @@ pub fn process_special_arg1(
                         return Err(err);
                     }
                     let vars = p[1].split('+').map(str::to_owned).collect();
-                    if !p[2].starts_with("maxcat=") 
-                        || p[2].after("maxcat=").parse::<usize>().is_err()
-                        || p[2].after("maxcat=").force_usize() == 0 {
+                    if !p[2].starts_with("maxcat:") 
+                        || p[2].after("maxcat:").parse::<usize>().is_err()
+                        || p[2].after("maxcat:").force_usize() == 0 {
                         return Err(err);
                     }
-                    let n = p[2].after("maxcat=").force_usize();
+                    let n = p[2].after("maxcat:").force_usize();
 
-                    let v = ColorByCategoricalVariable {
+                    let v = ColorByCategoricalVariableValue {
                         vars: vars,
                         maxcat: n,
                     };
-                    let cc = CellColor::ByCategoricalVariable(v);
+                    let cc = CellColor::ByCategoricalVariableValue(v);
                     ctl.plot_opt.cell_color = cc;
                 } else {
                     if p[0] != "var" || p.len() < 2 {

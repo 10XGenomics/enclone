@@ -29,7 +29,8 @@ pub fn build_clusters(
     out_datas: &Vec<Vec<HashMap<String, String>>>,
     const_names: &Vec<String>,
     by_cat_var: bool,
-    barcode_to_cat_var_color: &HashMap<(usize, String), String>::new(),
+    barcode_to_cat_var_color: &HashMap<(usize, String), String>,
+    cat_var_labels: &Vec<String>,
 ) -> Vec<PlotCluster> {
     let mut clusters = Vec::<PlotCluster>::new();
     const SEP: f64 = 1.0; // separation between clusters
@@ -40,7 +41,10 @@ pub fn build_clusters(
         passes = ctl.origin_info.n();
     }
     let tcn = turbo_color_names();
-    let n = std::cmp::min(256, ctl.origin_info.n());
+    let mut n = std::cmp::min(256, ctl.origin_info.n());
+    if by_cat_var {
+        n = std::cmp::min(256, cat_var_labels.len());
+    }
     let dcn = default_color_names(n);
     for i in 0..exacts.len() {
         for pass in 0..passes {
