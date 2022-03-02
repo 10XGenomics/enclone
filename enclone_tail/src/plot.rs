@@ -103,6 +103,88 @@ pub fn plot_clonotypes(
     }
     unique_sort(&mut origins);
 
+    // Determine if we are coloring cells by categorical variable value, and if so, assign colors.
+
+    let mut by_cat_var = false;
+    let mut barcode_to_cat_var_color = HashMap::<(usize, String), String>::new();
+    let mut cat_var_labels = Vec::<String>::new();
+    {
+        let mut vars = Vec::<String>::new();
+        let mut maxcat = 0;
+        match plot_opt.cell_color {
+            CellColor::ByCatagoricalVariableValue(ref x) => {
+                by_cat_var = true;
+                vars = x.vars.clone();
+                maxcat = x.n;
+            }
+            _ => {}
+        };
+        let mut barcode_to_cat_var_value = HashMap::<(usize, String), String>::new();
+        if by_cat_var {
+            let mut bvv = Vec::<usize, String, usize, String>::new();
+            for i in 0..out_datas.len() {
+                for j in 0..out_datas[i].len() {
+                    for (z, var) in vars.iter().enumerate {
+                        let var = *var;
+                        if out_datas[i][j].contains_key(&var) {
+                            let val_list = &out_datas[i][j][&var];
+                            let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
+                            let ex = &exact_clonotypes[exacts[i][j]];
+                            for k in 0..ex.ncells() {
+                                let val = if vals.len() > 1 { &vals[k] } else { &vals[0] };
+                                let li = ex.clones[k][0].dataset_index;
+                                let bc = &ex.clones[k][0].barcode;
+                                bvv.push((li, bc.clone(), z, val.to_string()));
+                            }
+                        } else {
+                            let ex = &exact_clonotypes[exacts[i][j]];
+                            for k in 0..ex.ncells() {
+                                let li = ex.clones[k][0].dataset_index;
+                                let bc = &ex.clones[k][0].barcode;
+                                bvv.push((li, bc.clone(), z, String::new()));
+                            }
+                        }
+                    }
+                }
+            }
+            bvv.sort();
+            let mut values = Vec::<String>::new();
+            for i in (0..bvv.len()).step_by(vars.len()) {
+                let v = bvv[i..i + vars.len()].iter().format(",");
+                barcode_to_cat_var_value.insert((bvv[i].0, bvv[i].1.clone), v.clone());
+                values.push(v);
+            }
+            values.sort();
+            let mut freq = Vec::<(u32, String)>::new();
+            make_freq(&values, &mut freq);
+            for i in 0..freq.len() {
+                if i == maxcat {
+                    cat_var_labels.push("other".to_string());
+                    freq.truncate(maxcat - 1);
+                    break;
+                }
+                cat_var_labels.push(freq[i].1.clone());
+            }
+            for i in (0..bvv.len()).step_by(vars.len()) {
+                let v = bvv[i..i + vars.len()].iter().format(",");
+                let mut color = String::new();
+                let mut found = false;
+                for j in 0..freq.len() {
+                    if v == freq[j].1 {
+                        let c = j % 256;
+                        color = format!("default-pre-{}", c);
+                        break;
+                    }
+                }
+                if !found {
+                    let c = freq.len();
+                    color = format!("default-pre-{}", c);
+                }
+                barcode_to_cat_var_value.color.insert((bvv[i].0, bvv[i].1.clone), color);
+            }
+        }
+    }
+
     // Build one cluster for each clonotype.
 
     let mut clusters = build_clusters(
@@ -113,6 +195,8 @@ pub fn plot_clonotypes(
         exact_clonotypes,
         out_datas,
         &const_names,
+        by_cat_var,
+        &barcode_to_cat_var_color,
     );
     let mut radii = Vec::<f64>::new();
     for i in 0..clusters.len() {
@@ -601,88 +685,6 @@ pub fn plot_clonotypes(
         }
     }
 
-    // Determine if we are coloring cells by categorical variable value, and if so, assign colors.
-
-    let mut by_cat_var = false;
-    let mut barcode_to_cat_var_color = HashMap::<(usize, String), String>::new();
-    let mut cat_var_labels = Vec::<String>::new();
-    {
-        let mut vars = Vec::<String>::new();
-        let mut maxcat = 0;
-        match plot_opt.cell_color {
-            CellColor::ByCatagoricalVariableValue(ref x) => {
-                by_cat_var = true;
-                vars = x.vars.clone();
-                maxcat = x.n;
-            }
-            _ => {}
-        };
-        let mut barcode_to_cat_var_value = HashMap::<(usize, String), String>::new();
-        if by_cat_var {
-            let mut bvv = Vec::<usize, String, usize, String>::new();
-            for i in 0..out_datas.len() {
-                for j in 0..out_datas[i].len() {
-                    for (z, var) in vars.iter().enumerate {
-                        let var = *var;
-                        if out_datas[i][j].contains_key(&var) {
-                            let val_list = &out_datas[i][j][&var];
-                            let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
-                            let ex = &exact_clonotypes[exacts[i][j]];
-                            for k in 0..ex.ncells() {
-                                let val = if vals.len() > 1 { &vals[k] } else { &vals[0] };
-                                let li = ex.clones[k][0].dataset_index;
-                                let bc = &ex.clones[k][0].barcode;
-                                bvv.push((li, bc.clone(), z, val.to_string()));
-                            }
-                        } else {
-                            let ex = &exact_clonotypes[exacts[i][j]];
-                            for k in 0..ex.ncells() {
-                                let li = ex.clones[k][0].dataset_index;
-                                let bc = &ex.clones[k][0].barcode;
-                                bvv.push((li, bc.clone(), z, String::new()));
-                            }
-                        }
-                    }
-                }
-            }
-            bvv.sort();
-            let mut values = Vec::<String>::new();
-            for i in (0..bvv.len()).step_by(vars.len()) {
-                let v = bvv[i..i + vars.len()].iter().format(",");
-                barcode_to_cat_var_value.insert((bvv[i].0, bvv[i].1.clone), v.clone());
-                values.push(v);
-            }
-            values.sort();
-            let mut freq = Vec::<(u32, String)>::new();
-            make_freq(&values, &mut freq);
-            for i in 0..freq.len() {
-                if i == maxcat {
-                    cat_var_labels.push("other".to_string());
-                    freq.truncate(maxcat - 1);
-                    break;
-                }
-                cat_var_labels.push(freq[i].1.clone());
-            }
-            for i in (0..bvv.len()).step_by(vars.len()) {
-                let v = bvv[i..i + vars.len()].iter().format(",");
-                let mut color = String::new();
-                let mut found = false;
-                for j in 0..freq.len() {
-                    if v == freq[j].1 {
-                        let c = j % 256;
-                        color = format!("default-pre-{}", c);
-                        break;
-                    }
-                }
-                if !found {
-                    let c = freq.len();
-                    color = format!("default-pre-{}", c);
-                }
-                barcode_to_cat_var_value.color.insert((bvv[i].0, bvv[i].1.clone), color);
-            }
-        }
-    }
-
     // Generate svg.
 
     *svg = circles_to_svg(
@@ -702,8 +704,6 @@ pub fn plot_clonotypes(
         by_var,
         var,
         &barcode_to_var_value,
-        by_cat_var,
-        &barcode_to_cat_var_color,
     );
 
     // Calculate the actual height and width of the svg.
@@ -831,6 +831,14 @@ pub fn plot_clonotypes(
                 let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
                 colors.push(color);
                 labels.push(ctl.origin_info.dataset_id[li].clone());
+            }
+        } else if by_cat_var {
+            labels = cat_var_labels.clone();
+            for i in 0..cat_var_labels.len() {
+                let c = i % 256;
+                let x = &dcx[c];
+                let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
+                colors.push(color);
             }
         } else if plot_opt.plot_by_isotype {
             for i in 0..const_names.len() {

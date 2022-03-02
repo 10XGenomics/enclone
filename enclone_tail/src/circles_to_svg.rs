@@ -24,8 +24,6 @@ pub fn circles_to_svg(
     by_var: bool,
     var: String,
     barcode_to_var_value: &HashMap<(usize, String), String>,
-    by_cat_var: bool,
-    barcode_to_cat_var_color: &HashMap<(usize, String), String>::new(),
 ) -> String {
     let n = center.len();
     assert!(!center.is_empty());

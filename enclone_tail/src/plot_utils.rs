@@ -28,6 +28,8 @@ pub fn build_clusters(
     exact_clonotypes: &Vec<ExactClonotype>,
     out_datas: &Vec<Vec<HashMap<String, String>>>,
     const_names: &Vec<String>,
+    by_cat_var: bool,
+    barcode_to_cat_var_color: &HashMap<(usize, String), String>::new(),
 ) -> Vec<PlotCluster> {
     let mut clusters = Vec::<PlotCluster>::new();
     const SEP: f64 = 1.0; // separation between clusters
@@ -87,19 +89,29 @@ pub fn build_clusters(
                         ex.clones[k][0].dataset_index,
                         ex.clones[k][0].barcode.clone(),
                     ));
-                    let mut color = assign_cell_color(
-                        ctl,
-                        plot_opt,
-                        refdata,
-                        const_names,
-                        dsx,
-                        exacts,
-                        exact_clonotypes,
-                        out_datas,
-                        i,
-                        j,
-                        k,
-                    );
+                    let mut color;
+                    if !by_cat_var {
+                        color = assign_cell_color(
+                            ctl,
+                            plot_opt,
+                            refdata,
+                            const_names,
+                            dsx,
+                            exacts,
+                            exact_clonotypes,
+                            out_datas,
+                            i,
+                            j,
+                            k,
+                        );
+                    } else {
+                        color = barcode_to_cat_var_color[
+                            &(
+                                ex.clones[k][0].dataset_index,
+                                ex.clones[k][0].barcode.clone()
+                            )
+                        ].clone();
+                    }
 
                     // Partially translate colors.
 
