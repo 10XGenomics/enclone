@@ -291,6 +291,74 @@ pub fn grouper(
         }
         ctl.perf_stats(&t, "grouping by cdr3 length");
 
+        // Group by cdr3_heavy_len.
+
+        let t = Instant::now();
+        if ctl.clono_group_opt.cdr3_heavy_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<usize>::new();
+                    for j in 0..ex.share.len() {
+                        if ex.share[j].left {
+                            s.push(ex.share[j].cdr3_aa.len());
+                        }
+                    }
+                    s.sort_unstable();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        ctl.perf_stats(&t, "grouping by cdr3 heavy length");
+
+        // Group by cdr3_light_len.
+
+        let t = Instant::now();
+        if ctl.clono_group_opt.cdr3_light_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<usize>::new();
+                    for j in 0..ex.share.len() {
+                        if !ex.share[j].left {
+                            s.push(ex.share[j].cdr3_aa.len());
+                        }
+                    }
+                    s.sort_unstable();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        ctl.perf_stats(&t, "grouping by cdr3 light length");
+
         // Group by heavy_pc and then light_pc.
 
         for pass in 1..=2 {

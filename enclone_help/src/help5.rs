@@ -175,6 +175,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "the lengths of V..J are the same (after correction for indels)",
         );
         h.doc("cdr3_len", "CDR3 sequences have the same length");
+        h.doc(
+            "cdr3_heavy_len",
+            "heavy chain CDR3 sequences have the same length",
+        );
+        h.doc(
+            "cdr3_light_len",
+            "light chain CDR3 sequences have the same length",
+        );
         h.ldoc(
             "cdr3_heavy≥n%",
             "nucleotide identity on heavy chain CDR3 sequences is at least n%",

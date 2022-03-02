@@ -44,6 +44,10 @@ pub fn process_special_arg2(
                 ctl.clono_group_opt.vj_len = true;
             } else if x == "cdr3_len" {
                 ctl.clono_group_opt.cdr3_len = true;
+            } else if x == "cdr3_heavy_len" {
+                ctl.clono_group_opt.cdr3_heavy_len = true;
+            } else if x == "cdr3_light_len" {
+                ctl.clono_group_opt.cdr3_light_len = true;
             } else if x.starts_with("≥light") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
