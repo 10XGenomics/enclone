@@ -161,13 +161,16 @@ pub fn plot_clonotypes(
             values.sort();
             let mut freq = Vec::<(u32, String)>::new();
             make_freq(&values, &mut freq);
+            let mut trunc = false;
+            if freq.len() > maxcat {
+                trunc = true;
+                freq.truncate(maxcat - 1);
+            }
             for i in 0..freq.len() {
-                if i == maxcat {
-                    cat_var_labels.push("other".to_string());
-                    freq.truncate(maxcat - 1);
-                    break;
-                }
                 cat_var_labels.push(freq[i].1.clone());
+            }
+            if trunc {
+                cat_var_labels.push("other".to_string());
             }
             for i in (0..bvv.len()).step_by(vars.len()) {
                 let mut vals = Vec::<String>::new();
