@@ -3,9 +3,46 @@
 use enclone_core::defs::EncloneControl;
 use io_utils::{open_userfile_for_read, path_exists};
 use rayon::prelude::*;
+use std::fs::{remove_file, File};
 use std::{io::BufRead, time::Instant};
 use string_utils::TextUtils;
 use vector_utils::next_diff;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test a file for writeability by writing and then deleting it.
+
+pub fn test_writeable(val: &str, evil_eye: bool) -> Result<(), String> {
+    if evil_eye {
+        println!("creating file {} to test writability", val);
+    }
+    let f = File::create(&val);
+    if f.is_err() {
+        let mut msgx = format!(
+            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+            val
+        );
+        if val.contains('/') {
+            let dir = val.rev_before("/");
+            let msg;
+            if path_exists(dir) {
+                msg = "exists";
+            } else {
+                msg = "does not exist";
+            }
+            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
+        }
+        return Err(msgx);
+    }
+    if evil_eye {
+        println!("removing file {}", val);
+    }
+    remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
+    if evil_eye {
+        println!("removal of file {} complete", val);
+    }
+    Ok(())
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

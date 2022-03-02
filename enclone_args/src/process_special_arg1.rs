@@ -2,7 +2,7 @@
 
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
-use crate::proc_args::test_writeable;
+use crate::proc_args2::test_writeable;
 use crate::proc_args2::{is_simple_arg, is_usize_arg};
 use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;

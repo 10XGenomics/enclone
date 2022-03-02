@@ -1,51 +1,17 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::proc_args2::{is_f64_arg, is_i32_arg, is_simple_arg, is_string_arg, is_usize_arg};
+use crate::proc_args2::{
+    is_f64_arg, is_i32_arg, is_simple_arg, is_string_arg, is_usize_arg, test_writeable,
+};
 use crate::proc_args_post::proc_args_post;
 use crate::process_special_arg1::process_special_arg1;
 use crate::process_special_arg2::process_special_arg2;
 use enclone_core::defs::{ClonotypeHeuristics, EncloneControl};
 use enclone_core::require_readable_file;
-use io_utils::path_exists;
 use itertools::Itertools;
-use std::fs::{remove_file, File};
 use std::{process::Command, time::Instant};
 use string_utils::{stringme, strme, TextUtils};
 use tilde_expand::tilde_expand;
-
-// Test a file for writeability by writing and then deleting it.
-
-pub fn test_writeable(val: &str, evil_eye: bool) -> Result<(), String> {
-    if evil_eye {
-        println!("creating file {} to test writability", val);
-    }
-    let f = File::create(&val);
-    if f.is_err() {
-        let mut msgx = format!(
-            "\nYou've specified an output file\n{}\nthat cannot be written.\n",
-            val
-        );
-        if val.contains('/') {
-            let dir = val.rev_before("/");
-            let msg;
-            if path_exists(dir) {
-                msg = "exists";
-            } else {
-                msg = "does not exist";
-            }
-            msgx += &mut format!("Note that the path {} {}.\n", dir, msg);
-        }
-        return Err(msgx);
-    }
-    if evil_eye {
-        println!("removing file {}", val);
-    }
-    remove_file(&val).unwrap_or_else(|_| panic!("could not remove file {}", val));
-    if evil_eye {
-        println!("removal of file {} complete", val);
-    }
-    Ok(())
-}
 
 // Process arguments.
 
