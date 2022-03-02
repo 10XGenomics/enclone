@@ -300,6 +300,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "GROUP_CDR3H_LEN_VAR",
             "only print groups having variable heavy chain CDR3 length",
         );
+        h.doc(
+            "GROUP_CDR3=x",
+            "only print groups containing the CDR3 amino acid sequence x",
+        );
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2()?;
         h.print("\n")?;

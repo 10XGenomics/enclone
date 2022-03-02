@@ -727,6 +727,24 @@ pub fn grouper(
                     continue;
                 }
             }
+            if ctl.clono_group_opt.cdr3.len() > 0 {
+                let mut found = false;
+                for j in 0..o.len() {
+                    let x = o[j] as usize;
+                    let s = &exacts[x];
+                    for k in 0..s.len() {
+                        let ex = &exact_clonotypes[s[k]];
+                        for l in 0..ex.share.len() {
+                            if ex.share[l].cdr3_aa == ctl.clono_group_opt.cdr3 {
+                                found = true;
+                            }
+                        }
+                    }
+                }
+                if !found {
+                    continue;
+                }
+            }
             let mut z = Vec::<(i32, String)>::new();
             for j in 0..o.len() {
                 z.push((o[j], String::new()));
