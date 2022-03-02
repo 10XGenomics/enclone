@@ -2,7 +2,7 @@
 
 // Process a special argument, i.e. one that does not fit into a neat bucket.
 
-use crate::proc_args::test_writeable;
+use crate::proc_args2::test_writeable;
 use crate::proc_args2::{is_simple_arg, is_usize_arg};
 use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
@@ -191,6 +191,25 @@ pub fn process_special_arg1(
                     schema = "dataset".to_string();
                     let v = ColorByDataset {};
                     let cc = CellColor::ByDataset(v);
+                    ctl.plot_opt.cell_color = cc;
+                } else if p[0] == "catvar" {
+                    if p.len() != 3 {
+                        return Err(err);
+                    }
+                    let vars = p[1].split('+').map(str::to_owned).collect();
+                    if !p[2].starts_with("maxcat:")
+                        || p[2].after("maxcat:").parse::<usize>().is_err()
+                        || p[2].after("maxcat:").force_usize() == 0
+                    {
+                        return Err(err);
+                    }
+                    let n = p[2].after("maxcat:").force_usize();
+
+                    let v = ColorByCategoricalVariableValue {
+                        vars: vars,
+                        maxcat: n,
+                    };
+                    let cc = CellColor::ByCategoricalVariableValue(v);
                     ctl.plot_opt.cell_color = cc;
                 } else {
                     if p[0] != "var" || p.len() < 2 {

@@ -248,6 +248,7 @@ pub struct GeneralOpt {
     pub external_ref: String,
     pub fails_only: bool,
     pub bc_joint: String,
+    pub post_filter: String,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -430,6 +431,7 @@ pub struct ClonoGroupOpt {
     pub min_group_donors: usize, // minimum number of donors in a group to print
     pub cdr3h_len_var: bool,     // requires different heavy chain CDR3 lengths
     pub style: String,           // symmetric or unsymmetric or unspecified
+    pub cdr3: String,            // only print groups having this CDR3
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub vj_heavy_refname: bool,  // group by having the same heavy VJ reference names
@@ -437,6 +439,8 @@ pub struct ClonoGroupOpt {
     pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names
     pub vj_len: bool,            // group by V..J of same length
     pub cdr3_len: bool,          // group by CDR3 of same length
+    pub cdr3_heavy_len: bool,    // group by heavy chain CDR3 of same length
+    pub cdr3_light_len: bool,    // group by light chain CDR3 of same length
     pub cdr3_heavy_pc: Option<f64>, // group if nuke aa identity >= given percent on heavy chain
     pub cdr3_light_pc: Option<f64>, // group if nuke aa identity >= given percent on light chain
     pub cdr3_aa_heavy_pc: Option<f64>, // group if CDR3 aa identity >= given percent on heavy chain
@@ -460,6 +464,7 @@ pub struct ParseableOpt {
     pub pout: String,             // name of parseable output file
     pub pchains: String,          // number of chains to show in parseable output
     pub pcols: Vec<String>,       // column names to show in parseable output
+    pub pcols_show: Vec<String>,  // replacement column names for the actual header line
     pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
     pub pcols_sortx: Vec<String>, // same but before colon if present
     pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype

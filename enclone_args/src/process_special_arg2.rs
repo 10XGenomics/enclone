@@ -44,6 +44,10 @@ pub fn process_special_arg2(
                 ctl.clono_group_opt.vj_len = true;
             } else if x == "cdr3_len" {
                 ctl.clono_group_opt.cdr3_len = true;
+            } else if x == "cdr3_heavy_len" {
+                ctl.clono_group_opt.cdr3_heavy_len = true;
+            } else if x == "cdr3_light_len" {
+                ctl.clono_group_opt.cdr3_light_len = true;
             } else if x.starts_with("≥light") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {
@@ -411,6 +415,12 @@ pub fn process_special_arg2(
             }
             unique_sort(&mut ctl.parseable_opt.pcols_sort);
             unique_sort(&mut ctl.parseable_opt.pcols_sortx);
+        }
+    } else if arg.starts_with("PCOLS_SHOW=") {
+        ctl.parseable_opt.pcols_show.clear();
+        let p = arg.after("PCOLS_SHOW=").split(',').collect::<Vec<&str>>();
+        for i in 0..p.len() {
+            ctl.parseable_opt.pcols_show.push(p[i].to_string());
         }
     } else if arg.starts_with("VJ=") {
         ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();

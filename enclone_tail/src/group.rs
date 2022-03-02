@@ -109,11 +109,15 @@ pub fn group_and_print_clonotypes(
         }
     }
     pcols = pcols2;
+    let mut pcols_show = pcols.clone();
+    if ctl.parseable_opt.pcols_show.len() > 0 {
+        pcols_show = ctl.parseable_opt.pcols_show.clone();
+    }
     if !ctl.parseable_opt.pout.is_empty()
         && ctl.parseable_opt.pout != *"stdout"
         && ctl.parseable_opt.pout != *"stdouth"
     {
-        fwriteln!(pout, "{}", pcols.iter().format(","));
+        fwriteln!(pout, "{}", pcols_show.iter().format(","));
     }
 
     // Set up for fasta output.
@@ -613,10 +617,10 @@ pub fn group_and_print_clonotypes(
                 if ctl.parseable_opt.pout == *"stdout"
                     && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
                 {
-                    fwriteln!(glog, "{}", pcols.iter().format(","));
+                    fwriteln!(glog, "{}", pcols_show.iter().format(","));
                 }
                 if ctl.parseable_opt.pout == *"stdouth" {
-                    rows.push(pcols.clone());
+                    rows.push(pcols_show.clone());
                 }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {

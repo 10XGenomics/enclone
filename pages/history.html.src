@@ -30,6 +30,21 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>3/2/22</b>: 
+<ul>
+<li>Add grouping options <code>cdr3_heavy_len</code> and <code>cdr3_light_len</code>.</li>
+<li>Clonotypes within groups are now reverse sorted by cell count.</li>
+<li>Add <code>GROUP_CDR3</code> to only show groups containing the given CDR3 amino acid
+sequence.</li>
+</ul>
+For all of the above, please see
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.
+<ul>
+<li>Add ability to plot by a categorical variable.  Please see
+<a href="../../pages/auto/plot.html">enclone plots</a>.</li>
+</ul>
+</p>
+
 <p><b>2/28/22</b>: Add an argument <code>BC_JOINT=filename</code>, which functions like 
 <code>BC</code>, but uses only a single file.  Please see
 <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>.</p>

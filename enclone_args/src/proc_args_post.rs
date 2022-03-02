@@ -425,6 +425,14 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.parseable_opt.pcols_show.len() > 0 {
+        if ctl.parseable_opt.pcols_show.len() != ctl.parseable_opt.pcols.len() {
+            return Err(
+                "\nThe number of fields provided to PCOLS_SHOW has to match that for PCOLS.\n"
+                    .to_string(),
+            );
+        }
+    }
     if ctl.plot_opt.split_plot_by_dataset && ctl.plot_opt.split_plot_by_origin {
         return Err(
             "\nOnly one of SPLIT_PLOT_BY_DATASET and SPLIT_PLOT_BY_ORIGIN can be specified.\n"

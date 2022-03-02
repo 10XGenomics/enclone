@@ -125,15 +125,11 @@ not long enough.</p>
 <p>The legend may be suppressed using the argument <code>SUPPRESS_ISOTYPE_LEGEND</code>.</p>
 
 <hr>
-
 <br><span style="color:red; font-weight:bold">5.</span> The fifth way is to color cells by the
 value of a variable.
-
 <p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY=out=plot.svg,color=var,u_cell1
 NOPRINT</code></p>
-
 <img src="../../img/var.png" style="max-width: 60%" lt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
-
 <p>In the given dataset, for cells in clonotypes having at least ten cells,
 the plot colors each by the value of the variable 
 <code>u_cell1</code>, the number of UMIs in the first chain within the cell's clonotype.
@@ -141,18 +137,24 @@ The variable is sometimes undefined because a clonotype can include cells which 
 first chain.  Note also that using the variable <code>u1</code> would have instead colored cells
 by the median number of UMIs for their first chain, where the median is computed across the
 exact subclonotype containing the cell.</p>
-
 <p>See merged syntax, below.</p>
 
 <hr>
-
-<br><span style="color:red; font-weight:bold">6.</span> The sixth way is to color cells by the dataset
-that they belong to.
-
+<br><span style="color:red; font-weight:bold">6.</span> The sixth way is to color cells by the 
+dataset that they belong to.
 <p><b>Example:</b> <code>enclone BCR=123085,123089,124547 MIN_CELLS=5 HONEY=out=gui,color=dataset</code></p>
-
 <img src="../../img/by_dataset.svg" style="max-width: 60%" lt="dataset-colored honeycomb plot" title="dataset-colored honeycomb plot">
+<p>See merged syntax, below.</p>
 
+<hr>
+<br><span style="color:red; font-weight:bold">7.</span> The seventh way is to color cells by 
+a categorical variable.  That is any variable, not necessarily having numerical values.  In this
+example, cells are colored by (heavy chain V gene, light chain V gene).  A total of 
+<code>10</code> categories are shown, reverse sorted by cell count.  The last category is "other".
+<p><b>Example:</b> <code>enclone BCR=123085 
+HONEY=out=plot.svg,color=catvar,v_name1+v_name2,maxcat:10 NOPRINT CHAINS_EXACT=2</code></p>
+<img src="../../img/cat_var.svg" style="max-width: 60%" lt="honeycomb plot colored by a 
+categorical variable" title="honeycomb plot colored by a categorical variable"> 
 <p>See merged syntax, below.</p>
 
 <hr>
@@ -177,10 +179,11 @@ that they belong to.
     <td> <code>out=<span style="color:red">filename</span>,<span style="color:red">width</span></code> </td>
     <td>1.  <code><span style="color:red">filename</span></code>
     is the output file to be generated; it should end with <code>.svg</code> 
-    or <code>.png</code><br>depending on the desired output file type
-    <br>2. <code><span style="color:red">width</span></code> is the width in pixels of the image.  
-    This only makes sense for <code>.png</code> files.<br>The default value is <code>2000</code>.  
-    You could use, for example, a value of <code>4000</code> to get a<br>higher resolution image. 
+    or <code>.png</code> depending on the desired output file type.
+    <br>2. <code><span style="color:red">width</span></code> is the width in pixels of the image
+    and may be omitted.
+    It only makes sense for <code>.png</code> files.<br>The default value is <code>2000</code>.  
+    You could use, for example, a value of <code>4000</code> to get a higher resolution image. 
     </td></tr>
 
 <tr><td> <code>legend-spec</code> </td>
@@ -191,13 +194,24 @@ that they belong to.
     <td> <code>color=dataset</td>
     <td> Specify coloring by dataset.<br>The color scheme is fixed for now.</td></tr>
 
-<tr><td> <code>color-spec</code><br>variable version </td>
+<tr><td> <code>color-spec</code><br>numerical variable version </td>
     <td> <code>color=var,<span style="color:red">abbr</span>:<span style="color:red">name</span>,turbo,scale-spec</code></td>
-    <td> Specify coloring by variable.<br>
+    <td> Specify coloring by numerical variable.<br>
     1. <code>turbo</code> is the name of the color map and may be omitted
     <br>2. <code><span style="color:red">abbr</span>:</code> may be omitted; 
     <code><span style="color:red">abbr</code></span> is the display name
     <br>3. <code><span style="color:red">name</span></code> is the name of the variable</td></tr>
+
+<tr><td> <code>color-spec</code><br>categorical variable version </td>
+    <td> <code>color=catvar,<span style="color:red">vars</span>,maxcat:<span style="color:red">n</span></code></td>
+    <td> Specify coloring by categorical variable.<br>
+    1. <code><span style="color:red">vars</span></code>
+       is the variable to be displayed; more than one variable may be used,
+       separated by <code>+</code>.
+    <br>2.  <code><span style="color:red">n</span></code> is the maximum number of categories.
+    Categories are reverse ordered by number of cells and if there are too many categories, one
+    is lumped as "other" and displayed last.
+    </td></tr>
 
 <tr><td> <code>scale-spec</code> </td>
     <td><code>minmax,<span style="color:red">min</span>,<span style="color:red">max

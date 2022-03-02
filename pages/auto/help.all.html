@@ -1653,6 +1653,8 @@ Here are the conditions:
 ├───────────────────┼───────────────────────────────────────────────────────────────────────┤
 │len                │  the lengths of V..J are the same (after correction for indels)       │
 │cdr3_len           │  CDR3 sequences have the same length                                  │
+│cdr3_heavy_len     │  heavy chain CDR3 sequences have the same length                      │
+│cdr3_light_len     │  light chain CDR3 sequences have the same length                      │
 ├───────────────────┼───────────────────────────────────────────────────────────────────────┤
 │cdr3_heavy≥n%      │  nucleotide identity on heavy chain CDR3 sequences is at least n%     │
 │cdr3_light≥n%      │  nucleotide identity on light chain CDR3 sequences is at least n%     │
@@ -1720,6 +1722,7 @@ cases:
 │MIN_GROUP            │  minimum number of clonotypes in group to print (default = 1)    │
 │MIN_GROUP_DONORS     │  minimum number of donors for a group to be printed (default = 1)│
 │GROUP_CDR3H_LEN_VAR  │  only print groups having variable heavy chain CDR3 length       │
+│GROUP_CDR3=x         │  only print groups containing the CDR3 amino acid sequence x     │
 ├─────────────────────┼──────────────────────────────────────────────────────────────────┤
 │NGROUP               │  don't display grouping messages                                 │
 └─────────────────────┴──────────────────────────────────────────────────────────────────┘

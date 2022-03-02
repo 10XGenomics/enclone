@@ -6,6 +6,7 @@
 // the cells.
 
 use crate::assign_cell_color::{VAR_HIGH, VAR_LOW};
+use crate::cat_var::setup_cat_var;
 use crate::circles_to_svg::circles_to_svg;
 use crate::colors::*;
 use crate::convert_svg_to_png::convert_svg_to_png;
@@ -103,6 +104,21 @@ pub fn plot_clonotypes(
     }
     unique_sort(&mut origins);
 
+    // Determine if we are coloring cells by categorical variable value, and if so, assign colors.
+
+    let mut by_cat_var = false;
+    let mut barcode_to_cat_var_color = HashMap::<(usize, String), String>::new();
+    let mut cat_var_labels = Vec::<String>::new();
+    setup_cat_var(
+        &plot_opt,
+        &exacts,
+        &exact_clonotypes,
+        &out_datas,
+        &mut by_cat_var,
+        &mut barcode_to_cat_var_color,
+        &mut cat_var_labels,
+    );
+
     // Build one cluster for each clonotype.
 
     let mut clusters = build_clusters(
@@ -113,6 +129,9 @@ pub fn plot_clonotypes(
         exact_clonotypes,
         out_datas,
         &const_names,
+        by_cat_var,
+        &barcode_to_cat_var_color,
+        &cat_var_labels,
     );
     let mut radii = Vec::<f64>::new();
     for i in 0..clusters.len() {
@@ -434,10 +453,13 @@ pub fn plot_clonotypes(
         // Finish color translation.
 
         let tcn = turbo_color_names();
-        let n = std::cmp::min(256, ctl.origin_info.n());
+        let mut n = std::cmp::min(256, ctl.origin_info.n());
+        if by_cat_var {
+            n = std::cmp::min(256, cat_var_labels.len());
+        }
         let mut dcn = Vec::<String>::new();
         let mut dc = Vec::<Vec<u8>>::new();
-        if need_default_colors {
+        if need_default_colors || by_cat_var {
             dcn = default_color_names(n);
             dc = default_colors();
             dc.truncate(n);
@@ -452,6 +474,9 @@ pub fn plot_clonotypes(
                     clusters[i].colors[j] = color;
                 } else if clusters[i].colors[j].starts_with("default-") {
                     let n = bin_position(&dcn, &clusters[i].colors[j]);
+                    if n < 0 {
+                        eprintln!("color = {}", clusters[i].colors[j]);
+                    }
                     let c = &dc[n as usize];
                     let color = format!("rgb({},{},{})", c[0], c[1], c[2]);
                     clusters[i].colors[j] = color;
@@ -714,9 +739,12 @@ pub fn plot_clonotypes(
 
     let t = Instant::now();
     let mut dcx = Vec::<Vec<u8>>::new();
-    if need_default_colors {
+    if need_default_colors || by_cat_var {
         dcx = default_colors();
-        let n = std::cmp::min(256, ctl.origin_info.n());
+        let mut n = std::cmp::min(256, ctl.origin_info.n());
+        if by_cat_var {
+            n = std::cmp::min(256, cat_var_labels.len());
+        }
         dcx.truncate(n);
         reorder_color_list(&mut dcx);
     }
@@ -747,6 +775,14 @@ pub fn plot_clonotypes(
                 let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
                 colors.push(color);
                 labels.push(ctl.origin_info.dataset_id[li].clone());
+            }
+        } else if by_cat_var {
+            labels = cat_var_labels.clone();
+            for i in 0..cat_var_labels.len() {
+                let c = i % 256;
+                let x = &dcx[c];
+                let color = format!("rgb({},{},{})", x[0], x[1], x[2]);
+                colors.push(color);
             }
         } else if plot_opt.plot_by_isotype {
             for i in 0..const_names.len() {

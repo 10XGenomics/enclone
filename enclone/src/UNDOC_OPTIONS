@@ -340,3 +340,15 @@ To generate the current IMGT reference within the 10x codebase, do something lik
 1. bazel build //:pd //:shimulate //:devpipes_env
 2. cellranger/bazel-bin/devpipes_env.sh python cellranger/lib/bin/fetch_imgt_lib.py 
    --genome vdj_IMGT_human --species "Homo sapiens"
+
+===================================================================================================
+
+POST_FILTER=filename
+should be CSV
+dataset,barcode
+
+Use this with PRE_EVAL.  It filters out cells that are not on that list.
+
+===================================================================================================
+
+PCOLS_SHOW: use this list instead of PCOLS to head the parseable output

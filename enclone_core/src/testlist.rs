@@ -67,7 +67,7 @@ pub const DTESTS: [&str; 15] = [
 // Tests that are affected by the grouping algorithm.  All such tests should go here, if not
 // already in DTESTS.
 
-pub const GTESTS: [&str; 17] = [
+pub const GTESTS: [&str; 21] = [
     // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
     // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
@@ -115,6 +115,18 @@ pub const GTESTS: [&str; 17] = [
     // 17. test of GROUP
     r###"BCR=123085 GROUP=vj_refname,heavy≥96.6% MIN_GROUP=2 MIN_CHAINS=2 
          CDR3="CARVIVGPKKLEGRLYSSSLHFDCW|CARVIVGPEKQEGRLYSSSLHFDYW" POUT=stdout PCOLS=vj_seq1"###,
+    // 18. test of GROUP
+    r###"BCR=123085 GROUP=vj_heavy_refname,cdr3_heavy_len,cdr3_heavy≥80% LVARS=n,donors,dref 
+         CVARS=const,cdr3_len AMINO=cdr3 CHAINS=2 MIN_GROUP=2
+         CDR3="CARDLHGYDPYGMDVW|CARELRHYDTYGMDVW""###,
+    // 19. test of GROUP
+    r###"BCR=123085 GROUP=vj_refname,cdr3_light_len LVARS=n,donors,dref CVARS=const,cdr3_len 
+         AMINO=cdr3 CHAINS=2 MIN_GROUP=2 CDR3="CARESAVAGDMDVW|CARDYGDYRWWVDGMDVW""###,
+    // 20. test of group
+    r###"BCR=123085 GROUP=vj_refname GROUP_CDR3=CACFGRIGVVVRAAHYW"###,
+    // 21. test of group, asserted at one time
+    r###"BCR=123085 GROUP=vj_refname,cdr3_len MIN_GROUP=3 HONEY=out=stdout,color=var,u1 
+         EXPECT_OK"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
@@ -227,7 +239,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 27] = [
+pub const SITE_EXAMPLES: [(&str, &str); 28] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -380,6 +392,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 27] = [
     (
         "pages/auto/var_def.html",
         r###"BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS HTML"###,
+    ),
+    // 28.
+    (
+        "img/cat_var.svg",
+        "BCR=123085 HONEY=out=stdout,color=catvar,v_name1+v_name2,maxcat:10 NOPRINT CHAINS_EXACT=2",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:

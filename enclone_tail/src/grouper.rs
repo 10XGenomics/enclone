@@ -291,6 +291,74 @@ pub fn grouper(
         }
         ctl.perf_stats(&t, "grouping by cdr3 length");
 
+        // Group by cdr3_heavy_len.
+
+        let t = Instant::now();
+        if ctl.clono_group_opt.cdr3_heavy_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<usize>::new();
+                    for j in 0..ex.share.len() {
+                        if ex.share[j].left {
+                            s.push(ex.share[j].cdr3_aa.len());
+                        }
+                    }
+                    s.sort_unstable();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        ctl.perf_stats(&t, "grouping by cdr3 heavy length");
+
+        // Group by cdr3_light_len.
+
+        let t = Instant::now();
+        if ctl.clono_group_opt.cdr3_light_len {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let ex = &exact_clonotypes[exacts[*i][0]];
+                    let mut s = Vec::<usize>::new();
+                    for j in 0..ex.share.len() {
+                        if !ex.share[j].left {
+                            s.push(ex.share[j].cdr3_aa.len());
+                        }
+                    }
+                    s.sort_unstable();
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let mut g = Vec::<usize>::new();
+                    for k in i..j {
+                        g.push(all[k].1);
+                    }
+                    groups2.push(g);
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        ctl.perf_stats(&t, "grouping by cdr3 light length");
+
         // Group by heavy_pc and then light_pc.
 
         for pass in 1..=2 {
@@ -659,6 +727,24 @@ pub fn grouper(
                     continue;
                 }
             }
+            if ctl.clono_group_opt.cdr3.len() > 0 {
+                let mut found = false;
+                for j in 0..o.len() {
+                    let x = o[j] as usize;
+                    let s = &exacts[x];
+                    for k in 0..s.len() {
+                        let ex = &exact_clonotypes[s[k]];
+                        for l in 0..ex.share.len() {
+                            if ex.share[l].cdr3_aa == ctl.clono_group_opt.cdr3 {
+                                found = true;
+                            }
+                        }
+                    }
+                }
+                if !found {
+                    continue;
+                }
+            }
             let mut z = Vec::<(i32, String)>::new();
             for j in 0..o.len() {
                 z.push((o[j], String::new()));
@@ -676,6 +762,30 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
+
+        // Reverse sort within groups by number of cells.
+
+        for i in 0..groups.len() {
+            let mut ncells = Vec::<usize>::new();
+            for j in 0..groups[i].len() {
+                let x = groups[i][j].0 as usize;
+                let s = &exacts[x];
+                let mut n = 0;
+                for k in 0..s.len() {
+                    n += exact_clonotypes[s[k]].clones.len();
+                }
+                ncells.push(n);
+            }
+            let mut ncells_unique = ncells.clone();
+            unique_sort(&mut ncells_unique);
+            if ncells_unique.len() > 1 {
+                sort_sync2(&mut ncells, &mut groups[i]);
+                groups[i].reverse();
+            }
+        }
+
+        // Done.
+
         ctl.perf_stats(&t, "in grouper tail");
         groups
 
