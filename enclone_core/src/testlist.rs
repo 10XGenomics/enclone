@@ -67,7 +67,7 @@ pub const DTESTS: [&str; 15] = [
 // Tests that are affected by the grouping algorithm.  All such tests should go here, if not
 // already in DTESTS.
 
-pub const GTESTS: [&str; 20] = [
+pub const GTESTS: [&str; 21] = [
     // 1. test 5/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
     // 2. test 6/8 for newline correctness (this grouping option deprecated but supported)
@@ -124,6 +124,9 @@ pub const GTESTS: [&str; 20] = [
          AMINO=cdr3 CHAINS=2 MIN_GROUP=2 CDR3="CARESAVAGDMDVW|CARDYGDYRWWVDGMDVW""###,
     // 20. test of group
     r###"BCR=123085 GROUP=vj_refname GROUP_CDR3=CACFGRIGVVVRAAHYW"###,
+    // 21. test of group, asserted at one time
+    r###"BCR=123085 GROUP=vj_refname,cdr3_len MIN_GROUP=3 HONEY=out=stdout,color=var,u1 
+         EXPECT_OK"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
