@@ -744,6 +744,26 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
+
+        // Reverse sort within groups by number of cells.
+
+        for i in 0..groups.len() {
+            let mut ncells = Vec::<usize>::new();
+            for j in 0..groups[i].len() {
+                let x = groups[i][j].0 as usize;
+                let s = &exacts[x];
+                let mut n = 0;
+                for k in 0..s.len() {
+                    n += exact_clonotypes[s[k]].clones.len();
+                }
+                ncells.push(n);
+            }
+            sort_sync2(&mut ncells, &mut groups[i]);
+            groups[i].reverse();
+        }
+
+        // Done.
+
         ctl.perf_stats(&t, "in grouper tail");
         groups
 
