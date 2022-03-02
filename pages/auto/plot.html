@@ -159,15 +159,11 @@ not long enough.</p>
 <p>The legend may be suppressed using the argument <code>SUPPRESS_ISOTYPE_LEGEND</code>.</p>
 
 <hr>
-
 <br><span style="color:red; font-weight:bold">5.</span> The fifth way is to color cells by the
 value of a variable.
-
 <p><b>Example:</b> <code>enclone BCR=123085 MIN_CELLS=10 HONEY=out=plot.svg,color=var,u_cell1
 NOPRINT</code></p>
-
 <img src="../../img/var.png" style="max-width: 60%" lt="u1-colored honeycomb plot" title="u1-colored honeycomb plot">
-
 <p>In the given dataset, for cells in clonotypes having at least ten cells,
 the plot colors each by the value of the variable 
 <code>u_cell1</code>, the number of UMIs in the first chain within the cell's clonotype.
@@ -175,18 +171,24 @@ The variable is sometimes undefined because a clonotype can include cells which 
 first chain.  Note also that using the variable <code>u1</code> would have instead colored cells
 by the median number of UMIs for their first chain, where the median is computed across the
 exact subclonotype containing the cell.</p>
-
 <p>See merged syntax, below.</p>
 
 <hr>
-
-<br><span style="color:red; font-weight:bold">6.</span> The sixth way is to color cells by the dataset
-that they belong to.
-
+<br><span style="color:red; font-weight:bold">6.</span> The sixth way is to color cells by the 
+dataset that they belong to.
 <p><b>Example:</b> <code>enclone BCR=123085,123089,124547 MIN_CELLS=5 HONEY=out=gui,color=dataset</code></p>
-
 <img src="../../img/by_dataset.svg" style="max-width: 60%" lt="dataset-colored honeycomb plot" title="dataset-colored honeycomb plot">
+<p>See merged syntax, below.</p>
 
+<hr>
+<br><span style="color:red; font-weight:bold">7.</span> The seventh way is to color cells by 
+a categorical variable.  That is any variable, not necessarily having numerical values.  In this
+example, cells are colored by the (heavy chain V gene, light chain V gene).  A total of 
+<code>10</code> categories are shown, reverse sorted by cell count.  The last category is "other".
+<p><b>Example:</b> <code>enclone BCR=123085 
+HONEY=out=~/plot.svg,color=catvar,v_name1+v_name2,maxcat:10 NOPRINT CHAINS_EXACT=2</code></p>
+<img src="../../img/cat_var.svg" style="max-width: 60%" lt="honeycomb plot colored by a 
+categorical variable" title="honeycomb plot colored by a categorical variable"> 
 <p>See merged syntax, below.</p>
 
 <hr>

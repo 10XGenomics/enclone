@@ -236,7 +236,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 27] = [
+pub const SITE_EXAMPLES: [(&str, &str); 28] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -389,6 +389,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 27] = [
     (
         "pages/auto/var_def.html",
         r###"BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS HTML"###,
+    ),
+    // 28.
+    (
+        "img/cat_var.svg",
+        "BCR=123085 HONEY=out=stdout,color=catvar,v_name1+v_name2,maxcat:10 NOPRINT CHAINS_EXACT=2",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
