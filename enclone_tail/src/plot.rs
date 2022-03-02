@@ -814,9 +814,12 @@ pub fn plot_clonotypes(
 
     let t = Instant::now();
     let mut dcx = Vec::<Vec<u8>>::new();
-    if need_default_colors {
+    if need_default_colors || by_cat_var {
         dcx = default_colors();
-        let n = std::cmp::min(256, ctl.origin_info.n());
+        let mut n = std::cmp::min(256, ctl.origin_info.n());
+        if by_cat_var {
+            n = std::cmp::min(256, cat_var_labels.len());
+        }
         dcx.truncate(n);
         reorder_color_list(&mut dcx);
     }
