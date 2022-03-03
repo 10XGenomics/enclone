@@ -259,7 +259,8 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.print("\\bold{META=filename}\n")?;
         h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
-             group.  After the first line, lines starting with # are ignored.  There must be a \
+             group.  After the first line, blank lines and lines starting with # are ignored.  \
+             There must be a \
              field tcr or bcr, and some other fields are allowed:\n",
         )?;
         h.doc3("\\bold{field}", "\\bold{default}", "\\bold{meaning}");
