@@ -146,6 +146,17 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             }
         }
     }
+    for i in (1..args.len()).rev() {
+        if args[i].starts_with("PREPOST=") {
+            let prepost = args[i].after("PREPOST=");
+            let mut pre_plus = Vec::<String>::new();
+            for p in ctl.gen_opt.pre.iter() {
+                pre_plus.push(format!("{p}/{prepost}"));
+            }
+            ctl.gen_opt.pre.append(&mut pre_plus);
+            break;
+        }
+    }
 
     // Process SOURCE.
 
@@ -253,6 +264,8 @@ pub fn setup(
                 to_delete[i] = true;
             } else if args[i].starts_with("PRE=") {
                 to_delete[i] = true;
+            } else if args[i].starts_with("PREPOST=") {
+                to_delete[i] = true;
             } else if args[i] == "PLAIN" {
                 to_delete[i] = true;
                 plain = true;
@@ -308,6 +321,7 @@ pub fn setup(
                 && args_orig[i] != "NO_KILL"
                 && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")
+                && !args_orig[i].starts_with("PREPOST=")
                 && !args_orig[i].starts_with("MAX_CORES=")
             {
                 argsx.push(args_orig[i].clone());

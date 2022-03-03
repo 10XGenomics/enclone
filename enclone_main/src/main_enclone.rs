@@ -158,6 +158,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             && args_orig[i] != "FORCE_EXTERNAL"
             && args_orig[i] != "NO_KILL"
             && !args_orig[i].starts_with("PRE=")
+            && !args_orig[i].starts_with("PREPOST=")
             && !args_orig[i].starts_with("MAX_CORES=")
         {
             argsy.push(args_orig[i].clone());

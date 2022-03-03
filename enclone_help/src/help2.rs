@@ -157,7 +157,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
              \\bold{ENCLONE_PRE} to the desired value.  The default value for \\bold{PRE} \
-             is\n\\bold{~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2}.",
+             is\n\\bold{~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2}.  There is \
+             also an argument \\bold{PREPOST=x} that causes \\bold{/x} to be appended to all \
+             entries in \\bold{PRE}.",
             true,
         )?;
         h.print(
