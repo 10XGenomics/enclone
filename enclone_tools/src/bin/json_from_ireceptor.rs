@@ -13,7 +13,7 @@ use io_utils::*;
 use lz4::EncoderBuilder;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
-use std::fs::{File, remove_file};
+use std::fs::{remove_file, File};
 use std::io::BufRead;
 use std::io::Write;
 use string_utils::*;
