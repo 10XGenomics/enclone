@@ -34,6 +34,8 @@ pub fn process_special_arg2(
             let x = *x;
             if x == "vj_refname" {
                 ctl.clono_group_opt.vj_refname = true;
+            } else if x == "v_heavy_refname" {
+                ctl.clono_group_opt.v_heavy_refname = true;
             } else if x == "vj_heavy_refname" {
                 ctl.clono_group_opt.vj_heavy_refname = true;
             } else if x == "vdj_refname" {
@@ -628,9 +630,11 @@ pub fn process_special_arg2(
         ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
         ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
     } else if arg.starts_with("META=") {
-        let f = arg.after("META=");
-        let f = stringme(&tilde_expand(f.as_bytes()));
-        metas.push(f);
+        let v = arg.after("META=").split(',').collect::<Vec<&str>>();
+        for f in v.iter() {
+            let f = stringme(&tilde_expand(f.as_bytes()));
+            metas.push(f);
+        }
     } else if arg.starts_with("METAX=") {
         let f = arg.after("METAX=");
         let f = f.chars().filter(|c| !c.is_whitespace()).collect();

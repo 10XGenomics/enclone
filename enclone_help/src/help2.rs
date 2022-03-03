@@ -157,7 +157,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
              (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
              \\bold{ENCLONE_PRE} to the desired value.  The default value for \\bold{PRE} \
-             is\n\\bold{~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2}.",
+             is\n\\bold{~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2}.  There is \
+             also an argument \\bold{PREPOST=x} that causes \\bold{/x} to be appended to all \
+             entries in \\bold{PRE}.",
             true,
         )?;
         h.print(
@@ -259,7 +261,8 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.print("\\bold{META=filename}\n")?;
         h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
-             group.  After the first line, lines starting with # are ignored.  There must be a \
+             group.  After the first line, blank lines and lines starting with # are ignored.  \
+             There must be a \
              field tcr or bcr, and some other fields are allowed:\n",
         )?;
         h.doc3("\\bold{field}", "\\bold{default}", "\\bold{meaning}");
@@ -290,9 +293,12 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.ldoc3pr("bc", "null", "name of CSV file as in the \\bold{BC} option");
         h.print_tab3()?;
         h.print(
-            "\nIn addition, metadata maybe fully specified on the command line via \
+            "\nMultiple \\bold{META} arguments are cumulative and we also allow \
+            \\bold{META} to be a comma-separated list of filenames.  In both cases the \
+            \\bold{META} files must have identical header lines.  \
+            In addition, metadata maybe fully specified on the command line via \
             \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
-            otherwise put in the \\bold{META} file.\n",
+            otherwise put in the \\bold{META} file.",
         )?;
 
         h.print(

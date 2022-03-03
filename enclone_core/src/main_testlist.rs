@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 295] = [
+pub const TESTS: [&str; 298] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -737,4 +737,12 @@ pub const TESTS: [&str; 295] = [
     r###"BCR=86237 HONEY=out=stdout,color=var,cdr3_aa1 NOPRINT EXPECT_FAIL"###,
     // 295. test BC_JOINT
     r###"BCR="123085;85333" BC_JOINT=testx/inputs/bc_joint.csv KEEP_CELL_IF="dummy >= 0""###,
+    // 296. test META with two args
+    r###"META=testx/inputs/meta1.csv,testx/inputs/meta2.csv CDR3="CQQANSFPLTF|CQHYGSSPYTF"
+         SEG=IGHV4-39"###,
+    // 297. test two META args
+    r###"META=testx/inputs/meta1.csv META=testx/inputs/meta2.csv CDR3="CQQANSFPLTF|CQHYGSSPYTF"
+         SEG=IGHV4-39"###,
+    // 298. test iReceptor and PREPOST
+    r###"PREPOST=iReceptor BUILT_IN BCR=CIS/1_1 CDR3=CARIPYGDYWLGPKHWYFDLW"###,
 ];

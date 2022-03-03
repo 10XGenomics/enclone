@@ -54,14 +54,15 @@ pipeline may be found.  enclone uses only some of the pipeline output files, so 
 those files are present in given directory, and the particular files that are needed may be found
 by typing <a href="../../pages/auto/help.input_tech.html"><code>enclone help input_tech</code></a>.
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃If you use the argument <span style="font-weight:bold;">PRE=p</span> then <span style="font-weight:bold;">p/</span> will be prepended to all pipeline paths.  A comma-separated┃
-┃list is also allowed <span style="font-weight:bold;">PRE=p1,...,pn</span>, in which case these directories are searched from left to    ┃
-┃right, until one works, and if all fail, the path is used without prepending anything.  Lastly,  ┃
-┃(see <a href="../../pages/auto/help.command.html"><code>enclone help command</code></a>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command line by setting the         ┃
-┃environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to the desired value.  The default value for <span style="font-weight:bold;">PRE</span> is             ┃
-┃<span style="font-weight:bold;">~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2</span>.                                    ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃If you use the argument <span style="font-weight:bold;">PRE=p</span> then <span style="font-weight:bold;">p/</span> will be prepended to all pipeline paths.  A comma-separated ┃
+┃list is also allowed <span style="font-weight:bold;">PRE=p1,...,pn</span>, in which case these directories are searched from left to     ┃
+┃right, until one works, and if all fail, the path is used without prepending anything.  Lastly,   ┃
+┃(see <a href="../../pages/auto/help.command.html"><code>enclone help command</code></a>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command line by setting the          ┃
+┃environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to the desired value.  The default value for <span style="font-weight:bold;">PRE</span> is              ┃
+┃<span style="font-weight:bold;">~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2</span>.  There is also an argument <span style="font-weight:bold;">PREPOST=x</span>┃
+┃that causes <span style="font-weight:bold;">/x</span> to be appended to all entries in <span style="font-weight:bold;">PRE</span>.                                              ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 Both input forms involve abbreviated names (discussed below), which should be as short as
 possible, as longer abbreviations will increase the width of the clonotype displays.
@@ -135,8 +136,8 @@ specified set.
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>
 This file should be a CSV (comma-separated values) file, with one line per cell group.  After the
-first line, lines starting with # are ignored.  There must be a field tcr or bcr, and some other
-fields are allowed:
+first line, blank lines and lines starting with # are ignored.  There must be a field tcr or bcr,
+and some other fields are allowed:
 ┌────────┬───────────────┬──────────────────────────────────────────────────────────────┐
 │<span style="font-weight:bold;">field</span>   │  <span style="font-weight:bold;">default</span>      │  <span style="font-weight:bold;">meaning</span>                                                     │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
@@ -155,9 +156,10 @@ fields are allowed:
 │bc      │  null         │  name of CSV file as in the <span style="font-weight:bold;">BC</span> option                        │
 └────────┴───────────────┴──────────────────────────────────────────────────────────────┘
 
-In addition, metadata maybe fully specified on the command line via <span style="font-weight:bold;">METAX="l1;...;ln"</span> where the <span style="font-weight:bold;">li</span>
-are the lines that you would otherwise put in the <span style="font-weight:bold;">META</span> file.
-
+Multiple <span style="font-weight:bold;">META</span> arguments are cumulative and we also allow <span style="font-weight:bold;">META</span> to be a comma-separated list of
+filenames.  In both cases the <span style="font-weight:bold;">META</span> files must have identical header lines.  In addition, metadata
+maybe fully specified on the command line via <span style="font-weight:bold;">METAX="l1;...;ln"</span> where the <span style="font-weight:bold;">li</span> are the lines that
+you would otherwise put in the <span style="font-weight:bold;">META</span> file.
 <span style="color:#c23621;font-weight:bold;">█ 3 █</span> enclone can also read an ancillary CSV file that specifies arbitrary fields that are
 associated to particular immune receptor sequences.  This is done using <span style="font-weight:bold;">INFO=path.csv</span>; The CSV
 file must have fields <span style="font-weight:bold;">vj_seq1</span>, specifying the full heavy or TRB sequence from the beginning of the

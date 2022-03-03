@@ -820,7 +820,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                         .to_string(),
                 );
             }
-        } else if !s.starts_with('#') {
+        } else if !s.starts_with('#') && s.len() > 0 {
             let val = s.split(',').collect::<Vec<&str>>();
             if val.len() != fields.len() {
                 return Err(format!(
@@ -925,24 +925,44 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
     Ok(())
 }
 
-pub fn proc_meta(f: &str, ctl: &mut EncloneControl) -> Result<(), String> {
-    if !path_exists(f) {
-        return Err("\nCan't find the file referenced by your META argument.\n".to_string());
+pub fn proc_meta(v: &Vec<String>, ctl: &mut EncloneControl) -> Result<(), String> {
+    let mut lines_all = Vec::<Vec<String>>::new();
+    for f in v.iter() {
+        if !path_exists(f) {
+            return Err(format!(
+                "\nCan't find the file {f} referenced by your META argument.\n"
+            ));
+        }
+        let fx = File::open(&f);
+        if fx.is_err() {
+            return Err(format!(
+                "\nProblem with META: unable to read from the file\n\
+                 \"{}\".\nPlease check that that path makes sense and that you have read \
+                 permission for it.\n",
+                f
+            ));
+        }
+        let f = BufReader::new(fx.unwrap());
+        let mut lines = Vec::<String>::new();
+        for line in f.lines() {
+            let s = line.unwrap();
+            lines.push(s);
+        }
+        lines_all.push(lines);
     }
-    let fx = File::open(&f);
-    if fx.is_err() {
-        return Err(format!(
-            "\nProblem with META: unable to read from the file\n\
-             \"{}\".\nPlease check that that path makes sense and that you have read \
-             permission for it.\n",
-            f
-        ));
-    }
-    let f = BufReader::new(fx.unwrap());
     let mut lines = Vec::<String>::new();
-    for line in f.lines() {
-        let s = line.unwrap();
-        lines.push(s);
+    for j in 0..lines_all.len() {
+        if lines_all[j].is_empty() || lines_all[j][0] != lines_all[0][0] {
+            return Err(format!(
+                "\nMETA files having different header lines have been specified.\n"
+            ));
+        }
+        if j == 0 {
+            lines.push(lines_all[0][0].clone());
+        }
+        for k in 1..lines_all[j].len() {
+            lines.push(lines_all[j][k].clone());
+        }
     }
     proc_meta_core(&lines, ctl)
 }

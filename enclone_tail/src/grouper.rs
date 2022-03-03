@@ -135,6 +135,46 @@ pub fn grouper(
         }
         ctl.perf_stats(&t, "grouping by vdj refname");
 
+        // Group by v_heavy_refname.
+
+        let t = Instant::now();
+        if ctl.clono_group_opt.v_heavy_refname {
+            let mut groups2 = Vec::<Vec<usize>>::new();
+            for g in groups.iter() {
+                let mut all = Vec::new();
+                for i in g.iter() {
+                    let mut s = Vec::<String>::new();
+                    for col in 0..rsi[*i].mat.len() {
+                        if rsi[*i].left[col] {
+                            let vid = rsi[*i].vids[col];
+                            s.push(refdata.name[vid].clone());
+                        }
+                    }
+                    all.push((s, *i));
+                }
+                all.sort();
+                let mut i = 0;
+                while i < all.len() {
+                    let j = next_diff1_2(&all, i as i32) as usize;
+                    if all[i].0.is_empty() {
+                        for k in i..j {
+                            let g = vec![all[k].1];
+                            groups2.push(g);
+                        }
+                    } else {
+                        let mut g = Vec::<usize>::new();
+                        for k in i..j {
+                            g.push(all[k].1);
+                        }
+                        groups2.push(g);
+                    }
+                    i = j;
+                }
+            }
+            groups = groups2;
+        }
+        ctl.perf_stats(&t, "grouping by v heavy refname");
+
         // Group by vj_heavy_refname.
 
         let t = Instant::now();

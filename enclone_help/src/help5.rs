@@ -153,8 +153,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.doc2("and likewise for J segments");
 
         h.doc(
+            "v_heavy_refname",
+            "heavy chain V segments have the same reference sequence name",
+        );
+        h.doc(
             "vj_heavy_refname",
-            "V segments have the same reference sequence name,",
+            "heavy chain V segments have the same reference sequence name,",
         );
         h.doc2("and likewise for J segments");
         h.doc2("(only applied to heavy chains)");
