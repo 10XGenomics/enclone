@@ -434,6 +434,7 @@ pub struct ClonoGroupOpt {
     pub cdr3: String,            // only print groups having this CDR3
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
+    pub v_heavy_refname: bool,   // group by having the same heavy V reference name
     pub vj_heavy_refname: bool,  // group by having the same heavy VJ reference names
     pub vdj_refname: bool,       // group by having the same VDJ reference names
     pub vdj_heavy_refname: bool, // group by having the same heavy VDJ reference names

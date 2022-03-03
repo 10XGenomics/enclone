@@ -34,6 +34,8 @@ pub fn process_special_arg2(
             let x = *x;
             if x == "vj_refname" {
                 ctl.clono_group_opt.vj_refname = true;
+            } else if x == "v_heavy_refname" {
+                ctl.clono_group_opt.v_heavy_refname = true;
             } else if x == "vj_heavy_refname" {
                 ctl.clono_group_opt.vj_heavy_refname = true;
             } else if x == "vdj_refname" {
