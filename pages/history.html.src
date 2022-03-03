@@ -30,6 +30,9 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+
+<p><b>3/3/22</b>: Add grouping option <code>v_heavy_refname</code>.</p>
+
 <p><b>3/2/22</b>: 
 <ul>
 <li>Add grouping options <code>cdr3_heavy_len</code> and <code>cdr3_light_len</code>.</li>
