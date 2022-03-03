@@ -295,7 +295,8 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.print(
             "\nIn addition, metadata maybe fully specified on the command line via \
             \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
-            otherwise put in the \\bold{META} file.\n",
+            otherwise put in the \\bold{META} file.  We also allow META to be a \
+            comma-separated list of filenames.\n",
         )?;
 
         h.print(
