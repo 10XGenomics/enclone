@@ -820,7 +820,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) -> Resu
                         .to_string(),
                 );
             }
-        } else if !s.starts_with('#') {
+        } else if !s.starts_with('#') && s.len() > 0 {
             let val = s.split(',').collect::<Vec<&str>>();
             if val.len() != fields.len() {
                 return Err(format!(
