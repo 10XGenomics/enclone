@@ -525,9 +525,12 @@ pub fn proc_args_post(
     let t = Instant::now();
     check_cvars(ctl)?;
     if !metas.is_empty() {
-        let f = &metas[metas.len() - 1];
-        let f = get_path_fail(f, ctl, "META")?;
-        proc_meta(&f, ctl)?;
+        let mut v = Vec::<String>::new();
+        for i in 0..metas.len() {
+            let f = get_path_fail(&metas[i], ctl, "META")?;
+            v.push(f);
+        }
+        proc_meta(&v, ctl)?;
     }
     if !metaxs.is_empty() {
         let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();

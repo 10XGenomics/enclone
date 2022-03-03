@@ -293,10 +293,12 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.ldoc3pr("bc", "null", "name of CSV file as in the \\bold{BC} option");
         h.print_tab3()?;
         h.print(
-            "\nIn addition, metadata maybe fully specified on the command line via \
+            "\nMultiple \\bold{META} arguments are cumulative and we also allow \
+            \\bold{META} to be a comma-separated list of filenames.  In both cases the \
+            \\bold{META} files must have identical header lines.  \
+            In addition, metadata maybe fully specified on the command line via \
             \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
-            otherwise put in the \\bold{META} file.  We also allow META to be a \
-            comma-separated list of filenames.\n",
+            otherwise put in the \\bold{META} file.",
         )?;
 
         h.print(
