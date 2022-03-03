@@ -1,6 +1,8 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Make all_contig_annotations.json.lz4 from iReceptor file vdjserver.tsv.
+// Make all_contig_annotations.json.lz4 from an IReceptor tsv file.
+//
+// Usage: json_from_ireceptor whatever.tsv
 //
 // Limitations:
 // 1. Fakes the quality scores as perfect because they're not there.
@@ -13,6 +15,7 @@ use io_utils::*;
 use lz4::EncoderBuilder;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
+use std::env;
 use std::fs::{remove_file, File};
 use std::io::BufRead;
 use std::io::Write;
@@ -44,7 +47,8 @@ pub struct Contig {
 
 fn main() {
     PrettyTrace::new().on();
-    let tsv = open_for_read!["vdjserver.tsv"];
+    let args: Vec<String> = env::args().collect();
+    let tsv = open_for_read![&args[1]];
     let mut to_field = HashMap::<String, usize>::new();
     let mut contigs = Vec::<Contig>::new();
     for (i, line) in tsv.lines().enumerate() {
