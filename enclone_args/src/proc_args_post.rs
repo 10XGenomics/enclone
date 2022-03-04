@@ -528,7 +528,13 @@ pub fn proc_args_post(
         let mut v = Vec::<String>::new();
         for i in 0..metas.len() {
             let f = get_path_fail(&metas[i], ctl, "META")?;
-            v.push(f);
+            v.push(f.clone());
+            if f.contains("/") {
+                let d = f.rev_before("/").to_string();
+                if !ctl.gen_opt.pre.contains(&d) {
+                    ctl.gen_opt.pre.push(d);
+                }
+            }
         }
         proc_meta(&v, ctl)?;
     }
