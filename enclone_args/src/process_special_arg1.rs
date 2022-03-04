@@ -56,6 +56,10 @@ pub fn process_special_arg1(
             return Err(format!("\nArgument {} is not properly specified.\n", arg));
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
+    } else if arg.starts_with("GROUP_DONOR=") {
+        ctl.clono_group_opt
+            .donor
+            .push(arg.after("GROUP_DONOR=").to_string());
     } else if arg.starts_with("JALIGN_2ND") {
         let n = arg.after("JALIGN_2ND");
         if n.parse::<usize>().is_err() || n.force_usize() == 0 {

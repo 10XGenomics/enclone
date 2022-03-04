@@ -432,6 +432,7 @@ pub struct ClonoGroupOpt {
     pub cdr3h_len_var: bool,     // requires different heavy chain CDR3 lengths
     pub style: String,           // symmetric or unsymmetric or unspecified
     pub cdr3: String,            // only print groups having this CDR3
+    pub donor: Vec<String>,      // only print groups having all these donors
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub v_heavy_refname: bool,   // group by having the same heavy V reference name

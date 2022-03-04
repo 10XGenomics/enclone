@@ -308,6 +308,11 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "GROUP_CDR3=x",
             "only print groups containing the CDR3 amino acid sequence x",
         );
+        h.doc(
+            "GROUP_DONOR=d",
+            "only print groups containing a cell from the given donor;",
+        );
+        h.doc2("multiple instances may be used to jointly restrict");
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2()?;
         h.print("\n")?;
