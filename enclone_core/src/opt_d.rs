@@ -111,6 +111,7 @@ pub fn opt_d(
     scores: &mut Vec<f64>,
     dsx: &mut Vec<Vec<usize>>,
     ctl: &EncloneControl,
+    v_alt: Option<usize>,
 ) {
     let mid = rsi.mat[col][u].unwrap();
     assert!(ex.share[mid].left);
@@ -129,9 +130,8 @@ pub fn opt_d(
     let mut counts = Vec::<f64>::new();
     let mut good_d = Vec::<usize>::new();
     let mut vref = refdata.refs[ex.share[mid].v_ref_id].to_ascii_vec();
-    if rsi.vpids[col].is_none() {
-    } else {
-        vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+    if v_alt.is_some() {
+        vref = dref[v_alt.unwrap()].nt_sequence.clone();
     }
     let vstart = vref.len() - vflank(tig, &vref);
     let mut seq_start = vstart as isize;

@@ -56,6 +56,7 @@ pub fn make_opt_d_val(
                                 &mut scores,
                                 &mut ds,
                                 ctl,
+                                rsi[i].vpids[col],
                             );
                             let mut opt = Vec::new();
                             if !ds.is_empty() {

@@ -256,7 +256,18 @@ pub fn align_n(
                             if ex.share[r].left {
                                 let mut scores = Vec::<f64>::new();
                                 let mut ds = Vec::<Vec<usize>>::new();
-                                opt_d(ex, m, k, &rsi[oo], refdata, dref, &mut scores, &mut ds, ctl);
+                                opt_d(
+                                    ex,
+                                    m,
+                                    k,
+                                    &rsi[oo],
+                                    refdata,
+                                    dref,
+                                    &mut scores,
+                                    &mut ds,
+                                    ctl,
+                                    rsi[oo].vpids[m],
+                                );
                                 let mut opt = Vec::new();
                                 if !ds.is_empty() {
                                     opt = ds[0].clone();

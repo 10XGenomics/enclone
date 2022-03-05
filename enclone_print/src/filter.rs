@@ -532,7 +532,18 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+                        opt_d(
+                            ex,
+                            col,
+                            u,
+                            rsi,
+                            refdata,
+                            dref,
+                            &mut scores,
+                            &mut ds,
+                            ctl,
+                            rsi.vpids[col],
+                        );
                         let mut opt = Vec::new();
                         if !ds.is_empty() {
                             opt = ds[0].clone();
@@ -564,7 +575,18 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+                        opt_d(
+                            ex,
+                            col,
+                            u,
+                            rsi,
+                            refdata,
+                            dref,
+                            &mut scores,
+                            &mut ds,
+                            ctl,
+                            rsi.vpids[col],
+                        );
                         let mut opt = Vec::new();
                         if !ds.is_empty() {
                             opt = ds[0].clone();
@@ -594,7 +616,18 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
-                        opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+                        opt_d(
+                            ex,
+                            col,
+                            u,
+                            rsi,
+                            refdata,
+                            dref,
+                            &mut scores,
+                            &mut ds,
+                            ctl,
+                            rsi.vpids[col],
+                        );
                         let mut opt = Vec::new();
                         if !ds.is_empty() {
                             opt = ds[0].clone();

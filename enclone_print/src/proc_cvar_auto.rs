@@ -476,7 +476,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut opt = Vec::new();
             if !ds.is_empty() {
                 opt = ds[0].clone();
@@ -499,7 +510,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut delta = 0.0;
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
@@ -513,7 +535,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut opt2 = Vec::new();
             if ds.len() > 1 {
                 opt2 = ds[1].clone();
@@ -536,7 +569,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut score = 0.0;
             if scores.len() > 1 {
                 score = scores[1];
@@ -550,7 +594,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut delta = 0.0;
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
@@ -644,7 +699,18 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
-            opt_d(ex, col, u, rsi, refdata, dref, &mut scores, &mut ds, ctl);
+            opt_d(
+                ex,
+                col,
+                u,
+                rsi,
+                refdata,
+                dref,
+                &mut scores,
+                &mut ds,
+                ctl,
+                rsi.vpids[col],
+            );
             let mut delta = 0.0;
             if scores.len() > 1 {
                 delta = scores[0] - scores[1];
