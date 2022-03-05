@@ -48,9 +48,7 @@ pub fn make_opt_d_val(
                             let mut ds = Vec::<Vec<usize>>::new();
                             opt_d(
                                 ex,
-                                col,
                                 rsi[i].mat[col][u].unwrap(),
-                                u,
                                 refdata,
                                 drefs,
                                 &mut scores,

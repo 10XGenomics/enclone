@@ -478,9 +478,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,
@@ -512,9 +510,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,
@@ -537,9 +533,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,
@@ -571,9 +565,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,
@@ -596,9 +588,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,
@@ -701,9 +691,7 @@ pub fn proc_cvar_auto(
             let mut ds = Vec::<Vec<usize>>::new();
             opt_d(
                 ex,
-                col,
                 rsi.mat[col][u].unwrap(),
-                u,
                 refdata,
                 dref,
                 &mut scores,

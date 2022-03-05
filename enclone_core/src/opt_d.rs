@@ -103,9 +103,7 @@ pub fn evaluate_d(
 
 pub fn opt_d(
     ex: &ExactClonotype,
-    _col: usize,
     mid: usize,
-    _u: usize,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     scores: &mut Vec<f64>,

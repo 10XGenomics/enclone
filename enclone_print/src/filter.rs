@@ -534,9 +534,7 @@ pub fn survives_filter(
                         let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
                             ex,
-                            col,
                             rsi.mat[col][u].unwrap(),
-                            u,
                             refdata,
                             dref,
                             &mut scores,
@@ -577,9 +575,7 @@ pub fn survives_filter(
                         let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
                             ex,
-                            col,
                             rsi.mat[col][u].unwrap(),
-                            u,
                             refdata,
                             dref,
                             &mut scores,
@@ -618,9 +614,7 @@ pub fn survives_filter(
                         let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
                             ex,
-                            col,
                             rsi.mat[col][u].unwrap(),
-                            u,
                             refdata,
                             dref,
                             &mut scores,

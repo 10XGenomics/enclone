@@ -258,9 +258,7 @@ pub fn align_n(
                                 let mut ds = Vec::<Vec<usize>>::new();
                                 opt_d(
                                     ex,
-                                    m,
                                     rsi[oo].mat[m][k].unwrap(),
-                                    k,
                                     refdata,
                                     dref,
                                     &mut scores,
