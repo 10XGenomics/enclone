@@ -49,8 +49,8 @@ pub fn make_opt_d_val(
                             opt_d(
                                 ex,
                                 col,
+                                rsi[i].mat[col][u].unwrap(),
                                 u,
-                                &rsi[i],
                                 refdata,
                                 drefs,
                                 &mut scores,

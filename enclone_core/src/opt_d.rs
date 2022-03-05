@@ -5,7 +5,7 @@
 // segment may be null.  This is obvious from looking at data.
 
 use crate::align_to_vdj_ref::{align_to_vdj_ref, match_bit_score, zero_one};
-use crate::defs::{ColInfo, EncloneControl, ExactClonotype};
+use crate::defs::{EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
 use std::cmp::min;
 use vdj_ann::refx::RefData;
@@ -103,9 +103,9 @@ pub fn evaluate_d(
 
 pub fn opt_d(
     ex: &ExactClonotype,
-    col: usize,
-    u: usize,
-    rsi: &ColInfo,
+    _col: usize,
+    mid: usize,
+    _u: usize,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     scores: &mut Vec<f64>,
@@ -113,7 +113,6 @@ pub fn opt_d(
     ctl: &EncloneControl,
     v_alt: Option<usize>,
 ) {
-    let mid = rsi.mat[col][u].unwrap();
     assert!(ex.share[mid].left);
     let mut comp = 1000000.0;
     let td = &ex.share[mid];

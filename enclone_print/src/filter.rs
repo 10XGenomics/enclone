@@ -535,8 +535,8 @@ pub fn survives_filter(
                         opt_d(
                             ex,
                             col,
+                            rsi.mat[col][u].unwrap(),
                             u,
-                            rsi,
                             refdata,
                             dref,
                             &mut scores,
@@ -578,8 +578,8 @@ pub fn survives_filter(
                         opt_d(
                             ex,
                             col,
+                            rsi.mat[col][u].unwrap(),
                             u,
-                            rsi,
                             refdata,
                             dref,
                             &mut scores,
@@ -619,8 +619,8 @@ pub fn survives_filter(
                         opt_d(
                             ex,
                             col,
+                            rsi.mat[col][u].unwrap(),
                             u,
-                            rsi,
                             refdata,
                             dref,
                             &mut scores,

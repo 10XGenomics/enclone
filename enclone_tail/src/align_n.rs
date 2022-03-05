@@ -259,8 +259,8 @@ pub fn align_n(
                                 opt_d(
                                     ex,
                                     m,
+                                    rsi[oo].mat[m][k].unwrap(),
                                     k,
-                                    &rsi[oo],
                                     refdata,
                                     dref,
                                     &mut scores,

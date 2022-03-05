@@ -479,8 +479,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
@@ -513,8 +513,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
@@ -538,8 +538,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
@@ -572,8 +572,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
@@ -597,8 +597,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
@@ -702,8 +702,8 @@ pub fn proc_cvar_auto(
             opt_d(
                 ex,
                 col,
+                rsi.mat[col][u].unwrap(),
                 u,
-                rsi,
                 refdata,
                 dref,
                 &mut scores,
