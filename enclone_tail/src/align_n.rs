@@ -172,6 +172,8 @@ fn print_vis_align(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Note that heavy_complexity, below, is largely a copy of this.
+
 pub fn align_n(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
@@ -385,3 +387,182 @@ pub fn align_n(
     }
     align_out
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// This is largely copied from align_n.
+
+/*
+
+pub fn heavy_complexity(
+    refdata: &RefData,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    ctl: &EncloneControl,
+    dref: &Vec<DonorReferenceItem>,
+) -> Vec<usize> {
+    let mut results = Vec::<(usize, usize)>::new();
+    for i in 0..exact_clonotypes.len() {
+        results.push((i, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let ex = &exact_clonotypes[i];
+        for r in 0..ex.share.len() {
+            if ex.share[r].left {
+                let mut seq = ex.share[r].seq_del.clone();
+                let mut vref = refdata.refs[ex.share[r].v_ref_id].to_ascii_vec();
+                if ex.share[r].v_ref_id_donor.is_some() {
+                    vref = dref[ex.share[r].v_ref_id_donor_alt_id.unwrap()].nt_sequence.clone();
+                }
+                let mut vstart = ex.share[r].cdr3_start - 2;
+
+                // Compensate for indel.  Code here and next work imperfectly and
+                // there would be value in investigating the error cases.
+
+                if ex.share[r].ins.len() > 0 {
+                    vstart -= ex.share[r].ins[0].1.len();
+                } else if ex.share[r].seq.len() < ex.share[r].seq_del.len() {
+                    vstart += ex.share[r].seq_del.len() - ex.share[r].seq.len();
+                }
+
+                // Prevent crash (working around bug).
+
+                if vstart > vref.len() {
+                    vstart = vref.len();
+                }
+
+                // Keep going.
+
+                vref = vref[vstart..vref.len()].to_vec();
+                let mut concat = vref.clone();
+                let mut drefx = Vec::<u8>::new();
+                let mut d2ref = Vec::<u8>::new();
+                let mut drefname = String::new();
+                let mut scores = Vec::<f64>::new();
+                let mut ds = Vec::<Vec<usize>>::new();
+                opt_d(ex, r, refdata, dref, &mut scores, &mut ds, ctl,
+                    ex.share[r].v_ref_id_donor_alt_id);
+
+                ...................................................................................
+
+                let mut opt = Vec::new();
+                if !ds.is_empty() {
+                    opt = ds[0].clone();
+                }
+                let mut opt2 = Vec::new();
+                if ds.len() > 1 {
+                    opt2 = ds[1].clone();
+                }
+                        let optx = if pass == 1 { opt } else { opt2 };
+                        for j in 0..optx.len() {
+                            let d = optx[j];
+                            if j == 0 {
+                                drefx = refdata.refs[d].to_ascii_vec();
+                            } else {
+                                d2ref = refdata.refs[d].to_ascii_vec();
+                            }
+                            if j > 0 {
+                                drefname += ":";
+                            }
+                            if ctl.pretty {
+                                let mut log = Vec::<u8>::new();
+                                if j == 0 {
+                                    print_color(DCOLOR, &mut log);
+                                } else {
+                                    print_color(D2COLOR, &mut log);
+                                }
+                                drefname += strme(&log);
+                            }
+                            drefname += &mut refdata.name[d].clone();
+                            if ctl.pretty {
+                                let mut log = Vec::<u8>::new();
+                                emit_end_escape(&mut log);
+                                drefname += strme(&log);
+                            }
+                        }
+                        concat.append(&mut drefx.clone());
+                        concat.append(&mut d2ref.clone());
+                    }
+                    let mut jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                    let mut frame = 0;
+                    if jun {
+                        let jend = jflank(&seq, &jref);
+                        let mut seq_start = vstart as isize;
+                        // probably not exactly right
+                        if ex.share[r].annv.len() > 1 {
+                            let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
+                            let q2 = ex.share[r].annv[1].0;
+                            seq_start += q2 as isize - q1 as isize;
+                        }
+                        let mut seq_end = seq.len() - (jref.len() - jend);
+                        // very flaky bug workaround
+                        // asserted on BCR=180030 CDR3=CARERDLIWFGPW JALIGN1
+                        if seq_start as usize > seq_end {
+                            seq_start = vstart as isize;
+                        }
+                        if seq_end <= seq_start as usize {
+                            seq_end = seq.len(); // bug fix for problem found by customer,
+                                                 // couldn't reproduce internally
+                        }
+                        seq = seq[seq_start as usize..seq_end].to_vec();
+                        frame = seq_start as usize % 3;
+                        jref = jref[0..jend].to_vec();
+                    }
+                    concat.append(&mut jref.clone());
+
+                    // Make and print alignment.
+
+                    let mut add = String::new();
+                    if ex.share[r].left {
+                        let mut drefname = drefname.clone();
+                        if drefname == *"" {
+                            drefname = "none".to_string();
+                        }
+                        let rank;
+                        if pass == 1 {
+                            rank = "1ST";
+                        } else {
+                            rank = "2ND";
+                        }
+                        add = format!("  •  D = {} = {}", rank, drefname);
+                    }
+                    let widthx;
+                    if !jun {
+                        widthx = width;
+                    } else {
+                        widthx = 1000;
+                    }
+                    print_vis_align(
+                        &seq,
+                        &concat,
+                        *col,
+                        k,
+                        &vref,
+                        &drefx,
+                        &d2ref,
+                        &jref,
+                        &drefname,
+                        ex.share[r].left,
+                        ctl,
+                        &mut logx,
+                        widthx,
+                        &add,
+                        frame,
+                        jun,
+                    );
+                }
+            }
+        }
+        }
+        res.1.push(logx);
+        }
+    });
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            align_out.insert((i, j), results[i].1[j].clone());
+        }
+    }
+    align_out
+}
+
+*/
