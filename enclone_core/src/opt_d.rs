@@ -128,7 +128,7 @@ pub fn opt_d(
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
     let mut good_d = Vec::<usize>::new();
-    let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+    let mut vref = refdata.refs[ex.share[mid].v_ref_id].to_ascii_vec();
     if rsi.vpids[col].is_none() {
     } else {
         vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
@@ -142,7 +142,7 @@ pub fn opt_d(
 
         seq_start += q1 as isize - q2 as isize;
     }
-    let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+    let jref = refdata.refs[ex.share[mid].j_ref_id].to_ascii_vec();
     const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
         let (ops, count) = evaluate_d(
