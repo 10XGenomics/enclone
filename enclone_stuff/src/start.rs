@@ -377,14 +377,13 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Compute complexity.
 
-    let mut hcomp = Vec::<usize>::new();
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
-        hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
-    }
-    for u in 0..exact_clonotypes.len() {
-        let ex = &mut exact_clonotypes[u];
-        for m in 0..ex.share.len() {
-            ex.share[m].hcomp = hcomp[u];
+        let hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
+        for u in 0..exact_clonotypes.len() {
+            let ex = &mut exact_clonotypes[u];
+            for m in 0..ex.share.len() {
+                ex.share[m].hcomp = hcomp[u];
+            }
         }
     }
 
