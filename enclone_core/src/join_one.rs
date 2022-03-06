@@ -530,12 +530,14 @@ pub fn join_one(
     let mut accept = false;
     if ctl.join_alg_opt.comp_filt {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
-            let comp = min(
-                hcomp[info[k1].clonotype_index],
-                hcomp[info[k2].clonotype_index],
-            );
-            if comp as isize - cd >= 8 {
-                accept = true;
+            if hcomp.len() > 0 {
+                let comp = min(
+                    hcomp[info[k1].clonotype_index],
+                    hcomp[info[k2].clonotype_index],
+                );
+                if comp as isize - cd >= 8 {
+                    accept = true;
+                }
             }
         }
     }
