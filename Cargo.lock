@@ -1266,6 +1266,7 @@ dependencies = [
  "assert_cmd",
  "debruijn",
  "enclone_core",
+ "enclone_proto",
  "equiv",
  "evalexpr",
  "graph_simple",
@@ -1318,6 +1319,7 @@ dependencies = [
 name = "enclone_core"
 version = "0.5.154"
 dependencies = [
+ "align_tools",
  "amino",
  "ansi_escape",
  "attohttpc",
@@ -1334,6 +1336,7 @@ dependencies = [
  "perf_stats",
  "pretty_trace",
  "qd",
+ "rayon",
  "regex",
  "stats_utils",
  "stirling_numbers",

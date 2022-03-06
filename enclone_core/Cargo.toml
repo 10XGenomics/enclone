@@ -21,6 +21,7 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
+align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
@@ -37,6 +38,7 @@ mirror_sparse_matrix = "0.1"
 perf_stats = "0.1"
 pretty_trace = "0.5"
 qd = { git = "https://github.com/Barandis/qd" }
+rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"
 stirling_numbers = "0.1"

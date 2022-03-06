@@ -332,6 +332,7 @@ pub struct JoinAlgOpt {
     pub fwr1_cdr12_delta: f64,
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
+    pub comp_filt: usize,
 }
 
 // Clonotype filtering options.
@@ -432,6 +433,7 @@ pub struct ClonoGroupOpt {
     pub cdr3h_len_var: bool,     // requires different heavy chain CDR3 lengths
     pub style: String,           // symmetric or unsymmetric or unspecified
     pub cdr3: String,            // only print groups having this CDR3
+    pub donor: Vec<String>,      // only print groups having all these donors
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub v_heavy_refname: bool,   // group by having the same heavy V reference name
@@ -699,6 +701,7 @@ pub struct TigData1 {
     pub mait_alpha_chain_junction_match: bool,
     pub mait_beta_chain_gene_match: bool,
     pub mait_beta_chain_junction_match: bool,
+    pub hcomp: usize,
 }
 
 impl TigData1 {

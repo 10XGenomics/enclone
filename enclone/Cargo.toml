@@ -24,6 +24,7 @@ amino = "0.1"
 ansi_escape = "0.1"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
+enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1"
 evalexpr = "7"
 graph_simple = "0.1"

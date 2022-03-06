@@ -722,7 +722,7 @@ pub fn grouper(
 
         let mut groups = Vec::<Vec<(i32, String)>>::new();
         let mut grepsn = Vec::<usize>::new();
-        for i in 0..greps.len() {
+        'group: for i in 0..greps.len() {
             let mut o = Vec::<i32>::new();
             e.orbit(greps[i], &mut o);
             if o.len() < ctl.clono_group_opt.min_group {
@@ -785,6 +785,29 @@ pub fn grouper(
                     continue;
                 }
             }
+
+            if ctl.clono_group_opt.donor.len() > 0 {
+                for d in ctl.clono_group_opt.donor.iter() {
+                    let mut found = false;
+                    for j in 0..o.len() {
+                        let x = o[j] as usize;
+                        let s = &exacts[x];
+                        for k in 0..s.len() {
+                            let ex = &exact_clonotypes[s[k]];
+                            for l in 0..ex.clones.len() {
+                                let dx = &ctl.origin_info.donor_id[ex.clones[l][0].dataset_index];
+                                if dx == d {
+                                    found = true;
+                                }
+                            }
+                        }
+                    }
+                    if !found {
+                        continue 'group;
+                    }
+                }
+            }
+
             let mut z = Vec::<(i32, String)>::new();
             for j in 0..o.len() {
                 z.push((o[j], String::new()));

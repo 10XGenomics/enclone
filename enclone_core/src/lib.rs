@@ -6,6 +6,7 @@ pub mod cell_color;
 pub mod combine_group_pics;
 pub mod defs;
 pub mod enclone_structs;
+pub mod hcomp;
 pub mod join_one;
 pub mod linear_condition;
 pub mod logging;

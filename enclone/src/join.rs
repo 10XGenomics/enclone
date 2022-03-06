@@ -37,6 +37,7 @@ pub fn join_exacts(
     raw_joins: &mut Vec<(i32, i32)>,
     sr: &Vec<Vec<Double>>,
 ) -> EquivRel {
+    //
     // Run special option for joining by barcode identity.
 
     let timer1 = Instant::now();

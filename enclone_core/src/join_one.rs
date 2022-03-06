@@ -524,10 +524,25 @@ pub fn join_one(
 
     let score = p1 * mult;
 
+    // Apply COMP_FILT.
+
+    let mut accept = false;
+    if ctl.join_alg_opt.comp_filt < 1_000_000 {
+        if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
+            let comp = min(ex1.share[0].hcomp, ex2.share[0].hcomp);
+            if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
+                accept = true;
+            }
+        }
+    }
+
     // Threshold on score.
 
-    if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize {
-        return false;
+    if !accept {
+        if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize
+        {
+            return false;
+        }
     }
 
     // If V gene names are different (after removing trailing *...), and either

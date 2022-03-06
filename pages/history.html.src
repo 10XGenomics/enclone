@@ -30,6 +30,8 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>3/4/22</b>: Add ability to select functional groups by donor, see
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</p>
 
 <p><b>3/3/22</b>: 
 <ul>

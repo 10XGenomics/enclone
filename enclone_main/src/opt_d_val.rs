@@ -48,14 +48,13 @@ pub fn make_opt_d_val(
                             let mut ds = Vec::<Vec<usize>>::new();
                             opt_d(
                                 ex,
-                                col,
-                                u,
-                                &rsi[i],
+                                rsi[i].mat[col][u].unwrap(),
                                 refdata,
                                 drefs,
                                 &mut scores,
                                 &mut ds,
                                 ctl,
+                                rsi[i].vpids[col],
                             );
                             let mut opt = Vec::new();
                             if !ds.is_empty() {
