@@ -22,7 +22,6 @@ pub fn weak_chains(
     raw_joins: &Vec<Vec<usize>>,
     fate: &mut Vec<HashMap<String, String>>,
     refdata: &RefData,
-    hcomp: &Vec<usize>,
 ) {
     // Note mat calculation duplicated with print_clonotypes and also doublet detection.
 
@@ -57,7 +56,6 @@ pub fn weak_chains(
             info,
             raw_joins,
             &refdata,
-            &hcomp,
         );
         let cols = mat.len();
         if cols > 2 {

@@ -15,6 +15,8 @@ use crate::join2::finish_join;
 use crate::join_core::join_core;
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use enclone_proto::types::DonorReferenceItem;
+use enclone_tail::align_n::heavy_complexity;
 use equiv::EquivRel;
 use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
@@ -36,9 +38,16 @@ pub fn join_exacts(
     join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
     sr: &Vec<Vec<Double>>,
-    hcomp: &Vec<usize>,
+    dref: &Vec<DonorReferenceItem>,
 ) -> EquivRel {
     //
+    // Compute complexity.
+
+    let mut hcomp = Vec::<usize>::new();
+    if ctl.join_alg_opt.comp_filt < 1_000_000 {
+        hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &dref);
+    }
+
     // Run special option for joining by barcode identity.
 
     let timer1 = Instant::now();

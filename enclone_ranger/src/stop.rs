@@ -22,7 +22,6 @@ pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), S
     let fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
-    let hcomp = &inter.ex.hcomp;
 
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
@@ -87,7 +86,6 @@ pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), S
         &mut tests,
         &mut controls,
         fate,
-        &hcomp,
     )?;
     Ok(())
 }

@@ -66,7 +66,6 @@ pub fn define_mat(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
-    hcomp: &Vec<usize>,
 ) -> Vec<Vec<Option<usize>>> {
     // Define map of indices into exacts.
 
@@ -163,7 +162,7 @@ pub fn define_mat(
                                 sr,
                                 &mut pot,
                                 &refdata,
-                                &hcomp,
+                                &Vec::new(),
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -243,7 +242,7 @@ pub fn define_mat(
                     sr,
                     &mut pot,
                     &refdata,
-                    &hcomp,
+                    &Vec::new(),
                 ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);
