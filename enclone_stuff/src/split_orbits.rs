@@ -20,6 +20,7 @@ pub fn split_orbits(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
+    hcomp: &Vec<usize>,
 ) {
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
@@ -48,6 +49,7 @@ pub fn split_orbits(
             info,
             raw_joins,
             &refdata,
+            &hcomp,
         );
         let cols = mat.len();
 

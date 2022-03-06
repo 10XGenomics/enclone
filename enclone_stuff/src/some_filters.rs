@@ -29,6 +29,7 @@ pub fn some_filters(
     disintegrated: &Vec<bool>,
     fate: &mut Vec<HashMap<String, String>>,
     refdata: &RefData,
+    hcomp: &Vec<usize>,
 ) {
     // Delete exact subclonotypes that appear to represent doublets.
 
@@ -42,6 +43,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        hcomp,
     );
 
     // Given a signature s having at least two chains, if the total cells in the two-chain
@@ -83,6 +85,7 @@ pub fn some_filters(
             info,
             raw_joins,
             &refdata,
+            &hcomp,
         );
 
         // Find all the signatures and cell counts associated to each.
@@ -213,6 +216,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        hcomp,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 1");
 
@@ -230,6 +234,7 @@ pub fn some_filters(
         raw_joins,
         fate,
         &refdata,
+        hcomp,
     );
     ctl.perf_stats(&tweak, "weak chain filtering");
 
@@ -246,6 +251,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        hcomp,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 2");
 
@@ -284,6 +290,7 @@ pub fn some_filters(
             info,
             raw_joins,
             &refdata,
+            &hcomp,
         );
         let cols = mat.len();
         let rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);
@@ -469,6 +476,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        hcomp,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 3");
 }

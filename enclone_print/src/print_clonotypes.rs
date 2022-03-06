@@ -67,6 +67,7 @@ pub fn print_clonotypes(
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
     fate: &mut Vec<HashMap<String, String>>,
+    hcomp: &Vec<usize>,
 ) -> Result<(), String> {
     let lvars = &ctl.clono_print_opt.lvars;
 
@@ -276,6 +277,7 @@ pub fn print_clonotypes(
                 info,
                 raw_joins,
                 &refdata,
+                &hcomp,
             );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
@@ -321,6 +323,7 @@ pub fn print_clonotypes(
                 info,
                 raw_joins,
                 &refdata,
+                &hcomp,
             );
             let cols = mat.len();
             let mut rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);

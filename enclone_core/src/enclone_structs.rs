@@ -51,6 +51,7 @@ pub struct EncloneExacts {
     pub to_bc: HashMap<(usize, usize), Vec<String>>,
     pub exact_clonotypes: Vec<ExactClonotype>,
     pub raw_joins: Vec<Vec<usize>>,
+    pub hcomp: Vec<usize>,
     pub info: Vec<CloneInfo>,
     pub orbits: Vec<Vec<i32>>,
     pub vdj_cells: Vec<Vec<String>>,

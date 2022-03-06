@@ -22,6 +22,7 @@ use enclone_args::read_json::parse_json_annotations_files;
 use enclone_core::defs::{CloneInfo, TigData};
 use enclone_core::enclone_structs::*;
 use enclone_print::loupe::make_donor_refs;
+use enclone_tail::align_n::heavy_complexity;
 use equiv::EquivRel;
 use io_utils::{fwriteln, open_for_read};
 use qd::dd;
@@ -374,6 +375,13 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let sr = stirling2_ratio_table_double(3000);
     ctl.perf_stats(&tsr, "computing stirling number table");
 
+    // Compute complexity.
+
+    let mut hcomp = Vec::<usize>::new();
+    if ctl.join_alg_opt.comp_filt < 1_000_000 {
+        hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
+    }
+
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
 
@@ -389,7 +397,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut join_info,
         &mut raw_joins,
         &sr,
-        &drefs,
+        &hcomp,
     );
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
@@ -548,6 +556,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &disintegrated,
         &mut fate,
         refdata,
+        &hcomp,
     );
 
     // Pre evaluate (PRE_EVAL).
@@ -824,6 +833,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             to_bc,
             exact_clonotypes,
             raw_joins,
+            hcomp,
             info: info.to_vec(),
             orbits,
             vdj_cells,

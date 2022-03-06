@@ -24,6 +24,7 @@ pub fn delete_doublets(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
+    hcomp: &Vec<usize>,
 ) {
     if ctl.clono_filt_opt_def.doublet {
         let t = Instant::now();
@@ -65,6 +66,7 @@ pub fn delete_doublets(
                 info,
                 raw_joins,
                 &refdata,
+                &hcomp,
             );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();
