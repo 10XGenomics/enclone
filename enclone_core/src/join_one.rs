@@ -75,6 +75,7 @@ pub fn join_one(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
+    hcomp: &Vec<usize>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -524,10 +525,28 @@ pub fn join_one(
 
     let score = p1 * mult;
 
+    // Apply COMP_FILT.
+
+    let mut accept = false;
+    if ctl.join_alg_opt.comp_filt {
+        if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
+            let comp = min(
+                hcomp[info[k1].clonotype_index],
+                hcomp[info[k2].clonotype_index],
+            );
+            if comp as isize - cd >= 8 {
+                accept = true;
+            }
+        }
+    }
+
     // Threshold on score.
 
-    if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize {
-        return false;
+    if !accept {
+        if score > ctl.join_alg_opt.max_score && *min_shares < ctl.join_alg_opt.auto_share as isize
+        {
+            return false;
+        }
     }
 
     // If V gene names are different (after removing trailing *...), and either

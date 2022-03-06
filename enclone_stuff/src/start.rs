@@ -389,6 +389,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut join_info,
         &mut raw_joins,
         &sr,
+        &drefs,
     );
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell

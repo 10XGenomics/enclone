@@ -1266,6 +1266,8 @@ dependencies = [
  "assert_cmd",
  "debruijn",
  "enclone_core",
+ "enclone_proto",
+ "enclone_tail",
  "equiv",
  "evalexpr",
  "graph_simple",

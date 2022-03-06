@@ -162,6 +162,7 @@ pub fn define_mat(
                                 sr,
                                 &mut pot,
                                 &refdata,
+                                &Vec::new(),
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -241,6 +242,7 @@ pub fn define_mat(
                     sr,
                     &mut pot,
                     &refdata,
+                    &Vec::new(),
                 ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);

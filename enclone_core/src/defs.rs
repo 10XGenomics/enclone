@@ -332,6 +332,7 @@ pub struct JoinAlgOpt {
     pub fwr1_cdr12_delta: f64,
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
+    pub comp_filt: bool,
 }
 
 // Clonotype filtering options.
