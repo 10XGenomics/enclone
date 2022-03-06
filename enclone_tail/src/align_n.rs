@@ -5,6 +5,7 @@
 use align_tools::vis_align;
 use amino::codon_to_aa;
 use ansi_escape::{emit_end_escape, print_color};
+use bio_edit::alignment::AlignmentOperation::{Del, Ins, Subst};
 use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_core::opt_d::{jflank, opt_d};
@@ -392,8 +393,6 @@ pub fn align_n(
 
 // This is largely copied from align_n.
 
-/*
-
 pub fn heavy_complexity(
     refdata: &RefData,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -412,7 +411,9 @@ pub fn heavy_complexity(
                 let mut seq = ex.share[r].seq_del.clone();
                 let mut vref = refdata.refs[ex.share[r].v_ref_id].to_ascii_vec();
                 if ex.share[r].v_ref_id_donor.is_some() {
-                    vref = dref[ex.share[r].v_ref_id_donor_alt_id.unwrap()].nt_sequence.clone();
+                    vref = dref[ex.share[r].v_ref_id_donor_alt_id.unwrap()]
+                        .nt_sequence
+                        .clone();
                 }
                 let mut vstart = ex.share[r].cdr3_start - 2;
 
@@ -440,15 +441,19 @@ pub fn heavy_complexity(
                 let mut drefname = String::new();
                 let mut scores = Vec::<f64>::new();
                 let mut ds = Vec::<Vec<usize>>::new();
-                opt_d(ex, r, refdata, dref, &mut scores, &mut ds, ctl,
-                    ex.share[r].v_ref_id_donor_alt_id);
+                opt_d(
+                    ex,
+                    r,
+                    refdata,
+                    dref,
+                    &mut scores,
+                    &mut ds,
+                    ctl,
+                    ex.share[r].v_ref_id_donor_alt_id,
+                );
                 let mut opt = Vec::new();
                 if !ds.is_empty() {
                     opt = ds[0].clone();
-                }
-                let mut opt2 = Vec::new();
-                if ds.len() > 1 {
-                    opt2 = ds[1].clone();
                 }
                 for j in 0..opt.len() {
                     let d = opt[j];
@@ -465,7 +470,6 @@ pub fn heavy_complexity(
                 concat.append(&mut drefx.clone());
                 concat.append(&mut d2ref.clone());
                 let mut jref = refdata.refs[ex.share[r].j_ref_id].to_ascii_vec();
-                let mut frame = 0;
                 let jend = jflank(&seq, &jref);
                 let mut seq_start = vstart as isize;
                 // probably not exactly right
@@ -485,11 +489,10 @@ pub fn heavy_complexity(
                                          // couldn't reproduce internally
                 }
                 seq = seq[seq_start as usize..seq_end].to_vec();
-                frame = seq_start as usize % 3;
                 jref = jref[0..jend].to_vec();
                 concat.append(&mut jref.clone());
-                let (ops, _score)
-                    = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, drefname, true, ctl);
+                let (ops, _score) =
+                    align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true, ctl);
                 for i in 0..ops.len() {
                     if ops[i] == Subst {
                         res.1 += 1;
@@ -508,5 +511,3 @@ pub fn heavy_complexity(
     }
     comp
 }
-
-*/
