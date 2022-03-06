@@ -1320,6 +1320,7 @@ dependencies = [
 name = "enclone_core"
 version = "0.5.154"
 dependencies = [
+ "align_tools",
  "amino",
  "ansi_escape",
  "attohttpc",
@@ -1336,6 +1337,7 @@ dependencies = [
  "perf_stats",
  "pretty_trace",
  "qd",
+ "rayon",
  "regex",
  "stats_utils",
  "stirling_numbers",
@@ -1541,7 +1543,6 @@ dependencies = [
  "enclone_args",
  "enclone_core",
  "enclone_print",
- "enclone_tail",
  "equiv",
  "evalexpr",
  "hdf5",
