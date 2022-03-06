@@ -402,7 +402,7 @@ pub fn heavy_complexity(
 ) -> Vec<usize> {
     let mut results = Vec::<(usize, usize)>::new();
     for i in 0..exact_clonotypes.len() {
-        results.push((i, Vec::new()));
+        results.push((i, 0));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -450,9 +450,8 @@ pub fn heavy_complexity(
                 if ds.len() > 1 {
                     opt2 = ds[1].clone();
                 }
-                let optx = opt;
-                for j in 0..optx.len() {
-                    let d = optx[j];
+                for j in 0..opt.len() {
+                    let d = opt[j];
                     if j == 0 {
                         drefx = refdata.refs[d].to_ascii_vec();
                     } else {
@@ -467,47 +466,47 @@ pub fn heavy_complexity(
                 concat.append(&mut d2ref.clone());
                 let mut jref = refdata.refs[ex.share[r].j_ref_id].to_ascii_vec();
                 let mut frame = 0;
-                if jun {
-                    let jend = jflank(&seq, &jref);
-                    let mut seq_start = vstart as isize;
-                    // probably not exactly right
-                    if ex.share[r].annv.len() > 1 {
-                        let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
-                        let q2 = ex.share[r].annv[1].0;
-                        seq_start += q2 as isize - q1 as isize;
-                    }
-                    let mut seq_end = seq.len() - (jref.len() - jend);
-                    // very flaky bug workaround
-                    // asserted on BCR=180030 CDR3=CARERDLIWFGPW JALIGN1
-                    if seq_start as usize > seq_end {
-                        seq_start = vstart as isize;
-                    }
-                    if seq_end <= seq_start as usize {
-                        seq_end = seq.len(); // bug fix for problem found by customer,
-                                             // couldn't reproduce internally
-                    }
-                    seq = seq[seq_start as usize..seq_end].to_vec();
-                    frame = seq_start as usize % 3;
-                    jref = jref[0..jend].to_vec();
+                let jend = jflank(&seq, &jref);
+                let mut seq_start = vstart as isize;
+                // probably not exactly right
+                if ex.share[r].annv.len() > 1 {
+                    let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
+                    let q2 = ex.share[r].annv[1].0;
+                    seq_start += q2 as isize - q1 as isize;
                 }
+                let mut seq_end = seq.len() - (jref.len() - jend);
+                // very flaky bug workaround
+                // asserted on BCR=180030 CDR3=CARERDLIWFGPW JALIGN1
+                if seq_start as usize > seq_end {
+                    seq_start = vstart as isize;
+                }
+                if seq_end <= seq_start as usize {
+                    seq_end = seq.len(); // bug fix for problem found by customer,
+                                         // couldn't reproduce internally
+                }
+                seq = seq[seq_start as usize..seq_end].to_vec();
+                frame = seq_start as usize % 3;
+                jref = jref[0..jend].to_vec();
                 concat.append(&mut jref.clone());
                 let (ops, _score)
                     = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, drefname, true, ctl);
-
-                ...................................................................................
-
+                for i in 0..ops.len() {
+                    if ops[i] == Subst {
+                        res.1 += 1;
+                    } else if ops[i] == Ins {
+                        res.1 += 1;
+                    } else if ops[i] == Del && (i == 0 || ops[i - 1] != Del) {
+                        res.1 += 1;
+                    }
+                }
             }
         }
-        }
-        res.1.push(logx);
-        }
     });
-    for i in 0..groups.len() {
-        for j in 0..groups[i].len() {
-            align_out.insert((i, j), results[i].1[j].clone());
-        }
+    let mut comp = Vec::<usize>::new();
+    for i in 0..results.len() {
+        comp.push(results[i].1);
     }
-    align_out
+    comp
 }
 
 */
