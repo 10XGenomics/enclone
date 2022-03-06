@@ -44,7 +44,7 @@ pub fn join_exacts(
     // Compute complexity.
 
     let mut hcomp = Vec::<usize>::new();
-    if ctl.join_alg_opt.comp_filt {
+    if ctl.join_alg_opt.comp_filt < 1_000_000 {
         hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &dref);
     }
 

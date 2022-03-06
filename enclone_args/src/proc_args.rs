@@ -167,6 +167,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.fwr1_cdr12_delta = 20.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
     ctl.join_alg_opt.auto_share = 15;
+    ctl.join_alg_opt.comp_filt = 1_000_000;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -399,7 +400,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("BUILT_IN", &mut ctl.gen_opt.built_in),
         ("CDIFF", &mut ctl.clono_filt_opt.cdiff),
         ("CHAIN_BRIEF", &mut ctl.clono_print_opt.chain_brief),
-        ("COMP_FILT", &mut ctl.join_alg_opt.comp_filt),
         ("COMPLETE", &mut ctl.gen_opt.complete),
         ("CON", &mut ctl.allele_print_opt.con),
         ("CON_CON", &mut ctl.gen_opt.con_con),
@@ -532,6 +532,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("CDR3_NORMAL_LEN", &mut ctl.join_alg_opt.cdr3_normal_len),
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
+        ("COMP_FILT", &mut ctl.join_alg_opt.comp_filt),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),

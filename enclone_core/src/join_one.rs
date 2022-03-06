@@ -528,7 +528,7 @@ pub fn join_one(
     // Apply COMP_FILT.
 
     let mut accept = false;
-    if ctl.join_alg_opt.comp_filt {
+    if ctl.join_alg_opt.comp_filt < 1_000_000 {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
             if hcomp.len() > 0 {
                 let comp = min(
