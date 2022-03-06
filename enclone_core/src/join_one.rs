@@ -535,7 +535,7 @@ pub fn join_one(
                     hcomp[info[k1].clonotype_index],
                     hcomp[info[k2].clonotype_index],
                 );
-                if comp as isize - cd >= 8 {
+                if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
                     accept = true;
                 }
             }
