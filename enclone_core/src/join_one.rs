@@ -75,7 +75,6 @@ pub fn join_one(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
-    hcomp: &Vec<usize>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -530,14 +529,9 @@ pub fn join_one(
     let mut accept = false;
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
-            if hcomp.len() > 0 {
-                let comp = min(
-                    hcomp[info[k1].clonotype_index],
-                    hcomp[info[k2].clonotype_index],
-                );
-                if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
-                    accept = true;
-                }
+            let comp = min(ex1.share[0].hcomp, ex2.share[0].hcomp);
+            if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
+                accept = true;
             }
         }
     }

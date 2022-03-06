@@ -229,6 +229,7 @@ pub fn create_exact_subclonotype_core(
             mait_alpha_chain_junction_match: false,
             mait_beta_chain_gene_match: false,
             mait_beta_chain_junction_match: false,
+            hcomp: 0,
         });
     }
     for t in r..s {

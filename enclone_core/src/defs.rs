@@ -701,6 +701,7 @@ pub struct TigData1 {
     pub mait_alpha_chain_junction_match: bool,
     pub mait_beta_chain_gene_match: bool,
     pub mait_beta_chain_junction_match: bool,
+    pub hcomp: usize,
 }
 
 impl TigData1 {
