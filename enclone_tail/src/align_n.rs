@@ -407,7 +407,7 @@ pub fn heavy_complexity(
         let i = res.0;
         let ex = &exact_clonotypes[i];
         for r in 0..ex.share.len() {
-            if ex.share[r].left {
+            if ex.share[r].left && ex.share.len() == 2 && !ex.share[1 - r].left {
                 let mut seq = ex.share[r].seq_del.clone();
                 let mut vref = refdata.refs[ex.share[r].v_ref_id].to_ascii_vec();
                 if ex.share[r].v_ref_id_donor.is_some() {
