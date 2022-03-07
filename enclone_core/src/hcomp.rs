@@ -138,6 +138,7 @@ pub fn heavy_complexity(
                         del_len += 1;
                         if i == ops.len() - 1 || ops[i + 1] != Del {
                             indels.push((tigpos, -(del_len as isize)));
+                            del_len = 0;
                         }
                     }
                 }
