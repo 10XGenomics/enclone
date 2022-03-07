@@ -15,10 +15,10 @@ pub fn heavy_complexity(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
-) -> Vec<usize> {
-    let mut results = Vec::<(usize, usize)>::new();
+) -> Vec<Junction> {
+    let mut results = Vec::<(usize, Junction)>::new();
     for i in 0..exact_clonotypes.len() {
-        results.push((i, 0));
+        results.push((i, Junction::default()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -141,8 +141,7 @@ pub fn heavy_complexity(
                         }
                     }
                 }
-                res.1 = hcomp;
-                let _jun = Junction {
+                res.1 = Junction {
                     hcomp: hcomp,
                     d: ds[0].clone(),
                     vstart: vstart,
@@ -151,9 +150,9 @@ pub fn heavy_complexity(
             }
         }
     });
-    let mut comp = Vec::<usize>::new();
+    let mut comp = Vec::<Junction>::new();
     for i in 0..results.len() {
-        comp.push(results[i].1);
+        comp.push(results[i].1.clone());
     }
     comp
 }

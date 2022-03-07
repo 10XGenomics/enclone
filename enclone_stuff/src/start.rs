@@ -378,11 +378,13 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     // Compute complexity.
 
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
-        let hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
+        let jun = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
         for u in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[u];
             for m in 0..ex.share.len() {
-                ex.share[m].jun.hcomp = hcomp[u];
+                if ex.share.len() == 2 && ex.share[m].left {
+                    ex.share[m].jun = jun[u].clone();
+                }
             }
         }
     }
