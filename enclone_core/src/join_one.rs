@@ -648,9 +648,18 @@ pub fn join_one(
                                         let mut log = Vec::<u8>::new();
                                         use io_utils::*;
                                         use std::io::Write;
-                                        fwriteln!(log, "\ncomparable");
+                                        fwriteln!(log, "\nEXAMPLE");
                                         fwriteln!(log, "cdr3: {}", ex1.share[h1].cdr3_aa);
                                         fwriteln!(log, "cdr3: {}", ex2.share[h2].cdr3_aa);
+
+                                        let (j1, j2) 
+                                            = (info[k1].exact_cols[0], info[k2].exact_cols[0]);
+                                        let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
+                                        let (v1, v2) = (x1.v_ref_id, x2.v_ref_id);
+                                        let (n1, n2) 
+                                            = (refdata.name[v1].clone(), refdata.name[v2].clone());
+                                        fwriteln!(log, "heavy V genes = {}/{}", n1, n2);
+
                                         use itertools::Itertools;
                                         fwriteln!(log, "indels1 = {:?}", 
                                             ex1.share[h1].jun.indels.iter().format(","));
@@ -659,9 +668,11 @@ pub fn join_one(
                                         fwriteln!(log, "vstart1 = {}", vstart);
                                         fwriteln!(log, "vstart2 = {}", ex2.share[h2].jun.vstart);
                                         use string_utils::strme;
+                                        /*
                                         fwriteln!(log, "seq1   = {}", strme(&seq1));
                                         fwriteln!(log, "seq2   = {}", strme(&seq2));
                                         fwriteln!(log, "concat = {}", strme(&concat));
+                                        */
                                         fwriteln!(log, "heavy junction share = {}", share);
                                         fwriteln!(log, "non junction share = {}", *min_shares);
                                         fwriteln!(log, "indep mutations outside = {}", *min_indeps);
