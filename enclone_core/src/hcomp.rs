@@ -139,8 +139,6 @@ pub fn heavy_complexity(
                         if i == ops.len() - 1 || ops[i + 1] != Del {
                             indels.push((tigpos, -(del_len as isize)));
                         }
-                    } else {
-                        assert!(0 == 1); // TO REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     }
                 }
                 res.1 = hcomp;
