@@ -529,7 +529,9 @@ pub fn join_one(
     let mut accept = false;
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
-            let comp = min(ex1.share[0].jun.hcomp, ex2.share[0].jun.hcomp);
+            let h1 = info[k1].exact_cols[0];
+            let h2 = info[k2].exact_cols[0];
+            let comp = min(ex1.share[h1].jun.hcomp, ex2.share[h2].jun.hcomp);
             if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
                 accept = true;
             }
