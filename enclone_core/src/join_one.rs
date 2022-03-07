@@ -256,9 +256,13 @@ pub fn join_one(
     // Compute junction diffs.
 
     let mut cd = 0_isize;
+    let mut hcd = 0_isize;
     for l in 0..x1.len() {
         for m in 0..x1[l].len() {
             if x1[l].as_bytes()[m] != x2[l].as_bytes()[m] {
+                if l == 0 {
+                    hcd += 1;
+                }
                 cd += 1;
             }
         }
@@ -675,6 +679,7 @@ pub fn join_one(
                                         fwriteln!(log, "non junction share = {}", *min_shares);
                                         fwriteln!(log, "indep mutations outside = {}", *min_indeps);
                                         fwriteln!(log, "cd = {}", cd);
+                                        fwriteln!(log, "hcd = {}", hcd);
                                         print!("{}", strme(&log));
                                         accept = true;
                                     }
