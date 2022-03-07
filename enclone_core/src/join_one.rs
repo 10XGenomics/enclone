@@ -537,15 +537,11 @@ pub fn join_one(
             let comp = min(ex1.share[h1].jun.hcomp, ex2.share[h2].jun.hcomp);
             if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
                 accept = true;
+            } else {
                 if score > ctl.join_alg_opt.max_score 
-                    && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
-                    println!("\nexception!");
-                    use itertools::Itertools;
-                    println!("indels1 = {:?}", ex1.share[h1].jun.indels.iter().format(","));
-                    println!("indels2 = {:?}", ex2.share[h2].jun.indels.iter().format(","));
+                    // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
+                    && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
                     let vstart = ex1.share[h1].jun.vstart;
-                    println!("vstart1 = {}", vstart);
-                    println!("vstart2 = {}", ex2.share[h2].jun.vstart);
                     let indels = &ex1.share[h1].jun.indels;
                     let v_ref_id = ex1.share[h1].v_ref_id;
                     let j_ref_id = ex1.share[h1].j_ref_id;
@@ -569,7 +565,16 @@ pub fn join_one(
                                         .clone();
                                 }
                                 if vref1 == vref2 {
-                                    println!("comparable");
+                                    println!("\ncomparable");
+                                    println!("cdr3: {}", ex1.share[h1].cdr3_aa);
+                                    println!("cdr3: {}", ex2.share[h2].cdr3_aa);
+                                    use itertools::Itertools;
+                                    println!("indels1 = {:?}", 
+                                        ex1.share[h1].jun.indels.iter().format(","));
+                                    println!("indels2 = {:?}", 
+                                        ex2.share[h2].jun.indels.iter().format(","));
+                                    println!("vstart1 = {}", vstart);
+                                    println!("vstart2 = {}", ex2.share[h2].jun.vstart);
                                     let vref = vref1[vstart..vref1.len()].to_vec();
                                     let mut concat = vref.clone();
                                     for i in 0..d.len() {
@@ -609,7 +614,7 @@ pub fn join_one(
                                     println!("concat = {}", strme(&concat));
                                     let mut ref_pos = 0;
                                     let mut i = 0;
-                                    let mut n = min(seq1.len(), seq2.len());
+                                    let n = min(seq1.len(), seq2.len());
                                     'seq: while i < n {
                                         for j in 0..indels.len() {
                                             if indels[j].0 == i {
