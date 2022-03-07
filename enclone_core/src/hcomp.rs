@@ -28,7 +28,7 @@ pub fn heavy_complexity(
                 let mut seq = ex.share[r].seq_del.clone();
                 let mut vref = refdata.refs[ex.share[r].v_ref_id].to_ascii_vec();
                 if ex.share[r].v_ref_id_donor.is_some() {
-                    vref = dref[ex.share[r].v_ref_id_donor_alt_id.unwrap()]
+                    vref = dref[ex.share[r].v_ref_id_donor.unwrap()]
                         .nt_sequence
                         .clone();
                 }
@@ -66,7 +66,7 @@ pub fn heavy_complexity(
                     &mut scores,
                     &mut ds,
                     ctl,
-                    ex.share[r].v_ref_id_donor_alt_id,
+                    ex.share[r].v_ref_id_donor,
                 );
                 let mut opt = Vec::new();
                 if !ds.is_empty() {

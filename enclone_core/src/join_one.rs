@@ -566,14 +566,14 @@ pub fn join_one(
                                 let mut seq1 = ex1.share[h1].seq_del.clone();
                                 let mut seq2 = ex2.share[h2].seq_del.clone();
                                 let mut vref1 = refdata.refs[v_ref_id].to_ascii_vec();
-                                if ex1.share[h1].v_ref_id_donor_alt_id.is_some() {
-                                    vref1 = dref[ex1.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                if ex1.share[h1].v_ref_id_donor.is_some() {
+                                    vref1 = dref[ex1.share[h1].v_ref_id_donor.unwrap()]
                                         .nt_sequence
                                         .clone();
                                 }
                                 let mut vref2 = refdata.refs[v_ref_id].to_ascii_vec();
-                                if ex2.share[h2].v_ref_id_donor_alt_id.is_some() {
-                                    vref2 = dref[ex2.share[h2].v_ref_id_donor_alt_id.unwrap()]
+                                if ex2.share[h2].v_ref_id_donor.is_some() {
+                                    vref2 = dref[ex2.share[h2].v_ref_id_donor.unwrap()]
                                         .nt_sequence
                                         .clone();
                                 }
