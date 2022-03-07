@@ -655,6 +655,14 @@ pub struct TigData0 {
     pub v_ref_id: usize, // index of V segment reference sequence in ref file
 }
 
+#[derive(Clone, Default)]
+pub struct Junction {
+    pub hcomp: usize,                // junction alignment complexity
+    pub d: Vec<usize>,               // D gene ids
+    pub vstart: usize,               // start of junction alignment on tig
+    pub indels: Vec<(usize, isize)>, // indel tig start, size (+ ins, - del)
+}
+
 #[derive(Clone)]
 pub struct TigData1 {
     pub cdr3_dna: String,           // CDR3 DNA sequence
@@ -701,7 +709,7 @@ pub struct TigData1 {
     pub mait_alpha_chain_junction_match: bool,
     pub mait_beta_chain_gene_match: bool,
     pub mait_beta_chain_junction_match: bool,
-    pub hcomp: usize,
+    pub jun: Junction,
 }
 
 impl TigData1 {

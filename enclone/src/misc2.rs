@@ -6,7 +6,7 @@ use crate::innate::mark_innate;
 use crate::misc3::study_consensus;
 use amino::aa_seq;
 use debruijn::dna_string::DnaString;
-use enclone_core::defs::{EncloneControl, ExactClonotype, TigData, TigData0, TigData1};
+use enclone_core::defs::{EncloneControl, ExactClonotype, Junction, TigData, TigData0, TigData1};
 use io_utils::{fwriteln, open_for_write_new};
 use rayon::prelude::*;
 use std::cmp::{max, min};
@@ -229,7 +229,7 @@ pub fn create_exact_subclonotype_core(
             mait_alpha_chain_junction_match: false,
             mait_beta_chain_gene_match: false,
             mait_beta_chain_junction_match: false,
-            hcomp: 0,
+            jun: Junction::default(),
         });
     }
     for t in r..s {

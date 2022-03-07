@@ -382,7 +382,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         for u in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[u];
             for m in 0..ex.share.len() {
-                ex.share[m].hcomp = hcomp[u];
+                ex.share[m].jun.hcomp = hcomp[u];
             }
         }
     }
