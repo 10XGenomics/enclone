@@ -536,8 +536,15 @@ pub fn join_one(
             let h2 = info[k2].exact_cols[0];
             let comp = min(ex1.share[h1].jun.hcomp, ex2.share[h2].jun.hcomp);
             if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
+                /*
+                println!("\nwould accept");
+                println!("cdr3: {}", ex1.share[h1].cdr3_aa);
+                println!("cdr3: {}", ex2.share[h2].cdr3_aa);
+                */
                 accept = true;
+            // }
             } else {
+            // if true {
                 if score > ctl.join_alg_opt.max_score 
                     // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
                     // && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
@@ -547,10 +554,14 @@ pub fn join_one(
                     let v_ref_id = ex1.share[h1].v_ref_id;
                     let j_ref_id = ex1.share[h1].j_ref_id;
                     if vstart == ex2.share[h2].jun.vstart && *indels == ex2.share[h2].jun.indels {
+                        if accept {
+                            // println!("passes first test");
+                        }
                         let d = &ex1.share[h1].jun.d;
                         if *d == ex2.share[h2].jun.d {
                             if v_ref_id == ex2.share[h2].v_ref_id &&
                                 j_ref_id == ex2.share[h2].j_ref_id {
+                                // println!("passes second test");
                                 let mut seq1 = ex1.share[h1].seq_del.clone();
                                 let mut seq2 = ex2.share[h2].seq_del.clone();
                                 let mut vref1 = refdata.refs[v_ref_id].to_ascii_vec();
@@ -567,17 +578,7 @@ pub fn join_one(
                                 }
                                 let donor1 = ex1.clones[0][0].donor_index;
                                 let donor2 = ex2.clones[0][0].donor_index;
-                                if vref1 == vref2 && donor1 != donor2 {
-                                    println!("\ncomparable");
-                                    println!("cdr3: {}", ex1.share[h1].cdr3_aa);
-                                    println!("cdr3: {}", ex2.share[h2].cdr3_aa);
-                                    use itertools::Itertools;
-                                    println!("indels1 = {:?}", 
-                                        ex1.share[h1].jun.indels.iter().format(","));
-                                    println!("indels2 = {:?}", 
-                                        ex2.share[h2].jun.indels.iter().format(","));
-                                    println!("vstart1 = {}", vstart);
-                                    println!("vstart2 = {}", ex2.share[h2].jun.vstart);
+                                if vref1 == vref2 /* && donor1 != donor2 */ {
                                     let vref = vref1[vstart..vref1.len()].to_vec();
                                     let mut concat = vref.clone();
                                     for i in 0..d.len() {
@@ -604,17 +605,10 @@ pub fn join_one(
                                     seq2 = seq2[seq_start as usize..seq_end].to_vec();
                                     let mut share = 0;
                                     for i in 0..indels.len() {
-                                        if indels[i].1 > 0 {
-                                            share += indels[i].1;
-                                        } else {
+                                        if indels[i].1 < 0 {
                                             share += 1;
                                         }
                                     }
-                                    println!("initial share = {}", share);
-                                    use string_utils::strme;
-                                    println!("seq1   = {}", strme(&seq1));
-                                    println!("seq2   = {}", strme(&seq2));
-                                    println!("concat = {}", strme(&concat));
                                     let mut ref_pos = 0;
                                     let mut i = 0;
                                     let n = min(seq1.len(), seq2.len());
@@ -622,6 +616,11 @@ pub fn join_one(
                                         for j in 0..indels.len() {
                                             if indels[j].0 == i {
                                                 if indels[j].1 > 0 {
+                                                    for k in 0..indels[j].1 as usize {
+                                                        if seq1[i + k] == seq2[i + k] {
+                                                            share += 1;
+                                                        }
+                                                    }
                                                     i += indels[j].1 as usize;
                                                     continue 'seq;
                                                 } else {
@@ -638,7 +637,30 @@ pub fn join_one(
                                         i += 1;
                                         ref_pos += 1;
                                     }
-                                    println!("final share = {}", share);
+                                    if share >= 10 {
+                                        /*
+                                        let mut log = Vec::<u8>::new();
+                                        use io_utils::*;
+                                        use std::io::Write;
+                                        fwriteln!(log, "\ncomparable");
+                                        fwriteln!(log, "cdr3: {}", ex1.share[h1].cdr3_aa);
+                                        fwriteln!(log, "cdr3: {}", ex2.share[h2].cdr3_aa);
+                                        use itertools::Itertools;
+                                        fwriteln!(log, "indels1 = {:?}", 
+                                            ex1.share[h1].jun.indels.iter().format(","));
+                                        fwriteln!(log, "indels2 = {:?}", 
+                                            ex2.share[h2].jun.indels.iter().format(","));
+                                        fwriteln!(log, "vstart1 = {}", vstart);
+                                        fwriteln!(log, "vstart2 = {}", ex2.share[h2].jun.vstart);
+                                        use string_utils::strme;
+                                        fwriteln!(log, "seq1   = {}", strme(&seq1));
+                                        fwriteln!(log, "seq2   = {}", strme(&seq2));
+                                        fwriteln!(log, "concat = {}", strme(&concat));
+                                        fwriteln!(log, "final share = {}", share);
+                                        print!("{}", strme(&log));
+                                        */
+                                        accept = true;
+                                    }
                                 }
                             }
                         }
