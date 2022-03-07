@@ -543,9 +543,7 @@ pub fn join_one(
                 println!("cdr3: {}", ex2.share[h2].cdr3_aa);
                 */
                 accept = true;
-            // }
-            } else {
-            // if true {
+            } else if ctl.join_alg_opt.super_comp_filt > 0 {
                 if score > ctl.join_alg_opt.max_score 
                     // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
                     // && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
@@ -644,7 +642,7 @@ pub fn join_one(
                                         i += 1;
                                         ref_pos += 1;
                                     }
-                                    if share >= 10 {
+                                    if share >= ctl.join_alg_opt.super_comp_filt {
                                         let mut log = Vec::<u8>::new();
                                         use io_utils::*;
                                         use std::io::Write;
@@ -665,10 +663,10 @@ pub fn join_one(
                                             ex1.share[h1].jun.indels.iter().format(","));
                                         fwriteln!(log, "indels2 = {:?}", 
                                             ex2.share[h2].jun.indels.iter().format(","));
-                                        fwriteln!(log, "vstart1 = {}", vstart);
-                                        fwriteln!(log, "vstart2 = {}", ex2.share[h2].jun.vstart);
                                         use string_utils::strme;
                                         /*
+                                        fwriteln!(log, "vstart1 = {}", vstart);
+                                        fwriteln!(log, "vstart2 = {}", ex2.share[h2].jun.vstart);
                                         fwriteln!(log, "seq1   = {}", strme(&seq1));
                                         fwriteln!(log, "seq2   = {}", strme(&seq2));
                                         fwriteln!(log, "concat = {}", strme(&concat));
