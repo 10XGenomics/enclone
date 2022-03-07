@@ -540,7 +540,8 @@ pub fn join_one(
             } else {
                 if score > ctl.join_alg_opt.max_score 
                     // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
-                    && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
+                    // && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
+                    {
                     let vstart = ex1.share[h1].jun.vstart;
                     let indels = &ex1.share[h1].jun.indels;
                     let v_ref_id = ex1.share[h1].v_ref_id;
@@ -553,18 +554,20 @@ pub fn join_one(
                                 let mut seq1 = ex1.share[h1].seq_del.clone();
                                 let mut seq2 = ex2.share[h2].seq_del.clone();
                                 let mut vref1 = refdata.refs[v_ref_id].to_ascii_vec();
-                                if ex1.share[h1].v_ref_id_donor.is_some() {
+                                if ex1.share[h1].v_ref_id_donor_alt_id.is_some() {
                                     vref1 = dref[ex1.share[h1].v_ref_id_donor_alt_id.unwrap()]
                                         .nt_sequence
                                         .clone();
                                 }
                                 let mut vref2 = refdata.refs[v_ref_id].to_ascii_vec();
-                                if ex1.share[h2].v_ref_id_donor.is_some() {
-                                    vref2 = dref[ex2.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                if ex2.share[h2].v_ref_id_donor_alt_id.is_some() {
+                                    vref2 = dref[ex2.share[h2].v_ref_id_donor_alt_id.unwrap()]
                                         .nt_sequence
                                         .clone();
                                 }
-                                if vref1 == vref2 {
+                                let donor1 = ex1.clones[0][0].donor_index;
+                                let donor2 = ex2.clones[0][0].donor_index;
+                                if vref1 == vref2 && donor1 != donor2 {
                                     println!("\ncomparable");
                                     println!("cdr3: {}", ex1.share[h1].cdr3_aa);
                                     println!("cdr3: {}", ex2.share[h2].cdr3_aa);
