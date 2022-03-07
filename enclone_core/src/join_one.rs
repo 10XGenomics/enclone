@@ -578,7 +578,7 @@ pub fn join_one(
                                 }
                                 let donor1 = ex1.clones[0][0].donor_index;
                                 let donor2 = ex2.clones[0][0].donor_index;
-                                if vref1 == vref2 /* && donor1 != donor2 */ {
+                                if vref1 == vref2 && donor1 != donor2 {
                                     let vref = vref1[vstart..vref1.len()].to_vec();
                                     let mut concat = vref.clone();
                                     for i in 0..d.len() {
@@ -638,7 +638,6 @@ pub fn join_one(
                                         ref_pos += 1;
                                     }
                                     if share >= 10 {
-                                        /*
                                         let mut log = Vec::<u8>::new();
                                         use io_utils::*;
                                         use std::io::Write;
@@ -658,7 +657,6 @@ pub fn join_one(
                                         fwriteln!(log, "concat = {}", strme(&concat));
                                         fwriteln!(log, "final share = {}", share);
                                         print!("{}", strme(&log));
-                                        */
                                         accept = true;
                                     }
                                 }
