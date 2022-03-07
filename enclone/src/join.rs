@@ -15,6 +15,7 @@ use crate::join2::finish_join;
 use crate::join_core::join_core;
 use debruijn::dna_string::DnaString;
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
@@ -36,6 +37,7 @@ pub fn join_exacts(
     join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
     sr: &Vec<Vec<Double>>,
+    dref: &Vec<DonorReferenceItem>,
 ) -> EquivRel {
     //
     // Run special option for joining by barcode identity.
@@ -137,6 +139,7 @@ pub fn join_exacts(
             sr,
             &mut pot,
             &refdata,
+            dref,
         );
 
         // Run two passes.

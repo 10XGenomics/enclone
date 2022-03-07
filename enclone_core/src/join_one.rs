@@ -5,6 +5,7 @@ use debruijn::{
     dna_string::{ndiffs, DnaString},
     Mer,
 };
+use enclone_proto::types::DonorReferenceItem;
 use qd::{dd, Double};
 use stats_utils::abs_diff;
 use std::cmp::min;
@@ -75,6 +76,7 @@ pub fn join_one(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
@@ -527,13 +529,57 @@ pub fn join_one(
     // Apply COMP_FILT.
 
     let mut accept = false;
-    if ctl.join_alg_opt.comp_filt < 1_000_000 {
+    if ctl.join_alg_opt.comp_filt < 1_000_000 && score > ctl.join_alg_opt.max_score {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
             let h1 = info[k1].exact_cols[0];
             let h2 = info[k2].exact_cols[0];
             let comp = min(ex1.share[h1].jun.hcomp, ex2.share[h2].jun.hcomp);
             if comp as isize - cd >= ctl.join_alg_opt.comp_filt as isize {
                 accept = true;
+                if score > ctl.join_alg_opt.max_score 
+                    && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
+                    println!("\nexception!");
+                    use itertools::Itertools;
+                    println!("indels1 = {:?}", ex1.share[h1].jun.indels.iter().format(","));
+                    println!("indels2 = {:?}", ex2.share[h2].jun.indels.iter().format(","));
+                    let vstart = ex1.share[h1].jun.vstart;
+                    println!("vstart1 = {}", vstart);
+                    println!("vstart2 = {}", ex2.share[h2].jun.vstart);
+                    if vstart == ex2.share[h2].jun.vstart {
+                        if ex1.share[h1].jun.indels == ex2.share[h2].jun.indels {
+                            let d = &ex1.share[h1].jun.d;
+                            if *d == ex2.share[h2].jun.d {
+                                if ex1.share[h1].v_ref_id == ex2.share[h2].v_ref_id {
+                                    let mut _seq1 = ex1.share[h1].seq_del.clone();
+                                    let mut _seq2 = ex2.share[h2].seq_del.clone();
+                                    let mut vref1 
+                                        = refdata.refs[ex1.share[h1].v_ref_id].to_ascii_vec();
+                                    if ex1.share[h1].v_ref_id_donor.is_some() {
+                                        vref1 = dref[ex1.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                            .nt_sequence
+                                            .clone();
+                                    }
+                                    let mut vref2 
+                                        = refdata.refs[ex2.share[h2].v_ref_id].to_ascii_vec();
+                                    if ex1.share[h2].v_ref_id_donor.is_some() {
+                                        vref2 = dref[ex2.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                            .nt_sequence
+                                            .clone();
+                                    }
+                                    if vref1 == vref2 {
+                                        println!("comparable");
+                                        let vref = vref1[vstart..vref1.len()].to_vec();
+                                        let mut concat = vref.clone();
+                                        for i in 0..d.len() {
+                                            concat.append(&mut refdata.refs[d[i]].to_ascii_vec());
+                                        }
+                                        let _concat = concat;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -1542,6 +1542,7 @@ dependencies = [
  "enclone_args",
  "enclone_core",
  "enclone_print",
+ "enclone_proto",
  "equiv",
  "evalexpr",
  "hdf5",

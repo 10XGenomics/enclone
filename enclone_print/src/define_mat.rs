@@ -2,6 +2,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
 use enclone_core::join_one::join_one;
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use qd::Double;
 use std::cmp::max;
@@ -66,6 +67,7 @@ pub fn define_mat(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<Option<usize>>> {
     // Define map of indices into exacts.
 
@@ -162,6 +164,7 @@ pub fn define_mat(
                                 sr,
                                 &mut pot,
                                 &refdata,
+                                dref,
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -241,6 +244,7 @@ pub fn define_mat(
                     sr,
                     &mut pot,
                     &refdata,
+                    dref,
                 ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);
