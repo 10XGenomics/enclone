@@ -655,7 +655,10 @@ pub fn join_one(
                                         fwriteln!(log, "seq1   = {}", strme(&seq1));
                                         fwriteln!(log, "seq2   = {}", strme(&seq2));
                                         fwriteln!(log, "concat = {}", strme(&concat));
-                                        fwriteln!(log, "final share = {}", share);
+                                        fwriteln!(log, "heavy junction share = {}", share);
+                                        fwriteln!(log, "non junction share = {}", *min_shares);
+                                        fwriteln!(log, "indep mutations outside = {}", *min_indeps);
+                                        fwriteln!(log, "cd = {}", cd);
                                         print!("{}", strme(&log));
                                         accept = true;
                                     }
