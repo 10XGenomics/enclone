@@ -110,7 +110,7 @@ pub fn heavy_complexity(
                 concat.append(&mut jref.clone());
                 let (ops, _score) =
                     align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true, ctl);
-                let mut tigpos = vstart;
+                let mut tigpos = 0;
                 let mut hcomp = 0;
                 let mut indels = Vec::<(usize, isize)>::new();
                 let mut ins_start = 0;
@@ -128,7 +128,7 @@ pub fn heavy_complexity(
                         }
                         tigpos += 1;
                         if i == ops.len() - 1 || ops[i + 1] != Ins {
-                            let ins_len = tigpos - vstart;
+                            let ins_len = tigpos;
                             indels.push((ins_start, ins_len as isize));
                         }
                     } else if ops[i] == Del {

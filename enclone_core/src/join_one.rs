@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use crate::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
+use crate::opt_d::jflank;
 use debruijn::{
     dna_string::{ndiffs, DnaString},
     Mer,
@@ -545,36 +546,91 @@ pub fn join_one(
                     let vstart = ex1.share[h1].jun.vstart;
                     println!("vstart1 = {}", vstart);
                     println!("vstart2 = {}", ex2.share[h2].jun.vstart);
-                    if vstart == ex2.share[h2].jun.vstart {
-                        if ex1.share[h1].jun.indels == ex2.share[h2].jun.indels {
-                            let d = &ex1.share[h1].jun.d;
-                            if *d == ex2.share[h2].jun.d {
-                                if ex1.share[h1].v_ref_id == ex2.share[h2].v_ref_id {
-                                    let mut _seq1 = ex1.share[h1].seq_del.clone();
-                                    let mut _seq2 = ex2.share[h2].seq_del.clone();
-                                    let mut vref1 
-                                        = refdata.refs[ex1.share[h1].v_ref_id].to_ascii_vec();
-                                    if ex1.share[h1].v_ref_id_donor.is_some() {
-                                        vref1 = dref[ex1.share[h1].v_ref_id_donor_alt_id.unwrap()]
-                                            .nt_sequence
-                                            .clone();
+                    let indels = &ex1.share[h1].jun.indels;
+                    let v_ref_id = ex1.share[h1].v_ref_id;
+                    let j_ref_id = ex1.share[h1].j_ref_id;
+                    if vstart == ex2.share[h2].jun.vstart && *indels == ex2.share[h2].jun.indels {
+                        let d = &ex1.share[h1].jun.d;
+                        if *d == ex2.share[h2].jun.d {
+                            if v_ref_id == ex2.share[h2].v_ref_id &&
+                                j_ref_id == ex2.share[h2].j_ref_id {
+                                let mut seq1 = ex1.share[h1].seq_del.clone();
+                                let mut seq2 = ex2.share[h2].seq_del.clone();
+                                let mut vref1 = refdata.refs[v_ref_id].to_ascii_vec();
+                                if ex1.share[h1].v_ref_id_donor.is_some() {
+                                    vref1 = dref[ex1.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                        .nt_sequence
+                                        .clone();
+                                }
+                                let mut vref2 = refdata.refs[v_ref_id].to_ascii_vec();
+                                if ex1.share[h2].v_ref_id_donor.is_some() {
+                                    vref2 = dref[ex2.share[h1].v_ref_id_donor_alt_id.unwrap()]
+                                        .nt_sequence
+                                        .clone();
+                                }
+                                if vref1 == vref2 {
+                                    println!("comparable");
+                                    let vref = vref1[vstart..vref1.len()].to_vec();
+                                    let mut concat = vref.clone();
+                                    for i in 0..d.len() {
+                                        concat.append(&mut refdata.refs[d[i]].to_ascii_vec());
                                     }
-                                    let mut vref2 
-                                        = refdata.refs[ex2.share[h2].v_ref_id].to_ascii_vec();
-                                    if ex1.share[h2].v_ref_id_donor.is_some() {
-                                        vref2 = dref[ex2.share[h1].v_ref_id_donor_alt_id.unwrap()]
-                                            .nt_sequence
-                                            .clone();
+                                    let mut jref = refdata.refs[j_ref_id].to_ascii_vec();
+                                    let jend = jflank(&seq1, &jref); // note using seq1
+                                    jref = jref[0..jend].to_vec();
+                                    concat.append(&mut jref.clone());
+                                    let mut seq_start = vstart as isize;
+                                    if ex1.share[h1].annv.len() > 1 {
+                                        let q1 = ex1.share[h1].annv[0].0 + ex1.share[h1].annv[0].1;
+                                        let q2 = ex1.share[h1].annv[1].0;
+                                        seq_start += q2 as isize - q1 as isize;
                                     }
-                                    if vref1 == vref2 {
-                                        println!("comparable");
-                                        let vref = vref1[vstart..vref1.len()].to_vec();
-                                        let mut concat = vref.clone();
-                                        for i in 0..d.len() {
-                                            concat.append(&mut refdata.refs[d[i]].to_ascii_vec());
+                                    let mut seq_end = seq1.len() - (jref.len() - jend);
+                                    if seq_start as usize > seq_end {
+                                        seq_start = vstart as isize;
+                                    }
+                                    if seq_end <= seq_start as usize {
+                                        seq_end = seq1.len();
+                                    }
+                                    seq1 = seq1[seq_start as usize..seq_end].to_vec();
+                                    seq2 = seq2[seq_start as usize..seq_end].to_vec();
+                                    let mut share = 0;
+                                    for i in 0..indels.len() {
+                                        if indels[i].1 > 0 {
+                                            share += indels[i].1;
+                                        } else {
+                                            share += 1;
                                         }
-                                        let _concat = concat;
                                     }
+                                    println!("initial share = {}", share);
+                                    use string_utils::strme;
+                                    println!("seq1   = {}", strme(&seq1));
+                                    println!("seq2   = {}", strme(&seq2));
+                                    println!("concat = {}", strme(&concat));
+                                    let mut ref_pos = 0;
+                                    let mut i = 0;
+                                    let mut n = min(seq1.len(), seq2.len());
+                                    'seq: while i < n {
+                                        for j in 0..indels.len() {
+                                            if indels[j].0 == i {
+                                                if indels[j].1 > 0 {
+                                                    i += indels[j].1 as usize;
+                                                    continue 'seq;
+                                                } else {
+                                                    ref_pos += -indels[j].1 as usize;
+                                                }
+                                            }
+                                        }
+                                        if i >= n || ref_pos >= concat.len() {
+                                            break;
+                                        }
+                                        if seq1[i] == seq2[i] && seq1[i] != concat[ref_pos] {
+                                            share += 1;
+                                        }
+                                        i += 1;
+                                        ref_pos += 1;
+                                    }
+                                    println!("final share = {}", share);
                                 }
                             }
                         }
