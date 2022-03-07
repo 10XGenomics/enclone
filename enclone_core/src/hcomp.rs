@@ -128,7 +128,7 @@ pub fn heavy_complexity(
                         }
                         tigpos += 1;
                         if i == ops.len() - 1 || ops[i + 1] != Ins {
-                            let ins_len = tigpos;
+                            let ins_len = tigpos - ins_start;
                             indels.push((ins_start, ins_len as isize));
                         }
                     } else if ops[i] == Del {
