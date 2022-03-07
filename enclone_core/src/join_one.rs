@@ -530,7 +530,8 @@ pub fn join_one(
     // Apply COMP_FILT.
 
     let mut accept = false;
-    if ctl.join_alg_opt.comp_filt < 1_000_000 && score > ctl.join_alg_opt.max_score {
+    if ctl.join_alg_opt.comp_filt < 1_000_000 && score > ctl.join_alg_opt.max_score
+        && *min_shares < ctl.join_alg_opt.auto_share as isize {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
             let h1 = info[k1].exact_cols[0];
             let h2 = info[k2].exact_cols[0];
@@ -578,7 +579,13 @@ pub fn join_one(
                                 }
                                 let donor1 = ex1.clones[0][0].donor_index;
                                 let donor2 = ex2.clones[0][0].donor_index;
-                                if vref1 == vref2 && donor1 != donor2 {
+                                let mut ok = vref1 == vref2;
+                                if ctl.gen_opt.mix_only {
+                                    if donor1 == donor2 {
+                                        ok = false;
+                                    }
+                                }
+                                if ok {
                                     let vref = vref1[vstart..vref1.len()].to_vec();
                                     let mut concat = vref.clone();
                                     for i in 0..d.len() {

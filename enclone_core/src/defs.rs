@@ -249,6 +249,7 @@ pub struct GeneralOpt {
     pub fails_only: bool,
     pub bc_joint: String,
     pub post_filter: String,
+    pub mix_only: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
