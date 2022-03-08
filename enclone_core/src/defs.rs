@@ -895,6 +895,8 @@ pub fn justification(x: &str) -> u8 {
         || x.contains("valumis")
         || x.contains("valbcumis")
         || x == "nbc"
+        || x == "allele"
+        || x == "allele_d"
     {
         b'l'
     } else {

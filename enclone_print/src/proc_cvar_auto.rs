@@ -103,7 +103,9 @@ pub fn proc_cvar_auto(
             // The following does not work correctly if an exact subclonotype contains cells
             // from more than one donor.  But that is extremely rare.
             if ex.clones[0][0].donor_index.is_some() {
-                if alt_refs[i].0 == ex.clones[0][0].donor_index.unwrap() {
+                if alt_refs[i].0 == ex.clones[0][0].donor_index.unwrap()
+                    && alt_refs[i].1 == ex.share[mid].v_ref_id
+                {
                     refs.push(alt_refs[i].2.to_ascii_vec());
                 }
             }
@@ -136,7 +138,8 @@ pub fn proc_cvar_auto(
         }
         let mut me = String::new();
         for j in 0..ps.len() {
-            me.push(ex.share[mid].seq_del_amino[ps[j]] as char);
+            let base = ex.share[mid].seq_del_amino[ps[j]];
+            me.push(base as char);
         }
         let mut details = String::new();
         if ps.len() > 0 {
