@@ -534,8 +534,10 @@ pub fn join_one(
     // Apply COMP_FILT.
 
     let mut accept = false;
-    if ctl.join_alg_opt.comp_filt < 1_000_000 && score > ctl.join_alg_opt.max_score
-        && *min_shares < ctl.join_alg_opt.auto_share as isize {
+    if ctl.join_alg_opt.comp_filt < 1_000_000
+        && score > ctl.join_alg_opt.max_score
+        && *min_shares < ctl.join_alg_opt.auto_share as isize
+    {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {
             let h1 = info[k1].exact_cols[0];
             let h2 = info[k2].exact_cols[0];
@@ -548,10 +550,10 @@ pub fn join_one(
                 */
                 accept = true;
             } else if ctl.join_alg_opt.super_comp_filt > 0 {
-                if score > ctl.join_alg_opt.max_score 
-                    // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
-                    // && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
-                    {
+                if score > ctl.join_alg_opt.max_score
+                // && ex2.share[h2].cdr3_aa == "CARESLVGLLPMFDYW" {
+                // && ex1.share[h1].cdr3_aa == "CARDGYSNSWYVPYW" {
+                {
                     let vstart = ex1.share[h1].jun.vstart;
                     let indels = &ex1.share[h1].jun.indels;
                     let v_ref_id = ex1.share[h1].v_ref_id;
@@ -562,8 +564,9 @@ pub fn join_one(
                         }
                         let d = &ex1.share[h1].jun.d;
                         if *d == ex2.share[h2].jun.d {
-                            if v_ref_id == ex2.share[h2].v_ref_id &&
-                                j_ref_id == ex2.share[h2].j_ref_id {
+                            if v_ref_id == ex2.share[h2].v_ref_id
+                                && j_ref_id == ex2.share[h2].j_ref_id
+                            {
                                 // println!("passes second test");
                                 let mut seq1 = ex1.share[h1].seq_del.clone();
                                 let mut seq2 = ex2.share[h2].seq_del.clone();
@@ -654,19 +657,25 @@ pub fn join_one(
                                         fwriteln!(log, "cdr3: {}", ex1.share[h1].cdr3_aa);
                                         fwriteln!(log, "cdr3: {}", ex2.share[h2].cdr3_aa);
 
-                                        let (j1, j2) 
-                                            = (info[k1].exact_cols[0], info[k2].exact_cols[0]);
+                                        let (j1, j2) =
+                                            (info[k1].exact_cols[0], info[k2].exact_cols[0]);
                                         let (x1, x2) = (&ex1.share[j1], &ex2.share[j2]);
                                         let (v1, v2) = (x1.v_ref_id, x2.v_ref_id);
-                                        let (n1, n2) 
-                                            = (refdata.name[v1].clone(), refdata.name[v2].clone());
+                                        let (n1, n2) =
+                                            (refdata.name[v1].clone(), refdata.name[v2].clone());
                                         fwriteln!(log, "heavy V genes = {}/{}", n1, n2);
 
                                         use itertools::Itertools;
-                                        fwriteln!(log, "indels1 = {:?}", 
-                                            ex1.share[h1].jun.indels.iter().format(","));
-                                        fwriteln!(log, "indels2 = {:?}", 
-                                            ex2.share[h2].jun.indels.iter().format(","));
+                                        fwriteln!(
+                                            log,
+                                            "indels1 = {:?}",
+                                            ex1.share[h1].jun.indels.iter().format(",")
+                                        );
+                                        fwriteln!(
+                                            log,
+                                            "indels2 = {:?}",
+                                            ex2.share[h2].jun.indels.iter().format(",")
+                                        );
                                         use string_utils::strme;
                                         /*
                                         fwriteln!(log, "vstart1 = {}", vstart);
