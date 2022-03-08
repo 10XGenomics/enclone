@@ -26,6 +26,7 @@ pub mod plot_utils;
 pub mod polygon;
 pub mod print_stats;
 pub mod requirements;
+pub mod sens_spec;
 pub mod sim_mat_plot;
 pub mod string_width;
 pub mod tail;
