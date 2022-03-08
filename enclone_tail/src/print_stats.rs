@@ -4,7 +4,7 @@
 
 use crate::alluvial_fb::*;
 use crate::fate::print_fate;
-use crate::sens_spec::*;
+// use crate::sens_spec::*;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
@@ -37,7 +37,7 @@ pub fn print_stats(
     three_chain: &mut usize,
     four_chain: &mut usize,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
-    refdata: &RefData,
+    _refdata: &RefData,
 ) {
     // Compute some umi stats.
 
@@ -121,7 +121,7 @@ pub fn print_stats(
 
     // Print summary stats.
 
-    let sens_spec_stats = sens_spec(&exacts, &exact_clonotypes, &refdata);
+    // let sens_spec_stats = sens_spec(&exacts, &exact_clonotypes, &refdata);
     let mut ncells = 0;
     *nclono2 = 0;
     *two_chain = 0;
@@ -478,7 +478,7 @@ pub fn print_stats(
                 "   • adjusted cell-cell merges (quadratic) = {}",
                 add_commas(adjusted)
             );
-            fwriteln!(logx, "\n{}", sens_spec_stats);
+            // fwriteln!(logx, "\n{}", sens_spec_stats);
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
