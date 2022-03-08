@@ -87,6 +87,13 @@ pub fn proc_cvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
+    } else if vname == "allele" {
+        let mut allele = 0;
+        if ex.share[mid].v_ref_id_donor_alt_id.is_some() {
+            allele = ex.share[mid].v_ref_id_donor_alt_id.unwrap() + 1;
+        }
+
+        (format!("{}", allele), Vec::new(), "clono".to_string())
     } else if vname == "cdiff" {
         let cstart = ex.share[mid].j_stop;
         let clen = ex.share[mid].full_seq.len() - cstart;

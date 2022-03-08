@@ -359,6 +359,23 @@ code:     let xm = &ex.share[mid];
           }
           exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     allele
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    clono
+val:      non_negative_integer
+doc:      TBD
+brief:    donor allele for V region id
+page:     enclone help parseable
+avail:    public
+notes:
+code:     let mut allele = 0;
+          if ex.share[mid].v_ref_id_donor_alt_id.is_some() {
+              allele = ex.share[mid].v_ref_id_donor_alt_id.unwrap() + 1;
+          }
+          exact: format!("{}", allele)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?
 limits:   only implemented for parseable output, and as an automatic field for clonotype tables in 
