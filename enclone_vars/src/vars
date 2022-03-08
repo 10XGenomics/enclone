@@ -429,7 +429,11 @@ code:     let mut refs = Vec::<Vec<u8>>::new();
           for j in 0..ps.len() {
               me.push(ex.share[mid].seq_del_amino[ps[j]] as char);
           }
-          exact: format!("{me} : {}", xs.iter().format(","))
+          let mut details = String::new();
+          if ps.len() > 0 {
+              details = format!("{me} : {}", xs.iter().format(","));
+          }
+          exact: details
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?

@@ -138,12 +138,12 @@ pub fn proc_cvar_auto(
         for j in 0..ps.len() {
             me.push(ex.share[mid].seq_del_amino[ps[j]] as char);
         }
+        let mut details = String::new();
+        if ps.len() > 0 {
+            details = format!("{me} : {}", xs.iter().format(","));
+        }
 
-        (
-            format!("{me} : {}", xs.iter().format(",")),
-            Vec::new(),
-            "clono".to_string(),
-        )
+        (details, Vec::new(), "clono".to_string())
     } else if vname == "cdiff" {
         let cstart = ex.share[mid].j_stop;
         let clen = ex.share[mid].full_seq.len() - cstart;
