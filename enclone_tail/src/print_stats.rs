@@ -619,7 +619,6 @@ pub fn print_stats(
                 "   • inferred errors = {}",
                 add_commas(inferred_errors)
             );
-            fwriteln!(logx, "");
             fwriteln!(
                 logx,
                 "   • adjusted true merges = {}",
