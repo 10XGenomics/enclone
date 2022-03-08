@@ -616,6 +616,12 @@ pub fn print_stats(
             let inferred_errors = (error_rate * intra_mergeable as f64).round() as usize;
             fwriteln!(
                 logx,
+                "   • inferred errors = {}",
+                add_commas(inferred_errors)
+            );
+            fwriteln!(logx, "");
+            fwriteln!(
+                logx,
                 "   • adjusted true merges = {}",
                 add_commas(intra_merged - inferred_errors)
             );
