@@ -577,6 +577,7 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             varmat: &Vec<Vec<Vec<u8>>>,
             out_data: &mut Vec<HashMap<String, String>>,
             stats: &mut Vec<(String, Vec<String>)>,
+            allele_data: &AlleleData,
         ) -> Result<bool, String> {
 
             let mut vname = var.clone();

@@ -298,6 +298,15 @@ pub struct AllelePrintOpt {
     pub con_trace: bool, // tracing for con
 }
 
+// Data about alleles
+
+#[derive(Clone, Default)]
+pub struct AlleleData {
+    pub alt_refs: Vec<(usize, usize, DnaString, usize, bool)>,
+    pub var_pos: Vec<Vec<usize>>,
+    pub var_bases: Vec<Vec<Vec<u8>>>,
+}
+
 // Join printing options.
 
 #[derive(Default, PartialEq)]

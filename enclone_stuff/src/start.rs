@@ -19,7 +19,7 @@ use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
 use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_for_shm_indels};
 use enclone::misc3::sort_tig_bc;
 use enclone_args::read_json::parse_json_annotations_files;
-use enclone_core::defs::{CloneInfo, TigData};
+use enclone_core::defs::{AlleleData, CloneInfo, TigData};
 use enclone_core::enclone_structs::*;
 use enclone_core::hcomp::heavy_complexity;
 use enclone_print::loupe::make_donor_refs;
@@ -848,6 +848,11 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             sr,
             fate,
             is_bcr,
+            allele_data: AlleleData {
+               alt_refs: alt_refs,
+               var_pos: Vec::new(),
+               var_bases: Vec::new(),
+            },
         },
     })
 }

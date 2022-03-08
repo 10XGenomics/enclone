@@ -123,7 +123,7 @@ pub fn print_stats(
     // and are either from the same donor (in the intra_mergeable case), or from different donors
     // (in the cross_mergeable) case.  We only consider cells having two or three chains.
     //
-    // Also compute intra_merged and cross_merged, the number of pairs of cells as above that 
+    // Also compute intra_merged and cross_merged, the number of pairs of cells as above that
     // are placed in the same clonotype.
 
     let mut intra_mergeable = 0;
@@ -167,8 +167,11 @@ pub fn print_stats(
                     for j in 0..ex.clones.len() {
                         if ex.clones[j][0].donor_index.is_some() {
                             nnlld.push((
-                                heavy[i1].0.clone(), light[i2].0.clone(),
-                                heavy[i1].1, light[i2].1, ex.clones[j][0].donor_index.unwrap()
+                                heavy[i1].0.clone(),
+                                light[i2].0.clone(),
+                                heavy[i1].1,
+                                light[i2].1,
+                                ex.clones[j][0].donor_index.unwrap(),
                             ));
                         }
                     }
@@ -195,10 +198,11 @@ pub fn print_stats(
     while i < nnlld.len() {
         let mut j = i + 1;
         while j < nnlld.len() {
-            if nnlld[j].0 != nnlld[i].0 
-                || nnlld[j].1 != nnlld[i].1 
-                || nnlld[j].2 != nnlld[i].2 
-                || nnlld[j].3 != nnlld[i].3  {
+            if nnlld[j].0 != nnlld[i].0
+                || nnlld[j].1 != nnlld[i].1
+                || nnlld[j].2 != nnlld[i].2
+                || nnlld[j].3 != nnlld[i].3
+            {
                 break;
             }
             j += 1;

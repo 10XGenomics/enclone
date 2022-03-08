@@ -1,7 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use self::refx::RefData;
-use crate::defs::{CloneInfo, EncloneControl, ExactClonotype, GexInfo};
+use crate::defs::{AlleleData, CloneInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_proto::types::DonorReferenceItem;
 use qd::Double;
 use std::{collections::HashMap, time::Instant};
@@ -59,4 +59,5 @@ pub struct EncloneExacts {
     pub sr: Vec<Vec<Double>>,
     pub fate: Vec<HashMap<String, String>>, // GETS MODIFIED SUBSEQUENTLY
     pub is_bcr: bool,
+    pub allele_data: AlleleData,
 }
