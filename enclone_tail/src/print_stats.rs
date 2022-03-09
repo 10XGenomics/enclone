@@ -934,6 +934,32 @@ pub fn print_stats(
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 2, &b"r|r".to_vec(), false, false);
             logx.append(&mut log.as_bytes().to_vec());
+            let mut lights = 0;
+            let mut lights_same = 0;
+            for i in 0..groups.len() {
+                for j1 in 0..groups[i].len() {
+                    for j2 in j1 + 1..groups[i].len() {
+                        lights += 1;
+                        let m1 = groups[i][j1].0 as usize;
+                        let m2 = groups[i][j2].0 as usize;
+                        let ex1 = &exact_clonotypes[exacts[m1][0]];
+                        let ex2 = &exact_clonotypes[exacts[m2][0]];
+                        'check: for k1 in 0..ex1.share.len() {
+                            for k2 in 0..ex2.share.len() {
+                                if !ex1.share[k1].left && !ex2.share[k2].left {
+                                    if ex1.share[k1].v_ref_id == ex2.share[k2].v_ref_id {
+                                        lights_same += 1;
+                                        break 'check;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            fwriteln!(logx, "light chain V gene concordance within groups = {:.1}",
+                100.0 * lights_same as f64 / lights as f64
+            );
         }
     }
 
