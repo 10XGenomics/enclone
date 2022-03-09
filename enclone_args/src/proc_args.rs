@@ -29,6 +29,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     let mut args = args.clone();
     for i in 0..args.len() {
+
+        let test1plus 
+            = "1279053,1279061,1287194,1287195:1279050,1279058:1279051,1279059:1279052,1279060";
+        let test2plus = "1279049,1279057:1279054,1279062,1287189:1279055,1279063";
+        let test3plus = "1279065,1279073,1287152:1279066,1279074:1279067,1279075:1279068,1279076";
+        let test4plus 
+            = "1279069,1279077,1287171,1287160:1279070,1279078:1279071,1279079:1279072,1279080";
+        args[i] = args[i].replace("@test1plus", test1plus);
+        args[i] = args[i].replace("@test2plus", test2plus);
+        args[i] = args[i].replace("@test3plus", test3plus);
+        args[i] = args[i].replace("@test4plus", test4plus);
+        args[i] = args[i].replace("@testplus", &format!("{};{};{};{}", 
+            test1plus, test2plus, test3plus, test4plus));
+
         let test1 = "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060";
         let test2 = "1279049,1279057:1279054,1279062:1279055,1279063";
         let test3 = "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076";
