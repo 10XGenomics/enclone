@@ -377,6 +377,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Compute complexity.
 
+    let tcomp = Instant::now();
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
         let jun = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
         for u in 0..exact_clonotypes.len() {
@@ -388,6 +389,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             }
         }
     }
+    ctl.perf_stats(&tcomp, "computing complexity");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
