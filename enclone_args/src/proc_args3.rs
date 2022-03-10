@@ -243,6 +243,9 @@ fn get_path_or_internal_id(
     source: &str,
     spinlock: &Arc<AtomicUsize>,
 ) -> Result<String, String> {
+    if ctl.gen_opt.evil_eye {
+        println!("getting path for {}", p);
+    }
     let mut ok = false;
     let mut pp = get_path(p, ctl, &mut ok);
     if !ok {

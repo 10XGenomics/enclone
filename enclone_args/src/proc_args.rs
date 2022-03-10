@@ -937,6 +937,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         println!("processing remaining args");
     }
     for i in 1..args.len() {
+        if evil_eye {
+            println!("processing {}", args[i]);
+        }
         if processed[i] {
             continue;
         }
