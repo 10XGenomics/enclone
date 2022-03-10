@@ -345,6 +345,9 @@ fn get_path_or_internal_id(
     if !pp.ends_with("/outs") && path_exists(&format!("{}/outs", pp)) {
         pp = format!("{}/outs", pp);
     }
+    if ctl.gen_opt.evil_eye {
+        println!("path found");
+    }
     Ok(pp)
 }
 
