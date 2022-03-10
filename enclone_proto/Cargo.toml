@@ -25,7 +25,7 @@ prost = { version = "0.9", default_features = false, features = ["std", "prost-d
 serde = "1"
 serde_derive = "1"
 thiserror = "1"
-vdj_ann = "0.4"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 [build-dependencies]
 prost-build = "0.9"
