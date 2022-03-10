@@ -957,7 +957,9 @@ pub fn print_stats(
                     }
                 }
             }
-            fwriteln!(logx, "light chain V gene concordance within groups = {:.1}%",
+            fwriteln!(
+                logx,
+                "light chain V gene concordance within groups = {:.1}%",
                 100.0 * lights_same as f64 / lights as f64
             );
         }

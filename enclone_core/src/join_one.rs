@@ -537,7 +537,7 @@ pub fn join_one(
     if ctl.join_alg_opt.comp_filt < 1_000_000
         && score > ctl.join_alg_opt.max_score
         && *min_shares < ctl.join_alg_opt.auto_share as isize
-        && (ctl.join_alg_opt.comp_filt_bound == 0 
+        && (ctl.join_alg_opt.comp_filt_bound == 0
             || *min_indeps as usize <= ctl.join_alg_opt.comp_filt_bound)
     {
         if ex1.share.len() == 2 && ex2.share.len() == 2 && ex1.share[0].left != ex1.share[1].left {

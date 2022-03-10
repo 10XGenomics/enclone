@@ -849,9 +849,9 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             fate,
             is_bcr,
             allele_data: AlleleData {
-               alt_refs: alt_refs,
-               var_pos: Vec::new(),
-               var_bases: Vec::new(),
+                alt_refs: alt_refs,
+                var_pos: Vec::new(),
+                var_bases: Vec::new(),
             },
         },
     })

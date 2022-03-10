@@ -14,7 +14,6 @@ pub fn sens_spec(
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
 ) -> String {
-
     // Compute intra_mergeable and cross_mergeable, the number of pairs of cells that share
     // a heavy chain with the same V/J gene name and CDR3 length, and likewise for a light chain,
     // and are either from the same donor (in the intra_mergeable case), or from different donors
@@ -147,11 +146,7 @@ pub fn sens_spec(
         add_commas(cross_merged)
     );
     let error_rate = cross_merged as f64 / cross_mergeable as f64;
-    fwriteln!(
-        log,
-        "   • error rate = {:.2} x 10^-3",
-        error_rate * 1_000.0
-    );
+    fwriteln!(log, "   • error rate = {:.2} x 10^-3", error_rate * 1_000.0);
     let inferred_errors = (error_rate * intra_mergeable as f64).round() as usize;
     fwriteln!(
         log,
