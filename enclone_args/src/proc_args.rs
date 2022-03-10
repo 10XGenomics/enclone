@@ -188,7 +188,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.fwr1_cdr12_delta = 20.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
     ctl.join_alg_opt.auto_share = 15;
-    ctl.join_alg_opt.comp_filt = 1_000_000;
+    ctl.join_alg_opt.comp_filt = 8;
+    ctl.join_alg_opt.comp_filt_bound = 80;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
