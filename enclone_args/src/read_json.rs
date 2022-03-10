@@ -728,7 +728,12 @@ pub fn read_json(
     // ◼ This loop could be speeded up, see comments above.
     let mut xs = Vec::<Vec<u8>>::new();
     loop {
-        match read_vector_entry_from_json(&mut f)? {
+        let x = read_vector_entry_from_json(&mut f);
+        if x.is_err() {
+            eprintln!("\nProblem reading {}.\n", jsonx);
+            return Err(format!("{}", x.err().unwrap()));
+        }
+        match x.unwrap() {
             None => break,
             Some(x) => {
                 xs.push(x);
