@@ -343,6 +343,7 @@ pub struct JoinAlgOpt {
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
     pub comp_filt: usize,
+    pub comp_filt_bound: usize,
     pub super_comp_filt: usize,
 }
 
