@@ -531,7 +531,7 @@ pub fn join_one(
 
     let score = p1 * mult;
 
-    // Apply COMP_FILT.
+    // Apply JUN_SHARE.
 
     let mut accept = false;
     if ctl.join_alg_opt.comp_filt < 1_000_000
