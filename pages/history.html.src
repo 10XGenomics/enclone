@@ -30,6 +30,15 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>3/11/22</b>:
+<ul>
+<li>A major change to the clonotype joining algorithm, which joins based on sharing in the
+heavy chain junction region, and which substantially increases clonotyping sensitivity.  Please 
+see <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.  This change also
+makes #enclone about 30% slower.</li>
+</ul>
+</p>
+
 <p><b>3/4/22</b>: Add ability to select functional groups by donor, see
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</p>
 
