@@ -222,9 +222,6 @@ nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is reject
 </td>
 </tr>
 
-
-
-
 <tr>
 <td> Mar. 11, 2022 </td>
 <td> <code>******</code> </td>
@@ -232,7 +229,7 @@ nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is reject
 <td>
 Two more changes to the join algorithm.
 <br>
-1. A major change to the clonotype joining algorithm, which allows some certain joins having
+1. A major change to the clonotype joining algorithm, which allows certain joins having
 high heavy chain CDR3 sharing.  Please see
 <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.
 <br>
@@ -243,8 +240,6 @@ genes often have heterogeneous assignments between the gene and its duplicate, a
 as it implies that assignment of genes to clonotypes in these cases is effectively random.
 </td>
 </tr>
-
-
 
 </tbody>
 </table>
