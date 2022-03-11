@@ -936,19 +936,29 @@ pub fn print_stats(
             logx.append(&mut log.as_bytes().to_vec());
             let mut lights = 0;
             let mut lights_same = 0;
+            let mut lights_dd = 0;
+            let mut lights_same_dd = 0;
             for i in 0..groups.len() {
                 for j1 in 0..groups[i].len() {
                     for j2 in j1 + 1..groups[i].len() {
-                        lights += 1;
+                        // Now we have two clonotypes that are in the same group.
                         let m1 = groups[i][j1].0 as usize;
                         let m2 = groups[i][j2].0 as usize;
                         let ex1 = &exact_clonotypes[exacts[m1][0]];
                         let ex2 = &exact_clonotypes[exacts[m2][0]];
+                        lights += 1;
+                        if ex1.clones[0][0].donor_index != ex2.clones[0][0].donor_index {
+                            lights_dd += 1;
+                        }
                         'check: for k1 in 0..ex1.share.len() {
                             for k2 in 0..ex2.share.len() {
                                 if !ex1.share[k1].left && !ex2.share[k2].left {
                                     if ex1.share[k1].v_ref_id == ex2.share[k2].v_ref_id {
                                         lights_same += 1;
+                                        if ex1.clones[0][0].donor_index 
+                                            != ex2.clones[0][0].donor_index {
+                                            lights_same_dd += 1;
+                                        }
                                         break 'check;
                                     }
                                 }
@@ -961,6 +971,11 @@ pub fn print_stats(
                 logx,
                 "light chain V gene concordance within groups = {:.1}%",
                 100.0 * lights_same as f64 / lights as f64
+            );
+            fwriteln!(
+                logx,
+                "interdonor light chain V gene concordance within groups = {:.1}%",
+                100.0 * lights_same_dd as f64 / lights_dd as f64
             );
         }
     }
