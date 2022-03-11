@@ -483,6 +483,7 @@ pub struct ParseableOpt {
     pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
     pub pcols_sortx: Vec<String>, // same but before colon if present
     pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype
+    pub pno_header: bool,         // suppress header line
 }
 
 // Computational performance options.

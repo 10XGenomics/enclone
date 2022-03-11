@@ -116,6 +116,7 @@ pub fn group_and_print_clonotypes(
     if !ctl.parseable_opt.pout.is_empty()
         && ctl.parseable_opt.pout != *"stdout"
         && ctl.parseable_opt.pout != *"stdouth"
+        && !ctl.parseable_opt.pno_header
     {
         fwriteln!(pout, "{}", pcols_show.iter().format(","));
     }
@@ -614,13 +615,15 @@ pub fn group_and_print_clonotypes(
                         .insert("group_ncells".to_string(), format!("{}", group_ncells));
                     out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
                 }
-                if ctl.parseable_opt.pout == *"stdout"
-                    && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
-                {
-                    fwriteln!(glog, "{}", pcols_show.iter().format(","));
-                }
-                if ctl.parseable_opt.pout == *"stdouth" {
-                    rows.push(pcols_show.clone());
+                if !ctl.parseable_opt.pno_header {
+                    if ctl.parseable_opt.pout == *"stdout"
+                        && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
+                    {
+                        fwriteln!(glog, "{}", pcols_show.iter().format(","));
+                    }
+                    if ctl.parseable_opt.pout == *"stdouth" {
+                        rows.push(pcols_show.clone());
+                    }
                 }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {
