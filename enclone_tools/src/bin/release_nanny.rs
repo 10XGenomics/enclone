@@ -72,7 +72,7 @@ fn main() {
             .expect("failed to execute curl");
         let out = strme(&o.stdout);
         for line in out.lines() {
-            if line.starts_with("Location:") {
+            if line.starts_with("Location:") || line.starts_with("location:") {
                 github_version = Some(line.between("/download/", "/enclone_linux").to_string());
             }
         }
