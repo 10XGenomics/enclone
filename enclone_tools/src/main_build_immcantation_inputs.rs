@@ -28,6 +28,8 @@ pub fn main_build_immcantation_inputs() {
     let mut args: Vec<String> = env::args().collect();
     for i in 1..args.len() {
         replace_at_test(&mut args[i]);
+        args[i] = args[i].replace(":", ",");
+        args[i] = args[i].replace(";", ",");
     }
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<usize>::new();
